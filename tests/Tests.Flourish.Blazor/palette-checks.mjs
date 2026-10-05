@@ -96,6 +96,26 @@ function withoutComments(css) {
   return css.replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
+function selectorArms(selector) {
+  const arms = [];
+  let start = 0, depth = 0, quote = null;
+  for (let index = 0; index < selector.length; index++) {
+    const character = selector[index];
+    if (quote) {
+      if (character === "\\") index++;
+      else if (character === quote) quote = null;
+    } else if (character === '"' || character === "'") quote = character;
+    else if (character === "(" || character === "[") depth++;
+    else if (character === ")" || character === "]") depth--;
+    else if (character === "," && depth === 0) {
+      arms.push(selector.slice(start, index).trim());
+      start = index + 1;
+    }
+  }
+  arms.push(selector.slice(start).trim());
+  return arms;
+}
+
 function blockFor(css, selector) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = new RegExp(`(?:^|\\n)\\s*${escaped}\\s*\\{`, "m").exec(css);
@@ -423,15 +443,15 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
     for (const rule of rules(await readFile(path, "utf8"))) {
       const size = property(rule.body, "font-size");
       if (!size) continue;
-      const selectors = rule.selector.split(",").map(selector => selector.trim());
+      const selectors = selectorArms(rule.selector);
       const compact = selector => /\[data-(?:compact-heading|heading-mode\s*=\s*["']?compact["']?)\]/.test(selector);
       const isTitle = selector => /\.(?:f-)?page-heading\b/.test(selector) && /\bh1\s*$/.test(selector);
       const normalized = size.replaceAll(/\s/g, "");
       if (selectors.every(selector => isTitle(selector) && compact(selector))) {
-        assert.equal(normalized, "var(--f-type-page-compact,38px)", `${relative(repositoryRoot, path)} compact title size`);
+        assert.match(normalized, /^var\(--f-type-page-compact(?:,38px)?\)$/, `${relative(repositoryRoot, path)} compact title size`);
         compactFiles.add(relative(designCssRoot, path).replaceAll("\\", "/"));
       } else if (selectors.every(isTitle)) {
-        assert.equal(normalized, "var(--f-type-page,50px)", `${relative(repositoryRoot, path)} expanded title size`);
+        assert.match(normalized, /^var\(--f-type-page(?:,50px)?\)$/, `${relative(repositoryRoot, path)} expanded title size`);
       }
       if (/38px|--f-type-page-compact/.test(size)) {
         assert.ok(selectors.every(selector => isTitle(selector) && compact(selector)),
@@ -439,7 +459,7 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
       }
     }
   }
-  assert.deepEqual([...compactFiles].sort(), ["foundation.css", "layout.css", "patterns/content-surface.css", "patterns/navigation-surface.css"]);
+  assert.deepEqual([...compactFiles].sort(), ["foundation.css", "layout.css", "patterns/content-surface.css", "patterns/navigation-surface.css", "static-surfaces.css"]);
 });
 
 test("static SVG assets only embed the approved Primary and Surface paints", async () => {

@@ -1,7 +1,10 @@
 @inherits LayoutComponentBase
+@using ArkheideSystem.Flourish.Blazor.Hosting
+@inject ApplicationOptions Options
 @inject IServiceProvider Services
 
 <HeadContent>
+    <link rel="icon" href="@Options.Project.BrowserIconPath" />
     <link rel="stylesheet" href="_content/Arkheide.Flourish.Blazor.Framework/framework.css" />
     @if (Theme is not null)
     {

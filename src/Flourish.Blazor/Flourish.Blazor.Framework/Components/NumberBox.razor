@@ -1,13 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @using System.Globalization
 @typeparam TValue
-@inherits InputBase<TValue>
+@inherits TextInputBase<TValue>
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<input @ref="Element" @attributes="AdditionalAttributes" type="number" inputmode="decimal" id="@(Id ?? Field?.Id)" class="f-input @CssClass"
+<input @ref="Element" @attributes="AdditionalAttributes" name="@NameAttributeValue" type="number" inputmode="decimal" id="@(Id ?? Field?.Id)" class="f-input @CssClass"
        value="@CurrentValueAsString" step="@Step" min="@Min" max="@Max" disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)"
-       aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)" aria-describedby="@Description" @oninput="Change" />
+       aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)" aria-describedby="@Description" @oninput="InputCallback" @onchange="ChangeCallback" />
 
 @code {
     private ElementReference Element;
@@ -19,6 +19,9 @@
     [Parameter] public string? Min { get; set; }
     [Parameter] public string? Max { get; set; }
     [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string ChangeEvent { get; set; } = "input";
+    private EventCallback<ChangeEventArgs> InputCallback => ChangeEvent == "input" ? EventCallback.Factory.Create<ChangeEventArgs>(this, Change) : default;
+    private EventCallback<ChangeEventArgs> ChangeCallback => ChangeEvent == "change" ? EventCallback.Factory.Create<ChangeEventArgs>(this, Change) : default;
     [Parameter] public string ParsingErrorMessage { get; set; } = "Enter a valid number.";
     private string? Description => InputSemantics.Description(Field, AdditionalAttributes);
     private void Change(ChangeEventArgs args) { if (!Disabled) CurrentValueAsString = args.Value?.ToString(); }
@@ -27,10 +30,11 @@
     {
         if (BindConverter.TryConvertTo<TValue>(value, CultureInfo.InvariantCulture, out var parsed))
         { result = parsed!; validationErrorMessage = ""; return true; }
-        result = default!; validationErrorMessage = ParsingErrorMessage; return false;
+        result = default!; validationErrorMessage = DefaultText(nameof(ParsingErrorMessage), ParsingErrorMessage, "Input_NumberError", "Enter a valid number."); return false;
     }
     protected override void OnParametersSet()
     {
+        if (ChangeEvent is not ("input" or "change")) throw new ArgumentException("ChangeEvent must be input or change.", nameof(ChangeEvent));
         var type = Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue);
         if (type != typeof(int) && type != typeof(long) && type != typeof(short) && type != typeof(decimal) && type != typeof(double) && type != typeof(float))
             throw new InvalidOperationException("NumberBox supports int, long, short, decimal, double and float, including their nullable forms.");

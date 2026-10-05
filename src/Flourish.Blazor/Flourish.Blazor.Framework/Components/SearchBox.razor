@@ -1,14 +1,16 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @using System.Threading
 @implements IDisposable
 
 <label class="f-search" for="@Identifier">
-    <span class="f-field-label">@Label</span>
+    <span class="f-field-label">@EffectiveLabel</span>
     <input @attributes="AdditionalAttributes" id="@Identifier" class="f-input" type="search" value="@Value" autocomplete="off"
            disabled="@Disabled" maxlength="@MaxLength" @oninput="InputAsync" @onkeydown="KeyDownAsync" />
 </label>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Input_Search", "Search");
     private readonly string GeneratedId = "f-search-" + Guid.NewGuid().ToString("N");
     private string Identifier => Id ?? GeneratedId;
     private CancellationTokenSource? Pending;
@@ -52,5 +54,5 @@
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
     }
     private Task KeyDownAsync(KeyboardEventArgs args) => args.Key == "Escape" ? InputAsync(new ChangeEventArgs { Value = "" }) : Task.CompletedTask;
-    public void Dispose() { Disposed = true; CancelPending(); }
+    public override void Dispose() { base.Dispose(); Disposed = true; CancelPending(); }
 }

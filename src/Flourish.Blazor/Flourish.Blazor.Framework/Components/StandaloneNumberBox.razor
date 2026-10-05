@@ -1,0 +1,17 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<StandaloneTextBox @attributes="AdditionalAttributes" Id="@Id" Type="number" Value="@Value" ValueChanged="ValueChanged"
+    min="@Min" max="@Max" step="@Step" inputmode="decimal" Disabled="@Disabled" ChangeEvent="@ChangeEvent" Class="@Class" />
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string? Min { get; set; }
+    [Parameter] public string? Max { get; set; }
+    [Parameter] public string Step { get; set; } = "any";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string ChangeEvent { get; set; } = "input";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

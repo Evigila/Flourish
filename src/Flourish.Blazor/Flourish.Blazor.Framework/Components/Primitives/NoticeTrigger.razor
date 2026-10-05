@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 <span class="notice-trigger @NoticePresentation.CssClass(Severity)">
     <button class="notice-trigger-button" type="button" aria-label="@Label" aria-describedby="@DescriptionId">
         <svg class="notice-trigger-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -30,10 +31,10 @@
     private readonly string DescriptionId = $"notice-trigger-{Guid.NewGuid():N}";
     private string Label => Severity switch
     {
-        NoticeSeverity.Error => "ERRO",
-        NoticeSeverity.Warning => "AVISO",
-        NoticeSeverity.Success => "SUCESSO",
-        NoticeSeverity.Information or NoticeSeverity.Subtle => "INFO",
-        _ => "INFO"
+        NoticeSeverity.Error => Ui("Notice_Error", "Error"),
+        NoticeSeverity.Warning => Ui("Notice_Warning", "Warning"),
+        NoticeSeverity.Success => Ui("Notice_Success", "Success"),
+        NoticeSeverity.Information or NoticeSeverity.Subtle => Ui("Notice_Information", "Information"),
+        _ => Ui("Notice_Information", "Information")
     };
 }

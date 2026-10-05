@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/WPF/">
+    <Project Path="Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
+  <Folder Name="/Blazor/">
+    <Project Path="Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="../../tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="../../tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj" />
+  </Folder>
+</Solution>

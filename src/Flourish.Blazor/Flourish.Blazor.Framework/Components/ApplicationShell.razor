@@ -1,3 +1,4 @@
+@inherits TextComponentBase
 @using ArkheideSystem.Flourish.Blazor.Hosting
 @implements IAsyncDisposable
 @inject ApplicationOptions Options
@@ -6,27 +7,32 @@
 @inject IServiceProvider Services
 @inject ICommandDispatcher Commands
 
-<div @ref="root" class="f-root @Theme?.CssClass f-shell @(HasNavigationTree ? "f-has-navigation-tree" : "") @(!Options.TopBar.Enabled ? "f-no-titlebar" : "") @(!PrimaryEntries.Any() && !FixedEntries.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
+<div @ref="root" lang="@Texts.Culture" class="f-root @Theme?.CssClass f-shell @(HasNavigationTree ? "f-has-navigation-tree" : "") @(!Options.TopBar.Enabled ? "f-no-titlebar" : "") @(!PrimaryEntries.Any() && !FixedEntries.Any() ? "f-no-navigation" : !HasSecondary ? "f-no-secondary" : "")"
      style="@RootStyle" data-navigation-open="@navigationOpen.ToString().ToLowerInvariant()" data-f-document-shell="@(OwnsDocument ? "" : null)">
-    <a class="f-skip-link" href="#@contentId">@SkipLabel</a>
+    <a class="f-skip-link" href="#@contentId">@SkipLabelText</a>
     @if (Options.TopBar.Enabled)
     {
         <header class="f-titlebar">
             @if (Options.TopBar.NavigationToggle && HasSecondary)
             {
-                <button type="button" class="f-icon-button" aria-label="@MenuLabel" aria-expanded="@navigationOpen.ToString().ToLowerInvariant()" aria-controls="@navigationId" @onclick="ToggleNavigation"><Icon Name="menu" /></button>
+                <button type="button" class="f-icon-button" aria-label="@MenuLabelText" aria-expanded="@navigationOpen.ToString().ToLowerInvariant()" aria-controls="@navigationId" @onclick="ToggleNavigation"><Icon Name="menu" /></button>
             }
-            <a class="f-application-brand" href="@HomeHref" aria-label="@(ApplicationTitle ?? Options.TopBar.AppName)">
-                @if (TitleBarBrand is not null)
-                {
-                    <span class="f-application-logo">@TitleBarBrand</span>
-                }
-                else if (Options.TopBar.IconPath is not null)
-                {
-                    <span class="f-application-logo"><img src="@Options.TopBar.IconPath" alt="@Options.TopBar.IconAlternativeText" /></span>
-                }
-                <span class="f-application-title">@(ApplicationTitle ?? Options.TopBar.AppName)</span>
-            </a>
+            @if (Options.TopBar.DisplayLogo || Options.TopBar.DisplayProjectName)
+            {
+                <a class="f-application-brand" href="@HomeHref" aria-label="@(ProjectName)">
+                    @if (Options.TopBar.DisplayLogo)
+                    {
+                        <span class="f-application-logo">
+                            @if (TitleBarBrand is not null) { @TitleBarBrand }
+                            else { <img src="@Options.Project.LogoPath" alt="@Options.Project.LogoAlternativeText" /> }
+                        </span>
+                    }
+                    @if (Options.TopBar.DisplayProjectName)
+                    {
+                        <span class="f-application-title">@(ProjectName)</span>
+                    }
+                </a>
+            }
             @if (TitleBarStart is not null || Options.TopBar.LeftItems.Count > 0)
             {
                 <div class="f-titlebar-start">
@@ -39,8 +45,8 @@
                 <div class="f-titlebar-center">
                     @foreach (var menu in Options.TopBar.MenuItems)
                     {
-                        <ActionMenu Label="@menu.Label" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
-                            <TriggerContent>@menu.Label <ExpansionIndicator /></TriggerContent>
+                        <ActionMenu Label="@Label(menu, menu.Label)" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
+                            <TriggerContent>@Label(menu, menu.Label) <ExpansionIndicator /></TriggerContent>
                         </ActionMenu>
                     }
                     @foreach (var placement in Options.TopBar.CenterItems) { <DynamicComponent Type="@placement.ComponentType" /> }
@@ -49,9 +55,9 @@
             @if (Options.TopBar.Search)
             {
                 <form class="f-title-search" role="search" @onsubmit="SubmitSearch" @onsubmit:preventDefault>
-                    <label class="f-sr-only" for="@searchId">@Options.TopBar.SearchLabel</label>
+                    <label class="f-sr-only" for="@searchId">@SearchCaption</label>
                     <input id="@searchId" type="search" @bind="search" />
-                    <button type="submit" class="f-icon-button" aria-label="@Options.TopBar.SearchLabel"><Icon Name="search" /></button>
+                    <button type="submit" class="f-icon-button" aria-label="@SearchCaption"><Icon Name="search" /></button>
                 </form>
             }
             <div class="f-titlebar-end">
@@ -63,7 +69,7 @@
     @if (PrimaryEntries.Any() || FixedEntries.Any())
     {
         <aside id="@navigationId" class="f-navigation">
-            <nav class="f-primary-navigation" aria-label="@MainNavigationLabel">
+            <nav class="f-primary-navigation" aria-label="@MainNavigationLabelText">
                 <div class="f-primary-navigation-main">
                     @foreach (var entry in PrimaryEntries) { @RenderPrimaryEntry(entry) }
                 </div>
@@ -76,14 +82,14 @@
             </nav>
             @if (HasSecondary && ActiveEntry is { } active)
             {
-                <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabel">
+                <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabelText">
                     <ul class="f-secondary-list">
                         @foreach (var item in active.SecondaryItems) { @RenderNavigationItem(item) }
                     </ul>
                 </nav>
             }
         </aside>
-        <button class="f-navigation-backdrop" type="button" aria-label="@CloseMenuLabel" tabindex="@(navigationOpen ? 0 : -1)" @onclick="CloseNavigation"></button>
+        <button class="f-navigation-backdrop" type="button" aria-label="@CloseMenuLabelText" tabindex="@(navigationOpen ? 0 : -1)" @onclick="CloseNavigation"></button>
     }
     <main id="@contentId" class="f-content-scroll" tabindex="-1" @ref="content">
         @ChildContent
@@ -109,6 +115,17 @@
     [Parameter] public string SecondaryNavigationLabel { get; set; } = "Secondary navigation";
     [Parameter] public string ExpandNavigationLabel { get; set; } = "Expand";
     [Parameter] public string CollapseNavigationLabel { get; set; } = "Collapse";
+
+    private string ProjectName => ApplicationTitle ?? (Options.Project.NameText is { } text ? Texts.Get(text) : Options.Project.Name);
+    private string SearchCaption => Options.TopBar.SearchText is { } text ? Texts.Get(text) : Options.TopBar.SearchLabel;
+    private string Label(object owner, string literal) => Options.LabelReferences.TryGetValue(owner, out var text) ? Texts.Get(text) : literal;
+    private string SkipLabelText => DefaultText(nameof(SkipLabel), SkipLabel, "Shell_Skip", "Skip to content");
+    private string MenuLabelText => DefaultText(nameof(MenuLabel), MenuLabel, "Shell_OpenNavigation", "Open navigation");
+    private string CloseMenuLabelText => DefaultText(nameof(CloseMenuLabel), CloseMenuLabel, "Shell_CloseNavigation", "Close navigation");
+    private string MainNavigationLabelText => DefaultText(nameof(MainNavigationLabel), MainNavigationLabel, "Shell_MainNavigation", "Main navigation");
+    private string SecondaryNavigationLabelText => DefaultText(nameof(SecondaryNavigationLabel), SecondaryNavigationLabel, "Shell_SecondaryNavigation", "Secondary navigation");
+    private string ExpandNavigationLabelText => DefaultText(nameof(ExpandNavigationLabel), ExpandNavigationLabel, "Shell_Expand", "Expand");
+    private string CollapseNavigationLabelText => DefaultText(nameof(CollapseNavigationLabel), CollapseNavigationLabel, "Shell_Collapse", "Collapse");
 
     private readonly string contentId = "content-" + Guid.NewGuid().ToString("N");
     private readonly string navigationId = "nav-" + Guid.NewGuid().ToString("N");
@@ -191,17 +208,18 @@
         var disabled = parentDisabled || item.Disabled;
         var expanded = expandedItems.Contains(item.Href);
         var selected = !disabled && activeItems.Contains(item);
-        var primaryAttributes = new Dictionary<string, object> { ["title"] = item.Label };
+        var label = Label(item, item.Label);
+        var primaryAttributes = new Dictionary<string, object> { ["title"] = label };
         if (selected) primaryAttributes["aria-current"] = item == ActiveItem ? "page" : "true";
         return @<li class="f-navigation-node" @key="item.Href">
             @if (item.ChildItems.Count > 0)
             {
-                <SplitButton Class="f-secondary-row" Href="@item.Href" Text="@item.Label" Icon="@item.Icon"
+                <SplitButton Class="f-secondary-row" Href="@item.Href" Text="@label" Icon="@item.Icon"
                              PrimaryClass="@($"f-secondary-item{(third ? " f-third-item" : null)}")" SecondaryClass="f-secondary-toggle"
                              Selected="selected" Disabled="disabled" Expanded="expanded" SecondaryControls="@PanelId(item)"
-                             SecondaryLabel="@($"{(expanded ? CollapseNavigationLabel : ExpandNavigationLabel)} {item.Label}")"
+                             SecondaryLabel="@($"{(expanded ? CollapseNavigationLabelText : ExpandNavigationLabelText)} {label}")"
                              PrimaryAttributes="primaryAttributes"
-                             SecondaryAttributes="@(new Dictionary<string, object> { ["title"] = item.Label, ["data-navigation-target"] = item.Href })"
+                             SecondaryAttributes="@(new Dictionary<string, object> { ["title"] = label, ["data-navigation-target"] = item.Href })"
                              OnClick="CloseNavigation" OnSecondaryClick="() => ToggleItem(item)">
                 </SplitButton>
             }
@@ -209,8 +227,8 @@
             {
                 <div class="f-secondary-row">
                     <a href="@(disabled ? null : item.Href)" class="@($"f-secondary-item{(third ? " f-third-item" : null)}{(selected ? " is-selected" : null)}")"
-                       aria-current="@(selected ? "page" : null)" aria-disabled="@(disabled ? "true" : null)" title="@item.Label"
-                       tabindex="@(disabled ? -1 : 0)" @onclick="() => { if (!disabled) CloseNavigation(); }"><Icon Name="@item.Icon" /><span class="f-navigation-label">@item.Label</span></a>
+                       aria-current="@(selected ? "page" : null)" aria-disabled="@(disabled ? "true" : null)" title="@label"
+                       tabindex="@(disabled ? -1 : 0)" @onclick="() => { if (!disabled) CloseNavigation(); }"><Icon Name="@item.Icon" /><span class="f-navigation-label">@label</span></a>
                 </div>
             }
             @if (item.ChildItems.Count > 0)
@@ -224,6 +242,7 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         Theme = Services.GetService(typeof(IThemeProvider)) as IThemeProvider;
         if (Theme is not null) Theme.Changed += ThemeChanged;
         Navigation.LocationChanged += LocationChanged;
@@ -242,6 +261,7 @@
 
     private RenderFragment RenderPrimaryEntry(NavigationEntry entry) => builder =>
     {
+        var label = Label(entry, entry.Label);
         var selected = ReferenceEquals(entry, ActiveEntry) || entry == ActiveEntry;
         var sequence = 0;
         if (entry.Kind == NavigationEntryKind.Route)
@@ -251,8 +271,8 @@
             builder.AddAttribute(sequence++, "href", entry.Disabled ? null : entry.Href);
             builder.AddAttribute(sequence++, "aria-current", selected ? "true" : null);
             builder.AddAttribute(sequence++, "aria-disabled", entry.Disabled ? "true" : null);
-            builder.AddAttribute(sequence++, "aria-label", entry.Label);
-            builder.AddAttribute(sequence++, "title", entry.Label);
+            builder.AddAttribute(sequence++, "aria-label", label);
+            builder.AddAttribute(sequence++, "title", label);
             builder.AddAttribute(sequence++, "tabindex", entry.Disabled ? -1 : 0);
             builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, CloseNavigation));
         }
@@ -261,8 +281,8 @@
             builder.OpenElement(sequence++, "button");
             builder.AddAttribute(sequence++, "type", "button");
             builder.AddAttribute(sequence++, "class", "f-primary-item f-primary-command");
-            builder.AddAttribute(sequence++, "aria-label", entry.Label);
-            builder.AddAttribute(sequence++, "title", entry.Label);
+            builder.AddAttribute(sequence++, "aria-label", label);
+            builder.AddAttribute(sequence++, "title", label);
             builder.AddAttribute(sequence++, "disabled", entry.Disabled || !CanExecute(entry));
             builder.AddAttribute(sequence++, "onclick", EventCallback.Factory.Create(this, () => ExecuteAsync(entry, CommandSource.Navigation)));
         }
@@ -284,7 +304,7 @@
     private bool CanExecute(NavigationEntry entry) => entry.CommandKey is not null && Commands.CanExecute(entry.CommandKey, source: CommandSource.Navigation);
 
     private IReadOnlyList<MenuAction> CreateMenuActions(TopBarMenu menu) => menu.Items
-        .Select(item => new MenuAction(item.Label, () => ExecuteAsync(item.CommandKey, CommandSource.TitleBar),
+        .Select(item => new MenuAction(Label(item, item.Label), () => ExecuteAsync(item.CommandKey, CommandSource.TitleBar),
             item.Disabled || !Commands.CanExecute(item.CommandKey, source: CommandSource.TitleBar), item.Destructive))
         .ToArray();
 
@@ -334,6 +354,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        Dispose();
         disposed = true;
         Navigation.LocationChanged -= LocationChanged;
         if (Theme is not null) Theme.Changed -= ThemeChanged;

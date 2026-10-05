@@ -19,7 +19,7 @@ Persistence is enabled by default: a valid `Flourish:Preferences:Locale` value w
 
 ## Connect Essential Culture
 
-To translate application text with `Arkheide.Essential.Culture`, install its WPF package directly. The independent `Extension.Culture` project is not part of this repository and is not currently a published Flourish dependency.
+To translate application text with `Arkheide.Essential.Culture`, install its WPF package directly. The optional `Flourish.Extensions.Culture.WPF` project is now part of this repository; its renamed package has not been published.
 
 ```bash
 dotnet add package Arkheide.Essential.Culture.Wpf

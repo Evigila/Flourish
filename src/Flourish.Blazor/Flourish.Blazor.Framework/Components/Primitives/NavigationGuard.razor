@@ -1,14 +1,16 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
 @code {
+    private string EffectiveMessage => DefaultText(nameof(Message), Message, "Navigation_Unsaved", "There are unsaved changes. Leave and discard them?");
     [Parameter]
     public bool HasUnsavedChanges { get; set; }
 
     [Parameter]
-    public string Message { get; set; } = "Há alterações não salvas. Deseja sair e descartar o que foi preenchido?";
+    public string Message { get; set; } = "There are unsaved changes. Leave and discard them?";
 
     private IDisposable? LocationChangingRegistration;
     private IJSObjectReference? Module;
@@ -63,7 +65,7 @@
         if (!HasUnsavedChanges || IsCurrentLocation(target))
             return;
 
-        if (!await JS.InvokeAsync<bool>("confirm", Message))
+        if (!await JS.InvokeAsync<bool>("confirm", EffectiveMessage))
             context.PreventNavigation();
     }
 
@@ -85,6 +87,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         LocationChangingRegistration?.Dispose();
         if (Module is null) return;
 

@@ -374,3 +374,6 @@ docs/_site/
 
 # Flourish runtime project catalog
 projects.json
+
+# Restored local package cache
+.packages/

@@ -1,11 +1,14 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<nav class="page-contents" aria-label="Nesta página">
+@inherits TextComponentBase
+<nav class="page-contents" aria-label="@EffectiveLabel">
     <ul>
         @ChildContent
     </ul>
 </nav>
 
 @code {
+    [Parameter] public string Label { get; set; } = "On this page";
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Shell_PageContents", "On this page");
     [Parameter, EditorRequired]
     public RenderFragment? ChildContent { get; set; }
 }

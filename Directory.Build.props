@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <Authors>ArkheideSystem</Authors>
+    <Company>ArkheideSystem</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Evigila/Flourish</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
+    <Deterministic>true</Deterministic>
+    <EssentialCultureVersion>1.3.0</EssentialCultureVersion>
+    <RestoreAdditionalProjectSources Condition="Exists('$(MSBuildThisFileDirectory)../Essential/artifacts/packages')">$(RestoreAdditionalProjectSources);$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../Essential/artifacts/packages'))</RestoreAdditionalProjectSources>
+  </PropertyGroup>
+</Project>

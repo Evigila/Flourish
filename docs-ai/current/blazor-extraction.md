@@ -41,7 +41,31 @@ Native CSS keeps real masked-input text visible, system-colored popup surfaces, 
 
 ## Program configuration, navigation and scroll ownership
 
-AddFlourishFramework exposes ConfigureTopBar, ConfigureNavigation, ConfigureLayout and `SetCommandParser<TParser>`. Top-bar configuration supplies the app name, local logo, menus and optional component types in left/center/right regions. DynamicComponent instantiates these types in the current scope. Command parsers/dispatchers are also scope-owned; singleton options do not capture a component, scoped service or another circuit's mutable command handlers.
+AddFlourishFramework exposes ConfigureProject, ConfigureTopBar, ConfigureNavigation, ConfigureLayout and `SetCommandParser<TParser>`. `IFrameworkBuilder.ConfigureProject(Action<IProjectBuilder>)` owns project identity independently of its presentation. IProjectBuilder.SetProjectName sets the name, SetLogo supplies the logo path and optional alternative text, and SetFavicon supplies a separate browser tab icon.
+
+| Project setting | Default / reset behavior |
+|---|---|
+| Project name | Application |
+| Logo | Framework-bundled white browse SVG at _content/Arkheide.Flourish.Blazor.Framework/browse.svg; SetLogo() or null restores it |
+| Logo alternative text | Empty by default; SetLogo(path, alt) supplies it |
+| Favicon | Unset by default, resolving to Logo; SetFavicon(), null or an empty string clears the dedicated icon and restores Logo fallback |
+
+ConfigureTopBar enables the bar and owns menus, search/navigation controls, component slots and the DisplayLogo(bool display=true)/DisplayProjectName(bool display=true) switches. Both display defaults are true. Logo/name paths and identity are configured in ConfigureProject rather than on the top-bar builder. Hiding either or both top-bar elements does not affect favicon resolution; hiding both omits the brand link while retaining other bar controls. Existing ApplicationTitle/TitleBarBrand runtime slots remain available and respect their display switches; they do not replace the configured favicon.
+
+A host can configure a distinct logo and tab icon while leaving both top-bar elements visible:
+
+    builder.Services.AddFlourishFramework(framework => framework
+        .ConfigureProject(project => project
+            .SetProjectName("My application")
+            .SetLogo("app-logo.svg", "")
+            .SetFavicon("app-favicon.svg"))
+        .ConfigureTopBar(top => top.DisplayLogo().DisplayProjectName()));
+
+Omit SetFavicon to use Logo for the browser tab. ApplicationLayout's existing HeadContent emits the resolved rel=icon link as well as library styles; the host keeps the standard HeadOutlet and does not need a hardcoded favicon link. Low-level ApplicationShell itself emits no HeadContent, so an embedded shell cannot replace its host's tab icon; custom low-level layouts retain head ownership.
+
+Gallery configures project name Gallery, white gallery.svg Logo and separate gallery-favicon.svg in Light Primary #153A32. Its logo's internal 0.8 scale gives 28.8px visible browse geometry in the unchanged 48px brand box. The Framework default browse remains 36px visible within that box. These static SVG assets use the existing authorized Material Symbols source; no icon/API dependency is added.
+
+DynamicComponent instantiates configured left/center/right component types in the current scope. Command parsers/dispatchers are also scope-owned; singleton options do not capture a component, scoped service or another circuit's mutable command handlers.
 
 Navigation distinguishes primary routes, commands, secondary routes and bottom-fixed entries. A primary route has its own explicit target; it is not inferred from the first child. Nested AddSubNav configure callbacks support third-level entries while the original overload with positional Boolean arguments remains compatible. A landing destination may equal its own first child; duplicate siblings and routes shared by different branches/modules remain rejected. The most specific enabled route selects the destination and its ancestry. A disabled ancestor suppresses descendant matching and actions.
 
@@ -49,7 +73,7 @@ An entry with children composes SplitButton: its link navigates and closes narro
 
 Navigation labels intentionally stay on one line with ellipsis; full accessible text/title remains available. Third-level siblings share a Surface panel. Rails/menu panels hide their scrollbar while retaining pointer, touch and keyboard scrolling. These approved project choices do not change the common requirement that organization/record identity text wrap. Narrow navigation retains its focus loop, Escape/outside close and focus return.
 
-Configured top-bar menus use ActionMenu.OpenOnHover=true; standalone ActionMenu defaults to click. Hover opens without moving focus and uses a gap-free pointer corridor; keyboard/touch activation, arrow navigation, Escape, outside close and disabled/busy guards remain supported. Shared popup positioning uses the actual trigger, right alignment, a 12px viewport guard, above/below placement, available-height scrolling and scroll/resize repositioning. Click mode retains its 6px gap. Extracted ServiceMenu keeps its own entry contract.
+Configured top-bar menus use ActionMenu.OpenOnHover=true; standalone ActionMenu defaults to click. Hover opens without moving focus and uses a gap-free pointer corridor; keyboard/touch activation, arrow navigation, Escape, outside close and disabled/busy guards remain supported. Shared popup positioning uses the actual trigger, right alignment, a 12px viewport guard, above/below placement, available-height scrolling and scroll/resize repositioning. Click mode retains its 6px gap. Design ActionMenu option text uses ordinary 17px body type at weight 400; the trigger retains its existing emphasis. Disabled/destructive, hover, press, focus and command behavior are unchanged. Extracted ServiceMenu keeps its own entry contract.
 
 ApplicationLayout.OwnsDocument defaults true. The marked full-page shell locks html/body scroll; its content owns vertical page scrolling, with overflow:clip preventing fragment navigation from moving chrome. Low-level ApplicationShell.OwnsDocument defaults false. Embedded Gallery previews explicitly use false and stay within their local viewport. Disposal removes the owned document lock.
 
@@ -97,11 +121,11 @@ Card and IdentityCard use Primary/PrimaryInk in both themes. IdentityCard keeps 
 
 ## Gallery organization and executable documentation
 
-The five primary destinations are Home, Framework, Controls, Foundations and Examples. Home has no secondary rail. Other destinations show only the selected topic/category:
+The five primary destinations are Home, Framework, Controls, Foundations and Examples. Their updated symbols are home (unchanged), responsive_layout, crossword, shapes and explore respectively; the fixed theme command uses routine. The requested explorer artwork corresponds to the official explore glyph. Other navigation entries are unchanged. Home has no secondary rail. Other destinations show only the selected topic/category:
 
 | Primary | Secondary content |
 |---|---|
-| Framework | Setup, top bar, navigation, commands, layout, built-in interactions |
+| Framework | Setup, top bar, navigation, commands, layout, built-in interactions, language/localization |
 | Controls | Actions, inputs, data, overlays, feedback, progress, content, shell/layout |
 | Foundations | Colors/theme, typography, spacing, radius/shadows, dimensions, icons |
 | Examples | Index, form composition, live form, records, details, composed layout, enum selection, search/list |
@@ -150,4 +174,4 @@ Run-specific totals/screenshots/timings belong in historical records. Current so
 
 Known limits include no virtualization/generic remote query, in-memory default preferences/demo state, retained Portuguese defaults in some Primitives and different browser fallback between enhanced Components ActionMenu/overlays and native Primitives RowActionMenu/Popover. No universal localization or public NuGet publication is claimed.
 
-Culture integration remains future work. The canonical [Culture Web integration plan](culture-web-integration.md) records isolated Server request/circuit and WASM/client contexts, catalog distribution, runtime text resolution and the proposed optional adapter. Do not freeze translated startup navigation labels or introduce a mandatory Culture dependency into Framework/Design. Dependency additions and the contract migration above require their own explicitly authorized implementation task.
+Local Server/SSR Culture integration is implemented under the authorized 2026-10-05 task. Abstract exposes TextReference/ITextProvider; Framework stores explicit startup references in outer metadata and resolves them per circuit through its neutral TextComponentBase. The optional same-repository Flourish.Extensions.Culture.Blazor bridge connects Essential.Culture.Blazor, and Gallery has separate embedded app/framework catalogs, a standard top-bar language picker, bilingual Home and /framework/localization. String APIs, DTO placement and explicit control overrides remain compatible. Framework/Design have no mandatory Culture reference, and Native uses literal fallback. The [Culture integration guide](culture-web-integration.md) documents actual registration, scope, coverage and local source/package limits. Other guide/primitive translations, persistence, client/WASM validation and public package publication remain separate work.

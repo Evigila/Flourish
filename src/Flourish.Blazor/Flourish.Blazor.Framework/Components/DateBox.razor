@@ -1,0 +1,25 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@using System.Linq.Expressions
+@typeparam TValue
+
+<InputDate TValue="TValue" @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="@($"f-input {Class}")"
+    Value="Value" ValueChanged="ValueChanged" ValueExpression="ValueExpression" Type="Type" ParsingErrorMessage="@EffectiveParsingErrorMessage" disabled="@Disabled"
+    required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(FormContext, Identifier, Field, AdditionalAttributes)"
+    aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)" />
+
+@code {
+    [Parameter] public string ParsingErrorMessage { get; set; } = "The {0} field must be a valid date.";
+    private string EffectiveParsingErrorMessage => DefaultText(nameof(ParsingErrorMessage), ParsingErrorMessage, "Input_DateError", "The {0} field must be a valid date.");
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    [CascadingParameter] private EditContext? FormContext { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public Expression<Func<TValue>>? ValueExpression { get; set; }
+    [Parameter] public InputDateType Type { get; set; } = InputDateType.Date;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private FieldIdentifier Identifier => ValueExpression is null ? default : FieldIdentifier.Create(ValueExpression);
+}

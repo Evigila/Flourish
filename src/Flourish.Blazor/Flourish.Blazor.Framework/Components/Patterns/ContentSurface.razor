@@ -1,13 +1,15 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Patterns
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
 <div @ref="root" class="content-surface @CssClass" style="@Style">
-    <a class="skip-link" href="#@ContentId">@SkipLabel</a>
+    <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @TitleBar
     <main @ref="stage" @key="DocumentKey" class="content-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
 </div>
 @code {
+    private string EffectiveSkipLabel => DefaultText(nameof(SkipLabel), SkipLabel, "Shell_Skip", "Skip to content");
     [Parameter] public RenderFragment? TitleBar { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string? CssClass { get; set; }
@@ -25,6 +27,7 @@
         await module.InvokeVoidAsync("synchronize", root, stage, null);
     }
     public async ValueTask DisposeAsync() {
+        base.Dispose();
         disposed = true;
         if (module is null) return;
         try { await module.InvokeVoidAsync("dispose", root); await module.DisposeAsync(); }

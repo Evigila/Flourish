@@ -1,10 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @typeparam TItem
 
 <div class="data-search quick-filter-row form-controls">
     @if (SearchColumns.Count > 0)
     {
-        <label class="quick-filter-field search-column-field" for="@(FieldId + "-column")">Buscar por
+        <label class="quick-filter-field search-column-field" for="@(FieldId + "-column")">@Ui("Table_SearchBy", "Search by")
             <select class="f-input f-select" id="@(FieldId + "-column")" @bind:get="SelectedColumn.Key" @bind:set="ChangeColumnAsync"
                     disabled="@Disabled" @onchange:stopPropagation @oninput:stopPropagation>
                 @foreach (var column in SearchColumns)

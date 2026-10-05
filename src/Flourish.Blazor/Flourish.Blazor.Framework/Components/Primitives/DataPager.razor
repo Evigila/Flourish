@@ -1,39 +1,41 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @using System.Globalization
 
-<nav class="data-pagination" data-page-controls aria-label="@Label" data-page-count="@Pagination.PageCount"
+<nav class="data-pagination" data-page-controls aria-label="@EffectiveLabel" data-page-count="@Pagination.PageCount"
      data-page-current="@Pagination.CurrentPage" data-page-size="@PageSize" data-page-total-records="@TotalCount">
     @if (ShowRange)
     {
-        <span class="data-pagination-range" data-page-range title="Registros carregados" aria-live="polite">
-            <span data-page-range-text>Itens @Pagination.FirstItem–@Pagination.LastItem de</span>
+        <span class="data-pagination-range" data-page-range title="@Ui("Pager_Loaded", "Loaded records")" aria-live="polite">
+            <span data-page-range-text>@Ui("Pager_Range", "Items {0}–{1} of", Pagination.FirstItem, Pagination.LastItem)</span>
             <span class="data-pagination-range-total" data-page-range-total>@Pagination.TotalCount</span>
-            @if (IsLimited) { <span>carregados</span> }
+            @if (IsLimited) { <span>@Ui("Pager_Limited", "loaded")</span> }
         </span>
     }
     <div class="data-pagination-controls">
         <button type="button" class="data-pagination-previous" data-page-previous
-                aria-label="Página anterior" title="Página anterior" disabled="@(Disabled || !Pagination.HasPrevious)"
+                aria-label="@Ui("Table_PreviousPage", "Previous page")" title="@Ui("Table_PreviousPage", "Previous page")" disabled="@(Disabled || !Pagination.HasPrevious)"
                 @onclick="() => RequestPageAsync(Pagination.CurrentPage - 1)">
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
         </button>
         <button type="button" class="data-pagination-next" data-page-next
-                aria-label="Próxima página" title="Próxima página" disabled="@(Disabled || !Pagination.HasNext)"
+                aria-label="@Ui("Table_NextPage", "Next page")" title="@Ui("Table_NextPage", "Next page")" disabled="@(Disabled || !Pagination.HasNext)"
                 @onclick="() => RequestPageAsync(Pagination.CurrentPage + 1)">
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" /></svg>
         </button>
         <label class="data-pagination-page">
-            <span class="visually-hidden">Página atual</span>
+            <span class="visually-hidden">@Ui("Pager_CurrentPage", "Current page")</span>
             <input class="data-pagination-input" data-page-input type="number" inputmode="numeric" step="1"
-                   min="1" max="@Pagination.PageCount" value="@PageText" disabled="@Disabled" aria-label="Página atual"
+                   min="1" max="@Pagination.PageCount" value="@PageText" disabled="@Disabled" aria-label="@Ui("Pager_CurrentPage", "Current page")"
                    @oninput="UpdatePageText" @oninput:stopPropagation
                    @onchange="CommitPageAsync" @onchange:stopPropagation @onkeydown="PageKeyDownAsync" />
         </label>
-        <span class="data-pagination-total" data-page-total aria-label="@($"{Pagination.PageCount} páginas")">/ @Pagination.PageCount</span>
+        <span class="data-pagination-total" data-page-total aria-label="@Ui("Pager_PageCount", "{0} pages", Pagination.PageCount)">/ @Pagination.PageCount</span>
     </div>
 </nav>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Pager_Label", "Record pagination");
     private DataPagination Pagination = new();
     private string PageText = "1";
 
@@ -44,7 +46,7 @@
     [Parameter] public bool ShowRange { get; set; } = true;
     [Parameter] public bool IsLimited { get; set; }
     [Parameter] public bool Disabled { get; set; }
-    [Parameter] public string Label { get; set; } = "Paginação dos registros";
+    [Parameter] public string Label { get; set; } = "Record pagination";
 
     protected override void OnParametersSet()
     {

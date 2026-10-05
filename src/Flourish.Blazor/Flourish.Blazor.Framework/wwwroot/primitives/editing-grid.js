@@ -83,14 +83,14 @@ export function serializeCells(matrix) {
 }
 
 async function reportStreamError(reference) {
-    try { await reference.invokeMethodAsync("ReportPasteError", "Não foi possível concluir a edição. Tente novamente."); }
+    try { await reference.invokeMethodAsync("ReportPasteError", "Grid_EditFailed"); }
     catch { /* The disconnected page owns its reconnect message. */ }
 }
 
 export async function sendPaste(reference, row, column, text) {
     const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
     if (blob.size > 2_000_000) {
-        await reference.invokeMethodAsync("ReportPasteError", "O conteúdo colado deve ter no máximo 2 MB.");
+        await reference.invokeMethodAsync("ReportPasteError", "Grid_PasteTooLarge");
         return;
     }
     const stream = DotNet.createJSStreamReference(blob);
@@ -108,7 +108,7 @@ export async function sendEdits(reference, edits, mergeLastCellEdit = false) {
     const payload = mergeLastCellEdit ? { edits, mergeLastCellEdit: true } : edits;
     const blob = new Blob([JSON.stringify(payload)], { type: "application/json;charset=utf-8" });
     if (blob.size > 2_000_000) {
-        await reference.invokeMethodAsync("ReportPasteError", "A edição selecionada deve ter no máximo 2 MB.");
+        await reference.invokeMethodAsync("ReportPasteError", "Grid_EditTooLarge");
         return false;
     }
     const stream = DotNet.createJSStreamReference(blob);

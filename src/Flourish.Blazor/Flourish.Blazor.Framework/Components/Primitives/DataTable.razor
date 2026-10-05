@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @typeparam TItem
 @inject NavigationManager Navigation
 @inject ArkheideSystem.Flourish.Blazor.Abstract.ITablePreferences Preferences
@@ -18,25 +19,25 @@
         @if (Purpose == TablePurpose.Registry && Columns.Count > 0)
         {
             <div class="table-view-tools">
-                <div class="data-view-switch" role="radiogroup" aria-label="Modo de exibição">
+                <div class="data-view-switch" role="radiogroup" aria-label="@Ui("Table_ViewMode", "Display mode")">
                     <button type="button" role="radio" aria-checked="@(ViewMode == DataViewMode.List ? "true" : "false")"
-                            aria-label="Lista" title="Lista"
+                            aria-label="@Ui("Table_List", "List")" title="@Ui("Table_List", "List")"
                             class="data-view-option @(ViewMode == DataViewMode.List ? "is-selected" : null)"
                             @onclick="() => SetViewMode(DataViewMode.List)">
                         <svg class="data-view-icon" aria-hidden="true" viewBox="0 0 490.667 490.667"><path d="M469.333,224h-448C9.551,224,0,233.551,0,245.333c0,11.782,9.551,21.333,21.333,21.333h448c11.782,0,21.333-9.551,21.333-21.333C490.667,233.551,481.115,224,469.333,224z M21.333,117.333h448c11.782,0,21.333-9.551,21.333-21.333s-9.551-21.333-21.333-21.333h-448C9.551,74.667,0,84.218,0,96S9.551,117.333,21.333,117.333z M469.333,373.333h-448C9.551,373.333,0,382.885,0,394.667C0,406.449,9.551,416,21.333,416h448c11.782,0,21.333-9.551,21.333-21.333C490.667,382.885,481.115,373.333,469.333,373.333z" /></svg>
-                        @if (ViewMode == DataViewMode.List) { <span>Lista</span> }
+                        @if (ViewMode == DataViewMode.List) { <span>@Ui("Table_List", "List")</span> }
                     </button>
                     <button type="button" role="radio" aria-checked="@(ViewMode == DataViewMode.Grid ? "true" : "false")"
-                            aria-label="Grade" title="Grade"
+                            aria-label="@Ui("Table_Grid", "Grid")" title="@Ui("Table_Grid", "Grid")"
                             class="data-view-option @(ViewMode == DataViewMode.Grid ? "is-selected" : null)"
                             disabled="@BulkEditing" @onclick="() => SetViewMode(DataViewMode.Grid)">
                         <svg class="data-view-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M0,3v8H11V0H3A3,3,0,0,0,0,3Z M21,0H13V11H24V3A3,3,0,0,0,21,0Z M0,21a3,3,0,0,0,3,3h8V13H0Z M13,24h8a3,3,0,0,0,3-3V13H13Z" /></svg>
-                        @if (ViewMode == DataViewMode.Grid) { <span>Grade</span> }
+                        @if (ViewMode == DataViewMode.Grid) { <span>@Ui("Table_Grid", "Grid")</span> }
                     </button>
                 </div>
                 <details class="table-column-selector" name="@ToolGroupName">
-                    <summary class="secondary-action">Exibição</summary>
-                    <fieldset aria-label="@(ViewMode == DataViewMode.List ? "Visibilidade e ordem das colunas" : "Visibilidade das informações")">
+                    <summary class="secondary-action">@Ui("Table_Display", "Display")</summary>
+                    <fieldset aria-label="@(ViewMode == DataViewMode.List ? Ui("Table_ColumnVisibility", "Column visibility and order") : Ui("Table_InfoVisibility", "Information visibility"))">
                         @foreach (var column in OrderedColumns)
                         {
                             <div class="column-option @(CanReorder(column) ? "is-reorderable" : "is-reorder-disabled") @(!column.CanHide ? "is-fixed" : null)"
@@ -48,7 +49,7 @@
                                  @ondrop="() => DropColumn(column.Key)">
                                 <button class="column-drag-handle" type="button"
                                         disabled="@(!CanReorder(column))"
-                                        aria-label="@($"Reordenar {column.Label}")"
+                                        aria-label="@Ui("Table_Reorder", "Reorder {0}", column.Label)"
                                         aria-pressed="@(KeyboardMovingKey == column.Key)"
                                         @onkeydown:preventDefault="@(KeyboardMovingKey == column.Key)"
                                         @onkeydown="eventArgs => ReorderColumnWithKeyboard(eventArgs, column)">
@@ -71,16 +72,16 @@
                 @if (BulkEditRequested.HasDelegate || SpreadsheetEditHref is not null)
                 {
                     <details class="table-advanced-selector" name="@ToolGroupName" @key="BulkEditing">
-                        <summary class="secondary-action">Edição avançada</summary>
+                        <summary class="secondary-action">@Ui("Table_AdvancedEdit", "Advanced editing")</summary>
                         <div class="table-popup-panel advanced-edit-options">
                             @if (BulkEditRequested.HasDelegate)
                             {
                                 <button class="table-popup-item" type="button" disabled="@(EditingBusy || BulkEditing)"
-                                        @onclick="BeginBulkEditAsync">Edição em massa</button>
+                                        @onclick="BeginBulkEditAsync">@Ui("Table_BulkEdit", "Bulk editing")</button>
                             }
                             @if (SpreadsheetEditHref is not null)
                             {
-                                <a class="table-popup-item" href="@SpreadsheetEditHref">Edição em tabela</a>
+                                <a class="table-popup-item" href="@SpreadsheetEditHref">@Ui("Table_SpreadsheetEdit", "Edit in grid")</a>
                             }
                         </div>
                     </details>
@@ -94,7 +95,7 @@
     }
     @if (BulkEditing || Purpose != TablePurpose.Registry || ViewMode == DataViewMode.List)
     {
-        <div class="table-scroll" tabindex="0" role="region" aria-label="@Label">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="@EffectiveLabel">
             <table class="data-table" data-resizable-table style="@TableWidthStyle">
                 <colgroup>
                     @if (BulkEditing) { <col style="width:44px" /> }
@@ -111,7 +112,7 @@
                         @if (BulkEditing)
                         {
                             <th scope="col" class="edit-selection">
-                                <input type="checkbox" aria-label="Selecionar todos os registros carregados"
+                                <input type="checkbox" aria-label="@Ui("Table_SelectAllLoaded", "Select all loaded records")"
                                        checked="@AllEditSelected" disabled="@EditingBusy"
                                        @onchange="() => ToggleAllEditSelection.InvokeAsync()" />
                             </th>
@@ -137,22 +138,22 @@
                                 }
                                 <span class="data-column-resizer" data-column-resize="@column.Key"
                                       role="separator" tabindex="0" aria-orientation="vertical"
-                                      aria-label="@($"Largura de {column.Label}")" aria-valuemin="72" aria-valuemax="100000"
+                                      aria-label="@Ui("Table_ColumnWidth", "Width of {0}", column.Label)" aria-valuemin="72" aria-valuemax="100000"
                                       aria-valuenow="@ColumnWidth(column.Key)"
-                                      aria-valuetext="@($"{ColumnWidth(column.Key)} pixels")"
-                                      title="Arraste para ajustar a largura; use as setas para ajustar pelo teclado"></span>
+                                      aria-valuetext="@Ui("Table_Pixels", "{0} pixels", ColumnWidth(column.Key))"
+                                      title="@Ui("Table_ResizeHint", "Drag or use arrow keys; Shift changes 50 px; Home restores; Escape cancels.")"></span>
                             </th>
                         }
                         <th class="table-fill" aria-hidden="true"></th>
                         @if (HasActions)
                         {
-                            <th scope="col" class="table-actions"><span class="visually-hidden">Ações</span></th>
+                            <th scope="col" class="table-actions"><span class="visually-hidden">@Ui("Table_Actions", "Actions")</span></th>
                         }
                     </tr>
                     @if (BulkEditing && BulkEditCell is not null)
                     {
                         <tr class="bulk-edit-row">
-                            <td class="edit-selection"><span class="visually-hidden">Valores a aplicar aos registros selecionados</span></td>
+                            <td class="edit-selection"><span class="visually-hidden">@Ui("Table_BulkValues", "Values to apply to selected records")</span></td>
                             @foreach (var column in VisibleColumns)
                             {
                                 <td @key="column.Key">@BulkEditCell(column)</td>
@@ -174,7 +175,7 @@
                             @if (BulkEditing)
                             {
                                 <td class="edit-selection" @ondblclick:stopPropagation>
-                                    <input type="checkbox" aria-label="@($"Selecionar {EditSelectionLabel?.Invoke(item) ?? "registro"}")"
+                                    <input type="checkbox" aria-label="@Ui("Table_SelectRecord", "Select {0}", EditSelectionLabel?.Invoke(item) ?? Ui("Table_RecordName", "record"))"
                                            checked="@(IsSelectedForEditing?.Invoke(item) == true)" disabled="@EditingBusy"
                                            @onchange="() => ToggleEditSelection.InvokeAsync(item)" />
                                 </td>
@@ -192,7 +193,7 @@
                                             }
                                             else
                                             {
-                                                <span class="muted">Sem imagem</span>
+                                                <span class="muted">@Ui("Table_NoImage", "No image")</span>
                                             }
                                         }
                                         else if (column.UsesTemplate && CellTemplate is not null)
@@ -217,7 +218,7 @@
                     }
                     @if (RenderedItems.Count == 0)
                     {
-                        <tr><td class="empty-row" title="@EmptyMessage" colspan="@ColumnCount">@EmptyMessage</td></tr>
+                        <tr><td class="empty-row" title="@EffectiveEmptyMessage" colspan="@ColumnCount">@EffectiveEmptyMessage</td></tr>
                     }
                 </tbody>
             </table>
@@ -225,7 +226,7 @@
     }
     else
     {
-        <div class="data-card-grid" role="list" aria-label="@Label">
+        <div class="data-card-grid" role="list" aria-label="@EffectiveLabel">
             @foreach (var item in RenderedItems)
             {
                 var hasDefaultAction = HasDefaultAction(item);
@@ -247,7 +248,7 @@
                             else
                             {
                                 <div class="data-card-image-placeholder">
-                                    <span>Sem imagem</span>
+                                    <span>@Ui("Table_NoImage", "No image")</span>
                                 </div>
                             }
                             </div>
@@ -358,7 +359,7 @@
             }
             @if (RenderedItems.Count == 0)
             {
-                <p class="data-card-empty">@EmptyMessage</p>
+                <p class="data-card-empty">@EffectiveEmptyMessage</p>
             }
         </div>
     }
@@ -369,6 +370,8 @@
 </div>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Table_Label", "Records");
+    private string EffectiveEmptyMessage => DefaultText(nameof(EmptyMessage), EmptyMessage, "Grid_Empty", "No records found.");
     private const double DefaultColumnWidth = 72;
     private const double MaximumAutomaticColumnWidth = 260;
     private const double MinimumColumnWidth = 72;
@@ -452,7 +455,7 @@
     public RenderFragment<DataCellContext<TItem>>? CellTemplate { get; set; }
 
     [Parameter]
-    public string EmptyMessage { get; set; } = "Nenhum registro encontrado.";
+    public string EmptyMessage { get; set; } = "No records found.";
 
     [Parameter]
     public TablePurpose Purpose { get; set; } = TablePurpose.Registry;
@@ -626,6 +629,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         IsDisposed = true;
         try
         {
@@ -698,10 +702,10 @@
         : SortDirection == SortDirection.Descending ? "descending" : "ascending";
 
     private string ColumnSortAction(DataColumn<TItem> column) => SortKey != column.Key
-        ? $"{column.Label}: ordenar decrescente"
+        ? $"{column.Label}: {Ui("Table_SortDescending", "sort descending")}"
         : SortDirection == SortDirection.Descending
-            ? $"{column.Label}: ordenar crescente"
-            : $"{column.Label}: restaurar ordem padrão";
+            ? $"{column.Label}: {Ui("Table_SortAscending", "sort ascending")}"
+            : $"{column.Label}: {Ui("Table_SortDefault", "restore default order")}";
 
     private void CycleSort(DataColumn<TItem> column)
     {
@@ -820,7 +824,7 @@
         Purpose == TablePurpose.Registry && ViewMode == DataViewMode.List && column.CanReorder;
 
     private string ActionLabelFor(TItem item) =>
-        ActionLabel?.Invoke(item) ?? "Abrir ações do registro";
+        ActionLabel?.Invoke(item) ?? Ui("Menu_RecordActions", "Record actions");
 
     private object? ItemKeyFor(TItem item) => ItemKey?.Invoke(item) ?? item;
 
@@ -836,11 +840,11 @@
             @if (DefaultActionContent is not null) { @DefaultActionContent(item) }
             else if (DefaultActionHref?.Invoke(item) is { } href)
             {
-                <a class="table-popup-item" href="@href" data-record-open>Abrir</a>
+                <a class="table-popup-item" href="@href" data-record-open>@Ui("Table_Open", "Open")</a>
             }
             else
             {
-                <button class="table-popup-item" type="button" data-record-open @onclick="() => InvokeDefaultActionAsync(item)">Abrir</button>
+                <button class="table-popup-item" type="button" data-record-open @onclick="() => InvokeDefaultActionAsync(item)">@Ui("Table_Open", "Open")</button>
             }
         }
         @if (Actions is not null) { @Actions(item) }
@@ -901,12 +905,12 @@
             if (KeyboardMovingKey == column.Key)
             {
                 KeyboardMovingKey = null;
-                KeyboardReorderStatus = $"Posição de {column.Label} confirmada.";
+                KeyboardReorderStatus = Ui("Table_ReorderConfirmed", "Position of {0} confirmed.", column.Label);
             }
             else
             {
                 KeyboardMovingKey = column.Key;
-                KeyboardReorderStatus = $"Reordenando {column.Label}. Use as setas para mover e Enter ou Espaço para concluir.";
+                KeyboardReorderStatus = Ui("Table_ReorderStarted", "Reordering {0}. Use arrow keys to move; Enter or Space finishes.", column.Label);
             }
 
             return;
@@ -916,14 +920,14 @@
         if (eventArgs.Key == "Enter")
         {
             KeyboardMovingKey = null;
-            KeyboardReorderStatus = $"Posição de {column.Label} confirmada.";
+            KeyboardReorderStatus = Ui("Table_ReorderConfirmed", "Position of {0} confirmed.", column.Label);
             return;
         }
 
         if (eventArgs.Key == "Escape")
         {
             KeyboardMovingKey = null;
-            KeyboardReorderStatus = $"Reordenação de {column.Label} encerrada.";
+            KeyboardReorderStatus = Ui("Table_ReorderFinished", "Reordering of {0} ended.", column.Label);
             return;
         }
 
@@ -937,7 +941,7 @@
         OrderedKeys.RemoveAt(sourceIndex);
         OrderedKeys.Insert(targetIndex, column.Key);
         RebuildColumnSnapshots();
-        KeyboardReorderStatus = $"{column.Label} movida para a posição {targetIndex + 1}.";
+        KeyboardReorderStatus = Ui("Table_ReorderMoved", "{0} moved to position {1}.", column.Label, targetIndex + 1);
     }
 
     private void RebuildColumnSnapshots()

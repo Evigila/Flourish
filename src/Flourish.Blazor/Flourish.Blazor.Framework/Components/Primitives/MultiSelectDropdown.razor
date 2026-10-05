@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @typeparam TItem
 @typeparam TValue where TValue : notnull
 
@@ -20,12 +21,12 @@
             {
                 <input class="multi-select-search selection-search" type="search" form="@(Id + "-popup-search")"
                        value="@Search" maxlength="@NewItemMaximumLength" autocomplete="off"
-                       aria-label="Buscar ou adicionar etiqueta" disabled="@Creating"
+                       aria-label="@Ui("Selection_SearchOrAdd", "Search or add")" disabled="@Creating"
                        @oninput="SearchChanged" @oninput:stopPropagation @onkeydown="HandleSearchKeyDownAsync" />
             }
             @if (MatchingItems.Count == 0)
             {
-                <p>@(string.IsNullOrWhiteSpace(Search) ? EmptyText : "Nenhuma etiqueta encontrada.")</p>
+                <p>@(string.IsNullOrWhiteSpace(Search) ? EffectiveEmptyText : Ui("Selection_NoResults", "No results found."))</p>
             }
             @foreach (var item in MatchingItems)
             {
@@ -41,7 +42,7 @@
             @if (CanCreate)
             {
                 <button type="button" class="multi-select-create selection-create" disabled="@(Creating || SelectedValues.Count >= MaximumSelections)"
-                        @onclick="CreateAsync">@(Creating ? "Adicionando..." : $"Adicionar \"{Search.Trim()}\"")</button>
+                        @onclick="CreateAsync">@(Creating ? Ui("Selection_Adding", "Adding…") : Ui("Selection_Add", "Add \"{0}\"", Search.Trim()))</button>
             }
         </div>
     }
@@ -50,6 +51,9 @@
 </SelectionDropdownSurface>
 
 @code {
+    private string EffectiveEmptyText => DefaultText(nameof(EmptyText), EmptyText, "Selection_NoOptions", "No options available.");
+    private string EffectiveEmptySelectionText => DefaultText(nameof(EmptySelectionText), EmptySelectionText, "Selection_NoneSelected", "None selected");
+    private string EffectiveMultipleSelectionText => DefaultText(nameof(MultipleSelectionText), MultipleSelectionText, "Selection_Count", "items selected");
     [Parameter, EditorRequired]
     public string Id { get; set; } = string.Empty;
 
@@ -72,13 +76,13 @@
     public string? LabelledBy { get; set; }
 
     [Parameter]
-    public string EmptyText { get; set; } = "Nenhuma opção cadastrada.";
+    public string EmptyText { get; set; } = "No options available.";
 
     [Parameter]
-    public string EmptySelectionText { get; set; } = "Sem etiquetas";
+    public string EmptySelectionText { get; set; } = "None selected";
 
     [Parameter]
-    public string MultipleSelectionText { get; set; } = "etiquetas selecionadas";
+    public string MultipleSelectionText { get; set; } = "items selected";
 
     [Parameter]
     public int MaximumSelections { get; set; } = int.MaxValue;
@@ -108,14 +112,14 @@
     {
         get
         {
-            if (SelectedValues.Count == 0) return EmptySelectionText;
+            if (SelectedValues.Count == 0) return EffectiveEmptySelectionText;
             if (SelectedValues.Count == 1)
             {
                 var selected = Items.Where(item => SelectedValues.Contains(ValueSelector(item)))
                     .Select(TextSelector).FirstOrDefault();
                 if (selected is not null) return selected;
             }
-            return $"{SelectedValues.Count} {MultipleSelectionText}";
+            return $"{SelectedValues.Count.ToString(Texts.FormatCulture)} {EffectiveMultipleSelectionText}";
         }
     }
 

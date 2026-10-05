@@ -1,3 +1,4 @@
+@inherits TextComponentBase
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -6,12 +7,12 @@
     @if (CopyText is not null)
     {
         <Button Variant="ButtonVariant.Elevated" Icon="@(Copied ? "check" : "content_copy")"
-                aria-label="@(Copied ? CopiedLabel : CopyLabel)" title="@(Copied ? CopiedLabel : CopyLabel)"
-                Class="f-display-board-copy" Busy="Copying" BusyLabel="@CopyingLabel" OnClick="CopyAsync" />
+                aria-label="@(Copied ? CopiedLabelText : CopyLabelText)" title="@(Copied ? CopiedLabelText : CopyLabelText)"
+                Class="f-display-board-copy" Busy="Copying" BusyLabel="@CopyingLabelText" OnClick="CopyAsync" />
         <span class="f-sr-only" role="status">@CopyStatus</span>
     }
     <div class="f-display-board-viewport"><div class="f-display-board-content">@ChildContent</div></div>
-    @if (CopyFailed) { <p class="f-display-board-error" role="alert">@CopyFailedLabel</p> }
+    @if (CopyFailed) { <p class="f-display-board-error" role="alert">@CopyFailedLabelText</p> }
 </div>
 
 @code {
@@ -26,6 +27,11 @@
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
+    private string CopyLabelText => DefaultText(nameof(CopyLabel), CopyLabel, "Board_Copy", "Copy");
+    private string CopiedLabelText => DefaultText(nameof(CopiedLabel), CopiedLabel, "Board_Copied", "Copied");
+    private string CopyingLabelText => DefaultText(nameof(CopyingLabel), CopyingLabel, "Board_Copying", "Copying\u2026");
+    private string CopyFailedLabelText => DefaultText(nameof(CopyFailedLabel), CopyFailedLabel, "Board_CopyFailed", "Unable to copy. Select the code and copy it manually.");
+
     private IJSObjectReference? Module;
     private bool Copying;
     private bool Copied;
@@ -34,7 +40,7 @@
     private string? LastText;
     private CancellationTokenSource? FeedbackCancellation;
     private Task? FeedbackTask;
-    private string CopyStatus => Copied ? CopiedLabel : string.Empty;
+    private string CopyStatus => Copied ? CopiedLabelText : string.Empty;
 
     protected override void OnParametersSet()
     {
@@ -100,6 +106,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        Dispose();
         Disposed = true;
         FeedbackCancellation?.Cancel();
         if (FeedbackTask is not null) await FeedbackTask;

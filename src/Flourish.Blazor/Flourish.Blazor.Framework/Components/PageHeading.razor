@@ -1,6 +1,7 @@
+@inherits TextComponentBase
 <header class="f-page-heading" data-page-heading data-heading-mode="@(Compact ? "compact" : null)">
     <div class="f-heading-title">
-        @if (!string.IsNullOrEmpty(ParentHref)) { <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref" Class="f-parent-link" Icon="arrow_back" Text="@(ParentLabel ?? string.Empty)" aria-label="@(string.IsNullOrWhiteSpace(ParentLabel) ? "Back" : ParentLabel)" /> }
+        @if (!string.IsNullOrEmpty(ParentHref)) { <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref" Class="f-parent-link" Icon="arrow_back" Text="@(ParentLabel ?? string.Empty)" aria-label="@(string.IsNullOrWhiteSpace(ParentLabel) ? Texts.Get(new TextReference("Flourish", "Heading_Back", "Back")) : ParentLabel)" /> }
         <h1>@Title</h1>
     </div>
     @if (Actions is not null) { <div class="f-heading-actions">@Actions</div> }

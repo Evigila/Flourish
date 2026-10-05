@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
@@ -9,7 +10,7 @@
             <div class="section-title-row">
                 <h2 id="@(Id + "-title")">@Title</h2>
             </div>
-            <button class="bottom-sheet-close" type="button" title="Fechar" aria-label="Fechar"
+            <button class="bottom-sheet-close" type="button" title="@EffectiveCloseLabel" aria-label="@EffectiveCloseLabel"
                     disabled="@IsBusy" @onclick="RequestCloseAsync">
                 <AppIcon Name="close" Size="tool" />
             </button>
@@ -27,6 +28,8 @@
 </dialog>
 
 @code {
+    [Parameter] public string CloseLabel { get; set; } = "Close";
+    private string EffectiveCloseLabel => DefaultText(nameof(CloseLabel), CloseLabel, "Dialog_Close", "Close");
     [Parameter, EditorRequired]
     public string Id { get; set; } = string.Empty;
 
@@ -93,6 +96,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         if (IsDisposed) return;
         IsDisposed = true;
         try

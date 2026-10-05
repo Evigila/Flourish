@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
         if (options.CommandParserType is { } parserType)
             services.AddScoped(typeof(ICommandParser), parserType);
 
+        services.TryAddScoped<ITextProvider, LiteralTextProvider>();
         services.TryAddScoped<CommandRuntime>();
         services.TryAddScoped<ICommandDispatcher>(provider => provider.GetRequiredService<CommandRuntime>());
         services.TryAddScoped<ITablePreferences, Components.Primitives.TablePreferences>();

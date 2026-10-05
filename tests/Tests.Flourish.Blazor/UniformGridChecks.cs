@@ -1,6 +1,7 @@
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -200,6 +201,7 @@ internal static class UniformGridChecks
             var activator = new ButtonActivator();
             var services = new ServiceCollection();
             services.AddLogging();
+        services.AddFlourishFramework();
             services.AddSingleton<NavigationManager>(new TestNavigation());
             services.AddSingleton<IComponentActivator>(activator);
             using var provider = services.BuildServiceProvider();
@@ -245,6 +247,7 @@ internal static class UniformGridChecks
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        services.AddFlourishFramework();
         services.AddSingleton<NavigationManager>(new TestNavigation());
         using var provider = services.BuildServiceProvider();
         await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());

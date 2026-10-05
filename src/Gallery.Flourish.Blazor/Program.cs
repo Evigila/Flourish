@@ -1,3 +1,9 @@
+using System.Globalization;
+using ArkheideSystem.Essential.Culture;
+using ArkheideSystem.Flourish.Blazor.Abstract;
+using ArkheideSystem.Flourish.Blazor.Components;
+using Microsoft.AspNetCore.Localization;
+using TextKey = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Gallery.Flourish.Blazor.Commands;
 using ArkheideSystem.Gallery.Flourish.Blazor.Components;
@@ -5,44 +11,68 @@ using ArkheideSystem.Gallery.Flourish.Blazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+using var galleryTexts = typeof(Program).Assembly.GetManifestResourceStream("Gallery.Texts.json")
+    ?? throw new InvalidOperationException("The embedded Gallery text catalog is missing.");
+using var frameworkTexts = typeof(ApplicationShell).Assembly.GetManifestResourceStream("Flourish.Blazor.Texts.json")
+    ?? throw new InvalidOperationException("The embedded framework text catalog is missing.");
+builder.Services.AddCultureBlazor(culture => culture
+    .AddCatalog("Gallery", LocalizationCatalog.Load(galleryTexts))
+    .AddCatalog("Flourish", LocalizationCatalog.Load(frameworkTexts))
+    .SetDefaultCatalog("Gallery")
+    .SetDefaultCulture("zh-CN")
+    .AddSupportedCultures("zh-CN", "en-US"));
+builder.Services.AddFlourishCulture();
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("zh-CN");
+    options.SupportedCultures = new[] { "zh-CN", "en-US", "pt-BR" }.Select(CultureInfo.GetCultureInfo).ToArray();
+    options.SupportedUICultures = new[] { "zh-CN", "en-US" }.Select(CultureInfo.GetCultureInfo).ToArray();
+    options.RequestCultureProviders = [new CookieRequestCultureProvider(), new AcceptLanguageHeaderRequestCultureProvider()];
+});
+
+static TextReference Text(string key, string fallback) => new("Gallery", key, fallback);
 builder.Services.AddFlourishFramework(framework =>
     framework
+        .ConfigureProject(project =>
+            project.SetProjectName(Text(TextKey.Project_Name, "Gallery"))
+                .SetLogo("gallery.svg")
+                .SetFavicon("gallery-favicon.svg")
+        )
         .ConfigureTopBar(top =>
-            top.SetAppName("Gallery")
-                .SetIcon("gallery.svg", "")
-                .AddMenu(
-                    "页面",
-                    menu =>
-                        menu.AddMenuItem("框架", GalleryCommandParser.OpenFramework)
-                            .AddMenuItem("控件", GalleryCommandParser.OpenControls)
-                            .AddMenuItem("基础", GalleryCommandParser.OpenFoundations)
-                            .AddMenuItem("案例", GalleryCommandParser.OpenExamples)
-                )
+            top.InjectToRight<LanguagePicker>().AddMenu(
+                Text(TextKey.Menu_Pages, "页面"),
+                menu =>
+                    menu.AddMenuItem(Text(TextKey.Nav_Framework, "框架"), GalleryCommandParser.OpenFramework)
+                        .AddMenuItem(Text(TextKey.Nav_Controls, "控件"), GalleryCommandParser.OpenControls)
+                        .AddMenuItem(Text(TextKey.Nav_Foundations, "基础"), GalleryCommandParser.OpenFoundations)
+                        .AddMenuItem(Text(TextKey.Nav_Examples, "案例"), GalleryCommandParser.OpenExamples)
+            )
         )
         .ConfigureNavigation(navigation =>
             navigation
-                .AddNav("主页", "home", "/", exact: true)
+                .AddNav(Text(TextKey.Nav_Home, "主页"), "home", "/", exact: true)
                 .AddNav(
-                    "框架",
-                    "dashboard_customize",
+                    Text(TextKey.Nav_Framework, "框架"),
+                    "responsive_layout",
                     "/framework",
                     secondary =>
                         secondary
-                            .AddSubNav("接入应用", "start", "/framework", exact: true)
-                            .AddSubNav("顶部栏", "web_asset", "/framework/topbar")
-                            .AddSubNav("导航", "menu", "/framework/navigation")
-                            .AddSubNav("命令处理", "terminal", "/framework/commands")
-                            .AddSubNav("页面布局", "view_quilt", "/framework/layout")
-                            .AddSubNav("内置交互", "touch_app", "/framework/interactions")
+                            .AddSubNav(Text(TextKey.Nav_GetStarted, "接入应用"), "start", "/framework", exact: true)
+                            .AddSubNav(Text(TextKey.Nav_TopBar, "顶部栏"), "web_asset", "/framework/topbar")
+                            .AddSubNav(Text(TextKey.Nav_Navigation, "导航"), "menu", "/framework/navigation")
+                            .AddSubNav(Text(TextKey.Nav_Commands, "命令处理"), "terminal", "/framework/commands")
+                            .AddSubNav(Text(TextKey.Nav_PageLayout, "页面布局"), "view_quilt", "/framework/layout")
+                            .AddSubNav(Text(TextKey.Nav_Interactions, "内置交互"), "touch_app", "/framework/interactions")
+                            .AddSubNav(Text(TextKey.Nav_Localization, "语言与本地化"), "translate", "/framework/localization")
                 )
                 .AddNav(
-                    "控件",
-                    "widgets",
+                    Text(TextKey.Nav_Controls, "控件"),
+                    "crossword",
                     "/controls",
                     secondary =>
                         secondary
                             .AddSubNav(
-                                "按钮与菜单",
+                                Text(TextKey.Nav_Actions, "按钮与菜单"),
                                 "smart_button",
                                 "/controls",
                                 third =>
@@ -86,7 +116,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "输入与选择",
+                                Text(TextKey.Nav_Inputs, "输入与选择"),
                                 "input",
                                 "/controls/inputs",
                                 third =>
@@ -214,7 +244,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "数据与列表",
+                                Text(TextKey.Nav_Data, "数据与列表"),
                                 "table_chart",
                                 "/controls/data",
                                 third =>
@@ -252,7 +282,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "对话框与弹层",
+                                Text(TextKey.Nav_Overlays, "对话框与弹层"),
                                 "web_asset",
                                 "/controls/overlays",
                                 third =>
@@ -278,7 +308,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "状态反馈",
+                                Text(TextKey.Nav_Feedback, "状态反馈"),
                                 "notifications",
                                 "/controls/feedback",
                                 third =>
@@ -322,7 +352,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "进度",
+                                Text(TextKey.Nav_Progress, "进度"),
                                 "hourglass_empty",
                                 "/controls/progress",
                                 third =>
@@ -342,7 +372,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "内容与组合",
+                                Text(TextKey.Nav_Content, "内容与组合"),
                                 "view_agenda",
                                 "/controls/content",
                                 third =>
@@ -446,7 +476,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 exact: true
                             )
                             .AddSubNav(
-                                "外壳与布局",
+                                Text(TextKey.Nav_Layout, "外壳与布局"),
                                 "view_quilt",
                                 "/controls/layout",
                                 third =>
@@ -569,34 +599,34 @@ builder.Services.AddFlourishFramework(framework =>
                             )
                 )
                 .AddNav(
-                    "基础",
-                    "palette",
+                    Text(TextKey.Nav_Foundations, "基础"),
+                    "shapes",
                     "/foundations",
                     secondary =>
                         secondary
-                            .AddSubNav("颜色与主题", "palette", "/foundations", exact: true)
-                            .AddSubNav("字体", "text_fields", "/foundations/typography")
-                            .AddSubNav("间距", "space_bar", "/foundations/spacing")
-                            .AddSubNav("圆角与阴影", "rounded_corner", "/foundations/shape")
-                            .AddSubNav("布局尺寸", "aspect_ratio", "/foundations/dimensions")
-                            .AddSubNav("图标", "emoji_symbols", "/foundations/icons")
+                            .AddSubNav(Text(TextKey.Nav_Colors, "颜色与主题"), "palette", "/foundations", exact: true)
+                            .AddSubNav(Text(TextKey.Nav_Typography, "字体"), "text_fields", "/foundations/typography")
+                            .AddSubNav(Text(TextKey.Nav_Spacing, "间距"), "space_bar", "/foundations/spacing")
+                            .AddSubNav(Text(TextKey.Nav_Shape, "圆角与阴影"), "rounded_corner", "/foundations/shape")
+                            .AddSubNav(Text(TextKey.Nav_Dimensions, "布局尺寸"), "aspect_ratio", "/foundations/dimensions")
+                            .AddSubNav(Text(TextKey.Nav_Icons, "图标"), "emoji_symbols", "/foundations/icons")
                 )
                 .AddNav(
-                    "案例",
-                    "auto_awesome_mosaic",
+                    Text(TextKey.Nav_Examples, "案例"),
+                    "explore",
                     "/examples",
                     secondary =>
                         secondary
-                            .AddSubNav("案例目录", "view_list", "/examples", exact: true)
-                            .AddSubNav("创建表单页面", "description", "/examples/form")
-                            .AddSubNav("表单演示", "edit", "/forms")
-                            .AddSubNav("记录列表", "list", "/records")
-                            .AddSubNav("记录详情", "person", "/records/sample")
-                            .AddSubNav("组合布局", "view_quilt", "/patterns")
-                            .AddSubNav("枚举下拉框", "arrow_drop_down", "/examples/enum")
-                            .AddSubNav("搜索与列表", "search", "/examples/search")
+                            .AddSubNav(Text(TextKey.Nav_ExampleIndex, "案例目录"), "view_list", "/examples", exact: true)
+                            .AddSubNav(Text(TextKey.Nav_FormPage, "创建表单页面"), "description", "/examples/form")
+                            .AddSubNav(Text(TextKey.Nav_Forms, "表单演示"), "edit", "/forms")
+                            .AddSubNav(Text(TextKey.Nav_Records, "记录列表"), "list", "/records")
+                            .AddSubNav(Text(TextKey.Nav_RecordDetails, "记录详情"), "person", "/records/sample")
+                            .AddSubNav(Text(TextKey.Nav_Patterns, "组合布局"), "view_quilt", "/patterns")
+                            .AddSubNav(Text(TextKey.Nav_Enums, "枚举下拉框"), "arrow_drop_down", "/examples/enum")
+                            .AddSubNav(Text(TextKey.Nav_Search, "搜索与列表"), "search", "/examples/search")
                 )
-                .AddFixedNavButton("切换主题", "palette", GalleryCommandParser.ToggleTheme)
+                .AddFixedNavButton(Text(TextKey.Nav_Theme, "切换主题"), "routine", GalleryCommandParser.ToggleTheme)
         )
         .SetCommandParser<GalleryCommandParser>()
 );
@@ -613,6 +643,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 app.UseStatusCodePagesWithReExecute("/not-found");
+app.UseRequestLocalization();
 app.UseAntiforgery();
 app.MapStaticAssets().ShortCircuit();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();

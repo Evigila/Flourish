@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @typeparam TItem
 
 <span class="search-autocomplete" @onfocusout="CloseAsync">
@@ -22,10 +23,10 @@
            @onkeydown="HandleKeyDownAsync" />
     @if (IsOpen)
     {
-        <span id="@ListboxId" class="search-autocomplete-options" role="listbox" aria-label="@ResultsLabel">
+        <span id="@ListboxId" class="search-autocomplete-options" role="listbox" aria-label="@EffectiveResultsLabel">
             @if (Matches.Count == 0)
             {
-                <span class="search-autocomplete-empty" role="status">@EmptyText</span>
+                <span class="search-autocomplete-empty" role="status">@EffectiveEmptyText</span>
             }
             else
             {
@@ -49,6 +50,8 @@
 </span>
 
 @code {
+    private string EffectiveResultsLabel => DefaultText(nameof(ResultsLabel), ResultsLabel, "Search_Suggestions", "Search suggestions");
+    private string EffectiveEmptyText => DefaultText(nameof(EmptyText), EmptyText, "Selection_NoResults", "No results found.");
     [Parameter, EditorRequired]
     public string Id { get; set; } = string.Empty;
 
@@ -98,10 +101,10 @@
     public string? Form { get; set; }
 
     [Parameter]
-    public string ResultsLabel { get; set; } = "Sugestões da busca";
+    public string ResultsLabel { get; set; } = "Search suggestions";
 
     [Parameter]
-    public string EmptyText { get; set; } = "Nenhum resultado encontrado.";
+    public string EmptyText { get; set; } = "No results found.";
 
     [Parameter]
     public bool Disabled { get; set; }

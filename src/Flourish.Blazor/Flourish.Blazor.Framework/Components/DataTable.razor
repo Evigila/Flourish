@@ -1,3 +1,4 @@
+@inherits TextComponentBase
 @using System.Globalization
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
@@ -12,9 +13,9 @@
     {
         <div class="f-data-search">
             <label>
-                <span>@Text.SearchBy</span>
-                <select class="f-input f-select" value="@_searchColumn" @onchange="ChangeSearchColumn" aria-label="@Text.SearchBy">
-                    <option value="">@Text.AllColumns</option>
+                <span>@EffectiveText.SearchBy</span>
+                <select class="f-input f-select" value="@_searchColumn" @onchange="ChangeSearchColumn" aria-label="@EffectiveText.SearchBy">
+                    <option value="">@EffectiveText.AllColumns</option>
                     @foreach (var column in Columns.Where(column => column.Searchable))
                     {
                         <option value="@column.Key">@column.Header</option>
@@ -33,20 +34,20 @@
             <div class="f-data-page-group">@Pager()</div>
         }
         <div class="f-data-tools">
-            <div class="f-data-view" role="group" aria-label="@Text.Display">
+            <div class="f-data-view" role="group" aria-label="@EffectiveText.Display">
                 <button type="button" class="@(_view == TableView.Table ? "f-data-view-selected" : null)"
-                        aria-label="@Text.List" aria-pressed="@(_view == TableView.Table ? "true" : "false")" @onclick="() => ChangeView(TableView.Table)">
+                        aria-label="@EffectiveText.List" aria-pressed="@(_view == TableView.Table ? "true" : "false")" @onclick="() => ChangeView(TableView.Table)">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" /></svg>
-                    @if (_view == TableView.Table) { <span>@Text.List</span> }
+                    @if (_view == TableView.Table) { <span>@EffectiveText.List</span> }
                 </button>
                 <button type="button" class="@(_view == TableView.Cards ? "f-data-view-selected" : null)"
-                        aria-label="@Text.Cards" aria-pressed="@(_view == TableView.Cards ? "true" : "false")" @onclick="() => ChangeView(TableView.Cards)">
+                        aria-label="@EffectiveText.Cards" aria-pressed="@(_view == TableView.Cards ? "true" : "false")" @onclick="() => ChangeView(TableView.Cards)">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="currentColor" /></svg>
-                    @if (_view == TableView.Cards) { <span>@Text.Cards</span> }
+                    @if (_view == TableView.Cards) { <span>@EffectiveText.Cards</span> }
                 </button>
             </div>
             <details class="f-data-display">
-                <summary class="f-dropdown-trigger" aria-controls="@($"{_instanceId}-display")">@Text.Display <ExpansionIndicator /></summary>
+                <summary class="f-dropdown-trigger" aria-controls="@($"{_instanceId}-display")">@EffectiveText.Display <ExpansionIndicator /></summary>
                 <div id="@($"{_instanceId}-display")" class="f-data-display-options f-dropdown-panel f-menu-panel" popover="manual">
                     @foreach (var column in Columns)
                     {
@@ -68,17 +69,17 @@
     }
     @if (Loading)
     {
-        <div class="f-data-status" role="status">@LoadingMessage</div>
+        <div class="f-data-status" role="status">@LoadingText</div>
     }
     @if (_rows.Count == 0 && !Loading && string.IsNullOrWhiteSpace(Error))
     {
-        <div class="f-data-empty" role="status">@EmptyMessage</div>
+        <div class="f-data-empty" role="status">@EmptyText</div>
     }
     else if (_rows.Count > 0 && _view == TableView.Table)
     {
-        <div class="f-data-scroll" tabindex="0" role="region" aria-label="@Label">
+        <div class="f-data-scroll" tabindex="0" role="region" aria-label="@RecordsText">
             <table @ref="_table" class="f-data-table" data-f-table>
-                <caption class="f-data-sr-only">@Label</caption>
+                <caption class="f-data-sr-only">@RecordsText</caption>
                 <colgroup>
                     @for (var i = 0; i < _visibleColumns.Count; i++)
                     {
@@ -111,13 +112,13 @@
                                     <span class="f-data-cell" title="@column.Header">@column.Header</span>
                                 }
                                 <button class="f-data-resize" type="button" data-f-resize="@column.Key"
-                                        role="slider" aria-orientation="horizontal" aria-label="@($"{Text.Width}: {column.Header}")"
+                                        role="slider" aria-orientation="horizontal" aria-label="@($"{EffectiveText.Width}: {column.Header}")"
                                         aria-valuemin="72" aria-valuemax="100000" aria-valuenow="72"
-                                        title="@Text.ResizeHint" @onclick:stopPropagation="true"></button>
+                                        title="@EffectiveText.ResizeHint" @onclick:stopPropagation="true"></button>
                             </th>
                         }
                         <th class="f-data-spacer" aria-hidden="true"></th>
-                        @if (_hasActions) { <th class="f-data-actions"><span class="f-data-sr-only">@Text.Actions</span></th> }
+                        @if (_hasActions) { <th class="f-data-actions"><span class="f-data-sr-only">@EffectiveText.Actions</span></th> }
                     </tr>
                 </thead>
                 <tbody>
@@ -132,7 +133,7 @@
                             @if (_hasActions)
                             {
                                 <td class="f-data-actions" @ondblclick:stopPropagation="true">
-                                    @if (row.Actions.Count > 0) { <ActionMenu Label="@($"{Text.Actions}: {row.Label}")" Actions="@row.Actions" /> }
+                                    @if (row.Actions.Count > 0) { <ActionMenu Label="@($"{EffectiveText.Actions}: {row.Label}")" Actions="@row.Actions" /> }
                                 </td>
                             }
                         </tr>
@@ -143,7 +144,7 @@
     }
     else if (_rows.Count > 0)
     {
-        <div class="f-data-cards" role="list" aria-label="@Label">
+        <div class="f-data-cards" role="list" aria-label="@RecordsText">
             @foreach (var row in _rows)
             {
                 <article @key="row.Key" class="f-data-card @(OnRowOpen.HasDelegate ? "f-data-openable" : null)" role="listitem" @ondblclick="() => Open(row.Item)">
@@ -157,7 +158,7 @@
                     </div>
                     @if (row.Actions.Count > 0)
                     {
-                        <div class="f-data-card-actions" @ondblclick:stopPropagation="true"><ActionMenu Label="@($"{Text.Actions}: {row.Label}")" Actions="@row.Actions" /></div>
+                        <div class="f-data-card-actions" @ondblclick:stopPropagation="true"><ActionMenu Label="@($"{EffectiveText.Actions}: {row.Label}")" Actions="@row.Actions" /></div>
                     }
                 </article>
             }
@@ -189,6 +190,36 @@
     [Parameter] public string? Error { get; set; }
     [Parameter] public string EmptyMessage { get; set; } = "No items.";
 
+    private CultureInfo EffectiveCulture => HasExplicitParameter(nameof(Culture)) ? Culture : Texts.FormatCulture;
+    private string RecordsText => DefaultText(nameof(Label), Label, "Table_Label", "Records");
+    private string LoadingText => DefaultText(nameof(LoadingMessage), LoadingMessage, "Table_Loading", "Loading…");
+    private string EmptyText => DefaultText(nameof(EmptyMessage), EmptyMessage, "Table_Empty", "No items.");
+    private TableText? localizedTableText;
+    private TableText EffectiveText => HasExplicitParameter(nameof(Text)) ? Text : localizedTableText ??= new(
+        SearchBy: Texts.Get(new TextReference("Flourish", "Table_SearchBy", "Search by")),
+        AllColumns: Texts.Get(new TextReference("Flourish", "Table_AllColumns", "All columns")),
+        SearchContent: Texts.Get(new TextReference("Flourish", "Table_SearchContent", "Content")),
+        List: Texts.Get(new TextReference("Flourish", "Table_List", "List")),
+        Cards: Texts.Get(new TextReference("Flourish", "Table_Cards", "Cards")),
+        Display: Texts.Get(new TextReference("Flourish", "Table_Display", "Display")),
+        Actions: Texts.Get(new TextReference("Flourish", "Table_Actions", "Actions")),
+        Open: Texts.Get(new TextReference("Flourish", "Table_Open", "Open")),
+        Items: Texts.Get(new TextReference("Flourish", "Table_Items", "Items")),
+        Of: Texts.Get(new TextReference("Flourish", "Table_Of", "of")),
+        Page: Texts.Get(new TextReference("Flourish", "Table_Page", "Page")),
+        PreviousPage: Texts.Get(new TextReference("Flourish", "Table_PreviousPage", "Previous page")),
+        NextPage: Texts.Get(new TextReference("Flourish", "Table_NextPage", "Next page")),
+        Width: Texts.Get(new TextReference("Flourish", "Table_Width", "Width")),
+        SortDescending: Texts.Get(new TextReference("Flourish", "Table_SortDescending", "sort descending")),
+        SortAscending: Texts.Get(new TextReference("Flourish", "Table_SortAscending", "sort ascending")),
+        SortDefault: Texts.Get(new TextReference("Flourish", "Table_SortDefault", "restore default order")),
+        ResizeHint: Texts.Get(new TextReference("Flourish", "Table_ResizeHint", "Drag or use arrow keys; Shift changes 50 px; Home restores; Escape cancels.")),
+        ItemsPerPage: Texts.Get(new TextReference("Flourish", "Table_ItemsPerPage", "Items per page")),
+        Total: Texts.Get(new TextReference("Flourish", "Table_Total", "Total")),
+        ItemRangeFormat: Texts.Get(new TextReference("Flourish", "Table_ItemRangeFormat", "{0} {1}-{2} / {3} {4}")));
+
+    protected override void OnTextChanged() { localizedTableText = null; if (_initialized) Rebuild(); }
+
     private readonly HashSet<string> _hidden = new(StringComparer.Ordinal);
     private IReadOnlyList<TableColumn<TItem>> _visibleColumns = Array.Empty<TableColumn<TItem>>();
     private IReadOnlyList<TItem> _processed = Array.Empty<TItem>();
@@ -214,10 +245,11 @@
     private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)_pageSize));
     private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;
     private int LastItem => (int)Math.Min((long)_page * _pageSize, _processed.Count);
-    private string SearchLabel => Columns.FirstOrDefault(column => column.Key == _searchColumn)?.Header ?? Text.SearchContent;
+    private string SearchLabel => Columns.FirstOrDefault(column => column.Key == _searchColumn)?.Header ?? EffectiveText.SearchContent;
 
     protected override void OnParametersSet()
     {
+        localizedTableText = null;
         ArgumentOutOfRangeException.ThrowIfLessThan(PageSize, 1);
         if (Columns.Select(column => column.Key).Distinct(StringComparer.Ordinal).Count() != Columns.Count
             || Columns.Any(column => string.IsNullOrWhiteSpace(column.Key)))
@@ -249,17 +281,17 @@
     {
         _visibleColumns = Columns.Where(column => !_hidden.Contains(column.Key)).ToArray();
         if (_visibleColumns.Count == 0 && Columns.Count > 0) { _hidden.Remove(Columns[0].Key); _visibleColumns = new[] { Columns[0] }; }
-        _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable ? _query : null, _searchColumn, Culture),
-            Columns.FirstOrDefault(column => column.Key == _sortKey), _sortDirection, Culture);
+        _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable ? _query : null, _searchColumn, EffectiveCulture),
+            Columns.FirstOrDefault(column => column.Key == _sortKey), _sortDirection, EffectiveCulture);
         _page = TableData<TItem>.ClampPage(_page, _processed.Count, _pageSize);
         var offset = (_page - 1) * _pageSize;
         _rows = _processed.Skip(offset).Take(_pageSize).Select((item, index) =>
         {
-            var values = _visibleColumns.Select(column => TableData<TItem>.Display(item, column, Culture)).ToArray();
-            var label = RowLabel?.Invoke(item) ?? values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? $"Record {offset + index + 1}";
+            var values = _visibleColumns.Select(column => TableData<TItem>.Display(item, column, EffectiveCulture)).ToArray();
+            var label = RowLabel?.Invoke(item) ?? values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? Texts.Get(new TextReference("Flourish", "Table_Record", "Record {0}"), offset + index + 1);
             var actions = Actions.Where(action => action.IsAvailable?.Invoke(item) != false)
                 .Select(action => new MenuAction(action.Label, () => action.OnClick(item), action.Disabled, action.Destructive)).ToList();
-            if (OnRowOpen.HasDelegate) actions.Insert(0, new MenuAction(Text.Open, () => OnRowOpen.InvokeAsync(item)));
+            if (OnRowOpen.HasDelegate) actions.Insert(0, new MenuAction(EffectiveText.Open, () => OnRowOpen.InvokeAsync(item)));
             return new RenderRow(item, ItemKey?.Invoke(item) ?? (object)(offset + index), values, actions, label);
         }).ToArray();
         _hasActions = OnRowOpen.HasDelegate || Actions.Count > 0;
@@ -284,8 +316,8 @@
     }
     private string AriaSort(TableColumn<TItem> column) => _sortKey != column.Key ? "none" : _sortDirection == TableSortDirection.Descending ? "descending" : "ascending";
     private string SortHint(TableColumn<TItem> column) => _sortKey != column.Key || _sortDirection == TableSortDirection.Default
-        ? $"{column.Header}: {Text.SortDescending}" : _sortDirection == TableSortDirection.Descending
-            ? $"{column.Header}: {Text.SortAscending}" : $"{column.Header}: {Text.SortDefault}";
+        ? $"{column.Header}: {EffectiveText.SortDescending}" : _sortDirection == TableSortDirection.Descending
+            ? $"{column.Header}: {EffectiveText.SortAscending}" : $"{column.Header}: {EffectiveText.SortDefault}";
     private Task Open(TItem item) => OnRowOpen.HasDelegate ? OnRowOpen.InvokeAsync(item) : Task.CompletedTask;
     private static string Shown(string value) => string.IsNullOrEmpty(value) ? "—" : value;
     private void MovePage(int page) { _page = TableData<TItem>.ClampPage(page, _processed.Count, _pageSize); Rebuild(); }
@@ -302,15 +334,15 @@
     private IEnumerable<int> PageSizes => new[] { 10, 20, 50, 100, _pageSize }.Distinct().Order();
 
     private RenderFragment Pager() => @<div class="f-data-pager-row">
-        <div class="f-data-count"><span>@string.Format(Culture, Text.ItemRangeFormat, Text.Items, FirstItem, LastItem, Text.Total, _processed.Count)</span></div>
-        <div class="f-data-pager" role="group" aria-label="@Text.Page">
-            <button type="button" aria-label="@Text.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
-            <button type="button" aria-label="@Text.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
-            <span class="f-data-page-input"><input type="number" aria-label="@Text.Page" min="1" max="@PageCount" value="@_page" @onchange="SetPage" data-f-page /></span>
-            <span class="f-data-page-total">@Text.Of @PageCount</span>
+        <div class="f-data-count"><span>@string.Format(EffectiveCulture, EffectiveText.ItemRangeFormat, EffectiveText.Items, FirstItem, LastItem, EffectiveText.Total, _processed.Count)</span></div>
+        <div class="f-data-pager" role="group" aria-label="@EffectiveText.Page">
+            <button type="button" aria-label="@EffectiveText.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
+            <button type="button" aria-label="@EffectiveText.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
+            <span class="f-data-page-input"><input type="number" aria-label="@EffectiveText.Page" min="1" max="@PageCount" value="@_page" @onchange="SetPage" data-f-page /></span>
+            <span class="f-data-page-total">@EffectiveText.Of @PageCount</span>
         </div>
         <label class="f-data-page-size">
-            <span>@Text.ItemsPerPage</span>
+            <span>@EffectiveText.ItemsPerPage</span>
             <select class="f-input f-select" value="@_pageSize" @onchange="ChangePageSize" data-f-page-size>
                 @foreach (var pageSize in PageSizes) { <option value="@pageSize">@pageSize</option> }
             </select>
@@ -320,6 +352,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        Dispose();
         _disposed = true;
         if (_module is null) return;
         try { await _module.InvokeVoidAsync("detach", _instanceId); await _module.DisposeAsync(); }

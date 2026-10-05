@@ -1,32 +1,41 @@
 # currentproject-architecture
 
-This document explains the maintained directory and file tree from the repository root. Every listed node has a short responsibility description. It describes the current checkout, including Gallery navigation trees, self-hosted Material Symbols, compiled component examples, reusable display boards, split buttons, section navigation and shared grid cells.
+This document explains the maintained directory and file tree from the repository root. Every listed node has a short responsibility description. Flourish owns framework libraries, optional Design libraries and Culture bridges. External Culture dependencies are NuGet packages; application pages and business data remain in their consuming hosts.
 
-The tree omits `docs/` and `docs-ai/` as permitted for this inventory. It also omits version-control data (`.git/`), IDE state (`.vs/`), ignored build outputs and caches (`bin/`, `obj/`, `TestResults/`, architecture-specific build folders and restored packages). Those outputs are produced from the listed source files. Deleted README files and removed skill packages are absent.
+The tree omits all docs/ and docs-ai/ directories, version-control internals, IDE state, generated builds and caches (bin/, obj/, artifacts/, TestResults/, .packages/, packages/, node_modules/, x64/, x86/ and ARM64/), local agent state and archived directories. Empty directories without maintained files are omitted.
 
-Coverage: 894 maintained files and 132 directories, plus the repository root.
+Coverage: 948 maintained files and 140 directories, plus the repository root.
 
 ```text
-Flourish/ — Repository root for libraries, Gallery hosts and verification.
+Flourish/ — Repository root for framework libraries, optional extensions, Gallery hosts and verification.
 ├── .config/ — Pins repository-local development tools.
 │   └── dotnet-tools.json — Pins DocFX for documentation and CSharpier for code formatting.
 ├── .github/ — Contains repository automation configuration.
 │   └── workflows/ — Defines GitHub Actions workflows.
+│       ├── build.yml — Builds, tests and verifies all release packages; matching version tags publish through the nuget environment.
 │       └── docs.yml — Builds and publishes the existing DocFX documentation site.
-├── build/ — Contains maintained CSS build tasks and their verification scripts.
+├── build/ — Contains maintained CSS build tasks and integration verification scripts.
 │   ├── BundleCss.cs — Expands local CSS imports, detects invalid paths and creates deterministic bundles.
 │   ├── CssBundle.targets — Runs the CSS bundler during project builds and static asset generation.
 │   ├── Test-CssAssets.ps1 — Checks framework and design asset paths and optional theme boundaries.
-│   └── Test-CssBundle.ps1 — Checks deterministic bundling, import resolution and packaging outputs.
+│   ├── Test-CssBundle.ps1 — Checks deterministic bundling, import resolution and packaging outputs.
+│   └── Test-CultureIntegration.cjs — Checks live Gallery language changes, independent browser sessions, formatted values and the Framework-only host with a headless browser.
 ├── script/ — Contains local documentation preview commands.
 │   ├── preview-docs-en-us.ps1 — Builds and serves the existing English DocFX site locally.
 │   └── preview-docs-zh-cn.ps1 — Builds and serves the existing Chinese DocFX site locally.
-├── src/ — Contains framework libraries and runnable Gallery applications.
+├── scripts/ — Contains local release preparation, package inspection and user-confirmed tag publishing commands.
+│   ├── Publish-Helper.ps1 — Prepares packages and optionally validates clean master, confirms and pushes the matching release tag.
+│   ├── Release-Common.ps1 — Loads release settings, reads versions, runs checked commands and validates release tag ancestry.
+│   ├── ReleaseSettings.psd1 — Lists the release solution, version source, ordered package IDs, dependencies, required assets and checks.
+│   ├── Test-Release.ps1 — Builds and tests Release, packs every configured library and verifies the resulting package set.
+│   └── Verify-PackageSet.ps1 — Checks exact package identities, versions, dependencies and required packaged assemblies and assets.
+├── src/ — Contains framework libraries, optional extensions and runnable Gallery applications.
 │   ├── Flourish.Blazor/ — Groups the four Blazor libraries and the Blazor solution entry point.
-│   │   ├── Flourish.Blazor.Abstract/ — Exposes public shell, configuration and service contracts.
-│   │   │   ├── ApplicationContracts.cs — Declares shell builders, nested navigation callbacks, appearance services and optional theme contracts.
+│   │   ├── Flourish.Blazor.Abstract/ — Exposes public shell, configuration, text-provider and service contracts.
+│   │   │   ├── ApplicationContracts.cs — Declares project branding, top-bar display, navigation, layout and appearance contracts with optional text references.
 │   │   │   ├── Flourish.Blazor.Abstract.csproj — Defines the public Blazor contracts package and shared model references.
-│   │   │   └── ITablePreferences.cs — Declares per-user column widths, visibility and ordering preferences.
+│   │   │   ├── ITablePreferences.cs — Declares per-user column widths, visibility and ordering preferences.
+│   │   │   └── TextContracts.cs — Declares catalog-qualified text references and the scoped text provider contract without selecting a translation library.
 │   │   ├── Flourish.Blazor.Design/ — Provides optional theme services and visual styles.
 │   │   │   ├── Hosting/ — Composes startup options and services with the application host.
 │   │   │   │   ├── AppearanceService.cs — Publishes runtime theme and palette changes as scoped appearance state and CSS variables.
@@ -73,14 +82,16 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   ├── data.css — Defines themed table, sorting, selection and row-action appearance.
 │   │   │   │   ├── design.css — Imports the optional theme's foundation, control, table and composition styles.
 │   │   │   │   ├── display-board.css — Styles preview board dots, code backgrounds, copy controls and board spacing.
-│   │   │   │   ├── expansion-indicator.css — Styles shared triangle geometry, rotation timing and reduced-motion behavior.
 │   │   │   │   ├── dropdown.css — Styles shared triggers, native pickers, menu options and unavailable actions.
+│   │   │   │   ├── expansion-indicator.css — Styles shared triangle geometry, rotation timing and reduced-motion behavior.
+│   │   │   │   ├── form-inputs.css — Styles standard date and file inputs and read-only input presentation.
 │   │   │   │   ├── foundation.css — Defines fifteen color roles, text sizes, spacing, radius and shadows.
 │   │   │   │   ├── layout.css — Defines page, form, section and responsive composition styles.
 │   │   │   │   ├── native-overrides.css — Applies the optional theme to native form and focus presentation.
-│   │   │   │   ├── section-navigator.css — Styles section dots, active links and section-label tooltips.
 │   │   │   │   ├── scrollbars.css — Provides thin transparent scrollbar tracks, narrow thumbs and hidden arrow buttons.
+│   │   │   │   ├── section-navigator.css — Styles section dots, active links and section-label tooltips.
 │   │   │   │   ├── split-button.css — Styles both split-button actions and their shared selection and focus states.
+│   │   │   │   ├── static-surfaces.css — Styles static server-rendered surfaces and shared form boundaries with Design tokens.
 │   │   │   │   ├── theme-aliases.css — Maps primitive color aliases to the optional theme's semantic tokens.
 │   │   │   │   └── uniform-grid.css — Styles shared grid cells, title and body roles, interaction states and filled surfaces.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
@@ -129,6 +140,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── ReferenceDropdown.razor — Selects one reference with search, keyboard navigation and independent popup width.
 │   │   │   │   │   ├── RowActionMenu.razor — Displays a row's contextual actions with outside-click dismissal.
 │   │   │   │   │   ├── SearchAutocomplete.razor — Displays suggestions while a user enters a search query.
+│   │   │   │   │   ├── SecondaryNavigationItem.razor — Renders a secondary route link with prefix matching and explicit current-page semantics.
 │   │   │   │   │   ├── SelectionDropdownSurface.razor — Provides shared layout and focus behavior for dropdown options.
 │   │   │   │   │   ├── ServiceMenu.razor — Displays a dropdown of application destinations.
 │   │   │   │   │   ├── ShellHeader.razor — Displays logo, application name, menus and identity actions.
@@ -140,50 +152,64 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── ToggleSwitch.razor — Edits a binary setting through a switch control.
 │   │   │   │   │   └── UniformGrid.razor — Arranges content into equal-width grid columns.
 │   │   │   │   ├── ActionMenu.razor — Shows click or hover action menus with dismissal and keyboard focus handling.
-│   │   │   │   ├── ApplicationLayout.razor — Connects routed page content to the configured shell and stylesheet links.
+│   │   │   │   ├── ApplicationLayout.razor — Connects routed content to the shell and outputs stylesheet links and the configured tab icon.
 │   │   │   │   ├── ApplicationShell.razor — Renders top bar content, route links and separate branch disclosure buttons.
 │   │   │   │   ├── BottomSheet.razor — Shows a dismissible panel anchored to the bottom of the viewport.
 │   │   │   │   ├── Button.razor — Exposes ordinary action buttons with visual variants, busy states and click behavior.
 │   │   │   │   ├── Card.razor — Groups related content in a surface with selectable visual variants.
-│   │   │   │   ├── CheckBox.razor — Exposes a binary selection value and optional label.
+│   │   │   │   ├── CheckBox.razor — Renders a bound checkbox with optional label wrapping and a preserved boolean submission value.
 │   │   │   │   ├── CodeBlock.razor — Displays escaped code text in a formatted block with a language label.
 │   │   │   │   ├── DataTable.razor — Renders table rows, selection, sorting and column configuration.
+│   │   │   │   ├── DateBox.razor — Wraps typed native date input with binding, disabled state and standard field semantics.
 │   │   │   │   ├── Dialog.razor — Displays modal content with focus handling and dismissal behavior.
 │   │   │   │   ├── Disclosure.razor — Expands and collapses content below a labelled trigger.
 │   │   │   │   ├── DisplayBoard.razor — Displays preview content or formatted code with an explicit copy action.
-│   │   │   │   ├── ExpansionIndicator.razor — Displays the decorative expansion triangle from a host-controlled state.
+│   │   │   │   ├── DropdownSurface.razor — Renders a native details-based menu with a supplied trigger and child actions.
 │   │   │   │   ├── EmptyState.razor — Displays a title, explanation and optional action when no data is available.
-│   │   │   │   ├── Field.razor — Connects a form control with its label, description and error message.
+│   │   │   │   ├── ExpansionIndicator.razor — Displays the decorative expansion triangle from a host-controlled state.
+│   │   │   │   ├── Field.razor — Associates a field label, required state and validation errors with its nested input.
+│   │   │   │   ├── FilePicker.razor — Wraps native file selection with a visible optional label, accepted types and upload change notification.
 │   │   │   │   ├── FormActions.razor — Groups the actions at the end of a form.
 │   │   │   │   ├── FormLayout.razor — Composes form content, sections and its action area.
 │   │   │   │   ├── Icon.razor — Renders a decorative Material Symbols Outlined codepoint from a name or compatibility alias.
 │   │   │   │   ├── IdentityCard.razor — Displays a person's name, initials and supporting facts.
-│   │   │   │   ├── InputSemantics.cs — Normalizes input identity and accessibility attributes.
+│   │   │   │   ├── InputSemantics.cs — Combines field identity, required state, invalid state and error descriptions with explicit native attributes.
 │   │   │   │   ├── LoadingState.razor — Displays a loading indicator and supporting message.
 │   │   │   │   ├── Notice.razor — Displays a semantic information, success, warning or error message.
-│   │   │   │   ├── NumberBox.razor — Edits a numeric value with range and step options.
+│   │   │   │   ├── NumberBox.razor — Renders typed bound numeric input with field validation and input/change event selection.
 │   │   │   │   ├── PageBody.razor — Hosts vertically stacked page content in its scrolling viewport.
 │   │   │   │   ├── PageHeading.razor — Displays a page title beneath its optional parent link and aligned actions.
 │   │   │   │   ├── ProgressBar.razor — Displays determinate or indeterminate progress along a bar.
 │   │   │   │   ├── ProgressRing.razor — Displays circular determinate or indeterminate progress.
 │   │   │   │   ├── SearchBox.razor — Edits a search query and exposes search and clear actions.
-│   │   │   │   ├── Section.razor — Groups a page heading and its related content.
+│   │   │   │   ├── Section.razor — Renders a titled content section with stable heading and anchor identities.
 │   │   │   │   ├── SectionNavigator.razor — Shows supplied or discovered section links beside the host content.
-│   │   │   │   ├── SelectBox.razor — Selects one value from supplied native options.
+│   │   │   │   ├── SelectBox.razor — Renders typed bound selections with native attributes and standard field semantics.
 │   │   │   │   ├── SplitButton.razor — Combines independent primary and secondary actions with shared selection and disabled state.
-│   │   │   │   ├── TextBox.razor — Edits text with label, placeholder and validation semantics.
+│   │   │   │   ├── StandaloneCheckBox.razor — Renders a standalone checkbox with native POST value and optional outer-label compatibility.
+│   │   │   │   ├── StandaloneNumberBox.razor — Renders native numeric input with preserved string POST values and browser constraints.
+│   │   │   │   ├── StandaloneSelectBox.razor — Renders typed native selections for standalone callbacks and static POST forms.
+│   │   │   │   ├── StandaloneTextBox.razor — Renders native text input for static POST forms or callbacks without requiring a binding expression.
+│   │   │   │   ├── StaticDialog.razor — Renders a host-controlled native dialog surface without requiring interactive component state.
+│   │   │   │   ├── TableSurface.razor — Wraps a semantic native table in a local scrolling surface for static server rendering.
+│   │   │   │   ├── TextBox.razor — Renders bound text or multiline input with native attributes, field semantics and input/change event selection.
+│   │   │   │   ├── TextComponentBase.cs — Refreshes localized components and gives explicit text parameters precedence over library defaults.
+│   │   │   │   ├── TextInputBase.cs — Provides scoped text lookup and localized parsing defaults for bound input components.
 │   │   │   │   ├── ToggleSection.razor — Combines an enable switch with optional section content.
 │   │   │   │   ├── ToggleSwitch.razor — Edits a binary setting through a switch control.
 │   │   │   │   ├── UniformGrid.razor — Arranges cells with independent shape, appearance and automatic or explicit row and column layouts.
 │   │   │   │   ├── UniformGridButton.razor — Exposes an action or link cell with appearance, title, icon, text, busy state and content slot.
 │   │   │   │   └── UniformGridItem.razor — Displays a passive cell with appearance, title, icon, text and optional content.
 │   │   │   ├── Hosting/ — Composes startup options and services with the application host.
-│   │   │   │   ├── ApplicationOptions.cs — Collects and validates the shell configuration before registration.
-│   │   │   │   └── CommandRuntime.cs — Keeps command registrations and dispatch inside the current Blazor scope.
+│   │   │   │   ├── ApplicationOptions.cs — Collects immutable project identity and shell options, validating paths and favicon fallback.
+│   │   │   │   ├── CommandRuntime.cs — Keeps command registrations and dispatch inside the current Blazor scope.
+│   │   │   │   └── LiteralTextProvider.cs — Provides literal fallback text and current formatting when no optional Culture bridge is registered.
 │   │   │   ├── Icons/ — Contains the bundled icon name catalog and its embedded font codepoint map.
 │   │   │   │   ├── IconCatalog.cs — Lists Material Symbols Outlined names, resolves compatibility aliases and maps names to font codepoints.
 │   │   │   │   └── MaterialSymbolsOutlined.codepoints — Maps official Material Symbols Outlined names to the codepoints embedded in the Framework assembly.
-│   │   │   ├── wwwroot/ — Contains structural CSS and JavaScript behavior assets.
+│   │   │   ├── Localization/ — Contains library-owned text catalogs independent of the selected translation provider.
+│   │   │   │   └── Texts.json — Contains the framework's English, Chinese and Brazilian Portuguese control text.
+│   │   │   ├── wwwroot/ — Contains structural CSS, JavaScript behavior and the default project logo.
 │   │   │   │   ├── icons/ — Contains locally served icon font assets.
 │   │   │   │   │   └── material/ — Contains the pinned Google Material Symbols Outlined font, license and source metadata.
 │   │   │   │   │       ├── LICENSE.txt — Preserves the Apache 2.0 license for the bundled Google icon assets.
@@ -206,11 +232,13 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── primary-navigation-item.js — Tracks primary navigation pointer and pressed states.
 │   │   │   │   │   ├── reference-dropdown.js — Determines whether a dropdown still contains keyboard focus.
 │   │   │   │   │   └── row-action-menu.js — Coordinates contextual menu opening, positioning and dismissal.
+│   │   │   │   ├── browse.svg — Provides the default white Material Symbols browse logo and tab-icon fallback.
 │   │   │   │   ├── clipboard.js — Copies text on request and restores focus and selection after a clipboard fallback.
 │   │   │   │   ├── controls.js — Positions and dismisses action/display popups, handles menu keys, modal focus and input selection.
 │   │   │   │   ├── data.js — Synchronizes table column widths and connects display selection to shared popup behavior.
 │   │   │   │   ├── display-board.css — Defines display board alignment, code overflow and copy-button placement without a visual theme.
 │   │   │   │   ├── expansion-indicator.css — Defines native triangle content and expanded orientation without a visual theme.
+│   │   │   │   ├── form-inputs.css — Styles standard date and file inputs and read-only input presentation.
 │   │   │   │   ├── framework.css — Defines functional layouts, control states and the self-hosted icon font face without applying a visual theme.
 │   │   │   │   ├── layout.css — Defines structural page and form layout without themed colors or typography.
 │   │   │   │   ├── section-navigator.css — Positions section links and provides native focus and tooltip behavior.
@@ -220,8 +248,8 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   └── uniform-grid.css — Defines responsive grid tracks, optional dimensions and child-cell shapes.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   ├── AssemblyInfo.cs — Allows the Blazor test project to inspect framework internals.
-│   │   │   ├── Flourish.Blazor.Framework.csproj — Defines the Razor Framework package, embeds the icon codepoint map and includes licensed static font assets.
-│   │   │   └── ServiceCollectionExtensions.cs — Registers the framework, commands and navigation services.
+│   │   │   ├── Flourish.Blazor.Framework.csproj — Defines the Razor Framework package, embeds its text catalog and icon map, and includes licensed static font assets without a Culture dependency.
+│   │   │   └── ServiceCollectionExtensions.cs — Registers framework behavior, commands, navigation and the default literal text provider.
 │   │   ├── Flourish.Blazor.Shared/ — Provides presentation models and shared algorithms used by the Blazor layers.
 │   │   │   ├── Components/ — Contains shared control variants and table metadata.
 │   │   │   │   ├── ControlContracts.cs — Defines common control variants, sizes and semantic states.
@@ -338,6 +366,19 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   └── WindowCloseService.cs — Runs ordered close guards before invoking the attached platform close action.
 │   │   ├── AssemblyInfo.cs — Allows platform adapters and tests to access shared internal services.
 │   │   └── Flourish.Core.csproj — Defines the platform-independent .NET library and its service dependencies.
+│   ├── Flourish.Extensions/ — Groups optional integrations owned and packaged by Flourish.
+│   │   ├── Flourish.Extensions.Culture.Blazor/ — Connects the scoped Blazor text provider to Essential.Culture.Blazor.
+│   │   │   ├── CultureServiceCollectionExtensions.cs — Registers the scoped text-provider adapter through AddFlourishCulture.
+│   │   │   ├── CultureTextProvider.cs — Resolves catalog-qualified text, formatting and change events from the current localization session.
+│   │   │   └── Flourish.Extensions.Culture.Blazor.csproj — Defines the optional Blazor Culture extension package with public framework contracts and localization dependencies.
+│   │   ├── Flourish.Extensions.Culture.WPF/ — Connects the WPF shell culture service to Essential.Culture.
+│   │   │   ├── AssemblyInfo.cs — Allows the WPF extension tests to inspect internal integration classes.
+│   │   │   ├── EssentialCultureBuilderExtensions.cs — Registers the WPF culture connection through UseEssentialCulture.
+│   │   │   ├── EssentialCultureHostedService.cs — Starts and stops culture synchronization and shell text updates with the application host.
+│   │   │   ├── Flourish.Extensions.Culture.WPF.csproj — Defines the optional WPF Culture extension package and its framework and localization dependencies.
+│   │   │   └── ShellCultureApplicator.cs — Refreshes shell labels from stable localization tokens on the WPF dispatcher.
+│   │   ├── Directory.Build.props — Sets extension package metadata, versions and the optional local Essential.Culture module path.
+│   │   └── Flourish.Extensions.slnx — Opens the WPF and Blazor Culture extensions with their tests.
 │   ├── Flourish.WinUI3/ — Contains the WinUI3 library project placeholder.
 │   │   ├── Flourish.WinUI3.csproj — Defines the WinUI3 library placeholder and Windows App SDK dependency.
 │   │   └── Flourish.WINUI3.slnx — Groups the WinUI3 placeholder library and its Gallery host.
@@ -614,6 +655,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   ├── Forms.razor — Demonstrates form composition, binding, validation and save feedback.
 │   │   │   │   ├── Framework.razor — Separates setup, top bar, navigation, commands, layout and interactions into Framework topic pages.
 │   │   │   │   ├── Icons.razor — Links official Material Symbols resources and shows the searchable catalog and icon usage.
+│   │   │   │   ├── Localization.razor — Demonstrates live translation, separate formatting culture, framework default labels and registration code.
 │   │   │   │   ├── NotFound.razor — Displays a missing-page message and a link back to Gallery.
 │   │   │   │   ├── Overview.razor — Displays four starting-page links in an automatically wrapping rectangular button grid and the minimal setup code.
 │   │   │   │   ├── RecordDetails.razor — Demonstrates a record detail page, editable fields and navigation actions.
@@ -637,7 +679,6 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   └── UniformGridSample.razor — Demonstrates independent cell shapes and appearances with automatic and explicit grid layouts.
 │   │   │   │   ├── Data/ — Contains examples of actions, data views, modal surfaces, feedback and progress.
 │   │   │   │   │   ├── ActionMenuSample.razor — Demonstrates click or hover menus, disabled states and local action callbacks.
-│   │   │   │   │   ├── ExpansionIndicatorSample.razor — Demonstrates shared expansion markers and a working disclosure button.
 │   │   │   │   │   ├── BottomSheetSample.razor — Demonstrates bottom-panel opening, local editing and save state.
 │   │   │   │   │   ├── ButtonSample.razor — Demonstrates button variants, disabled states, icons and asynchronous local actions.
 │   │   │   │   │   ├── DataPagerSample.razor — Demonstrates primitive pagination states and paging through a local collection.
@@ -646,6 +687,7 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │   │   ├── DialogSample.razor — Demonstrates modal opening, guarded closing and a local asynchronous action.
 │   │   │   │   │   ├── EditingGridSample.razor — Demonstrates empty and populated editable grids with local edit callbacks.
 │   │   │   │   │   ├── EmptyStateSample.razor — Demonstrates empty-result messages and adding local sample content.
+│   │   │   │   │   ├── ExpansionIndicatorSample.razor — Demonstrates shared expansion markers and a working disclosure button.
 │   │   │   │   │   ├── LoadingStateSample.razor — Demonstrates loading feedback during a simulated local request.
 │   │   │   │   │   ├── NoticeSample.razor — Demonstrates notice severity variants and local draft feedback.
 │   │   │   │   │   ├── NoticeTriggerSample.razor — Demonstrates compact notice triggers and changing their severity and message.
@@ -703,7 +745,10 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   │   │       └── ShellHeaderSample.razor — Demonstrates header branding, identity and injected menu content.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   ├── App.razor — Defines the HTML document and interactive Blazor root.
+│   │   │   ├── LanguagePicker.razor — Uses the standard SelectBox to switch the current Blazor session between Chinese and English.
 │   │   │   └── Routes.razor — Routes application pages through the framework layout and handles missing destinations.
+│   │   ├── Localization/ — Contains Gallery-owned translations supplied to the optional Culture extension.
+│   │   │   └── Culture.json — Stores the Gallery text catalog used for generated keys and embedded application translations.
 │   │   ├── Models/ — Contains Gallery-only demonstration and editor data.
 │   │   │   ├── BusinessRecord.cs — Defines the editable record used by Gallery examples.
 │   │   │   ├── CatalogSections.cs — Maps components to eight categories and independent page routes for the directory.
@@ -717,10 +762,11 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   ├── Services/ — Contains circuit-local demonstration data.
 │   │   │   └── RecordStore.cs — Keeps example records in one interactive server circuit's memory.
 │   │   ├── wwwroot/ — Contains static assets served by the application or Razor class library.
-│   │   │   └── gallery.svg — Provides the smaller official Material Symbols browse logo and Gallery favicon.
+│   │   │   ├── gallery-favicon.svg — Provides a Primary-colored browse icon specifically for browser tabs.
+│   │   │   └── gallery.svg — Provides the white browse logo with visible dimensions reduced by twenty percent.
 │   │   ├── appsettings.json — Sets host logging levels and allowed HTTP hosts.
-│   │   ├── Gallery.Flourish.Blazor.csproj — Defines the Blazor Gallery host, references Framework and Design, and embeds example Razor source.
-│   │   └── Program.cs — Configures five primary modules, secondary topics, third-level component pages, commands and optional Design.
+│   │   ├── Gallery.Flourish.Blazor.csproj — Defines the Gallery host, embeds examples and translations, and references the optional Flourish Culture extension and Essential key generator.
+│   │   └── Program.cs — Configures shell branding, navigation, commands, Design, request cultures and the optional Culture extension for the Gallery host.
 │   ├── Gallery.Flourish.WINUI3/ — Hosts the initial WinUI3 application window.
 │   │   ├── App.xaml — Declares the initial WinUI3 application resources.
 │   │   ├── App.xaml.cs — Creates and activates the initial WinUI3 window.
@@ -834,6 +880,31 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │       ├── MemberRow.cs — Defines sample member data for WPF table demonstrations.
 │       └── Program.cs — Configures WPF Gallery's host, shell, navigation and command parser.
 ├── tests/ — Contains library regression tests and the unthemed Blazor verification host.
+│   ├── Tests.Flourish.Blazor/ — Checks Blazor contracts, rendering and browser interop lifetimes.
+│   │   ├── BrandingChecks.cs — Checks brand defaults, display combinations, favicon priority, frozen builders and the public API migration.
+│   │   ├── CatalogChecks.cs — Checks all component parameters, inherited metadata, defaults and grid container ownership.
+│   │   ├── clipboard-dom.mjs — Checks exact clipboard text, fallback cleanup and focus and selection restoration.
+│   │   ├── controls-dom.mjs — Checks popup placement and lifecycles, modal focus and input behavior against a simulated DOM.
+│   │   ├── ControlTextChecks.cs — Checks component default localization, explicit overrides and subscription disposal.
+│   │   ├── DataTableChecks.cs — Checks dropdown styling hooks, localized counts, paging, visibility and column sizing.
+│   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
+│   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
+│   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
+│   │   ├── heading-dom.mjs — Checks heading stability when content shrinks, scroll positions clamp or page dimensions change.
+│   │   ├── InputMigrationChecks.cs — Checks standalone POST attributes, typed input behavior and field identity and validation relationships.
+│   │   ├── interaction-origin-dom.mjs — Checks pointer and keyboard focus origin changes against a simulated DOM.
+│   │   ├── LifecycleChecks.cs — Checks JavaScript registration, component disposal and circuit-local state.
+│   │   ├── measurement-lifecycle.test.mjs — Checks observer cleanup and measurements across browser component lifetimes.
+│   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.
+│   │   ├── Program.cs — Runs platform-independent Blazor configuration, rendering and contract checks.
+│   │   ├── row-action-menu-dom.mjs — Checks disabled menu clicks, keyboard candidates, normal closing and listener behavior.
+│   │   ├── section-navigator-dom.mjs — Checks section discovery, scrolling, tooltip dismissal and browser-listener cleanup.
+│   │   ├── SectionNavigatorChecks.cs — Checks section identifiers, native fragment links, encoding and discovery lifecycle.
+│   │   ├── SplitButtonChecks.cs — Checks independent actions, shared selection, disabled behavior and disclosure accessibility.
+│   │   ├── Tests.Flourish.Blazor.csproj — Defines rendering and contract checks and links Gallery catalog models for API verification.
+│   │   ├── tests.js — Checks browser measurement and data helpers in the JavaScript test runner.
+│   │   ├── TextChecks.cs — Checks provider-free fallbacks, live scoped text changes, explicit overrides, stable navigation identities and subscription cleanup.
+│   │   └── UniformGridChecks.cs — Checks independent grid shape, appearance and dimensions alongside passive and action cell behavior.
 │   ├── Tests.Flourish.Blazor.Native/ — Hosts Framework without Design to verify native appearance and behavior.
 │   │   ├── Components/ — Contains Razor components composed by this project.
 │   │   │   ├── Pages/ — Contains routed Gallery pages or verification pages.
@@ -844,29 +915,8 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   ├── Properties/ — Contains local launch and development host settings.
 │   │   │   └── launchSettings.json — Defines local launch profiles, URLs and development environment.
 │   │   ├── appsettings.json — Sets host logging levels and allowed HTTP hosts.
-│   │   ├── Tests.Flourish.Blazor.Native.csproj — Defines the unthemed Blazor host with a Framework reference and no Design reference.
-│   │   └── Program.cs — Starts a host that registers Framework without the optional Design library.
-│   ├── Tests.Flourish.Blazor/ — Checks Blazor contracts, rendering and browser interop lifetimes.
-│   │   ├── CatalogChecks.cs — Checks all component parameters, inherited metadata, defaults and grid container ownership.
-│   │   ├── clipboard-dom.mjs — Checks exact clipboard text, fallback cleanup and focus and selection restoration.
-│   │   ├── controls-dom.mjs — Checks popup placement and lifecycles, modal focus and input behavior against a simulated DOM.
-│   │   ├── DataTableChecks.cs — Checks dropdown styling hooks, localized counts, paging, visibility and column sizing.
-│   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
-│   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
-│   │   ├── Tests.Flourish.Blazor.csproj — Defines rendering and contract checks and links Gallery catalog models for API verification.
-│   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
-│   │   ├── heading-dom.mjs — Checks heading stability when content shrinks, scroll positions clamp or page dimensions change.
-│   │   ├── interaction-origin-dom.mjs — Checks pointer and keyboard focus origin changes against a simulated DOM.
-│   │   ├── LifecycleChecks.cs — Checks JavaScript registration, component disposal and circuit-local state.
-│   │   ├── measurement-lifecycle.test.mjs — Checks observer cleanup and measurements across browser component lifetimes.
-│   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.
-│   │   ├── Program.cs — Runs platform-independent Blazor configuration, rendering and contract checks.
-│   │   ├── row-action-menu-dom.mjs — Checks disabled menu clicks, keyboard candidates, normal closing and listener behavior.
-│   │   ├── section-navigator-dom.mjs — Checks section discovery, scrolling, tooltip dismissal and browser-listener cleanup.
-│   │   ├── SectionNavigatorChecks.cs — Checks section identifiers, native fragment links, encoding and discovery lifecycle.
-│   │   ├── SplitButtonChecks.cs — Checks independent actions, shared selection, disabled behavior and disclosure accessibility.
-│   │   ├── tests.js — Checks browser measurement and data helpers in the JavaScript test runner.
-│   │   └── UniformGridChecks.cs — Checks independent grid shape, appearance and dimensions alongside passive and action cell behavior.
+│   │   ├── Program.cs — Starts a host that registers Framework without the optional Design library.
+│   │   └── Tests.Flourish.Blazor.Native.csproj — Defines the unthemed Blazor host with a Framework reference and no Design reference.
 │   ├── Tests.Flourish.Core/ — Checks shared services independently of UI frameworks.
 │   │   ├── Abstract/ — Groups regression checks for abstract.
 │   │   │   └── PlatformNeutralContractTests.cs — Checks that theme and navigation state values remain platform-independent.
@@ -925,6 +975,16 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │   │   ├── Windowing/ — Groups regression checks for windowing.
 │   │   │   └── WindowCloseServiceTests.cs — Checks that ordered close guards run before platform close and respect cancellation.
 │   │   └── Tests.Flourish.Core.csproj — Defines the shared service regression test project and test dependencies.
+│   ├── Tests.Flourish.Extensions.Culture.Blazor/ — Checks scoped translation behavior and the optional Blazor adapter dependency boundary.
+│   │   ├── Program.cs — Runs the adapter registration, fallback, formatting and session isolation checks.
+│   │   └── Tests.Flourish.Extensions.Culture.Blazor.csproj — Defines the Blazor Culture extension verification executable.
+│   ├── Tests.Flourish.Extensions.Culture.WPF/ — Checks WPF culture registration, hosted lifetime and shell label updates.
+│   │   ├── Culture.json — Contains the test translations used by the WPF extension checks.
+│   │   ├── EssentialCultureBuilderExtensionsTests.cs — Checks service registration through the WPF culture builder extension.
+│   │   ├── EssentialCultureHostedServiceTests.cs — Checks startup, culture synchronization and shutdown of the WPF connection.
+│   │   ├── ShellCultureApplicatorTests.cs — Checks shell label translation and refresh behavior.
+│   │   ├── TestAssembly.cs — Runs extension tests serially to protect shared desktop culture state.
+│   │   └── Tests.Flourish.Extensions.Culture.WPF.csproj — Defines the Windows WPF Culture extension test project.
 │   └── Tests.Flourish.WPF/ — Checks WPF configuration, resources, interaction and rendered structure.
 │       ├── Abstract/ — Groups regression checks for abstract.
 │       │   ├── CommandKeyApiContractTests.cs — Checks that public command APIs preserve icon and command-key parameter ordering.
@@ -1024,14 +1084,16 @@ Flourish/ — Repository root for libraries, Gallery hosts and verification.
 │       │   ├── GalleryProjectRuntimePageTests.cs — Checks that multi-project controls reflect runtime mode and activation state.
 │       │   └── ShellNotificationControllerTests.cs — Checks that notifications reuse the newest views and actions delegate to runtime services.
 │       ├── coverage.runsettings — Configures code coverage collection and its assembly filters.
-│       ├── Tests.Flourish.WPF.csproj — Defines the Windows WPF regression test project and Gallery references.
-│       └── TestAssembly.cs — Runs WPF test collections serially to avoid process-wide UI state races.
+│       ├── TestAssembly.cs — Runs WPF test collections serially to avoid process-wide UI state races.
+│       └── Tests.Flourish.WPF.csproj — Defines the Windows WPF regression test project and Gallery references.
 ├── .gitattributes — Sets repository text normalization and file handling rules.
 ├── .gitignore — Excludes generated builds, local settings and caches from version control.
 ├── AGENTS.ensure.json — Records the most recent required-documentation audit and repair.
 ├── AGENTS.md — Defines repository ownership, documentation and collaboration rules.
+├── Directory.Build.props — Defines Flourish package version 1.1.0, Culture dependency version 1.3.0, metadata and the optional sibling local package feed.
 ├── Directory.Build.targets — Rejects architecture-specific library packaging before NuGet generation.
-├── Flourish.slnx — Groups Blazor, WPF and WinUI3 libraries and Galleries, exposes Core at the root, and separates Tests and Solutions.
+├── Flourish.slnx — Groups framework libraries, Galleries and optional extensions, exposes Core at the root, and separates Tests and Solutions.
 ├── global.json — Selects the .NET SDK version used by the repository.
-└── LICENSE.txt — Contains the repository's license terms.
+├── LICENSE.txt — Contains the repository's license terms.
+└── publish-helper.bat — Forwards Prepare or Publish arguments to the PowerShell release helper and returns its exit code.
 ```

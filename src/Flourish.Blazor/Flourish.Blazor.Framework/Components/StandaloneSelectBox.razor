@@ -1,0 +1,44 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@using System.Globalization
+@typeparam TValue
+
+<select @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-select @Class"
+    value="@BindConverter.FormatValue(ShownValue, Texts.FormatCulture)" disabled="@Disabled"
+    required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)"
+    aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)" @onchange="ChangeAsync">
+    @if (ChildContent is not null) { @ChildContent }
+    else
+    {
+        @foreach (var option in Options)
+        {
+            <option value="@BindConverter.FormatValue(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
+        }
+    }
+</select>
+
+@code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public IReadOnlyList<SelectOption<TValue>> Options { get; set; } = Array.Empty<SelectOption<TValue>>();
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private TValue? ShownValue, LastValue;
+    private bool Initialized;
+    protected override void OnParametersSet()
+    {
+        if (!Initialized || ValueChanged.HasDelegate || !EqualityComparer<TValue>.Default.Equals(Value!, LastValue!)) ShownValue = Value;
+        Initialized = true;
+        LastValue = Value;
+    }
+    private async Task ChangeAsync(ChangeEventArgs args)
+    {
+        if (Disabled || !BindConverter.TryConvertTo<TValue>(args.Value, Texts.FormatCulture, out var value)) return;
+        ShownValue = value;
+        await ValueChanged.InvokeAsync(value);
+    }
+}

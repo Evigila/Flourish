@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 <div class="@(Locked ? "interaction-content-locked" : null)"
      inert="@(Locked ? "" : null)" aria-hidden="@(Locked ? "true" : null)">
     @ChildContent
@@ -7,13 +8,14 @@
 {
     <div class="interaction-lock" role="alertdialog" aria-modal="true" aria-labelledby="@TitleId" tabindex="-1">
         <div class="interaction-message">
-            <h2 id="@TitleId">@Title</h2>
+            <h2 id="@TitleId">@EffectiveTitle</h2>
             @Message
         </div>
     </div>
 }
 
 @code {
+    private string EffectiveTitle => DefaultText(nameof(Title), Title, "Interaction_Unavailable", "Interaction unavailable");
     private readonly string TitleId = $"interaction-lock-{Guid.NewGuid():N}";
     [Parameter] public bool Locked { get; set; }
     [Parameter] public string Title { get; set; } = "Interaction unavailable";

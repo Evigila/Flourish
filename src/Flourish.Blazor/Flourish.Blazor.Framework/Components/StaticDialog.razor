@@ -1,0 +1,8 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+<dialog @attributes="AdditionalAttributes" id="@Id" class="f-dialog @Class">@ChildContent</dialog>
+@code {
+    [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

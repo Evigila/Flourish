@@ -1,14 +1,15 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
 <span class="f-action-menu @(OpenOnHover ? "f-action-menu-hover" : null)">
-    <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@Label" disabled="@(Disabled || Executing)"
+    <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@EffectiveLabel" disabled="@(Disabled || Executing)"
             aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">
         @if (TriggerContent is not null) { @TriggerContent }
         else { <span aria-hidden="true">•••</span> }
     </button>
-    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@Label" popover="manual"
+    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
         @for (var index = 0; index < Actions.Count; index++)
         {
@@ -21,6 +22,7 @@
 </span>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Menu_RecordActions", "Record actions");
     private readonly string MenuId = "f-menu-" + Guid.NewGuid().ToString("N");
     private ElementReference Trigger;
     private ElementReference Panel;
@@ -64,6 +66,7 @@
     }
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         Disposed = true;
         if (Module is null) return;
         try { await Module.InvokeVoidAsync("detachMenu", Trigger, Panel); await Module.DisposeAsync(); }

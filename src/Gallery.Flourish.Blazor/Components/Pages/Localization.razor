@@ -1,0 +1,70 @@
+@page "/framework/localization"
+@inherits LocalizedComponentBase
+
+<PageTitle>@Localization.Parse(TextKey.Nav_Localization) · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_Localization)" ParentHref="/framework" ParentLabel="@Localization.Parse(TextKey.Nav_Framework)" />
+    <Section Title="@Localization.Parse(TextKey.Localization_IntroTitle)">
+        <p><LocalizedText Key="@TextKey.Localization_Introduction" /></p>
+        <p><LocalizedText Key="@TextKey.Localization_Scope" /></p>
+    </Section>
+    <Section Title="@Localization.Parse(TextKey.Localization_Sample)">
+        <DisplayBoard>
+            <LanguagePicker />
+            <Button Text="@Localization.Parse(TextKey.Show_Dialog)" OnClick="@(_ => open = true)" />
+        </DisplayBoard>
+        <Dialog Title="@Localization.Parse(TextKey.Dialog_Title)" @bind-IsOpen="open">
+            <p><LocalizedText Key="@TextKey.Dialog_Body" /></p>
+        </Dialog>
+    </Section>
+    <Section Title="@Localization.Parse(TextKey.Localization_API)">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Registration"><CodeBlock Text="@Registration" Language="csharp" /></DisplayBoard>
+    </Section>
+    <Section Title="@Localization.Parse(TextKey.Localization_Scenario)">
+        <Field Id="localization-format" Label="@Localization.Parse(TextKey.Format)">
+            <SelectBox TValue="string" Options="@formats" Value="@Localization.FormatCulture.Name" ValueChanged="ChangeFormat" ValueExpression="@(() => Localization.FormatCulture.Name)" />
+        </Field>
+        <DisplayBoard>
+            <LocalizedText Key="@TextKey.Formatted_Sample" Arguments="@arguments" />
+        </DisplayBoard>
+        <DataTable TItem="SampleRecord" Items="@records" Columns="@Columns" />
+    </Section>
+    <Section Title="@Localization.Parse(TextKey.Localization_Code)">
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Scenario"><CodeBlock Text="@Scenario" Language="razor" /></DisplayBoard>
+    </Section>
+</PageBody>
+
+@code {
+    private bool open;
+    private readonly object?[] arguments = [12345.67m, new DateTime(2026, 10, 5)];
+    private static readonly IReadOnlyList<SelectOption<string>> formats =
+        [new("zh-CN", "中文（中国）"), new("en-US", "English (United States)"), new("pt-BR", "Português (Brasil)")];
+    private readonly IReadOnlyList<SampleRecord> records = [new(12345.67m)];
+    private IReadOnlyList<TableColumn<SampleRecord>> Columns =>
+        [new("name", Localization.Parse(TextKey.Record_Name), _ => Localization.Parse(TextKey.Record_One)),
+         new("amount", Localization.Parse(TextKey.Amount), row => row.Amount)];
+    private void ChangeFormat(string format) => Localization.SetCulture(Localization.Culture, format);
+    private sealed record SampleRecord(decimal Amount);
+    private const string Registration = """
+        // Register the loaded application and framework catalogs under separate identities.
+        builder.Services.AddCultureBlazor(culture => culture
+            .AddCatalog("App", appCatalog)
+            .AddCatalog("Flourish", frameworkCatalog)
+            .SetDefaultCatalog("App")
+            .SetDefaultCulture("zh-CN")
+            .AddSupportedCultures("zh-CN", "en-US"));
+        builder.Services.AddFlourishCulture();
+        builder.Services.AddFlourishFramework(framework => framework
+            .ConfigureNavigation(nav => nav.AddNav(
+                new TextReference("App", TextKey.Nav_Home, "主页"), "home", "/", exact: true)));
+        """;
+    private const string Scenario = """
+        @inherits LocalizedComponentBase
+        <LocalizedText Key="@TextKey.Formatted_Sample" Arguments="@arguments" />
+        @code {
+            private readonly object?[] arguments = [12345.67m, new DateTime(2026, 10, 5)];
+            private void UseChineseWithBrazilianFormats()
+                => Localization.SetCulture("zh-CN", "pt-BR");
+        }
+        """;
+}

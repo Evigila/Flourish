@@ -1,12 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 
 <div class="service-menu">
     <button class="service-menu-trigger" type="button" aria-haspopup="true" aria-controls="@MenuId">
-        <span>@Label</span>
+        <span>@EffectiveLabel</span>
         <ExpansionIndicator Class="service-menu-chevron" />
     </button>
     <div class="service-menu-view" id="@MenuId">
-        <nav aria-label="@Label">
+        <nav aria-label="@EffectiveLabel">
             @foreach (var item in Items)
             {
                 <a href="@item.Href"><strong>@item.Label</strong></a>
@@ -16,6 +17,7 @@
 </div>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Menu_Services", "Services");
     private readonly string GeneratedId = $"services-{Guid.NewGuid():N}";
     private string MenuId => Id ?? GeneratedId;
     [Parameter] public string? Id { get; set; }

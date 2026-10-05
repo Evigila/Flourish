@@ -1,0 +1,5 @@
+.f-file-input{padding:0;overflow:hidden;cursor:pointer}
+.f-file-input::file-selector-button{height:calc(var(--f-control-height,48px) - 2px);margin:0 12px 0 0;padding:0 16px;border:0;border-inline-end:1px solid var(--f-border);color:var(--f-text);background:var(--f-surface);font:inherit;cursor:pointer}
+.f-file-input:hover:not(:disabled)::file-selector-button{background:var(--f-surface-preview)}
+.f-file-input:active:not(:disabled)::file-selector-button{background:var(--f-surface-click)}
+.f-file-input:disabled,.f-file-input:disabled::file-selector-button{cursor:not-allowed}

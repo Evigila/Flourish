@@ -1,3 +1,4 @@
+using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -38,7 +39,8 @@ internal static class SectionNavigatorChecks
     private static async Task<string> Render(Dictionary<string, object?> parameters)
     {
         var services = new ServiceCollection();
-        services.AddLogging(); services.AddSingleton<IJSRuntime>(new NoJs());
+        services.AddLogging();
+        services.AddFlourishFramework(); services.AddSingleton<IJSRuntime>(new NoJs());
         using var provider = services.BuildServiceProvider();
         await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
         return await renderer.Dispatcher.InvokeAsync(async () => (await renderer.RenderComponentAsync<SectionNavigator>(ParameterView.FromDictionary(parameters))).ToHtmlString());

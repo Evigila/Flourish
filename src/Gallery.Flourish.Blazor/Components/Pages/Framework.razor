@@ -15,7 +15,7 @@
     @if (TopicKey == "topbar")
     {
     <Section Title="顶部栏">
-        <p>SetAppName 和 SetIcon 设置名称与图标。AddMenu 创建下拉菜单；鼠标悬浮时展开，离开按钮与菜单区域时关闭，菜单项通过命令键执行。InjectToLeft、InjectToCenter、InjectToRight 接收组件类型，由 Blazor 创建组件并完成依赖注入。</p>
+        <p>ConfigureProject 配置项目名称、Logo 和 Favicon。Favicon 仅用于标签页；未设置时使用 Logo。DisplayLogo 和 DisplayProjectName 控制顶部栏显示，默认均开启。AddMenu 创建下拉菜单；鼠标悬浮时展开，离开按钮与菜单区域时关闭，菜单项通过命令键执行。InjectToLeft、InjectToCenter、InjectToRight 接收组件类型，由 Blazor 创建组件并完成依赖注入。</p>
         <DisplayBoard Dotted="false" Centered="false" CopyText="@TopBar" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@TopBar" Language="csharp" /></DisplayBoard>
         <p>图标路径相对于应用根目录。StatusButton 是应用自己的 Razor 组件，可以注入服务并管理状态。SetNavigationToggle 控制窄窗口的二级导航入口。</p>
     </Section>
@@ -91,7 +91,8 @@
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddRazorComponents().AddInteractiveServerComponents();
         builder.Services.AddFlourishFramework(framework => framework
-            .ConfigureTopBar(top => top.SetAppName("My application"))
+            .ConfigureProject(project => project.SetProjectName("My application"))
+            .ConfigureTopBar(top => top.DisplayLogo().DisplayProjectName())
             .ConfigureNavigation(nav => nav.AddNav("主页", "home", "/", exact: true)));
         builder.Services.AddFlourishDesign(); // Optional
 
@@ -112,9 +113,13 @@
         <script src="_framework/blazor.web.js"></script>
         """;
     private const string TopBar = """
-        framework.ConfigureTopBar(top => top
-            .SetAppName("My application")
-            .SetIcon("app.svg", "")
+        framework.ConfigureProject(project => project
+            .SetProjectName("My application")
+            .SetLogo("app.svg")
+            .SetFavicon("favicon.svg"))
+        .ConfigureTopBar(top => top
+            .DisplayLogo()
+            .DisplayProjectName()
             .AddMenu("操作", menu => menu
                 .AddMenuItem("打开案例", "open-examples")
                 .AddMenuItem("暂不可用", "unavailable", disabled: true))

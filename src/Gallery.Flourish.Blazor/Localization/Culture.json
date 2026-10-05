@@ -1,0 +1,258 @@
+{
+  "Nav_Home": {
+    "en-US": "Home",
+    "zh-CN": "主页"
+  },
+  "Nav_Framework": {
+    "en-US": "Framework",
+    "zh-CN": "框架"
+  },
+  "Nav_Controls": {
+    "en-US": "Controls",
+    "zh-CN": "控件"
+  },
+  "Nav_Foundations": {
+    "en-US": "Foundations",
+    "zh-CN": "基础"
+  },
+  "Nav_Examples": {
+    "en-US": "Examples",
+    "zh-CN": "案例"
+  },
+  "Menu_Pages": {
+    "en-US": "Pages",
+    "zh-CN": "页面"
+  },
+  "Nav_GetStarted": {
+    "en-US": "Get started",
+    "zh-CN": "接入应用"
+  },
+  "Nav_TopBar": {
+    "en-US": "Top bar",
+    "zh-CN": "顶部栏"
+  },
+  "Nav_Navigation": {
+    "en-US": "Navigation",
+    "zh-CN": "导航"
+  },
+  "Nav_Commands": {
+    "en-US": "Commands",
+    "zh-CN": "命令处理"
+  },
+  "Nav_PageLayout": {
+    "en-US": "Page layout",
+    "zh-CN": "页面布局"
+  },
+  "Nav_Interactions": {
+    "en-US": "Built-in interactions",
+    "zh-CN": "内置交互"
+  },
+  "Nav_Actions": {
+    "en-US": "Buttons and menus",
+    "zh-CN": "按钮与菜单"
+  },
+  "Nav_Inputs": {
+    "en-US": "Input and selection",
+    "zh-CN": "输入与选择"
+  },
+  "Nav_Data": {
+    "en-US": "Data and lists",
+    "zh-CN": "数据与列表"
+  },
+  "Nav_Overlays": {
+    "en-US": "Dialogs and overlays",
+    "zh-CN": "对话框与弹层"
+  },
+  "Nav_Feedback": {
+    "en-US": "Feedback",
+    "zh-CN": "状态反馈"
+  },
+  "Nav_Progress": {
+    "en-US": "Progress",
+    "zh-CN": "进度"
+  },
+  "Nav_Content": {
+    "en-US": "Content and composition",
+    "zh-CN": "内容与组合"
+  },
+  "Nav_Layout": {
+    "en-US": "Shell and layout",
+    "zh-CN": "外壳与布局"
+  },
+  "Nav_Colors": {
+    "en-US": "Colors and themes",
+    "zh-CN": "颜色与主题"
+  },
+  "Nav_Typography": {
+    "en-US": "Typography",
+    "zh-CN": "字体"
+  },
+  "Nav_Spacing": {
+    "en-US": "Spacing",
+    "zh-CN": "间距"
+  },
+  "Nav_Shape": {
+    "en-US": "Radius and shadows",
+    "zh-CN": "圆角与阴影"
+  },
+  "Nav_Dimensions": {
+    "en-US": "Dimensions",
+    "zh-CN": "布局尺寸"
+  },
+  "Nav_Icons": {
+    "en-US": "Icons",
+    "zh-CN": "图标"
+  },
+  "Nav_ExampleIndex": {
+    "en-US": "Example index",
+    "zh-CN": "案例目录"
+  },
+  "Nav_FormPage": {
+    "en-US": "Create a form page",
+    "zh-CN": "创建表单页面"
+  },
+  "Nav_Forms": {
+    "en-US": "Form demo",
+    "zh-CN": "表单演示"
+  },
+  "Nav_Records": {
+    "en-US": "Record list",
+    "zh-CN": "记录列表"
+  },
+  "Nav_RecordDetails": {
+    "en-US": "Record details",
+    "zh-CN": "记录详情"
+  },
+  "Nav_Patterns": {
+    "en-US": "Composed layouts",
+    "zh-CN": "组合布局"
+  },
+  "Nav_Enums": {
+    "en-US": "Enum selection",
+    "zh-CN": "枚举下拉框"
+  },
+  "Nav_Search": {
+    "en-US": "Search and lists",
+    "zh-CN": "搜索与列表"
+  },
+  "Nav_Theme": {
+    "en-US": "Toggle theme",
+    "zh-CN": "切换主题"
+  },
+  "Nav_Localization": {
+    "en-US": "Language and localization",
+    "zh-CN": "语言与本地化"
+  },
+  "Project_Name": {
+    "en-US": "Gallery",
+    "zh-CN": "Gallery"
+  },
+  "Home_Start": {
+    "en-US": "Start here",
+    "zh-CN": "从这里开始"
+  },
+  "Home_Setup": {
+    "en-US": "Minimal configuration",
+    "zh-CN": "最小配置"
+  },
+  "Home_Framework": {
+    "en-US": "Framework",
+    "zh-CN": "框架 Framework"
+  },
+  "Home_Controls": {
+    "en-US": "Controls",
+    "zh-CN": "控件 Controls"
+  },
+  "Home_Foundations": {
+    "en-US": "Foundations",
+    "zh-CN": "基础 Foundations"
+  },
+  "Home_Examples": {
+    "en-US": "Examples",
+    "zh-CN": "案例 Examples"
+  },
+  "Home_FrameworkDescription": {
+    "en-US": "Configure the top bar, navigation, commands and application shell.",
+    "zh-CN": "配置顶部栏、导航、命令和页面外壳。"
+  },
+  "Home_ControlsDescription": {
+    "en-US": "Browse components, variants, APIs and interactive examples.",
+    "zh-CN": "查看控件目录、变体、用法和交互演示。"
+  },
+  "Home_FoundationsDescription": {
+    "en-US": "Explore typography, colors, spacing, radius and themes.",
+    "zh-CN": "查看字体、颜色、间距、圆角和主题。"
+  },
+  "Home_ExamplesDescription": {
+    "en-US": "Compose forms, lists, enum selection and search.",
+    "zh-CN": "组合表单、列表、枚举选择和搜索。"
+  },
+  "Home_SetupDescription": {
+    "en-US": "Use ApplicationLayout as the default route layout and create your pages. Design is optional; Framework provides layout and behavior.",
+    "zh-CN": "将路由的默认布局设置为 ApplicationLayout，再创建自己的页面。Design 是可选主题；Framework 提供布局和交互行为。"
+  },
+  "Language": {
+    "en-US": "Language",
+    "zh-CN": "语言"
+  },
+  "Format": {
+    "en-US": "Number and date format",
+    "zh-CN": "数字与日期格式"
+  },
+  "Localization_Scope": {
+    "en-US": "Changes belong to this circuit. Reloading restores the browser request language.",
+    "zh-CN": "切换只影响当前会话。刷新会恢复浏览器请求选择的语言。"
+  },
+  "Localization_Introduction": {
+    "en-US": "The application and framework use separate embedded catalogs. A scoped bridge resolves shell labels without changing routes or commands.",
+    "zh-CN": "应用与框架使用独立的嵌入词典。Scoped 桥接解析外壳文案，不改变路由或命令。"
+  },
+  "Localization_Sample": {
+    "en-US": "Component example",
+    "zh-CN": "控件示例"
+  },
+  "Localization_API": {
+    "en-US": "Registration and text references",
+    "zh-CN": "注册与文本引用"
+  },
+  "Localization_Scenario": {
+    "en-US": "Scenario example",
+    "zh-CN": "场景示例"
+  },
+  "Localization_Code": {
+    "en-US": "Scenario code",
+    "zh-CN": "场景代码"
+  },
+  "Amount": {
+    "en-US": "Amount",
+    "zh-CN": "金额"
+  },
+  "Record_Name": {
+    "en-US": "Name",
+    "zh-CN": "名称"
+  },
+  "Record_One": {
+    "en-US": "Demonstration item",
+    "zh-CN": "演示项"
+  },
+  "Show_Dialog": {
+    "en-US": "Open dialog",
+    "zh-CN": "打开对话框"
+  },
+  "Dialog_Title": {
+    "en-US": "Localized dialog",
+    "zh-CN": "本地化对话框"
+  },
+  "Dialog_Body": {
+    "en-US": "The close button is provided by the framework text catalog.",
+    "zh-CN": "关闭按钮的文案来自框架词典。"
+  },
+  "Formatted_Sample": {
+    "en-US": "Amount: {0:N2} · Date: {1:D}",
+    "zh-CN": "金额：{0:N2} · 日期：{1:D}"
+  },
+  "Localization_IntroTitle": {
+    "en-US": "Introduction",
+    "zh-CN": "简介"
+  }
+}

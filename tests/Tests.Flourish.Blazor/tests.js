@@ -9,7 +9,10 @@ globalThis.document = {
     removeEventListener: (name, handler) => documentListeners.get(name)?.delete(handler)
 };
 globalThis.getComputedStyle = node => ({ fontWeight: '400', fontSize: '17px', fontFamily: 'Segoe UI', paddingLeft: node.tagName ? '16px' : '0px', paddingRight: node.tagName ? '16px' : '0px' });
-const source = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js', import.meta.url), 'utf8');
+const controlsSource = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js', import.meta.url), 'utf8');
+const controlsUrl = `data:text/javascript;base64,${Buffer.from(controlsSource).toString('base64')}`;
+const source = (await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js', import.meta.url), 'utf8'))
+    .replace("'./controls.js'", JSON.stringify(controlsUrl));
 const { synchronize, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
 function table(text = 'Alpha', withActions = true, lastDataColumn = true) {
@@ -105,5 +108,5 @@ test('page Enter prevents parent form submission and uses the same change callba
     view.dispatch('keydown', { target: page, key: 'Enter', preventDefault: () => prevented = true });
     assert.equal(prevented, true); assert.equal(changes, 1);
     detach('page'); assert.equal(view.handlerCount(), 0);
-    assert.equal(documentListeners.get('pointerdown').size, 0);
+    assert.ok([...documentListeners.values()].every(listeners => listeners.size === 0));
 });

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using ArkheideSystem.Flourish.Blazor.Abstract;
 using Microsoft.AspNetCore.Components;
 using ICommandParser = ArkheideSystem.Flourish.Abstract.ICommandParser;
@@ -6,14 +7,25 @@ using ICommandParser = ArkheideSystem.Flourish.Abstract.ICommandParser;
 
 namespace ArkheideSystem.Flourish.Blazor.Hosting;
 
+internal sealed record ProjectOptions(
+    string Name = "Application",
+    string LogoPath = ProjectOptions.DefaultLogoPath,
+    string LogoAlternativeText = "",
+    string? FaviconPath = null,
+    TextReference? NameText = null)
+{
+    internal const string DefaultLogoPath = "_content/Arkheide.Flourish.Blazor.Framework/browse.svg";
+    internal string BrowserIconPath => FaviconPath ?? LogoPath;
+}
+
 internal sealed record TopBarOptions(
     bool Enabled = false,
-    string AppName = "Application",
-    string? IconPath = null,
-    string? IconAlternativeText = null,
+    bool DisplayLogo = true,
+    bool DisplayProjectName = true,
     bool Search = false,
     string SearchLabel = "Search",
     bool NavigationToggle = true,
+    TextReference? SearchText = null,
     IReadOnlyList<TopBarMenu>? Menus = null,
     IReadOnlyList<ComponentPlacement>? Left = null,
     IReadOnlyList<ComponentPlacement>? Center = null,
@@ -28,16 +40,20 @@ internal sealed record TopBarOptions(
 internal sealed record LayoutOptions(bool Fluid = true, int ContentWidth = 1180);
 
 internal sealed record ApplicationOptions(
+    ProjectOptions Project,
     TopBarOptions TopBar,
     LayoutOptions Layout,
     IReadOnlyList<NavigationEntry> PrimaryNavigation,
     IReadOnlyList<NavigationEntry> FixedNavigation,
     IReadOnlyList<NavigationGroup> LegacyNavigation,
-    Type? CommandParserType);
+    Type? CommandParserType,
+    IReadOnlyDictionary<object, TextReference> LabelReferences);
 
-internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, ITitleBarBuilder, INavigationBuilder, ILayoutBuilder
+internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder, ITopBarBuilder, ITitleBarBuilder, INavigationBuilder, ILayoutBuilder
 {
+    private readonly Dictionary<object, TextReference> labelReferences = new(ReferenceEqualityComparer.Instance);
     private bool completed;
+    private ProjectOptions project = new();
     private TopBarOptions topBar = new();
     private LayoutOptions layout = new();
     private readonly List<TopBarMenu> menus = [];
@@ -66,7 +82,16 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
             Center = center.AsReadOnly(),
             Right = right.AsReadOnly(),
         };
-        return new(topBar, layout, primaryNavigation.AsReadOnly(), fixedNavigation.AsReadOnly(), legacyNavigation.AsReadOnly(), commandParserType);
+        return new(project, topBar, layout, primaryNavigation.AsReadOnly(), fixedNavigation.AsReadOnly(), legacyNavigation.AsReadOnly(), commandParserType,
+            new ReadOnlyDictionary<object, TextReference>(new Dictionary<object, TextReference>(labelReferences, ReferenceEqualityComparer.Instance)));
+    }
+
+    public IFrameworkBuilder ConfigureProject(Action<IProjectBuilder> configure)
+    {
+        Check();
+        ArgumentNullException.ThrowIfNull(configure);
+        configure(this);
+        return this;
     }
 
     public IFrameworkBuilder ConfigureTopBar(Action<ITopBarBuilder> configure)
@@ -124,18 +149,55 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         return this;
     }
 
-    public ITopBarBuilder SetAppName(string displayName)
+    public IProjectBuilder SetProjectName(string projectName)
     {
         Check();
-        ArgumentException.ThrowIfNullOrWhiteSpace(displayName);
-        topBar = topBar with { AppName = displayName };
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectName);
+        project = project with { Name = projectName, NameText = null };
         return this;
     }
 
-    public ITopBarBuilder SetIcon(string iconPath, string? alternativeText = null)
+    public IProjectBuilder SetProjectName(TextReference projectName)
+    {
+        ArgumentNullException.ThrowIfNull(projectName);
+        SetProjectName(projectName.FallbackText ?? projectName.Token);
+        project = project with { NameText = projectName };
+        return this;
+    }
+
+    public ITopBarBuilder SetSearch(TextReference label, bool enabled = true)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        SetSearch(enabled, label.FallbackText ?? label.Token);
+        topBar = topBar with { SearchText = label };
+        return this;
+    }
+
+    public IProjectBuilder SetLogo(string? logoPath = null, string? alternativeText = null)
     {
         Check();
-        topBar = topBar with { IconPath = ValidateAssetPath(iconPath), IconAlternativeText = alternativeText };
+        project = project with { LogoPath = logoPath is null ? ProjectOptions.DefaultLogoPath : ValidateAssetPath(logoPath), LogoAlternativeText = alternativeText ?? "" };
+        return this;
+    }
+
+    public IProjectBuilder SetFavicon(string? faviconPath = null)
+    {
+        Check();
+        project = project with { FaviconPath = string.IsNullOrEmpty(faviconPath) ? null : ValidateAssetPath(faviconPath) };
+        return this;
+    }
+
+    public ITopBarBuilder DisplayLogo(bool display = true)
+    {
+        Check();
+        topBar = topBar with { DisplayLogo = display };
+        return this;
+    }
+
+    public ITopBarBuilder DisplayProjectName(bool display = true)
+    {
+        Check();
+        topBar = topBar with { DisplayProjectName = display };
         return this;
     }
 
@@ -156,11 +218,19 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         Check();
         ArgumentException.ThrowIfNullOrWhiteSpace(menuName);
         ArgumentNullException.ThrowIfNull(configure);
-        var builder = new TopBarMenuBuilder();
+        var builder = new TopBarMenuBuilder(AttachText);
         configure(builder);
         var items = builder.Complete();
         if (items.Count == 0) throw new ArgumentException("A top bar menu needs at least one item.", nameof(configure));
         menus.Add(new(menuName, items));
+        return this;
+    }
+
+    public ITopBarBuilder AddMenu(TextReference menuName, Action<ITopBarMenuBuilder> configure)
+    {
+        ArgumentNullException.ThrowIfNull(menuName);
+        AddMenu(menuName.FallbackText ?? menuName.Token, configure);
+        AttachText(menus[^1], menuName);
         return this;
     }
 
@@ -177,7 +247,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
 
     public ITitleBarBuilder SetApplicationTitle(string title)
     {
-        SetAppName(title);
+        SetProjectName(title);
         return this;
     }
 
@@ -185,7 +255,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
     {
         Check();
         ArgumentException.ThrowIfNullOrWhiteSpace(label);
-        topBar = topBar with { Search = enabled, SearchLabel = label };
+        topBar = topBar with { Search = enabled, SearchLabel = label, SearchText = null };
         return this;
     }
 
@@ -201,7 +271,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         Check();
         ValidateLabelAndIcon(label, icon);
         var route = AddRoute(navTarget);
-        var children = new SubNavigationBuilder(AddRoute, route);
+        var children = new SubNavigationBuilder(AddRoute, AttachText, route);
         configure?.Invoke(children);
         primaryNavigation.Add(new(label, icon, NavigationEntryKind.Route, Href: route, Children: children.Complete(), Exact: exact));
         return this;
@@ -230,6 +300,44 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         ValidateLabelAndIcon(label, icon);
         ValidateCommandKey(commandKey);
         fixedNavigation.Add(new(label, icon, NavigationEntryKind.Command, CommandKey: commandKey));
+        return this;
+    }
+
+    private void AttachText(object owner, TextReference text)
+    {
+        Check();
+        labelReferences.Add(owner, text);
+    }
+
+    public INavigationBuilder AddNav(TextReference label, string icon, string navTarget, Action<ISubNavigationBuilder>? configure = null, bool exact = false)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddNav(label.FallbackText ?? label.Token, icon, navTarget, configure, exact);
+        AttachText(primaryNavigation[^1], label);
+        return this;
+    }
+
+    public INavigationBuilder AddNavButton(TextReference label, string icon, string commandKey)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddNavButton(label.FallbackText ?? label.Token, icon, commandKey);
+        AttachText(primaryNavigation[^1], label);
+        return this;
+    }
+
+    public INavigationBuilder AddFixedNav(TextReference label, string icon, string navTarget, bool exact = false)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddFixedNav(label.FallbackText ?? label.Token, icon, navTarget, exact);
+        AttachText(fixedNavigation[^1], label);
+        return this;
+    }
+
+    public INavigationBuilder AddFixedNavButton(TextReference label, string icon, string commandKey)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddFixedNavButton(label.FallbackText ?? label.Token, icon, commandKey);
+        AttachText(fixedNavigation[^1], label);
         return this;
     }
 
@@ -285,7 +393,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         path = path.Trim();
         if (path.StartsWith("//", StringComparison.Ordinal) || path.Contains('\\') || path.Contains(':'))
-            throw new ArgumentException("Top bar icons use application-local asset paths.", nameof(path));
+            throw new ArgumentException("Project icons use application-local asset paths.", nameof(path));
         return path;
     }
 
@@ -298,7 +406,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, ITopBarBuilder, 
     private static void ValidateCommandKey(string commandKey) => ArgumentException.ThrowIfNullOrWhiteSpace(commandKey);
 }
 
-internal sealed class TopBarMenuBuilder : ITopBarMenuBuilder
+internal sealed class TopBarMenuBuilder(Action<object, TextReference> attachText) : ITopBarMenuBuilder
 {
     private bool completed;
     private readonly List<TopBarMenuItem> items = [];
@@ -312,6 +420,14 @@ internal sealed class TopBarMenuBuilder : ITopBarMenuBuilder
         return this;
     }
 
+    public ITopBarMenuBuilder AddMenuItem(TextReference menuItemName, string commandKey, bool disabled = false, bool destructive = false)
+    {
+        ArgumentNullException.ThrowIfNull(menuItemName);
+        AddMenuItem(menuItemName.FallbackText ?? menuItemName.Token, commandKey, disabled, destructive);
+        attachText(items[^1], menuItemName);
+        return this;
+    }
+
     internal IReadOnlyList<TopBarMenuItem> Complete()
     {
         completed = true;
@@ -319,7 +435,7 @@ internal sealed class TopBarMenuBuilder : ITopBarMenuBuilder
     }
 }
 
-internal sealed class SubNavigationBuilder(Func<string, string> addRoute, string? parentRoute = null) : ISubNavigationBuilder
+internal sealed class SubNavigationBuilder(Func<string, string> addRoute, Action<object, TextReference> attachText, string? parentRoute = null) : ISubNavigationBuilder
 {
     private bool completed;
     private readonly List<NavigationItem> items = [];
@@ -336,9 +452,25 @@ internal sealed class SubNavigationBuilder(Func<string, string> addRoute, string
     {
         ArgumentNullException.ThrowIfNull(configure);
         var route = AddItemRoute(label, icon, navTarget);
-        var children = new SubNavigationBuilder(addRoute, route);
+        var children = new SubNavigationBuilder(addRoute, attachText, route);
         configure(children);
         items.Add(new(label, route, icon, exact, disabled, children.Complete()));
+        return this;
+    }
+
+    public ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, bool exact = false, bool disabled = false)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddSubNav(label.FallbackText ?? label.Token, icon, navTarget, exact, disabled);
+        attachText(items[^1], label);
+        return this;
+    }
+
+    public ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
+    {
+        ArgumentNullException.ThrowIfNull(label);
+        AddSubNav(label.FallbackText ?? label.Token, icon, navTarget, configure, exact, disabled);
+        attachText(items[^1], label);
         return this;
     }
 

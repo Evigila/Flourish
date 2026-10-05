@@ -7,7 +7,9 @@ internal sealed record FieldContext(string Id, bool Required, bool HasErrors)
     public string? Description(IReadOnlyDictionary<string, object>? attributes)
     {
         var existing = attributes is not null && attributes.TryGetValue("aria-describedby", out var value) ? value?.ToString() : null;
-        return HasErrors ? string.IsNullOrWhiteSpace(existing) ? Id + "-error" : existing + " " + Id + "-error" : existing;
+        if (!HasErrors) return existing;
+        return string.Join(" ", (existing ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)
+            .Append(Id + "-error").Distinct(StringComparer.Ordinal));
     }
 }
 

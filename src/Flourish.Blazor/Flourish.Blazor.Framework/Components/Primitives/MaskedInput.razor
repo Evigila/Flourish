@@ -12,7 +12,10 @@
             <span class="@(isEntered ? "is-entered" : "is-mask")">@(isEntered ? FormattedValue[currentIndex] : EffectiveMask[currentIndex])</span>
         }
     </span>
-    <input @attributes="AdditionalAttributes"
+    <input @attributes="AdditionalAttributes" name="@NameAttributeValue"
+           id="@Identifier" required="@InputSemantics.Required(Field, AdditionalAttributes)"
+           aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)"
+           aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
            class="@($"masked-input-control {CssClass}")"
            @bind:get="FormattedValue" @bind:set="HandleInput" @bind:event="oninput"
            data-input-mask="@EffectiveMask"
@@ -20,6 +23,8 @@
 </span>
 
 @code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    private string? Identifier => AdditionalAttributes?.TryGetValue("id", out var id) == true ? id?.ToString() : Field?.Id;
     [Parameter, EditorRequired]
     public string Mask { get; set; } = string.Empty;
 

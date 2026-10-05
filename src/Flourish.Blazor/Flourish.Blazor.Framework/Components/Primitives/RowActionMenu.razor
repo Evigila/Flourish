@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
@@ -7,7 +8,7 @@
             id="@TriggerId"
             class="row-action-menu-trigger"
             type="button"
-            aria-label="@Label"
+            aria-label="@EffectiveLabel"
             aria-haspopup="menu"
             aria-expanded="false"
             aria-controls="@MenuId"
@@ -23,6 +24,7 @@
 </span>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Menu_RecordActions", "Record actions");
     private readonly string Id = $"row-actions-{Guid.NewGuid():N}";
     private ElementReference Trigger;
     private ElementReference Menu;
@@ -31,7 +33,7 @@
     private string MenuId => $"{Id}-menu";
 
     [Parameter]
-    public string Label { get; set; } = "Abrir ações do registro";
+    public string Label { get; set; } = "Record actions";
 
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
@@ -45,6 +47,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         if (Module is null) return;
         try
         {

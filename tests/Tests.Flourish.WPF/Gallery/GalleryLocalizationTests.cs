@@ -133,11 +133,13 @@ public sealed class GalleryLocalizationTests
 
         Assert.DoesNotContain("Extension.Culture", project, StringComparison.Ordinal);
         Assert.DoesNotContain("../Extension", solution, StringComparison.Ordinal);
-        Assert.Contains(
-            "PackageReference Include=\"Arkheide.Essential.Culture.Wpf\" Version=\"1.2.0\"",
-            project,
-            StringComparison.Ordinal
-        );
+        var cultureReference = XDocument.Parse(project).Descendants("PackageReference")
+            .Single(reference => (string?)reference.Attribute("Include") == "Arkheide.Essential.Culture.Wpf");
+        Assert.Equal("$(EssentialCultureVersion)", (string?)cultureReference.Attribute("Version"));
+        var cultureVersion = XDocument.Load(Path.Combine(repository, "Directory.Build.props"))
+            .Descendants("EssentialCultureVersion").Single().Value;
+        Assert.True(Version.TryParse(cultureVersion, out var parsedCultureVersion), "The central Culture version is invalid.");
+        Assert.True(parsedCultureVersion >= new Version(1, 3, 0), "Gallery requires the authorized Culture 1.3 API.");
         Assert.Contains("<IsPackable>false</IsPackable>", project, StringComparison.Ordinal);
         Assert.DoesNotContain("UseLocalEssentialCulture", project, StringComparison.Ordinal);
         Assert.DoesNotContain(
@@ -332,6 +334,8 @@ public sealed class GalleryLocalizationTests
                 "Arkheide.Flourish.Blazor.Framework",
                 "Arkheide.Flourish.Blazor.Shared",
                 "Arkheide.Flourish.Core",
+                "Arkheide.Flourish.Extensions.Culture.Blazor",
+                "Arkheide.Flourish.Extensions.Culture.WPF",
                 "Arkheide.Flourish.WPF"
             },
             packageIds

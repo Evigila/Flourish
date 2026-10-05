@@ -1,0 +1,11 @@
+@inherits LocalizedComponentBase
+
+<SelectBox TValue="string" Options="@languages" Value="@Localization.Culture"
+           ValueChanged="ChangeLanguage" ValueExpression="@(() => Localization.Culture)"
+           aria-label="@Localization.Parse(TextKey.Language)" />
+
+@code {
+    private static readonly IReadOnlyList<SelectOption<string>> languages =
+        [new("zh-CN", "中文"), new("en-US", "English")];
+    private void ChangeLanguage(string language) => Localization.SetCulture(language);
+}

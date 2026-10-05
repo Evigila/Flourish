@@ -1,11 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 
 <Dialog Id="@Id" Title="@Title" IsOpen="@IsOpen" IsOpenChanged="@IsOpenChanged" Busy="@Busy" Class="@Class"
-        Presentation="DialogPresentation.BottomSheet" CanClose="@CanClose" OnClose="@OnClose" CloseLabel="@CloseLabel" Actions="@Actions">
+        Presentation="DialogPresentation.BottomSheet" CanClose="@CanClose" OnClose="@OnClose" CloseLabel="@EffectiveCloseLabel" Actions="@Actions">
     @ChildContent
 </Dialog>
 
 @code {
+    private string EffectiveCloseLabel => DefaultText(nameof(CloseLabel), CloseLabel, "Dialog_Close", "Close");
     [Parameter] public string? Id { get; set; }
     [Parameter, EditorRequired] public string Title { get; set; } = "";
     [Parameter] public bool IsOpen { get; set; }

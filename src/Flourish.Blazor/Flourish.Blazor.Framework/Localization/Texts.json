@@ -1,0 +1,517 @@
+{
+  "Shell_Skip": {
+    "en-US": "Skip to content",
+    "zh-CN": "跳到正文",
+    "pt-BR": "Ir para o conteúdo"
+  },
+  "Shell_OpenNavigation": {
+    "en-US": "Open navigation",
+    "zh-CN": "打开导航",
+    "pt-BR": "Abrir navegação"
+  },
+  "Shell_CloseNavigation": {
+    "en-US": "Close navigation",
+    "zh-CN": "关闭导航",
+    "pt-BR": "Fechar navegação"
+  },
+  "Shell_MainNavigation": {
+    "en-US": "Main navigation",
+    "zh-CN": "主导航",
+    "pt-BR": "Navegação principal"
+  },
+  "Shell_SecondaryNavigation": {
+    "en-US": "Secondary navigation",
+    "zh-CN": "二级导航",
+    "pt-BR": "Navegação secundária"
+  },
+  "Shell_Expand": {
+    "en-US": "Expand",
+    "zh-CN": "展开",
+    "pt-BR": "Expandir"
+  },
+  "Shell_Collapse": {
+    "en-US": "Collapse",
+    "zh-CN": "收起",
+    "pt-BR": "Recolher"
+  },
+  "Heading_Back": {
+    "en-US": "Back",
+    "zh-CN": "返回",
+    "pt-BR": "Voltar"
+  },
+  "Dialog_Close": {
+    "en-US": "Close",
+    "zh-CN": "关闭",
+    "pt-BR": "Fechar"
+  },
+  "Table_SearchBy": {
+    "en-US": "Search by",
+    "zh-CN": "搜索字段",
+    "pt-BR": "Buscar por"
+  },
+  "Table_AllColumns": {
+    "en-US": "All columns",
+    "zh-CN": "所有列",
+    "pt-BR": "Todas as colunas"
+  },
+  "Table_SearchContent": {
+    "en-US": "Content",
+    "zh-CN": "内容",
+    "pt-BR": "Conteúdo"
+  },
+  "Table_List": {
+    "en-US": "List",
+    "zh-CN": "列表",
+    "pt-BR": "Lista"
+  },
+  "Table_Cards": {
+    "en-US": "Cards",
+    "zh-CN": "卡片",
+    "pt-BR": "Cartões"
+  },
+  "Table_Display": {
+    "en-US": "Display",
+    "zh-CN": "显示",
+    "pt-BR": "Exibição"
+  },
+  "Table_Actions": {
+    "en-US": "Actions",
+    "zh-CN": "操作",
+    "pt-BR": "Ações"
+  },
+  "Table_Open": {
+    "en-US": "Open",
+    "zh-CN": "打开",
+    "pt-BR": "Abrir"
+  },
+  "Table_Items": {
+    "en-US": "Items",
+    "zh-CN": "项",
+    "pt-BR": "Itens"
+  },
+  "Table_Of": {
+    "en-US": "of",
+    "zh-CN": "/",
+    "pt-BR": "de"
+  },
+  "Table_Page": {
+    "en-US": "Page",
+    "zh-CN": "页",
+    "pt-BR": "Página"
+  },
+  "Table_PreviousPage": {
+    "en-US": "Previous page",
+    "zh-CN": "上一页",
+    "pt-BR": "Página anterior"
+  },
+  "Table_NextPage": {
+    "en-US": "Next page",
+    "zh-CN": "下一页",
+    "pt-BR": "Próxima página"
+  },
+  "Table_Width": {
+    "en-US": "Width",
+    "zh-CN": "列宽",
+    "pt-BR": "Largura"
+  },
+  "Table_SortDescending": {
+    "en-US": "sort descending",
+    "zh-CN": "降序排列",
+    "pt-BR": "ordenar decrescente"
+  },
+  "Table_SortAscending": {
+    "en-US": "sort ascending",
+    "zh-CN": "升序排列",
+    "pt-BR": "ordenar crescente"
+  },
+  "Table_SortDefault": {
+    "en-US": "restore default order",
+    "zh-CN": "恢复默认顺序",
+    "pt-BR": "restaurar ordem padrão"
+  },
+  "Table_ResizeHint": {
+    "en-US": "Drag or use arrow keys; Shift changes 50 px; Home restores; Escape cancels.",
+    "zh-CN": "拖动或使用方向键；Shift 每次调整 50 px；Home 恢复；Escape 取消。",
+    "pt-BR": "Arraste ou use as setas; Shift altera 50 px; Home restaura; Escape cancela."
+  },
+  "Table_ItemsPerPage": {
+    "en-US": "Items per page",
+    "zh-CN": "每页数量",
+    "pt-BR": "Itens por página"
+  },
+  "Table_Total": {
+    "en-US": "Total",
+    "zh-CN": "共",
+    "pt-BR": "Total"
+  },
+  "Table_ItemRangeFormat": {
+    "en-US": "{0} {1}-{2} / {3} {4}",
+    "zh-CN": "{0} {1}-{2} / {3} {4}",
+    "pt-BR": "{0} {1}-{2} / {3} {4}"
+  },
+  "Table_Label": {
+    "en-US": "Records",
+    "zh-CN": "记录",
+    "pt-BR": "Registros"
+  },
+  "Table_Loading": {
+    "en-US": "Loading…",
+    "zh-CN": "正在加载…",
+    "pt-BR": "Carregando…"
+  },
+  "Table_Empty": {
+    "en-US": "No items.",
+    "zh-CN": "没有项。",
+    "pt-BR": "Nenhum item."
+  },
+  "Table_Record": {
+    "en-US": "Record {0}",
+    "zh-CN": "记录 {0}",
+    "pt-BR": "Registro {0}"
+  },
+  "Board_Copy": {
+    "en-US": "Copy",
+    "zh-CN": "复制",
+    "pt-BR": "Copiar"
+  },
+  "Board_Copied": {
+    "en-US": "Copied",
+    "zh-CN": "已复制",
+    "pt-BR": "Copiado"
+  },
+  "Board_Copying": {
+    "en-US": "Copying…",
+    "zh-CN": "正在复制…",
+    "pt-BR": "Copiando…"
+  },
+  "Board_CopyFailed": {
+    "en-US": "Unable to copy. Select the code and copy it manually.",
+    "zh-CN": "未能复制，请选中代码手动复制。",
+    "pt-BR": "Não foi possível copiar. Selecione o código e copie manualmente."
+  },
+  "Shell_Modules": {
+    "en-US": "Modules",
+    "zh-CN": "模块",
+    "pt-BR": "Módulos"
+  },
+  "Shell_Pages": {
+    "en-US": "Pages",
+    "zh-CN": "页面",
+    "pt-BR": "Páginas"
+  },
+  "Shell_Top": {
+    "en-US": "Back to top",
+    "zh-CN": "返回顶部",
+    "pt-BR": "Voltar ao topo"
+  },
+  "Shell_PageContents": {
+    "en-US": "On this page",
+    "zh-CN": "本页目录",
+    "pt-BR": "Nesta página"
+  },
+  "Navigation_Unavailable": {
+    "en-US": "{0} — unavailable",
+    "zh-CN": "{0} — 不可用",
+    "pt-BR": "{0} — indisponível"
+  },
+  "Navigation_Unsaved": {
+    "en-US": "There are unsaved changes. Leave and discard them?",
+    "zh-CN": "有未保存的更改。离开并放弃这些更改？",
+    "pt-BR": "Há alterações não salvas. Deseja sair e descartá-las?"
+  },
+  "Menu_RecordActions": {
+    "en-US": "Record actions",
+    "zh-CN": "记录操作",
+    "pt-BR": "Ações do registro"
+  },
+  "Menu_MoreActions": {
+    "en-US": "More actions",
+    "zh-CN": "更多操作",
+    "pt-BR": "Mais ações"
+  },
+  "Menu_Services": {
+    "en-US": "Services",
+    "zh-CN": "服务",
+    "pt-BR": "Serviços"
+  },
+  "Button_Working": {
+    "en-US": "Working…",
+    "zh-CN": "正在处理…",
+    "pt-BR": "Processando…"
+  },
+  "Input_Search": {
+    "en-US": "Search",
+    "zh-CN": "搜索",
+    "pt-BR": "Buscar"
+  },
+  "Input_Required": {
+    "en-US": "Required",
+    "zh-CN": "必填",
+    "pt-BR": "Obrigatório"
+  },
+  "Input_NumberError": {
+    "en-US": "Enter a valid number.",
+    "zh-CN": "请输入有效数字。",
+    "pt-BR": "Informe um número válido."
+  },
+  "Input_SelectError": {
+    "en-US": "Select a valid option.",
+    "zh-CN": "请选择有效选项。",
+    "pt-BR": "Selecione uma opção válida."
+  },
+  "Input_DateError": {
+    "en-US": "The {0} field must be a valid date.",
+    "zh-CN": "{0} 字段必须是有效日期。",
+    "pt-BR": "O campo {0} deve conter uma data válida."
+  },
+  "Toggle_On": {
+    "en-US": "On",
+    "zh-CN": "开启",
+    "pt-BR": "Ativado"
+  },
+  "Toggle_Off": {
+    "en-US": "Off",
+    "zh-CN": "关闭",
+    "pt-BR": "Desativado"
+  },
+  "Progress_Label": {
+    "en-US": "Progress",
+    "zh-CN": "进度",
+    "pt-BR": "Progresso"
+  },
+  "Progress_Working": {
+    "en-US": "In progress",
+    "zh-CN": "正在进行",
+    "pt-BR": "Em andamento"
+  },
+  "Interaction_Unavailable": {
+    "en-US": "Interaction unavailable",
+    "zh-CN": "交互不可用",
+    "pt-BR": "Interação indisponível"
+  },
+  "Notice_Error": {
+    "en-US": "Error",
+    "zh-CN": "错误",
+    "pt-BR": "Erro"
+  },
+  "Notice_Warning": {
+    "en-US": "Warning",
+    "zh-CN": "警告",
+    "pt-BR": "Aviso"
+  },
+  "Notice_Success": {
+    "en-US": "Success",
+    "zh-CN": "成功",
+    "pt-BR": "Sucesso"
+  },
+  "Notice_Information": {
+    "en-US": "Information",
+    "zh-CN": "信息",
+    "pt-BR": "Informação"
+  },
+  "Selection_None": {
+    "en-US": "None",
+    "zh-CN": "无",
+    "pt-BR": "Nenhum"
+  },
+  "Selection_NoOptions": {
+    "en-US": "No options available.",
+    "zh-CN": "暂无选项。",
+    "pt-BR": "Nenhuma opção cadastrada."
+  },
+  "Selection_NoResults": {
+    "en-US": "No results found.",
+    "zh-CN": "未找到结果。",
+    "pt-BR": "Nenhum resultado encontrado."
+  },
+  "Selection_SearchOrAdd": {
+    "en-US": "Search or add",
+    "zh-CN": "搜索或添加",
+    "pt-BR": "Buscar ou adicionar"
+  },
+  "Selection_Adding": {
+    "en-US": "Adding…",
+    "zh-CN": "正在添加…",
+    "pt-BR": "Adicionando…"
+  },
+  "Selection_Add": {
+    "en-US": "Add \"{0}\"",
+    "zh-CN": "添加“{0}”",
+    "pt-BR": "Adicionar \"{0}\""
+  },
+  "Selection_NoneSelected": {
+    "en-US": "None selected",
+    "zh-CN": "尚未选择",
+    "pt-BR": "Nenhum selecionado"
+  },
+  "Selection_Count": {
+    "en-US": "items selected",
+    "zh-CN": "项已选择",
+    "pt-BR": "itens selecionados"
+  },
+  "Search_Suggestions": {
+    "en-US": "Search suggestions",
+    "zh-CN": "搜索建议",
+    "pt-BR": "Sugestões da busca"
+  },
+  "Pager_Label": {
+    "en-US": "Record pagination",
+    "zh-CN": "记录分页",
+    "pt-BR": "Paginação dos registros"
+  },
+  "Pager_Loaded": {
+    "en-US": "Loaded records",
+    "zh-CN": "已加载记录",
+    "pt-BR": "Registros carregados"
+  },
+  "Pager_Range": {
+    "en-US": "Items {0}–{1} of",
+    "zh-CN": "第 {0}–{1} 项，共",
+    "pt-BR": "Itens {0}–{1} de"
+  },
+  "Pager_Limited": {
+    "en-US": "loaded",
+    "zh-CN": "已加载",
+    "pt-BR": "carregados"
+  },
+  "Pager_CurrentPage": {
+    "en-US": "Current page",
+    "zh-CN": "当前页",
+    "pt-BR": "Página atual"
+  },
+  "Pager_PageCount": {
+    "en-US": "{0} pages",
+    "zh-CN": "{0} 页",
+    "pt-BR": "{0} páginas"
+  },
+  "Table_ViewMode": {
+    "en-US": "Display mode",
+    "zh-CN": "显示方式",
+    "pt-BR": "Modo de exibição"
+  },
+  "Table_Grid": {
+    "en-US": "Grid",
+    "zh-CN": "网格",
+    "pt-BR": "Grade"
+  },
+  "Table_ColumnVisibility": {
+    "en-US": "Column visibility and order",
+    "zh-CN": "列可见性和顺序",
+    "pt-BR": "Visibilidade e ordem das colunas"
+  },
+  "Table_InfoVisibility": {
+    "en-US": "Information visibility",
+    "zh-CN": "信息可见性",
+    "pt-BR": "Visibilidade das informações"
+  },
+  "Table_Reorder": {
+    "en-US": "Reorder {0}",
+    "zh-CN": "调整 {0} 的顺序",
+    "pt-BR": "Reordenar {0}"
+  },
+  "Table_AdvancedEdit": {
+    "en-US": "Advanced editing",
+    "zh-CN": "高级编辑",
+    "pt-BR": "Edição avançada"
+  },
+  "Table_BulkEdit": {
+    "en-US": "Bulk editing",
+    "zh-CN": "批量编辑",
+    "pt-BR": "Edição em massa"
+  },
+  "Table_SpreadsheetEdit": {
+    "en-US": "Edit in grid",
+    "zh-CN": "在网格中编辑",
+    "pt-BR": "Edição em tabela"
+  },
+  "Table_SelectAllLoaded": {
+    "en-US": "Select all loaded records",
+    "zh-CN": "选择所有已加载记录",
+    "pt-BR": "Selecionar todos os registros carregados"
+  },
+  "Table_ColumnWidth": {
+    "en-US": "Width of {0}",
+    "zh-CN": "{0} 的列宽",
+    "pt-BR": "Largura de {0}"
+  },
+  "Table_Pixels": {
+    "en-US": "{0} pixels",
+    "zh-CN": "{0} 像素",
+    "pt-BR": "{0} pixels"
+  },
+  "Table_BulkValues": {
+    "en-US": "Values to apply to selected records",
+    "zh-CN": "应用于已选记录的值",
+    "pt-BR": "Valores a aplicar aos registros selecionados"
+  },
+  "Table_SelectRecord": {
+    "en-US": "Select {0}",
+    "zh-CN": "选择 {0}",
+    "pt-BR": "Selecionar {0}"
+  },
+  "Table_RecordName": {
+    "en-US": "record",
+    "zh-CN": "记录",
+    "pt-BR": "registro"
+  },
+  "Table_NoImage": {
+    "en-US": "No image",
+    "zh-CN": "无图片",
+    "pt-BR": "Sem imagem"
+  },
+  "Table_ReorderConfirmed": {
+    "en-US": "Position of {0} confirmed.",
+    "zh-CN": "已确认 {0} 的位置。",
+    "pt-BR": "Posição de {0} confirmada."
+  },
+  "Table_ReorderStarted": {
+    "en-US": "Reordering {0}. Use arrow keys to move; Enter or Space finishes.",
+    "zh-CN": "正在调整 {0}。使用方向键移动，Enter 或空格完成。",
+    "pt-BR": "Reordenando {0}. Use as setas para mover e Enter ou Espaço para concluir."
+  },
+  "Table_ReorderFinished": {
+    "en-US": "Reordering of {0} ended.",
+    "zh-CN": "已结束调整 {0}。",
+    "pt-BR": "Reordenação de {0} encerrada."
+  },
+  "Table_ReorderMoved": {
+    "en-US": "{0} moved to position {1}.",
+    "zh-CN": "{0} 已移至第 {1} 个位置。",
+    "pt-BR": "{0} movida para a posição {1}."
+  },
+  "Grid_Label": {
+    "en-US": "Editable grid",
+    "zh-CN": "可编辑网格",
+    "pt-BR": "Grade editável"
+  },
+  "Grid_Empty": {
+    "en-US": "No records found.",
+    "zh-CN": "未找到记录。",
+    "pt-BR": "Nenhum registro encontrado."
+  },
+  "Grid_ResizeHint": {
+    "en-US": "Drag to resize; Home restores automatic width.",
+    "zh-CN": "拖动调整宽度；Home 恢复自动列宽。",
+    "pt-BR": "Arraste para ajustar a largura; Home restaura a largura automática."
+  },
+  "Grid_EditFailed": {
+    "en-US": "Unable to complete the edit. Try again.",
+    "zh-CN": "未能完成编辑，请重试。",
+    "pt-BR": "Não foi possível concluir a edição. Tente novamente."
+  },
+  "Grid_PasteTooLarge": {
+    "en-US": "Pasted content must not exceed 2 MB.",
+    "zh-CN": "粘贴内容不得超过 2 MB。",
+    "pt-BR": "O conteúdo colado deve ter no máximo 2 MB."
+  },
+  "Grid_EditTooLarge": {
+    "en-US": "Selected edits must not exceed 2 MB.",
+    "zh-CN": "所选编辑内容不得超过 2 MB。",
+    "pt-BR": "A edição selecionada deve ter no máximo 2 MB."
+  },
+  "Heading_BackTo": {
+    "en-US": "Back to {0}",
+    "zh-CN": "返回{0}",
+    "pt-BR": "Voltar para {0}"
+  }
+}

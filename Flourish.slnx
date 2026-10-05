@@ -46,6 +46,15 @@
     <Platform Solution="*|x64" Project="AnyCPU" />
     <Platform Solution="*|x86" Project="AnyCPU" />
   </Project>
+  <Folder Name="/Flourish.Extensions/">
+    <Project Path="src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj">
       <Platform Solution="*|Any CPU" Project="AnyCPU" />
@@ -61,8 +70,16 @@
     </Project>
     <Project Path="tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj" />
     <Project Path="tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj" />
+    <Project Path="tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj">
+      <Platform Solution="*|Any CPU" Project="AnyCPU" />
+      <Platform Solution="*|ARM64" Project="ARM64" />
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+    <Project Path="tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj" />
   </Folder>
   <Folder Name="/Solutions/">
+    <File Path="src/Flourish.Extensions/Flourish.Extensions.slnx" />
     <File Path="src/Flourish.Blazor/Flourish.Blazor.slnx" />
     <File Path="src/Flourish.WPF/Flourish.WPF.slnx" />
     <File Path="src/Flourish.WinUI3/Flourish.WINUI3.slnx" />

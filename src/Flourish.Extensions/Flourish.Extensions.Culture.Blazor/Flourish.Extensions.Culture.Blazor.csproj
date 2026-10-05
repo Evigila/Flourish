@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Flourish.Extensions.Culture.Blazor</AssemblyName>
+    <RootNamespace>ArkheideSystem.Flourish.Extensions.Culture.Blazor</RootNamespace>
+    <PackageId>Arkheide.Flourish.Extensions.Culture.Blazor</PackageId>
+    <Description>Optional scoped text integration between Flourish.Blazor and Essential.Culture.Blazor.</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
+    <PackageReference Include="Arkheide.Essential.Culture.Blazor" Version="$(EssentialCultureVersion)" />
+  </ItemGroup>
+</Project>

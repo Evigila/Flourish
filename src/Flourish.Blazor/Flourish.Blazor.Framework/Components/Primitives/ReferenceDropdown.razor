@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @typeparam TValue where TValue : struct
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -18,13 +19,13 @@
             </div>
             <input @ref="SearchInput" class="reference-search selection-search" type="search"
                    form="@(Id + "-popup-search")" value="@Search" maxlength="@MaximumLength"
-                   aria-label="@SearchLabel" autocomplete="off" disabled="@Creating"
+                   aria-label="@EffectiveSearchLabel" autocomplete="off" disabled="@Creating"
                    @oninput="SearchChanged" @oninput:stopPropagation @onkeydown="HandleSearchKeyDownAsync" />
             <div id="@(Id + "-options")" class="reference-options" role="listbox" aria-labelledby="@LabelledBy">
                 @if (AllowNone)
                 {
                     <button type="button" role="option" aria-selected="@((SelectedId is null && string.IsNullOrWhiteSpace(UnlistedName)) ? "true" : "false")"
-                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)">@EmptySelectionText</button>
+                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)">@EffectiveEmptySelectionText</button>
                 }
                 @if (ShowUnlisted)
                 {
@@ -37,13 +38,13 @@
                 }
                 @if (Matches.Count == 0 && !ShowUnlisted && !AllowNone)
                 {
-                    <span class="reference-empty">Nenhum item cadastrado.</span>
+                    <span class="reference-empty">@Ui("Selection_NoOptions", "No options available.")</span>
                 }
             </div>
             @if (CanCreate)
             {
                 <button type="button" class="reference-create selection-create" disabled="@Creating" @onclick="CreateAsync">
-                    @(Creating ? "Adicionando..." : $"Adicionar \"{Search.Trim()}\"")
+                    @(Creating ? Ui("Selection_Adding", "Adding…") : Ui("Selection_Add", "Add \"{0}\"", Search.Trim()))
                 </button>
             }
         </div>
@@ -53,6 +54,8 @@
 </SelectionDropdownSurface>
 
 @code {
+    private string EffectiveSearchLabel => DefaultText(nameof(SearchLabel), SearchLabel, "Selection_SearchOrAdd", "Search or add");
+    private string EffectiveEmptySelectionText => DefaultText(nameof(EmptySelectionText), EmptySelectionText, "Selection_None", "None");
     [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string LabelledBy { get; set; } = string.Empty;
     [Parameter, EditorRequired] public IReadOnlyList<ReferenceItem<TValue>> Items { get; set; } = [];
@@ -60,8 +63,8 @@
     [Parameter] public string? UnlistedName { get; set; }
     [Parameter] public EventCallback<TValue?> SelectionChanged { get; set; }
     [Parameter] public Func<string, Task<TValue?>>? CreateRequested { get; set; }
-    [Parameter] public string EmptySelectionText { get; set; } = "Nenhum";
-    [Parameter] public string SearchLabel { get; set; } = "Buscar ou adicionar";
+    [Parameter] public string EmptySelectionText { get; set; } = "None";
+    [Parameter] public string SearchLabel { get; set; } = "Search or add";
     [Parameter] public int MaximumLength { get; set; } = 120;
     [Parameter] public bool AllowNone { get; set; } = true;
     [Parameter] public bool Disabled { get; set; }
@@ -75,7 +78,7 @@
     private bool Creating;
     private string Search = string.Empty;
     private string SelectedName => Items.FirstOrDefault(item => EqualityComparer<TValue?>.Default.Equals(item.Id, SelectedId))?.Name
-        ?? (string.IsNullOrWhiteSpace(UnlistedName) ? EmptySelectionText : UnlistedName);
+        ?? (string.IsNullOrWhiteSpace(UnlistedName) ? EffectiveEmptySelectionText : UnlistedName);
     private IReadOnlyList<ReferenceItem<TValue>> Matches => Items
         .Where(item => string.IsNullOrWhiteSpace(Search)
             || item.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -164,6 +167,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         if (Module is not null)
         {
             try { await Module.DisposeAsync(); }

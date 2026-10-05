@@ -1,10 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @using System.Linq.Expressions
 @using System.Linq
 @implements IDisposable
 
 <div @attributes="AdditionalAttributes" class="f-field @(FullWidth ? "f-field-full" : null) @Class">
-    <label class="f-field-label" for="@Id">@Label@if (Required) { <span class="f-required" aria-label="Required">*</span> }</label>
+    <label id="@(LabelId ?? Id + "-label")" class="f-field-label" for="@(ControlId ?? Id)">@Label@if (Required) { <span class="f-required" aria-label="@Ui("Input_Required", "Required")">*</span> }</label>
     <div class="f-field-control"><CascadingValue Value="@Context">@ChildContent</CascadingValue></div>
     @if (Messages.Count > 0)
     {
@@ -18,6 +19,8 @@
     [CascadingParameter] private EditContext? FormContext { get; set; }
     [Parameter, EditorRequired] public string Label { get; set; } = "";
     [Parameter, EditorRequired] public string Id { get; set; } = "";
+    [Parameter] public string? LabelId { get; set; }
+    [Parameter] public string? ControlId { get; set; }
     [Parameter] public bool Required { get; set; }
     [Parameter] public bool FullWidth { get; set; }
     [Parameter] public Expression<Func<object?>>? For { get; set; }
@@ -37,5 +40,5 @@
         if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged += ValidationChanged;
     }
     private void ValidationChanged(object? sender, ValidationStateChangedEventArgs args) => _ = InvokeAsync(StateHasChanged);
-    public void Dispose() { if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
+    public override void Dispose() { base.Dispose(); if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
 }

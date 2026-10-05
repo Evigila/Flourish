@@ -1,24 +1,26 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Patterns
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
 <div @ref="root" class="navigation-surface @CssClass" style="@Style">
-    <a class="skip-link" href="#@ContentId">@SkipLabel</a>
+    <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @TitleBar
     <div class="app-body @(ShowSecondary && SecondaryNavigation is not null ? "has-secondary-navigation" : null)">
         @if (PrimaryNavigation is not null) {
-            <aside class="primary-rail"><nav aria-label="@PrimaryLabel">@PrimaryNavigation</nav></aside>
+            <aside class="primary-rail"><nav aria-label="@EffectivePrimaryLabel">@PrimaryNavigation</nav></aside>
         }
         @if (ShowSecondary && SecondaryNavigation is not null) {
-            <aside class="secondary-rail"><nav aria-label="@SecondaryLabel">@SecondaryNavigation</nav></aside>
+            <aside class="secondary-rail"><nav aria-label="@EffectiveSecondaryLabel">@SecondaryNavigation</nav></aside>
         }
         <main @ref="stage" @key="DocumentKey" class="application-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
-        <button @ref="top" class="scroll-to-top" type="button" hidden aria-label="@TopLabel" title="@TopLabel" @onclick="ScrollToTop">
+        <button @ref="top" class="scroll-to-top" type="button" hidden aria-label="@EffectiveTopLabel" title="@EffectiveTopLabel" @onclick="ScrollToTop">
             <ArkheideSystem.Flourish.Blazor.Components.Primitives.AppIcon Name="arrow-up" />
         </button>
     </div>
 </div>
 @code {
+    private string EffectiveSkipLabel => DefaultText(nameof(SkipLabel), SkipLabel, "Shell_Skip", "Skip to content");
     [Parameter] public RenderFragment? TitleBar { get; set; }
     [Parameter] public RenderFragment? PrimaryNavigation { get; set; }
     [Parameter] public bool ShowSecondary { get; set; } = true;
@@ -33,6 +35,9 @@
     [Parameter] public string PrimaryLabel { get; set; } = "Modules";
     [Parameter] public string SecondaryLabel { get; set; } = "Pages";
     [Parameter] public string TopLabel { get; set; } = "Back to top";
+    private string EffectivePrimaryLabel => DefaultText(nameof(PrimaryLabel), PrimaryLabel, "Shell_Modules", "Modules");
+    private string EffectiveSecondaryLabel => DefaultText(nameof(SecondaryLabel), SecondaryLabel, "Shell_Pages", "Pages");
+    private string EffectiveTopLabel => DefaultText(nameof(TopLabel), TopLabel, "Shell_Top", "Back to top");
     private ElementReference root, stage, top;
     private IJSObjectReference? module;
     private bool disposed;
@@ -43,6 +48,7 @@
     }
     private async Task ScrollToTop() { if (module is not null) await module.InvokeVoidAsync("scrollToTop", stage); }
     public async ValueTask DisposeAsync() {
+        base.Dispose();
         disposed = true;
         if (module is null) return;
         try { await module.InvokeVoidAsync("dispose", root); await module.DisposeAsync(); }

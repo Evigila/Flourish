@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>ArkheideSystem.Flourish.Extensions.Culture.WPF</RootNamespace>
+    <AssemblyName>Flourish.Extensions.Culture.WPF</AssemblyName>
+    <PackageId>Arkheide.Flourish.Extensions.Culture.WPF</PackageId>
+    <Title>Flourish Culture WPF integration</Title>
+    <Description>Optional integration between the Flourish WPF shell and Essential.Culture.</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Flourish.WPF/Flourish.WPF.csproj" />
+    <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="$(EssentialCultureVersion)" />
+  </ItemGroup>
+</Project>

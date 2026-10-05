@@ -1,0 +1,28 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+@if (string.IsNullOrWhiteSpace(Label))
+{
+    @Control
+}
+else
+{
+    <label class="f-file-picker" for="@Identifier"><span class="f-field-label">@Label</span>@Control</label>
+}
+
+@code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? Accept { get; set; }
+    [Parameter] public bool Multiple { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private readonly string GeneratedId = "f-file-" + Guid.NewGuid().ToString("N");
+    private string Identifier => Id ?? Field?.Id ?? GeneratedId;
+    private RenderFragment Control => @<InputFile @attributes="AdditionalAttributes" id="@Identifier" class="@($"f-input f-file-input {Class}")"
+        accept="@Accept" multiple="@Multiple" disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)"
+        aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)" aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
+        OnChange="OnChange" />;
+}

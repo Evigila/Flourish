@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @inject NavigationManager Navigation
 
 <div class="f-split-button @Class">
@@ -14,7 +15,7 @@
                 aria-disabled="@(Disabled ? "true" : null)" @onclick="ClickAsync">@PrimaryContent</button>
     }
     <button @attributes="SecondaryAttributes" type="button" class="@SecondaryCss" disabled="@Disabled"
-            aria-disabled="@(Disabled ? "true" : null)" aria-label="@SecondaryLabel"
+            aria-disabled="@(Disabled ? "true" : null)" aria-label="@EffectiveSecondaryLabel"
             aria-expanded="@(Expanded?.ToString().ToLowerInvariant())" aria-controls="@SecondaryControls" @onclick="SecondaryClickAsync">
         @if (SecondaryContent is not null) { @SecondaryContent }
         else if (SecondaryIcon is "arrow_drop_down" or "expand_more" or "arrow_right") { <ExpansionIndicator Expanded="@(Expanded == true)" /> }
@@ -23,6 +24,7 @@
 </div>
 
 @code {
+    private string EffectiveSecondaryLabel => DefaultText(nameof(SecondaryLabel), SecondaryLabel, "Menu_MoreActions", "More actions");
     [Parameter] public string? Href { get; set; }
     [Parameter] public string Text { get; set; } = string.Empty;
     [Parameter] public string? Icon { get; set; }

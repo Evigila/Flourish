@@ -10,6 +10,9 @@
         }
     </span>
     <input @attributes="AdditionalAttributes"
+           id="@Identifier" required="@InputSemantics.Required(Field, AdditionalAttributes)"
+           aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)"
+           aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
            class="masked-input-control"
            @bind:get="FormattedValue" @bind:set="HandleInputAsync" @bind:event="oninput"
            data-input-mask="@Mask"
@@ -17,6 +20,8 @@
 </span>
 
 @code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    private string? Identifier => AdditionalAttributes?.TryGetValue("id", out var id) == true ? id?.ToString() : Field?.Id;
     [Parameter, EditorRequired] public string Mask { get; set; } = string.Empty;
     [Parameter] public string? Value { get; set; }
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }

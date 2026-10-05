@@ -1,9 +1,10 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @using System.Globalization
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div @ref="Grid" class="spreadsheet-scroll" tabindex="0" aria-label="@Label" hidden="@Hidden"
+<div @ref="Grid" class="spreadsheet-scroll" tabindex="0" aria-label="@EffectiveLabel" hidden="@Hidden"
      data-edit-disabled="@(EditDisabled ? "true" : "false")" data-has-more="@(HasMore ? "true" : "false")">
     <table class="editing-grid-table @TableClass" role="grid" aria-multiselectable="true"
            data-resizable-table data-column-minimum-width="@MinimumWidth" style="@TableWidthStyle"
@@ -22,9 +23,9 @@
                 <th scope="col" role="columnheader" class="@(column.Identity ? "identity-column" : null) @(Widths.ContainsKey(column.Key) ? "is-manual-column" : null)">
                     <span class="data-column-label @(column.Required ? "required-field" : null)" title="@column.Label">@column.Label</span>
                     <span class="data-column-resizer" data-column-resize="@column.Key" role="separator" tabindex="0"
-                          aria-orientation="vertical" aria-label="@string.Format(CultureInfo.CurrentCulture, Text.ColumnWidth, column.Label)"
+                          aria-orientation="vertical" aria-label="@string.Format(Texts.FormatCulture, EffectiveText.ColumnWidth, column.Label)"
                           aria-valuemin="@MinimumWidth" aria-valuemax="@MaximumWidth" aria-valuenow="@ColumnWidth(column.Key)"
-                          aria-valuetext="@string.Format(CultureInfo.CurrentCulture, Text.Pixels, ColumnWidth(column.Key))" title="@Text.ResizeHint"></span>
+                          aria-valuetext="@string.Format(Texts.FormatCulture, EffectiveText.Pixels, ColumnWidth(column.Key))" title="@EffectiveText.ResizeHint"></span>
                 </th>
             }
             <th class="spreadsheet-fill" aria-hidden="true"></th>
@@ -106,12 +107,17 @@
                     <td class="spreadsheet-fill" aria-hidden="true"></td>
                 </tr>
             }
-            @if (Rows.Count == 0) { <tr><td colspan="@(Columns.Count + 1)" class="empty-grid">@EmptyMessage</td></tr> }
+            @if (Rows.Count == 0) { <tr><td colspan="@(Columns.Count + 1)" class="empty-grid">@EffectiveEmptyMessage</td></tr> }
         </tbody>
     </table>
 </div>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Grid_Label", "Editable grid");
+    private string EffectiveEmptyMessage => DefaultText(nameof(EmptyMessage), EmptyMessage, "Grid_Empty", "No records found.");
+    private GridText EffectiveText => HasExplicitParameter(nameof(Text)) ? Text : new(
+        Ui("Table_ColumnWidth", "Width of {0}"), Ui("Table_Pixels", "{0} pixels"),
+        Ui("Grid_ResizeHint", "Drag to resize; Home restores automatic width."));
     private const double MinimumWidth = 100, MaximumWidth = 100000, MaximumAutomaticWidth = 260;
     private readonly string Identifier = $"editing-grid-{Guid.NewGuid():N}";
     private readonly Dictionary<string, double> Widths = [], AutomaticWidths = [];
@@ -239,7 +245,14 @@
     private Task<bool> LoadMoreRows() => Disposed || Hidden ? Task.FromResult(false) : Interactions.LoadMore?.Invoke() ?? Task.FromResult(false);
     private Task<bool> ApplyCellEdits(IJSStreamReference stream) => Disposed || Hidden ? Task.FromResult(false) : Interactions.ApplyCells?.Invoke(stream) ?? Task.FromResult(false);
     private Task PasteCells(int row, int column, IJSStreamReference stream) => Disposed || Hidden ? Task.CompletedTask : Interactions.Paste?.Invoke(row, column, stream) ?? Task.CompletedTask;
-    private Task ReportPasteError(string message) => Disposed || Hidden ? Task.CompletedTask : Interactions.ReportError?.Invoke(message) ?? Task.CompletedTask;
+    private Task ReportPasteError(string message) => Disposed || Hidden ? Task.CompletedTask
+        : Interactions.ReportError?.Invoke(message switch
+        {
+            "Grid_EditFailed" => Ui("Grid_EditFailed", "Unable to complete the edit. Try again."),
+            "Grid_PasteTooLarge" => Ui("Grid_PasteTooLarge", "Pasted content must not exceed 2 MB."),
+            "Grid_EditTooLarge" => Ui("Grid_EditTooLarge", "Selected edits must not exceed 2 MB."),
+            _ => message
+        }) ?? Task.CompletedTask;
     private Task SetColumnWidth(string key, double width) => InvokeAsync(() =>
     {
         if (Disposed || !double.IsFinite(width) || !Columns.Any(column => column.Key == key)) return;
@@ -277,6 +290,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         Disposed = true;
         try { await DisconnectAsync(); }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }

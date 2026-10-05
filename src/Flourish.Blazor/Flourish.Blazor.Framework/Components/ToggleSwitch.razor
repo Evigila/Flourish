@@ -1,11 +1,14 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 
 <button @attributes="AdditionalAttributes" type="button" class="f-toggle @Class" role="switch" aria-checked="@(Value ? "true" : "false")"
         aria-controls="@Controls" disabled="@Disabled" @onclick="ToggleAsync">
-    <span class="f-toggle-track" aria-hidden="true"><span class="f-toggle-thumb"></span></span><span>@Label</span><span class="f-toggle-state" aria-hidden="true">@(Value ? OnLabel : OffLabel)</span>
+    <span class="f-toggle-track" aria-hidden="true"><span class="f-toggle-thumb"></span></span><span>@Label</span><span class="f-toggle-state" aria-hidden="true">@(Value ? EffectiveOnLabel : EffectiveOffLabel)</span>
 </button>
 
 @code {
+    private string EffectiveOnLabel => DefaultText(nameof(OnLabel), OnLabel, "Toggle_On", "On");
+    private string EffectiveOffLabel => DefaultText(nameof(OffLabel), OffLabel, "Toggle_Off", "Off");
     [Parameter, EditorRequired] public string Label { get; set; } = "";
     [Parameter] public string OnLabel { get; set; } = "On";
     [Parameter] public string OffLabel { get; set; } = "Off";

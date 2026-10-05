@@ -1,11 +1,12 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @inject NavigationManager Navigation
 
 @if (!string.IsNullOrWhiteSpace(Href))
 {
     <a @attributes="LinkAttributes" href="@(Unavailable ? null : LinkHref)" class="@ButtonClass"
-       role="@(Unavailable ? "link" : null)" aria-disabled="@(Unavailable ? "true" : "false")"
-       aria-busy="@(Busy ? "true" : "false")" tabindex="@(Unavailable ? -1 : (int?)null)"
+       role="@LinkRole" aria-disabled="@(Unavailable ? "true" : "false")"
+       aria-busy="@(Busy ? "true" : "false")" tabindex="@LinkTabIndex"
        @onclick="ClickAsync" @onclick:preventDefault="Unavailable">@Contents</a>
 }
 else
@@ -15,6 +16,7 @@ else
 }
 
 @code {
+    private string EffectiveBusyLabel => DefaultText(nameof(BusyLabel), BusyLabel, "Button_Working", "Working…");
     [Parameter] public ButtonVariant Variant { get; set; } = ButtonVariant.Filled;
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public string Icon { get; set; } = string.Empty;
@@ -28,6 +30,8 @@ else
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     private bool Unavailable => Disabled || Busy;
+    private string? LinkRole => AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("role", out var role) ? role?.ToString() : Unavailable ? "link" : null;
+    private string? LinkTabIndex => Unavailable ? "-1" : AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("tabindex", out var index) ? index?.ToString() : null;
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
     private bool IsIconOnly => !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
     private string ButtonClass => $"f-button {VariantClass} {(IsIconOnly ? "f-button-icon" : null)} {Class}";
@@ -38,7 +42,7 @@ else
         @if (Busy)
         {
             <span class="f-spinner" aria-hidden="true"></span>
-            <span class="f-busy-text f-sr-only" role="status">@BusyLabel</span>
+            <span class="f-busy-text f-sr-only" role="status">@EffectiveBusyLabel</span>
         }
         else if (!string.IsNullOrWhiteSpace(Icon))
         {

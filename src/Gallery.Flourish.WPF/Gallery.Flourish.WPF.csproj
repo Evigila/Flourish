@@ -14,7 +14,7 @@
     <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="1.2.0" />
+    <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="$(EssentialCultureVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 

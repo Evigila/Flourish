@@ -1,0 +1,26 @@
+/* Static SSR surfaces share interactive control tokens and keep native form semantics. */
+.f-root fieldset { min-width:0; border:0; margin:0; padding:0; }
+.f-table-surface { max-width:100%; overflow:auto; }
+.f-static-table { width:100%; border-collapse:collapse; text-align:start; }
+.f-static-table th,.f-static-table td { padding:12px 16px; border-bottom:1px solid var(--f-border); }
+.f-static-table th { font-weight:650; background:var(--f-canvas); }
+.f-static-table tbody tr:hover { background:var(--f-target-preview); }
+.f-dropdown-surface { position:relative; display:inline-block; }
+.f-dropdown-surface > summary { display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; }
+.f-dropdown-surface > summary::-webkit-details-marker { display:none; }
+.f-dropdown-surface > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; margin:4px 0 0; display:none; width:max-content; min-width:100%; max-width:min(90vw,36rem); z-index:40; }
+.f-dropdown-surface[open] > .f-menu-panel { display:grid; gap:4px; }
+.f-root .form-action-bar .f-form-actions { margin-top:24px; }
+.f-root .form-action-bar .f-uniform-cell { min-height:120px; }
+.f-root .page-heading h1 { font-size:var(--f-type-page); }
+.f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .page-heading h1 { font-size:var(--f-type-page-compact); }
+.f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .record-heading-copy { display:flex; align-items:center; gap:12px; }
+.f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .record-parent-link .f-button-text { display:none; }
+.f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .page-heading { min-height:72px; padding-block:12px; }
+.f-root :is(.navigation-surface,.content-surface)[data-compact-heading] .record-parent-link { margin:0; }
+.f-root .shell-header .f-button { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }
+.f-root .shell-header .f-button:hover { background:var(--f-target-preview); border-color:var(--f-border); }
+.f-root .shell-header .f-button:active { background:var(--f-target-click); }
+.f-root .service-menu-view a strong { font-weight:400; }
+
+.f-root .secondary-rail .is-active { color:var(--f-surface); background:var(--f-primary); }

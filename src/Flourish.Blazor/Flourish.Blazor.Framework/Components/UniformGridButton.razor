@@ -1,9 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 
-<Button AdditionalAttributes="AdditionalAttributes" Type="@Type" Disabled="Disabled" Busy="Busy" BusyLabel="@BusyLabel"
+<Button AdditionalAttributes="AdditionalAttributes" Type="@Type" Disabled="Disabled" Busy="Busy" BusyLabel="@EffectiveBusyLabel"
         Href="@Href" Class="@($"f-uniform-cell f-uniform-grid-button {(SupportsIcon ? "f-uniform-icon-support" : null)} {VariantClass} {Class}")" OnClick="OnClick">@Contents</Button>
 
 @code {
+    private string EffectiveBusyLabel => DefaultText(nameof(BusyLabel), BusyLabel, "Button_Working", "Working…");
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public string Title { get; set; } = string.Empty;
     [Parameter] public string Icon { get; set; } = string.Empty;

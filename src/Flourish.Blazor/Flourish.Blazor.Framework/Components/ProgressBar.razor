@@ -1,17 +1,19 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @using System.Globalization
 
-<div class="f-progress" role="progressbar" aria-label="@Label" aria-valuemin="0" aria-valuemax="100"
+<div class="f-progress" role="progressbar" aria-label="@EffectiveLabel" aria-valuemin="0" aria-valuemax="100"
      aria-valuenow="@NumericValue" aria-valuetext="@StatusText">
     <progress class="f-progress-native" max="100" value="@NumericValue" aria-hidden="true"></progress>
     <div class="f-progress-track @(Value is null ? "f-progress-indeterminate" : null)">
         <span class="f-progress-fill" style="@(Value is null ? null : "width:" + NumericValue + "%")"></span>
     </div>
-    @if (Value is not null) { <p class="f-progress-percent" aria-hidden="true">@Value.Value.ToString("0", CultureInfo.CurrentCulture)%</p> }
+    @if (Value is not null) { <p class="f-progress-percent" aria-hidden="true">@Value.Value.ToString("0", Texts.FormatCulture)%</p> }
     @if (!string.IsNullOrWhiteSpace(StatusText)) { <p class="f-progress-status">@StatusText</p> }
 </div>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Progress_Label", "Progress");
     [Parameter] public string Label { get; set; } = "Progress";
     [Parameter] public double? Value { get; set; }
     [Parameter] public string? StatusText { get; set; }

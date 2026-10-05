@@ -1,3 +1,4 @@
+@inherits TextComponentBase
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -6,7 +7,7 @@
         aria-labelledby="@(Identifier + "-title")" aria-modal="true" aria-busy="@(Busy || Closing ? "true" : "false")">
     <header class="f-dialog-header">
         <h2 id="@(Identifier + "-title")">@Title</h2>
-        <button type="button" class="f-dialog-close" disabled="@(Busy || Closing)" aria-label="@CloseLabel" @onclick="RequestCloseAsync">
+        <button type="button" class="f-dialog-close" disabled="@(Busy || Closing)" aria-label="@CloseText" @onclick="RequestCloseAsync">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" /></svg>
         </button>
     </header>
@@ -15,6 +16,7 @@
 </dialog>
 
 @code {
+    private string CloseText => DefaultText(nameof(CloseLabel), CloseLabel, "Dialog_Close", "Close");
     private readonly string GeneratedId = "f-dialog-" + Guid.NewGuid().ToString("N");
     private string Identifier => Id ?? GeneratedId;
     private ElementReference Element;
@@ -62,6 +64,7 @@
     }
     public async ValueTask DisposeAsync()
     {
+        Dispose();
         Disposed = true;
         try
         {

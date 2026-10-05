@@ -1,17 +1,19 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
 @using System.Globalization
 
-<span class="f-progress-ring @(Stopped ? "f-progress-stopped" : null)" role="progressbar" aria-label="@Label"
+<span class="f-progress-ring @(Stopped ? "f-progress-stopped" : null)" role="progressbar" aria-label="@EffectiveLabel"
       aria-valuemin="0" aria-valuemax="100" aria-valuenow="@NumericValue" aria-valuetext="@StatusText" title="@StatusText">
     <svg viewBox="0 0 52 52" aria-hidden="true">
         <circle class="f-progress-ring-track" cx="26" cy="26" r="23" />
         <circle class="f-progress-ring-arc" cx="26" cy="26" r="23" pathLength="100" stroke-dasharray="@((Value ?? 28).ToString(CultureInfo.InvariantCulture) + " 100")" />
     </svg>
-    @if (Value is null) { <span class="f-progress-ring-native" aria-hidden="true">@(StatusText ?? "In progress")</span> }
-    @if (Value is not null) { <span aria-hidden="true">@Value.Value.ToString("0", CultureInfo.CurrentCulture)%</span> }
+    @if (Value is null) { <span class="f-progress-ring-native" aria-hidden="true">@(StatusText ?? Ui("Progress_Working", "In progress"))</span> }
+    @if (Value is not null) { <span aria-hidden="true">@Value.Value.ToString("0", Texts.FormatCulture)%</span> }
 </span>
 
 @code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Progress_Label", "Progress");
     [Parameter] public string Label { get; set; } = "Progress";
     [Parameter] public double? Value { get; set; }
     [Parameter] public string? StatusText { get; set; }

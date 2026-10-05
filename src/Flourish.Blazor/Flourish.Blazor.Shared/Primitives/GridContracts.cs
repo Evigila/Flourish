@@ -30,6 +30,6 @@ public sealed record GridCell(
     string? AriaLabel = null);
 
 public sealed record GridText(
-    string ColumnWidth = "Largura de {0}",
+    string ColumnWidth = "Width of {0}",
     string Pixels = "{0} pixels",
-    string ResizeHint = "Arraste para ajustar a largura; Home restaura a largura automática");
+    string ResizeHint = "Drag to resize; Home restores automatic width.");

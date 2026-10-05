@@ -19,7 +19,7 @@ builder.ConfigureData(data => data.SetLocale("en-US"));
 
 ## 接入 Essential Culture
 
-使用 `Arkheide.Essential.Culture` 翻译应用文案时，直接安装其 WPF 包。独立的 `Extension.Culture` 项目不属于本仓库，目前也不是 Flourish 的已发布依赖。
+使用 `Arkheide.Essential.Culture` 翻译应用文案时，直接安装其 WPF 包。可选的 `Flourish.Extensions.Culture.WPF` 项目现已归入本仓库；改名后的包尚未发布。
 
 ```bash
 dotnet add package Arkheide.Essential.Culture.Wpf

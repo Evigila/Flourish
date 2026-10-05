@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <VersionPrefix>1.1.0</VersionPrefix>
+
     <AssemblyName>Flourish.Blazor.Framework</AssemblyName>
     <RootNamespace>ArkheideSystem.Flourish.Blazor</RootNamespace>
     <PackageId>Arkheide.Flourish.Blazor.Framework</PackageId>
@@ -17,6 +17,9 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <None Remove="Localization/Texts.json" />
+    <Content Remove="Localization/Texts.json" />
+    <EmbeddedResource Include="Localization/Texts.json" LogicalName="Flourish.Blazor.Texts.json" />
     <EmbeddedResource Include="Icons/MaterialSymbolsOutlined.codepoints" LogicalName="Flourish.Blazor.Icons.Codepoints" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
     <ProjectReference Include="../Flourish.Blazor.Shared/Flourish.Blazor.Shared.csproj" />

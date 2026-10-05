@@ -1,8 +1,9 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 <header class="page-heading record-page-heading" data-heading-mode="@(Compact ? "compact" : null)">
     <div class="record-heading-copy">
         <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref"
-            Class="record-parent-link" Icon="arrow_back" Text="@ParentLabel" aria-label="@($"Voltar para {ParentLabel}")" />
+            Class="record-parent-link" Icon="arrow_back" Text="@ParentLabel" aria-label="@Ui("Heading_BackTo", "Back to {0}", ParentLabel)" />
         <h1>@Title</h1>
     </div>
     @if (Actions is not null)

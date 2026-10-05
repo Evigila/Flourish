@@ -130,7 +130,8 @@ Test("framework registration keeps commands scoped to each user circuit", () => 
     var services = new ServiceCollection();
     services.AddScoped<CommandState>();
     services.AddFlourishFramework(framework => framework
-        .ConfigureTopBar(top => top.SetAppName("Test").AddMenu("Actions", menu => menu.AddMenuItem("Run", TestCommandParser.CommandKey)))
+        .ConfigureProject(project => project.SetProjectName("Test"))
+        .ConfigureTopBar(top => top.AddMenu("Actions", menu => menu.AddMenuItem("Run", TestCommandParser.CommandKey)))
         .ConfigureNavigation(navigation => navigation
             .AddNav("Home", "home", "/", exact: true)
             .AddNavButton("Run", "play", TestCommandParser.CommandKey)
@@ -235,9 +236,10 @@ AsyncTest("the bundled icon catalog renders official names and retains legacy al
 });
 AsyncTest("program configuration renders top bar menus, explicit navigation and fixed commands", async () => {
     var html = await RenderFramework(framework => framework
+        .ConfigureProject(project => project
+            .SetProjectName("Configured application")
+            .SetLogo("app.svg", "Application icon"))
         .ConfigureTopBar(top => top
-            .SetAppName("Configured application")
-            .SetIcon("app.svg", "Application icon")
             .AddMenu("Actions", menu => menu.AddMenuItem("Run action", TestCommandParser.CommandKey))
             .InjectToLeft<TestInjectedComponent>()
             .InjectToCenter<TestInjectedComponent>()
@@ -512,11 +514,11 @@ AsyncTest("bottom sheet keeps its accessible title and Busy close policy", async
 });
 AsyncTest("notice indicators expose named glyph buttons and unique encoded descriptions", async () => {
     var names = new Dictionary<ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity, string> {
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Error] = "ERRO",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Warning] = "AVISO",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Success] = "SUCESSO",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Information] = "INFO",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Subtle] = "INFO"
+        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Error] = "Error",
+        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Warning] = "Warning",
+        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Success] = "Success",
+        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Information] = "Information",
+        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Subtle] = "Information"
     };
     var ids = new HashSet<string>(StringComparer.Ordinal);
     foreach (var (severity, name) in names) {
@@ -795,6 +797,10 @@ SplitButtonChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);
+BrandingChecks.Register(tests);
+TextChecks.Register(tests);
+InputMigrationChecks.Register(tests);
+ControlTextChecks.Register(tests);
 Test("catalog covers component parameters and constructor defaults", ArkheideSystem.Tests.Flourish.Blazor.CatalogChecks.Run);
 
 var passed = 0;

@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
@@ -18,7 +19,7 @@
         </NavLink>
     }
     <span id="@TooltipId" class="primary-navigation-tooltip" role="tooltip" popover="manual"
-          data-navigation-tooltip>@(Disabled ? DisabledMessage ?? Label + " — não implementado" : Label)</span>
+          data-navigation-tooltip>@(Disabled ? DisabledMessage ?? Ui("Navigation_Unavailable", "{0} — unavailable", Label) : Label)</span>
 </div>
 
 @code {
@@ -53,6 +54,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        base.Dispose();
         IsDisposed = true;
         if (Module is null) return;
         try

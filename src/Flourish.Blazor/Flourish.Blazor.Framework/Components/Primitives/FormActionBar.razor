@@ -1,8 +1,8 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 <div class="form-action-bar @Class">
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid Columns="Columns" NarrowColumns="@(Columns > 2 ? 2 : Columns)" Filled="true">
+    <ArkheideSystem.Flourish.Blazor.Components.UniformGrid Columns="Columns" NarrowColumns="@(Columns > 2 ? 2 : Columns)" Class="f-form-actions">
         @ChildContent
-    </ArkheideSystem.Flourish.Blazor.Components.Primitives.UniformGrid>
+    </ArkheideSystem.Flourish.Blazor.Components.UniformGrid>
 </div>
 
 @code {

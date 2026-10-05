@@ -1,0 +1,62 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+@if (Multiline)
+{
+    <textarea @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-textarea @Class" rows="@Rows"
+        maxlength="@MaxLength" placeholder="@Placeholder" disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)"
+        aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)" aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
+        @oninput="InputCallback" @onchange="ChangeCallback">@ShownValue</textarea>
+}
+else
+{
+    <input @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input @Class" type="@Type" value="@ShownValue"
+        maxlength="@MaxLength" placeholder="@Placeholder" disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)"
+        aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)" aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
+        @oninput="InputCallback" @onchange="ChangeCallback" />
+}
+
+@code {
+    [CascadingParameter] private FieldContext? Field { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public int? MaxLength { get; set; }
+    [Parameter] public bool Multiline { get; set; }
+    [Parameter] public int Rows { get; set; } = 4;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string ChangeEvent { get; set; } = "input";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private string? ShownValue, LastValue;
+    private bool Initialized;
+    private Primitives.InputBehaviorBinding? InputBehaviors;
+    private EventCallback<ChangeEventArgs> InputCallback => ChangeEvent == "input" ? EventCallback.Factory.Create<ChangeEventArgs>(this, ChangeAsync) : default;
+    private EventCallback<ChangeEventArgs> ChangeCallback => ChangeEvent == "change" ? EventCallback.Factory.Create<ChangeEventArgs>(this, ChangeAsync) : default;
+    protected override void OnParametersSet()
+    {
+        if (ChangeEvent is not ("input" or "change")) throw new ArgumentException("ChangeEvent must be input or change.", nameof(ChangeEvent));
+        if (!Initialized || ValueChanged.HasDelegate || Value != LastValue) ShownValue = Value;
+        Initialized = true;
+        LastValue = Value;
+    }
+    private async Task ChangeAsync(ChangeEventArgs args)
+    {
+        if (Disabled) return;
+        ShownValue = args.Value?.ToString();
+        await ValueChanged.InvokeAsync(ShownValue);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        InputBehaviors ??= new(JS);
+        await InputBehaviors.EnsureAsync();
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (InputBehaviors is not null) await InputBehaviors.DisposeAsync();
+    }
+}
