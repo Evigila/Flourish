@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<section class="@($"f-presentation-band f-presentation-{Tone.ToString().ToLowerInvariant()} {Class}".Trim())" aria-labelledby="@(string.IsNullOrWhiteSpace(Title) ? null : TitleId)" @attributes="AdditionalAttributes">
+<section @attributes="AdditionalAttributes" class="@($"f-presentation-band f-presentation-{Tone.ToString().ToLowerInvariant()} {(Dotted ? "f-presentation-dotted" : null)} {(FullHeight ? "f-presentation-fullheight" : null)} {Class}".Trim())" style="@BandStyle" aria-labelledby="@LabelledBy">
     <ContentContainer>
         @if (!string.IsNullOrWhiteSpace(Title))
         {
@@ -13,6 +13,9 @@
     [Parameter] public string? Title { get; set; }
     [Parameter] public string TitleId { get; set; } = $"presentation-band-{Guid.NewGuid():N}";
     [Parameter] public PresentationTone Tone { get; set; }
+    [Parameter] public int MinHeight { get; set; } = 450;
+    [Parameter] public bool Dotted { get; set; }
+    [Parameter] public bool FullHeight { get; set; }
     [Parameter] public int HeadingLevel { get; set; } = 2;
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -20,8 +23,13 @@
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     protected override void OnParametersSet() {
         if (!Enum.IsDefined(Tone)) throw new ArgumentOutOfRangeException(nameof(Tone));
+        if (MinHeight < 0) throw new ArgumentOutOfRangeException(nameof(MinHeight));
         if (HeadingLevel is < 1 or > 6) throw new ArgumentOutOfRangeException(nameof(HeadingLevel));
     }
+    private string BandStyle => (AdditionalAttributes?.TryGetValue("style", out var style) == true ? style + ";" : string.Empty)
+        + $"--f-band-min-height:{MinHeight}px;";
+    private string? LabelledBy => !string.IsNullOrWhiteSpace(Title) ? TitleId
+        : AdditionalAttributes?.TryGetValue("aria-labelledby", out var label) == true ? label?.ToString() : null;
     private RenderFragment Heading => builder => {
         builder.OpenElement(0, $"h{HeadingLevel}");
         builder.AddAttribute(1, "id", TitleId);

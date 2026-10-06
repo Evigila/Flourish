@@ -1,0 +1,69 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<span @attributes="AdditionalAttributes" @ref="root" class="f-back-to-top @Class">
+    <Button Href="@($"#{ContentId}")" Icon="arrow-up" Variant="ButtonVariant.Elevated" aria-label="@EffectiveLabel" title="@EffectiveLabel" />
+</span>
+
+@code {
+    [Parameter, EditorRequired] public string ContentId { get; set; } = string.Empty;
+    [Parameter] public double Threshold { get; set; } = 280;
+    [Parameter] public string Label { get; set; } = "Back to top";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Shell_Top", "Back to top");
+    private ElementReference root;
+    private IJSObjectReference? module;
+    private Task<IJSObjectReference?>? moduleLoading;
+    private bool disposed;
+
+    protected override void OnParametersSet()
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ContentId);
+        if (ContentId.Any(char.IsWhiteSpace)) throw new ArgumentException("The scroll region must have a valid HTML identifier.", nameof(ContentId));
+        if (!double.IsFinite(Threshold) || Threshold < 0) throw new ArgumentOutOfRangeException(nameof(Threshold));
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (disposed) return;
+        try
+        {
+            var activeModule = await GetModuleAsync();
+            if (!disposed && activeModule is not null) await activeModule.InvokeVoidAsync("synchronizeBackToTop", root, ContentId, Threshold);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (module is not null) return module;
+        var loading = moduleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(moduleLoading, loading)) moduleLoading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/patterns/surfaces.js");
+        if (disposed) { await ReleaseModuleAsync(imported); return null; }
+        module = imported;
+        return imported;
+    }
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference activeModule)
+    {
+        try { await activeModule.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (disposed) return;
+        disposed = true;
+        base.Dispose();
+        var activeModule = module;
+        module = null;
+        if (activeModule is null) return;
+        try { await activeModule.InvokeVoidAsync("disposeBackToTop", root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { await ReleaseModuleAsync(activeModule); }
+    }
+}

@@ -1,0 +1,16 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("BackToTop")]
+
+<div id="@ContentId" tabindex="-1" style="height:280px;overflow:auto;width:100%;">
+    <Section Title="本地长报告">
+        <p>向下滚动至 120px 后显示同一标准 Elevated 图标按钮。点击后只返回此滚动区域顶部；减少动态效果偏好使用直接滚动。</p>
+        <div style="min-height:@(Preview ? "340px" : "600px")"><p>按钮无需宿主图标、样式或滚动脚本。没有 JavaScript 时保留原生片段链接。</p></div>
+    </Section>
+</div>
+<BackToTop ContentId="@ContentId" Threshold="120" Label="返回报告顶部" />
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string ContentId = "top-sample-" + Guid.NewGuid().ToString("N");
+}

@@ -3,9 +3,9 @@ using System.Globalization;
 namespace ArkheideSystem.Flourish.Blazor.Components;
 
 /// <summary>Pure local-data operations shared by both visual modes.</summary>
-internal static class TableData<TItem>
+public static class TableData<TItem>
 {
-    internal static IReadOnlyList<TItem> Filter(
+    public static IReadOnlyList<TItem> Filter(
         IReadOnlyList<TItem> items,
         IReadOnlyList<TableColumn<TItem>> columns,
         string? query,
@@ -17,18 +17,18 @@ internal static class TableData<TItem>
             && (string.IsNullOrEmpty(columnKey) || column.Key == columnKey)).ToArray();
         var text = query.Trim();
         return items.Where(item => searchable.Any(column =>
-            culture.CompareInfo.IndexOf(Display(item, column, culture), text,
+            culture.CompareInfo.IndexOf(column.SearchValue?.Invoke(item) ?? Display(item, column, culture), text,
                 CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0)).ToArray();
     }
 
-    internal static IReadOnlyList<TItem> Sort(
+    public static IReadOnlyList<TItem> Sort(
         IReadOnlyList<TItem> items,
         TableColumn<TItem>? column,
         TableSortDirection direction,
         CultureInfo culture)
     {
         if (column is null || !column.Sortable || direction == TableSortDirection.Default) return items;
-        var rows = items.Select((item, index) => (Item: item, Index: index, Value: column.Value(item))).ToArray();
+        var rows = items.Select((item, index) => (Item: item, Index: index, Value: (column.SortValue ?? column.Value)(item))).ToArray();
         Array.Sort(rows, (left, right) =>
         {
             // Null is always last; reversing a single composite comparer would break that guarantee.
@@ -40,7 +40,7 @@ internal static class TableData<TItem>
         return rows.Select(row => row.Item).ToArray();
     }
 
-    internal static string Display(TItem item, TableColumn<TItem> column, CultureInfo culture)
+    public static string Display(TItem item, TableColumn<TItem> column, CultureInfo culture)
     {
         if (column.Format is not null) return column.Format(item) ?? string.Empty;
         return column.Value(item) switch
@@ -54,7 +54,7 @@ internal static class TableData<TItem>
         };
     }
 
-    internal static int ClampPage(int page, int itemCount, int pageSize)
+    public static int ClampPage(int page, int itemCount, int pageSize)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(pageSize, 1);
         return Math.Clamp(page, 1, Math.Max(1, (int)Math.Ceiling(itemCount / (double)pageSize)));

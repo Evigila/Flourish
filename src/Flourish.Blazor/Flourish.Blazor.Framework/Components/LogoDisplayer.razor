@@ -1,0 +1,48 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@using ArkheideSystem.Flourish.Blazor.Hosting
+@inject ApplicationOptions Options
+
+<header @attributes="AdditionalAttributes" class="@($"f-logo-displayer {Class}".Trim())">
+    @if (!string.IsNullOrWhiteSpace(EffectiveLogoPath))
+    {
+        <img class="f-logo-displayer-logo" src="@EffectiveLogoPath" alt="@EffectiveAlternativeText" width="96" height="96" />
+    }
+    @Heading
+    @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-logo-displayer-description">@Description</p> }
+</header>
+@code {
+    [Parameter] public string? LogoPath { get; set; }
+    [Parameter] public string? LogoAlternativeText { get; set; }
+    [Parameter] public string? ProjectName { get; set; }
+    [Parameter] public string? ContextName { get; set; }
+    [Parameter] public string? Description { get; set; }
+    [Parameter] public string TitleId { get; set; } = $"logo-title-{Guid.NewGuid():N}";
+    [Parameter] public int HeadingLevel { get; set; } = 1;
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (HeadingLevel is < 1 or > 6) throw new ArgumentOutOfRangeException(nameof(HeadingLevel));
+    }
+    private string EffectiveName => ProjectName ?? (Options.Project.NameText is { } text ? Texts.Get(text) : Options.Project.Name);
+    private string EffectiveLogoPath => LogoPath ?? Options.Project.LogoPath;
+    private string EffectiveAlternativeText => LogoAlternativeText ?? Options.Project.LogoAlternativeText;
+    private RenderFragment Heading => builder =>
+    {
+        builder.OpenElement(0, $"h{HeadingLevel}");
+        builder.AddAttribute(1, "id", TitleId);
+        builder.AddAttribute(2, "class", "f-logo-displayer-title");
+        builder.OpenElement(3, "span");
+        builder.AddContent(4, EffectiveName);
+        builder.CloseElement();
+        if (!string.IsNullOrWhiteSpace(ContextName))
+        {
+            builder.OpenElement(5, "span");
+            builder.AddAttribute(6, "class", "f-logo-displayer-context");
+            builder.AddContent(7, ContextName);
+            builder.CloseElement();
+        }
+        builder.CloseElement();
+    };
+}

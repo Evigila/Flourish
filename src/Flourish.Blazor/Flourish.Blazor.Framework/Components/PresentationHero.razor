@@ -1,20 +1,31 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<section class="@($"f-presentation-hero {Class}".Trim())" aria-labelledby="@TitleId" @attributes="AdditionalAttributes">
-    <ContentContainer>
+<PresentationBand Class="@($"f-presentation-hero {Class}".Trim())" Tone="Tone" MinHeight="MinHeight" Dotted="Dotted" FullHeight="FullHeight" AdditionalAttributes="HeroAttributes">
+    <div class="f-presentation-hero-content">
         <h1 id="@TitleId">@Title</h1>
         @if (!string.IsNullOrWhiteSpace(Subtitle)) { <p class="f-presentation-hero-subtitle">@Subtitle</p> }
         @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-presentation-hero-description">@Description</p> }
         @ChildContent
         @if (Actions is not null) { <div class="f-presentation-hero-actions">@Actions</div> }
-    </ContentContainer>
-</section>
+    </div>
+</PresentationBand>
 @code {
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public string? Description { get; set; }
+    [Parameter] public PresentationTone Tone { get; set; }
+    [Parameter] public int MinHeight { get; set; } = 450;
+    [Parameter] public bool Dotted { get; set; }
+    [Parameter] public bool FullHeight { get; set; }
     [Parameter] public string TitleId { get; set; } = $"presentation-hero-{Guid.NewGuid():N}";
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private IReadOnlyDictionary<string, object> HeroAttributes {
+        get {
+            var attributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attributes["aria-labelledby"] = TitleId;
+            return attributes;
+        }
+    }
 }

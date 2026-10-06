@@ -1,4 +1,19 @@
 {
+  "Chart_Maximum": {
+    "en-US": "Maximum",
+    "zh-CN": "最大值",
+    "pt-BR": "Máximo"
+  },
+  "Chart_Point": {
+    "en-US": "Point",
+    "zh-CN": "数据点",
+    "pt-BR": "Ponto"
+  },
+  "Chart_NoSeries": {
+    "en-US": "No series selected.",
+    "zh-CN": "尚未选择数据序列。",
+    "pt-BR": "Nenhuma série selecionada."
+  },
   "Offer_PauseRotation": {
     "en-US": "Pause rotation",
     "zh-CN": "暂停轮播",

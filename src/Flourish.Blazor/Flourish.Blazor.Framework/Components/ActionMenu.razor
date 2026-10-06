@@ -3,6 +3,24 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
+@if (ChildContent is not null)
+{
+    <details @ref="Disclosure" class="f-action-menu @(!NativeEnhanced ? "f-dropdown-surface" : null)" data-f-native-menu data-f-enhanced="@(NativeEnhanced ? "true" : null)"
+             inert="@(Disabled || Executing ? true : (bool?)null)">
+        <summary @ref="Trigger" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@EffectiveLabel"
+                 aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="@(NativeEnhanced ? "false" : null)" aria-disabled="@(Disabled || Executing ? "true" : "false")">
+            @if (TriggerContent is not null) { @TriggerContent }
+            else { <span aria-hidden="true">•••</span> }
+        </summary>
+        <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel"
+             inert="@(Disabled || Executing ? true : (bool?)null)"
+             popover="@(NativeEnhanced ? "manual" : null)" aria-busy="@(Executing ? "true" : "false")">
+            @ChildContent
+        </div>
+    </details>
+}
+else
+{
 <span class="f-action-menu @(OpenOnHover ? "f-action-menu-hover" : null)">
     <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@EffectiveLabel" disabled="@(Disabled || Executing)"
             aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">
@@ -20,31 +38,82 @@
         }
     </div>
 </span>
+}
 
 @code {
     private string EffectiveLabel => DefaultText(nameof(Label), Label, "Menu_RecordActions", "Record actions");
     private readonly string MenuId = "f-menu-" + Guid.NewGuid().ToString("N");
     private ElementReference Trigger;
     private ElementReference Panel;
+    private ElementReference Disclosure;
+    private ElementReference AttachedTrigger;
+    private ElementReference AttachedPanel;
     private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
+    private bool MenuAttached;
+    private bool AttachedNative;
+    private bool NativeEnhanced;
     private bool Executing;
     private bool Disposed;
     [Parameter] public string Label { get; set; } = "Record actions";
     [Parameter] public IReadOnlyList<MenuAction> Actions { get; set; } = Array.Empty<MenuAction>();
+    /// <summary>Native menu actions using the same menu controller. Mutually exclusive with nonempty Actions.</summary>
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public RenderFragment? TriggerContent { get; set; }
-    /// <summary>Opens on mouse hover without moving focus and closes when the pointer leaves the trigger and menu.</summary>
+    /// <summary>Generated Actions only: opens on mouse hover without moving focus and closes when the pointer leaves both regions.</summary>
     [Parameter] public bool OpenOnHover { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (ChildContent is not null && Actions.Count > 0)
+            throw new InvalidOperationException("Provide either Actions or ChildContent, not both.");
+        if (ChildContent is not null && OpenOnHover)
+            throw new InvalidOperationException("Native ChildContent uses a disclosure opening and cannot combine with OpenOnHover.");
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Disposed) return;
-        if (Module is null)
+        var module = await GetModuleAsync();
+        if (Disposed || module is null) return;
+        var native = ChildContent is not null;
+        if (MenuAttached && (AttachedNative != native || AttachedTrigger.Id != Trigger.Id || AttachedPanel.Id != Panel.Id))
         {
-            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
-            if (Disposed) { await module.DisposeAsync(); return; }
-            Module = module;
+            await module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel);
+            MenuAttached = false;
+            if (Disposed) return;
         }
-        await Module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);
+        if (native && !NativeEnhanced)
+        {
+            // Static SSR retains an ordinary details opening with one native content DOM.
+            // Only an available browser controller opts the same panel into the top layer.
+            NativeEnhanced = true;
+            StateHasChanged();
+            return;
+        }
+        AttachedNative = native;
+        AttachedTrigger = Trigger;
+        AttachedPanel = Panel;
+        MenuAttached = true;
+        if (native)
+        {
+            await module.InvokeVoidAsync("attachDisclosureMenu", Disclosure, Trigger, Panel);
+            if (!Disposed && (Disabled || Executing)) await module.InvokeVoidAsync("closeMenu", Trigger, Panel, true);
+        }
+        else await module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var loading = ModuleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(ModuleLoading, loading)) ModuleLoading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
+        if (Disposed) { await imported.DisposeAsync(); return null; }
+        Module = imported;
+        return imported;
     }
     private async Task ToggleAsync(MouseEventArgs args)
     {
@@ -66,10 +135,11 @@
     }
     public async ValueTask DisposeAsync()
     {
+        if (Disposed) return;
         base.Dispose();
         Disposed = true;
         if (Module is null) return;
-        try { await Module.InvokeVoidAsync("detachMenu", Trigger, Panel); await Module.DisposeAsync(); }
+        try { if (MenuAttached) await Module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel); await Module.DisposeAsync(); }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 }

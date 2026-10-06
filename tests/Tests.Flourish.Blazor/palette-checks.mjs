@@ -64,10 +64,10 @@ test("presentation and access scenes consume existing theme roles without reskin
   }
   const presentation = withoutComments(await readFile(join(designCssRoot, "presentation.css"), "utf8"));
   assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "color"), "var(--f-primary-ink)");
-  assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "background"), "var(--f-primary)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "background-color"), "var(--f-primary)");
   assert.equal(property(blockFor(presentation, ".f-presentation-band-heading h1"), "font-size"), "var(--f-type-page,50px)");
-  assert.equal(property(blockFor(presentation, ".f-presentation-hero h1"), "font-size"), "clamp(72px,11vw,128px)");
-  assert.equal(property(blockFor(presentation, ".f-presentation-hero-description"), "font-size"), "var(--f-type-body,17px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > h1"), "font-size"), "clamp(72px,11vw,128px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > .f-presentation-hero-description"), "font-size"), "var(--f-type-body,17px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "color"), "var(--f-primary-ink)");
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "background"), "var(--f-primary)");
 });

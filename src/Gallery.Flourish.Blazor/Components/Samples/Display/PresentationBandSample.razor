@@ -2,9 +2,9 @@
 @attribute [SampleFor("PresentationBand")]
 @foreach (var tone in Enum.GetValues<PresentationTone>())
 {
-    <PresentationBand Title="@($"展示横幅 · {tone}")" Tone="tone">
+    <PresentationBand Title="@($"展示横幅 · {tone}")" Tone="tone" Dotted="@(tone == PresentationTone.Primary)">
         <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">完整案例</Button></Actions>
-        <ChildContent><p>全宽背景与居中内容使用同一套库内布局，不需要宿主 CSS。</p></ChildContent>
+        <ChildContent><p>默认最小高度 450px，长内容自然增高；点阵默认关闭，此处仅 Primary 显式开启。相邻横幅推荐使用不同标准颜色。背景全宽、内容居中，不需要宿主 CSS。</p></ChildContent>
     </PresentationBand>
 }
 @code {

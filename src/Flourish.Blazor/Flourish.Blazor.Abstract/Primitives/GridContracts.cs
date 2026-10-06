@@ -1,11 +1,13 @@
 namespace ArkheideSystem.Flourish.Blazor.Components.Primitives;
 
-public enum GridEditorKind { Text, Decimal, Date, Multiline, Select, Masked, Link }
+public enum GridEditorKind { Text, Decimal, Date, Multiline, Select, Masked, Link, Template }
 
 public sealed record GridOption(string Value, string Label);
 public sealed record GridColumn(string Key, string Label, bool Required = false, bool Identity = false);
 public sealed record GridRow(object Key, IReadOnlyList<GridCell> Cells, bool Dirty = false, string? Label = null);
 public sealed record GridCellChange(int Row, int Column, string? Value);
+public sealed record GridCellContext(int RowIndex, int ColumnIndex, GridRow Row, GridColumn Column,
+    GridCell Cell, bool Disabled, string DescribedBy);
 
 /// <summary>One cell's presentation; the host retains parsing, permission checks and persistence.</summary>
 public sealed record GridCell(

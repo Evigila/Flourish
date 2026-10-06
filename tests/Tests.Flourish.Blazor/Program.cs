@@ -811,6 +811,8 @@ SplitButtonChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);
+NavigationControlsChecks.Register(tests);
+DataSearchChecks.Register(tests);
 BrandingChecks.Register(tests);
 TextChecks.Register(tests);
 InputMigrationChecks.Register(tests);

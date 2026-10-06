@@ -14,6 +14,33 @@ internal static class GridChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("grid template uses the existing cell shell and preserves complete values and errors", async () =>
+        {
+            IReadOnlyList<GridColumn> columns = [new("tags", "Tags")];
+            GridRow row = new("one", [new("alpha;beta", "2 selected", GridEditorKind.Template, Disabled: true, Error: "Choose available tags")]);
+            GridCellContext? observed = null;
+            var parameters = Parameters(columns, [row]);
+            parameters[nameof(EditingGrid.CellTemplate)] = (RenderFragment<GridCellContext>)(context => builder =>
+            {
+                observed = context;
+                builder.OpenComponent<ArkheideSystem.Flourish.Blazor.Components.Button>(0);
+                builder.AddAttribute(1, "Disabled", context.Disabled);
+                builder.AddAttribute(2, "aria-describedby", context.DescribedBy);
+                builder.AddAttribute(3, "Text", context.Cell.Display);
+                builder.CloseComponent();
+            });
+            var html = await Render<EditingGrid>(parameters);
+            var cell = Cells(html).Single();
+            Require(observed is { RowIndex: 0, ColumnIndex: 0, Disabled: true } && observed.Row.Key.Equals("one") && observed.Column.Key == "tags", "Template coordinates or availability were lost.");
+            Require(Attribute(Tag(cell, "td"), "data-cell-value") == "alpha;beta", "Copying a composite cell lost the full value.");
+            Require(Attribute(Tag(cell, "td"), "aria-invalid") == "true" && Attribute(Tag(cell, "button"), "aria-describedby") == observed!.DescribedBy, "Template validation metadata is detached from its actual error.");
+            Require(Regex.IsMatch(Tag(cell, "fieldset"), @"\bdisabled(?:\s|=|>)") && Regex.IsMatch(Tag(cell, "button"), @"\bdisabled(?:\s|=|>)"), "The template does not honor its availability boundary.");
+            Require(cell.Contains("f-button", StringComparison.Ordinal) && !cell.Contains("<input", StringComparison.Ordinal), "A parallel default editor was created behind the template.");
+        }));
+        tests.Add(("grid template kind fails closed when its native editor slot is missing", async () =>
+        {
+            await RejectAsync(Parameters([new("tags", "Tags")], [new("one", [new("alpha", "Alpha", GridEditorKind.Template)])]), nameof(EditingGrid.CellTemplate));
+        }));
         tests.Add(("grid rejects ambiguous migrated column keys before rendering or changing host data", async () =>
         {
             var changes = 0;

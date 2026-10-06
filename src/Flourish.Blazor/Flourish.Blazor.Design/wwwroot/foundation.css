@@ -126,8 +126,8 @@
 .f-page-heading h1 { max-width:100%; font-size:var(--f-type-page,50px); font-weight:780; line-height:1.15; letter-spacing:-.035em; margin:0; }
 .f-heading-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; min-width:0; }
 .f-parent-link { margin-bottom:8px; }
-.f-shell[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact] { align-items:center; gap:16px; min-height:72px; padding-block:12px; }
-.f-shell[data-compact-heading] .f-page-heading h1,.f-page-heading[data-heading-mode=compact] h1 { font-size:var(--f-type-page-compact,38px); }
+:is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact] { align-items:center; gap:16px; min-height:72px; padding-block:12px; }
+:is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading h1,.f-page-heading[data-heading-mode=compact] h1 { font-size:var(--f-type-page-compact,38px); }
 .f-section { margin-block:0; padding-top:clamp(44px,7vw,84px); min-width:0; }
 .f-section-heading { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:24px; }
 .f-section-heading h2 { font-size:var(--f-type-h2,28px); font-weight:760; line-height:1.2; letter-spacing:-.02em; margin:0; }
@@ -167,9 +167,9 @@
  .f-page-heading h1 { font-size:var(--f-type-page,50px); }
  .f-page-heading .f-heading-actions { width:100%; margin-top:20px; }
  .f-page-heading .f-heading-actions > * { flex:1; }
- :is(.f-shell[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact]) .f-heading-actions { margin-top:12px; }
- .f-shell[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact] { min-height:72px; padding-block:12px; }
- .f-shell[data-compact-heading] .f-page-heading h1,.f-page-heading[data-heading-mode=compact] h1 { font-size:var(--f-type-page-compact,38px); }
+ :is(:is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact]) .f-heading-actions { margin-top:12px; }
+ :is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact] { min-height:72px; padding-block:12px; }
+ :is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading h1,.f-page-heading[data-heading-mode=compact] h1 { font-size:var(--f-type-page-compact,38px); }
  .f-section,.f-page-body > .f-data { padding-top:52px; }
  .f-section-heading { display:block; margin-bottom:20px; }
  .f-section-heading .f-heading-actions { margin-top:18px; }

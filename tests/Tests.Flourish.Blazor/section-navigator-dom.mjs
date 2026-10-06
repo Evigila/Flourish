@@ -120,4 +120,65 @@ check('Continuous scroll events have a bounded alignment deadline and disposal r
     api.detach(local.nav); advance(1500); assert.equal(local.content.scrollCalls.length, before); assert.equal(timers.size, 0);
     for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) assert.equal(document.events.get(type).length, 0);
 });
-process.stdout.write(`${count}/${count} section navigator checks passed\n`);
+// The top control shares the surface module but does not own the compact-title controller.
+// Keep that unrelated import isolated while executing the real BackToTop functions below.
+document.body = new Node('body');
+let surfaceCode = await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/surfaces.js', import.meta.url), 'utf8');
+surfaceCode = surfaceCode.replace("import { updateCompactHeading, resetCompactHeading } from '../shell.js';", 'const updateCompactHeading=()=>{}; const resetCompactHeading=()=>{};');
+const surfaceApi = await import('data:text/javascript;base64,' + Buffer.from(surfaceCode).toString('base64'));
+const makeTop = () => { const control = new Node('span'), link = new Node('a'), icon = new Node('span'); link.append(icon); control.append(link); control.style.removeProperty = name => control.style.values.delete(name); return { control, link, icon }; };
+const topRegion = new Node('main'); topRegion.id = 'top-report'; topRegion.setAttribute('tabindex', '-1');
+const topAction = makeTop();
+surfaceApi.synchronizeBackToTop(topAction.control, topRegion.id, 120);
+check('BackToTop enhances the chosen region and hides before the exact configured threshold', () => {
+    assert.equal(topAction.control.hidden, true); assert.equal(topAction.control.hasAttribute('data-enhanced'), true);
+    topRegion.scrollTop=120; topRegion.emit('scroll'); assert.equal(topAction.control.hidden, false);
+    assert.equal(topAction.control.style.values.get('--f-back-to-top-left'), '828px'); assert.equal(topAction.control.style.values.get('--f-back-to-top-top'), '528px');
+});
+check('Repeated BackToTop synchronization owns one listener and refreshes threshold without another controller', () => {
+    surfaceApi.synchronizeBackToTop(topAction.control, topRegion.id, 200); assert.equal(topAction.control.hidden, true);
+    assert.equal(topRegion.events.get('scroll').length, 1); assert.equal(topAction.control.events.get('click').length, 1);
+    surfaceApi.synchronizeBackToTop(topAction.control, topRegion.id, 120);
+});
+check('BackToTop icon activation scrolls only the target region and returns focus without moving the page', () => {
+    const activation=click(topAction.icon); topAction.control.emit('click', activation);
+    assert.equal(activation.prevented, true); assert.deepEqual(topRegion.scrolled, { top:0, behavior:'smooth' });
+    assert.equal(document.activeElement, topRegion); assert.deepEqual(topRegion.focusOptions, { preventScroll:true });
+    assert.equal(window.scrolled, undefined); assert.equal(topAction.control.hidden, true);
+});
+check('BackToTop reduced motion uses direct scrolling and modified clicks remain genuine fragment links', () => {
+    reducedMotion=true; topRegion.scrollTop=400; topAction.control.emit('click', click(topAction.link)); assert.equal(topRegion.scrolled.behavior, 'auto');
+    const modified={ ...click(topAction.link), metaKey:true }; topAction.control.emit('click', modified); assert.equal(modified.prevented, false); reducedMotion=false;
+});
+check('BackToTop stays inside the scroll region on viewport or geometry changes', () => {
+    topRegion.scrollTop=300; topRegion.rect={left:500,right:1300,top:400,bottom:1000,height:600}; window.emit('resize');
+    assert.equal(topAction.control.style.values.get('--f-back-to-top-left'), '928px'); assert.equal(topAction.control.style.values.get('--f-back-to-top-top'), '728px');
+    topRegion.rect={left:500,right:1300,top:900,bottom:1500,height:600}; document.emit('scroll'); assert.equal(topAction.control.hidden, true);
+});
+const newTopRegion=new Node('main'); newTopRegion.id='new-top-report'; newTopRegion.scrollTop=300;
+check('BackToTop target replacement releases the old listeners and selects the replacement region', () => {
+    surfaceApi.synchronizeBackToTop(topAction.control, newTopRegion.id, 120);
+    assert.equal(topRegion.events.get('scroll').length, 0); assert.equal(newTopRegion.events.get('scroll').length, 1);
+    topAction.control.emit('click', click(topAction.link)); assert.equal(newTopRegion.scrollTop, 0);
+});
+check('A missing BackToTop region has no stale actions or retained listeners', () => {
+    surfaceApi.synchronizeBackToTop(topAction.control, 'missing-top-report', 120);
+    assert.equal(topAction.control.hidden, true); assert.equal(newTopRegion.events.get('scroll').length, 0); assert.equal(topAction.control.events.get('click').length, 0);
+});
+check('BackToTop disposal restores its SSR fragment fallback and removes all enhancement state', () => {
+    surfaceApi.synchronizeBackToTop(topAction.control, newTopRegion.id, 120); surfaceApi.disposeBackToTop(topAction.control); surfaceApi.disposeBackToTop(topAction.control);
+    assert.equal(topAction.control.hasAttribute('data-enhanced'), false); assert.equal(topAction.control.hidden, false);
+    assert.equal(topAction.control.style.values.has('--f-back-to-top-left'), false); assert.equal(newTopRegion.events.get('scroll').length, 0);
+    assert.equal(window.events.get('resize').length, 0); assert.equal(document.events.get('scroll').length, 0);
+});
+check('A removed BackToTop node releases listeners through the existing removal observer', () => {
+    const removed=makeTop(); surfaceApi.synchronizeBackToTop(removed.control, newTopRegion.id, 120); removed.control.isConnected=false;
+    Observer.all.at(-2).notify(); assert.equal(newTopRegion.events.get('scroll').length, 0); assert.equal(removed.control.events.get('click').length, 0);
+});
+const topCss = await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/back-to-top.css', import.meta.url), 'utf8');
+check('BackToTop geometry centers the actual standard icon button without retaining the old 72px raw skin', () => {
+    const css=topCss; assert.match(css, /\.f-back-to-top > \.f-button\s*\{[^}]*align-items:center;[^}]*justify-content:center;[^}]*inline-size:48px;[^}]*block-size:48px;/);
+    assert.match(css, /\.f-back-to-top \.f-icon\s*\{[^}]*inline-size:1em;[^}]*block-size:1em;[^}]*line-height:1;/);
+    assert.doesNotMatch(css, /72px|\.app-icon|background:/);
+});
+process.stdout.write(`${count}/${count} section navigator and top control checks passed\n`);

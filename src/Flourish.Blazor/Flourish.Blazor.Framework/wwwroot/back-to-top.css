@@ -1,0 +1,5 @@
+.f-back-to-top { position:fixed; z-index:35; inset-block-start:var(--f-back-to-top-top,auto); inset-inline-start:var(--f-back-to-top-left,auto); inset-block-end:24px; inset-inline-end:24px; display:flex; inline-size:48px; block-size:48px; }
+.f-back-to-top[data-enhanced] { inset-block-end:auto; inset-inline-end:auto; }
+.f-back-to-top[hidden] { display:none; }
+.f-back-to-top > .f-button { box-sizing:border-box; display:inline-flex; align-items:center; justify-content:center; inline-size:48px; block-size:48px; min-block-size:48px; padding:0; gap:0; }
+.f-back-to-top .f-icon { display:block; inline-size:1em; block-size:1em; line-height:1; }

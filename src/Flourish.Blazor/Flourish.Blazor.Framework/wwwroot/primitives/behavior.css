@@ -385,6 +385,8 @@
 }
 
 /* ShellHeader.css */
+/* Top-bar actions must not inherit content-flow spacing from inline action groups. */
+.shell-header-actions > .f-inline-actions { margin:0; align-self:center; }
 .shell-header {
     position: relative;
     z-index: 50;

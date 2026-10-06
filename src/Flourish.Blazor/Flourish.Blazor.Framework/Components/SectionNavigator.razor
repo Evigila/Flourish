@@ -3,7 +3,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @inherits TextComponentBase
 
-<nav id="@navigatorId" @ref="root" class="f-section-navigator @Class" aria-label="@EffectiveLabel" data-content-id="@ContentId" hidden="@(Entries.Count == 0)">
+<nav @attributes="AdditionalAttributes" id="@navigatorId" @ref="root" class="f-section-navigator @Class" aria-label="@EffectiveLabel" data-content-id="@ContentId" hidden="@(Entries.Count == 0)">
     <ul>
         @foreach (var entry in Entries)
         {
@@ -22,11 +22,13 @@
     [Parameter] public IReadOnlyList<Entry>? Items { get; set; }
     [Parameter] public string Label { get; set; } = "On this page";
     [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     private readonly string navigatorId = "section-navigation-" + Guid.NewGuid().ToString("N");
     private IReadOnlyList<Entry> discovered = Array.Empty<Entry>();
     private IReadOnlyList<Entry> Entries => Items ?? discovered;
     private ElementReference root;
     private IJSObjectReference? module;
+    private Task<IJSObjectReference?>? moduleLoading;
     private DotNetObjectReference<SectionNavigator>? reference;
     private bool disposed;
     private string? previousContentId;
@@ -34,6 +36,7 @@
     protected override void OnParametersSet()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ContentId);
+        if (ContentId.Any(char.IsWhiteSpace)) throw new ArgumentException("The scroll region must have a valid HTML identifier.", nameof(ContentId));
         if (previousContentId != ContentId) discovered = Array.Empty<Entry>();
         previousContentId = ContentId;
         if (Items is null) return;
@@ -49,14 +52,29 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (disposed) return;
-        if (module is null)
+        try
         {
-            var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/section-navigator.js");
-            if (disposed) { await imported.DisposeAsync(); return; }
-            module = imported;
-            reference = DotNetObjectReference.Create(this);
+            var activeModule = await GetModuleAsync();
+            if (disposed || activeModule is null) return;
+            reference ??= DotNetObjectReference.Create(this);
+            await activeModule.InvokeVoidAsync("synchronize", root, ContentId, Items is null, reference);
         }
-        await module.InvokeVoidAsync("synchronize", root, ContentId, Items is null, reference);
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (module is not null) return module;
+        var loading = moduleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(moduleLoading, loading)) moduleLoading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/section-navigator.js");
+        if (disposed) { await imported.DisposeAsync(); return null; }
+        module = imported;
+        return imported;
     }
 
     [JSInvokable]
@@ -69,6 +87,7 @@
 
     public async ValueTask DisposeAsync()
     {
+        if (disposed) return;
         base.Dispose();
         disposed = true;
         try

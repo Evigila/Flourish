@@ -1,0 +1,29 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataSearch<TItem>")]
+
+<DataSearch TItem="Entry" Columns="Columns" ColumnKey="@ColumnKey" Value="@Query" Changed="Search" IncludeAllColumns="true" MaximumLength="80">
+    <StandaloneCheckBox Label="包括归档" @bind-Value="IncludeArchived" />
+</DataSearch>
+@if (!Preview)
+{
+    <p role="status">共享列合同的受控搜索：匹配 @Results.Count 条虚构记录，宿主负责查询及归档过滤。</p>
+    <ListView TItem="Entry" Items="Results" Columns="Columns" Label="本地查询结果" />
+    <Section Title="首列默认与禁用">
+        <DataSearch TItem="Entry" Columns="Columns" Value="演示" Disabled="true" MaximumLength="80" />
+    </Section>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private sealed record Entry(string Name, string Group, bool Archived = false);
+    private string? ColumnKey;
+    private string Query = string.Empty;
+    private bool IncludeArchived;
+    private static readonly Entry[] Items = [new("演示笔记本", "文具"), new("演示水杯", "日用品"), new("演示铅笔", "文具", true)];
+    private static readonly TableColumn<Entry>[] Columns = [new("name", "名称", item => item.Name), new("group", "分类", item => item.Group)];
+    private IReadOnlyList<Entry> Results => Items.Where(item => IncludeArchived || !item.Archived)
+        .Where(item => string.IsNullOrWhiteSpace(Query) || Columns.Where(column => column.Searchable && (ColumnKey is null || column.Key == ColumnKey))
+            .Any(column => (column.Value(item)?.ToString() ?? string.Empty).Contains(Query, StringComparison.OrdinalIgnoreCase))).ToArray();
+    private void Search(TableSearchRequest request) { ColumnKey = request.ColumnKey; Query = request.Value; }
+}

@@ -14,9 +14,8 @@
             <aside class="secondary-rail"><nav aria-label="@EffectiveSecondaryLabel">@SecondaryNavigation</nav></aside>
         }
         <main @ref="stage" @key="DocumentKey" class="application-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
-        <button @ref="top" class="scroll-to-top" type="button" hidden aria-label="@EffectiveTopLabel" title="@EffectiveTopLabel" @onclick="ScrollToTop">
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.AppIcon Name="arrow-up" />
-        </button>
+        <SectionNavigator ContentId="@ContentId" />
+        <BackToTop ContentId="@ContentId" Label="@EffectiveTopLabel" />
     </div>
 </div>
 @code {
@@ -38,7 +37,7 @@
     private string EffectivePrimaryLabel => DefaultText(nameof(PrimaryLabel), PrimaryLabel, "Shell_Modules", "Modules");
     private string EffectiveSecondaryLabel => DefaultText(nameof(SecondaryLabel), SecondaryLabel, "Shell_Pages", "Pages");
     private string EffectiveTopLabel => DefaultText(nameof(TopLabel), TopLabel, "Shell_Top", "Back to top");
-    private ElementReference root, stage, top;
+    private ElementReference root, stage;
     private IJSObjectReference? module;
     private Task<IJSObjectReference?>? moduleLoading;
     private bool disposed;
@@ -47,7 +46,7 @@
         try {
             var activeModule = await GetModuleAsync();
             if (disposed || activeModule is null) return;
-            await activeModule.InvokeVoidAsync("synchronize", root, stage, top);
+            await activeModule.InvokeVoidAsync("synchronize", root, stage, null);
         }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
@@ -65,11 +64,6 @@
     }
     private static async ValueTask ReleaseModuleAsync(IJSObjectReference activeModule) {
         try { await activeModule.DisposeAsync(); }
-        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
-    }
-    private async Task ScrollToTop() {
-        if (disposed || module is null) return;
-        try { await module.InvokeVoidAsync("scrollToTop", stage); }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
     public async ValueTask DisposeAsync() {

@@ -319,5 +319,33 @@
   "Localization_IntroTitle": {
     "en-US": "Introduction",
     "zh-CN": "简介"
+  },
+  "Access_RecoveryDemo": {
+    "en-US": "Password recovery (demonstration)",
+    "zh-CN": "密码恢复（演示）"
+  },
+  "Access_RegistrationDemo": {
+    "en-US": "Registration (demonstration)",
+    "zh-CN": "注册（演示）"
+  },
+  "Access_SubmitMenu": {
+    "en-US": "Other access actions",
+    "zh-CN": "其他访问操作"
+  },
+  "Display_FreeStart": {
+    "en-US": "Start free without a license",
+    "zh-CN": "无需许可证，免费开始"
+  },
+  "Display_CreateFreeAccount": {
+    "en-US": "Create a free account (demonstration)",
+    "zh-CN": "创建免费账号（演示）"
+  },
+  "Display_CustomLicense": {
+    "en-US": "Custom license",
+    "zh-CN": "定制许可证"
+  },
+  "Display_RequestCustomLicense": {
+    "en-US": "Request a custom license (demonstration)",
+    "zh-CN": "申请定制许可证（演示）"
   }
 }

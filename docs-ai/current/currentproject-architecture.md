@@ -4,7 +4,7 @@ This document explains the maintained directory and file tree from the repositor
 
 The tree omits all docs/ and docs-ai/ directories, version-control internals, IDE state, generated builds and caches (bin/, obj/, artifacts/, TestResults/, .packages/, packages/, node_modules/, x64/, x86/ and ARM64/), local agent state and archived directories. Empty directories without maintained files are omitted.
 
-Coverage: 997 maintained files and 143 directories, plus the repository root.
+The original tree snapshot covered 997 maintained files and 143 directories, plus the repository root. Workspace additions below extend that snapshot; generated package/cache evidence remains outside this maintained tree.
 
 ```text
 Flourish/ — Repository root for framework libraries, optional extensions, Gallery hosts and verification.
@@ -97,6 +97,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   └── UniformGrid.css — Styles equal-width grid spacing and responsive columns.
 │   │   │   │   ├── controls.css — Defines button, input, card and floating-control appearance, plus shared Notice and StatusNotice semantic colors.
 │   │   │   │   ├── data.css — Defines themed table, sorting, selection and row-action appearance.
+│   │   │   │   ├── data-search.css — Normalizes the canonical search Field font weight within the library.
 │   │   │   │   ├── design.css — Imports the optional theme's foundation, control, table and composition styles.
 │   │   │   │   ├── display-board.css — Styles preview board dots, code backgrounds, copy controls and board spacing.
 │   │   │   │   ├── dropdown.css — Styles shared triggers, native pickers, menu options and unavailable actions.
@@ -104,6 +105,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── form-inputs.css — Styles standard date and file inputs and read-only input presentation.
 │   │   │   │   ├── foundation.css — Defines fifteen color roles, text sizes, spacing, radius and shadows.
 │   │   │   │   ├── layout.css — Defines page, form, section and responsive composition styles.
+│   │   │   │   ├── line-chart.css — Styles chart series and axes with the existing semantic theme roles.
 │   │   │   │   ├── native-overrides.css — Applies the optional theme to native form and focus presentation.
 │   │   │   │   ├── presentation.css — Styles full-width bands, artistic heroes, wordmark footers, offer cards and access panels with shared Design color roles.
 │   │   │   │   ├── scrollbars.css — Provides thin transparent scrollbar tracks, narrow thumbs and hidden arrow buttons.
@@ -176,13 +178,15 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── ActionMenu.razor — Shows click or hover action menus with dismissal and keyboard focus handling.
 │   │   │   │   ├── ApplicationLayout.razor — Connects routed content to the shell and outputs stylesheet links and the configured tab icon.
 │   │   │   │   ├── ApplicationShell.razor — Renders top bar content, route links and separate branch disclosure buttons.
+│   │   │   │   ├── BackToTop.razor — Composes a standard icon button with native fragment fallback and shared region-scrolling lifecycle.
 │   │   │   │   ├── BottomSheet.razor — Shows a dismissible panel anchored to the bottom of the viewport.
 │   │   │   │   ├── Button.razor — Exposes ordinary action buttons with visual variants, busy states and click behavior.
 │   │   │   │   ├── Card.razor — Groups related content in a surface with selectable visual variants.
 │   │   │   │   ├── CheckBox.razor — Renders a bound checkbox with optional label wrapping and a preserved boolean submission value.
 │   │   │   │   ├── CodeBlock.razor — Displays escaped code text in a formatted block with a language label.
 │   │   │   │   ├── ContentContainer.razor — Centers and constrains content independently from an outer full-width background.
-│   │   │   │   ├── DataTable.razor — Renders table rows, selection, sorting and column configuration.
+│   │   │   │   ├── DataSearch.razor — Composes canonical columns and search requests with standard fields and a same-row filter slot.
+│   │   │   │   ├── DataTable.razor — Owns canonical browsing, retained editing purposes, native transports and bounded progressive SSR enhancement.
 │   │   │   │   ├── DateBox.razor — Wraps typed native date input with binding, disabled state and standard field semantics.
 │   │   │   │   ├── Dialog.razor — Displays modal content with focus handling and dismissal behavior.
 │   │   │   │   ├── Disclosure.razor — Expands and collapses content below a labelled trigger.
@@ -197,6 +201,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── Icon.razor — Renders a decorative Material Symbols Outlined codepoint from a name or compatibility alias.
 │   │   │   │   ├── IdentityCard.razor — Displays a person's name, initials and supporting facts.
 │   │   │   │   ├── InputSemantics.cs — Combines field identity, required state, invalid state and error descriptions with explicit native attributes.
+│   │   │   │   ├── LineChart.razor — Renders stable decimal series with theme roles, explicit scales and accessible exact values.
 │   │   │   │   ├── ListView.razor — Renders static read-only tabular lists with shared columns, formatting, cell templates and accessible row headers, without JavaScript or table operations.
 │   │   │   │   ├── LoadingState.razor — Displays a loading indicator and supporting message.
 │   │   │   │   ├── Notice.razor — Displays a semantic information, success, warning or error message.
@@ -273,12 +278,16 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── browse.svg — Provides the default white Material Symbols browse logo and tab-icon fallback.
 │   │   │   │   ├── clipboard.js — Copies text on request and restores focus and selection after a clipboard fallback.
 │   │   │   │   ├── controls.js — Positions and dismisses action/display popups, handles menu keys, modal focus and input selection.
-│   │   │   │   ├── data.js — Synchronizes table column widths and connects display selection to shared popup behavior.
+│   │   │   │   ├── back-to-top.css — Positions and centers the standard icon button without a second raw button skin.
+│   │   │   │   ├── data-search.css — Owns canonical field layout and same-row filter spacing without broad descendant input/label overrides.
+│   │   │   │   ├── data-table.css — Defines canonical retained-row, template, ordering and progressive view structures.
+│   │   │   │   ├── data.js — Owns canonical sizing, display popup, unique native opening and visible-text progressive directory enhancement.
 │   │   │   │   ├── display-board.css — Defines display board alignment, code overflow and copy-button placement without a visual theme.
 │   │   │   │   ├── expansion-indicator.css — Defines native triangle content and expanded orientation without a visual theme.
 │   │   │   │   ├── form-inputs.css — Styles standard date and file inputs and read-only input presentation.
 │   │   │   │   ├── framework.css — Defines functional layouts, control states and the self-hosted icon font face without applying a visual theme.
 │   │   │   │   ├── layout.css — Defines structural page and form layout without themed colors or typography.
+│   │   │   │   ├── line-chart.css — Defines chart geometry and accessible exact-value table structure.
 │   │   │   │   ├── section-navigator.css — Positions section links and provides native focus and tooltip behavior.
 │   │   │   │   ├── section-navigator.js — Discovers headings, positions gutter links and synchronizes scrolling and cleanup.
 │   │   │   │   ├── shell.js — Synchronizes navigation and page headings without repeating collapse when short documents clamp scrolling.
@@ -935,6 +944,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── controls-dom.mjs — Checks popup placement and lifecycles, modal focus and input behavior against a simulated DOM.
 │   │   ├── ControlTextChecks.cs — Checks component default localization, explicit overrides and subscription disposal.
 │   │   ├── DataTableChecks.cs — Checks dropdown styling hooks, localized counts, paging, visibility and column sizing.
+│   │   ├── DataSearchChecks.cs — Checks canonical search state, input association, disabled callbacks, compatibility equivalence and CSS ownership.
 │   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
 │   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
 │   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
@@ -943,6 +953,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── interaction-origin-dom.mjs — Checks pointer and keyboard focus origin changes against a simulated DOM.
 │   │   ├── InteropFinalAuditChecks.cs — Checks reserved offer attributes, single-flight imports, late completion, idempotent/disconnected cleanup and document-flow mode races.
 │   │   ├── LifecycleChecks.cs — Checks JavaScript registration, component disposal and circuit-local state.
+│   │   ├── NavigationControlsChecks.cs — Checks shared directory ownership, BackToTop lifecycle/geometry and chart values/scale boundaries.
 │   │   ├── ListViewChecks.cs — Checks complete ordered SSR lists, shared formatting, accessibility, templates, validation, no-JavaScript operation and scoped localization disposal.
 │   │   ├── measurement-lifecycle.test.mjs — Checks observer cleanup and measurements across browser component lifetimes.
 │   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.

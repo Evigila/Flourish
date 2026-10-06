@@ -34,15 +34,15 @@ public static class CatalogSections
             or "Primitives.ReferenceDropdown<TValue>" or "Primitives.SelectionDropdownSurface"
             or "Primitives.FormSurface" or "Primitives.FormFields" or "Primitives.FormActionBar"
             or "Primitives.ToggleSwitch" or "Primitives.ToggleIndicator" => "inputs",
-        "DataTable<TItem>" or "ListView<TItem>" or "TableSurface" or "Primitives.DataTable<TItem>" or "Primitives.DataSearch<TItem>"
+        "DataTable<TItem>" or "DataSearch<TItem>" or "ListView<TItem>" or "LineChart" or "TableSurface" or "Primitives.DataTable<TItem>" or "Primitives.DataSearch<TItem>"
             or "Primitives.DataPager" or "Primitives.EditingGrid" => "data",
         "Dialog" or "BottomSheet" or "Primitives.BottomSheet" or "StaticDialog" or "DropdownSurface" => "overlays",
         "Notice" or "EmptyState" or "LoadingState" or "Primitives.StatusNotice"
             or "Primitives.NoticeTrigger" or "Primitives.PageLoading" => "feedback",
         "ProgressBar" or "ProgressRing" => "progress",
-        "ApplicationLayout" or "ApplicationShell" or "PageBody" or "PageHeading" or "SectionNavigator"
+        "ApplicationLayout" or "ApplicationShell" or "PageBody" or "PageHeading" or "SectionNavigator" or "BackToTop"
             or "Patterns.ContentSurface" or "Patterns.NavigationSurface" or "Patterns.RecordListPage"
-            or "ContentContainer" or "PresentationBand" or "PresentationHero" or "PresentationFooter" or "AccessPanel"
+            or "ContentContainer" or "PresentationBand" or "PresentationHero" or "PresentationFooter" or "LogoDisplayer" or "AccessPanel"
             or "Primitives.AccessBrand" or "Primitives.AccessSurface" or "Primitives.ShellHeader"
             or "Primitives.ServiceMenu" or "Primitives.PrimaryNavigationItem" or "Primitives.SecondaryNavigationItem"
             or "Primitives.PageHeading" or "Primitives.RecordPageHeading"

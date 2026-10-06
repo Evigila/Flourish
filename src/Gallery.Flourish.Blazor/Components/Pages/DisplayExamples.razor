@@ -39,8 +39,8 @@ else if (TopicKey is "product" or "pricing" or "access")
         }
         else if (TopicKey == "pricing")
         {
-            <PresentationBand Title="@Localization.Parse(TextKey.Display_PricingTitle)" HeadingLevel="1" TitleId="display-pricing-title">
-                <p>@Localization.Parse(TextKey.Display_Intro)</p>
+            <PageHeading Title="@Localization.Parse(TextKey.Display_PricingTitle)" />
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_ViewPlans)" TitleId="display-pricing-title" Tone="PresentationTone.Canvas">
                 <UniformGrid Centered="true" Columns="3" NarrowColumns="1" id="display-offer-links">
                     @for (var index = 0; index < Offers.Count; index++)
                     {
@@ -49,7 +49,7 @@ else if (TopicKey is "product" or "pricing" or "access")
                     }
                 </UniformGrid>
             </PresentationBand>
-            <PresentationBand Title="@Localization.Parse(TextKey.Display_Comparison)" TitleId="display-comparison" Tone="PresentationTone.Surface">
+            <PresentationBand aria-label="@Localization.Parse(TextKey.Display_Comparison)" Tone="PresentationTone.Surface">
                 <ListView TItem="Feature" Items="Features" Columns="ComparisonColumns" RowHeaderKey="feature"
                           Label="@Localization.Parse(TextKey.Display_Comparison)">
                     <CellTemplate Context="cell">
@@ -58,8 +58,13 @@ else if (TopicKey is "product" or "pricing" or "access")
                     </CellTemplate>
                 </ListView>
             </PresentationBand>
-            <PresentationBand Title="@Localization.Parse(TextKey.Display_Offers)" TitleId="display-offers-title">
-                <OfferStage Id="display-offers" LinkScopeId="display-offer-links" Label="@Localization.Parse(TextKey.Display_Offers)">
+            <PresentationBand Tone="PresentationTone.Canvas" aria-label="@Localization.Parse(TextKey.Display_FreeStart)">
+                <Card Prominent="true" Text="@Localization.Parse(TextKey.Display_FreeStart)">
+                    <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/access">@Localization.Parse(TextKey.Display_CreateFreeAccount)</Button></Actions>
+                </Card>
+            </PresentationBand>
+            <PresentationBand Title="@Localization.Parse(TextKey.Display_Offers)" TitleId="display-offers-title" Tone="PresentationTone.Surface">
+                <OfferStage Id="display-offers" LinkScopeId="display-offer-links" Label="@Localization.Parse(TextKey.Display_Offers)" RotationControlIconOnly="true">
                     @for (var index = 0; index < Offers.Count; index++)
                     {
                         <OfferCard Id="@($"display-offer-{index}")" Title="@Offers[index]" Description="@Localization.Parse(TextKey.Display_OfferDescription)">
@@ -67,6 +72,11 @@ else if (TopicKey is "product" or "pricing" or "access")
                         </OfferCard>
                     }
                 </OfferStage>
+            </PresentationBand>
+            <PresentationBand Tone="PresentationTone.Canvas" aria-label="@Localization.Parse(TextKey.Display_CustomLicense)">
+                <Card Prominent="true" Text="@Localization.Parse(TextKey.Display_CustomLicense)">
+                    <Actions><Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Display_RequestCustomLicense)</Button></Actions>
+                </Card>
             </PresentationBand>
         }
         else
@@ -89,7 +99,7 @@ else if (TopicKey is "product" or "pricing" or "access")
             </PresentationBand>
         }
         <PresentationFooter BrandName="Lumen" Watermark="Lumen" Copyright="@Localization.Parse(TextKey.Display_Disclaimer)">
-            <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
+            <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
         </PresentationFooter>
     </PageBody>
 }

@@ -258,6 +258,7 @@ internal static class InteropFinalAuditChecks
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<IJSRuntime>(javascript);
+        services.AddSingleton<NavigationManager>(new TestNavigation());
         services.AddSingleton<IComponentActivator>(activator);
         services.AddFlourishFramework();
         using var provider = services.BuildServiceProvider();

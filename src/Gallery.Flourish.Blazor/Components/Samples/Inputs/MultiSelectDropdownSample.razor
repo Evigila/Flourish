@@ -27,6 +27,14 @@ else
                           MaximumSelections="3" EmptyText="没有示例标签" EmptySelectionText="未选择标签" MultipleSelectionText="个标签已选择" />
     <p role="status">已选 @SelectedValues.Count 个示例标签。</p>
     <Button OnClick="Clear">清空选择</Button>
+    <Section Title="图表显示序列">
+        <Field Id="@(Prefix + "-series")" Label="显示">
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.MultiSelectDropdown TItem="SeriesOption" TValue="string" Id="@(Prefix + "-series")" LabelledBy="@(Prefix + "-series-label")"
+                                  Items="SeriesOptions" SelectedValues="VisibleSeries" ValueSelector="@(item => item.Key)" TextSelector="@(item => item.Label)"
+                                  SelectionChanged="ToggleSeries" EmptySelectionText="无可见序列" MultipleSelectionText="条可见序列" />
+        </Field>
+        <LineChart Labels="ChartLabels" Series="ChartSeries" Title="虚构订单趋势" IndependentScales="true" MaximumLabel="最大值" EmptyText="请选择至少一条序列。" />
+    </Section>
 }
 
 @code {
@@ -41,4 +49,10 @@ else
     private void ToggleSelection(int value) { if (!SelectedValues.Remove(value) && SelectedValues.Count < 3) SelectedValues.Add(value); }
     private Task<bool> Create(string name) { var id = Tags.Count + 1; Tags.Add(new(id, name)); SelectedValues.Add(id); return Task.FromResult(true); }
     private void Clear() => SelectedValues.Clear();
+    private sealed record SeriesOption(string Key, string Label);
+    private static readonly SeriesOption[] SeriesOptions = [new("count", "订单数量"), new("amount", "订单金额")];
+    private readonly HashSet<string> VisibleSeries = ["count", "amount"];
+    private static readonly LineChart.PointLabel[] ChartLabels = [new("mon", "一"), new("tue", "二"), new("wed", "三")];
+    private LineChart.DataSeries[] ChartSeries => [new("count", "订单数量", [2, 5, 3], value => value.ToString("N0"), Visible: VisibleSeries.Contains("count")), new("amount", "订单金额", [120, 250, 180], value => value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("zh-CN")), Visible: VisibleSeries.Contains("amount"))];
+    private void ToggleSeries(string key) { if (!VisibleSeries.Remove(key)) VisibleSeries.Add(key); }
 }

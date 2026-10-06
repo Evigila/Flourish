@@ -10,7 +10,13 @@ public sealed record TableColumn<TItem>(
     bool Sortable = true,
     bool Searchable = true,
     bool CanHide = true,
-    Func<TItem, string?>? Format = null);
+    Func<TItem, string?>? Format = null,
+    bool DefaultVisible = true,
+    TableCardField CardField = TableCardField.Detail,
+    bool? CanReorder = null,
+    Func<TItem, object?>? SortValue = null,
+    Func<TItem, string?>? SearchValue = null,
+    bool UsesTemplate = false);
 
 /// <summary>A read-only cell and its culture-formatted text, using the shared table column contract.</summary>
 public sealed record TableCellContext<TItem>(TItem Item, TableColumn<TItem> Column, string Text);
@@ -24,6 +30,13 @@ public sealed record RowAction<TItem>(
     bool Disabled = false);
 
 public enum TableView { Table, Cards }
+
+public enum TablePurpose { Registry, Pool, Worklist }
+public enum TableCardField { Detail, Image, Title, Identifier, Metric }
+public enum TableSearchMode { Local, Remote }
+
+/// <summary>A presentation query; remote filtering, cancellation and authorization remain host-owned.</summary>
+public sealed record TableSearchRequest(string? ColumnKey, string Value);
 
 public enum TableSortDirection { Default, Descending, Ascending }
 

@@ -78,6 +78,165 @@ internal static class TextChecks
             Require(html.Contains("en-US:First/Same") && html.Contains("en-US:Second/Same"), "Reference metadata collapsed equal records from separate catalogs.");
         }));
 
+        tests.Add(("presentation footer resolves the configured project fallback without a culture provider", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project =>
+                project.SetProjectName(new TextReference("App", "Project", "Fallback <product> & identity"))), translated: false);
+            using var scope = provider.CreateScope();
+            var html = await Render<PresentationFooter>(scope, new() { [nameof(PresentationFooter.Copyright)] = "Host copyright" });
+            Require(html.Contains("<strong>Fallback &lt;product&gt; &amp; identity</strong>", StringComparison.Ordinal)
+                && html.Contains("aria-hidden=\"true\">Fallback &lt;product&gt; &amp; identity</span>", StringComparison.Ordinal),
+                "Footer title and watermark did not use the encoded project fallback without Culture.");
+            Require(html.Contains("Host copyright", StringComparison.Ordinal) && !html.Contains("App/Project", StringComparison.Ordinal),
+                "Footer guessed a translation token or replaced independently supplied copyright.");
+        }));
+
+        tests.Add(("presentation footer live project names are scope isolated unsubscribe and preserve explicit overrides", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName(Ref("Project"))));
+            using var first = provider.CreateScope();
+            using var second = provider.CreateScope();
+            await using var a = Renderer(first);
+            await using var b = Renderer(second);
+            var automaticParameters = new Dictionary<string, object?>
+            {
+                [nameof(PresentationFooter.Copyright)] = "Host copyright",
+                [nameof(PresentationFooter.AdditionalAttributes)] = new Dictionary<string, object> { ["id"] = "project-footer" }
+            };
+            var outputA = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(automaticParameters)));
+            var outputB = await b.Dispatcher.InvokeAsync(() => b.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(automaticParameters)));
+            var explicitOutput = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(new Dictionary<string, object?>
+            {
+                [nameof(PresentationFooter.BrandName)] = "Explicit <brand>",
+                [nameof(PresentationFooter.Watermark)] = "Explicit <watermark>",
+                [nameof(PresentationFooter.Copyright)] = "Explicit host copyright"
+            })));
+            var explicitBefore = await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString);
+            Require(explicitBefore.Contains("<strong>Explicit &lt;brand&gt;</strong>", StringComparison.Ordinal)
+                && explicitBefore.Contains("aria-hidden=\"true\">Explicit &lt;watermark&gt;</span>", StringComparison.Ordinal),
+                "Explicit footer identities were replaced or inserted without encoding.");
+            var textsA = (TrackingTextProvider)first.ServiceProvider.GetRequiredService<ITextProvider>();
+            var textsB = (TrackingTextProvider)second.ServiceProvider.GetRequiredService<ITextProvider>();
+            Require(textsA.Subscribers == 2 && textsB.Subscribers == 1, "Each footer must subscribe once to its own scoped text provider.");
+            var before = await a.Dispatcher.InvokeAsync(outputA.ToHtmlString);
+            Require(before.Contains("<strong>en-US:App/Project</strong>", StringComparison.Ordinal)
+                && before.Contains("aria-hidden=\"true\">en-US:App/Project</span>", StringComparison.Ordinal),
+                "Footer title and watermark do not resolve the same configured project reference.");
+            await Task.Run(() => textsA.Select("zh-CN"));
+            var changed = await a.Dispatcher.InvokeAsync(outputA.ToHtmlString);
+            Require(changed.Contains("<strong>zh-CN:App/Project</strong>", StringComparison.Ordinal)
+                && changed.Contains("aria-hidden=\"true\">zh-CN:App/Project</span>", StringComparison.Ordinal),
+                "Footer title and watermark did not update together on a scoped language change.");
+            Require(changed.Contains("id=\"project-footer\"", StringComparison.Ordinal)
+                && changed.Contains("Host copyright", StringComparison.Ordinal), "Language refresh changed native footer identity or manual copyright.");
+            Require(await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString) == explicitBefore,
+                "Language refresh overwrote explicit compatibility brand, watermark or copyright.");
+            Require(textsB.Culture == "en-US" && (await b.Dispatcher.InvokeAsync(outputB.ToHtmlString)).Contains("<strong>en-US:App/Project</strong>", StringComparison.Ordinal),
+                "A footer language change leaked to another user scope.");
+            await Task.Run(() => textsA.Select("pt-BR"));
+            Require((await a.Dispatcher.InvokeAsync(outputA.ToHtmlString)).Contains("<strong>pt-BR:App/Project</strong>", StringComparison.Ordinal)
+                && textsA.Subscribers == 2 && textsB.Subscribers == 1, "Repeated footer refresh accumulated subscriptions or failed to update.");
+            await a.DisposeAsync();
+            Require(textsA.Subscribers == 0 && textsB.Subscribers == 1, "Disposed footers retained subscriptions or detached another user's footer.");
+            textsA.Select("en-US");
+            await b.DisposeAsync();
+            Require(textsB.Subscribers == 0, "The second disposed footer retained its text subscription.");
+        }));
+
+        tests.Add(("presentation footer literal project names stay literal through text refresh", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName("App.Project")));
+            using var scope = provider.CreateScope();
+            var texts = (TrackingTextProvider)scope.ServiceProvider.GetRequiredService<ITextProvider>();
+            await using var renderer = Renderer(scope);
+            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<PresentationFooter>());
+            await Task.Run(() => texts.Select("zh-CN"));
+            var html = await renderer.Dispatcher.InvokeAsync(output.ToHtmlString);
+            Require(html.Contains("<strong>App.Project</strong>", StringComparison.Ordinal)
+                && html.Contains("aria-hidden=\"true\">App.Project</span>", StringComparison.Ordinal)
+                && !html.Contains("zh-CN:", StringComparison.Ordinal), "A literal project name was guessed as a culture token.");
+            await renderer.DisposeAsync();
+            Require(texts.Subscribers == 0, "The literal-project footer retained its subscription after disposal.");
+        }));
+
+        tests.Add(("logo displayer resolves project fallback and shared configured logo without a culture provider", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project
+                .SetProjectName(new TextReference("App", "Project", "Fallback <product> & name"))
+                .SetLogo("shared-logo.svg", "Shared <logo>")), translated: false);
+            using var scope = provider.CreateScope();
+            var html = await Render<LogoDisplayer>(scope, new() { [nameof(LogoDisplayer.TitleId)] = "fallback-logo-title" });
+            Require(html.Contains("<span>Fallback &lt;product&gt; &amp; name</span>", StringComparison.Ordinal)
+                && html.Contains("src=\"shared-logo.svg\"", StringComparison.Ordinal)
+                && html.Contains("alt=\"Shared &lt;logo&gt;\"", StringComparison.Ordinal), "Brand display did not resolve the encoded fallback and shared project logo.");
+            Require(html.Contains("id=\"fallback-logo-title\"", StringComparison.Ordinal)
+                && !html.Contains("App/Project", StringComparison.Ordinal), "Brand display changed title identity or guessed a literal fallback as a token.");
+        }));
+
+        tests.Add(("logo displayer project localization is scope isolated preserves explicit identity and unsubscribes", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project
+                .SetProjectName(Ref("Project")).SetLogo("project-logo.svg", "Project logo")));
+            using var first = provider.CreateScope();
+            using var second = provider.CreateScope();
+            await using var a = Renderer(first);
+            await using var b = Renderer(second);
+            var automaticParameters = new Dictionary<string, object?>
+            {
+                [nameof(LogoDisplayer.TitleId)] = "shared-logo-title", [nameof(LogoDisplayer.ContextName)] = "Login",
+                [nameof(LogoDisplayer.Description)] = "Host description"
+            };
+            var outputA = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<LogoDisplayer>(ParameterView.FromDictionary(automaticParameters)));
+            var outputB = await b.Dispatcher.InvokeAsync(() => b.RenderComponentAsync<LogoDisplayer>(ParameterView.FromDictionary(automaticParameters)));
+            var explicitOutput = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<LogoDisplayer>(ParameterView.FromDictionary(new Dictionary<string, object?>
+            {
+                [nameof(LogoDisplayer.TitleId)] = "explicit-logo-title", [nameof(LogoDisplayer.ProjectName)] = "Explicit <brand>",
+                [nameof(LogoDisplayer.LogoPath)] = "explicit-logo.svg", [nameof(LogoDisplayer.LogoAlternativeText)] = "Explicit <alternative>",
+                [nameof(LogoDisplayer.ContextName)] = "Host context", [nameof(LogoDisplayer.Description)] = "Explicit description"
+            })));
+            var explicitBefore = await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString);
+            Require(explicitBefore.Contains("<span>Explicit &lt;brand&gt;</span>", StringComparison.Ordinal)
+                && explicitBefore.Contains("src=\"explicit-logo.svg\"", StringComparison.Ordinal)
+                && explicitBefore.Contains("alt=\"Explicit &lt;alternative&gt;\"", StringComparison.Ordinal), "Brand/logo/alternative text overrides did not win or were not encoded.");
+            var textsA = (TrackingTextProvider)first.ServiceProvider.GetRequiredService<ITextProvider>();
+            var textsB = (TrackingTextProvider)second.ServiceProvider.GetRequiredService<ITextProvider>();
+            Require(textsA.Subscribers == 2 && textsB.Subscribers == 1, "Each brand display must subscribe once to its own scoped text provider.");
+            Require((await a.Dispatcher.InvokeAsync(outputA.ToHtmlString)).Contains("<span>en-US:App/Project</span>", StringComparison.Ordinal), "Initial configured project reference was not resolved.");
+            await Task.Run(() => textsA.Select("zh-CN"));
+            var changed = await a.Dispatcher.InvokeAsync(outputA.ToHtmlString);
+            Require(changed.Contains("<span>zh-CN:App/Project</span>", StringComparison.Ordinal)
+                && changed.Contains("id=\"shared-logo-title\"", StringComparison.Ordinal)
+                && changed.Contains("src=\"project-logo.svg\"", StringComparison.Ordinal)
+                && changed.Contains("alt=\"Project logo\"", StringComparison.Ordinal)
+                && changed.Contains("Login", StringComparison.Ordinal)
+                && changed.Contains("Host description", StringComparison.Ordinal), "Culture refresh changed native title/logo identity or explicit context/description rather than only the project reference.");
+            Require((await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString)) == explicitBefore, "Culture refresh overwrote explicitly supplied brand-display identity.");
+            Require(textsB.Culture == "en-US"
+                && (await b.Dispatcher.InvokeAsync(outputB.ToHtmlString)).Contains("<span>en-US:App/Project</span>", StringComparison.Ordinal), "Brand-display culture leaked into another user scope.");
+            await Task.Run(() => textsA.Select("pt-BR"));
+            Require((await a.Dispatcher.InvokeAsync(outputA.ToHtmlString)).Contains("<span>pt-BR:App/Project</span>", StringComparison.Ordinal)
+                && textsA.Subscribers == 2 && textsB.Subscribers == 1, "Repeated brand-display refresh accumulated subscriptions or failed to resolve text.");
+            await a.DisposeAsync();
+            Require(textsA.Subscribers == 0 && textsB.Subscribers == 1, "Disposed brand displays retained subscriptions or detached another user's display.");
+            textsA.Select("en-US");
+            await b.DisposeAsync();
+            Require(textsB.Subscribers == 0, "The second brand display retained its subscription after disposal.");
+        }));
+
+        tests.Add(("logo displayer literal project identity stays literal through culture changes", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName("App.Project")));
+            using var scope = provider.CreateScope();
+            var texts = (TrackingTextProvider)scope.ServiceProvider.GetRequiredService<ITextProvider>();
+            await using var renderer = Renderer(scope);
+            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<LogoDisplayer>());
+            await Task.Run(() => texts.Select("zh-CN"));
+            var html = await renderer.Dispatcher.InvokeAsync(output.ToHtmlString);
+            Require(html.Contains("<span>App.Project</span>", StringComparison.Ordinal) && !html.Contains("zh-CN:", StringComparison.Ordinal), "A literal logo-display project name was guessed as a culture token.");
+            await renderer.DisposeAsync();
+            Require(texts.Subscribers == 0, "The literal-project brand display retained its subscription after disposal.");
+        }));
+
         tests.Add(("explicit shell accessibility text wins even when it equals the original default", async () =>
         {
             using var provider = Services(framework => framework.ConfigureNavigation(nav => nav.AddNav("Home", "home", "/")));

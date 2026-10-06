@@ -67,10 +67,10 @@ internal static class ComponentInventoryChecks
         {
             foreach (var type in new[]
             {
-                typeof(Primitives.DataTable<>), typeof(Primitives.EditingGrid), typeof(Primitives.MaskedInput),
+                typeof(Primitives.EditingGrid), typeof(Primitives.MaskedInput),
                 typeof(Primitives.StandaloneMaskedInput), typeof(Primitives.MultiSelectDropdown<,>),
                 typeof(Primitives.ReferenceDropdown<>), typeof(Primitives.SearchAutocomplete<>),
-                typeof(Primitives.DataPager), typeof(Primitives.DataSearch<>), typeof(Primitives.NavigationGuard),
+                typeof(Primitives.DataPager), typeof(Primitives.NavigationGuard),
                 typeof(Primitives.InteractionBoundary), typeof(Primitives.NoticeTrigger), typeof(Primitives.RowActionMenu)
             })
                 Check(ComponentUsageCatalog.For(type).Kind == ComponentUseKind.Scenario,
@@ -79,8 +79,14 @@ internal static class ComponentInventoryChecks
             foreach (var type in new[] { typeof(Primitives.ToggleIndicator), typeof(Primitives.SelectionDropdownSurface), typeof(ExpansionIndicator) })
                 Check(ComponentUsageCatalog.For(type).Kind == ComponentUseKind.BuildingBlock, $"Incomplete helper lacks its construction-only warning: {type.Name}.");
             var advanced = ComponentUsageCatalog.For(typeof(Primitives.DataTable<>));
-            Check(advanced.PreferredEntry is null && advanced.Guidance.Contains("尚未完成共享核心统一", StringComparison.Ordinal)
-                && advanced.Guidance.Contains("不可互换", StringComparison.Ordinal), "Advanced table guidance must not falsely promise completed API unification.");
+            var search = ComponentUsageCatalog.For(typeof(Primitives.DataSearch<>));
+            Check(search.Kind == ComponentUseKind.Compatibility && search.PreferredEntry == typeof(DataSearch<>)
+                && search.Guidance.Contains("委托同一", StringComparison.Ordinal), "Legacy search must truthfully name its single canonical renderer.");
+            Check(advanced.Kind == ComponentUseKind.Compatibility && advanced.PreferredEntry == typeof(DataTable<>)
+                && advanced.Guidance.Contains("仍有独立实现", StringComparison.Ordinal), "Legacy table guidance must name the preferred entry without falsely claiming a shared implementation.");
+            var outline = ComponentUsageCatalog.For(typeof(Primitives.PageContents));
+            Check(outline.Kind == ComponentUseKind.Compatibility && outline.PreferredEntry == typeof(SectionNavigator)
+                && outline.Guidance.Contains("不得用于业务页面", StringComparison.Ordinal), "Static directory cannot stand in for the active business section indicator.");
             var grid = ComponentUsageCatalog.For(typeof(Primitives.UniformGrid));
             Check(grid.Kind == ComponentUseKind.Compatibility && grid.PreferredEntry is null
                 && grid.Guidance.Contains("不等价", StringComparison.Ordinal), "The fluid legacy grid must not be presented as a drop-in tile-grid alias.");

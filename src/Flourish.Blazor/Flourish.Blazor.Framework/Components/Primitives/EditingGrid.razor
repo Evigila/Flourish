@@ -50,9 +50,10 @@
                         var hasOptions = cell.Editor == GridEditorKind.Select;
                         var multiline = cell.Editor == GridEditorKind.Multiline;
                         <td data-row="@currentRow" data-column="@currentColumn" data-label="@column.Label" data-readonly="@(cell.ReadOnly ? "true" : "false")"
+                            data-cell-value="@(cell.Editor == GridEditorKind.Template ? cell.Value : null)"
                             role="gridcell" tabindex="-1" aria-selected="false" aria-readonly="@(disabled || cell.ReadOnly ? "true" : "false")" aria-invalid="@(hasError ? "true" : null)"
                             class="@CellClass(column, cell)" aria-label="@($"{label}: {cell.Display}")" aria-describedby="@describedBy">
-                            <div class="spreadsheet-cell-surface @(hasOptions ? "has-options" : null) @(multiline ? "is-long-text" : null)">
+                            <div class="spreadsheet-cell-surface @(hasOptions ? "has-options" : null) @(multiline ? "is-long-text" : null) @(cell.Editor == GridEditorKind.Template ? "has-template" : null)">
                                 @if (!multiline)
                                 {
                                     <span class="spreadsheet-cell-display data-cell-content" data-measurement-padding="20" title="@cell.Display">@cell.Display</span>
@@ -66,7 +67,13 @@
                                     <span class="cell-select-marker" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2 4h8L6 8z" /></svg></span>
                                 }
                                 <div class="spreadsheet-cell-editor">
-                                    @if (cell.Editor == GridEditorKind.Link)
+                                    @if (cell.Editor == GridEditorKind.Template)
+                                    {
+                                        <fieldset disabled="@(disabled || cell.ReadOnly)" aria-describedby="@describedBy">
+                                            @CellTemplate!(new(currentRow, currentColumn, row, column, cell, disabled || cell.ReadOnly, describedBy))
+                                        </fieldset>
+                                    }
+                                    else if (cell.Editor == GridEditorKind.Link)
                                     {
                                         <a tabindex="-1" href="@cell.LinkHref" title="@cell.Hint" aria-label="@cell.LinkLabel" aria-describedby="@describedBy" aria-invalid="@(hasError ? "true" : null)">@cell.Display</a>
                                     }
@@ -133,6 +140,7 @@
     [Parameter, EditorRequired] public IReadOnlyList<GridRow> Rows { get; set; } = [];
     [Parameter] public GridInteractions Interactions { get; set; } = new();
     [Parameter] public EventCallback<GridCellChange> CellChanged { get; set; }
+    [Parameter] public RenderFragment<GridCellContext>? CellTemplate { get; set; }
     [Parameter] public bool EditDisabled { get; set; }
     [Parameter] public bool Hidden { get; set; }
     [Parameter] public bool HasMore { get; set; }
@@ -161,6 +169,8 @@
             throw new ArgumentException("Grid column keys must be unique.", nameof(Columns));
         if (Rows.Any(row => row.Cells.Count != Columns.Count))
             throw new ArgumentException("Every row must contain one cell for each column.", nameof(Rows));
+        if (Rows.Any(row => row.Cells.Any(cell => cell.Editor == GridEditorKind.Template)) && CellTemplate is null)
+            throw new ArgumentException("Template editors require a native cell template.", nameof(CellTemplate));
         var signature = string.Join("\0", Columns.Select(column => column.Key));
         if (signature != ColumnSignature)
         {

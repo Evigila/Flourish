@@ -5,7 +5,13 @@
 <section class="f-offer-presentation">
     <div @ref="root" @attributes="AdditionalAttributes" id="@Id" class="@($"f-offer-stage {Class}".Trim())" role="list" aria-label="@Label"><CascadingValue Value="this" IsFixed="true">@ChildContent</CascadingValue></div>
     @if (AutoRotate) {
-        <div class="f-offer-controls"><Button Type="button" Variant="ButtonVariant.Quiet" OnClick="ToggleRotation" Disabled="@(!initialized)" aria-pressed="@paused.ToString().ToLowerInvariant()">@EffectiveRotationLabel</Button></div>
+        <div class="f-offer-controls">
+            @if (RotationControlIconOnly) {
+                <Button Type="button" Variant="ButtonVariant.Quiet" Icon="@(paused ? "play_arrow" : "pause")" OnClick="ToggleRotation" Disabled="@(!initialized)" aria-label="@EffectiveRotationLabel" data-tooltip="@EffectiveRotationLabel" aria-pressed="@paused.ToString().ToLowerInvariant()" />
+            } else {
+                <Button Type="button" Variant="ButtonVariant.Quiet" OnClick="ToggleRotation" Disabled="@(!initialized)" aria-pressed="@paused.ToString().ToLowerInvariant()">@EffectiveRotationLabel</Button>
+            }
+        </div>
     }
 </section>
 @code {
@@ -13,6 +19,8 @@
     [Parameter] public string? LinkScopeId { get; set; }
     [Parameter] public string? Label { get; set; }
     [Parameter] public bool AutoRotate { get; set; } = true;
+    /// <summary>Uses the standard icon-only button; accessible names keep the scoped rotation labels.</summary>
+    [Parameter] public bool RotationControlIconOnly { get; set; }
     [Parameter] public int RotationIntervalMilliseconds { get; set; } = 2200;
     [Parameter] public string PauseRotationLabel { get; set; } = "Pause rotation";
     [Parameter] public string ResumeRotationLabel { get; set; } = "Resume rotation";

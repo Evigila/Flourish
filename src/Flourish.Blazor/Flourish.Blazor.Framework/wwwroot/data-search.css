@@ -1,0 +1,6 @@
+.f-data-search { display:flex; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-block-end:36px; min-inline-size:0; }
+.f-data-search > .f-field { flex:0 1 240px; min-inline-size:0; }
+.f-data-search > .f-data-search-value { flex:1 1 360px; }
+.f-data-search .f-field-control > .f-input { inline-size:100%; min-inline-size:0; }
+.f-data-search-content { display:flex; flex:0 0 auto; align-items:center; gap:16px; min-block-size:48px; min-inline-size:0; }
+@media(max-width:760px) { .f-data-search { align-items:stretch; flex-direction:column; } .f-data-search > .f-field { inline-size:100%; flex:auto; } }

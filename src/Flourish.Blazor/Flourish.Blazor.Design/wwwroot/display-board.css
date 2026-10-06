@@ -1,7 +1,7 @@
 .f-display-board { --f-display-board-padding:24px; padding:0; border-radius:16px; background-color:var(--f-display-board); color:var(--f-display-board-ink); }
 .f-display-board + .f-display-board { margin-block-start:24px; }
 .f-display-board + :not(.f-display-board) { margin-block-start:var(--f-space-6,24px); }
-.f-display-board-dotted { background-image:radial-gradient(circle,var(--f-border) 1px,transparent 1.2px); background-size:18px 18px; }
+.f-display-board-dotted,.f-presentation-dotted { background-image:radial-gradient(circle,var(--f-border) 1px,transparent 1.2px); background-size:18px 18px; }
 .f-display-board-content { box-sizing:border-box; padding:var(--f-display-board-padding); min-height:calc(120px + 2 * var(--f-display-board-padding)); gap:16px; }
 .f-display-board-content:has(> .f-code-block) { align-items:flex-start; justify-content:flex-start; min-height:0; }
 .f-display-board-content > .f-code-block { width:100%; padding:0; overflow:visible; border-radius:0; background:transparent; color:inherit; }

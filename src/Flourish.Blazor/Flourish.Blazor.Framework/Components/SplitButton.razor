@@ -2,29 +2,39 @@
 @inherits TextComponentBase
 @inject NavigationManager Navigation
 
-<div class="f-split-button @Class">
+<div class="f-split-button @(FullWidth ? "f-split-button-full-width" : null) @Class" style="@WidthStyle">
     @if (!string.IsNullOrWhiteSpace(Href))
     {
-        <a @attributes="LinkAttributes" href="@(Disabled ? null : LinkHref)" class="@PrimaryCss"
-           role="@(Disabled ? "link" : null)" aria-disabled="@(Disabled ? "true" : null)" tabindex="@(Disabled ? -1 : 0)"
-           @onclick="ClickAsync" @onclick:preventDefault="Disabled">@PrimaryContent</a>
+        <a @attributes="LinkAttributes" href="@(Unavailable ? null : LinkHref)" class="@PrimaryCss"
+           role="@(Unavailable ? "link" : null)" aria-disabled="@(Unavailable ? "true" : null)" tabindex="@(Unavailable ? -1 : 0)"
+           aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync" @onclick:preventDefault="Unavailable">@PrimaryContent</a>
     }
     else
     {
-        <button @attributes="PrimaryAttributes" type="@Type" class="@PrimaryCss" disabled="@Disabled"
-                aria-disabled="@(Disabled ? "true" : null)" @onclick="ClickAsync">@PrimaryContent</button>
+        <button @attributes="PrimaryAttributes" type="@Type" class="@PrimaryCss" disabled="@Unavailable"
+                aria-disabled="@(Unavailable ? "true" : null)" aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync">@PrimaryContent</button>
     }
-    <button @attributes="SecondaryAttributes" type="button" class="@SecondaryCss" disabled="@Disabled"
-            aria-disabled="@(Disabled ? "true" : null)" aria-label="@EffectiveSecondaryLabel"
-            aria-expanded="@(Expanded?.ToString().ToLowerInvariant())" aria-controls="@SecondaryControls" @onclick="SecondaryClickAsync">
-        @if (SecondaryContent is not null) { @SecondaryContent }
-        else if (SecondaryIcon is "arrow_drop_down" or "expand_more" or "arrow_right") { <ExpansionIndicator Expanded="@(Expanded == true)" /> }
-        else if (!string.IsNullOrWhiteSpace(SecondaryIcon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@SecondaryIcon" /> }
-    </button>
+    @if (MenuContent is not null && !Unavailable)
+    {
+        <DropdownSurface Class="f-split-button-menu" TriggerClass="@SecondaryCss" TriggerAttributes="@MenuTriggerAttributes">
+            <Trigger>@SecondaryContents</Trigger>
+            <ChildContent><div id="@MenuRegionId" class="f-split-button-menu-content">@MenuContent</div></ChildContent>
+        </DropdownSurface>
+    }
+    else
+    {
+        @* A disabled native summary cannot be enforced with a disabled attribute. Do not mount its menu. *@
+        <button @attributes="SecondaryAttributes" type="button" class="@SecondaryCss" disabled="@Unavailable"
+                aria-disabled="@(Unavailable ? "true" : null)" aria-busy="@(Busy ? "true" : "false")" aria-label="@EffectiveSecondaryLabel"
+                aria-expanded="@(MenuContent is null ? Expanded?.ToString().ToLowerInvariant() : null)"
+                aria-controls="@(MenuContent is null ? SecondaryControls : null)" @onclick="SecondaryClickAsync">@SecondaryContents</button>
+    }
 </div>
 
 @code {
     private string EffectiveSecondaryLabel => DefaultText(nameof(SecondaryLabel), SecondaryLabel, "Menu_MoreActions", "More actions");
+    private string EffectiveBusyLabel => DefaultText(nameof(BusyLabel), BusyLabel, "Button_Working", "Working…");
+    private readonly string GeneratedMenuId = "f-split-menu-" + Guid.NewGuid().ToString("N");
     [Parameter] public string? Href { get; set; }
     [Parameter] public string Text { get; set; } = string.Empty;
     [Parameter] public string? Icon { get; set; }
@@ -34,12 +44,20 @@
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public bool? Expanded { get; set; }
     [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public string BusyLabel { get; set; } = "Working...";
+    /// <summary>Uses the full parent width, taking precedence over Width without changing navigation-row sizing.</summary>
+    [Parameter] public bool FullWidth { get; set; }
+    /// <summary>Optional total width in pixels; must be positive even when FullWidth takes precedence.</summary>
+    [Parameter] public int? Width { get; set; }
     [Parameter] public bool Selected { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? PrimaryClass { get; set; }
     [Parameter] public string? SecondaryClass { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? SecondaryContent { get; set; }
+    /// <summary>Native details content. Cannot be combined with controlled Expanded or OnSecondaryClick; SecondaryControls maps to its real content ID.</summary>
+    [Parameter] public RenderFragment? MenuContent { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
     [Parameter] public EventCallback<MouseEventArgs> OnSecondaryClick { get; set; }
     [Parameter] public IReadOnlyDictionary<string, object>? PrimaryAttributes { get; set; }
@@ -48,14 +66,56 @@
     private string PrimaryCss => $"f-split-button-primary {PrimaryClass}{(Selected ? " is-selected" : null)}";
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
     private string SecondaryCss => $"f-split-button-secondary {SecondaryClass}{(Selected ? " is-selected" : null)}";
+    private bool Unavailable => Disabled || Busy;
+    private string? WidthStyle => !FullWidth && Width.HasValue ? FormattableString.Invariant($"width:{Width.Value}px") : null;
+    private string? AttributeControls => SecondaryAttributes?.FirstOrDefault(attribute => string.Equals(attribute.Key, "aria-controls", StringComparison.OrdinalIgnoreCase)).Value?.ToString();
+    private string MenuRegionId => !string.IsNullOrWhiteSpace(SecondaryControls) ? SecondaryControls
+        : !string.IsNullOrWhiteSpace(AttributeControls) ? AttributeControls : GeneratedMenuId;
+    private IReadOnlyDictionary<string, object> MenuTriggerAttributes
+    {
+        get
+        {
+            var attributes = SecondaryAttributes?.Where(attribute =>
+                !string.Equals(attribute.Key, "type", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(attribute.Key, "aria-label", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(attribute.Key, "aria-controls", StringComparison.OrdinalIgnoreCase))
+                .ToDictionary(attribute => attribute.Key, attribute => attribute.Value) ?? new Dictionary<string, object>();
+            attributes["aria-label"] = EffectiveSecondaryLabel;
+            attributes["aria-controls"] = MenuRegionId;
+            return attributes;
+        }
+    }
     private IReadOnlyDictionary<string, object>? LinkAttributes => PrimaryAttributes is null ? null
         : PrimaryAttributes.Where(attribute => !string.Equals(attribute.Key, "href", StringComparison.OrdinalIgnoreCase))
             .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
     private RenderFragment PrimaryContent => @<text>
-        @if (!string.IsNullOrWhiteSpace(Icon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" /> }
+        @if (Busy)
+        {
+            <span class="f-spinner" aria-hidden="true"></span>
+            <span class="f-busy-text f-sr-only" role="status">@EffectiveBusyLabel</span>
+        }
+        else if (!string.IsNullOrWhiteSpace(Icon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" /> }
         @if (!string.IsNullOrWhiteSpace(Text)) { <span class="f-split-button-label">@Text</span> }
         @ChildContent
     </text>;
-    private Task ClickAsync(MouseEventArgs args) => Disabled ? Task.CompletedTask : OnClick.InvokeAsync(args);
-    private Task SecondaryClickAsync(MouseEventArgs args) => Disabled ? Task.CompletedTask : OnSecondaryClick.InvokeAsync(args);
+    private RenderFragment SecondaryContents => @<text>
+        @if (SecondaryContent is not null) { @SecondaryContent }
+        else if (SecondaryIcon is "arrow_drop_down" or "expand_more" or "arrow_right") { <ExpansionIndicator Expanded="@(MenuContent is null && Expanded == true)" /> }
+        else if (!string.IsNullOrWhiteSpace(SecondaryIcon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@SecondaryIcon" /> }
+    </text>;
+    protected override void OnParametersSet()
+    {
+        if (Width is <= 0) throw new ArgumentOutOfRangeException(nameof(Width), "Split button width must be positive pixels.");
+        if (MenuContent is null) return;
+        if (Expanded.HasValue) throw new ArgumentException("Native MenuContent owns its expansion; omit Expanded.", nameof(Expanded));
+        if (OnSecondaryClick.HasDelegate) throw new ArgumentException("Native MenuContent owns the secondary action; omit OnSecondaryClick.", nameof(OnSecondaryClick));
+        if (SecondaryAttributes?.Keys.Any(key => string.Equals(key, "aria-expanded", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(key, "onclick", StringComparison.OrdinalIgnoreCase)) == true)
+            throw new ArgumentException("A native summary cannot combine static aria-expanded or an onclick handler with MenuContent.", nameof(SecondaryAttributes));
+        if (MenuRegionId.Any(char.IsWhiteSpace)) throw new ArgumentException("The native menu content requires one whitespace-free ID.", nameof(SecondaryControls));
+        if (!string.IsNullOrWhiteSpace(SecondaryControls) && !string.IsNullOrWhiteSpace(AttributeControls) && SecondaryControls != AttributeControls)
+            throw new ArgumentException("SecondaryAttributes aria-controls must match SecondaryControls.", nameof(SecondaryAttributes));
+    }
+    private Task ClickAsync(MouseEventArgs args) => Unavailable ? Task.CompletedTask : OnClick.InvokeAsync(args);
+    private Task SecondaryClickAsync(MouseEventArgs args) => Unavailable || MenuContent is not null ? Task.CompletedTask : OnSecondaryClick.InvokeAsync(args);
 }

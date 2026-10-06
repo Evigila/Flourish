@@ -224,6 +224,19 @@ internal static class ControlTextChecks
         new(typeof(ProgressRing), "Progress_Label", "Label", "Progress", new()),
         new(typeof(SplitButton), "Menu_MoreActions", "SecondaryLabel", "More actions", new()),
         new(typeof(SectionNavigator), "Shell_PageContents", "Label", "On this page", new() { ["ContentId"] = "content" }),
+        new(typeof(BackToTop), "Shell_Top", "Label", "Back to top", new() { ["ContentId"] = "content" }),
+        new(typeof(DataSearch<string>), "Table_SearchBy", null, null, new() { ["Columns"] = new TableColumn<string>[] { new("name", "Name", item => item) } }),
+        new(typeof(LineChart), "Chart_NoSeries", "EmptyText", "No series selected.", new() { ["Title"] = "Host chart" }),
+        new(typeof(LineChart), "Chart_Maximum", "MaximumLabel", "Maximum", new()
+        {
+            ["Title"] = "Host chart", ["Labels"] = new LineChart.PointLabel[] { new("one", "One") },
+            ["Series"] = new LineChart.DataSeries[] { new("one", "Host series", [1]) }
+        }),
+        new(typeof(LineChart), "Chart_Point", "PointCaption", "Point", new()
+        {
+            ["Title"] = "Host chart", ["Labels"] = new LineChart.PointLabel[] { new("one", "One") },
+            ["Series"] = new LineChart.DataSeries[] { new("one", "Host series", [1]) }
+        }),
         new(typeof(UniformGridButton), "Button_Working", "BusyLabel", "Working...", new() { ["Busy"] = true }),
         new(typeof(OfferStage), "Offer_PauseRotation", "PauseRotationLabel", "Pause rotation", new()),
         new(typeof(Field), "Input_Required", null, null, new() { ["Required"] = true, ["Id"] = "field", ["Label"] = "Host label" }),

@@ -7,62 +7,87 @@
 @typeparam TItem
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject ArkheideSystem.Flourish.Blazor.Abstract.ITablePreferences Preferences
 
-<div @ref="_root" class="f-data" aria-busy="@(Loading ? "true" : "false")">
+<div @ref="_root" class="f-data" aria-busy="@(Loading ? "true" : "false")" data-f-progressive="@(Progressive ? "true" : null)" data-f-instance="@(Progressive ? _instanceId : null)" data-f-initial-page-size="@(Progressive ? _pageSize : null)" data-f-culture="@(Progressive ? EffectiveCulture.Name : null)" data-f-range-format="@(Progressive ? EffectiveText.ItemRangeFormat : null)" data-f-items-label="@(Progressive ? EffectiveText.Items : null)" data-f-total-label="@(Progressive ? EffectiveText.Total : null)" data-f-empty-message="@(Progressive ? EmptyText : null)">
     @if (Searchable)
     {
-        <div class="f-data-search">
-            <label>
-                <span>@EffectiveText.SearchBy</span>
-                <select class="f-input f-select" value="@_searchColumn" @onchange="ChangeSearchColumn" aria-label="@EffectiveText.SearchBy">
-                    <option value="">@EffectiveText.AllColumns</option>
-                    @foreach (var column in Columns.Where(column => column.Searchable))
-                    {
-                        <option value="@column.Key">@column.Header</option>
-                    }
-                </select>
-            </label>
-            <label class="f-data-search-value">
-                <span>@SearchLabel</span>
-                <input type="search" value="@_query" @oninput="ChangeQuery" autocomplete="off" />
-            </label>
-        </div>
+        <ArkheideSystem.Flourish.Blazor.Components.DataSearch TItem="TItem" Columns="Columns" ColumnKey="@_searchColumn" Value="@_query" Changed="ChangeSearchAsync"
+                    Disabled="@(SearchDisabled || BulkEditing || EditingBusy)" Id="@SearchId" MaximumLength="SearchMaximumLength"
+                    IncludeAllColumns="@(SearchMode == TableSearchMode.Local)" Text="EffectiveText" ChildContent="SearchContent" />
     }
     <div class="f-data-toolbar">
         @if (ShowCounts)
         {
             <div class="f-data-page-group">@Pager()</div>
         }
+        @if (Purpose == TablePurpose.Registry)
+        {
         <div class="f-data-tools">
             <div class="f-data-view" role="group" aria-label="@EffectiveText.Display">
                 <button type="button" class="@(_view == TableView.Table ? "f-data-view-selected" : null)"
-                        aria-label="@EffectiveText.List" aria-pressed="@(_view == TableView.Table ? "true" : "false")" @onclick="() => ChangeView(TableView.Table)">
+                        aria-label="@EffectiveText.List" data-f-view="table" aria-pressed="@(_view == TableView.Table ? "true" : "false")" @onclick="() => ChangeView(TableView.Table)">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" /></svg>
                     @if (_view == TableView.Table) { <span>@EffectiveText.List</span> }
                 </button>
                 <button type="button" class="@(_view == TableView.Cards ? "f-data-view-selected" : null)"
-                        aria-label="@EffectiveText.Cards" aria-pressed="@(_view == TableView.Cards ? "true" : "false")" @onclick="() => ChangeView(TableView.Cards)">
+                        aria-label="@EffectiveText.Cards" data-f-view="cards" aria-pressed="@(_view == TableView.Cards ? "true" : "false")" @onclick="() => ChangeView(TableView.Cards)">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" fill="currentColor" /></svg>
                     @if (_view == TableView.Cards) { <span>@EffectiveText.Cards</span> }
                 </button>
             </div>
+            @if ((ShowSortControls || Progressive) && Columns.Any(column => column.Sortable))
+            {
+                <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Sort_Label", "Sorting"))">
+                    <ChildContent>
+                        <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-reset OnClick="_ => SetSortAsync(null)">@EffectiveText.SortDefault</Button>
+                        @foreach (var column in Columns.Where(column => column.Sortable))
+                        {
+                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" data-f-sort-direction="descending" OnClick="_ => SetSortAsync(column, TableSortDirection.Descending)">@column.Header: @EffectiveText.SortDescending</Button>
+                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" data-f-sort-direction="ascending" OnClick="_ => SetSortAsync(column, TableSortDirection.Ascending)">@column.Header: @EffectiveText.SortAscending</Button>
+                        }
+                    </ChildContent>
+                </ActionMenu>
+            }
+            @if (BulkEditRequested.HasDelegate || !string.IsNullOrWhiteSpace(SpreadsheetEditHref))
+            {
+                <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Table_AdvancedEdit", "Advanced editing"))">
+                    <ChildContent>
+                        @if (BulkEditRequested.HasDelegate)
+                        {
+                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" OnClick="BeginBulkEditAsync">@Texts.Get(new TextReference("Flourish", "Table_BulkEdit", "Bulk editing"))</Button>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(SpreadsheetEditHref))
+                        {
+                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Href="@SpreadsheetEditHref" Disabled="@(BulkEditing || EditingBusy)">@Texts.Get(new TextReference("Flourish", "Table_SpreadsheetEdit", "Edit in grid"))</Button>
+                        }
+                    </ChildContent>
+                </ActionMenu>
+            }
             <details class="f-data-display">
                 <summary class="f-dropdown-trigger" aria-controls="@($"{_instanceId}-display")">@EffectiveText.Display <ExpansionIndicator /></summary>
                 <div id="@($"{_instanceId}-display")" class="f-data-display-options f-dropdown-panel f-menu-panel" popover="manual">
-                    @foreach (var column in Columns)
+                    @foreach (var column in OrderedColumns)
                     {
+                        <div class="f-data-column-option" draggable="@(CanReorderColumn(column) ? "true" : "false")" @ondragstart="() => _draggingColumn = column.Key" @ondragend="() => _draggingColumn = null" @ondragover:preventDefault @ondrop="() => DropColumn(column.Key)">
                         <label class="f-dropdown-item @(!_hidden.Contains(column.Key) ? "is-selected" : null)">
                             <input type="checkbox" checked="@(!_hidden.Contains(column.Key))"
                                    data-f-display-column="@column.Key"
-                                   disabled="@(!column.CanHide || (!_hidden.Contains(column.Key) && _visibleColumns.Count == 1))"
+                                   data-f-fixed="@(!column.CanHide ? "true" : null)"
+                                   disabled="@(BulkEditing || EditingBusy || !column.CanHide || (!_hidden.Contains(column.Key) && _visibleColumns.Count == 1))"
                                    @onchange="() => ToggleColumn(column.Key)" />
                             <span>@column.Header</span>
                         </label>
+                        <Button Variant="ButtonVariant.Quiet" Class="f-data-reorder" Disabled="@(!CanReorderColumn(column))" data-f-reorder aria-label="@Texts.Get(new TextReference("Flourish", "Table_Reorder", "Reorder {0}"), column.Header)" @onkeydown="(KeyboardEventArgs args) => ReorderColumnWithKeyboard(column, args)"><span aria-hidden="true">↕</span></Button>
+                        </div>
                     }
                 </div>
             </details>
         </div>
+        }
     </div>
+    @if (BulkEditing && BulkEditActions is not null) { <div class="f-data-bulk-actions" aria-live="polite">@BulkEditActions</div> }
     @if (!string.IsNullOrWhiteSpace(Error))
     {
         <div class="f-data-status f-data-error" role="alert">@Error</div>
@@ -75,29 +100,34 @@
     {
         <div class="f-data-empty" role="status">@EmptyText</div>
     }
-    else if (_rows.Count > 0 && _view == TableView.Table)
+    else if (_rows.Count > 0 && (_view == TableView.Table || Purpose != TablePurpose.Registry || BulkEditing || Progressive))
     {
         <div class="f-data-scroll" tabindex="0" role="region" aria-label="@RecordsText">
             <table @ref="_table" class="f-data-table" data-f-table>
                 <caption class="f-data-sr-only">@RecordsText</caption>
                 <colgroup>
+                    @if (BulkEditing) { <col class="f-data-selection-column" /> }
                     @for (var i = 0; i < _visibleColumns.Count; i++)
                     {
                         var column = _visibleColumns[i];
-                        <col data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" />
+                        <col data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" style="@ColumnWidthStyle(column.Key)" />
                     }
                     <col class="f-data-spacer" />
                     @if (_hasActions) { <col class="f-data-action-column" /> }
                 </colgroup>
                 <thead>
                     <tr>
+                        @if (BulkEditing)
+                        {
+                            <th scope="col" class="f-data-selection"><StandaloneCheckBox WrapLabel="false" Value="@AllEditSelected" Disabled="@EditingBusy" aria-label="@Texts.Get(new TextReference("Flourish", "Table_SelectAllLoaded", "Select all loaded records"))" ValueChanged="_ => ToggleAllSelectionAsync()" /></th>
+                        }
                         @for (var i = 0; i < _visibleColumns.Count; i++)
                         {
                             var column = _visibleColumns[i];
                             <th scope="col" data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" aria-sort="@AriaSort(column)">
-                                @if (column.Sortable)
+                                @if (column.Sortable && Purpose == TablePurpose.Registry)
                                 {
-                                    <Button Variant="ButtonVariant.Quiet" Class="f-data-sort" title="@SortHint(column)" OnClick="@(_ => SortColumn(column))">
+                                    <Button Variant="ButtonVariant.Quiet" Class="f-data-sort" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" title="@SortHint(column)" OnClick="@(_ => SortColumn(column))">
                                         <span class="f-data-sort-label">
                                             <span class="f-data-sort-text" title="@column.Header">@column.Header</span>
                                         @if (_sortKey == column.Key && _sortDirection != TableSortDirection.Default)
@@ -113,7 +143,7 @@
                                 }
                                 <button class="f-data-resize" type="button" data-f-resize="@column.Key"
                                         role="slider" aria-orientation="horizontal" aria-label="@($"{EffectiveText.Width}: {column.Header}")"
-                                        aria-valuemin="72" aria-valuemax="100000" aria-valuenow="72"
+                                        aria-valuemin="72" aria-valuemax="100000" aria-valuenow="@(_manualWidths.TryGetValue(column.Key, out var manualWidth) ? manualWidth : 72)"
                                         title="@EffectiveText.ResizeHint" @onclick:stopPropagation="true"></button>
                             </th>
                         }
@@ -122,18 +152,31 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if (BulkEditing && BulkEditCell is not null)
+                    {
+                        <tr class="f-data-bulk-row">
+                            <td class="f-data-selection"><span class="f-data-sr-only">@Texts.Get(new TextReference("Flourish", "Table_BulkValues", "Values to apply to selected records"))</span></td>
+                            @foreach (var column in _visibleColumns) { <td data-f-column="@column.Key">@BulkEditCell(column)</td> }
+                            <td class="f-data-spacer" aria-hidden="true"></td>
+                            @if (_hasActions) { <td class="f-data-actions"></td> }
+                        </tr>
+                    }
                     @foreach (var row in _rows)
                     {
-                        <tr @key="row.Key" class="@(OnRowOpen.HasDelegate ? "f-data-openable" : null)" @ondblclick="() => Open(row.Item)">
+                        <tr @key="row.Key" hidden="@(!row.Visible)" class="@(row.CanOpen ? "f-data-openable" : null)" data-f-native-open="@(row.CanOpen && (RowActionsContent is not null || RowOpenHref is not null) ? "true" : null)" @ondblclick="() => Open(row.Item)">
+                            @if (BulkEditing)
+                            {
+                                <td class="f-data-selection"><StandaloneCheckBox WrapLabel="false" Value="@(IsSelectedForEditing?.Invoke(row.Item) == true)" Disabled="@EditingBusy" aria-label="@(EditSelectionLabel?.Invoke(row.Item) ?? row.Label)" ValueChanged="_ => ToggleSelectionAsync(row.Item)" /></td>
+                            }
                             @for (var i = 0; i < _visibleColumns.Count; i++)
                             {
-                                <td data-f-column="@_visibleColumns[i].Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)"><span class="f-data-cell" title="@row.Values[i]">@Shown(row.Values[i])</span></td>
+                                <td data-f-column="@_visibleColumns[i].Key" data-f-label="@_visibleColumns[i].Header" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)"><span class="f-data-cell" title="@row.Values[i]">@CellContent(row.Item, _visibleColumns[i], row.Values[i])</span></td>
                             }
                             <td class="f-data-spacer" aria-hidden="true"></td>
                             @if (_hasActions)
                             {
                                 <td class="f-data-actions" @ondblclick:stopPropagation="true">
-                                    @if (row.Actions.Count > 0) { <ActionMenu Label="@($"{EffectiveText.Actions}: {row.Label}")" Actions="@row.Actions" /> }
+                                    @RowActionsFor(row)
                                 </td>
                             }
                         </tr>
@@ -147,18 +190,20 @@
         <div class="f-data-cards" role="list" aria-label="@RecordsText">
             @foreach (var row in _rows)
             {
-                <article @key="row.Key" class="f-data-card @(OnRowOpen.HasDelegate ? "f-data-openable" : null)" role="listitem" @ondblclick="() => Open(row.Item)">
+                <article @key="row.Key" class="f-data-card @(row.CanOpen ? "f-data-openable" : null)" role="listitem" data-f-native-open="@(row.CanOpen && (RowActionsContent is not null || RowOpenHref is not null) ? "true" : null)" @ondblclick="() => Open(row.Item)">
                     <div class="f-data-card-values">
                         @for (var i = 0; i < _visibleColumns.Count; i++)
                         {
-                            <div class="f-data-card-value" title="@row.Values[i]">
-                                <span class="f-data-sr-only">@_visibleColumns[i].Header: </span>@Shown(row.Values[i])
+                            <div class="f-data-card-value f-data-card-@_visibleColumns[i].CardField.ToString().ToLowerInvariant()" title="@row.Values[i]">
+                                <span class="f-data-sr-only">@_visibleColumns[i].Header: </span>
+                                @if (_visibleColumns[i].CardField == TableCardField.Image && !_visibleColumns[i].UsesTemplate && !string.IsNullOrWhiteSpace(row.Values[i])) { <img src="@row.Values[i]" alt="" loading="lazy" /> }
+                                else { @CellContent(row.Item, _visibleColumns[i], row.Values[i]) }
                             </div>
                         }
                     </div>
-                    @if (row.Actions.Count > 0)
+                    @if (_hasActions && (row.Actions.Count > 0 || RowActionsContent is not null || row.CanOpen && RowOpenHref is not null))
                     {
-                        <div class="f-data-card-actions" @ondblclick:stopPropagation="true"><ActionMenu Label="@($"{EffectiveText.Actions}: {row.Label}")" Actions="@row.Actions" /></div>
+                        <div class="f-data-card-actions" @ondblclick:stopPropagation="true">@RowActionsFor(row)</div>
                     }
                 </article>
             }
@@ -175,11 +220,49 @@
     [Parameter, EditorRequired] public IReadOnlyList<TableColumn<TItem>> Columns { get; set; } = Array.Empty<TableColumn<TItem>>();
     [Parameter] public IReadOnlyList<RowAction<TItem>> Actions { get; set; } = Array.Empty<RowAction<TItem>>();
     [Parameter] public bool Searchable { get; set; } = true;
+    /// <summary>Remote mode forwards a controlled query without filtering the host's returned page a second time.</summary>
+    [Parameter] public TableSearchMode SearchMode { get; set; }
+    [Parameter] public string SearchQuery { get; set; } = string.Empty;
+    [Parameter] public string? SearchColumnKey { get; set; }
+    [Parameter] public EventCallback<TableSearchRequest> SearchChanged { get; set; }
+    [Parameter] public RenderFragment? SearchContent { get; set; }
+    [Parameter] public bool SearchDisabled { get; set; }
+    [Parameter] public string? SearchId { get; set; }
+    [Parameter] public int SearchMaximumLength { get; set; } = 200;
+    [Parameter] public RenderFragment<TableCellContext<TItem>>? CellTemplate { get; set; }
+    [Parameter] public object? PaginationResetKey { get; set; }
+    [Parameter] public bool IsLimited { get; set; }
+    [Parameter] public TablePurpose Purpose { get; set; } = TablePurpose.Registry;
+    [Parameter] public bool BulkEditing { get; set; }
+    [Parameter] public bool EditingBusy { get; set; }
+    [Parameter] public RenderFragment<TableColumn<TItem>>? BulkEditCell { get; set; }
+    [Parameter] public RenderFragment? BulkEditActions { get; set; }
+    [Parameter] public Func<TItem, bool>? IsSelectedForEditing { get; set; }
+    [Parameter] public Func<TItem, string>? EditSelectionLabel { get; set; }
+    [Parameter] public EventCallback<TItem> ToggleEditSelection { get; set; }
+    [Parameter] public EventCallback ToggleAllEditSelection { get; set; }
+    [Parameter] public bool AllEditSelected { get; set; }
+    [Parameter] public EventCallback BulkEditRequested { get; set; }
+    [Parameter] public string? SpreadsheetEditHref { get; set; }
+    [Parameter] public bool ShowSortControls { get; set; }
     [Parameter] public int PageSize { get; set; } = 10;
     [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
     [Parameter] public TableView View { get; set; } = TableView.Table;
     [Parameter] public EventCallback<TableView> ViewChanged { get; set; }
     [Parameter] public EventCallback<TItem> OnRowOpen { get; set; }
+    [Parameter] public bool ShowRowActions { get; set; } = true;
+    /// <summary>Optional genuine GET link, mutually exclusive with the row-open callback.</summary>
+    [Parameter] public Func<TItem, string?>? RowOpenHref { get; set; }
+    /// <summary>Declares opening through the unique native transport in RowActionsContent without inventing a callback or GET URL.</summary>
+    [Parameter] public bool NativeRowOpen { get; set; }
+    /// <summary>Standalone local directory enhanced from its already-authorized visible cell text, without serializing business records.</summary>
+    [Parameter] public bool Progressive { get; set; }
+    /// <summary>Limits the explicit opening action per row; does not grant business authorization.</summary>
+    [Parameter] public Func<TItem, bool>? RowOpenAvailable { get; set; }
+    /// <summary>Complete native row menu content. Replaces the generated menu, including its automatic Open item.</summary>
+    [Parameter] public RenderFragment<TItem>? RowActionsContent { get; set; }
+    /// <summary>Optional stable, nontranslated key for scoped sort preferences, not persistent business storage.</summary>
+    [Parameter] public string? PreferenceKey { get; set; }
     [Parameter] public Func<TItem, object>? ItemKey { get; set; }
     [Parameter] public Func<TItem, string>? RowLabel { get; set; }
     [Parameter] public CultureInfo Culture { get; set; } = CultureInfo.CurrentCulture;
@@ -221,6 +304,12 @@
     protected override void OnTextChanged() { localizedTableText = null; if (_initialized) Rebuild(); }
 
     private readonly HashSet<string> _hidden = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _knownColumns = new(StringComparer.Ordinal);
+    private readonly List<string> _columnOrder = [];
+    private string? _draggingColumn;
+    private object? _incomingResetKey;
+    private readonly Dictionary<string, double> _manualWidths = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, double?> _widthUpdates = new(StringComparer.Ordinal);
     private IReadOnlyList<TableColumn<TItem>> _visibleColumns = Array.Empty<TableColumn<TItem>>();
     private IReadOnlyList<TItem> _processed = Array.Empty<TItem>();
     private IReadOnlyList<RenderRow> _rows = Array.Empty<RenderRow>();
@@ -228,6 +317,7 @@
     private string _searchColumn = string.Empty;
     private string? _sortKey;
     private TableSortDirection _sortDirection;
+    private string? _restoredPreferenceKey;
     private TableView _view;
     private TableView _incomingView;
     private int _pageSize;
@@ -247,20 +337,98 @@
     private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;
     private int LastItem => (int)Math.Min((long)_page * _pageSize, _processed.Count);
     private string SearchLabel => Columns.FirstOrDefault(column => column.Key == _searchColumn)?.Header ?? EffectiveText.SearchContent;
+    private bool RetainsEditingRows => Purpose is TablePurpose.Pool or TablePurpose.Worklist;
+    private IReadOnlyList<TableColumn<TItem>> OrderedColumns => _columnOrder.Select(key => Columns.First(column => column.Key == key)).ToArray();
+    private bool CanReorderColumn(TableColumn<TItem> column) => Purpose == TablePurpose.Registry && _view == TableView.Table
+        && !BulkEditing && !EditingBusy && (column.CanReorder ?? column.CanHide);
+    private void MoveColumn(string sourceKey, string targetKey)
+    {
+        var moveable = OrderedColumns.Where(CanReorderColumn).Select(column => column.Key).ToList();
+        if (!moveable.Contains(sourceKey) || !moveable.Contains(targetKey)) return;
+        var targetIndex = moveable.IndexOf(targetKey);
+        moveable.Remove(sourceKey); moveable.Insert(targetIndex, sourceKey);
+        var slots = _columnOrder.Select((key, index) => (key, index)).Where(entry => moveable.Contains(entry.key)).Select(entry => entry.index).ToArray();
+        for (var index = 0; index < slots.Length; index++) _columnOrder[slots[index]] = moveable[index];
+        Rebuild();
+    }
+    private void DropColumn(string targetKey)
+    {
+        if (_draggingColumn is null) return;
+        MoveColumn(_draggingColumn, targetKey); _draggingColumn = null;
+    }
+    private void ReorderColumnWithKeyboard(TableColumn<TItem> column, KeyboardEventArgs args)
+    {
+        if (!CanReorderColumn(column) || args.Key is not ("ArrowUp" or "ArrowDown")) return;
+        var moveable = OrderedColumns.Where(CanReorderColumn).ToArray();
+        var index = Array.FindIndex(moveable, candidate => candidate.Key == column.Key);
+        var destination = index + (args.Key == "ArrowUp" ? -1 : 1);
+        if (destination < 0 || destination >= moveable.Length) return;
+        var first = _columnOrder.IndexOf(column.Key); var second = _columnOrder.IndexOf(moveable[destination].Key);
+        (_columnOrder[first], _columnOrder[second]) = (_columnOrder[second], _columnOrder[first]); Rebuild();
+    }
+    private Task ToggleSelectionAsync(TItem item) => EditingBusy ? Task.CompletedTask : ToggleEditSelection.InvokeAsync(item);
+    private Task ToggleAllSelectionAsync() => EditingBusy ? Task.CompletedTask : ToggleAllEditSelection.InvokeAsync();
+    private async Task BeginBulkEditAsync(MouseEventArgs _)
+    {
+        if (BulkEditing || EditingBusy) return;
+        await ChangeView(TableView.Table);
+        await BulkEditRequested.InvokeAsync();
+    }
+    private IReadOnlyList<MenuAction> SortActions => new[]
+        { new MenuAction(EffectiveText.SortDefault, () => SetSortAsync(null), BulkEditing || EditingBusy) }
+        .Concat(Columns.Where(column => column.Sortable).SelectMany(column => new[]
+        {
+            new MenuAction($"{column.Header}: {EffectiveText.SortDescending}", () => SetSortAsync(column, TableSortDirection.Descending), EditingBusy || BulkEditing),
+            new MenuAction($"{column.Header}: {EffectiveText.SortAscending}", () => SetSortAsync(column, TableSortDirection.Ascending), EditingBusy || BulkEditing)
+        })).ToArray();
+    private Task SetSortAsync(TableColumn<TItem>? column, TableSortDirection direction = TableSortDirection.Default)
+    {
+        if (BulkEditing || EditingBusy || Purpose != TablePurpose.Registry) return Task.CompletedTask;
+        _sortKey = column?.Key; _sortDirection = column is null ? TableSortDirection.Default : direction;
+        SaveSortPreference(); _page = 1; Rebuild();
+        return Task.CompletedTask;
+    }
+    private RenderFragment CellContent(TItem item, TableColumn<TItem> column, string text) => column.UsesTemplate && CellTemplate is not null
+        ? CellTemplate(new TableCellContext<TItem>(item, column, text)) : builder => builder.AddContent(0, Shown(text));
 
     protected override void OnParametersSet()
     {
         localizedTableText = null;
+        if (RowActionsContent is not null && Actions.Count > 0)
+            throw new InvalidOperationException("Provide either Actions or RowActionsContent, not both.");
+        if (RowOpenHref is not null && OnRowOpen.HasDelegate)
+            throw new InvalidOperationException("Provide either RowOpenHref or OnRowOpen, not both.");
+        if (NativeRowOpen && (RowActionsContent is null || OnRowOpen.HasDelegate || RowOpenHref is not null))
+            throw new InvalidOperationException("NativeRowOpen requires RowActionsContent and cannot be combined with OnRowOpen or RowOpenHref.");
+        if (Progressive && (Purpose != TablePurpose.Registry || BulkEditing || SearchMode != TableSearchMode.Local
+            || Columns.Any(column => !column.DefaultVisible && column.CanHide || column.SortValue is not null || column.SearchValue is not null)))
+            throw new InvalidOperationException("Progressive directories browse only already-visible presentation text; hidden defaults, independent search/sort values, remote requests and editing require the interactive table.");
         ArgumentOutOfRangeException.ThrowIfLessThan(PageSize, 1);
+        ArgumentOutOfRangeException.ThrowIfLessThan(SearchMaximumLength, 1);
+        if (!Enum.IsDefined(SearchMode)) throw new ArgumentOutOfRangeException(nameof(SearchMode));
+        if (!Enum.IsDefined(Purpose)) throw new ArgumentOutOfRangeException(nameof(Purpose));
         if (Columns.Select(column => column.Key).Distinct(StringComparer.Ordinal).Count() != Columns.Count
             || Columns.Any(column => string.IsNullOrWhiteSpace(column.Key)))
             throw new ArgumentException("Each column must have a nonempty unique key.", nameof(Columns));
         if (!_initialized || _incomingView != View) { _view = View; _incomingView = View; }
         if (!_initialized || _incomingPageSize != PageSize) { _pageSize = PageSize; _incomingPageSize = PageSize; }
+        if (_initialized && !Equals(_incomingResetKey, PaginationResetKey)) _page = 1;
+        _incomingResetKey = PaginationResetKey;
         _initialized = true;
+        _knownColumns.IntersectWith(Columns.Select(column => column.Key));
+        _columnOrder.RemoveAll(key => Columns.All(column => column.Key != key));
+        foreach (var column in Columns) if (!_columnOrder.Contains(column.Key, StringComparer.Ordinal)) _columnOrder.Add(column.Key);
+        foreach (var column in Columns)
+            if (_knownColumns.Add(column.Key) && !column.DefaultVisible && column.CanHide) _hidden.Add(column.Key);
+        if (SearchMode == TableSearchMode.Remote)
+        {
+            _query = SearchQuery;
+            _searchColumn = SearchColumnKey ?? string.Empty;
+        }
         _hidden.RemoveWhere(key => Columns.All(column => column.Key != key || !column.CanHide));
         if (!string.IsNullOrEmpty(_searchColumn) && Columns.All(column => column.Key != _searchColumn || !column.Searchable)) _searchColumn = string.Empty;
         if (_sortKey is not null && Columns.All(column => column.Key != _sortKey || !column.Sortable)) { _sortKey = null; _sortDirection = TableSortDirection.Default; }
+        RestoreSortPreference();
         Rebuild();
     }
 
@@ -272,6 +440,9 @@
             var activeModule = await GetModuleAsync();
             if (_disposed || activeModule is null) return;
             await activeModule.InvokeVoidAsync("synchronize", _root, _instanceId);
+            foreach (var (key, width) in _widthUpdates.ToArray())
+                await activeModule.InvokeVoidAsync("setColumnWidth", _root, _instanceId, key, width);
+            _widthUpdates.Clear();
             if (!_disposed) _resizeDirty = false;
         }
         catch (InvalidOperationException) { /* Prerendering has no browser; static widths remain usable. */ }
@@ -303,31 +474,123 @@
 
     private void Rebuild()
     {
-        _visibleColumns = Columns.Where(column => !_hidden.Contains(column.Key)).ToArray();
+        _visibleColumns = OrderedColumns.Where(column => Purpose != TablePurpose.Registry || !_hidden.Contains(column.Key)).ToArray();
         if (_visibleColumns.Count == 0 && Columns.Count > 0) { _hidden.Remove(Columns[0].Key); _visibleColumns = new[] { Columns[0] }; }
-        _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable ? _query : null, _searchColumn, EffectiveCulture),
-            Columns.FirstOrDefault(column => column.Key == _sortKey), _sortDirection, EffectiveCulture);
+        _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable && SearchMode == TableSearchMode.Local ? _query : null, _searchColumn, EffectiveCulture),
+            Purpose == TablePurpose.Registry ? Columns.FirstOrDefault(column => column.Key == _sortKey) : null, _sortDirection, EffectiveCulture);
         _page = TableData<TItem>.ClampPage(_page, _processed.Count, _pageSize);
         var offset = (_page - 1) * _pageSize;
-        _rows = _processed.Skip(offset).Take(_pageSize).Select((item, index) =>
+        var displayedItems = RetainsEditingRows || Progressive ? _processed : _processed.Skip(offset).Take(_pageSize);
+        _rows = displayedItems.Select((item, index) =>
         {
             var values = _visibleColumns.Select(column => TableData<TItem>.Display(item, column, EffectiveCulture)).ToArray();
             var label = RowLabel?.Invoke(item) ?? values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? Texts.Get(new TextReference("Flourish", "Table_Record", "Record {0}"), offset + index + 1);
+            var canOpen = CanOpen(item);
             var actions = Actions.Where(action => action.IsAvailable?.Invoke(item) != false)
                 .Select(action => new MenuAction(action.Label, () => action.OnClick(item), action.Disabled, action.Destructive)).ToList();
-            if (OnRowOpen.HasDelegate) actions.Insert(0, new MenuAction(EffectiveText.Open, () => OnRowOpen.InvokeAsync(item)));
-            return new RenderRow(item, ItemKey?.Invoke(item) ?? (object)(offset + index), values, actions, label);
+            if (canOpen && RowActionsContent is null && RowOpenHref is null) actions.Insert(0, new MenuAction(EffectiveText.Open, () => Open(item)));
+            var position = RetainsEditingRows || Progressive ? index : offset + index;
+            return new RenderRow(item, ItemKey?.Invoke(item) ?? (object)position, values, actions, label, canOpen,
+                Progressive || !RetainsEditingRows || position >= offset && position < offset + _pageSize);
         }).ToArray();
-        _hasActions = OnRowOpen.HasDelegate || Actions.Count > 0;
+        _hasActions = ShowRowActions && !BulkEditing && (OnRowOpen.HasDelegate || RowOpenHref is not null || Actions.Count > 0 || RowActionsContent is not null);
         _resizeDirty = true;
     }
 
-    private void ChangeQuery(ChangeEventArgs args) { _query = args.Value?.ToString() ?? string.Empty; _page = 1; Rebuild(); }
-    private void ChangeSearchColumn(ChangeEventArgs args) { _searchColumn = args.Value?.ToString() ?? string.Empty; _page = 1; Rebuild(); }
-    private void ToggleColumn(string key) { if (!_hidden.Add(key)) _hidden.Remove(key); Rebuild(); }
-    private async Task ChangeView(TableView view) { _view = view; Rebuild(); await ViewChanged.InvokeAsync(view); }
+    private RenderFragment RowActionsFor(RenderRow row) => builder =>
+    {
+        if (!_hasActions || RowActionsContent is null && row.Actions.Count == 0 && !(row.CanOpen && RowOpenHref is not null)) return;
+        builder.OpenComponent<ActionMenu>(0);
+        builder.AddAttribute(1, nameof(ActionMenu.Label), $"{EffectiveText.Actions}: {row.Label}");
+        if (RowActionsContent is not null)
+            builder.AddAttribute(2, nameof(ActionMenu.ChildContent), RowActionsContent(row.Item));
+        else if (RowOpenHref is not null)
+            builder.AddAttribute(2, nameof(ActionMenu.ChildContent), NativeLinkActions(row));
+        else
+            builder.AddAttribute(3, nameof(ActionMenu.Actions), row.Actions);
+        builder.CloseComponent();
+    };
+
+    private RenderFragment NativeLinkActions(RenderRow row) => @<text>
+        @if (row.CanOpen)
+        {
+            <Button Href="@RowOpenHref!(row.Item)" Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem" data-record-open>@EffectiveText.Open</Button>
+        }
+        @foreach (var action in row.Actions)
+        {
+            <Button Variant="@(action.Destructive ? ButtonVariant.Danger : ButtonVariant.Quiet)" Class="f-menu-item f-dropdown-item" role="menuitem" Disabled="@(action.Disabled || EditingBusy)" OnClick="_ => action.OnClick()">@action.Text</Button>
+        }
+    </text>;
+
+    private void RestoreSortPreference()
+    {
+        var key = string.IsNullOrWhiteSpace(PreferenceKey) ? null : PreferenceKey;
+        if (string.Equals(_restoredPreferenceKey, key, StringComparison.Ordinal))
+        {
+            if (key is not null && _sortKey is null) Preferences.RemoveSort(key);
+            return;
+        }
+        _restoredPreferenceKey = key;
+        _sortKey = null;
+        _sortDirection = TableSortDirection.Default;
+        if (key is null || !Preferences.TryGetSort(key, out var preference)) return;
+        if (Columns.Any(column => column.Key == preference.SortKey && column.Sortable))
+        {
+            _sortKey = preference.SortKey;
+            _sortDirection = preference.Descending ? TableSortDirection.Descending : TableSortDirection.Ascending;
+        }
+        else Preferences.RemoveSort(key);
+    }
+
+    private void SaveSortPreference()
+    {
+        if (string.IsNullOrWhiteSpace(PreferenceKey)) return;
+        if (_sortKey is null || _sortDirection == TableSortDirection.Default) Preferences.RemoveSort(PreferenceKey);
+        else Preferences.SetSort(PreferenceKey, new ArkheideSystem.Flourish.Blazor.Abstract.TableSortPreference(
+            _sortKey, _sortDirection == TableSortDirection.Descending));
+    }
+
+    private async Task ChangeQuery(ChangeEventArgs args)
+    {
+        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
+        var value = args.Value?.ToString() ?? string.Empty;
+        if (value.Length > SearchMaximumLength) value = value[..SearchMaximumLength];
+        _query = value; _page = 1;
+        if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(_searchColumn, value));
+        else Rebuild();
+    }
+    private async Task ChangeSearchAsync(TableSearchRequest request)
+    {
+        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
+        var key = request.ColumnKey ?? string.Empty;
+        if (SearchMode == TableSearchMode.Remote && string.IsNullOrEmpty(key)) return;
+        if (!string.IsNullOrEmpty(key) && Columns.All(column => column.Key != key || !column.Searchable)) return;
+        var query = request.Value ?? string.Empty;
+        if (query.Length > SearchMaximumLength) query = query[..SearchMaximumLength];
+        _searchColumn = key; _query = query; _page = 1;
+        if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(key, query));
+        else Rebuild();
+    }
+    private async Task ChangeSearchColumn(ChangeEventArgs args)
+    {
+        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
+        var key = args.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrEmpty(key) && Columns.All(column => column.Key != key || !column.Searchable)) return;
+        _searchColumn = key; _page = 1;
+        if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(key, _query));
+        else Rebuild();
+    }
+    private void ToggleColumn(string key)
+    {
+        var column = Columns.FirstOrDefault(candidate => candidate.Key == key);
+        if (BulkEditing || EditingBusy || Purpose != TablePurpose.Registry || column is null || !column.CanHide
+            || !_hidden.Contains(key) && _visibleColumns.Count <= 1) return;
+        if (!_hidden.Add(key)) _hidden.Remove(key); Rebuild();
+    }
+    private async Task ChangeView(TableView view) { if (EditingBusy || BulkEditing || !await CanLeavePageAsync()) return; _view = view; Rebuild(); await ViewChanged.InvokeAsync(view); }
     private void SortColumn(TableColumn<TItem> column)
     {
+        if (Purpose != TablePurpose.Registry || BulkEditing || EditingBusy) return;
         _sortDirection = _sortKey != column.Key ? TableSortDirection.Descending : _sortDirection switch
         {
             TableSortDirection.Descending => TableSortDirection.Ascending,
@@ -335,6 +598,7 @@
             _ => TableSortDirection.Descending
         };
         _sortKey = _sortDirection == TableSortDirection.Default ? null : column.Key;
+        SaveSortPreference();
         _page = 1;
         Rebuild();
     }
@@ -342,13 +606,43 @@
     private string SortHint(TableColumn<TItem> column) => _sortKey != column.Key || _sortDirection == TableSortDirection.Default
         ? $"{column.Header}: {EffectiveText.SortDescending}" : _sortDirection == TableSortDirection.Descending
             ? $"{column.Header}: {EffectiveText.SortAscending}" : $"{column.Header}: {EffectiveText.SortDefault}";
-    private Task Open(TItem item) => OnRowOpen.HasDelegate ? OnRowOpen.InvokeAsync(item) : Task.CompletedTask;
+    private bool CanOpen(TItem item) => ShowRowActions && !BulkEditing && !EditingBusy && RowOpenAvailable?.Invoke(item) != false
+        && (NativeRowOpen || OnRowOpen.HasDelegate || !string.IsNullOrWhiteSpace(RowOpenHref?.Invoke(item)));
+    private Task Open(TItem item)
+    {
+        if (!CanOpen(item)) return Task.CompletedTask;
+        if (RowOpenHref?.Invoke(item) is { Length: > 0 } href) { Navigation.NavigateTo(href); return Task.CompletedTask; }
+        return OnRowOpen.InvokeAsync(item);
+    }
     private static string Shown(string value) => string.IsNullOrEmpty(value) ? "—" : value;
-    private void MovePage(int page) { _page = TableData<TItem>.ClampPage(page, _processed.Count, _pageSize); Rebuild(); }
-    private void SetPage(ChangeEventArgs args) { if (int.TryParse(args.Value?.ToString(), out var page)) MovePage(page); }
+    public async Task<bool> CanLeavePageAsync()
+    {
+        if (_disposed || EditingBusy) return false;
+        return !RetainsEditingRows || _module is null || await _module.InvokeAsync<bool>("canChangePage", _root);
+    }
+    private string? ColumnWidthStyle(string key) => _manualWidths.TryGetValue(key, out var width)
+        ? FormattableString.Invariant($"width:{width}px") : null;
+    public Task SetColumnWidth(string key, double width) => InvokeAsync(() =>
+    {
+        if (_disposed || !double.IsFinite(width) || Columns.All(column => column.Key != key)) return;
+        var bounded = Math.Clamp(Math.Round(width), 72, 100000);
+        _manualWidths[key] = bounded; _widthUpdates[key] = bounded; _resizeDirty = true; StateHasChanged();
+    });
+    public Task ResetColumnWidth(string key) => InvokeAsync(() =>
+    {
+        if (_disposed || Columns.All(column => column.Key != key)) return;
+        _manualWidths.Remove(key); _widthUpdates[key] = null; _resizeDirty = true; StateHasChanged();
+    });
+    private async Task MovePage(int page)
+    {
+        if (!await CanLeavePageAsync()) return;
+        _page = TableData<TItem>.ClampPage(page, _processed.Count, _pageSize); Rebuild();
+    }
+    private Task SetPage(ChangeEventArgs args) => int.TryParse(args.Value?.ToString(), out var page) ? MovePage(page) : Task.CompletedTask;
     private async Task ChangePageSize(ChangeEventArgs args)
     {
         if (!int.TryParse(args.Value?.ToString(), out var pageSize) || pageSize < 1 || pageSize == _pageSize) return;
+        if (!await CanLeavePageAsync()) return;
         _pageSize = pageSize;
         _page = 1;
         Rebuild();
@@ -358,12 +652,12 @@
     private IEnumerable<int> PageSizes => new[] { 10, 20, 50, 100, _pageSize }.Distinct().Order();
 
     private RenderFragment Pager() => @<div class="f-data-pager-row">
-        <div class="f-data-count"><span>@string.Format(EffectiveCulture, EffectiveText.ItemRangeFormat, EffectiveText.Items, FirstItem, LastItem, EffectiveText.Total, _processed.Count)</span></div>
+        <div class="f-data-count"><span>@string.Format(EffectiveCulture, EffectiveText.ItemRangeFormat, EffectiveText.Items, FirstItem, LastItem, EffectiveText.Total, _processed.Count)</span>@if (IsLimited) { <span aria-label="@Texts.Get(new TextReference("Flourish", "Pager_Limited", "Loaded records; the complete result may contain more items."))">+</span> }</div>
         <div class="f-data-pager" role="group" aria-label="@EffectiveText.Page">
-            <button type="button" aria-label="@EffectiveText.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
-            <button type="button" aria-label="@EffectiveText.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
+            <button type="button" data-f-page-previous aria-label="@EffectiveText.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
+            <button type="button" data-f-page-next aria-label="@EffectiveText.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
             <span class="f-data-page-input"><input type="number" aria-label="@EffectiveText.Page" min="1" max="@PageCount" value="@_page" @onchange="SetPage" data-f-page /></span>
-            <span class="f-data-page-total">@EffectiveText.Of @PageCount</span>
+            <span class="f-data-page-total" data-f-page-prefix="@EffectiveText.Of">@EffectiveText.Of @PageCount</span>
         </div>
         <label class="f-data-page-size">
             <span>@EffectiveText.ItemsPerPage</span>
@@ -387,5 +681,5 @@
         finally { await ReleaseModuleAsync(activeModule); }
     }
 
-    private sealed record RenderRow(TItem Item, object Key, IReadOnlyList<string> Values, IReadOnlyList<MenuAction> Actions, string Label);
+    private sealed record RenderRow(TItem Item, object Key, IReadOnlyList<string> Values, IReadOnlyList<MenuAction> Actions, string Label, bool CanOpen, bool Visible = true);
 }

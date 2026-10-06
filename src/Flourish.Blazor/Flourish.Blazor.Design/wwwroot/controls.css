@@ -15,6 +15,9 @@
 .f-button-underline{padding-inline:0;border:0;border-bottom:1px solid transparent;border-radius:0;color:var(--f-accent-text);background:transparent}
 .f-button-underline:hover:not(:disabled):not([aria-disabled=true]){border-bottom-color:var(--f-border);background:transparent;text-decoration:none}
 .f-button-underline:active:not(:disabled):not([aria-disabled=true]){color:var(--f-text);border-bottom-color:var(--f-border);background:var(--f-target-click);text-decoration:none}
+/* Standard Underline's Primary footer context stays in the shared Button stylesheet. */
+.f-presentation-footer .f-button-underline { color:var(--f-primary-ink); }
+.f-presentation-footer .f-button-underline:active:not(:disabled):not([aria-disabled=true]) { color:var(--f-primary-ink); background:var(--f-primary-click); }
 .f-button-elevated{--f-target-preview:var(--f-surface-preview);--f-target-click:var(--f-surface-click);color:var(--f-text);background:var(--f-surface);box-shadow:var(--f-shadow-control)}
 .f-button-elevated:hover:not(:disabled):not([aria-disabled=true]){background:var(--f-target-preview)}
 .f-button-elevated:active:not(:disabled):not([aria-disabled=true]){background:var(--f-target-click)}

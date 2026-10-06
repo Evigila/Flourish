@@ -6,11 +6,11 @@
 @inject IAppearanceService Appearance
 
 <PageTitle>@Title · Gallery</PageTitle>
-<ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="true">
+<ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="true" Banner="true" Dotted="true">
     <AccessPanel Wide="AccountsPage" Emphasized="true" aria-labelledby="access-example-title">
         <Brand>
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="Lumen" ContextName="@Title"
-                TitleId="access-example-title" Description="@L(AccountsPage ? TextKey.Access_AccountsDescription : TextKey.Access_LoginDescription)" />
+            <LogoDisplayer ContextName="@Title"
+                TitleId="access-example-title" HeadingLevel="1" Description="@L(AccountsPage ? TextKey.Access_AccountsDescription : TextKey.Access_LoginDescription)" />
         </Brand>
         <ChildContent>
             <AccessFormSurface>
@@ -73,18 +73,29 @@
                     }
                     <form method="post" novalidate @onsubmit="SubmitAsync" @onsubmit:preventDefault aria-busy="@State.Busy.ToString().ToLowerInvariant()">
                         <AccessFormSurface>
-                            <Field Label="@L(TextKey.Display_Email)" Id="access-example-email" Required="true" Error="@EmailError">
-                                <StandaloneTextBox Id="access-example-email" Type="email" @bind-Value="State.Email" Disabled="LoginLocked" MaxLength="254" name="demo-email" autocomplete="off" />
-                            </Field>
-                            <Field Label="@L(TextKey.Display_Password)" Id="access-example-password" Required="true" Error="@PasswordError">
-                                <StandaloneTextBox Id="access-example-password" Type="password" @bind-Value="State.Password" Disabled="LoginLocked" MaxLength="120" name="demo-password" autocomplete="off" />
-                            </Field>
-                            <StandaloneCheckBox Label="@L(TextKey.Access_Remember)" @bind-Value="State.RememberEmail" Disabled="LoginLocked" />
-                            <Field Label="@L(TextKey.Access_Outcome)" Id="access-example-outcome">
-                                <StandaloneSelectBox TValue="AccessExampleOutcome" Id="access-example-outcome" @bind-Value="State.OutcomeChoice" Options="OutcomeOptions" Disabled="LoginLocked" />
-                            </Field>
-                            <Button Type="submit" Disabled="@(!Interactive)" Busy="State.Busy" BusyLabel="@L(TextKey.Access_Busy)">@L(TextKey.Display_Submit)</Button>
-                            <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" OnClick="ResetLogin">@L(TextKey.Access_Reset)</Button>
+                            <ChildContent>
+                                <Field Label="@L(TextKey.Display_Email)" Id="access-example-email" Required="true" Error="@EmailError">
+                                    <StandaloneTextBox Id="access-example-email" Type="email" @bind-Value="State.Email" Disabled="LoginLocked" MaxLength="254" name="demo-email" autocomplete="off" />
+                                </Field>
+                                <Field Label="@L(TextKey.Display_Password)" Id="access-example-password" Required="true" Error="@PasswordError">
+                                    <StandaloneTextBox Id="access-example-password" Type="password" @bind-Value="State.Password" Disabled="LoginLocked" MaxLength="120" name="demo-password" autocomplete="off" />
+                                </Field>
+                                <StandaloneCheckBox Label="@L(TextKey.Access_Remember)" @bind-Value="State.RememberEmail" Disabled="LoginLocked" />
+                                <Field Label="@L(TextKey.Access_Outcome)" Id="access-example-outcome">
+                                    <StandaloneSelectBox TValue="AccessExampleOutcome" Id="access-example-outcome" @bind-Value="State.OutcomeChoice" Options="OutcomeOptions" Disabled="LoginLocked" />
+                                </Field>
+                            </ChildContent>
+                            <Actions>
+                                <SplitButton Text="@L(TextKey.Display_Submit)" Type="submit" FullWidth="true" Disabled="@(!Interactive)"
+                                             Busy="State.Busy" BusyLabel="@L(TextKey.Access_Busy)" SecondaryLabel="@L(TextKey.Access_SubmitMenu)">
+                                    <MenuContent>
+                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RecoveryDemo)</Button>
+                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RegistrationDemo)</Button>
+                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access">@L(TextKey.Display_Back)</Button>
+                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" OnClick="ResetLogin">@L(TextKey.Access_Reset)</Button>
+                                    </MenuContent>
+                                </SplitButton>
+                            </Actions>
                         </AccessFormSurface>
                     </form>
                     @if (State.Result is { } result)
@@ -107,7 +118,10 @@
             {
                 <Button Variant="ButtonVariant.Underline" Href="/examples/display/accounts" Disabled="State.Busy">@L(TextKey.Nav_DisplayAccounts)</Button>
             }
-            <Button Variant="ButtonVariant.Underline" Href="/examples/display/access" Disabled="State.Busy">@L(TextKey.Display_Back)</Button>
+            else
+            {
+                <Button Variant="ButtonVariant.Underline" Href="/examples/display/access" Disabled="State.Busy">@L(TextKey.Display_Back)</Button>
+            }
         </Actions>
     </AccessPanel>
 </ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>

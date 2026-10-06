@@ -1,0 +1,25 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("LogoDisplayer")]
+@inherits LocalizedComponentBase
+
+@if (!Preview)
+{
+    <StandaloneCheckBox Label="@Explain("Show an explicit identity override", "显示显式身份覆盖")" @bind-Value="OverrideIdentity" />
+}
+<LogoDisplayer LogoPath="@(OverrideIdentity ? "gallery.svg" : null)"
+               ProjectName="@(OverrideIdentity ? Localization.Parse(TextKey.Display_DemoOnly) : null)"
+               ContextName="@Localization.Parse(TextKey.Nav_DisplayLogin)"
+               Description="@Localization.Parse(TextKey.Access_LoginDescription)" TitleId="@TitleId" HeadingLevel="2" />
+@if (!Preview)
+{
+    <p>@Explain("Omitting LogoPath and ProjectName uses ConfigureProject identity and refreshes its localized name. An explicit override belongs to this instance only. The logo, artistic name and description use library styles; no host skin is added.",
+        "省略 LogoPath 和 ProjectName 时使用 ConfigureProject 身份，并随语言刷新名称。显式覆盖仅作用于当前实例。Logo、艺术项目名与说明均使用库内样式，不添加宿主皮肤。")</p>
+    <Button Variant="ButtonVariant.Underline" Href="/examples/display/login">@Localization.Parse(TextKey.Nav_DisplayLogin)</Button>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool OverrideIdentity;
+    private readonly string TitleId = "logo-displayer-sample-" + Guid.NewGuid().ToString("N");
+    private string Explain(string english, string chinese) => Localization.Culture == "zh-CN" ? chinese : english;
+}

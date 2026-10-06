@@ -1,10 +1,6 @@
 .f-data { width:100%; min-width:0; color:var(--f-text); font:17px/1.5 var(--f-font); }
 .f-data *, .f-data *::before, .f-data *::after { box-sizing:border-box; }
 .f-data button, .f-data input, .f-data select, .f-data summary { font:inherit; }
-.f-data-search { display:flex; align-items:end; flex-wrap:wrap; gap:16px; margin-bottom:36px; }
-.f-data-search label { display:grid; flex:0 1 240px; gap:7px; min-width:0; font-weight:400; }
-.f-data-search .f-data-search-value { flex:1 1 360px; }
-.f-data-search input { width:100%; min-width:0; height:48px; padding:0 16px; border:1px solid var(--f-border); border-radius:12px; color:var(--f-text); background:var(--f-surface); }
 .f-data :is(button, input, select, summary):focus-visible, .f-data-scroll:focus-visible { outline:3px solid var(--f-accent); outline-offset:3px; }
 .f-data-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px 10px; flex-wrap:wrap; margin-bottom:14px; }
 .f-data-page-group, .f-data-tools, .f-data-pager-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-width:0; }
@@ -94,9 +90,13 @@
 .f-data-page-size select { width:max-content; min-width:88px; font-variant-numeric:tabular-nums; }
 .f-data-sr-only { position:absolute !important; width:1px !important; height:1px !important; padding:0 !important; margin:-1px !important; overflow:hidden !important; clip-path:inset(50%) !important; white-space:nowrap !important; border:0 !important; }
 @media (max-width: 760px) {
-    .f-data-search { align-items:stretch; flex-direction:column; }
-    .f-data-search label, .f-data-search .f-data-search-value { width:100%; flex:auto; }
     .f-data-tools { width:100%; }
     .f-data-toolbar { gap:16px; }
 }
 @media (prefers-reduced-motion: reduce) { .f-data * { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
+.f-data-card-value.f-data-card-title { font-weight:700; }
+.f-data-card-value.f-data-card-metric { font-variant-numeric:tabular-nums; }
+.f-data-progressive-cards .f-data-scroll { border:0; border-radius:0; background:transparent; }
+.f-data-progressive-cards .f-data-table tr { padding:24px; border:1px solid var(--f-border); border-radius:16px; background:var(--f-surface); }
+.f-data-progressive-cards .f-data-table td { border-bottom:0; background:transparent; box-shadow:none; }
+.f-data-progressive-cards .f-data-table td[data-f-column]::before { color:var(--f-muted); font-size:var(--f-small-size,14px); }

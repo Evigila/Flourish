@@ -1,0 +1,75 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@typeparam TItem
+
+<div @attributes="AdditionalAttributes" class="f-data-search @Class" @oninput:stopPropagation="true" @onchange:stopPropagation="true">
+    @if (SearchColumns.Count > 0)
+    {
+        <Field Id="@(FieldId + "-column")" Label="@SearchBy">
+            <StandaloneSelectBox TValue="string" Value="@(EffectiveColumnKey ?? string.Empty)" ValueChanged="ChangeColumnAsync"
+                                 Disabled="@Disabled" data-f-search-column aria-label="@SearchBy">
+                @if (IncludeAllColumns) { <option value="">@AllColumns</option> }
+                @foreach (var column in SearchColumns) { <option value="@column.Key">@column.Header</option> }
+            </StandaloneSelectBox>
+        </Field>
+        <Field Id="@FieldId" Label="@SearchLabel" Class="f-data-search-value">
+            <StandaloneTextBox Type="search" Value="@Value" ValueChanged="ChangeValueAsync" Disabled="@Disabled"
+                               MaxLength="@MaximumLength" autocomplete="off" data-f-search-query />
+        </Field>
+    }
+    @if (ChildContent is not null) { <div class="f-data-search-content">@ChildContent</div> }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<TableColumn<TItem>> Columns { get; set; } = [];
+    [Parameter] public string? ColumnKey { get; set; }
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<TableSearchRequest> Changed { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public int MaximumLength { get; set; } = 200;
+    [Parameter] public bool IncludeAllColumns { get; set; }
+    [Parameter] public TableText? Text { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private readonly string identifier = "data-search-" + Guid.NewGuid().ToString("N");
+    private string FieldId => Id ?? identifier;
+    private IReadOnlyList<TableColumn<TItem>> SearchColumns => Columns.Where(column => column.Searchable).ToArray();
+    private string SearchBy => Text?.SearchBy ?? Ui("Table_SearchBy", "Search by");
+    private string AllColumns => Text?.AllColumns ?? Ui("Table_AllColumns", "All columns");
+    private string ContentLabel => Text?.SearchContent ?? Ui("Table_SearchContent", "Content");
+    private string? EffectiveColumnKey => SearchColumns.FirstOrDefault(column => column.Key == ColumnKey)?.Key
+        ?? (IncludeAllColumns ? null : SearchColumns.FirstOrDefault()?.Key);
+    private string SearchLabel => SearchColumns.FirstOrDefault(column => column.Key == EffectiveColumnKey)?.Header ?? ContentLabel;
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Columns);
+        ArgumentOutOfRangeException.ThrowIfLessThan(MaximumLength, 1);
+        if (Id is not null && (string.IsNullOrWhiteSpace(Id) || Id.Any(char.IsWhiteSpace)))
+            throw new ArgumentException("Search fields require a valid HTML identifier.", nameof(Id));
+        if (Columns.Any(column => column is null || string.IsNullOrWhiteSpace(column.Key))
+            || Columns.Select(column => column.Key).Distinct(StringComparer.Ordinal).Count() != Columns.Count)
+            throw new ArgumentException("Each column must have a nonempty unique key.", nameof(Columns));
+    }
+    private Task ChangeColumnAsync(string? key)
+    {
+        if (Disabled || SearchColumns.Count == 0) return Task.CompletedTask;
+        var selected = string.IsNullOrEmpty(key) ? null : key;
+        if (selected is null ? !IncludeAllColumns : !SearchColumns.Any(column => column.Key == selected)) return Task.CompletedTask;
+        return Changed.InvokeAsync(new TableSearchRequest(selected, Value ?? string.Empty));
+    }
+    private Task ChangeValueAsync(string? value)
+    {
+        if (Disabled || SearchColumns.Count == 0) return Task.CompletedTask;
+        var query = value ?? string.Empty;
+        if (query.Length > MaximumLength)
+        {
+            var length = MaximumLength;
+            if (char.IsHighSurrogate(query[length - 1]) && char.IsLowSurrogate(query[length])) length--;
+            query = query[..length];
+        }
+        return Changed.InvokeAsync(new TableSearchRequest(EffectiveColumnKey, query));
+    }
+}

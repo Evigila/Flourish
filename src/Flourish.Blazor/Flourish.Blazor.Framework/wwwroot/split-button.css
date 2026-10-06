@@ -1,4 +1,16 @@
 .f-split-button { display:inline-flex; align-items:stretch; gap:3px; min-width:0; max-width:100%; vertical-align:middle; }
+.f-split-button-full-width { display:flex; width:100%; }
 .f-split-button-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-width:0; }
 .f-split-button-label { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .f-split-button-secondary { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+/* Navigation rows retain their existing 36px secondary controls and independent expansion. */
+.f-split-button:not(.f-secondary-row) > .f-split-button-primary { flex:1 1 auto; }
+.f-split-button:not(.f-secondary-row) > :is(.f-split-button-secondary,.f-split-button-menu) { flex:0 0 48px; width:48px; height:48px; box-sizing:border-box; }
+.f-split-button:not(.f-secondary-row) > .f-split-button-menu > summary { width:48px; height:48px; box-sizing:border-box; justify-content:center; }
+.f-split-button-menu { position:relative; }
+.f-split-button-menu > summary { list-style:none; }
+.f-split-button-menu > summary::-webkit-details-marker { display:none; }
+.f-split-button-menu > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; width:max-content; min-width:100%; max-width:min(90vw,36rem); z-index:40; }
+/* Native details do not set the interactive popover controller's data-f-open flag. */
+.f-split-button > .f-split-button-menu[open] > .f-menu-panel { display:block; }
+.f-split-button-menu-content { display:grid; min-width:0; gap:4px; }

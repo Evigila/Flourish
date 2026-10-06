@@ -1,0 +1,9 @@
+.f-line-chart { color:var(--f-text); }
+.f-line-chart-legend { font-size:var(--f-type-body,17px); }
+.f-line-chart-legend strong { font-weight:650; }
+.f-line-chart-grid { stroke:var(--f-border); opacity:1; }
+.f-line-chart [data-series="0"] { color:var(--f-primary); }
+.f-line-chart [data-series="1"] { color:var(--f-accent); }
+.f-line-chart [data-series="2"] { color:var(--f-info-text); }
+.f-line-chart [data-series="3"] { color:var(--f-danger); }
+.f-line-chart-labels,.f-line-chart-empty { color:var(--f-muted); }

@@ -2,31 +2,12 @@
 @inherits TextComponentBase
 @typeparam TItem
 
-<div class="data-search quick-filter-row form-controls">
-    @if (SearchColumns.Count > 0)
-    {
-        <label class="quick-filter-field search-column-field" for="@(FieldId + "-column")">@Ui("Table_SearchBy", "Search by")
-            <select class="f-input f-select" id="@(FieldId + "-column")" @bind:get="SelectedColumn.Key" @bind:set="ChangeColumnAsync"
-                    disabled="@Disabled" @onchange:stopPropagation @oninput:stopPropagation>
-                @foreach (var column in SearchColumns)
-                {
-                    <option value="@column.Key">@column.Label</option>
-                }
-            </select>
-        </label>
-        <label class="quick-filter-field search-value-field" for="@FieldId">@SelectedColumn.Label
-            <input id="@FieldId" type="search" @bind:get="Value" @bind:set="ChangeValueAsync" @bind:event="oninput" disabled="@Disabled"
-                   maxlength="@MaximumLength" autocomplete="off" @oninput:stopPropagation @onchange:stopPropagation />
-        </label>
-    }
-    @ChildContent
-</div>
+<ArkheideSystem.Flourish.Blazor.Components.DataSearch TItem="TItem" Columns="CanonicalColumns" ColumnKey="@ColumnKey" Value="@Value"
+    Changed="ForwardChangedAsync" Disabled="@Disabled" Id="@Id" MaximumLength="@MaximumLength" ChildContent="@ChildContent" />
 
 @code {
-    private readonly string Identifier = $"list-search-{Guid.NewGuid():N}";
-    private IReadOnlyList<DataColumn<TItem>> SearchColumns = [];
-    private DataColumn<TItem> SelectedColumn => SearchColumns.FirstOrDefault(column => column.Key == ColumnKey) ?? SearchColumns[0];
-    private string FieldId => Id ?? Identifier;
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.TableColumn<TItem>> CanonicalColumns => Columns.Select(column =>
+        new ArkheideSystem.Flourish.Blazor.Components.TableColumn<TItem>(column.Key, column.Label, item => column.Value(item), Searchable: column.CanSearch)).ToArray();
 
     [Parameter, EditorRequired] public IReadOnlyList<DataColumn<TItem>> Columns { get; set; } = [];
     [Parameter] public string? ColumnKey { get; set; }
@@ -37,14 +18,6 @@
     [Parameter] public int MaximumLength { get; set; } = 200;
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    protected override void OnParametersSet() => SearchColumns = Columns.Where(column => column.CanSearch).ToArray();
-
-    private Task ChangeColumnAsync(string key)
-    {
-        return Disabled || !SearchColumns.Any(column => column.Key == key) ? Task.CompletedTask
-            : Changed.InvokeAsync(new(key, Value));
-    }
-
-    private Task ChangeValueAsync(string value) => Disabled || SearchColumns.Count == 0 ? Task.CompletedTask
-        : Changed.InvokeAsync(new(SelectedColumn.Key, value));
+    private Task ForwardChangedAsync(ArkheideSystem.Flourish.Blazor.Components.TableSearchRequest request) =>
+        Changed.InvokeAsync(new DataSearchRequest(request.ColumnKey ?? string.Empty, request.Value));
 }

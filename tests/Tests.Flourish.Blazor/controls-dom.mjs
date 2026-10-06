@@ -133,6 +133,54 @@ check('Display outside interaction closes without taking focus and disposal remo
 
 const dataCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js',import.meta.url),'utf8');
 const dataApi=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace("'./controls.js'",JSON.stringify(controlsUrl))).toString('base64'));
+check('Progressive directory searches declared visible text with culture-aware accents and column boundaries',()=>{
+  const rows=[{index:0,cells:{name:'João',country:'Brasil'}},{index:1,cells:{name:'Ana',country:'Portugal'}}];
+  assert.deepEqual(dataApi.processDirectory(rows,'JOAO','name',null,false,'pt-BR'),[rows[0]]);
+  assert.deepEqual(dataApi.processDirectory(rows,'Portugal','name',null,false,'pt-BR'),[]);
+  assert.deepEqual(dataApi.processDirectory(rows,'Portugal','',null,false,'pt-BR'),[rows[1]]);
+});
+check('Progressive directory sorting is stable presentation-text sorting and reset retains rendered order',()=>{
+  const rows=[{index:0,cells:{name:'Água'}},{index:1,cells:{name:'agua'}},{index:2,cells:{name:'João'}}];
+  assert.deepEqual(dataApi.processDirectory(rows,'','','name',true,'pt-BR').map(row=>row.index),[2,0,1]);
+  assert.deepEqual(dataApi.processDirectory(rows,'','',null,false,'pt-BR'),rows);
+});
+function progressiveFixture(){
+  const root=new Node(),table=new Node(),body=new Node(),scroll=new Node();
+  root.dataset={fProgressive:'true',fInitialPageSize:'2',fCulture:'pt-BR',fItemsLabel:'Items',fTotalLabel:'Total',fRangeFormat:'{0} {1}-{2} / {3} {4}',fEmptyMessage:'None'};
+  const rows=['João','Ana','Carla'].map((name,index)=>{
+    const row=new Node(),cell=new Node();cell.dataset={fColumn:'name'};cell.querySelector=()=>({textContent:name});
+    row.querySelectorAll=selector=>selector==='td[data-f-column]'?[cell]:[];row.index=index;return row;
+  });
+  body.children=[...rows];body.querySelectorAll=()=>rows;
+  body.append=node=>{body.children=body.children.filter(child=>child!==node);body.children.push(node);};
+  table.querySelector=selector=>selector==='tbody'?body:null;table.querySelectorAll=()=>[];table.closest=()=>scroll;
+  scroll.after=node=>{root.empty=node;};
+  const page=new Node(),size=new Node(),previous=new Node(),next=new Node(),counter=new Node(),label=new Node();
+  page.dataset={};size.dataset={};counter.querySelector=()=>label;
+  root.querySelector=selector=>selector==='[data-f-table]'?table:null;
+  root.querySelectorAll=selector=>({'[data-f-search-column] option':[{value:'name'}],'[data-f-page]':[page],'[data-f-page-size]':[size],'[data-f-page-previous]':[previous],'[data-f-page-next]':[next],'.f-data-count':[counter]}[selector]??[]);
+  root.classList={add(){},remove(){},toggle(name,value){root.cards=value;}};
+  root.contains=node=>node===root||rows.includes(node);root.children=rows;
+  const target=(marker,value)=>{const node=new Node();node.dataset={};node.value=value;node.hasAttribute=name=>node.attrs.has(name);node.matches=selector=>selector===`[${marker}]`;node.closest=selector=>selector.includes(`[${marker}]`)?node:null;node.setAttribute(marker,'');return node;};
+  return{root,rows,body,page,label,next,query:target('data-f-search-query',''),view:target('data-f-view',''),sort:target('data-f-sort-key',''),nextTarget:target('data-f-page-next','')};
+}
+check('Progressive canonical directory pages searches sorts and switches cards on one retained DOM',()=>{
+  const f=progressiveFixture();dataApi.synchronize(f.root,'progressive-owned');
+  assert.deepEqual(f.rows.map(row=>row.hidden),[false,false,true]);assert.equal(f.label.textContent,'Items 1-2 / Total 3');
+  f.root.emit('click',{...event(''),target:f.nextTarget});assert.deepEqual(f.rows.map(row=>row.hidden),[true,true,false]);assert.equal(f.page.value,2);
+  f.query.value='joao';f.root.emit('input',{...event(''),target:f.query});assert.deepEqual(f.rows.map(row=>row.hidden),[false,true,true]);assert.equal(f.label.textContent,'Items 1-1 / Total 1');
+  f.query.value='';f.root.emit('input',{...event(''),target:f.query});f.sort.dataset.fSortKey='name';f.root.emit('click',{...event(''),target:f.sort});
+  assert.deepEqual(f.body.children.map(row=>row.index),[0,2,1]);
+  f.view.dataset.fView='cards';f.root.emit('click',{...event(''),target:f.view});assert.equal(f.root.cards,true);
+  assert.equal(new Set(f.body.children).size,3);assert.deepEqual([...f.rows].sort((a,b)=>a.index-b.index),f.rows);dataApi.detach('progressive-owned');
+});
+check('Progressive native POST action stays the same unique form after paging sorting and disposal',()=>{
+  const f=progressiveFixture(),form=new Node(),submitter=new Node(),surface=new Node();form.tagName='FORM';submitter.tagName='BUTTON';submitter.matches=()=>false;form.querySelectorAll=()=>[submitter];form.requestSubmit=value=>{assert.equal(value,submitter);form.submitted=(form.submitted??0)+1;};
+  f.rows[0].querySelectorAll=selector=>selector==='[data-record-open]'?[form]:selector==='td[data-f-column]'?[]:[];
+  surface.closest=selector=>selector.includes('f-data-openable')?f.rows[0]:null;
+  dataApi.synchronize(f.root,'progressive-post');f.root.emit('dblclick',{...event(''),target:surface});assert.equal(form.submitted,1);
+  assert.equal(new Set(f.body.children).size,3);dataApi.detach('progressive-post');assert.equal(f.root.events.get('dblclick').length,0);assert.equal(f.root.events.get('input').length,0);assert.equal(f.root.events.get('change').length,0);
+});
 const emptyDataRoot=new Node(),emptyDisclosure=new Node(),emptySummary=new Node(),emptyDisplayPanel=new Node();
 emptyDisclosure.children=[emptySummary,emptyDisplayPanel];emptyDisplayPanel.rect={width:200,height:100};emptyDisplayPanel.children=[new Node()];
 emptyDataRoot.querySelector=selector=>selector==='.f-data-display'?emptyDisclosure:null;
@@ -163,6 +211,84 @@ check('Older-browser display portals survive table rerenders and restore their n
     document.emit('pointerdown',{target:option});assert.equal(details.open,true);
     document.emit('pointerdown',{target:new Node()});assert.equal(details.open,false);assert.equal(details.children.includes(panel),true);assert.equal(document.body.children.includes(panel),false);
   } finally {dataApi.detach('legacy-data');document.body.append=originalAppend;}
+});
+
+function nativeDataFixture(kind='list') {
+  const root=new Node(),row=new Node(),target=new Node(),entry=new Node(),submitter=new Node();
+  root.children=[row];row.kind=kind;row.entries=[entry];row.nativeOpen=true;
+  row.querySelectorAll=selector=>selector==='[data-record-open]'?row.entries:[];
+  target.interactive=false;
+  target.closest=selector=>selector.startsWith('.f-data-actions')?(target.interactive?target:null)
+    :selector==='.f-data-openable[data-f-native-open="true"]'&&row.nativeOpen?row:null;
+  entry.tagName='A';entry.setAttribute('href','https://example.test/entry');entry.clicks=0;entry.submits=0;
+  entry.closest=selector=>selector==='[inert]'&&entry.inert?entry:null;
+  entry.click=()=>entry.clicks++;
+  submitter.matches=selector=>selector===':disabled'&&submitter.fieldsetDisabled===true;
+  submitter.closest=selector=>selector==='[inert]'&&submitter.inert?submitter:null;
+  entry.submitters=[submitter];entry.querySelectorAll=()=>entry.submitters;
+  entry.requestSubmit=button=>{assert.equal(button,submitter);entry.submits++;};
+  const emit=()=>{const click=event();click.target=target;root.emit('dblclick',click);return click;};
+  return {root,row,target,entry,submitter,emit};
+}
+check('Standard list and card rows synchronously activate the same unique native GET entry once',()=>{
+  for(const kind of ['list','cards']) {
+    const fixture=nativeDataFixture(kind),id=`native-get-${kind}`;
+    dataApi.synchronize(fixture.root,id);dataApi.synchronize(fixture.root,id);
+    assert.equal(fixture.root.events.get('dblclick').length,1);
+    assert.equal(fixture.root.eventOptions.get(fixture.root.events.get('dblclick')[0]),true);
+    const click=fixture.emit();assert.equal(click.propagationStopped,true);assert.equal(fixture.entry.clicks,1);
+    // Stopping propagation suppresses the later asynchronous row callback/new-tab duplicate.
+    let delayed=0;if(!click.propagationStopped)delayed++;assert.equal(delayed,0);dataApi.detach(id);
+  }
+});
+check('Standard native POST rows use the unique real submitter in list and cards',()=>{
+  for(const kind of ['list','cards']) {
+    const fixture=nativeDataFixture(kind),id=`native-post-${kind}`;fixture.entry.tagName='FORM';
+    dataApi.synchronize(fixture.root,id);assert.equal(fixture.emit().propagationStopped,true);
+    assert.equal(fixture.entry.submits,1);assert.equal(fixture.entry.clicks,0);dataApi.detach(id);
+  }
+});
+check('Missing or multiple native opening entries fail closed without a callback fallback',()=>{
+  const fixture=nativeDataFixture();dataApi.synchronize(fixture.root,'native-ambiguous');
+  fixture.row.entries=[];assert.equal(fixture.emit().propagationStopped,true);
+  fixture.row.entries=[fixture.entry,new Node()];assert.equal(fixture.emit().propagationStopped,true);
+  fixture.row.entries=[new Node()];assert.equal(fixture.emit().propagationStopped,true);
+  assert.equal(fixture.entry.clicks,0);assert.equal(fixture.entry.submits,0);dataApi.detach('native-ambiguous');
+});
+check('Disabled, busy, inert and href-less native links cannot be activated',()=>{
+  const fixture=nativeDataFixture();dataApi.synchronize(fixture.root,'native-unavailable-get');
+  fixture.entry.setAttribute('aria-disabled','true');fixture.emit();fixture.entry.removeAttribute('aria-disabled');
+  fixture.entry.setAttribute('aria-busy','true');fixture.emit();fixture.entry.removeAttribute('aria-busy');
+  fixture.entry.inert=true;fixture.emit();fixture.entry.inert=false;
+  fixture.entry.removeAttribute('href');fixture.emit();assert.equal(fixture.entry.clicks,0);dataApi.detach('native-unavailable-get');
+});
+check('Disabled, fieldset-disabled, busy and inert native POST submitters remain unavailable',()=>{
+  const fixture=nativeDataFixture();fixture.entry.tagName='FORM';dataApi.synchronize(fixture.root,'native-unavailable-post');
+  fixture.submitter.disabled=true;fixture.emit();fixture.submitter.disabled=false;
+  fixture.submitter.fieldsetDisabled=true;fixture.emit();fixture.submitter.fieldsetDisabled=false;
+  fixture.submitter.inert=true;fixture.emit();fixture.submitter.inert=false;
+  fixture.submitter.setAttribute('aria-disabled','true');fixture.emit();fixture.submitter.removeAttribute('aria-disabled');
+  fixture.submitter.setAttribute('aria-busy','true');fixture.emit();assert.equal(fixture.entry.submits,0);dataApi.detach('native-unavailable-post');
+});
+check('Native POST with no submitter or multiple submitters does not guess a default action',()=>{
+  const fixture=nativeDataFixture();fixture.entry.tagName='FORM';dataApi.synchronize(fixture.root,'native-submitters');
+  fixture.entry.submitters=[];assert.equal(fixture.emit().propagationStopped,true);
+  fixture.entry.submitters=[fixture.submitter,new Node()];assert.equal(fixture.emit().propagationStopped,true);
+  assert.equal(fixture.entry.submits,0);dataApi.detach('native-submitters');
+});
+check('Controls and non-opening or foreign rows do not trigger native double-click activation',()=>{
+  const fixture=nativeDataFixture();dataApi.synchronize(fixture.root,'native-source-guard');
+  fixture.target.interactive=true;assert.equal(fixture.emit().propagationStopped,false);fixture.target.interactive=false;
+  fixture.row.nativeOpen=false;assert.equal(fixture.emit().propagationStopped,false);fixture.row.nativeOpen=true;
+  fixture.root.children=[];assert.equal(fixture.emit().propagationStopped,false);
+  fixture.root.emit('dblclick',{target:{},stopPropagation(){throw new Error('A non-element source was handled.');}});
+  assert.equal(fixture.entry.clicks,0);dataApi.detach('native-source-guard');
+});
+check('Standard native activation listeners detach completely and reattach without duplication',()=>{
+  const fixture=nativeDataFixture();dataApi.synchronize(fixture.root,'native-disposal');dataApi.detach('native-disposal');
+  assert.equal(fixture.root.events.get('dblclick').length,0);fixture.emit();assert.equal(fixture.entry.clicks,0);
+  dataApi.synchronize(fixture.root,'native-disposal');assert.equal(fixture.root.events.get('dblclick').length,1);
+  fixture.emit();assert.equal(fixture.entry.clicks,1);dataApi.detach('native-disposal');
 });
 
 const opener=new Node(),dialog=new Node(),close=new Node(),last=new Node();dialog.id='dialog-test';dialog.children=[close,last];
@@ -224,5 +350,84 @@ check('Mask formatting precedes bound event reads and keeps a normalized mid-tex
   const handler=document.events.get('input').at(-1);assert.equal(document.eventOptions.get(handler).capture,true);
   document.emit('input',{target:input});assert.equal(input.value,'AB-12');assert.equal(input.selectionStart,5);assert.equal(input.selectionEnd,5);
   input.value='AB-12x3';input.selectionStart=6;document.emit('input',{target:input});assert.equal(input.value,'AB-123');assert.equal(input.selectionStart,5);
+});
+check('Progressive column dragging has the same bidirectional move and fixed-slot contract',()=>{
+  const f=progressiveFixture(),parent=new Node(),group=new Node(),spacer=new Node();
+  const keys=['name','fixed','code','detail'];
+  const options=keys.map(key=>{
+    const option=new Node(),handle=new Node(),input=new Node();handle.disabled=key==='fixed';input.dataset={fDisplayColumn:key};
+    option.key=key;option.parentElement=parent;option.closest=()=>option;
+    option.querySelector=selector=>selector==='[data-f-reorder]'?handle:selector==='[data-f-display-column]'?input:null;return option;
+  });
+  parent.children=[...options];parent.append=option=>{parent.children=parent.children.filter(child=>child!==option);parent.children.push(option);};
+  group.children=[...keys.map(key=>{const col=new Node();col.dataset={fColumn:key};return col;}),spacer];
+  group.querySelector=()=>spacer;group.insertBefore=(cell,before)=>{group.children=group.children.filter(child=>child!==cell);group.children.splice(group.children.indexOf(before),0,cell);};
+  const rootAll=f.root.querySelectorAll;
+  f.root.querySelectorAll=selector=>selector==='.f-data-column-option'?parent.children:rootAll(selector);
+  const table=f.root.querySelector('[data-f-table]'),tableQuery=table.querySelector;
+  table.querySelector=selector=>selector==='colgroup'?group:tableQuery(selector);
+  dataApi.synchronize(f.root,'progressive-order');
+  const drag=(source,target)=>{f.root.emit('dragstart',{target:source});f.root.emit('drop',{...event(''),target});};
+  drag(options[0],options[3]);
+  assert.deepEqual(parent.children.map(option=>option.key),['code','fixed','detail','name']);
+  assert.deepEqual(group.children.filter(col=>col.dataset).map(col=>col.dataset.fColumn),['code','fixed','detail','name']);
+  drag(options[0],options[2]);
+  assert.deepEqual(parent.children.map(option=>option.key),keys);
+  drag(options[0],options[1]);assert.deepEqual(parent.children.map(option=>option.key),keys);
+  dataApi.detach('progressive-order');
+});
+function measuredTableFixture() {
+  const root=new Node(),table=new Node(),action=new Node();
+  const cols=['name','code'].map(key=>{const col=new Node();col.dataset={fColumn:key};return col;});
+  cols[1].dataset.fLastColumn='true';action.rect.width=80;
+  const handles=cols.map(col=>{const button=new Node();button.dataset={fResize:col.dataset.fColumn};button.rect.width=8;return button;});
+  const texts=cols.map(()=>{const text=new Node();text.textContent='x'.repeat(80);return text;});
+  const cells=cols.map((col,index)=>{const cell=new Node();cell.dataset={fColumn:col.dataset.fColumn};cell.querySelector=selector=>selector==='[data-f-resize]'?handles[index]:texts[index];return cell;});
+  table.querySelectorAll=selector=>selector==='col[data-f-column]'?cols:selector==='th[data-f-column],td[data-f-column]'?cells:selector==='[data-f-resize]'?handles:[];
+  table.querySelector=selector=>selector==='th.f-data-actions'?action:null;
+  root.querySelector=selector=>selector==='[data-f-table]'?table:null;root.dataset={};
+  return {root,table,cols,handles,texts};
+}
+check('Canonical widths measure content with a nonfinal cap and uncapped final column',()=>{
+  const f=measuredTableFixture();dataApi.synchronize(f.root,'measurement');
+  assert.equal(f.cols[0].style.width,'320px');assert.equal(f.cols[1].style.width,'728px');
+  assert.equal(f.handles[0].getAttribute('aria-valuenow'),'320');assert.equal(f.handles[1].getAttribute('aria-valuenow'),'728');
+  assert.equal(f.table.style.minWidth,'1128px');dataApi.detach('measurement');
+});
+check('Manual widths survive measurements, reject invalid values, reset naturally and are instance-local',()=>{
+  const first=measuredTableFixture(),second=measuredTableFixture();
+  dataApi.synchronize(first.root,'first-width');dataApi.setColumnWidth(first.root,'first-width','name',450);
+  first.texts[0].textContent='short';dataApi.synchronize(first.root,'first-width');
+  assert.equal(first.cols[0].style.width,'450px');assert.equal(first.handles[0].getAttribute('aria-valuenow'),'450');
+  dataApi.setColumnWidth(first.root,'first-width','name',NaN);dataApi.setColumnWidth(first.root,'first-width','unknown',200);
+  assert.equal(first.cols[0].style.width,'450px');
+  dataApi.synchronize(second.root,'second-width');assert.equal(second.cols[0].style.width,'320px');
+  dataApi.setColumnWidth(first.root,'first-width','name',null);assert.equal(first.cols[0].style.width,'72px');
+  assert.equal(first.handles[0].getAttribute('aria-valuenow'),'72');dataApi.detach('first-width');dataApi.detach('second-width');
+});
+check('Declared hidden column widths are cached without accepting absent unknown keys',()=>{
+  const f=measuredTableFixture();
+  const choices=f.cols.map(col=>({dataset:{fDisplayColumn:col.dataset.fColumn}}));
+  f.root.querySelectorAll=selector=>selector==='[data-f-display-column]'?choices:[];
+  dataApi.synchronize(f.root,'hidden-width');f.cols[0].hidden=true;
+  dataApi.setColumnWidth(f.root,'hidden-width','name',487);dataApi.setColumnWidth(f.root,'hidden-width','unknown',777);
+  f.cols[0].hidden=false;
+  const unknown=new Node();unknown.dataset={fColumn:'unknown'};f.cols.push(unknown);choices.push({dataset:{fDisplayColumn:'unknown'}});
+  dataApi.synchronize(f.root,'hidden-width');
+  assert.equal(f.cols[0].style.width,'487px');assert.equal(f.handles[0].getAttribute('aria-valuenow'),'487');
+  assert.equal(unknown.style.width,'72px');dataApi.detach('hidden-width');
+});
+check('Cards can set and reset declared widths before returning to the table without accepting unknown keys',()=>{
+  const f=measuredTableFixture(),choices=f.cols.map(col=>({dataset:{fDisplayColumn:col.dataset.fColumn}}));
+  f.root.querySelectorAll=selector=>selector==='[data-f-display-column]'?choices:[];
+  dataApi.synchronize(f.root,'cards-width');
+  const originalQuery=f.root.querySelector;f.root.querySelector=()=>null;
+  dataApi.setColumnWidth(f.root,'cards-width','name',451);dataApi.setColumnWidth(f.root,'cards-width','code',511);
+  dataApi.setColumnWidth(f.root,'cards-width','code',Infinity);dataApi.setColumnWidth(f.root,'cards-width','unknown',900);
+  dataApi.setColumnWidth(f.root,'cards-width','name',null);
+  f.root.querySelector=originalQuery;const unknown=new Node();unknown.dataset={fColumn:'unknown'};
+  f.cols.push(unknown);choices.push({dataset:{fDisplayColumn:'unknown'}});dataApi.synchronize(f.root,'cards-width');
+  assert.equal(f.cols[0].style.width,'320px');assert.equal(f.cols[1].style.width,'511px');
+  assert.equal(f.handles[1].getAttribute('aria-valuenow'),'511');assert.equal(unknown.style.width,'72px');dataApi.detach('cards-width');
 });
 process.stdout.write(`${count}/${count} mocked DOM checks passed.\n`);

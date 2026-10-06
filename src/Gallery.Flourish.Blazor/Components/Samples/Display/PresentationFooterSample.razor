@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("PresentationFooter")]
-<PresentationFooter BrandName="Lumen" Watermark="Lumen" Copyright="虚构展示品牌 · 非商业服务">
-    <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display">展示目录</Button></Actions>
+<PresentationFooter Copyright="虚构展示声明 · 版权由宿主设置，标题与水印自动跟随项目名">
+    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示目录</Button></Actions>
 </PresentationFooter>
 @code {
     [Parameter] public bool Preview { get; set; }

@@ -1,12 +1,23 @@
 /* Display composition shares existing controls; this file owns layout and progressive enhancement only. */
 .f-content-container { box-sizing:border-box; width:100%; max-width:var(--f-content-width,1180px); min-width:0; margin-inline:auto; padding-inline:24px; }
+/* Keep native vertical document scrolling, but suppress the root's boundary bounce/pull. */
+html:has(.f-document-surface,main.access-surface,.f-access-document), body:has(.f-document-surface,main.access-surface,.f-access-document) { overscroll-behavior-y:none; }
 .content-surface.f-document-surface { display:flex; height:auto; min-height:100dvh; flex-direction:column; overflow:visible; }
 .f-document-surface-header { position:sticky; top:0; z-index:50; flex:0 0 auto; }
 .content-surface.f-document-surface > .content-stage { flex:1 0 auto; overflow:visible; overscroll-behavior:auto; }
 .f-document-surface .f-page-body.f-page-full { min-height:0; padding:0; }
-.f-presentation-band { box-sizing:border-box; width:100%; }
-.f-presentation-band-heading { display:flex; flex-direction:column; align-items:center; text-align:center; }
-.f-presentation-hero .f-content-container { display:grid; align-content:center; min-height:min(580px,calc(100dvh - 260px)); }
+/* Website page titles stay in document flow; only the top bar owns sticky chrome. */
+.f-document-surface .f-page-heading { position:static; }
+.f-document-surface .f-page-body.f-page-full > .f-page-heading { padding-inline:max(24px,calc((100% - var(--f-content-width,1180px))/2 + 24px)); }
+.f-presentation-band { box-sizing:border-box; display:flex; align-items:center; width:100%; min-width:0; min-height:var(--f-band-min-height,450px); }
+.f-presentation-band.f-presentation-fullheight { min-height:max(100dvh,var(--f-band-min-height,450px)); }
+.f-access-document { margin:0; min-width:0; }
+body:has(.f-access-document) { margin:0; }
+.f-logo-displayer { display:grid; justify-items:center; gap:24px; min-width:0; text-align:center; }
+.f-logo-displayer-logo { display:block; width:96px; height:96px; object-fit:contain; }
+.f-logo-displayer-title { display:grid; min-width:0; }
+.f-presentation-band-heading { display:flex; flex-direction:column; align-items:flex-start; text-align:start; }
+.f-presentation-hero-content { display:grid; min-width:0; align-content:center; gap:40px; }
 .f-presentation-hero-actions { display:flex; flex-wrap:wrap; align-items:center; }
 .f-presentation-footer { position:relative; flex:0 0 auto; overflow:hidden; isolation:isolate; }
 .f-presentation-watermark { position:absolute; z-index:0; white-space:nowrap; pointer-events:none; }
@@ -22,6 +33,7 @@
 .f-access-panel { box-sizing:border-box; width:min(100%,560px); min-width:0; margin-inline:auto; }
 .f-access-panel-wide { width:min(100%,960px); }
 .f-access-form-surface { box-sizing:border-box; display:grid; width:100%; gap:16px; }
+.f-access-form-actions { display:grid; min-width:0; margin-top:16px; }
 .f-access-form-surface > form { display:grid; min-width:0; gap:16px; }
 .f-access-actions { display:flex; flex-wrap:wrap; align-items:center; }
 @media(min-width:1100px) and (prefers-reduced-motion:no-preference) {
@@ -44,5 +56,15 @@
 @media(max-width:600px) { .f-offer-stage { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:560px) {
  .f-content-container { padding-inline:18px; }
- .f-presentation-hero .f-content-container { min-height:460px; }
+ .f-document-surface .f-page-body.f-page-full > .f-page-heading { padding-inline:18px; }
+}
+
+/* Prominent is a layout variant of Card, not an additional renderer or fixed-height preview. */
+.f-card.f-card-prominent { box-sizing:border-box; display:flex; align-items:center; width:100%; min-width:0; min-height:260px; gap:32px; }
+.f-card-prominent > .f-card-prominent-actions { display:flex; flex:0 1 240px; flex-direction:column; align-items:flex-start; min-width:0; max-width:100%; gap:12px; }
+.f-card-prominent > .f-card-prominent-copy { display:grid; flex:1 1 0; min-width:0; gap:16px; overflow-wrap:anywhere; }
+.f-card-prominent-actions > .f-button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+@media(max-width:760px) {
+ .f-card.f-card-prominent { flex-direction:column; align-items:stretch; }
+ .f-card-prominent > .f-card-prominent-actions { flex:0 1 auto; }
 }

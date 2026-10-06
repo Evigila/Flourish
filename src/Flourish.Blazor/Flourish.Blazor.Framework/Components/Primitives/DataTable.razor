@@ -10,7 +10,7 @@
 <div @ref="GridRoot" class="data-grid" style="@CardValueStyle">
     @if (ShowSearch && Columns.Any(column => column.CanSearch))
     {
-        <DataSearch TItem="TItem" Columns="Columns" ColumnKey="@LocalSearchColumn" Value="@LocalSearchText"
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataSearch TItem="TItem" Columns="Columns" ColumnKey="@LocalSearchColumn" Value="@LocalSearchText"
                              Changed="ChangeLocalSearchAsync" Disabled="@(BulkEditing || EditingBusy)" />
     }
     <div class="table-column-tools">
