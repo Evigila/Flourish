@@ -18,47 +18,39 @@ internal static class ControlTextChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
-        tests.Add(("primitive table SSR emits explicit pressed states for sort and keyboard reorder controls", async () =>
+        tests.Add(("canonical table exposes header sorting and whole Display rows without legacy controllers", async () =>
         {
             using var services = Services();
             using var scope = services.CreateScope();
             var activator = scope.ServiceProvider.GetRequiredService<CaptureActivator>();
             await using var renderer = Renderer(scope);
-            Primitive.DataColumn<string> name = new("name", "Name", item => item);
-            Primitive.DataColumn<string> hidden = new("hidden", "Hidden", item => item, defaultVisible: false);
-            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<Primitive.DataTable<string>>(
+            TableColumn<string> name = new("name", "Name", item => item);
+            TableColumn<string> hidden = new("hidden", "Hidden", item => item, DefaultVisible: false);
+            var output = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<DataTable<string>>(
                 ParameterView.FromDictionary(new Dictionary<string, object?>
                 {
                     ["PreferenceKey"] = "aria.ssr", ["Items"] = new[] { "Record" },
-                    ["Columns"] = new[] { name, hidden }, ["ShowSortControls"] = true, ["CardValueLines"] = 2
+                    ["Columns"] = new[] { name, hidden }
                 })));
-            var table = activator.Components.OfType<Primitive.DataTable<string>>().Single();
-            await renderer.Dispatcher.InvokeAsync(() =>
+            var table = activator.Components.OfType<DataTable<string>>().Single();
+            await renderer.Dispatcher.InvokeAsync(async () =>
             {
                 var html = output.ToHtmlString();
-                Require(System.Text.RegularExpressions.Regex.Matches(html, "aria-pressed=\"(?:true|false)\"").Count == 7,
-                    "SSR must emit a valid true/false pressed state for every sort and reorder choice.");
-                Require(html.Contains("--f-card-value-lines:2;--f-card-value-height:48px", StringComparison.Ordinal),
-                    "A host's explicit two-line card geometry was lost.");
-                  Require(System.Text.RegularExpressions.Regex.Matches(html, "data-page-controls").Count == 2,
-                      "Table pagination must expose synchronized controls above and below the records.");
-                  var ranges = System.Text.RegularExpressions.Regex.Matches(html, @"<span\b[^>]*\sdata-page-range(?:\s|>)[^>]*>");
-                  Require(ranges.Count == 1 && ranges[0].Value.Contains("aria-live=\"polite\"", StringComparison.Ordinal)
-                      && html.IndexOf(" data-page-range", StringComparison.Ordinal)
-                          < html.IndexOf("data-table-pagination-bottom", StringComparison.Ordinal),
-                      "Only the upper pager may announce the range; the lower pager must not duplicate its live region.");
-                table.GetType().GetMethod("SetSortKey", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, ["hidden"]);
+                Require(!html.Contains("data-table-sort-controls", StringComparison.Ordinal)
+                    && !html.Contains("column-drag-handle", StringComparison.Ordinal), "A retired sort controller or reorder handle survived.");
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "f-data-pager-row").Count == 2,
+                    "The canonical table lost its synchronized upper and lower pager.");
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "draggable=\"true\"").Count == 2,
+                    "Display entries must themselves be draggable.");
+                table.GetType().GetMethod("SortColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, [name]);
+                typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, null);
+                Require(output.ToHtmlString().Contains("aria-sort=\"descending\"", StringComparison.Ordinal),
+                    "The actual header did not announce its first sorting state.");
+                await activator.Components.OfType<MultiSelectBox>().Single().ApplyAsync(["hidden","name"],["name"]);
                 typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, null);
                 html = output.ToHtmlString();
-                Require(System.Text.RegularExpressions.Regex.IsMatch(html, "<button[^>]*aria-pressed=\"true\"[^>]*>Hidden</button>"),
-                    "Selecting a hidden sort target must expose its pressed state to assistive technology.");
-                table.GetType().GetMethod("ReorderColumnWithKeyboard", BindingFlags.Instance | BindingFlags.NonPublic)!
-                    .Invoke(table, [new KeyboardEventArgs { Key = " " }, name]);
-                typeof(ComponentBase).GetMethod("StateHasChanged", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(table, null);
-                html = output.ToHtmlString();
-                var handles = System.Text.RegularExpressions.Regex.Matches(html, "<button[^>]*column-drag-handle[^>]*>");
-                Require(handles[0].Value.Contains("aria-pressed=\"true\"", StringComparison.Ordinal),
-                    "Keyboard reorder activation must emit an explicit pressed state.");
+                Require(html.IndexOf("data-f-selection-key=\"hidden\"", StringComparison.Ordinal)
+                    < html.IndexOf("data-f-selection-key=\"name\"", StringComparison.Ordinal), "The whole Display row did not move through the current keyboard contract.");
             });
         }));
 
@@ -215,8 +207,9 @@ internal static class ControlTextChecks
     private static List<Fixture> Fixtures() =>
     [
         new(typeof(ActionMenu), "Menu_RecordActions", "Label", "Record actions", new()),
+        new(typeof(MultiSelectBox), "Selection_NoneSelected", "EmptySelectionText", "None selected", new() { ["Items"] = new MultiSelectOption[] { new("one","Host member") } }),
         new(typeof(Button), "Button_Working", "BusyLabel", "Working...", new() { ["Busy"] = true }),
-        new(typeof(BottomSheet), "Dialog_Close", "CloseLabel", "Close", new() { ["Title"] = "Sheet" }),
+        new(typeof(Dialog), "Dialog_Close", "CloseLabel", "Close", new() { ["Title"] = "Sheet", ["IsOpen"] = true, ["Presentation"] = DialogPresentation.BottomSheet }),
         new(typeof(LoadingState), "Table_Loading", "Message", "Loading...", new()),
         new(typeof(SearchBox), "Input_Search", "Label", "Search", new()),
         new(typeof(ToggleSwitch), "Toggle_On", "OnLabel", "On", new() { ["Value"] = true, ["Label"] = "Host label" }),
@@ -240,13 +233,12 @@ internal static class ControlTextChecks
         new(typeof(UniformGridButton), "Button_Working", "BusyLabel", "Working...", new() { ["Busy"] = true }),
         new(typeof(OfferStage), "Offer_PauseRotation", "PauseRotationLabel", "Pause rotation", new()),
         new(typeof(Field), "Input_Required", null, null, new() { ["Required"] = true, ["Id"] = "field", ["Label"] = "Host label" }),
-        new(typeof(Primitive.BottomSheet), "Dialog_Close", "CloseLabel", "Close", new() { ["Id"] = "sheet", ["Title"] = "Sheet" }),
-        new(typeof(Primitive.RowActionMenu), "Menu_RecordActions", "Label", "Record actions", new() { ["ChildContent"] = (RenderFragment)(_ => { }) }),
-        new(typeof(Primitive.ReferenceDropdown<long>), "Selection_None", "EmptySelectionText", "None", new() { ["Id"] = "ref", ["LabelledBy"] = "ref-label" }),
-        new(typeof(Primitive.MultiSelectDropdown<string, string>), "Selection_NoneSelected", "EmptySelectionText", "None selected", new()
+        new(typeof(ActionMenu), "Menu_RecordActions", "Label", "Record actions", new() { ["ChildContent"] = (RenderFragment)(builder =>
         {
-            ["Id"] = "multi", ["ValueSelector"] = (Func<string,string>)(item => item), ["TextSelector"] = (Func<string,string>)(item => item)
-        }),
+            builder.OpenComponent<Button>(0); builder.AddAttribute(1, nameof(Button.Text), "Host action");
+            builder.AddAttribute(2, nameof(Button.AdditionalAttributes), new Dictionary<string, object> { ["role"] = "menuitem" }); builder.CloseComponent();
+        }) }),
+        new(typeof(Primitive.ReferenceDropdown<long>), "Selection_None", "EmptySelectionText", "None", new() { ["Id"] = "ref", ["LabelledBy"] = "ref-label" }),
         new(typeof(Primitive.SearchAutocomplete<string>), "Search_Suggestions", "ResultsLabel", "Search suggestions", new()
         {
             ["Id"] = "search", ["ValueSelector"] = (Func<string,string>)(item => item), ["TextSelector"] = (Func<string,string>)(item => item)
@@ -254,14 +246,9 @@ internal static class ControlTextChecks
         new(typeof(Primitive.NavigationGuard), "Navigation_Unsaved", "Message", "There are unsaved changes. Leave and discard them?", new(), "EffectiveMessage"),
         new(typeof(Primitive.ServiceMenu), "Menu_Services", "Label", "Services", new()),
         new(typeof(Primitive.InteractionBoundary), "Interaction_Unavailable", "Title", "Interaction unavailable", new() { ["Locked"] = true }),
-        new(typeof(Primitive.PageContents), "Shell_PageContents", "Label", "On this page", new()),
         new(typeof(Primitive.EditingGrid), "Grid_Label", "Label", "Editable grid", new()),
         new(typeof(Primitive.DataPager), "Pager_Label", "Label", "Record pagination", new()),
-        new(typeof(Primitive.DataSearch<string>), "Table_SearchBy", null, null, new()
-        {
-            ["Columns"] = new Primitive.DataColumn<string>[] { new("name", "Name", item => item) }
-        }),
-        new(typeof(Primitive.DataTable<string>), "Grid_Empty", "EmptyMessage", "No records found.", new() { ["PreferenceKey"] = "text-checks" }),
+        new(typeof(DataTable<string>), "Table_Empty", "EmptyMessage", "No items.", new() { ["PreferenceKey"] = "text-checks" }),
         new(typeof(Pattern.ContentSurface), "Shell_Skip", "SkipLabel", "Skip to content", new()),
         new(typeof(Pattern.NavigationSurface), "Shell_Top", "TopLabel", "Back to top", new())
     ];

@@ -5,12 +5,11 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ApplicationLayout")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ApplicationLayout", Description = "ApplicationLayout 读取 Program 的应用配置；真实应用通过 Router 的 DefaultLayout 使用它。此局部预览阻止链接离开当前页面。")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
 
-<p>ApplicationLayout 读取 Program 的应用配置；真实应用通过 Router 的 DefaultLayout 使用它。此局部预览阻止链接离开当前页面。</p>
 <style>@((MarkupString)ScopedStyles)</style>
 <div id="@Id" style="position:relative; overflow:hidden; isolation:isolate;" @onclick:preventDefault>
     <ArkheideSystem.Flourish.Blazor.Components.ApplicationLayout OwnsDocument="false">

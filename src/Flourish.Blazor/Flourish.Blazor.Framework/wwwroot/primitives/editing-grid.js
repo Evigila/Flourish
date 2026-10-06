@@ -150,7 +150,7 @@ export function connect(root, reference) {
         const bounds = root.getBoundingClientRect();
         const target = cell.getBoundingClientRect();
         const identityCell = root.querySelector("td.identity-column");
-        const stickyWidth = identityCell && typeof getComputedStyle === "function" && getComputedStyle(identityCell).position === "sticky"
+        const stickyWidth = identityCell && getComputedStyle(identityCell).position === "sticky"
             ? identityCell.getBoundingClientRect().width : 0;
         const stickyHeight = root.querySelector("thead")?.getBoundingClientRect().height ?? 0;
         if (target.right > bounds.right) root.scrollLeft += target.right - bounds.right + 16;
@@ -506,8 +506,8 @@ export function connect(root, reference) {
     root.ownerDocument.addEventListener("pointercancel", pointerup);
     const observer = new MutationObserver(() => { paint(); void scroll(); });
     observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "data-edit-disabled", "data-has-more", "disabled", "data-cell-value"] });
-    const resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver(() => { void scroll(); }) : null;
-    resizeObserver?.observe(root);
+    const resizeObserver = new ResizeObserver(() => { void scroll(); });
+    resizeObserver.observe(root);
     bindings.set(root, { listeners, pointerup, observer, resizeObserver, state });
     paint();
     void scroll();
@@ -518,7 +518,7 @@ export function disconnect(root) {
     if (!handlers) return;
     handlers.state.disposed = true;
     handlers.observer.disconnect();
-    handlers.resizeObserver?.disconnect();
+    handlers.resizeObserver.disconnect();
     for (const [name, handler] of Object.entries(handlers.listeners)) root.removeEventListener(name, handler, name !== "scroll");
     root.ownerDocument.removeEventListener("pointerup", handlers.pointerup);
     root.ownerDocument.removeEventListener("pointercancel", handlers.pointerup);

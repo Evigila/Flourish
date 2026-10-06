@@ -12,7 +12,7 @@
     color: inherit;
     background: transparent;
     border: 0;
-    border-radius: var(--radius-small);
+    border-radius: var(--f-radius-small);
     cursor: pointer;
     font: inherit;
     font-size: 17px;
@@ -47,7 +47,7 @@
 .service-menu-view a {
     padding: 10px 12px;
     color: var(--f-text);
-    border-radius: var(--radius-small);
+    border-radius: var(--f-radius-small);
     text-decoration: none;
 }
 .service-menu-view a strong {
@@ -61,14 +61,12 @@
     outline: 2px solid var(--f-accent);
     outline-offset: -2px;
 }
-@media (max-width: 760px) {
-.service-menu-trigger {
+@media (max-width: 760px) {.service-menu-trigger {
     padding-inline: 10px;
     font-size: 17px;
 }
 }
-@media (hover: none) {
-.service-menu:focus-within > .service-menu-trigger {
+@media (hover: none) {.service-menu:focus-within > .service-menu-trigger {
     color: var(--f-chrome-ink, var(--f-surface));
     background: var(--f-preview-dark);
 }
@@ -78,8 +76,7 @@
     transition-delay: 0s;
 }
 }
-@media (prefers-reduced-motion: reduce) {
-.service-menu-view {
+@media (prefers-reduced-motion: reduce) {.service-menu-view {
     transition: none;
 }
 }

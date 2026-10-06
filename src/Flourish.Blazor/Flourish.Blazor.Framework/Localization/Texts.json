@@ -139,41 +139,6 @@
     "zh-CN": "列宽",
     "pt-BR": "Largura"
   },
-  "Sort_Label": {
-    "en-US": "Sorting",
-    "zh-CN": "排序",
-    "pt-BR": "Ordenação"
-  },
-  "Sort_Records": {
-    "en-US": "Record sorting",
-    "zh-CN": "记录排序",
-    "pt-BR": "Ordenação dos registros"
-  },
-  "Sort_By": {
-    "en-US": "Sort by",
-    "zh-CN": "排序字段",
-    "pt-BR": "Ordenar por"
-  },
-  "Sort_Default": {
-    "en-US": "Default order",
-    "zh-CN": "默认顺序",
-    "pt-BR": "Ordem padrão"
-  },
-  "Sort_Direction": {
-    "en-US": "Direction",
-    "zh-CN": "方向",
-    "pt-BR": "Direção"
-  },
-  "Sort_Ascending": {
-    "en-US": "Ascending",
-    "zh-CN": "升序",
-    "pt-BR": "Crescente"
-  },
-  "Sort_Descending": {
-    "en-US": "Descending",
-    "zh-CN": "降序",
-    "pt-BR": "Decrescente"
-  },
   "Table_SortDescending": {
     "en-US": "sort descending",
     "zh-CN": "降序排列",
@@ -374,6 +339,11 @@
     "zh-CN": "无",
     "pt-BR": "Nenhum"
   },
+  "Selection_Reorder": {
+    "en-US": "Reorder {0}",
+    "zh-CN": "调整 {0} 的顺序",
+    "pt-BR": "Reordenar {0}"
+  },
   "Selection_NoOptions": {
     "en-US": "No options available.",
     "zh-CN": "暂无选项。",
@@ -568,6 +538,60 @@
     "en-US": "Selected edits must not exceed 2 MB.",
     "zh-CN": "所选编辑内容不得超过 2 MB。",
     "pt-BR": "A edição selecionada deve ter no máximo 2 MB."
+  },
+  "Confirmation_Title": {
+    "en-US": "Confirm action", "zh-CN": "确认操作", "pt-BR": "Confirmar ação"
+  },
+  "Confirmation_Cancel": {
+    "en-US": "Cancel", "zh-CN": "取消", "pt-BR": "Cancelar"
+  },
+  "Confirmation_Accept": {
+    "en-US": "Confirm", "zh-CN": "确认", "pt-BR": "Confirmar"
+  },
+  "Reconnect_ConnectionLabel": {
+    "en-US": "Server connection",
+    "zh-CN": "服务器连接",
+    "pt-BR": "Conexão com o servidor"
+  },
+  "Reconnect_ReconnectingText": {
+    "en-US": "Reconnecting to the server…",
+    "zh-CN": "正在重新连接服务器…",
+    "pt-BR": "Reconectando ao servidor…"
+  },
+  "Reconnect_RetryingPrefix": {
+    "en-US": "Connection failed. Retrying in",
+    "zh-CN": "连接失败，下次重试将在",
+    "pt-BR": "Falha na conexão. Nova tentativa em"
+  },
+  "Reconnect_RetryingSuffix": {
+    "en-US": "seconds.",
+    "zh-CN": "秒后开始。",
+    "pt-BR": "segundos."
+  },
+  "Reconnect_FailedText": {
+    "en-US": "Unable to reconnect.\nTry again or reload the page.",
+    "zh-CN": "无法重新连接。\n请重试或重新加载页面。",
+    "pt-BR": "Não foi possível restabelecer a conexão.\nTente novamente ou recarregue a página."
+  },
+  "Reconnect_PausedText": {
+    "en-US": "The server paused this session.",
+    "zh-CN": "服务器已暂停此会话。",
+    "pt-BR": "A sessão foi pausada pelo servidor."
+  },
+  "Reconnect_ResumeFailedText": {
+    "en-US": "Unable to resume this session.\nTry again or reload the page.",
+    "zh-CN": "无法恢复此会话。\n请重试或重新加载页面。",
+    "pt-BR": "Não foi possível retomar a sessão.\nTente novamente ou recarregue a página."
+  },
+  "Reconnect_RetryLabel": {
+    "en-US": "Try again",
+    "zh-CN": "重试",
+    "pt-BR": "Tentar novamente"
+  },
+  "Reconnect_ResumeLabel": {
+    "en-US": "Resume",
+    "zh-CN": "恢复",
+    "pt-BR": "Retomar"
   },
   "Heading_BackTo": {
     "en-US": "Back to {0}",

@@ -4,7 +4,18 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
+
+<Dialog @ref="Decision" Title="@Ui("Confirmation_Title", "Confirm action")">
+    <ChildContent><p>@EffectiveMessage</p></ChildContent>
+    <Actions>
+        <InlineActions>
+            <Button Variant="ButtonVariant.Quiet" OnClick="() => Decision!.CloseAsync()">@Ui("Confirmation_Cancel", "Cancel")</Button>
+            <Button OnClick="() => Decision!.CloseAsync(true)">@Ui("Confirmation_Accept", "Confirm")</Button>
+        </InlineActions>
+    </Actions>
+</Dialog>
 @code {
+    private Dialog? Decision;
     private string EffectiveMessage => DefaultText(nameof(Message), Message, "Navigation_Unsaved", "There are unsaved changes. Leave and discard them?");
     [Parameter]
     public bool HasUnsavedChanges { get; set; }
@@ -65,7 +76,13 @@
         if (!HasUnsavedChanges || IsCurrentLocation(target))
             return;
 
-        if (!await JS.InvokeAsync<bool>("confirm", EffectiveMessage))
+        if (Decision is null || Decision.HasPendingResult)
+        {
+            context.PreventNavigation();
+            return;
+        }
+        var result = await Decision.ShowAsync(context.CancellationToken);
+        if (result is not true || context.CancellationToken.IsCancellationRequested)
             context.PreventNavigation();
     }
 

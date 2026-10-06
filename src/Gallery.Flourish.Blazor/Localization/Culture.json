@@ -5,23 +5,31 @@
   "Nav_DisplayAccess": { "en-US": "Access overview", "zh-CN": "访问案例总览" },
   "Nav_DisplayLogin": { "en-US": "Complete login page", "zh-CN": "完整登录页" },
   "Nav_DisplayAccounts": { "en-US": "Saved account selection", "zh-CN": "已保存账号选择" },
-  "Access_Overview": { "en-US": "Open independent, executable access pages. AccessSurface owns their single main landmark; AccessPanel also fits an existing page without adding another main. Forms and all actions remain standard Flourish controls.", "zh-CN": "打开独立且可执行的访问页。AccessSurface 提供唯一的 main 地标；AccessPanel 也可嵌入现有页面而不增加另一个 main。表单与全部动作均使用标准 Flourish 控件。" },
-  "Access_DemoOnly": { "en-US": "UI demonstration only: use fictitious values, never real credentials. No authentication, network request, token, browser storage or account persistence occurs. Fixture changes last only in this example instance; a reload resets them.", "zh-CN": "仅为 UI 演示：请使用虚构值，切勿输入真实凭据。本页不执行认证或网络请求，不产生令牌，不使用浏览器存储，也不持久化账号。数据只保留在当前示例实例内，刷新即重置。" },
-  "Access_LoginDescription": { "en-US": "A complete local login composition with field validation, selectable results, visible busy state and disabled actions.", "zh-CN": "完整的本地登录组合，展示字段校验、可选结果、可见忙碌状态与禁用动作。" },
-  "Access_AccountsDescription": { "en-US": "Choose a fictitious saved email to prefill the login page, remove a fixture, or test the empty and unavailable-account states.", "zh-CN": "选择虚构的已保存邮箱并预填登录页，移除示例账号，或验证空态与不可用账号状态。" },
-  "Access_Remember": { "en-US": "Remember this fictitious email in this example only", "zh-CN": "仅在当前示例中记住此虚构邮箱" },
-  "Access_Outcome": { "en-US": "Demonstration result (no credentials are checked)", "zh-CN": "演示结果（不检查凭据）" },
+  "Nav_DisplayMethods": { "en-US": "Access method selection", "zh-CN": "访问方式选择" },
+  "Nav_DisplayWizard": { "en-US": "Wizard choices", "zh-CN": "向导选项" },
+  "Wizard_Personal": { "en-US": "Personal use", "zh-CN": "个人使用" },
+  "Wizard_Workspace": { "en-US": "Workspace use", "zh-CN": "工作空间" },
+  "Wizard_Back": { "en-US": "Back", "zh-CN": "上一步" },
+  "Wizard_Restart": { "en-US": "Choose again", "zh-CN": "重新选择" },
+  "Access_LoginSubmit": { "en-US": "Simulate sign in", "zh-CN": "模拟登录" },
+  "Access_LoginTitle": { "en-US": "Sign in", "zh-CN": "登录" },
+  "Access_Overview": { "en-US": "Explore the login and account selection examples.", "zh-CN": "查看登录与账号选择示例。" },
+  "Access_DemoOnly": { "en-US": "Local demo only. Do not enter real credentials.", "zh-CN": "仅为本地演示，请勿输入真实凭据。" },
+  "Access_LoginDescription": { "en-US": "Enter a fictitious email and password.", "zh-CN": "请输入虚构邮箱与密码。" },
+  "Access_AccountsDescription": { "en-US": "Choose an example account or use another email.", "zh-CN": "选择示例账号，或使用其他邮箱。" },
+  "Access_Remember": { "en-US": "Remember email for this demo", "zh-CN": "在本次演示中记住邮箱" },
+  "Access_Outcome": { "en-US": "Demo result", "zh-CN": "演示结果" },
   "Access_OutcomeAccepted": { "en-US": "Success view", "zh-CN": "成功界面" },
   "Access_OutcomeRejected": { "en-US": "Rejected view", "zh-CN": "拒绝界面" },
   "Access_OutcomeUnavailable": { "en-US": "Service unavailable view", "zh-CN": "服务不可用界面" },
   "Access_RequiredEmail": { "en-US": "Enter a fictitious email address.", "zh-CN": "请输入虚构邮箱。" },
   "Access_InvalidEmail": { "en-US": "Use a valid email format, such as visitor@example.invalid.", "zh-CN": "请输入有效邮箱格式，例如 visitor@example.invalid。" },
   "Access_RequiredPassword": { "en-US": "Enter any fictitious password to exercise the required field.", "zh-CN": "请输入任意虚构密码以验证必填字段。" },
-  "Access_Accepted": { "en-US": "The success view is shown. No account has been authenticated and no session has been created. If selected, only the email fixture is remembered; the password has been cleared.", "zh-CN": "已展示成功界面，但未认证任何账号，也未创建会话。若勾选记住选项，仅保留邮箱示例；密码已清空。" },
-  "Access_Rejected": { "en-US": "The rejected-result view is shown. This is a chosen demonstration state, not a credential check. The password has been cleared; enter another fictitious value to retry.", "zh-CN": "已展示拒绝结果界面。这是选定的演示状态，并非凭据检查。密码已清空；请输入另一个虚构值后重试。" },
-  "Access_Unavailable": { "en-US": "The service-error view is shown. No service was contacted. The password has been cleared; choose another demonstration result and retry.", "zh-CN": "已展示服务错误界面，但未联系任何服务。密码已清空；可改选演示结果后重试。" },
+  "Access_Accepted": { "en-US": "Success demo. No sign-in occurred; the password was cleared.", "zh-CN": "成功演示，未实际登录；密码已清空。" },
+  "Access_Rejected": { "en-US": "Rejected demo. Enter a fictitious password to retry.", "zh-CN": "拒绝演示，请重新输入虚构密码后重试。" },
+  "Access_Unavailable": { "en-US": "Service error demo. Try again.", "zh-CN": "服务异常演示，请重试。" },
   "Access_Busy": { "en-US": "Demonstrating busy state…", "zh-CN": "正在演示忙碌状态…" },
-  "Access_InteractiveRequired": { "en-US": "Waiting for the interactive example. Submission stays disabled without JavaScript; this page has no server authentication endpoint.", "zh-CN": "正在等待交互示例连接。未启用 JavaScript 时提交保持禁用；本页没有服务端认证入口。" },
+  "Access_InteractiveRequired": { "en-US": "Connecting…", "zh-CN": "正在连接…" },
   "Access_Reset": { "en-US": "Clear local fields", "zh-CN": "清空本地字段" },
   "Access_Empty": { "en-US": "No saved example accounts", "zh-CN": "没有已保存的示例账号" },
   "Access_EmptyDescription": { "en-US": "Continue with another fictitious email or restore the original fixtures.", "zh-CN": "可使用另一个虚构邮箱，或恢复初始示例数据。" },
@@ -36,9 +44,8 @@
   "Access_SelectionRejected": { "en-US": "This example account is unavailable or no longer exists. Choose another account.", "zh-CN": "此示例账号不可用或已不存在，请选择其他账号。" },
   "Access_StaleSelection": { "en-US": "Demonstrate an expired selection", "zh-CN": "演示过期选择错误" },
   "Access_AccountsChanged": { "en-US": "The example list was changed locally. No real account was modified.", "zh-CN": "示例列表已在本地更新；没有修改任何真实账号。" },
-  "Access_Selected": { "en-US": "A saved fixture prefilled this email. Selection alone never signs in; enter a fictitious password to run the local demonstration.", "zh-CN": "已保存示例已预填邮箱。选择账号不会登录；请输入虚构密码运行本地演示。" },
+  "Access_Selected": { "en-US": "Email filled. Enter a fictitious password.", "zh-CN": "已填入邮箱，请输入虚构密码。" },
   "Access_Appearance": { "en-US": "Language and appearance", "zh-CN": "语言与外观" },
-  "Access_SurfaceGuide": { "en-US": "AccessSurface renders main and must be the only main landmark in an independent document. This Gallery board already sits inside ApplicationShell.main, so it links to complete executable login and account-selection pages instead of nesting another main. Use AccessPanel inside an existing surface.", "zh-CN": "AccessSurface 会生成 main，必须作为独立文档中唯一的 main 地标。当前 Gallery 演示板已位于 ApplicationShell.main 内，因此通过链接打开完整、可执行的登录与账号选择页，不再嵌套另一个 main。在已有表面内请使用 AccessPanel。" },
   "Display_Intro": { "en-US": "Presentation pages use full-width backgrounds with centered controls. These fictitious examples contain no authentication, licensing or billing behavior.", "zh-CN": "展示页面使用全宽背景与居中控件。这些虚构案例不执行认证、许可或计费行为。" },
   "Display_ProductSubtitle": { "en-US": "Ideas in one place", "zh-CN": "让想法汇聚一处" },
   "Display_ProductDescription": { "en-US": "Lumen is a fictitious product used to demonstrate library-owned banners, artistic titles, standard actions and a wordmark footer.", "zh-CN": "Lumen 是虚构产品，用于演示库内横幅、艺术标题、标准动作和品牌大字页脚。" },
@@ -253,8 +260,8 @@
     "zh-CN": "组合表单、列表、枚举选择和搜索。"
   },
   "Home_SetupDescription": {
-    "en-US": "Use ApplicationLayout as the default route layout and create your pages. Design is optional; Framework provides layout and behavior.",
-    "zh-CN": "将路由的默认布局设置为 ApplicationLayout，再创建自己的页面。Design 是可选主题；Framework 提供布局和交互行为。"
+    "en-US": "Use ApplicationLayout as the default route layout and create your pages.\nDesign is optional; Framework provides layout and behavior.",
+    "zh-CN": "将路由的默认布局设置为 ApplicationLayout，再创建自己的页面。\nDesign 是可选主题；Framework 提供布局和交互行为。"
   },
   "Language": {
     "en-US": "Language",
@@ -265,12 +272,12 @@
     "zh-CN": "数字与日期格式"
   },
   "Localization_Scope": {
-    "en-US": "Changes belong to this circuit. Reloading restores the browser request language.",
-    "zh-CN": "切换只影响当前会话。刷新会恢复浏览器请求选择的语言。"
+    "en-US": "Changes belong to this circuit.\nReloading restores the browser request language.",
+    "zh-CN": "切换只影响当前会话。\n刷新会恢复浏览器请求选择的语言。"
   },
   "Localization_Introduction": {
-    "en-US": "The application and framework use separate embedded catalogs. A scoped bridge resolves shell labels without changing routes or commands.",
-    "zh-CN": "应用与框架使用独立的嵌入词典。Scoped 桥接解析外壳文案，不改变路由或命令。"
+    "en-US": "The application and framework use separate embedded catalogs.\nA scoped bridge resolves shell labels without changing routes or commands.",
+    "zh-CN": "应用与框架使用独立的嵌入词典。\nScoped 桥接解析外壳文案，不改变路由或命令。"
   },
   "Localization_Sample": {
     "en-US": "Component example",
@@ -343,6 +350,10 @@
   "Display_CustomLicense": {
     "en-US": "Custom license",
     "zh-CN": "定制许可证"
+  },
+  "Display_CustomSupport": {
+    "en-US": "Need more features? Contact us for support.",
+    "zh-CN": "需要更多功能？请联系我们以获得支持。"
   },
   "Display_RequestCustomLicense": {
     "en-US": "Request a custom license (demonstration)",

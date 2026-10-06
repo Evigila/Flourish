@@ -1,10 +1,7 @@
 @page "/controls"
 @page "/controls/{Category}"
 @page "/controls/{Category}/{ComponentKey}"
-@page "/controls/support"
-@page "/controls/support/{Category}"
 @using ArkheideSystem.Gallery.Flourish.Blazor.Components.Catalog
-@inject NavigationManager Navigation
 <PageTitle>@Title · Controls · Gallery</PageTitle>
 <PageBody>
     <PageHeading Title="@Title" ParentHref="@(SelectedEntry is null ? null : CategoryHref)" ParentLabel="@($"返回 {CategoryTitle}")" />
@@ -18,12 +15,10 @@
     }
     else
     {
-        <p>@(SupportOnly ? "以下入口仅用于兼容迁移或控件内部组合；不要将其视作通用生产控件。原有详情链接仍可访问。" : "默认列出通用与专用场景生产入口；每个详情页明确其适用范围。兼容与构造基元单独列出。")</p>
-        <Button Variant="ButtonVariant.Underline" Href="@(SupportOnly ? CategoryHref : $"/controls/support/{CategoryKey}")">@(SupportOnly ? "返回生产控件" : "查看兼容与构造基元")</Button>
         <UniformGrid Shape="UniformGridShape.Square">
-            @foreach (var entry in CatalogSections.EntriesFor(CategoryKey).Where(entry => entry.IsProductionEntry != SupportOnly))
+            @foreach (var entry in CatalogSections.EntriesFor(CategoryKey))
             {
-                <UniformGridButton @key="entry.Name" Title="@entry.Name" Text="@UseLabel(entry)" Icon="@CategoryIcon"
+                <UniformGridButton @key="entry.Name" Title="@entry.Name" Icon="@CategoryIcon"
                                    Href="@CatalogSections.ComponentHref(entry)" AdditionalAttributes="@EntryAttributes(entry)" />
             }
         </UniformGrid>
@@ -37,12 +32,9 @@
     private string CategoryHref => CatalogSections.HrefFor(CategoryKey);
     private ComponentEntry? SelectedEntry => ComponentKey is null ? null
         : SampleCatalog.Find(ComponentKey) is { } entry && CatalogSections.CategoryOf(entry) == CategoryKey ? entry : null;
-    private bool SupportOnly => new Uri(Navigation.Uri).AbsolutePath.StartsWith("/controls/support", StringComparison.OrdinalIgnoreCase);
-    private string Title => SelectedEntry?.Name ?? (SupportOnly ? $"{CategoryTitle} · 兼容与构造基元" : CategoryTitle);
+    private string Title => SelectedEntry?.Name ?? CategoryTitle;
     private static IReadOnlyDictionary<string, object> EntryAttributes(ComponentEntry entry) =>
         new Dictionary<string, object> { ["title"] = $"{entry.Name} · {entry.Purpose}", ["aria-label"] = entry.Name };
-    private static string UseLabel(ComponentEntry entry) => entry.Usage.Kind switch
-    { ComponentUseKind.General => "通用生产", ComponentUseKind.Scenario => "专用场景", ComponentUseKind.Compatibility => "兼容迁移", _ => "构造基元" };
     private string CategoryIcon => CategoryKey switch
     {
         "actions" => "smart_button", "inputs" => "input", "data" => "table_chart",

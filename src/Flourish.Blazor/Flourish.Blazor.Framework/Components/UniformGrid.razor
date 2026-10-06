@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
 <CascadingValue Name="UniformGridIconSupport" Value="@IconSupport">
-    <div @attributes="AdditionalAttributes" class="f-uniform-grid f-uniform-grid-@Shape.ToString().ToLowerInvariant() f-uniform-grid-variant-@AppearanceName @LayoutClasses @(Centered ? "f-uniform-grid-centered" : null) @(Filled ? "f-uniform-filled" : null) @Class"
+    <div @attributes="AdditionalAttributes" class="f-uniform-grid f-uniform-grid-@Shape.ToString().ToLowerInvariant() f-uniform-grid-variant-@AppearanceName @LayoutClasses @(Centered ? "f-uniform-grid-centered" : null) @Class"
          style="@GridStyle" data-grid-layout="@Layout">@ChildContent</div>
 </CascadingValue>
 
@@ -14,7 +14,6 @@
     [Parameter] public int MaxCellSize { get; set; } = 280;
     [Parameter] public int MaxCellHeight { get; set; } = 260;
     [Parameter] public bool? IconSupport { get; set; }
-    [Parameter] public bool Filled { get; set; }
     [Parameter] public bool Centered { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -27,7 +26,7 @@
         _ => "auto"
     };
     private string LayoutClasses => $"{(Columns.HasValue ? "f-uniform-grid-columns" : null)} {(Rows.HasValue ? "f-uniform-grid-rows" : null)} {(NarrowColumns.HasValue ? "f-uniform-grid-narrow-columns" : null)}";
-    private string AppearanceName => (Filled ? UniformGridVariant.Filled : Variant) switch
+    private string AppearanceName => Variant switch
     {
         UniformGridVariant.Elevated => "elevated",
         UniformGridVariant.Filled => "filled",

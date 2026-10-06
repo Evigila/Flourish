@@ -9,7 +9,7 @@
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataTable<TItem>")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataTable<TItem>", Description = "全部记录为虚构数据。使用搜索、表头排序、分页和列表／卡片切换；双击记录或通过菜单执行操作。\n列表和卡片复用标准 ActionMenu。GET 打开本 Gallery 的示例链接；POST 只演示原生表单合同，交互就绪后记录本地提交意图，不请求真实服务。模板取代自动 Open，第二行演示不可打开的记录。\n下面仍是标准 DataTable。Worklist 保留所有页的输入实例；Registry 的选择、列编辑器和保存意图由宿主提供，没有第二个表格或真实服务。\n此例模拟宿主查询，不发送网络请求。表格不再二次过滤宿主结果，搜索回调、取消和授权仍属于宿主。\nProgressive 只读取已呈现的可见文字，不嵌入业务对象、隐藏字段或独立搜索／排序值。启用浏览器行为前所有记录和原生 GET 都可读可用；启用后在同一 DOM 上搜索、分页、排序与切换卡片。")]
 
 @if (Preview)
 {
@@ -20,7 +20,6 @@
 }
 else
 {
-    <p>全部记录为虚构数据。使用搜索、表头排序、分页和列表／卡片切换；双击记录或通过菜单执行操作。</p>
     <div class="f-inline-actions">
         <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loaded">有数据</Button>
         <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Empty">空数据</Button>
@@ -33,7 +32,6 @@ else
                Label="虚构用品目录" Text="Captions" LoadingMessage="正在加载虚构记录…" EmptyMessage="没有虚构记录" />
     <p role="status">@Message</p>
     <h3 id="native-row-demo">原生 GET / POST 行操作</h3>
-    <p>列表和卡片复用标准 ActionMenu。GET 打开本 Gallery 的示例链接；POST 只演示原生表单合同，交互就绪后记录本地提交意图，不请求真实服务。模板取代自动 Open，第二行演示不可打开的记录。</p>
     <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="@(item => item.Id)" RowLabel="@(item => item.Name)"
                OnRowOpen="Open" RowOpenAvailable="@(item => item.Id == 1)" PreferenceKey="gallery.data-table.native-records" Label="原生传输示例">
         <RowActionsContent Context="item">
@@ -54,14 +52,13 @@ else
         </RowActionsContent>
     </DataTable>
     <h3>同一表格的业务编辑能力</h3>
-    <p>下面仍是标准 DataTable。Worklist 保留所有页的输入实例；Registry 的选择、列编辑器和保存意图由宿主提供，没有第二个表格或真实服务。</p>
     <DataTable TItem="Entry" Items="NativeItems" Columns="EditableColumns" Purpose="TablePurpose.Worklist" PageSize="1" ItemKey="item => item.Id" Label="保留草稿的工作清单">
         <CellTemplate Context="cell">
             <StandaloneTextBox Value="@(Drafts.GetValueOrDefault(cell.Item.Id) ?? cell.Item.Name)" ValueChanged="value => Drafts[cell.Item.Id] = value ?? string.Empty" aria-label="@($"名称 {cell.Item.Id}")" required />
         </CellTemplate>
     </DataTable>
     <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="item => item.Id" Label="可选批量编辑" PreferenceKey="gallery.data-table.bulk"
-               ShowSortControls="true" BulkEditRequested="() => DemoBulk = true" BulkEditing="DemoBulk" AllEditSelected="@(Selected.Count == NativeItems.Count)"
+               BulkEditRequested="() => DemoBulk = true" BulkEditing="DemoBulk" AllEditSelected="@(Selected.Count == NativeItems.Count)"
                IsSelectedForEditing="item => Selected.Contains(item.Id)" ToggleEditSelection="ToggleDemoSelection" ToggleAllEditSelection="ToggleAllDemoSelection">
         <BulkEditCell Context="column"><StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@($"批量 {column.Header}")" /></BulkEditCell>
         <BulkEditActions>
@@ -73,11 +70,9 @@ else
         </BulkEditActions>
     </DataTable>
     <h3>同一搜索合同的远端结果模式</h3>
-    <p>此例模拟宿主查询，不发送网络请求。表格不再二次过滤宿主结果，搜索回调、取消和授权仍属于宿主。</p>
-    <DataTable TItem="Entry" Items="RemoteItems" Columns="Columns" SearchMode="TableSearchMode.Remote" SearchColumnKey="RemoteColumn"
-               SearchQuery="RemoteQuery" SearchChanged="SimulateRemoteSearch" PaginationResetKey="@((RemoteColumn, RemoteQuery))" ItemKey="item => item.Id" Label="模拟远端目录" />
+    <DataTable TItem="Entry" Items="RemoteItems" Columns="Columns" SearchMode="TableSearchMode.Remote" SearchColumnKey="@RemoteColumn"
+               SearchQuery="@RemoteQuery" SearchChanged="SimulateRemoteSearch" PaginationResetKey="@((RemoteColumn, RemoteQuery))" ItemKey="item => item.Id" Label="模拟远端目录" />
     <h3>无电路的渐进目录</h3>
-    <p>Progressive 只读取已呈现的可见文字，不嵌入业务对象、隐藏字段或独立搜索／排序值。启用浏览器行为前所有记录和原生 GET 都可读可用；启用后在同一 DOM 上搜索、分页、排序与切换卡片。</p>
     <DataTable TItem="Entry" Items="Items" Columns="DirectoryColumns" Progressive="true" RowOpenHref="DirectoryHref" ItemKey="item => item.Id" Label="渐进虚构目录" />
 }
 

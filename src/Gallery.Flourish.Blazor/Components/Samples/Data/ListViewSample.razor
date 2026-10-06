@@ -5,13 +5,8 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Microsoft.AspNetCore.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ListView<TItem>")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ListView<TItem>", Description = "静态只读 ListView 复用 DataTable 的表格样式和列格式，完整显示宿主传入的 25 条虚构记录。没有搜索、排序、分页、选中或行操作；需要这些动态能力时使用 DataTable。\n名称列提供行标题。说明中的长文本可以换行，null 显示为空；可用列通过只读模板展示带可访问说明的符号。\n同一列契约在空数据时仍保留标题；宿主负责获取数据和选择真实的空状态。")]
 
-@if (!Preview)
-{
-    <p>静态只读 ListView 复用 DataTable 的表格样式和列格式，完整显示宿主传入的 25 条虚构记录。没有搜索、排序、分页、选中或行操作；需要这些动态能力时使用 DataTable。</p>
-    <p>名称列提供行标题。说明中的长文本可以换行，null 显示为空；可用列通过只读模板展示带可访问说明的符号。</p>
-}
 <ListView TItem="Entry" Items="@(Preview ? Items.Take(3).ToArray() : Items)" Columns="Columns"
           ItemKey="@(item => item.Id)" RowHeaderKey="name" Culture="SampleCulture" Label="静态虚构用品目录"
           Caption="只读用品目录，包括名称、说明、单价和可用状态；完整场景包含全部 25 条记录。">
@@ -28,7 +23,6 @@
 </ListView>
 @if (!Preview)
 {
-    <p>同一列契约在空数据时仍保留标题；宿主负责获取数据和选择真实的空状态。</p>
     <ListView TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" RowHeaderKey="name" Label="空白只读目录" EmptyMessage="当前没有用品。" />
 }
 

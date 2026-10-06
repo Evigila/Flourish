@@ -23,11 +23,10 @@ internal static class InputMigrationChecks
             });
             Require(text.Contains("id=\"account-address\"") && text.Contains("name=\"address\"") && text.Contains("data-value=\"original\"")
                 && text.Contains("autocomplete=\"username\"") && text.Contains("value=\"a&lt;&amp;b\""), "SSR text input lost original POST or data attributes.");
-            var number = await Render<StandaloneNumberBox>(new()
+            var number = await Render<StandaloneTextBox>(new()
             {
-                [nameof(StandaloneNumberBox.Value)] = "2.75", [nameof(StandaloneNumberBox.Min)] = "0",
-                [nameof(StandaloneNumberBox.Max)] = "10", [nameof(StandaloneNumberBox.Step)] = "0.25",
-                [nameof(StandaloneNumberBox.AdditionalAttributes)] = Attributes(("name", "amount"), ("required", true))
+                [nameof(StandaloneTextBox.Type)] = "number", [nameof(StandaloneTextBox.Value)] = "2.75",
+                [nameof(StandaloneTextBox.AdditionalAttributes)] = Attributes(("name", "amount"), ("required", true), ("min", "0"), ("max", "10"), ("step", "0.25"), ("inputmode", "decimal"))
             });
             Require(number.Contains("type=\"number\"") && number.Contains("value=\"2.75\"") && number.Contains("name=\"amount\"")
                 && number.Contains("min=\"0\"") && number.Contains("max=\"10\"") && number.Contains("step=\"0.25\"") && number.Contains("required"), "SSR numeric input lost browser constraints or its invariant POST value.");

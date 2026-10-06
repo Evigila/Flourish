@@ -13,17 +13,3 @@
 .disclosure-section > summary::-webkit-details-marker {
     display: none;
 }
-.disclosure-section > summary > .toggle-indicator-track {
-    display: flex;
-}
-.toggle-indicator-track {
-    flex-basis: 52px;
-}
-.toggle-indicator-track::before,
-.toggle-switch[aria-checked="true"] .toggle-indicator-track::before {
-    display: none;
-    content: none;
-}
-.toggle-indicator-thumb {
-    display: block;
-}

@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("LogoDisplayer")]
+@attribute [SampleFor("LogoDisplayer", Description = "默认使用已配置的项目身份；覆盖仅作用于当前示例。")]
 @inherits LocalizedComponentBase
 
 @if (!Preview)
@@ -12,8 +12,6 @@
                Description="@Localization.Parse(TextKey.Access_LoginDescription)" TitleId="@TitleId" HeadingLevel="2" />
 @if (!Preview)
 {
-    <p>@Explain("Omitting LogoPath and ProjectName uses ConfigureProject identity and refreshes its localized name. An explicit override belongs to this instance only. The logo, artistic name and description use library styles; no host skin is added.",
-        "省略 LogoPath 和 ProjectName 时使用 ConfigureProject 身份，并随语言刷新名称。显式覆盖仅作用于当前实例。Logo、艺术项目名与说明均使用库内样式，不添加宿主皮肤。")</p>
     <Button Variant="ButtonVariant.Underline" Href="/examples/display/login">@Localization.Parse(TextKey.Nav_DisplayLogin)</Button>
 }
 

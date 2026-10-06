@@ -199,7 +199,7 @@ foreach ($mode in $modes) {
         Require ($page.Content.Contains('f-access-form-surface') -and $page.Content.Contains('action="/native-example"') -and $page.Content.Contains('data-enhance="false"')) "$($mode.Name) altered the native access form boundary."
         Require ($page.Content.Contains('_content/Arkheide.Flourish.Blazor.Framework/framework.css')) "$($mode.Name) omitted functional Framework CSS."
         Require ($page.Content.Contains('_content/Arkheide.Flourish.Blazor.Design/design.css') -eq $mode.Theme) "$($mode.Name) changed Design activation."
-        $assetPaths = @('framework.css','shell.js','controls.js','data.js','primitives/editing-grid.js','presentation/offers.js','icons/material/MaterialSymbolsOutlined.woff2','icons/material/LICENSE.txt')
+        $assetPaths = @('framework.css','shell.js','controls.js','data.js','multi-select-box.js','primitives/editing-grid.js','presentation/offers.js','icons/material/MaterialSymbolsOutlined.woff2','icons/material/LICENSE.txt')
         foreach ($asset in $assetPaths) {
             $response = Invoke-WebRequest -Uri "$origin/_content/Arkheide.Flourish.Blazor.Framework/$asset" -UseBasicParsing
             Require ($response.StatusCode -eq 200 -and $response.RawContentLength -gt 0) "$($mode.Name) cannot serve Framework $asset."

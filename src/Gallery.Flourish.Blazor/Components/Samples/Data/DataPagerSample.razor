@@ -9,7 +9,7 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataPager")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataPager", Description = "23 条虚构记录按页展示。页码输入会自动限制到有效范围。")]
 
 @if (Preview)
 {
@@ -19,7 +19,6 @@
 }
 else
 {
-    <p>23 条虚构记录按页展示。页码输入会自动限制到有效范围。</p>
     <div class="f-inline-actions">
         <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(5)">每页 5 条</Button>
         <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(10)">每页 10 条</Button>

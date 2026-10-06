@@ -25,7 +25,7 @@ internal static class UniformGridChecks
             parameters[nameof(UniformGrid.Centered)] = false;
             Require(!HasClass(Tag(await Render<UniformGrid>(parameters), "div", "f-uniform-grid"), "f-uniform-grid-centered"), "Explicit false did not restore start alignment.");
         }));
-        tests.Add(("uniform grid defaults to automatic columns and rectangular cells without shaping its container", async () =>
+        tests.Add(("uniform grid defaults to full-row automatic rectangular cells without shaping its container", async () =>
         {
             var html = await Render<UniformGrid>(new() { [nameof(UniformGrid.ChildContent)] = PassiveCells() });
             var grid = Tag(html, "div", "f-uniform-grid");
@@ -37,6 +37,37 @@ internal static class UniformGridChecks
             Require(!Attribute(grid, "style").Contains("--f-grid-columns", StringComparison.Ordinal), "Automatic layout still emits a fixed column count.");
             Require(!Attribute(grid, "style").Contains("aspect-ratio", StringComparison.Ordinal), "The container itself was shaped as a cell.");
             Require(Tags(html, "f-uniform-grid-item").Count == 3, "The container lost its supplied cells.");
+        }));
+        tests.Add(("rectangular and square action grids retain one shape-aware layout across all dimension modes", async () =>
+        {
+            foreach (var shape in new[] { UniformGridShape.Rectangle, UniformGridShape.Square })
+                foreach (var centered in new[] { false, true })
+                    foreach (var dimensions in new[] {
+                        (Columns: (int?)null, Rows: (int?)null, Layout: "auto"),
+                        (Columns: (int?)2, Rows: (int?)null, Layout: "columns"),
+                        (Columns: (int?)null, Rows: (int?)2, Layout: "rows"),
+                        (Columns: (int?)2, Rows: (int?)2, Layout: "explicit") })
+                    {
+                        var html = await Render<UniformGrid>(new() {
+                            [nameof(UniformGrid.Shape)] = shape, [nameof(UniformGrid.Centered)] = centered,
+                            [nameof(UniformGrid.Columns)] = dimensions.Columns, [nameof(UniformGrid.Rows)] = dimensions.Rows,
+                            [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.MaxCellSize)] = 180,
+                            [nameof(UniformGrid.MaxCellHeight)] = 160, [nameof(UniformGrid.ChildContent)] = ActionCells()
+                        });
+                        var grid = Tag(html, "div", "f-uniform-grid");
+                        var style = Attribute(grid, "style");
+                        Require(Attribute(grid, "data-grid-layout") == dimensions.Layout, "Changing shape or centering changed the supplied layout mode.");
+                        Require(HasClass(grid, "f-uniform-grid-centered") == centered, "The grid ignored explicit centering.");
+                        Require(HasClass(grid, "f-uniform-grid-columns") == dimensions.Columns.HasValue
+                            && HasClass(grid, "f-uniform-grid-rows") == dimensions.Rows.HasValue, "The grid invented or removed a dimension.");
+                        Require(style.Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal), "The narrow-screen column override was removed.");
+                        Require(style.Contains("--f-grid-cell-max:180px", StringComparison.Ordinal) == (shape == UniformGridShape.Square)
+                            && style.Contains("--f-grid-cell-max-height:160px", StringComparison.Ordinal) == (shape == UniformGridShape.Rectangle),
+                            "One shape inherited the other shape's size limit.");
+                        Require(Tags(html, "f-uniform-grid-button").Count == 3, "The layout lost its actual production action cells.");
+                        Require(!style.Contains("width:", StringComparison.Ordinal) && !style.Contains("grid-template", StringComparison.Ordinal),
+                            "The renderer introduced a second inline layout instead of using the shared shape-aware stylesheet.");
+                    }
         }));
         tests.Add(("only square grids emit the default 280px maximum side", async () =>
         {
@@ -54,20 +85,20 @@ internal static class UniformGridChecks
                 [nameof(UniformGrid.MaxCellHeight)] = 160 }), "div", "f-uniform-grid");
             Require(!Attribute(square, "style").Contains("--f-grid-cell-max-height:", StringComparison.Ordinal), "The Rectangle cap affected Square cells.");
         }));
-        tests.Add(("uniform grid exposes independent row and column modes and preserves explicit narrow-column compatibility", async () =>
+        tests.Add(("uniform grid exposes independent row column and narrow-screen dimensions", async () =>
         {
             var rows = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.Rows)] = 2 }), "div", "f-uniform-grid");
             Require(Attribute(rows, "data-grid-layout") == "rows" && Attribute(rows, "style").Contains("--f-grid-rows:2", StringComparison.Ordinal), "Rows-only layout was not retained.");
             Require(!HasClass(rows, "f-uniform-grid-columns"), "Rows-only layout invented columns.");
             var explicitGrid = Tag(await Render<UniformGrid>(new() {
                 [nameof(UniformGrid.Rows)] = 2, [nameof(UniformGrid.Columns)] = 6,
-                [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.Filled)] = true,
+                [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.Variant)] = UniformGridVariant.Filled,
                 [nameof(UniformGrid.Shape)] = UniformGridShape.Square
             }), "div", "f-uniform-grid");
             var style = Attribute(explicitGrid, "style");
             Require(Attribute(explicitGrid, "data-grid-layout") == "explicit" && style.Contains("--f-grid-columns:6", StringComparison.Ordinal) && style.Contains("--f-grid-rows:2", StringComparison.Ordinal), "The explicit dimensions were not preserved.");
             Require(style.Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal) && HasClass(explicitGrid, "f-uniform-grid-narrow-columns"), "The existing narrow-column API stopped being explicit.");
-            Require(HasClass(explicitGrid, "f-uniform-filled") && HasClass(explicitGrid, "f-uniform-grid-variant-filled") && HasClass(explicitGrid, "f-uniform-grid-square"), "Existing Filled or the selected cell shape was lost.");
+            Require(HasClass(explicitGrid, "f-uniform-grid-variant-filled") && HasClass(explicitGrid, "f-uniform-grid-square"), "The selected Filled appearance or cell shape was lost.");
         }));
         tests.Add(("uniform grid shape appearance and configurable cell maximum remain independent", async () =>
         {
@@ -82,8 +113,6 @@ internal static class UniformGridChecks
                     Require(HasClass(grid, $"f-uniform-grid-variant-{AppearanceName(variant)}"), "Changing shape changed the selected appearance.");
                     Require(Attribute(grid, "style").Contains("--f-grid-cell-max:180px", StringComparison.Ordinal) == (shape == UniformGridShape.Square), "The host-supplied maximum was not confined to Square cells.");
                 }
-            var alias = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.Variant)] = UniformGridVariant.Outline }), "div", "f-uniform-grid");
-            Require(HasClass(alias, "f-uniform-grid-variant-outlined"), "Outline does not resolve to the canonical Outlined appearance.");
         }));
         tests.Add(("uniform grid rejects invalid dimensions and unknown shape or appearance values through the correct parameters", async () =>
         {
@@ -107,8 +136,13 @@ internal static class UniformGridChecks
                 var expected = $"f-uniform-variant-{AppearanceName(variant)}";
                 Require(HasClass(item, expected) && HasClass(button, expected), "Passive and interactive cells disagree on their local appearance.");
             }
-            var alias = Tag(await Render<UniformGridItem>(new() { [nameof(UniformGridItem.Variant)] = UniformGridVariant.Outline }), "div", "f-uniform-grid-item");
-            Require(HasClass(alias, "f-uniform-variant-outlined"), "The item did not canonicalize Outline.");
+        }));
+        tests.Add(("uniform grid appearance has one variant contract without boolean or enum aliases", () =>
+        {
+            Require(typeof(UniformGrid).GetProperty("Filled") is null, "The retired Filled boolean still competes with Variant.");
+            Require(Enum.GetNames<UniformGridVariant>().SequenceEqual(new[] { "Elevated", "Filled", "Outlined", "Danger" }),
+                "The grid appearance enum contains aliases or unexpected variants.");
+            return Task.CompletedTask;
         }));
         tests.Add(("uniform grid item is passive and shares encoded title icon and text composition with interactive cells", async () =>
         {
@@ -140,7 +174,7 @@ internal static class UniformGridChecks
                 }
             }
         }));
-        tests.Add(("explicit icon support preserves legacy flow or reserves both halves independently of icon presence", async () =>
+        tests.Add(("explicit icon support chooses single-zone or split composition independently of icon presence", async () =>
         {
             foreach (var enabled in new[] { false, true })
                 foreach (var icon in new[] { "", "folder" })
@@ -190,8 +224,8 @@ internal static class UniformGridChecks
         {
             var empty = await Render<UniformGridItem>(new());
             Require(!empty.Contains("data-icon=", StringComparison.Ordinal) && Tags(empty, "f-uniform-cell-title").Count == 0 && Tags(empty, "f-uniform-cell-text").Count == 0, "An empty cell invented content.");
-            var legacy = await Render<UniformGridButton>(new() { [nameof(UniformGridButton.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Legacy <label>")) });
-            Require(legacy.Contains("Legacy &lt;label&gt;", StringComparison.Ordinal), "The existing content slot was removed or stopped encoding text.");
+            var slotted = await Render<UniformGridButton>(new() { [nameof(UniformGridButton.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Slotted <label>")) });
+            Require(slotted.Contains("Slotted &lt;label&gt;", StringComparison.Ordinal), "The content slot was removed or stopped encoding text.");
         }));
         tests.Add(("uniform grid action links retain shared styling and become nonnavigable while unavailable", async () =>
         {
@@ -214,7 +248,7 @@ internal static class UniformGridChecks
             var activator = new ButtonActivator();
             var services = new ServiceCollection();
             services.AddLogging();
-        services.AddFlourishFramework();
+            services.AddFlourishFramework();
             services.AddSingleton<NavigationManager>(new TestNavigation());
             services.AddSingleton<IComponentActivator>(activator);
             using var provider = services.BuildServiceProvider();
@@ -253,6 +287,15 @@ internal static class UniformGridChecks
         {
             builder.OpenComponent<UniformGridItem>(0);
             builder.AddAttribute(1, nameof(UniformGridItem.Title), $"Cell {index + 1}");
+            builder.CloseComponent();
+        }
+    };
+    private static RenderFragment ActionCells() => builder =>
+    {
+        for (var index = 0; index < 3; index++)
+        {
+            builder.OpenComponent<UniformGridButton>(0);
+            builder.AddAttribute(1, nameof(UniformGridButton.Title), $"Action {index + 1}");
             builder.CloseComponent();
         }
     };

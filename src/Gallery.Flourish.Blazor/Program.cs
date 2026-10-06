@@ -106,12 +106,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             "arrow_drop_down",
                                             "/controls/actions/expansionindicatorsample",
                                             exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.RowActionMenu",
-                                            "smart_button",
-                                            "/controls/actions/rowactionmenusample",
-                                            exact: true
                                         ),
                                 exact: true
                             )
@@ -139,6 +133,7 @@ builder.Services.AddFlourishFramework(framework =>
                                             "/controls/inputs/selectboxsample",
                                             exact: true
                                         )
+                                        .AddSubNav("MultiSelectBox", "input", "/controls/inputs/multiselectboxsample", exact: true)
                                         .AddSubNav(
                                             "CheckBox",
                                             "input",
@@ -169,6 +164,7 @@ builder.Services.AddFlourishFramework(framework =>
                                             "/controls/inputs/formlayoutsample",
                                             exact: true
                                         )
+                                        .AddSubNav("FormGroup", "input", "/controls/inputs/formgroupsample", exact: true)
                                         .AddSubNav(
                                             "FormActions",
                                             "input",
@@ -194,51 +190,9 @@ builder.Services.AddFlourishFramework(framework =>
                                             exact: true
                                         )
                                         .AddSubNav(
-                                            "Primitives.MultiSelectDropdown<TItem, TValue>",
-                                            "input",
-                                            "/controls/inputs/multiselectdropdownsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
                                             "Primitives.ReferenceDropdown<TValue>",
                                             "input",
                                             "/controls/inputs/referencedropdownsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.FormSurface",
-                                            "input",
-                                            "/controls/inputs/formsurfacesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.FormFields",
-                                            "input",
-                                            "/controls/inputs/formfieldssample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.FormActionBar",
-                                            "input",
-                                            "/controls/inputs/formactionbarsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.ToggleSwitch",
-                                            "input",
-                                            "/controls/inputs/primitivetoggleswitchsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.SelectionDropdownSurface",
-                                            "input",
-                                            "/controls/inputs/selectiondropdownsurfacesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.ToggleIndicator",
-                                            "input",
-                                            "/controls/inputs/toggleindicatorsample",
                                             exact: true
                                         ),
                                 exact: true
@@ -249,6 +203,7 @@ builder.Services.AddFlourishFramework(framework =>
                                 "/controls/data",
                                 third =>
                                     third
+                                        .AddSubNav("LineChart", "show_chart", "/controls/data/linechartsample", exact: true)
                                         .AddSubNav(
                                             "DataTable<TItem>",
                                             "table_chart",
@@ -259,18 +214,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             "ListView<TItem>",
                                             "table_chart",
                                             "/controls/data/listviewsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.DataTable<TItem>",
-                                            "table_chart",
-                                            "/controls/data/primitivedatatablesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.DataSearch<TItem>",
-                                            "table_chart",
-                                            "/controls/data/datasearchsample",
                                             exact: true
                                         )
                                         .AddSubNav(
@@ -297,18 +240,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             "Dialog",
                                             "web_asset",
                                             "/controls/overlays/dialogsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "BottomSheet",
-                                            "web_asset",
-                                            "/controls/overlays/bottomsheetsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.BottomSheet",
-                                            "web_asset",
-                                            "/controls/overlays/primitivebottomsheetsample",
                                             exact: true
                                         ),
                                 exact: true
@@ -338,21 +269,9 @@ builder.Services.AddFlourishFramework(framework =>
                                             exact: true
                                         )
                                         .AddSubNav(
-                                            "Primitives.StatusNotice",
-                                            "notifications",
-                                            "/controls/feedback/statusnoticesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
                                             "Primitives.NoticeTrigger",
                                             "notifications",
                                             "/controls/feedback/noticetriggersample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.PageLoading",
-                                            "notifications",
-                                            "/controls/feedback/pageloadingsample",
                                             exact: true
                                         ),
                                 exact: true
@@ -419,12 +338,14 @@ builder.Services.AddFlourishFramework(framework =>
                                             "/controls/content/cardsample",
                                             exact: true
                                         )
+                                        .AddSubNav("InlineActions", "view_agenda", "/controls/content/inlineactionssample", exact: true)
                                         .AddSubNav(
                                             "IdentityCard",
                                             "view_agenda",
                                             "/controls/content/identitycardsample",
                                             exact: true
                                         )
+                                        .AddSubNav("ImagePreview", "image", "/controls/content/imagepreviewsample", exact: true)
                                         .AddSubNav(
                                             "Icon",
                                             "view_agenda",
@@ -443,42 +364,7 @@ builder.Services.AddFlourishFramework(framework =>
                                             "/controls/content/codeblocksample",
                                             exact: true
                                         )
-                                        .AddSubNav(
-                                            "Primitives.AppIcon",
-                                            "view_agenda",
-                                            "/controls/content/appiconsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.Glyph",
-                                            "view_agenda",
-                                            "/controls/content/glyphsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.FilledIdentityCard",
-                                            "view_agenda",
-                                            "/controls/content/filledidentitycardsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.DisclosureSection",
-                                            "view_agenda",
-                                            "/controls/content/primitivedisclosuresample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.ToggleSection",
-                                            "view_agenda",
-                                            "/controls/content/primitivetogglesectionsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.UniformGrid",
-                                            "view_agenda",
-                                            "/controls/content/primitiveuniformgridsample",
-                                            exact: true
-                                        ),
+                                        .AddSubNav("CopyText", "content_copy", "/controls/content/copytextsample", exact: true),
                                 exact: true
                             )
                             .AddSubNav(
@@ -505,6 +391,7 @@ builder.Services.AddFlourishFramework(framework =>
                                             "/controls/layout/pagebodysample",
                                             exact: true
                                         )
+                                        .AddSubNav("AttributionFooter", "copyright", "/controls/layout/attributionfootersample", exact: true)
                                         .AddSubNav(
                                             "SectionNavigator",
                                             "more_vert",
@@ -530,12 +417,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             exact: true
                                         )
                                         .AddSubNav(
-                                            "Patterns.RecordListPage",
-                                            "view_quilt",
-                                            "/controls/layout/recordlistpagesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
                                             "Primitives.NavigationGuard",
                                             "view_quilt",
                                             "/controls/layout/navigationguardsample",
@@ -554,12 +435,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             exact: true
                                         )
                                         .AddSubNav(
-                                            "Primitives.AccessSurface",
-                                            "view_quilt",
-                                            "/controls/layout/accesssurfacesample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
                                             "Primitives.ShellHeader",
                                             "view_quilt",
                                             "/controls/layout/shellheadersample",
@@ -575,30 +450,6 @@ builder.Services.AddFlourishFramework(framework =>
                                             "Primitives.PrimaryNavigationItem",
                                             "view_quilt",
                                             "/controls/layout/primarynavigationitemsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.PageHeading",
-                                            "view_quilt",
-                                            "/controls/layout/primitivepageheadingsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.RecordPageHeading",
-                                            "view_quilt",
-                                            "/controls/layout/recordpageheadingsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.PageContent",
-                                            "view_quilt",
-                                            "/controls/layout/pagecontentsample",
-                                            exact: true
-                                        )
-                                        .AddSubNav(
-                                            "Primitives.PageContents",
-                                            "view_quilt",
-                                            "/controls/layout/pagecontentssample",
                                             exact: true
                                         ),
                                 exact: true
@@ -636,7 +487,9 @@ builder.Services.AddFlourishFramework(framework =>
                                     .AddSubNav(Text(TextKey.Nav_DisplayPricing, "报价与比较"), "table_chart", "/examples/display/pricing", exact: true)
                                     .AddSubNav(Text(TextKey.Nav_DisplayAccess, "访问案例总览"), "login", "/examples/display/access", exact: true)
                                     .AddSubNav(Text(TextKey.Nav_DisplayLogin, "完整登录页"), "login", "/examples/display/login", exact: true)
-                                    .AddSubNav(Text(TextKey.Nav_DisplayAccounts, "已保存账号选择"), "person", "/examples/display/accounts", exact: true),
+                                    .AddSubNav(Text(TextKey.Nav_DisplayAccounts, "已保存账号选择"), "person", "/examples/display/accounts", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayMethods, "访问方式选择"), "login", "/examples/display/access-methods", exact: true)
+                                    .AddSubNav(Text(TextKey.Nav_DisplayWizard, "向导选项"), "grid_view", "/examples/display/wizard", exact: true),
                                 exact: true
                             )
                             .AddSubNav(Text(TextKey.Nav_Enums, "枚举下拉框"), "arrow_drop_down", "/examples/enum")

@@ -2,9 +2,11 @@
 
 <SelectBox TValue="string" Options="@languages" Value="@Localization.Culture"
            ValueChanged="ChangeLanguage" ValueExpression="@(() => Localization.Culture)"
-           aria-label="@Localization.Parse(TextKey.Language)" />
+           aria-label="@Localization.Parse(TextKey.Language)" style="@WidthStyle" />
 
 @code {
+    [Parameter] public string? MaxWidth { get; set; }
+    private string? WidthStyle => MaxWidth is null ? null : $"width:{MaxWidth};max-width:100%";
     private static readonly IReadOnlyList<SelectOption<string>> languages =
         [new("zh-CN", "中文"), new("en-US", "English")];
     private void ChangeLanguage(string language) => Localization.SetCulture(language);

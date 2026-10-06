@@ -1,9 +1,14 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
-@attribute [SampleFor("StandaloneTextBox")]
+@attribute [SampleFor("StandaloneTextBox", Description = "适用于无 EditContext 的原生 GET/POST 协议边界；不提交网络请求。模型表单优先 TextBox。数字输入使用同一控件的 Type=number，min/max/step 保留原生约束；提交字符串由宿主解析。")]
 <Field Label="协议边界演示邮箱" Id="@Id"><StandaloneTextBox Id="@Id" Type="email" name="email" @bind-Value="Email" /></Field>
 <p role="status">当前本地值：@Email</p>
-@if (!Preview) { <p>适用于无 EditContext 的原生 GET/POST 协议边界；不提交网络请求。模型表单优先 TextBox。</p> }
+@if (!Preview)
+{
+    <Field Label="协议边界演示数量" Id="@(Id + "-quantity")"><StandaloneTextBox Id="@(Id + "-quantity")" Type="number" name="quantity" min="0" max="100" step="1" @bind-Value="Quantity" /></Field>
+    <p role="status">数量提交字符串：@Quantity</p>
+}
 @code {
     [Parameter] public bool Preview { get; set; }
+    private string? Quantity = "3";
     private string? Email = "visitor@example.invalid"; private readonly string Id = "standalone-text-" + Guid.NewGuid().ToString("N");
 }

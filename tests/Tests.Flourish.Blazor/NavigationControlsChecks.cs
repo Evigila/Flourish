@@ -1,6 +1,7 @@
 using System.Reflection;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
+using ArkheideSystem.Flourish.Blazor.Components.Primitives;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,14 @@ internal static class NavigationControlsChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("both production primary navigation entries share the canonical icon-size role", async () =>
+        {
+            var html = await Render<PrimaryNavigationItem>(new() { [nameof(PrimaryNavigationItem.Id)] = "inventory", [nameof(PrimaryNavigationItem.Label)] = "Inventory", [nameof(PrimaryNavigationItem.Href)] = "/inventory", [nameof(PrimaryNavigationItem.Icon)] = "inventory_2" });
+            Require(html.Contains("primary-nav-item", StringComparison.Ordinal) && html.Contains("primary-navigation-icon", StringComparison.Ordinal) && html.Contains("data-icon=\"inventory_2\"", StringComparison.Ordinal), "The primary navigation entry bypassed the production Icon.");
+            var rootPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+            var css = File.ReadAllText(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/foundation.css"));
+            Require(css.Contains(".f-primary-item .f-icon,.primary-nav-item .primary-navigation-icon { --f-icon-size:var(--f-icon-primary-size,24px); width:1em; height:1em; }", StringComparison.Ordinal), "A production primary navigation family missed the shared 24px role.");
+        }));
         tests.Add(("line charts own SVG, exact accessible values and encoded host data without browser imports", async () =>
         {
             var html = await Render<LineChart>(ChartParameters());
@@ -32,7 +41,8 @@ internal static class NavigationControlsChecks
             var parameters = ChartParameters();
             parameters[nameof(LineChart.Series)] = new LineChart.DataSeries[] { new("count", "Hidden", [2, 4], Visible:false), new("amount", "Visible", [100, 200]) };
             var html = await Render<LineChart>(parameters);
-            Require(html.Contains("data-series=\"1\"", StringComparison.Ordinal) && !html.Contains("Hidden", StringComparison.Ordinal), "Toggling visibility reindexed a series or leaked hidden values.");
+            Require(html.Contains("data-series=\"1\"", StringComparison.Ordinal) && !html.Contains("<g data-series=\"0\"", StringComparison.Ordinal)
+                && html.Contains("data-f-selection-key=\"count\"", StringComparison.Ordinal), "Toggling visibility reindexed a series or removed its actual display option.");
             parameters[nameof(LineChart.Series)] = new LineChart.DataSeries[] { new("count", "Hidden", [2, 4], Visible:false) };
             parameters[nameof(LineChart.EmptyText)] = "Select a series";
             html = await Render<LineChart>(parameters);

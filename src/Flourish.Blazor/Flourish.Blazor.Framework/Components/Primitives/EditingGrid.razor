@@ -197,7 +197,7 @@
             }
             if (WidthModule is null)
             {
-                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/data-table-columns.js");
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/editing-grid-columns.js");
                 if (Disposed) { await module.DisposeAsync(); return; }
                 WidthModule = module;
             }
@@ -222,10 +222,6 @@
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 
-    /// <summary>Requests the native confirmation surface without changing host data.</summary>
-    public ValueTask<bool> ConfirmAsync(string message) => Disposed
-        ? ValueTask.FromResult(false)
-        : JS.InvokeAsync<bool>("confirm", message);
     private Task ChangeAsync(int row, int column, string? value) =>
         Disposed || Hidden || EditDisabled || Rows[row].Cells[column].Disabled || Rows[row].Cells[column].ReadOnly ? Task.CompletedTask : CellChanged.InvokeAsync(new(row, column, value));
 

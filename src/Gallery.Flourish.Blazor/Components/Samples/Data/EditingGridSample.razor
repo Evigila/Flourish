@@ -11,7 +11,7 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.EditingGrid")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.EditingGrid", Description = "全部单元格数据为虚构。双击或使用键盘进入编辑。展示文本、金额、日期、多行文本、选择、掩码与链接编辑器。\n复合单元格复用本编辑网格和标准多选控件；宿主只提供值、授权及保存回调，不创建另一个表格。\n字段校验与保存由宿主回调完成。链接单元格跳到板内的本地说明；多单元格粘贴与远程事务通过 GridInteractions 接入。")]
 
 @if (Preview)
 {
@@ -19,7 +19,6 @@
 }
 else
 {
-    <p>全部单元格数据为虚构。双击或使用键盘进入编辑。展示文本、金额、日期、多行文本、选择、掩码与链接编辑器。</p>
     <div class="f-inline-actions">
         <Button Variant="ButtonVariant.Secondary" OnClick="() => ReadOnly = !ReadOnly">@(ReadOnly ? "启用编辑" : "禁用编辑")</Button>
         <Button Variant="ButtonVariant.Secondary" OnClick="UndoAsync" Disabled="@(History.Count == 0)">撤销</Button>
@@ -33,15 +32,13 @@ else
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Rows" CellChanged="ChangeCell" Interactions="Interactions" EditDisabled="ReadOnly"
                             MeasurementRevision="Revision" Label="虚构用品编辑网格" TableLabel="虚构用品" Text="Captions" />
     <p role="status">@Message</p>
-    <p>复合单元格复用本编辑网格和标准多选控件；宿主只提供值、授权及保存回调，不创建另一个表格。</p>
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="TagColumns" Rows="TagRows" EditDisabled="ReadOnly" Label="标准多选单元格" TableLabel="复合单元格" Text="Captions">
         <CellTemplate Context="cell">
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.MultiSelectDropdown TItem="string" TValue="string" Id="@(InfoId + "-tags")" Items="TagOptions"
-                SelectedValues="SelectedTags" ValueSelector="value => value" TextSelector="value => value"
-                SelectionChanged="ToggleTag" EmptySelectionText="未选择" MultipleSelectionText="已选项目" Disabled="cell.Disabled" />
+            <MultiSelectBox Id="@(InfoId + "-tags")" Label="标签" Items="TagOptions" Changed="ChangeTags"
+                            EmptySelectionText="未选择" MultipleSelectionText="已选项目" Disabled="cell.Disabled" />
         </CellTemplate>
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid>
-    <p id="@InfoId">本例在宿主回调中校验字段并保存本地状态。链接单元格会跳到此处。多单元格粘贴与远程事务可通过 GridInteractions 另外接入。</p>
+    <p id="@InfoId">链接目标：本地草稿说明。</p>
 }
 
 @code {
@@ -57,11 +54,11 @@ else
     private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> Rows = Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>();
     private readonly Stack<IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>> History = new(), RedoHistory = new();
     private bool ReadOnly;
-    private static readonly IReadOnlyList<string> TagOptions = ["文具", "日用品", "备品"];
-    private readonly HashSet<string> SelectedTags = ["文具"];
+    private IReadOnlyList<MultiSelectOption> TagOptions = [new("stationery", "文具", Selected: true), new("daily", "日用品"), new("spare", "备品")];
+    private string[] SelectedTags => TagOptions.Where(option => option.Selected).Select(option => option.Label).ToArray();
     private static readonly IReadOnlyList<Primitives.GridColumn> TagColumns = [new("tags", "标签")];
-    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [new(string.Join(';', SelectedTags), $"{SelectedTags.Count} 项", Primitives.GridEditorKind.Template)])];
-    private void ToggleTag(string value) { if (ReadOnly) return; if (!SelectedTags.Add(value)) SelectedTags.Remove(value); }
+    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [new(string.Join(';', SelectedTags), $"{SelectedTags.Length} 项", Primitives.GridEditorKind.Template)])];
+    private void ChangeTags(MultiSelectChange change) { if (ReadOnly) return; TagOptions = change.OrderedKeys.Select(key => TagOptions.Single(option => option.Key == key) with { Selected = change.SelectedKeys.Contains(key) }).ToArray(); }
     private long Revision;
     private string Message = "虚构数据仅在当前组件中保留。";
     private Primitives.GridInteractions Interactions => new()

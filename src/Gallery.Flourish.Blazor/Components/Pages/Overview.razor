@@ -12,8 +12,8 @@
         </UniformGrid>
     </Section>
     <Section Title="@Localization.Parse(TextKey.Home_Setup)">
+        @foreach (var paragraph in Localization.Parse(TextKey.Home_SetupDescription).Split('\n')) { <p>@paragraph</p> }
         <DisplayBoard Dotted="false" Centered="false" CopyText="@Startup"><CodeBlock Text="@Startup" Language="csharp" /></DisplayBoard>
-        <p><LocalizedText Key="@TextKey.Home_SetupDescription" /></p>
     </Section>
 </PageBody>
 @code {

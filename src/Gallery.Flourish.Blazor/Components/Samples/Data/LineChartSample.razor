@@ -1,12 +1,8 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("LineChart")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("LineChart", Description = "共用单位使用默认公共比例；不同单位必须明确启用 IndependentScales，不能把两条相同比例高度误认为相同业务数值。内置显示选择与 DataTable 共用通用 MultiSelectBox；显隐和排序由库持有，业务页只提供序列数据。")]
 
 <LineChart Labels="Labels" Series="Data" Title="虚构订单周趋势" Description="两条示例序列分别归一化；图例提供每条序列的最大值，数据表保留所有原始值。" IndependentScales="true" MaximumLabel="最大值" PointCaption="日期" />
-@if (!Preview)
-{
-    <p>共用单位使用默认公共比例；不同单位必须明确启用 IndependentScales，不能把两条相同比例高度误认为相同业务数值。显示控制器使用现有完整 MultiSelectDropdown，不使用装饰性 DropdownSurface。</p>
-}
 
 @code {
     [Parameter] public bool Preview { get; set; }

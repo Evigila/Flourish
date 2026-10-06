@@ -24,6 +24,11 @@ else
 {
     <CheckBox Label="悬浮打开、移出关闭" @bind-Value="HoverMenu" />
     <ActionMenu Label="示例草稿 A 的操作" Actions="Actions" OpenOnHover="HoverMenu"><TriggerContent>草稿操作 <ExpansionIndicator /></TriggerContent></ActionMenu>
+    <ActionMenu Label="原生内容记录操作">
+        <Button Variant="ButtonVariant.Quiet" role="menuitem" OnClick="EditDraft">编辑草稿</Button>
+        <Button Variant="ButtonVariant.Quiet" role="menuitem" Disabled="true">发布（不可用）</Button>
+        <Button Variant="ButtonVariant.Danger" role="menuitem" OnClick="DeleteDraft">删除草稿</Button>
+    </ActionMenu>
     <p role="status">@Message</p>
 }
 
@@ -38,4 +43,6 @@ else
         new("删除演示草稿", () => SetMessage("已删除本地演示草稿。"), Destructive: true)
     ];
     private Task SetMessage(string message) { Message = message; return InvokeAsync(StateHasChanged); }
+    private Task EditDraft() => SetMessage("已编辑本地演示草稿。");
+    private Task DeleteDraft() => SetMessage("已删除本地演示草稿。");
 }

@@ -17,7 +17,7 @@ else
 
 @code {
     private string EffectiveBusyLabel => DefaultText(nameof(BusyLabel), BusyLabel, "Button_Working", "Working…");
-    [Parameter] public ButtonVariant Variant { get; set; } = ButtonVariant.Filled;
+    [Parameter] public ButtonVariant Variant { get; set; } = ButtonVariant.Primary;
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public string Icon { get; set; } = string.Empty;
     [Parameter] public string Text { get; set; } = string.Empty;
@@ -34,7 +34,9 @@ else
     private string? LinkTabIndex => Unavailable ? "-1" : AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("tabindex", out var index) ? index?.ToString() : null;
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
     private bool IsIconOnly => !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
-    private string ButtonClass => $"f-button {VariantClass} {(IsIconOnly ? "f-button-icon" : null)} {Class}";
+    private bool IsMenuItem => AdditionalAttributes?.Any(attribute => string.Equals(attribute.Key, "role", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(attribute.Value?.ToString(), "menuitem", StringComparison.Ordinal)) == true;
+    private string ButtonClass => $"f-button {VariantClass} {(IsIconOnly ? "f-button-icon" : null)} {(IsMenuItem ? "f-menu-item f-dropdown-item" : null)} {Class}";
     private IReadOnlyDictionary<string, object>? LinkAttributes => AdditionalAttributes is null ? null
         : AdditionalAttributes.Where(attribute => !string.Equals(attribute.Key, "href", StringComparison.OrdinalIgnoreCase))
             .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
@@ -53,8 +55,8 @@ else
     </text>;
     private string VariantClass => Variant switch
     {
-        ButtonVariant.Primary or ButtonVariant.Filled => "f-button-primary f-button-filled",
-        ButtonVariant.Secondary or ButtonVariant.Outlined => "f-button-secondary f-button-outlined",
+        ButtonVariant.Primary => "f-button-primary",
+        ButtonVariant.Secondary => "f-button-secondary",
         ButtonVariant.Danger => "f-button-danger",
         ButtonVariant.Quiet => "f-button-quiet",
         ButtonVariant.Underline => "f-button-underline",

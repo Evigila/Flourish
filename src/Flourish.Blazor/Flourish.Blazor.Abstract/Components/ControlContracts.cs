@@ -6,8 +6,8 @@ using System.Collections.Generic;
 
 namespace ArkheideSystem.Flourish.Blazor.Components;
 
-/// <summary>The appearance of a standard action. Primary and Secondary preserve their previous Filled and Outlined behavior.</summary>
-public enum ButtonVariant { Primary, Secondary, Danger, Quiet, Filled, Outlined, Underline, Elevated }
+/// <summary>The unique appearance contract of a standard action.</summary>
+public enum ButtonVariant { Primary, Secondary, Danger, Quiet, Underline, Elevated }
 
 /// <summary>The geometry of a modal surface.</summary>
 public enum DialogPresentation { Centered, BottomSheet }

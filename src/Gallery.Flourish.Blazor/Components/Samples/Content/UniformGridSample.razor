@@ -27,10 +27,10 @@ else
 {
     <div class="f-inline-actions">
         <Button Text="@(Shape == UniformGridShape.Square ? "切换为矩形" : "切换为方形")" OnClick="ToggleShape" />
-        <Button Variant="ButtonVariant.Outlined" Text="@($"切换外观 · {Variant}")" OnClick="ToggleVariant" />
-        <Button Variant="ButtonVariant.Outlined" Text="@(Columns.HasValue ? "自动分列" : "固定三列")" OnClick="ToggleColumns" />
-        <Button Variant="ButtonVariant.Outlined" Text="@(Rows.HasValue ? "自动行数" : "固定两行")" OnClick="ToggleRows" />
-        <Button Variant="ButtonVariant.Outlined" Text="@(IconSupport == false ? "启用图标分区" : "使用连续布局")" OnClick="ToggleIconSupport" />
+        <Button Variant="ButtonVariant.Secondary" Text="@($"切换外观 · {Variant}")" OnClick="ToggleVariant" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(Columns.HasValue ? "自动分列" : "固定三列")" OnClick="ToggleColumns" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(Rows.HasValue ? "自动行数" : "固定两行")" OnClick="ToggleRows" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(IconSupport == false ? "启用图标分区" : "使用连续布局")" OnClick="ToggleIconSupport" />
     </div>
     <UniformGrid Shape="Shape" Variant="Variant" Columns="Columns" Rows="Rows" IconSupport="IconSupport">
         <UniformGridItem Title="草稿" Icon="palette" Text="待检查" />

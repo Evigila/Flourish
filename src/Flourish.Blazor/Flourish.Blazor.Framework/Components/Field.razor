@@ -7,12 +7,7 @@
 <div @attributes="AdditionalAttributes" class="f-field @(FullWidth ? "f-field-full" : null) @Class">
     <label id="@(LabelId ?? Id + "-label")" class="f-field-label" for="@(ControlId ?? Id)">@Label@if (Required) { <span class="f-required" aria-label="@Ui("Input_Required", "Required")">*</span> }</label>
     <div class="f-field-control"><CascadingValue Value="@Context">@ChildContent</CascadingValue></div>
-    @if (Messages.Count > 0)
-    {
-        <div class="f-field-errors" id="@(Id + "-error")" role="alert">
-            @foreach (var message in Messages) { <span>@message</span> }
-        </div>
-    }
+    <ValidationMessages Id="@(Id + "-error")" For="For" Error="@Error" />
 </div>
 
 @code {

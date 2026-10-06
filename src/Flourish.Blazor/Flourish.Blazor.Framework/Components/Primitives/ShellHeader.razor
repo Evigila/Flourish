@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<header class="shell-header @CssClass">
+<header class="shell-header @Class">
     <div class="shell-header-start">
         <a class="shell-header-brand" href="@HomeHref" aria-label="@HomeAriaLabel">
             <span class="shell-header-logo" aria-hidden="true">
@@ -13,28 +13,37 @@
                 }
             </span>
         </a>
-        @Services
+        @if (Services is not null)
+        {
+            <div class="f-topbar-slot">@Services</div>
+        }
     </div>
     @if (LeadingActions is not null || !string.IsNullOrWhiteSpace(IdentityName) || EndActions is not null)
     {
         <div class="shell-header-actions">
-            @LeadingActions
+            @if (LeadingActions is not null)
+            {
+                <div class="f-topbar-slot">@LeadingActions</div>
+            }
             @if (!string.IsNullOrWhiteSpace(IdentityName))
             {
                 @if (!string.IsNullOrWhiteSpace(IdentityHref))
                 {
                     <a class="shell-header-identity" href="@IdentityHref" aria-label="@IdentityAriaLabel">
-                        <Glyph Name="user" /><strong>@IdentityName</strong>
+                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" /><strong>@IdentityName</strong>
                     </a>
                 }
                 else
                 {
                     <span class="shell-header-identity" aria-label="@IdentityAriaLabel">
-                        <Glyph Name="user" /><strong>@IdentityName</strong>
+                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" /><strong>@IdentityName</strong>
                     </span>
                 }
             }
-            @EndActions
+            @if (EndActions is not null)
+            {
+                <div class="f-topbar-slot">@EndActions</div>
+            }
         </div>
     }
 </header>
@@ -48,7 +57,7 @@
     [Parameter] public string? IdentityName { get; set; }
     [Parameter] public string? IdentityHref { get; set; }
     [Parameter] public string? IdentityAriaLabel { get; set; }
-    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? Services { get; set; }
     [Parameter] public RenderFragment? LeadingActions { get; set; }
     [Parameter] public RenderFragment? EndActions { get; set; }

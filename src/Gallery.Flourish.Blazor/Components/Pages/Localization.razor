@@ -3,14 +3,14 @@
 
 <PageTitle>@Localization.Parse(TextKey.Nav_Localization) · Gallery</PageTitle>
 <PageBody>
-    <PageHeading Title="@Localization.Parse(TextKey.Nav_Localization)" ParentHref="/framework" ParentLabel="@Localization.Parse(TextKey.Nav_Framework)" />
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_Localization)" />
     <Section Title="@Localization.Parse(TextKey.Localization_IntroTitle)">
-        <p><LocalizedText Key="@TextKey.Localization_Introduction" /></p>
-        <p><LocalizedText Key="@TextKey.Localization_Scope" /></p>
+        @foreach (var paragraph in Localization.Parse(TextKey.Localization_Introduction).Split('\n')) { <p>@paragraph</p> }
+        @foreach (var paragraph in Localization.Parse(TextKey.Localization_Scope).Split('\n')) { <p>@paragraph</p> }
     </Section>
     <Section Title="@Localization.Parse(TextKey.Localization_Sample)">
         <DisplayBoard>
-            <LanguagePicker />
+            <LanguagePicker MaxWidth="16rem" />
             <Button Text="@Localization.Parse(TextKey.Show_Dialog)" OnClick="@(_ => open = true)" />
         </DisplayBoard>
         <Dialog Title="@Localization.Parse(TextKey.Dialog_Title)" @bind-IsOpen="open">
@@ -21,10 +21,10 @@
         <DisplayBoard Dotted="false" Centered="false" CopyText="@Registration"><CodeBlock Text="@Registration" Language="csharp" /></DisplayBoard>
     </Section>
     <Section Title="@Localization.Parse(TextKey.Localization_Scenario)">
-        <Field Id="localization-format" Label="@Localization.Parse(TextKey.Format)">
-            <SelectBox TValue="string" Options="@formats" Value="@Localization.FormatCulture.Name" ValueChanged="ChangeFormat" ValueExpression="@(() => Localization.FormatCulture.Name)" />
-        </Field>
         <DisplayBoard>
+            <Field Id="localization-format" Label="@Localization.Parse(TextKey.Format)" style="width:20rem;max-width:100%">
+                <SelectBox TValue="string" Options="@formats" Value="@Localization.FormatCulture.Name" ValueChanged="ChangeFormat" ValueExpression="@(() => Localization.FormatCulture.Name)" />
+            </Field>
             <LocalizedText Key="@TextKey.Formatted_Sample" Arguments="@arguments" />
         </DisplayBoard>
         <DataTable TItem="SampleRecord" Items="@records" Columns="@Columns" />

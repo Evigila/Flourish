@@ -1,19 +1,20 @@
-<article class="@(Prominent ? "f-card f-card-prominent" : "f-card")">
+<article class="@(Prominent ? "f-card f-card-prominent" + (Stacked ? " f-card-stacked" : "") : "f-card")">
     @if (Prominent)
     {
-        @if (Actions is not null) { <div class="f-card-prominent-actions">@Actions</div> }
+        @if (!Stacked && Actions is not null) { <div class="f-card-prominent-actions">@Actions</div> }
         <div class="f-card-prominent-copy">
             @if (!string.IsNullOrEmpty(Title)) { <p class="f-card-prominent-text">@Title</p> }
             @if (!string.IsNullOrEmpty(Text)) { <p class="f-card-prominent-text">@Text</p> }
             @ChildContent
         </div>
+        @if (Stacked && Actions is not null) { <div class="f-card-prominent-actions">@Actions</div> }
     }
     else
     {
         @if (!string.IsNullOrEmpty(Title)) { <h3>@Title</h3> }
         @if (!string.IsNullOrEmpty(Text)) { <p>@Text</p> }
         @ChildContent
-        @if (Actions is not null) { <div class="f-inline-actions">@Actions</div> }
+        @if (Actions is not null) { <InlineActions>@Actions</InlineActions> }
     }
 </article>
 @code {
@@ -21,8 +22,10 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     /// <summary>Display-page variant with left actions and large body copy; does not create another page heading.</summary>
     [Parameter] public bool Prominent { get; set; }
+    /// <summary>In prominent mode, places copy above actions at every viewport width. Ordinary cards are already vertical.</summary>
+    [Parameter] public bool Stacked { get; set; }
     /// <summary>Plain body text. Prominent mode uses heading-sized typography while retaining paragraph semantics.</summary>
     [Parameter] public string? Text { get; set; }
-    /// <summary>Real host-supplied controls, placed before the copy in prominent mode and after it otherwise.</summary>
+    /// <summary>Real host-supplied controls. Horizontal prominent cards place them before copy; stacked and ordinary cards place them after it.</summary>
     [Parameter] public RenderFragment? Actions { get; set; }
 }

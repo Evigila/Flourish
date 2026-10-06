@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const source = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/shell.js', import.meta.url), 'utf8');
-const { updateCompactHeading, resetCompactHeading } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const { updateCompactHeading, resetCompactHeading, attach, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
 function fixture(range = 110, shrink = 102) {
     const attrs = new Set(), events = [];
@@ -69,4 +69,49 @@ test('document replacement and navigation reset clear the blocked geometry', () 
     assert.equal(f.compact(), false);
     f.content.range = 500; f.content.scrollTop = 100; f.settle(); assert.equal(f.compact(), true);
     resetCompactHeading(f.root); f.content.scrollTop = 0; f.settle(); assert.equal(f.compact(), false);
+});
+
+test('shell measurement requires and owns the native ResizeObserver lifecycle', () => {
+    const previous = { window: globalThis.window, ResizeObserver: globalThis.ResizeObserver };
+    const observers = [], properties = new Map();
+    const titlebar = { height: 68, getBoundingClientRect() { return { height: this.height }; } };
+    const primary = { width: 80, getBoundingClientRect() { return { width: this.width }; } };
+    const root = { attrs: new Set(), dataset: {}, style: { setProperty: (key, value) => properties.set(key, value) },
+        querySelector: selector => selector === '.f-titlebar' ? titlebar : selector === '.f-primary-navigation' ? primary : null,
+        querySelectorAll: () => [], addEventListener() {}, removeEventListener() {},
+        hasAttribute(name) { return this.attrs.has(name); }, removeAttribute(name) { this.attrs.delete(name); } };
+    const content = { scrollTop: 0, addEventListener() {}, removeEventListener() {} };
+    globalThis.window = { addEventListener() {}, removeEventListener() {} };
+    globalThis.ResizeObserver = class {
+        constructor(callback) { this.callback = callback; this.observed = []; observers.push(this); }
+        observe(node) { this.observed.push(node); }
+        disconnect() { this.disconnected = true; }
+    };
+    try {
+        attach(root, content);
+        assert.deepEqual(observers[0].observed, [titlebar, primary]);
+        assert.equal(properties.get('--f-shell-titlebar-size'), '68px');
+        titlebar.height = 96; observers[0].callback();
+        assert.equal(properties.get('--f-shell-titlebar-size'), '96px');
+        detach(root);
+        assert.equal(observers[0].disconnected, true);
+        delete globalThis.ResizeObserver;
+        assert.throws(() => attach(root, content), ReferenceError,
+            'An unsupported browser must fail instead of silently disabling live shell measurement.');
+    } finally {
+        globalThis.window = previous.window;
+        if (previous.ResizeObserver === undefined) delete globalThis.ResizeObserver;
+        else globalThis.ResizeObserver = previous.ResizeObserver;
+    }
+});
+
+test('production interaction sources do not select alternative layouts when required modern APIs are absent', async () => {
+    for (const name of ['shell.js', 'primitives/primary-navigation-item.js', 'patterns/surfaces.js',
+        'section-navigator.js', 'primitives/editing-grid-columns.js', 'primitives/editing-grid.js',
+        'presentation/offers.js', 'data.js']) {
+        const text = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/' + name, import.meta.url), 'utf8');
+        assert.doesNotMatch(text, /typeof[^;\n]*(?:ResizeObserver|MutationObserver|requestAnimationFrame|showPopover|hidePopover)/, name);
+        assert.doesNotMatch(text, /if\s*\(!window\?\.matchMedia\)/, name);
+        assert.doesNotMatch(text, /runtime without observers|\.f-page-heading, \.page-heading/, name);
+    }
 });

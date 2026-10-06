@@ -2,9 +2,35 @@
 
 This document explains the maintained directory and file tree from the repository root. Every listed node has a short responsibility description. Flourish owns framework libraries, optional Design libraries and Culture bridges. External Culture dependencies are NuGet packages; application pages and business data remain in their consuming hosts.
 
+## Current Blazor boundary after the 2026-10-06 breaking refactor
+
+Framework has one interactive record entry: Components.DataTable with Abstract TableColumn/TableSearchRequest, shared TableData and Components.TablePreferences. Primitives.DataTable/DataSearch and their independent contracts, processing helpers and old styles are deleted. ListView is the static comparison scenario; EditingGrid remains a distinct spreadsheet with editing-grid-columns.js, not a second record-list contract. Display ordering acts on whole items; sorting is exposed only through headers, not a toolbar.
+
+The active API is AddFlourishFramework and its project/top-bar/navigation builders. Retired application/title/group builders, NavigationGroups shell adapters, icon/button/grid aliases, ThemePalette and CSS theme aliases are removed. The current component inventory has only General, Scenario and BuildingBlock classifications. See [the current API guide](component-api-organization.md) for supported entry points and ownership.
+
+Current Framework composition entries include FormGroup.razor, InlineActions.razor, ImagePreview.razor, AttributionFooter.razor and CopyText.razor. The later user-authorized generic-control convergence removes ConfirmationHost/ConfirmationService and ReconnectDialog instead of retaining a renamed host or adapter. Dialog now owns awaiting results, cancellation and browser-controlled keyed views; business and protocol composites instantiate it directly with ordinary Button. Components.Dialog owns lazy/retained content and the one native top-layer lifecycle, including asynchronous row-action focus restoration through primitives/interaction-origin.js. The retired bottom-sheet.js controller is deleted. A native reconnect protocol composite uses Dialog BrowserControlled, DialogView, Notice, ProgressBar and Button. The host owns protocol identifiers and state transitions; controls.js owns view visibility, modality and focus. The reconnect-specific stylesheet is deleted; DialogResultChecks/DialogViewChecks cover the shared lifecycles.
+
+Gallery adds Components/Pages/ShellExample.razor at /examples/shell. The configured application shell is a standalone document, not an embedded copy inside another shell. Login, account-selection and product/Pricing examples use current production entries and fictitious business data. NoCompatibilityApiChecks.cs rejects retired public contracts; DialogResultChecks.cs and DialogViewChecks.cs verify the real shared Dialog and Button behavior. Existing API, interop, dropdown and lifecycle checks use only current contracts.
+
+Browser baseline checks require current native Dialog/Popover, ResizeObserver and the respective observer/media APIs. No old browser portal, modal-backdrop or clipboard execCommand renderer is selected. Current responsive/reduced-motion behavior and readable SSR remain supported. ReferenceDropdown uses Value/ValueChanged; ShellHeader and both layout Patterns use Class. Desktop projects and their platform-specific behavior are outside this Blazor refactor and are not included in the 1.1.0 package set.
+
+## General control convergence on 2026-10-06
+
+The [generic-control audit](generic-control-convergence.md) identifies nine removed wrappers/scenarios and remaining groups needing genuine generic capabilities before consolidation. Public component coverage is now 80, with 683 parameter rows and 307 defaults. Confirmation and circuit interruption use the actual general Dialog; BottomSheet is only its Presentation value. StandaloneTextBox owns numeric native text, ContentSurface/PresentationBand compose full-height documents, and PageBody/PageHeading/Section compose lists.
+
+Gallery adds Components/Pages/ReconnectExample.razor at /examples/overlays/reconnect and wwwroot/reconnect-example.js. The example only maps fictional states to the library's controls.js helpers; it does not clone modality or call a server. SampleFor.Description moves technical notes outside the shared DisplayBoard.
+
+The subsequent Gallery string-binding repair corrects NavigationChoicesSample and copied API examples without changing the production control contract. build/Test-GalleryNavigation.ps1 supplies a loopback-only real-endpoint regression for current links, retained panels, query fallbacks, repeated requests and related sample values. See [the diagnosis](bugfix-reports/2026-10-06_144432_gallery-navigation-choice-literal-key.md).
+
+## Maintained tree
+
+The 2026-10-06 banner/wizard/grid follow-up changes the shared PresentationBand minimum to 800px and the existing UniformGrid CSS to full-container rectangular tracks while retaining bounded squares. Gallery adds Components/Pages/WizardExample.razor at /examples/display/wizard, with localized finite choices using actual UniformGridButton and no new control/API family. See [the accepted change record](currentproject-changelogs/2026-10-06_100324_refine-banner-default-and-grid-choice-scenes.md). The API guide and source catalogs document current shape/scene behavior.
+
+The subsequent [semantic-scene audit](bugfix-reports/2026-10-06_shared-display-and-production-scenes.md) introduced shared display selection, NavigationChoices and ValidationMessages. The user-authorized 2026-10-06 follow-up explicitly supersedes that audit's DisplayOptions/MultiSelectDropdown separation: Framework Components/MultiSelectBox.razor and MultiSelectOption.cs now provide the one general production selector and MultiSelectChange snapshot. DataTable and LineChart map display members to that entry with an explicit localized Display label and enabled ordering. Framework owns wwwroot/multi-select-box.js/css, Design owns optional wwwroot/multi-select-box.css paint, and the retired display-options assets and MultiSelectDropdown renderer/styles are deleted. Field still delegates error rendering to ValidationMessages. Gallery has one Inputs/MultiSelectBoxSample, adjacent to SelectBox, and its EditingGrid composite cell reuses the same general selector. The API guide explains current contracts; earlier audit history is retained with this explicit supersession.
+
 The tree omits all docs/ and docs-ai/ directories, version-control internals, IDE state, generated builds and caches (bin/, obj/, artifacts/, TestResults/, .packages/, packages/, node_modules/, x64/, x86/ and ARM64/), local agent state and archived directories. Empty directories without maintained files are omitted.
 
-The original tree snapshot covered 997 maintained files and 143 directories, plus the repository root. Workspace additions below extend that snapshot; generated package/cache evidence remains outside this maintained tree.
+The maintained tree below has been pruned against current paths after the 2026-10-06 breaking Blazor refactor. New convergence entries are described in the current boundary section below; generated package/cache evidence remains outside this maintained tree.
 
 ```text
 Flourish/ — Repository root for framework libraries, optional extensions, Gallery hosts and verification.
@@ -24,12 +50,17 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 ├── script/ — Contains local documentation preview commands.
 │   ├── preview-docs-en-us.ps1 — Builds and serves the existing English DocFX site locally.
 │   └── preview-docs-zh-cn.ps1 — Builds and serves the existing Chinese DocFX site locally.
-├── scripts/ — Contains local release preparation, package inspection and user-confirmed tag publishing commands.
+├── scripts/ — Contains allowlisted local application startup, release preparation, package inspection and user-confirmed tag publishing commands.
 │   ├── Publish-Helper.ps1 — Prepares packages and optionally validates clean master, confirms and pushes the matching release tag.
 │   ├── Release-Common.ps1 — Loads release settings, reads versions, runs checked commands and validates release tag ancestry.
 │   ├── ReleaseSettings.psd1 — Lists the release solution, version source, ordered package IDs, dependencies, required assets and checks.
+│   ├── Start-Common.ps1 — Validates runnable-project selections and constructs checked restore/build/run arguments without shell-generated commands.
+│   ├── Start-Project.ps1 — Selects a local Gallery or diagnostic host, verifies the existing SDK and launches Release by default.
+│   ├── StartSettings.json — Declares the four runnable project identities, paths, platform kinds and existing HTTP launch profiles.
 │   ├── Test-Release.ps1 — Builds and tests Release, packs every configured library and verifies the resulting package set.
+│   ├── Test-StartProject.ps1 — Checks launcher plans, failure exit codes, allowlists, SDK-free discovery and batch behavior without starting applications.
 │   └── Verify-PackageSet.ps1 — Checks exact package identities, versions, dependencies and required packaged assemblies and assets.
+├── start.bat — Calls the repository startup script through Windows PowerShell without a Visual Studio launcher.
 ├── src/ — Contains framework libraries, optional extensions and runnable Gallery applications.
 │   ├── Flourish.Blazor/ — Groups three Blazor libraries, the dependency-only convenience package and the release solution.
 │   │   ├── Flourish.Blazor/ — Defines the dependency-only convenience package with opt-in service activation.
@@ -40,13 +71,9 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── PresentationTone.cs — Defines Canvas, Surface and Primary color-role choices for presentation bands.
 │   │   │   │   ├── TableContracts.cs — Defines columns, row actions, sorting/view choices and localizable captions.
 │   │   │   │   ├── UniformGridShape.cs — Defines rectangular and square cell shapes.
-│   │   │   │   └── UniformGridVariant.cs — Defines cell paint variants and compatibility aliases.
-│   │   │   ├── Primitives/ — Defines public table, selection, identity, severity and editing-grid models.
-│   │   │   │   ├── DataColumn.cs — Describes local table column display, sort and search metadata.
-│   │   │   │   ├── DataSearchRequest.cs — Carries the selected search column and query.
+│   │   │   │   └── UniformGridVariant.cs — Defines the unique Elevated, Filled, Outlined and Danger cell paint variants.
+│   │   │   ├── Primitives/ — Defines specialized selection and editing-grid models; interactive record contracts live in Components.
 │   │   │   │   ├── GridContracts.cs — Describes editing-grid columns, rows, cells, proposed edits and captions.
-│   │   │   │   ├── IdentityFact.cs — Carries an identity label and value.
-│   │   │   │   ├── NoticeSeverity.cs — Defines presentation severity independently of its rendering.
 │   │   │   │   └── SelectionContracts.cs — Defines service links and typed reference/selection models.
 │   │   │   ├── ApplicationData.cs — Defines navigation, top-bar, placement and appearance records in their established namespaces.
 │   │   │   ├── ApplicationContracts.cs — Declares project branding, top-bar display, navigation, layout and appearance contracts with optional text references.
@@ -62,40 +89,22 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   ├── content-surface.css — Styles content surfaces, page headings and section spacing.
 │   │   │   │   │   └── navigation-surface.css — Styles navigation surfaces, active items and top bar appearance.
 │   │   │   │   ├── primitives/ — Contains optional skin styles for primitive components.
-│   │   │   │   │   ├── AccessSurface.css — Styles entry-page branding and content areas.
-│   │   │   │   │   ├── AppIcon.css — Sizes primitive icons supplied by the shared Material Symbols Outlined component.
-│   │   │   │   │   ├── BottomSheet.css — Styles the bottom panel, backdrop and right-aligned action footer without dividers.
-│   │   │   │   │   ├── DataGrid.css — Styles table headers, rows, cell states and column actions.
 │   │   │   │   │   ├── DataPager.css — Styles pagination buttons and the page summary.
-│   │   │   │   │   ├── DataSearch.css — Styles table search and filter controls.
-│   │   │   │   │   ├── DisclosureSection.css — Styles expandable section headings and content.
 │   │   │   │   │   ├── EditingGrid.css — Styles editable cells and keeps popup colors independent of cell selection.
 │   │   │   │   │   ├── FieldControl.css — Styles shared input fields, validation messages and focus states.
-│   │   │   │   │   ├── FilledIdentityCard.css — Styles identity cards, initials and supporting facts.
-│   │   │   │   │   ├── FormActionBar.css — Styles uniform-grid action cells while retaining ordinary button shapes.
-│   │   │   │   │   ├── FormFields.css — Styles field group spacing and alignment.
-│   │   │   │   │   ├── FormSurface.css — Styles form page headings, content width and action areas.
-│   │   │   │   │   ├── Glyph.css — Sizes shell glyphs and lets them inherit the surrounding text color.
 │   │   │   │   │   ├── InteractionBoundary.css — Styles keyboard and pointer focus origin states.
 │   │   │   │   │   ├── MaskedInput.css — Styles masked inputs and their validation state.
-│   │   │   │   │   ├── MultiSelectDropdown.css — Styles multi-value selections, option lists and search fields.
 │   │   │   │   │   ├── NoticeTrigger.css — Colors circular status indicators and their attached explanations.
 │   │   │   │   │   ├── PrimaryNavigationItem.css — Styles primary item hover, pressed, active and disabled states.
 │   │   │   │   │   ├── primitives.css — Imports the optional theme styles for primitive components.
-│   │   │   │   │   ├── RecordPageHeading.css — Styles record titles, parent links above the title and aligned actions.
 │   │   │   │   │   ├── ReferenceDropdown.css — Styles reference selection, search and option states.
-│   │   │   │   │   ├── RowActionMenu.css — Styles row menu triggers, panels and action items.
 │   │   │   │   │   ├── SearchAutocomplete.css — Styles search suggestions, active options and query input states.
-│   │   │   │   │   ├── SelectionDropdownSurface.css — Styles shared dropdown panels and option layout.
 │   │   │   │   │   ├── ServiceMenu.css — Styles the rounded header menu trigger and its options.
 │   │   │   │   │   ├── ShellHeader.css — Styles branding, identity and menu zones in the top bar.
 │   │   │   │   │   ├── StandaloneMaskedInput.css — Styles mask-aware inputs outside a form field wrapper.
 │   │   │   │   │   ├── SystemNavigationMenu.css — Styles system navigation menu items and states.
-│   │   │   │   │   ├── ToggleIndicator.css — Styles a compact binary state marker.
-│   │   │   │   │   ├── ToggleSection.css — Styles enable switches and optional section content.
-│   │   │   │   │   ├── ToggleSwitch.css — Styles the switch track, thumb and binary states.
-│   │   │   │   │   └── UniformGrid.css — Styles equal-width grid spacing and responsive columns.
-│   │   │   │   ├── controls.css — Defines button, input, card and floating-control appearance, plus shared Notice and StatusNotice semantic colors.
+│   │   │   │   ├── multi-select-box.css — Paints the general multi-selection control through shared palette roles.
+│   │   │   │   ├── controls.css — Defines button, input, card, floating-control and production Notice appearance.
 │   │   │   │   ├── data.css — Defines themed table, sorting, selection and row-action appearance.
 │   │   │   │   ├── data-search.css — Normalizes the canonical search Field font weight within the library.
 │   │   │   │   ├── design.css — Imports the optional theme's foundation, control, table and composition styles.
@@ -112,14 +121,12 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── section-navigator.css — Styles section dots, active links and section-label tooltips.
 │   │   │   │   ├── split-button.css — Styles both split-button actions and their shared selection and focus states.
 │   │   │   │   ├── static-surfaces.css — Styles static server-rendered surfaces and shared form boundaries with Design tokens.
-│   │   │   │   ├── theme-aliases.css — Maps primitive color aliases to the optional theme's semantic tokens.
 │   │   │   │   └── uniform-grid.css — Styles shared grid cells, title and body roles, interaction states and filled surfaces.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   ├── AppearancePalette.cs — Validates configurable palette seeds and selects fixed dark defaults without deriving colors.
 │   │   │   ├── AssemblyInfo.cs — Allows the Blazor test project to inspect theme internals.
 │   │   │   ├── DesignServiceCollectionExtensions.cs — Registers optional theme configuration and per-scope appearance services.
 │   │   │   ├── Flourish.Blazor.Design.csproj — Defines the optional Razor theme package and bundled visual assets.
-│   │   │   └── ThemePalette.cs — Resolves configurable palette seeds and CSS variables for legacy theme hosts.
 │   │   ├── Flourish.Blazor.Framework/ — Implements controls, shell behavior and browser interop.
 │   │   │   ├── Components/ — Contains public shell, page, input, action and data components.
 │   │   │   │   ├── Internal/ — Contains internal rendering helpers shared by public controls.
@@ -128,50 +135,24 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── Patterns/ — Contains composed navigation, content and record-list page surfaces.
 │   │   │   │   │   ├── ContentSurface.razor — Composes a title bar and content in an explicit business-scroll or document-flow mode, with an optional footer slot.
 │   │   │   │   │   ├── NavigationSurface.razor — Composes a top bar, two navigation levels and page content.
-│   │   │   │   │   └── RecordListPage.razor — Composes a reusable search, table and pager page from supplied records.
 │   │   │   │   ├── Primitives/ — Contains detailed dropdown, grid, input and page composition components.
 │   │   │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   │   │   ├── AccessBrand.razor — Renders a logo and application identity for an entry page.
-│   │   │   │   │   ├── AccessSurface.razor — Composes the brand area and content of an entry page.
-│   │   │   │   │   ├── AppIcon.razor — Delegates named icons to Icon and applies the requested primitive size class.
-│   │   │   │   │   ├── BottomSheet.razor — Shows a bottom modal with scrollable content and an optional action footer.
 │   │   │   │   │   ├── DataPager.razor — Renders controls for selecting a loaded result page.
-│   │   │   │   │   ├── DataSearch.razor — Combines text search with the table filter interface.
-│   │   │   │   │   ├── DataTable.razor — Renders table rows, selection, sorting and column configuration.
-│   │   │   │   │   ├── DisclosureSection.razor — Wraps an expandable page section and its open state.
 │   │   │   │   │   ├── EditingGrid.razor — Renders editable cells and bridges keyboard, selection and clipboard operations.
-│   │   │   │   │   ├── FilledIdentityCard.razor — Displays an identity summary in a filled card surface.
-│   │   │   │   │   ├── FormActionBar.razor — Positions form actions and supporting status content.
-│   │   │   │   │   ├── FormFields.razor — Lays out labelled fields inside a form surface.
-│   │   │   │   │   ├── FormSurface.razor — Composes a form heading, fields, status and actions.
-│   │   │   │   │   ├── Glyph.razor — Delegates shell glyph names to the shared Material Symbols Outlined component.
 │   │   │   │   │   ├── GridInteractions.cs — Bridges grid keyboard and clipboard requests to host callbacks.
 │   │   │   │   │   ├── InputBehaviorBinding.cs — Loads shared browser input behavior through the JavaScript module cache.
 │   │   │   │   │   ├── InteractionBoundary.razor — Tracks interaction origin and groups related focus behavior.
 │   │   │   │   │   ├── MaskedInput.razor — Provides mask-aware input editing and validation.
-│   │   │   │   │   ├── MultiSelectDropdown.razor — Selects several values and preserves full-option width when its visible choices are filtered.
 │   │   │   │   │   ├── NavigationGuard.razor — Intercepts navigation and asks the host whether leaving is allowed.
 │   │   │   │   │   ├── NoticeTrigger.razor — Associates a named status glyph with its hover and focus explanation.
-│   │   │   │   │   ├── PageContent.razor — Positions one section within a page.
-│   │   │   │   │   ├── PageContents.razor — Groups a page's ordered content sections.
-│   │   │   │   │   ├── PageHeading.razor — Displays a page title, subtitle and optional actions with scroll-aware spacing.
-│   │   │   │   │   ├── PageLoading.razor — Displays the primitive page loading surface.
 │   │   │   │   │   ├── PrimaryNavigationItem.razor — Renders a primary destination with active, hover and disabled states.
-│   │   │   │   │   ├── RecordPageHeading.razor — Displays a record title beneath its parent link and optional actions.
 │   │   │   │   │   ├── ReferenceDropdown.razor — Selects one reference with search, keyboard navigation and independent popup width.
-│   │   │   │   │   ├── RowActionMenu.razor — Displays a row's contextual actions with outside-click dismissal.
 │   │   │   │   │   ├── SearchAutocomplete.razor — Displays suggestions while a user enters a search query.
 │   │   │   │   │   ├── SecondaryNavigationItem.razor — Renders a secondary route link with prefix matching and explicit current-page semantics.
-│   │   │   │   │   ├── SelectionDropdownSurface.razor — Provides shared layout and focus behavior for dropdown options.
 │   │   │   │   │   ├── ServiceMenu.razor — Displays a dropdown of application destinations.
 │   │   │   │   │   ├── ShellHeader.razor — Displays logo, application name, menus and identity actions.
 │   │   │   │   │   ├── StandaloneMaskedInput.razor — Provides a mask-aware input outside a form's field bindings.
-│   │   │   │   │   ├── StatusNotice.razor — Displays primitive semantic status text and optional actions.
-│   │   │   │   │   ├── TablePreferences.cs — Keeps a circuit's table column presentation preferences.
-│   │   │   │   │   ├── ToggleIndicator.razor — Displays a compact binary state indicator.
-│   │   │   │   │   ├── ToggleSection.razor — Combines an enable switch with optional section content.
-│   │   │   │   │   ├── ToggleSwitch.razor — Edits a binary setting through a switch control.
-│   │   │   │   │   └── UniformGrid.razor — Arranges content into equal-width grid columns.
 │   │   │   │   ├── AccessActions.razor — Arranges standard buttons for access-entry and small presentation action groups.
 │   │   │   │   ├── AccessFormSurface.razor — Organizes access-page fields and submit controls without creating a form or authentication behavior.
 │   │   │   │   ├── AccessPanel.razor — Provides a centered access panel with brand, content and action slots, without creating another main element.
@@ -179,7 +160,6 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── ApplicationLayout.razor — Connects routed content to the shell and outputs stylesheet links and the configured tab icon.
 │   │   │   │   ├── ApplicationShell.razor — Renders top bar content, route links and separate branch disclosure buttons.
 │   │   │   │   ├── BackToTop.razor — Composes a standard icon button with native fragment fallback and shared region-scrolling lifecycle.
-│   │   │   │   ├── BottomSheet.razor — Shows a dismissible panel anchored to the bottom of the viewport.
 │   │   │   │   ├── Button.razor — Exposes ordinary action buttons with visual variants, busy states and click behavior.
 │   │   │   │   ├── Card.razor — Groups related content in a surface with selectable visual variants.
 │   │   │   │   ├── CheckBox.razor — Renders a bound checkbox with optional label wrapping and a preserved boolean submission value.
@@ -188,6 +168,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── DataSearch.razor — Composes canonical columns and search requests with standard fields and a same-row filter slot.
 │   │   │   │   ├── DataTable.razor — Owns canonical browsing, retained editing purposes, native transports and bounded progressive SSR enhancement.
 │   │   │   │   ├── DateBox.razor — Wraps typed native date input with binding, disabled state and standard field semantics.
+│   │   │   │   ├── DialogView.cs — Defines a keyed content view shared by controlled and browser-owned dialogs.
 │   │   │   │   ├── Dialog.razor — Displays modal content with focus handling and dismissal behavior.
 │   │   │   │   ├── Disclosure.razor — Expands and collapses content below a labelled trigger.
 │   │   │   │   ├── DisplayBoard.razor — Displays preview content or formatted code with an explicit copy action.
@@ -198,12 +179,14 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── FilePicker.razor — Wraps native file selection with a visible optional label, accepted types and upload change notification.
 │   │   │   │   ├── FormActions.razor — Groups the actions at the end of a form.
 │   │   │   │   ├── FormLayout.razor — Composes form content, sections and its action area.
-│   │   │   │   ├── Icon.razor — Renders a decorative Material Symbols Outlined codepoint from a name or compatibility alias.
+│   │   │   │   ├── Icon.razor — Renders the official Material Symbols Outlined name through one icon catalog.
 │   │   │   │   ├── IdentityCard.razor — Displays a person's name, initials and supporting facts.
 │   │   │   │   ├── InputSemantics.cs — Combines field identity, required state, invalid state and error descriptions with explicit native attributes.
 │   │   │   │   ├── LineChart.razor — Renders stable decimal series with theme roles, explicit scales and accessible exact values.
 │   │   │   │   ├── ListView.razor — Renders static read-only tabular lists with shared columns, formatting, cell templates and accessible row headers, without JavaScript or table operations.
 │   │   │   │   ├── LoadingState.razor — Displays a loading indicator and supporting message.
+│   │   │   │   ├── MultiSelectBox.razor — Owns the general multi-selection menu, complete validated snapshots, search/creation and optional ordering.
+│   │   │   │   ├── MultiSelectOption.cs — Defines stable option keys, selection constraints and complete MultiSelectChange snapshots.
 │   │   │   │   ├── Notice.razor — Displays a semantic information, success, warning or error message.
 │   │   │   │   ├── NumberBox.razor — Renders typed bound numeric input with field validation and input/change event selection.
 │   │   │   │   ├── OfferCard.razor — Renders an identified offer title, description and standard actions, registering with its containing offer stage.
@@ -220,12 +203,9 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── SectionNavigator.razor — Shows supplied or discovered section links beside the host content.
 │   │   │   │   ├── SelectBox.razor — Renders typed bound selections with native attributes and standard field semantics.
 │   │   │   │   ├── SplitButton.razor — Combines independent primary and secondary actions with shared selection and disabled state.
-│   │   │   │   ├── StandaloneCheckBox.razor — Renders a standalone checkbox with native POST value and optional outer-label compatibility.
-│   │   │   │   ├── StandaloneNumberBox.razor — Renders native numeric input with preserved string POST values and browser constraints.
+│   │   │   │   ├── StandaloneCheckBox.razor — Renders a standalone checkbox with native POST value and explicit native outer-label composition.
 │   │   │   │   ├── StandaloneSelectBox.razor — Renders typed native selections for standalone callbacks and static POST forms.
 │   │   │   │   ├── StandaloneTextBox.razor — Renders native text input for static POST forms or callbacks without requiring a binding expression.
-│   │   │   │   ├── StaticDialog.razor — Renders a host-controlled native dialog surface without requiring interactive component state.
-│   │   │   │   ├── TableSurface.razor — Wraps a semantic native table in a local scrolling surface for static server rendering.
 │   │   │   │   ├── TextBox.razor — Renders bound text or multiline input with native attributes, field semantics and input/change event selection.
 │   │   │   │   ├── TextComponentBase.cs — Refreshes localized components and gives explicit text parameters precedence over library defaults.
 │   │   │   │   ├── TextInputBase.cs — Provides scoped text lookup and localized parsing defaults for bound input components.
@@ -239,22 +219,22 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── CommandRuntime.cs — Keeps command registrations and dispatch inside the current Blazor scope.
 │   │   │   │   └── LiteralTextProvider.cs — Provides literal fallback text and current formatting when no optional Culture bridge is registered.
 │   │   │   ├── Icons/ — Contains the bundled icon name catalog and its embedded font codepoint map.
-│   │   │   │   ├── IconCatalog.cs — Lists Material Symbols Outlined names, resolves compatibility aliases and maps names to font codepoints.
+│   │   │   │   ├── IconCatalog.cs — Lists official Material Symbols Outlined names and maps names to font codepoints.
 │   │   │   │   └── MaterialSymbolsOutlined.codepoints — Maps official Material Symbols Outlined names to the codepoints embedded in the Framework assembly.
 │   │   │   ├── Localization/ — Contains library-owned text catalogs independent of the selected translation provider.
 │   │   │   │   └── Texts.json — Contains the framework's English, Chinese and Brazilian Portuguese control text.
 │   │   │   ├── Primitives/ — Contains public local-data and mask processing implementations.
-│   │   │   │   ├── DataFilter.cs — Filters loaded records using declared column search metadata.
 │   │   │   │   ├── DataPagination.cs — Tracks paging within an already loaded result set.
-│   │   │   │   ├── DataSorter.cs — Sorts loaded records while retaining established culture/null semantics.
 │   │   │   │   ├── InputMaskFormatter.cs — Formats and normalizes mask-aware input values.
 │   │   │   │   └── NoticePresentation.cs — Maps semantic severity to CSS classes and accessible roles.
 │   │   │   ├── wwwroot/ — Contains structural CSS, JavaScript behavior and the default project logo.
 │   │   │   │   ├── icons/ — Contains locally served icon font assets.
 │   │   │   │   │   └── material/ — Contains the pinned Google Material Symbols Outlined font, license and source metadata.
 │   │   │   │   │       ├── LICENSE.txt — Preserves the Apache 2.0 license for the bundled Google icon assets.
-│   │   │   │   │       ├── MaterialSymbolsOutlined.woff2 — Provides the self-hosted Material Symbols Outlined variable font used by Icon, AppIcon and Glyph.
+│   │   │   │   │       ├── MaterialSymbolsOutlined.woff2 — Provides the self-hosted Material Symbols Outlined variable font used by the unique Icon renderer.
 │   │   │   │   │       └── source.json — Records the upstream revision, license, file sizes and SHA-256 hashes for the bundled icon assets.
+│   │   │   │   ├── multi-select-box.css — Defines multi-selection option, search and popup structure.
+│   │   │   │   ├── multi-select-box.js — Owns selection snapshots and optional drag/keyboard order through the shared disclosure lifecycle.
 │   │   │   │   ├── patterns/ — Contains structural styles and browser measurements for page surfaces.
 │   │   │   │   │   ├── content-surface.css — Defines content stage, title and section layout behavior.
 │   │   │   │   │   ├── navigation-surface.css — Defines navigation surface geometry, collapsed states and responsive behavior.
@@ -264,8 +244,6 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   └── offers.js — Coordinates scoped offer anchors, rotation, focus, pointer and reduced-motion pauses, and listener cleanup.
 │   │   │   │   ├── primitives/ — Contains primitive browser behavior and structural CSS.
 │   │   │   │   │   ├── behavior.css — Defines primitive visibility, positioning and accessibility rules without a theme.
-│   │   │   │   │   ├── bottom-sheet.js — Synchronizes bottom sheet modal state and restores the invoking element's focus.
-│   │   │   │   │   ├── data-table-columns.js — Measures table content and manages resize observers and column widths.
 │   │   │   │   │   ├── editing-grid.js — Handles cell ranges, keyboard movement, editing and clipboard requests.
 │   │   │   │   │   ├── EditingGrid.css — Defines editable grid cell sizing, selection geometry and functional layout.
 │   │   │   │   │   ├── input-behaviors.js — Attaches native input selection and editing behavior at document level.
@@ -274,7 +252,6 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   ├── navigation-guard.js — Warns before external navigation while unsaved changes exist.
 │   │   │   │   │   ├── primary-navigation-item.js — Tracks primary navigation pointer and pressed states.
 │   │   │   │   │   ├── reference-dropdown.js — Determines whether a dropdown still contains keyboard focus.
-│   │   │   │   │   └── row-action-menu.js — Coordinates contextual menu opening, positioning and dismissal.
 │   │   │   │   ├── browse.svg — Provides the default white Material Symbols browse logo and tab-icon fallback.
 │   │   │   │   ├── clipboard.js — Copies text on request and restores focus and selection after a clipboard fallback.
 │   │   │   │   ├── controls.js — Positions and dismisses action/display popups, handles menu keys, modal focus and input selection.
@@ -295,7 +272,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   └── uniform-grid.css — Defines responsive grid tracks, optional dimensions and child-cell shapes.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   ├── AssemblyInfo.cs — Allows the Blazor test project to inspect framework internals.
-│   │   │   ├── ComponentUsageCatalog.cs — Registers every exported component as a general, scenario, compatibility or building-block entry with explicit scope and preferred production APIs.
+│   │   │   ├── ComponentUsageCatalog.cs — Registers every exported component as a general, scenario or building-block entry with explicit production scope.
 │   │   │   ├── Flourish.Blazor.Framework.csproj — Defines the Razor Framework package, embeds its text catalog and icon map, and includes licensed static font assets without a Culture dependency.
 │   │   │   └── ServiceCollectionExtensions.cs — Registers framework behavior, commands, navigation and the default literal text provider.
 │   │   └── Flourish.Blazor.slnx — Defines the Core/Blazor release solution including the meta package, Culture bridge, Gallery and verification projects.
@@ -679,7 +656,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── AccessExamples.razor — Demonstrates independent login and saved-account pages with standard controls, local errors/busy/empty states and no authentication service.
 │   │   │   │   ├── Appearance.razor — Shows Foundations topics, a three-cell rectangular theme chooser and standard palette action buttons.
 │   │   │   │   ├── AppearanceRedirect.razor — Redirects the former appearance route to the Foundations landing page.
-│   │   │   │   ├── Controls.razor — Separates production directories from compatibility and construction browsing while preserving full component names and existing detail routes.
+│   │   │   │   ├── Controls.razor — Separates production scenarios from construction helpers using current component contracts.
 │   │   │   │   ├── DisplayExamples.razor — Demonstrates localized fictitious product, pricing and access pages using full-width presentation components and centered controls, without authentication or billing.
 │   │   │   │   ├── Error.razor — Displays an error page and its diagnostic request identifier.
 │   │   │   │   ├── Examples.razor — Separates example links, form creation, enum dropdowns and linked search into topic pages.
@@ -694,26 +671,19 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   └── SurfacePatterns.razor — Demonstrates the advanced Registry table scenario with standard fields, actions, notices and controlled bottom sheets.
 │   │   │   ├── Samples/ — Contains 97 standalone Razor examples compiled and embedded in Gallery for live guides and source display.
 │   │   │   │   ├── Content/ — Contains examples of cards, icons, facts, grids and expandable content.
-│   │   │   │   │   ├── AppIconSample.razor — Demonstrates primitive icon size roles and a local icon action.
 │   │   │   │   │   ├── CardSample.razor — Demonstrates empty and titled cards alongside a card with local example content.
 │   │   │   │   │   ├── CodeBlockSample.razor — Demonstrates escaped code text and selectable code language labels.
 │   │   │   │   │   ├── DisclosureSample.razor — Demonstrates initial open states and expandable supporting content.
 │   │   │   │   │   ├── DisplayBoardSample.razor — Demonstrates preview and code boards with variant selection and local action feedback.
-│   │   │   │   │   ├── FilledIdentityCardSample.razor — Demonstrates primitive identity facts and an optional side panel.
-│   │   │   │   │   ├── GlyphSample.razor — Demonstrates shell glyph names in local content and actions.
 │   │   │   │   │   ├── IconSample.razor — Demonstrates named Material Symbols and a local icon action.
 │   │   │   │   │   ├── IdentityCardSample.razor — Demonstrates identity content with optional columns and side content.
-│   │   │   │   │   ├── PrimitiveDisclosureSample.razor — Demonstrates primitive expandable sections with initial open states.
-│   │   │   │   │   ├── PrimitiveUniformGridSample.razor — Demonstrates primitive equal-width grids with adjustable column count.
 │   │   │   │   │   ├── SectionSample.razor — Demonstrates titled content sections and section-level actions.
 │   │   │   │   │   ├── UniformGridItemSample.razor — Demonstrates passive information cells and local status changes.
 │   │   │   │   │   └── UniformGridSample.razor — Demonstrates independent cell shapes and appearances with automatic and explicit grid layouts.
 │   │   │   │   ├── Data/ — Contains examples of actions, data views, modal surfaces, feedback and progress.
 │   │   │   │   │   ├── ActionMenuSample.razor — Demonstrates click or hover menus, disabled states and local action callbacks.
-│   │   │   │   │   ├── BottomSheetSample.razor — Demonstrates bottom-panel opening, local editing and save state.
 │   │   │   │   │   ├── ButtonSample.razor — Demonstrates button variants, disabled states, icons and asynchronous local actions.
 │   │   │   │   │   ├── DataPagerSample.razor — Demonstrates primitive pagination states and paging through a local collection.
-│   │   │   │   │   ├── DataSearchSample.razor — Demonstrates column-based search requests against local sample data.
 │   │   │   │   │   ├── DataTableSample.razor — Demonstrates empty states, list and card views, and local record actions.
 │   │   │   │   │   ├── DialogSample.razor — Demonstrates modal opening, guarded closing and a local asynchronous action.
 │   │   │   │   │   ├── DropdownSurfaceSample.razor — Demonstrates only the native details construction boundary and directs ordinary command menus to ActionMenu.
@@ -724,16 +694,9 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   ├── LoadingStateSample.razor — Demonstrates loading feedback during a simulated local request.
 │   │   │   │   │   ├── NoticeSample.razor — Demonstrates notice severity variants and local draft feedback.
 │   │   │   │   │   ├── NoticeTriggerSample.razor — Demonstrates compact notice triggers and changing their severity and message.
-│   │   │   │   │   ├── PageLoadingSample.razor — Demonstrates primitive page-loading feedback during a local request.
-│   │   │   │   │   ├── PrimitiveBottomSheetSample.razor — Demonstrates primitive bottom-panel callbacks and saving a local draft.
-│   │   │   │   │   ├── PrimitiveDataTableSample.razor — Demonstrates primitive table purposes and actions over local records.
 │   │   │   │   │   ├── ProgressBarSample.razor — Demonstrates determinate and unknown progress with local task controls.
 │   │   │   │   │   ├── ProgressRingSample.razor — Demonstrates determinate, unknown and paused progress ring states.
-│   │   │   │   │   ├── RowActionMenuSample.razor — Demonstrates primitive row menus and local record action callbacks.
 │   │   │   │   │   ├── SplitButtonSample.razor — Demonstrates independent export actions, option disclosure and selected and disabled states.
-│   │   │   │   │   ├── StaticDialogSample.razor — Explains the protocol-owned dialog construction boundary and links to controlled production Dialog usage.
-│   │   │   │   │   ├── StatusNoticeSample.razor — Demonstrates primitive status notice states and changing local feedback.
-│   │   │   │   │   ├── TableSurfaceSample.razor — Explains the hand-authored table construction boundary and directs new static lists to ListView.
 │   │   │   │   │   └── UniformGridButtonSample.razor — Demonstrates cell appearance variants and independent action, link, disabled and busy behavior.
 │   │   │   │   ├── Display/ — Contains presentation and access component examples using fictitious brands and local-only actions.
 │   │   │   │   │   ├── AccessActionsSample.razor — Demonstrates standard auxiliary buttons for presentation and access navigation.
@@ -750,33 +713,24 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   ├── DateBoxSample.razor — Demonstrates typed date binding and local feedback within an EditForm.
 │   │   │   │   │   ├── FieldSample.razor — Demonstrates field layouts and email validation with required, invalid and valid states.
 │   │   │   │   │   ├── FilePickerSample.razor — Displays selected file name and size metadata with a bounded count, without reading or uploading file contents.
-│   │   │   │   │   ├── FormActionBarSample.razor — Demonstrates primitive form action layout and a simulated submitting state.
 │   │   │   │   │   ├── FormActionsSample.razor — Demonstrates form action columns and a simulated submitting state.
-│   │   │   │   │   ├── FormFieldsSample.razor — Demonstrates primitive form field grouping with locally bound input values.
 │   │   │   │   │   ├── FormLayoutSample.razor — Demonstrates single-column and multi-column forms with locally bound fields.
-│   │   │   │   │   ├── FormSurfaceSample.razor — Demonstrates a composed form surface with local validation and submission.
 │   │   │   │   │   ├── MaskedInputSample.razor — Demonstrates mask-aware input binding inside a validated form.
-│   │   │   │   │   ├── MultiSelectDropdownSample.razor — Demonstrates multi-selection, short/long option labels and host-managed state.
+│   │   │   │   │   ├── MultiSelectBoxSample.razor — Demonstrates general business multi-selection, search/creation, constraints and optional ordering.
 │   │   │   │   │   ├── NumberBoxSample.razor — Demonstrates integer and decimal binding, numeric ranges and disabled input.
-│   │   │   │   │   ├── PrimitiveToggleSectionSample.razor — Demonstrates primitive optional sections and enabled content binding.
-│   │   │   │   │   ├── PrimitiveToggleSwitchSample.razor — Demonstrates primitive toggle switch states and local value binding.
 │   │   │   │   │   ├── ReferenceDropdownSample.razor — Demonstrates single-reference selection with short/long choices and host callbacks.
 │   │   │   │   │   ├── SearchAutocompleteSample.razor — Demonstrates initial matching candidates, filtering, selected IDs and empty states.
 │   │   │   │   │   ├── SearchBoxSample.razor — Demonstrates delayed search changes and filtering a local list.
 │   │   │   │   │   ├── SelectBoxSample.razor — Demonstrates empty and disabled selectors and binding an enum option.
-│   │   │   │   │   ├── SelectionDropdownSurfaceSample.razor — Demonstrates a primitive dropdown panel with local search and selection content.
 │   │   │   │   │   ├── StandaloneCheckBoxSample.razor — Demonstrates a protocol-boundary boolean value and native submission value without saving a session.
 │   │   │   │   │   ├── StandaloneMaskedInputSample.razor — Demonstrates mask-aware value binding without a form context.
-│   │   │   │   │   ├── StandaloneNumberBoxSample.razor — Demonstrates native numeric constraints and preserved raw submission text outside model validation.
 │   │   │   │   │   ├── StandaloneSelectBoxSample.razor — Demonstrates protocol-boundary single selection using the shared option contract.
 │   │   │   │   │   ├── StandaloneTextBoxSample.razor — Demonstrates local email text binding and protocol field attributes without a network submission.
 │   │   │   │   │   ├── TextBoxSample.razor — Demonstrates single-line, multiline, password and disabled text input with local editing.
-│   │   │   │   │   ├── ToggleIndicatorSample.razor — Demonstrates a compact binary indicator and host-managed toggle state.
 │   │   │   │   │   ├── ToggleSectionSample.razor — Demonstrates enabled, disabled and optional sections containing local input.
 │   │   │   │   │   └── ToggleSwitchSample.razor — Demonstrates switch states and a locally bound reminder setting.
 │   │   │   │   └── Layout/ — Contains examples of application shells, page surfaces, headings and navigation behavior.
 │   │   │   │       ├── AccessBrandSample.razor — Demonstrates entry branding with optional context and descriptive content.
-│   │   │   │       ├── AccessSurfaceSample.razor — Demonstrates an access surface with standard email fields, submit buttons and native validation.
 │   │   │   │       ├── ApplicationLayoutSample.razor — Demonstrates the configured application layout within a bounded local preview.
 │   │   │   │       ├── ApplicationShellSample.razor — Demonstrates an application shell with local content and optional secondary navigation.
 │   │   │   │       ├── ContentSurfaceSample.razor — Demonstrates a top bar and scrolling content surface with document switching.
@@ -784,13 +738,8 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │       ├── NavigationGuardSample.razor — Demonstrates standard draft editing and opt-in protection through an Underline test link.
 │   │   │   │       ├── NavigationSurfaceSample.razor — Demonstrates a navigation surface using standard primary items and secondary action buttons.
 │   │   │   │       ├── PageBodySample.razor — Demonstrates page-body width modes around local example content.
-│   │   │   │       ├── PageContentSample.razor — Demonstrates primitive page content with an optional in-page contents panel.
-│   │   │   │       ├── PageContentsSample.razor — Demonstrates an in-page contents list linked to real sample sections.
 │   │   │   │       ├── PageHeadingSample.razor — Demonstrates page heading states and locally handled title actions.
 │   │   │   │       ├── PrimaryNavigationItemSample.razor — Demonstrates current, enabled and disabled primary navigation items.
-│   │   │   │       ├── PrimitivePageHeadingSample.razor — Demonstrates primitive page headings and title action content.
-│   │   │   │       ├── RecordListPageSample.razor — Demonstrates a composed record-list page using local records and feedback.
-│   │   │   │       ├── RecordPageHeadingSample.razor — Demonstrates record headings with parent links and record actions.
 │   │   │   │       ├── SecondaryNavigationItemSample.razor — Demonstrates secondary links for an explicit custom business-navigation host.
 │   │   │   │       ├── SectionNavigatorSample.razor — Demonstrates section discovery and gutter navigation within scrollable content.
 │   │   │   │       ├── ServiceMenuSample.razor — Demonstrates a header destination menu linked to local sample sections.
@@ -944,7 +893,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── controls-dom.mjs — Checks popup placement and lifecycles, modal focus and input behavior against a simulated DOM.
 │   │   ├── ControlTextChecks.cs — Checks component default localization, explicit overrides and subscription disposal.
 │   │   ├── DataTableChecks.cs — Checks dropdown styling hooks, localized counts, paging, visibility and column sizing.
-│   │   ├── DataSearchChecks.cs — Checks canonical search state, input association, disabled callbacks, compatibility equivalence and CSS ownership.
+│   │   ├── DataSearchChecks.cs — Checks unique canonical search state, input association, disabled callbacks and CSS ownership.
 │   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
 │   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
 │   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
@@ -959,8 +908,9 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.
 │   │   ├── presentation-offers-dom.mjs — Checks scoped offer links, rotation pauses, card ordering, replaced anchors and disposal against a simulated DOM.
 │   │   ├── PresentationChecks.cs — Checks presentation SSR structure, semantic headings, access-panel slots, validated modes, preserved native form transport and avoidance of nested main elements.
+│   │   ├── ButtonUnavailableChecks.cs — Checks unavailable Elevated native submits/links, busy state, guarded callbacks and re-enabled actions.
 │   │   ├── Program.cs — Runs platform-independent Blazor configuration, rendering and contract checks.
-│   │   ├── row-action-menu-dom.mjs — Checks disabled menu clicks, keyboard candidates, normal closing and listener behavior.
+│   │   ├── action-menu-dom.mjs — Checks the unique production menu's disabled actions, focus, dispatch, native disclosure and disposal.
 │   │   ├── section-navigator-dom.mjs — Checks section discovery, scrolling, tooltip dismissal and browser-listener cleanup.
 │   │   ├── SectionNavigatorChecks.cs — Checks section identifiers, native fragment links, encoding and discovery lifecycle.
 │   │   ├── SplitButtonChecks.cs — Checks independent actions, shared selection, disabled behavior and disclosure accessibility.

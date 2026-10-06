@@ -5,4 +5,5 @@ namespace ArkheideSystem.Gallery.Flourish.Blazor.Models;
 public sealed class SampleFor(string componentName) : Attribute
 {
     public string ComponentName { get; } = componentName;
+    public string? Description { get; set; }
 }

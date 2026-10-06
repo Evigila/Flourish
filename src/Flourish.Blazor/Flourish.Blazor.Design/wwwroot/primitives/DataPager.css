@@ -9,33 +9,33 @@
     color: var(--f-muted);
     background: var(--f-surface);
     border: 1px solid var(--f-border);
-    border-radius: var(--control-radius);
+    border-radius: var(--f-radius-control);
     line-height: 24px;
 }
 .data-pagination-range-total {
-    height: calc(var(--control-height) - 10px);
+    height: calc(var(--f-control-height) - 10px);
     padding: 0 10px;
     border: 1px solid var(--f-border);
-    border-radius: calc(var(--control-radius) - 3px);
+    border-radius: calc(var(--f-radius-control) - 3px);
     font-variant-numeric: tabular-nums;
 }
 .data-pagination-controls {
     gap: 6px;
-    height: var(--control-height);
+    height: var(--f-control-height);
     padding: 3px;
     background: var(--f-surface);
     border: 1px solid var(--f-border);
-    border-radius: var(--control-radius);
+    border-radius: var(--f-radius-control);
 }
 .data-pagination-previous,
 .data-pagination-next {
     width: 40px;
-    height: calc(var(--control-height) - 8px);
+    height: calc(var(--f-control-height) - 8px);
     padding: 0;
     color: var(--f-text);
     background: transparent;
     border: 0;
-    border-radius: calc(var(--control-radius) - 3px);
+    border-radius: calc(var(--f-radius-control) - 3px);
     cursor: pointer;
     font: inherit;
 }
@@ -68,12 +68,12 @@
 }
 .data-pagination-input {
     width: 64px;
-    height: calc(var(--control-height) - 10px);
+    height: calc(var(--f-control-height) - 10px);
     padding: 0 8px;
     color: var(--f-text);
     background: var(--f-surface);
     border: 1px solid var(--f-border);
-    border-radius: calc(var(--control-radius) - 3px);
+    border-radius: calc(var(--f-radius-control) - 3px);
     font: inherit;
     font-weight: inherit;
     font-variant-numeric: tabular-nums;
@@ -95,8 +95,7 @@
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
-@media (max-width: 520px) {
-.data-pagination {
+@media (max-width: 520px) {.data-pagination {
     gap: 8px;
 }
 .data-pagination-controls {

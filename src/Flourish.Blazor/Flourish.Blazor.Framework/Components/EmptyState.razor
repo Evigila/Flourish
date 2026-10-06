@@ -3,7 +3,7 @@
 <div class="f-empty-state @Class">
     @if (!string.IsNullOrWhiteSpace(Title)) { <p class="f-empty-title">@Title</p> }
     @ChildContent
-    @if (Actions is not null) { <div class="f-inline-actions">@Actions</div> }
+    @if (Actions is not null) { <InlineActions>@Actions</InlineActions> }
 </div>
 
 @code {

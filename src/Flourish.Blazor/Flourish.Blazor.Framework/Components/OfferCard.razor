@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @implements IDisposable
 <article @attributes="AdditionalAttributes" class="@($"f-offer-card {Class}".Trim())" id="@Id" role="listitem" tabindex="0">
-    <h3>@Title</h3>
+    <p class="f-offer-title">@Title</p>
     <span class="f-offer-compact-title" aria-hidden="true">@Title</span>
     <div class="f-offer-details">
         @if (!string.IsNullOrWhiteSpace(Description)) { <p>@Description</p> }

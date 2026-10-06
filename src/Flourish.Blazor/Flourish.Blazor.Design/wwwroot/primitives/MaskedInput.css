@@ -1,7 +1,7 @@
 .masked-input {
     width: 100%;
     background: var(--f-surface);
-    border-radius: var(--control-radius);
+    border-radius: var(--f-radius-control);
 }
 .masked-input-display,
 .masked-input-control {
@@ -10,7 +10,7 @@
 }
 .masked-input-display {
     font-weight: 400;
-    padding: 0 var(--masked-input-inline-padding, 12px);
+    padding: 0 var(--masked-input-inline-padding, 16px);
 }
 .masked-input-display .is-entered {
     color: var(--f-text);

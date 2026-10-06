@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readdir, readFile } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -52,7 +52,7 @@ test("presentation layout separates full-width backgrounds from centered content
 test("presentation and access scenes consume existing theme roles without reskinning buttons or inputs", async () => {
   const foundation = withoutComments(await readFile(foundationPath, "utf8"));
   const knownTokens = new Set([...foundation.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1]));
-  for (const path of [join(designCssRoot, "presentation.css"), join(designCssRoot, "primitives/AccessSurface.css")]) {
+  for (const path of [join(designCssRoot, "presentation.css"), join(designCssRoot, "primitives/AccessBrand.css")]) {
     const css = withoutComments(await readFile(path, "utf8"));
     assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|color-mix)\s*\(|f-theme-|data-theme|font-family\s*:/i,
       `${relative(repositoryRoot, path)} introduced a local theme, color literal or separate font family.`);
@@ -66,7 +66,7 @@ test("presentation and access scenes consume existing theme roles without reskin
   const presentation = withoutComments(await readFile(join(designCssRoot, "presentation.css"), "utf8"));
   assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "color"), "var(--f-primary-ink)");
   assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "background-color"), "var(--f-primary)");
-  assert.equal(property(blockFor(presentation, ".f-presentation-band-heading h1"), "font-size"), "var(--f-type-page,50px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-band-heading :is(h1,h2,h3,h4,h5,h6)"), "font-size"), "var(--f-type-h2,28px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > h1"), "font-size"), "clamp(72px,11vw,128px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > .f-presentation-hero-description"), "font-size"), "var(--f-type-body,17px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "color"), "var(--f-primary-ink)");
@@ -115,13 +115,83 @@ test("read-only ListView reuses the table surface and exposes complete wrapped v
   assert.doesNotMatch(design, /\.f-list-view[^{}]*(?:hover|active)[^{}]*\{/);
 });
 
-test("centered UniformGrid aligns the existing tile layout without creating a board skin", async () => {
+test("unavailable Elevated actions retain their surface and elevation without acquiring hover or press paint", async () => {
+  const css = await readFile(join(designCssRoot, "controls.css"), "utf8");
+  const styles = rules(css);
+  const element = (variant, nativeDisabled, ariaDisabled, hover = false, active = false) => ({
+    tag: nativeDisabled ? "button" : "a",
+    classes: new Set(["f-button", `f-button-${variant}`]),
+    attributes: new Map(ariaDisabled ? [["aria-disabled", "true"]] : []),
+    states: new Set([...(nativeDisabled ? ["disabled"] : []), ...(hover ? ["hover"] : []), ...(active ? ["active"] : [])]),
+  });
+  for (const [nativeDisabled, ariaDisabled] of [[true, false], [false, true]]) {
+    for (const hover of [false, true]) {
+      for (const active of [false, true]) {
+        const unavailable = element("elevated", nativeDisabled, ariaDisabled, hover, active);
+        assert.equal(buttonCascade(styles, unavailable, "background"), "var(--f-surface)");
+        assert.equal(buttonCascade(styles, unavailable, "box-shadow"), "var(--f-shadow-control)");
+        assert.equal(buttonCascade(styles, unavailable, "color"), "var(--f-disabled)");
+        assert.equal(buttonCascade(styles, unavailable, "border-color"), "var(--f-border)");
+        assert.equal(buttonCascade(styles, unavailable, "cursor"), "not-allowed");
+        for (const variant of ["primary", "secondary", "quiet", "danger", "underline"]) {
+          const other = element(variant, nativeDisabled, ariaDisabled, hover, active);
+          assert.equal(buttonCascade(styles, other, "background"), "transparent", `${variant} changed its disabled background.`);
+          assert.equal(buttonCascade(styles, other, "box-shadow"), "none", `${variant} gained disabled elevation.`);
+          assert.equal(buttonCascade(styles, other, "color"), "var(--f-disabled)");
+          assert.equal(buttonCascade(styles, other, "cursor"), "not-allowed");
+        }
+      }
+    }
+  }
+  for (const [hover, active, expected] of [[false, false, "var(--f-surface)"], [true, false, "var(--f-target-preview)"],
+    [false, true, "var(--f-target-click)"], [true, true, "var(--f-target-click)"]]) {
+    const available = element("elevated", false, false, hover, active);
+    assert.equal(buttonCascade(styles, available, "background"), expected);
+    assert.equal(buttonCascade(styles, available, "box-shadow"), "var(--f-shadow-control)");
+    assert.equal(buttonCascade(styles, available, "color"), "var(--f-text)");
+    assert.equal(buttonCascade(styles, available, "cursor"), "pointer");
+  }
+});
+
+test("UniformGrid fills rectangular rows while centered square grids retain their maximum side", async () => {
   const css = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/uniform-grid.css"), "utf8"));
   const centered = blockFor(css, ".f-uniform-grid-centered");
   assert.equal(centered.trim(), "margin-inline:auto;");
   const grid = blockFor(css, ".f-uniform-grid");
-  assert.equal(property(grid, "width"), "fit-content");
+  assert.equal(property(grid, "width"), "100%");
   assert.equal(property(grid, "max-width"), "100%");
+  assert.equal(property(grid, "--f-grid-cell-width"), "1fr");
+  assert.equal(property(grid, "grid-template-columns"),
+    "repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-max-height,260px))),1fr))");
+  const square = blockFor(css, ".f-uniform-grid-square");
+  assert.equal(property(square, "width"), "fit-content");
+  assert.equal(property(square, "--f-grid-cell-width"), "var(--f-grid-cell-max,280px)");
+  assert.equal(property(square, "grid-template-columns"), "repeat(auto-fit,minmax(0,var(--f-grid-cell-width)))");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "aspect-ratio"), "1");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-width"), "var(--f-grid-cell-max,280px)");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-height"), "var(--f-grid-cell-max,280px)");
+});
+
+test("UniformGrid explicit rows columns and narrow overrides share uncapped rectangle tracks and capped square tracks", async () => {
+  const css = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/uniform-grid.css"), "utf8"));
+  assert.equal(property(blockFor(css, ".f-uniform-grid-columns"), "grid-template-columns"),
+    "repeat(var(--f-grid-columns),minmax(0,var(--f-grid-cell-width)))");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-rows"), "grid-template-rows"),
+    "repeat(var(--f-grid-rows),minmax(0,1fr))");
+  const rows = blockFor(css, ".f-uniform-grid-rows:not(.f-uniform-grid-columns)");
+  assert.equal(property(rows, "grid-template-columns"), "none");
+  assert.equal(property(rows, "grid-auto-flow"), "column");
+  assert.equal(property(rows, "grid-auto-columns"), "minmax(0,var(--f-grid-cell-width))");
+  const narrow = blockFor(css, ".f-uniform-grid.f-uniform-grid-narrow-columns");
+  assert.equal(property(narrow, "grid-template-columns"),
+    "repeat(var(--f-grid-narrow-columns),minmax(0,var(--f-grid-cell-width)))");
+  assert.equal(property(narrow, "grid-auto-flow"), "row");
+  assert.equal(property(narrow, "grid-auto-columns"), "auto");
+  const rectangle = blockFor(css, ".f-uniform-grid-rectangle > .f-uniform-cell");
+  assert.equal(property(rectangle, "max-height"), "var(--f-grid-cell-max-height,260px)");
+  assert.equal(property(rectangle, "overflow"), "auto");
+  assert.equal(property(rectangle, "max-width"), undefined);
+  assert.equal(property(blockFor(css, ".f-uniform-grid-rectangle > *"), "aspect-ratio"), "2/1");
 });
 
 const roles = [
@@ -285,6 +355,55 @@ function matchingRule(css, description, predicate) {
   return matches[0];
 }
 
+// This bounded cascade fixture models standalone Button compound selectors, not a browser DOM.
+// It resolves matching, :not argument specificity, !important and source order so a disabled
+// variant rule with insufficient specificity fails instead of passing a string-presence check.
+function buttonCompound(selector, element) {
+  let matches = true, offset = 0;
+  const specificity = [0, 0, 0];
+  while (offset < selector.length) {
+    const token = /^(?:(:not\(([^()]*)\))|(\[([^\]=]+)(?:=(["']?)([^\]"']+)\5)?\])|(\.([\w-]+))|(:([\w-]+))|([a-z][\w-]*))/.exec(selector.slice(offset));
+    if (!token) return null; // Descendant/combinator rules cannot match this standalone fixture.
+    if (token[1]) {
+      const negated = buttonCompound(token[2], element);
+      assert.ok(negated, `Unsupported Button :not argument ${token[2]}.`);
+      for (let index = 0; index < specificity.length; index++) specificity[index] += negated.specificity[index];
+      matches &&= !negated.matches;
+    } else if (token[3]) {
+      specificity[1]++;
+      matches &&= element.attributes.has(token[4]) && (token[6] === undefined || element.attributes.get(token[4]) === token[6]);
+    } else if (token[7]) {
+      specificity[1]++;
+      matches &&= element.classes.has(token[8]);
+    } else if (token[9]) {
+      specificity[1]++;
+      matches &&= element.states.has(token[10]);
+    } else {
+      specificity[2]++;
+      matches &&= element.tag === token[11];
+    }
+    offset += token[0].length;
+  }
+  return { matches, specificity };
+}
+
+function buttonCascade(styles, element, name) {
+  let winner;
+  for (const rule of styles) {
+    const raw = property(rule.body, name);
+    if (raw === undefined) continue;
+    const important = /!important\s*$/.test(raw) ? 1 : 0;
+    for (const arm of selectorArms(rule.selector)) {
+      const compound = buttonCompound(arm, element);
+      if (!compound?.matches) continue;
+      const specificityOrder = winner ? compound.specificity.map((value, index) => value - winner.specificity[index]).find(value => value !== 0) ?? 0 : 0;
+      if (winner && (important < winner.important || important === winner.important && specificityOrder < 0)) continue;
+      winner = { value: raw.replace(/\s*!important\s*$/, ""), important, specificity: compound.specificity };
+    }
+  }
+  return winner?.value;
+}
+
 test("foundation exposes the seventeen-role palette to documents and Flourish surfaces", async () => {
   const css = withoutComments(await readFile(foundationPath, "utf8"));
   const baseBlock = blockFor(css, ":root, .f-root");
@@ -374,31 +493,59 @@ test("Design CSS derives paint from roles without private palette literals", asy
   assert.deepEqual(violations, [], `Palette bypasses:\n${violations.join("\n")}`);
 });
 
-test("palette roles have one source and aliases reference declared tokens", async () => {
+test("palette roles have one source and retired token aliases are absent", async () => {
   const cssFiles = await filesUnder(designCssRoot, new Set([".css"]));
-  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
-  const aliases = withoutComments(await readFile(aliasesPath, "utf8"));
+  const frameworkFiles = await filesUnder(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot"), new Set([".css"]));
   const allDesign = (await Promise.all(cssFiles.map(path => readFile(path, "utf8")))).map(withoutComments).join("\n");
-  const declaredFoundation = new Set([...foundation.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1]));
-  const legacyRoles = declarations(aliases);
-  assert.equal(legacyRoles.get("--accent-fill-hover"), "var(--f-primary-preview)");
-  assert.equal(legacyRoles.get("--chrome-hover"), "var(--f-preview-dark)");
-  assert.equal(legacyRoles.get("--line"), "var(--f-border)");
-  assert.equal(legacyRoles.get("--focus"), "var(--f-accent)");
-
+  await assert.rejects(access(aliasesPath), { code: "ENOENT" }, "The retired theme alias stylesheet still exists.");
+  assert.doesNotMatch(await readFile(join(designCssRoot, "design.css"), "utf8"), /theme-aliases\.css/);
+  const retired = [
+    "canvas", "surface", "surface-alternate", "surface-raised", "secondary-nav", "ink", "ink-soft", "ink-muted",
+    "muted", "disabled", "line", "line-strong", "row-hover", "row-active", "accent", "accent-strong",
+    "accent-fill-hover", "accent-soft", "success", "danger", "focus", "chrome", "chrome-ink", "chrome-accent",
+    "chrome-hover", "chrome-click", "chrome-line", "radius-small", "radius-medium", "radius-large",
+    "control-radius", "checkbox-radius", "shadow-card", "control-height", "control-height-compact", "checkbox-size",
+    "page-gutter", "field-label-gap", "field-label-weight", "surface-theme-primary", "surface-theme-accent",
+    "surface-theme-primary-ink", "surface-theme-accent-ink", "surface-theme-accent-text", "surface-theme-focus",
+    "topbar-height", "primary-rail-width", "secondary-rail-width", "surface-content-width", "surface-page-gutter",
+    "surface-content-gutter", "surface-context", "surface-accent-context", "notice-text", "notice-background",
+    "notice-foreground", "notice-error-background", "notice-subtle-background", "notice-subtle-foreground",
+  ];
+  const retiredToken = new RegExp(`--(?:${retired.join("|")})(?![\\w-])`);
+  for (const path of [...cssFiles, ...frameworkFiles]) {
+    const css = withoutComments(await readFile(path, "utf8"));
+    assert.doesNotMatch(css, retiredToken, `${relative(repositoryRoot, path)} restores a retired token contract.`);
+  }
   for (const role of roles) {
-    const property = `--f-${role}`;
-    assert.match(allDesign, new RegExp(`var\\(\\s*${property.replaceAll("-", "\\-")}\\b`), `${property} has no consumer.`);
+    const token = `--f-${role}`;
+    assert.match(allDesign, new RegExp(`var\\(\\s*${token.replaceAll("-", "\\-")}\\b`), `${token} has no consumer.`);
     for (const path of cssFiles.filter(path => path !== foundationPath)) {
       const css = withoutComments(await readFile(path, "utf8"));
-      assert.doesNotMatch(css, new RegExp(`${property.replaceAll("-", "\\-")}\\s*:`), `${property} is redefined by ${relative(repositoryRoot, path)}.`);
+      assert.doesNotMatch(css, new RegExp(`${token.replaceAll("-", "\\-")}\\s*:`), `${token} is redefined by ${relative(repositoryRoot, path)}.`);
     }
-  }
-  for (const reference of aliases.matchAll(/var\(\s*(--f-[\w-]+)/g)) {
-    assert.ok(declaredFoundation.has(reference[1]), `theme-aliases.css references undeclared ${reference[1]}.`);
   }
   assert.doesNotMatch(allDesign, /--f-border-strong\s*:|var\(\s*--f-border-strong\b/);
   assert.doesNotMatch(allDesign, /--f-focus\s*:|var\(\s*--f-focus\s*[,)]/);
+});
+
+test("current surface dimensions and local popup paint use canonical scoped roles", async () => {
+  for (const name of ["navigation-surface", "content-surface"]) {
+    const source = withoutComments(await readFile(join(designCssRoot, `patterns/${name}.css`), "utf8"));
+    assert.equal(property(blockFor(source, `.${name}`), "color-scheme"), "inherit");
+    const dimensionRules = rules(source).filter(rule => rule.selector === `.${name}` && rule.declarations.has("--f-content-width"));
+    assert.equal(dimensionRules.length, 1, `${name} defines competing standard geometry.`);
+    assert.equal(dimensionRules[0].declarations.get("--f-content-width"), "1180px");
+    assert.equal(dimensionRules[0].declarations.get("--f-page-gutter"), "24px");
+  }
+  const framework = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/layout.css"), "utf8"));
+  assert.equal(declarations(blockFor(framework, ":root")).get("--f-control-height"), "48px");
+  const navigation = await readFile(join(designCssRoot, "patterns/navigation-surface.css"), "utf8");
+  assert.equal(property(blockFor(navigation, ".navigation-surface .valid.modified"), "border-color"), "var(--f-accent) !important");
+  for (const [file, selector] of [["primitives/SystemNavigationMenu.css", ".system-menu-view"], ["controls.css", ".f-menu-panel"]]) {
+    const local = declarations(blockFor(await readFile(join(designCssRoot, file), "utf8"), selector));
+    assert.equal(local.get("--f-target-preview"), "var(--f-surface-preview)", `${selector} lost its surface-specific hover role.`);
+    assert.equal(local.get("--f-target-click"), "var(--f-surface-click)", `${selector} lost its surface-specific press role.`);
+  }
 });
 
 test("hover, press and persistent selections keep distinct cascade outcomes", async () => {
@@ -486,9 +633,9 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   assert.equal(property(dropdownSelected.body, "background"), "transparent");
   assert.equal(property(dropdownHover.body, "background"), "var(--f-target-preview)");
   assert.equal(property(dropdownPress.body, "background"), "var(--f-target-click)");
-  const filledDisplayOptionRows = rules(source.data).filter(rule => rule.selector.includes(".f-data-display-options")
+  const filledMultiSelectOptionRows = rules(await readFile(join(designCssRoot,"multi-select-box.css"),"utf8")).filter(rule => rule.selector.includes(".f-multi-select-panel")
     && !rule.selector.includes("input") && ![undefined, "transparent"].includes(property(rule.body, "background")));
-  assert.deepEqual(filledDisplayOptionRows.map(rule => rule.selector), [], "Display-option rows gained a persistent fill.");
+  assert.deepEqual(filledMultiSelectOptionRows.map(rule => rule.selector), [], "Display-option rows gained a persistent fill.");
 
   const dangerGrid = one("uniform-grid", "Danger uniform grid", rule => rule.selector.includes(".f-uniform-grid-variant-danger"));
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-background"), "var(--f-danger)");
@@ -502,34 +649,39 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   assert.equal(property(gridPress.body, "background"), "var(--f-uniform-cell-click,var(--f-target-click))");
 });
 
-test("Notice and StatusNotice share all semantic foreground/background mappings", async () => {
+test("Notice has one semantic foreground and background contract without retired status aliases", async () => {
   const source = await readFile(join(designCssRoot, "controls.css"), "utf8");
   const mappings = [
-    ["information", "info", "info-text", "surface"],
-    ["success", "success", "surface", "primary"],
-    ["warning", "warning", "warning-ink", "warning-background"],
-    ["error", "error", "surface", "danger"],
-    ["subtle", "subtle", "muted", "display-board"],
+    ["information", "info-text", "surface"],
+    ["success", "surface", "primary"],
+    ["warning", "warning-ink", "warning-background"],
+    ["error", "surface", "danger"],
+    ["subtle", "muted", "display-board"],
   ];
-  for (const [notice, status, foreground, background] of mappings) {
-    const shared = matchingRule(source, `${notice} semantic mapping`, rule =>
-      rule.selector.split(",").includes(`.f-notice-${notice}`) && rule.selector.split(",").includes(`.notice-${status}`));
-    assert.equal(shared.declarations.get("--notice-text"), `var(--f-${foreground})`);
-    assert.equal(shared.declarations.get("--notice-background"), `var(--f-${background})`);
+  for (const [severity, foreground, background] of mappings) {
+    const semantic = matchingRule(source, `${severity} semantic mapping`, rule => rule.selector === `.f-notice-${severity}`);
+    assert.equal(semantic.declarations.get("--f-notice-text"), `var(--f-${foreground})`);
+    assert.equal(semantic.declarations.get("--f-notice-background"), `var(--f-${background})`);
   }
-  const legacy = await readFile(join(designCssRoot, "layout.css"), "utf8");
-  const notice = matchingRule(legacy, "StatusNotice base", rule => rule.selector === ".notice");
-  assert.equal(property(notice.body, "color"), "var(--notice-text,var(--f-info-text))");
-  assert.equal(property(notice.body, "background"), "var(--notice-background,var(--f-surface))");
-  assert.ok(!notice.declarations.has("--notice-text") && !notice.declarations.has("--notice-background"),
-    "The later StatusNotice base overrides its shared severity colors.");
+  const notice = matchingRule(source, "Notice base", rule => rule.selector === ".f-notice");
+  assert.equal(property(notice.body, "color"), "var(--f-notice-text,var(--f-info-text))");
+  assert.equal(property(notice.body, "background"), "var(--f-notice-background,var(--f-surface))");
+  assert.ok(!notice.declarations.has("--f-notice-text") && !notice.declarations.has("--f-notice-background"),
+    "The Notice base overrides its explicit severity mapping.");
   const files = await filesUnder(designCssRoot, new Set([".css"]));
-  for (const path of files.filter(path => path !== join(designCssRoot, "controls.css"))) {
-    for (const rule of rules(await readFile(path, "utf8"))) {
-      if (/\.(?:f-)?notice-(?:information|info|success|warning|error|subtle)\b/.test(rule.selector)) {
+  for (const path of files) {
+    const css = await readFile(path, "utf8");
+    for (const rule of rules(css)) {
+      for (const selector of selectorArms(rule.selector))
+        assert.doesNotMatch(selector, /^\.notice-(?:info|success|warning|error|subtle)(?![\w-])/,
+          `${relative(repositoryRoot, path)} keeps a retired StatusNotice selector.`);
+    }
+    if (path === join(designCssRoot, "controls.css")) continue;
+    for (const rule of rules(css)) {
+      if (/\.f-notice-(?:information|success|warning|error|subtle)\b/.test(rule.selector)) {
         assert.ok(!property(rule.body, "color") && !property(rule.body, "background")
-          && !rule.declarations.has("--notice-text") && !rule.declarations.has("--notice-background"),
-          `${relative(repositoryRoot, path)} overrides the shared semantic notice colors.`);
+          && !rule.declarations.has("--f-notice-text") && !rule.declarations.has("--f-notice-background"),
+          `${relative(repositoryRoot, path)} overrides the shared semantic Notice colors.`);
       }
     }
   }
@@ -572,7 +724,7 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
       }
     }
   }
-  assert.deepEqual([...compactFiles].sort(), ["foundation.css", "layout.css", "patterns/content-surface.css", "patterns/navigation-surface.css", "static-surfaces.css"]);
+  assert.deepEqual([...compactFiles].sort(), ["foundation.css"]);
 });
 
 test("static SVG assets only embed the approved Primary and Surface paints", async () => {

@@ -26,7 +26,7 @@
 .f-offer-stage { gap:10px; }
 .f-offer-card { min-height:300px; gap:16px; padding:18px; color:var(--f-text); border:1px solid var(--f-border); border-radius:16px; background:var(--f-surface); }
 .f-offer-card:focus-visible { outline:3px solid var(--f-accent); outline-offset:4px; }
-.f-offer-card h3 { position:relative; z-index:1; margin:0; color:inherit; font-size:clamp(22px,2vw,30px); line-height:1.12; overflow-wrap:anywhere; }
+.f-offer-card > .f-offer-title { position:relative; z-index:1; margin:0; color:inherit; font-size:clamp(22px,2vw,30px); font-weight:700; line-height:1.12; overflow-wrap:anywhere; }
 .f-offer-details { gap:16px; }
 .f-offer-details p { margin:0; color:var(--f-muted); line-height:1.5; }
 .f-access-panel { color:var(--f-text); }
@@ -35,8 +35,8 @@
 .f-access-actions { gap:12px; margin-top:28px; }
 @media(min-width:1100px) and (prefers-reduced-motion:no-preference) {
  .f-offer-stage[data-offer-ready] .f-offer-card::before { background:var(--f-primary); transition:transform .22s cubic-bezier(.25,.75,.25,1); }
- .f-offer-stage[data-offer-ready] .f-offer-card h3 { transition:opacity .1s ease; }
- .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] h3 { transition-delay:.12s; }
+ .f-offer-stage[data-offer-ready] .f-offer-card > .f-offer-title { transition:opacity .1s ease; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] > .f-offer-title { transition-delay:.12s; }
  .f-offer-stage[data-offer-ready] .f-offer-compact-title { color:var(--f-primary-ink); font-size:clamp(25px,2.2vw,33px); font-weight:780; line-height:1.12; transition:opacity .08s ease .14s; }
  .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] .f-offer-compact-title { transition-delay:0s; }
  .f-offer-stage[data-offer-ready] .f-offer-details { transition:opacity .1s ease; }

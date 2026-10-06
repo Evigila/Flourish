@@ -3,27 +3,58 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<dialog @ref="Element" id="@Identifier" class="f-dialog @(Presentation == DialogPresentation.BottomSheet ? "f-bottom-sheet" : null) @Class"
-        aria-labelledby="@(Identifier + "-title")" aria-modal="true" aria-busy="@(Busy || Closing ? "true" : "false")">
+@if (Mounted)
+{
+<dialog @attributes="AdditionalAttributes" @ref="Element" id="@Identifier" class="@($"f-dialog {(Presentation == DialogPresentation.BottomSheet ? "f-bottom-sheet" : null)} {Class}".Trim())"
+        aria-labelledby="@(Identifier + "-title")" aria-modal="true" aria-busy="@(Busy || Closing ? "true" : "false")"
+        data-f-dialog-browser-controlled="@(BrowserControlled ? "true" : null)" data-f-dialog-dismissible="@Dismissible.ToString().ToLowerInvariant()"
+        data-f-dialog-active-view="@ActiveView">
     <header class="f-dialog-header">
         <h2 id="@(Identifier + "-title")">@Title</h2>
-        <button type="button" class="f-dialog-close" disabled="@(Busy || Closing)" aria-label="@CloseText" @onclick="RequestCloseAsync">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" /></svg>
-        </button>
+        @if (Dismissible)
+        {
+            @if (BrowserControlled)
+            {
+                <button type="button" class="f-dialog-close" data-f-dialog-close disabled="@(Busy || Closing)" aria-label="@CloseText">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" /></svg>
+                </button>
+            }
+            else
+            {
+                <button type="button" class="f-dialog-close" disabled="@(Busy || Closing)" aria-label="@CloseText" @onclick="RequestCloseAsync">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19" /></svg>
+                </button>
+            }
+        }
     </header>
-    <div class="f-dialog-body" data-f-dialog-body>@ChildContent</div>
+    <div class="f-dialog-body" data-f-dialog-body>
+        @ChildContent
+        @foreach (var view in Views)
+        {
+            <div @key="view.Key" class="f-dialog-view" data-f-dialog-view="@view.Key" hidden="@(view.Key != ActiveView)">@view.Content</div>
+        }
+    </div>
     @if (Actions is not null) { <footer class="f-dialog-actions">@Actions</footer> }
 </dialog>
+}
 
 @code {
     private string CloseText => DefaultText(nameof(CloseLabel), CloseLabel, "Dialog_Close", "Close");
     private readonly string GeneratedId = "f-dialog-" + Guid.NewGuid().ToString("N");
     private string Identifier => Id ?? GeneratedId;
+    private string? ActiveView => View ?? Views.FirstOrDefault()?.Key;
+    private bool Open => IsOpen || PendingResult is not null;
     private ElementReference Element;
     private IJSObjectReference? Module;
     private DotNetObjectReference<Dialog>? Reference;
+    private TaskCompletionSource<object?>? PendingResult;
+    private CancellationTokenRegistration RequestCancellation;
     private bool Disposed;
     private bool Closing;
+    private bool Mounted;
+    private bool? BrowserMode;
+    private bool? Synchronized;
+
     [Parameter] public string? Id { get; set; }
     [Parameter, EditorRequired] public string Title { get; set; } = "";
     [Parameter] public bool IsOpen { get; set; }
@@ -36,41 +67,145 @@
     [Parameter] public EventCallback OnClose { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public bool BrowserControlled { get; set; }
+    [Parameter] public bool Dismissible { get; set; } = true;
+    [Parameter] public IReadOnlyList<DialogView> Views { get; set; } = [];
+    [Parameter] public string? View { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Whether an independently opened dialog is awaiting its caller's result.</summary>
+    public bool HasPendingResult => PendingResult is not null;
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Views);
+        if (Views.Any(view => view is null || string.IsNullOrWhiteSpace(view.Key) || view.Content is null)
+            || Views.Select(view => view.Key).Distinct(StringComparer.Ordinal).Count() != Views.Count)
+            throw new ArgumentException("Dialog views require unique nonempty keys and content.", nameof(Views));
+        if (View is not null && !Views.Any(view => view.Key == View))
+            throw new ArgumentException("The active view must match a supplied view key.", nameof(View));
+        if (BrowserMode is { } previous && previous != BrowserControlled)
+            throw new InvalidOperationException("Choose the dialog lifecycle owner for the component's lifetime.");
+        BrowserMode = BrowserControlled;
+        if (BrowserControlled && (IsOpen || IsOpenChanged.HasDelegate || CanClose is not null || OnClose.HasDelegate))
+            throw new InvalidOperationException("Browser-controlled dialogs cannot also use circuit-controlled opening or closing.");
+        if (IsOpen && PendingResult is not null)
+            throw new InvalidOperationException("Controlled opening cannot replace an awaiting dialog request.");
+        Mounted |= BrowserControlled || Open;
+    }
+
+    /// <summary>Opens existing content and awaits any caller-defined result; dismissal or cancellation returns null.</summary>
+    public async Task<object?> ShowAsync(CancellationToken cancellationToken = default)
+    {
+        TaskCompletionSource<object?>? request = null;
+        await InvokeAsync(() =>
+        {
+            ObjectDisposedException.ThrowIf(Disposed, this);
+            if (BrowserControlled || Open || Closing)
+                throw new InvalidOperationException("This dialog already has an owner or an outstanding request.");
+            request = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (cancellationToken.IsCancellationRequested) { request.SetResult(null); return; }
+            PendingResult = request;
+            var current = request;
+            RequestCancellation = cancellationToken.Register(() => CancelRequest(current));
+            Mounted = true;
+            StateHasChanged();
+        });
+        return await request!.Task;
+    }
+
+    private void CancelRequest(TaskCompletionSource<object?> request)
+    {
+        var cancellation = InvokeAsync(() =>
+        {
+            if (!ReferenceEquals(PendingResult, request)) return;
+            CompleteRequest(null);
+            if (!Disposed) StateHasChanged();
+        });
+        if (!cancellation.IsCompletedSuccessfully) _ = ObserveCancellationAsync(cancellation);
+    }
+
+    private async Task ObserveCancellationAsync(Task cancellation)
+    {
+        try { await cancellation; }
+        catch (Exception error) { if (!Disposed) await DispatchExceptionAsync(error); }
+    }
+
+    private void CompleteRequest(object? result)
+    {
+        var request = PendingResult;
+        PendingResult = null;
+        RequestCancellation.Dispose();
+        RequestCancellation = default;
+        request?.TrySetResult(result);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Disposed) return;
-        if (Module is null)
+        if (Disposed || !Mounted || BrowserControlled) return;
+        try
         {
-            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
-            if (Disposed) { await module.DisposeAsync(); return; }
-            Module = module;
+            if (Module is null)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
+                if (Disposed) { await module.DisposeAsync(); return; }
+                Module = module;
+            }
+            Reference ??= DotNetObjectReference.Create(this);
+            if (Synchronized == Open) return;
+            await Module.InvokeVoidAsync("synchronizeDialog", Element, Open, Reference);
+            Synchronized = Open;
         }
-        Reference ??= DotNetObjectReference.Create(this);
-        await Module.InvokeVoidAsync("synchronizeDialog", Element, IsOpen, Reference);
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
+
     [JSInvokable]
-    public async Task RequestCloseAsync()
+    public Task RequestCloseAsync() => Dismissible ? CloseAsync() : Task.CompletedTask;
+
+    /// <summary>Closes through the normal busy/veto policy and completes an awaiting result, when present.</summary>
+    public async Task CloseAsync(object? result = null)
     {
-        if (Disposed || Busy || Closing || !IsOpen) return;
+        if (Disposed || BrowserControlled || Busy || Closing || !Open) return;
         Closing = true;
+        var request = PendingResult;
         try
         {
             if (CanClose is not null && !await CanClose()) return;
-            if (Disposed || Busy) return;
+            if (Disposed || Busy || !Open || !ReferenceEquals(request, PendingResult)) return;
             await IsOpenChanged.InvokeAsync(false);
             await OnClose.InvokeAsync();
+            CompleteRequest(result);
         }
-        finally { Closing = false; }
+        catch
+        {
+            CompleteRequest(null);
+            throw;
+        }
+        finally
+        {
+            Closing = false;
+            if (!Disposed) await InvokeAsync(StateHasChanged);
+        }
     }
+
+    public override void Dispose()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        CompleteRequest(null);
+        base.Dispose();
+    }
+
     public async ValueTask DisposeAsync()
     {
         Dispose();
-        Disposed = true;
+        var module = Module;
+        Module = null;
         try
         {
-            if (Module is not null) { await Module.InvokeVoidAsync("detachDialog", Element); await Module.DisposeAsync(); }
+            if (module is not null) { await module.InvokeVoidAsync("detachDialog", Element); await module.DisposeAsync(); }
         }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
-        finally { Reference?.Dispose(); }
+        finally { Reference?.Dispose(); Reference = null; }
     }
 }

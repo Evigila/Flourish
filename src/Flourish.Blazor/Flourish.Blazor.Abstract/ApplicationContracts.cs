@@ -55,9 +55,6 @@ public interface INavigationBuilder
     INavigationBuilder AddFixedNav(TextReference label, string icon, string navTarget, bool exact = false);
     INavigationBuilder AddFixedNavButton(string label, string icon, string commandKey);
     INavigationBuilder AddFixedNavButton(TextReference label, string icon, string commandKey);
-
-    [Obsolete("Use AddNav with an explicit primary navigation target.")]
-    INavigationBuilder AddGroup(string key, string label, string icon, Action<INavigationGroupBuilder> configure);
 }
 
 public interface ISubNavigationBuilder
@@ -67,30 +64,6 @@ public interface ISubNavigationBuilder
     /// <summary>Adds a destination with children displayed in the same navigation tree.</summary>
     ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
     ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
-}
-
-/// <summary>Legacy shell configuration retained for source migration.</summary>
-[Obsolete("Use IFrameworkBuilder and AddFlourishFramework.")]
-public interface IApplicationBuilder : IFrameworkBuilder
-{
-    IApplicationBuilder UseTitleBar(Action<ITitleBarBuilder>? configure = null);
-    IApplicationBuilder UseNavigation(Action<INavigationBuilder> configure);
-    new IApplicationBuilder ConfigureLayout(Action<ILayoutBuilder> configure);
-}
-
-[Obsolete("Use ITopBarBuilder.")]
-public interface ITitleBarBuilder
-{
-    ITitleBarBuilder SetApplicationTitle(string title);
-    ITitleBarBuilder SetSearch(bool enabled = true, string label = "Search");
-    ITitleBarBuilder SetNavigationToggle(bool enabled = true);
-}
-
-[Obsolete("Use ISubNavigationBuilder.")]
-public interface INavigationGroupBuilder
-{
-    INavigationGroupBuilder SetSecondaryNavigation(bool enabled = true);
-    INavigationGroupBuilder AddItem(string label, string href, string icon = "page", bool exact = false, bool disabled = false);
 }
 
 public interface IAppearanceBuilder

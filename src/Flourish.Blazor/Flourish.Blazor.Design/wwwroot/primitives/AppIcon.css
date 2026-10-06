@@ -1,4 +1,0 @@
-.app-icon { --f-icon-size:var(--f-icon-default-size,26px); width:1em; height:1em; color:inherit; }
-.app-icon--primary { --f-icon-size:var(--f-icon-primary-size,24px); }
-.app-icon--tool { --f-icon-size:var(--f-icon-tool-size,26px); }
-.app-icon--search,.app-icon--information { --f-icon-size:var(--f-icon-information-size,22px); }

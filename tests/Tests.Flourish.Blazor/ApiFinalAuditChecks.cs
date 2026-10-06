@@ -18,6 +18,74 @@ internal static class ApiFinalAuditChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("form layout full-width geometry and columns remain library-owned with native attributes", async () =>
+        {
+            await using var fixture = new Fixture();
+            var output = await fixture.Render<FormLayout>(new()
+            {
+                [nameof(FormLayout.FullWidth)] = true, [nameof(FormLayout.Columns)] = 3,
+                [nameof(FormLayout.Class)] = "group-scope",
+                [nameof(FormLayout.AdditionalAttributes)] = new Dictionary<string, object>
+                    { ["class"] = "host-replacement", ["style"] = "width:1px", ["data-field-group"] = "kept" }
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var tag = Regex.Match(output.ToHtmlString(), @"<div\b[^>]*>").Value;
+                Require(tag.Contains("f-form-layout f-field-full group-scope", StringComparison.Ordinal)
+                    && !tag.Contains("host-replacement", StringComparison.Ordinal)
+                    && tag.Contains("style=\"--f-form-columns:3\"", StringComparison.Ordinal)
+                    && tag.Contains("data-field-group=\"kept\"", StringComparison.Ordinal),
+                    "A native attribute replaced the production layout's geometry or lost a protocol attribute: " + tag);
+            });
+        }));
+        tests.Add(("standard Button menu roles select the common item geometry for both commands and links", async () =>
+        {
+            await using var fixture = new Fixture();
+            foreach (var href in new string?[] { null, "/records" })
+            {
+                var output = await fixture.Render<Button>(new()
+                {
+                    [nameof(Button.Text)] = "Menu action", [nameof(Button.Href)] = href,
+                    [nameof(Button.Variant)] = ButtonVariant.Quiet,
+                    [nameof(Button.AdditionalAttributes)] = new Dictionary<string, object>
+                        { ["role"] = "menuitem", ["data-command"] = "kept" }
+                });
+                await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+                {
+                    var tag = Regex.Match(output.ToHtmlString(), href is null ? @"<button\b[^>]*>" : @"<a\b[^>]*>").Value;
+                    Require(tag.Contains("f-button-quiet", StringComparison.Ordinal)
+                        && tag.Contains("f-menu-item f-dropdown-item", StringComparison.Ordinal)
+                        && tag.Contains("role=\"menuitem\"", StringComparison.Ordinal)
+                        && tag.Contains("data-command=\"kept\"", StringComparison.Ordinal),
+                        "The native command or link bypassed common library-owned menu geometry: " + tag);
+                    if (href is not null) Require(tag.Contains("href=\"/records\"", StringComparison.Ordinal), "A menu role changed the navigation target.");
+                });
+            }
+        }));
+        tests.Add(("Notice explicit role is authoritative and subtle warnings keep informational announcement", async () =>
+        {
+            await using var fixture = new Fixture();
+            var subtle = await fixture.Render<Notice>(new()
+            {
+                [nameof(Notice.Severity)] = ArkheideSystem.Flourish.Abstract.NotificationSeverity.Warning,
+                [nameof(Notice.Subtle)] = true
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() => Require(subtle.ToHtmlString().Contains("role=\"status\"", StringComparison.Ordinal),
+                "A subtle warning incorrectly requested an assertive alert."));
+            var explicitRole = await fixture.Render<Notice>(new()
+            {
+                [nameof(Notice.Announce)] = false, [nameof(Notice.Role)] = "status",
+                [nameof(Notice.AdditionalAttributes)] = new Dictionary<string, object> { ["role"] = "alert", ["data-result"] = "kept" }
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var tag = Regex.Match(explicitRole.ToHtmlString(), @"<div\b[^>]*>").Value;
+                Require(tag.Contains("role=\"status\"", StringComparison.Ordinal)
+                    && !tag.Contains("role=\"alert\"", StringComparison.Ordinal)
+                    && tag.Contains("data-result=\"kept\"", StringComparison.Ordinal),
+                    "An unmatched native role overrode the explicit standard notification contract: " + tag);
+            });
+        }));
         tests.Add(("bound checkbox generates its native POST name while an explicit host name takes precedence", async () =>
         {
             var model = new PostModel { Enabled = true };
@@ -136,20 +204,18 @@ internal static class ApiFinalAuditChecks
             var selections = 0;
             Task? creating = null;
             await using var fixture = new Fixture();
-            var output = await fixture.Render<Primitives.MultiSelectDropdown<string, string>>(new()
+            var output = await fixture.Render<MultiSelectBox>(new()
             {
-                ["Id"] = "creating-select", ["Items"] = new[] { "Existing" },
-                ["SelectedValues"] = new HashSet<string>(), ["MaximumSelections"] = 1,
-                ["ValueSelector"] = (Func<string, string>)(item => item), ["TextSelector"] = (Func<string, string>)(item => item),
-                ["SelectionChanged"] = EventCallback.Factory.Create<string>(fixture, _ => selections++),
+                ["Id"] = "creating-select", ["Items"] = new MultiSelectOption[] { new("Existing", "Existing") },
+                ["Searchable"] = true, ["MaximumSelections"] = 1,
+                ["Changed"] = EventCallback.Factory.Create<MultiSelectChange>(fixture, _ => selections++),
                 ["CreateRequested"] = (Func<string, Task<bool>>)(_ => completion.Task)
             });
-            var component = fixture.Component<Primitives.MultiSelectDropdown<string, string>>();
+            var component = fixture.Component<MultiSelectBox>();
             try
             {
                 await fixture.Renderer.Dispatcher.InvokeAsync(() =>
                 {
-                    Method(component, "Toggle").Invoke(component, null);
                     Method(component, "SearchChanged").Invoke(component, [new ChangeEventArgs { Value = "Exist" }]);
                     creating = (Task)Method(component, "CreateAsync").Invoke(component, null)!;
                     Rerender(component);
@@ -157,9 +223,9 @@ internal static class ApiFinalAuditChecks
                 await fixture.Renderer.Dispatcher.InvokeAsync(async () =>
                 {
                     var checkbox = Regex.Match(output.ToHtmlString(), @"<input\b[^>]*type=""checkbox""[^>]*>");
-                    await (Task)Method(component, "ChangeAsync").Invoke(component, ["Existing", new ChangeEventArgs { Value = true }])!;
+                    await component.ApplyAsync(["Existing"], ["Existing"]);
                     Require(checkbox.Success && Regex.IsMatch(checkbox.Value, @"\sdisabled(?:=|\s|>)") && selections == 0,
-                        $"Pending creation left an existing choice enabled or emitted SelectionChanged ({selections}): {output.ToHtmlString()}");
+                        $"Pending creation left an existing choice enabled or emitted Changed ({selections}): {output.ToHtmlString()}");
                 });
             }
             finally
@@ -172,9 +238,9 @@ internal static class ApiFinalAuditChecks
                 Rerender(component);
                 var checkbox = Regex.Match(output.ToHtmlString(), @"<input\b[^>]*type=""checkbox""[^>]*>");
                 Require(checkbox.Success && !Regex.IsMatch(checkbox.Value, @"\sdisabled(?:=|\s|>)"), "Completed creation left normal choices disabled.");
-                await (Task)Method(component, "ChangeAsync").Invoke(component, ["Existing", new ChangeEventArgs { Value = true }])!;
+                await component.ApplyAsync(["Existing"], ["Existing"]);
             });
-            Require(selections == 1, "The creation guard changed the established value-toggle callback after creation completed.");
+            Require(selections == 1, "The creation guard changed the shared selection snapshot callback after creation completed.");
         }));
     }
 

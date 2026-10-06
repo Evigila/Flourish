@@ -16,6 +16,53 @@ internal static class DataTableChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("record tables and column search export one contract with no retired API aliases", () =>
+        {
+            var framework = typeof(DataTable<>).Assembly;
+            Require(framework.GetExportedTypes().Where(type => type.Name == "DataTable`1").SequenceEqual([typeof(DataTable<>)]), "A second table renderer remains exported.");
+            Require(framework.GetExportedTypes().Where(type => type.Name == "DataSearch`1").SequenceEqual([typeof(DataSearch<>)]), "A second search renderer remains exported.");
+            foreach (var name in new[] { "DataTable`1", "DataSearch`1", "DataFilter", "DataSorter", "TablePreferences" })
+                Require(framework.GetType("ArkheideSystem.Flourish.Blazor.Components.Primitives." + name) is null, "A retired table/search entry remains available: " + name);
+            foreach (var name in new[] { "DataColumn`1", "DataSearchRequest", "DataCellContext`1", "CardField", "TablePurpose", "SortDirection" })
+                Require(typeof(TableColumn<>).Assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.Primitives." + name) is null, "A retired table contract remains available: " + name);
+            Require(typeof(DataTable<>).GetProperty("ShowSortControls") is null, "The deleted independent sorting controller can still be enabled.");
+            return Task.CompletedTask;
+        }));
+        tests.Add(("record sorting is exposed only by table headers and never by independent tools", async () =>
+        {
+            foreach (var progressive in new[] { false, true })
+            {
+                var parameters = Parameters(pageSize: 2);
+                parameters[nameof(DataTable<Row>.Progressive)] = progressive;
+                await WithTable(parameters, (_, html) =>
+                {
+                    var rendered = html();
+                    Require(!rendered.Contains("data-f-sort-reset", StringComparison.Ordinal) && !rendered.Contains("data-f-sort-direction", StringComparison.Ordinal), "A deleted standalone sort tool was rendered.");
+                    var header = Regex.Match(rendered, "<thead>[\\s\\S]*?</thead>").Value;
+                    Require(Tags(header, "button", "data-f-sort-key").Count == 2
+                        && Regex.Matches(rendered, "data-f-sort-key=").Count == 2, "A sorting entry exists outside the table header.");
+                    return Task.CompletedTask;
+                });
+            }
+        }));
+        tests.Add(("display choices themselves are full-row drag and keyboard targets without a separate handle", async () =>
+        {
+            foreach (var view in new[] { TableView.Table, TableView.Cards })
+            {
+                var parameters = Parameters(pageSize: 1);
+                parameters[nameof(DataTable<Row>.View)] = view;
+                await WithTable(parameters, (_, html) =>
+                {
+                    var choices = Tags(html(), "div", "data-f-selection-key");
+                    Require(choices.Count == 2 && choices.All(tag => Attribute(tag, "class") == "f-multi-select-option"), "The display drag target is not the complete item.");
+                    Require(choices.All(tag => Attribute(tag, "draggable") == (view == TableView.Table ? "true" : "false")
+                        && Attribute(tag, "aria-disabled") == "false"
+                        && Attribute(tag, "tabindex") == (view == TableView.Table ? "0" : "-1")), "Table and Cards do not share explicit reorder availability.");
+                    Require(Tags(html(), "button", "data-f-selection-key").Count == 0 && !html().Contains("f-data-reorder", StringComparison.Ordinal), "A separate reorder handle remains in the display choices.");
+                    return Task.CompletedTask;
+                });
+            }
+        }));
         tests.Add(("canonical remote search forwards host query without filtering returned rows", async () =>
         {
             TableSearchRequest? changed = null;
@@ -92,13 +139,13 @@ internal static class DataTableChecks
             };
             await WithTable(parameters, async (table, html) =>
             {
-                await table.ReorderAsync("detail", "ArrowUp");
+                await table.Display!.ApplyAsync(["detail","fixed","name"],["name","fixed","detail"]);
                 Require(Tags(html(), "col", "data-f-column").Select(tag => Attribute(tag, "data-f-column")).SequenceEqual(new[] { "detail", "fixed", "name" }), "A fixed column changed slots during keyboard ordering.");
-                await table.DragAsync("detail", "name");
+                await table.Display!.ApplyAsync(["name","fixed","detail"],["name","fixed","detail"]);
                 Require(Tags(html(), "col", "data-f-column").Select(tag => Attribute(tag, "data-f-column")).SequenceEqual(new[] { "name", "fixed", "detail" }), "Dragging forwards did not reach the original target slot.");
-                await table.DragAsync("detail", "name");
+                await table.Display!.ApplyAsync(["detail","fixed","name"],["name","fixed","detail"]);
                 Require(Tags(html(), "col", "data-f-column").Select(tag => Attribute(tag, "data-f-column")).SequenceEqual(new[] { "detail", "fixed", "name" }), "Dragging backwards did not preserve the fixed slot.");
-                await table.DragAsync("detail", "fixed");
+                await table.Display!.ApplyAsync(["detail","name","fixed"],["name","fixed","detail"]);
                 Require(Tags(html(), "col", "data-f-column").Select(tag => Attribute(tag, "data-f-column")).SequenceEqual(new[] { "detail", "fixed", "name" }), "Dragging into a fixed column moved it.");
                 await table.SetColumnWidth("name", 300000);
                 Require(Regex.IsMatch(html(), "<col[^>]*data-f-column=\"name\"[^>]*style=\"width:100000px\""), "Manual width did not enforce the finite maximum.");
@@ -186,9 +233,9 @@ internal static class DataTableChecks
             await WithTable(Parameters(pageSize: 1), (_, html) =>
             {
                 var rendered = html();
-                Require(rendered.Contains("f-data-display-options f-dropdown-panel", StringComparison.Ordinal), "The display selector did not use the shared dropdown panel.");
+                Require(rendered.Contains("f-multi-select-panel f-dropdown-panel", StringComparison.Ordinal), "The display selector did not use the shared dropdown panel.");
                 Require(rendered.Contains("f-dropdown-item is-selected", StringComparison.Ordinal), "Visible columns did not expose the shared selected state.");
-                Require(Regex.IsMatch(rendered, "<summary[^>]*class=\"f-dropdown-trigger\"[^>]*>Display\\s*<span[^>]*f-expansion-indicator"), "Display options lost the shared trigger or expansion marker.");
+                Require(Regex.IsMatch(rendered, "<summary[^>]*class=\"f-dropdown-trigger\"[^>]*><span[^>]*data-f-selection-label[^>]*>Display</span>\\s*<span[^>]*f-expansion-indicator"), "Display options lost the shared trigger or expansion marker.");
                 Require(rendered.Contains("f-button-quiet", StringComparison.Ordinal)
                     && rendered.Contains("f-data-sort-label", StringComparison.Ordinal)
                     && rendered.Contains("f-data-sort-text", StringComparison.Ordinal),
@@ -271,7 +318,7 @@ internal static class DataTableChecks
             await WithTable(Parameters(pageSize: 1, withActions: true), async (table, html) =>
             {
                 Require(html().Contains("data-f-column=\"detail\" data-f-last-column=\"true\"", StringComparison.Ordinal), "The initial last visible data column was not marked.");
-                await table.ChangeAsync("data-f-display-column", "detail", "false");
+                await table.Display!.ApplyAsync(["name","detail"],["name"]);
                 var rendered = html();
                 Require(rendered.Contains("data-f-column=\"name\" data-f-last-column=\"true\"", StringComparison.Ordinal), "Hiding the last column did not transfer the uncapped marker.");
                 Require(!Regex.IsMatch(rendered, @"<col\b[^>]*data-f-column=""detail"""), "The hidden data column remained in the sizing colgroup.");
@@ -599,6 +646,7 @@ internal static class DataTableChecks
         {
             var component = (IComponent)Activator.CreateInstance(componentType)!;
             if (component is DataTableProbe table) Table = table;
+            if (component is MultiSelectBox display && Table is not null) Table.Display = display;
             return component;
         }
     }
@@ -606,26 +654,15 @@ internal static class DataTableChecks
     private sealed class DataTableProbe : DataTable<Row>
     {
         public DataTableProbe() { }
+        internal MultiSelectBox? Display { get; set; }
 
         internal Task OpenAsync(Row row) => (Task)typeof(DataTable<Row>).GetMethod("Open", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [row])!;
         internal async Task QueryAsync(string value)
         {
-            await (Task)typeof(DataTable<Row>).GetMethod("ChangeQuery", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [new ChangeEventArgs { Value = value }])!;
+            var column = (string)typeof(DataTable<Row>).GetField("_searchColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(this)!;
+            await (Task)typeof(DataTable<Row>).GetMethod("ChangeSearchAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [new TableSearchRequest(column, value)])!;
             StateHasChanged();
         }
-        internal Task ReorderAsync(string key, string direction)
-        {
-            typeof(DataTable<Row>).GetMethod("ReorderColumnWithKeyboard", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this,
-                [Columns.Single(column => column.Key == key), new KeyboardEventArgs { Key = direction }]);
-            StateHasChanged(); return Task.CompletedTask;
-        }
-        internal Task DragAsync(string sourceKey, string targetKey)
-        {
-            typeof(DataTable<Row>).GetField("_draggingColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(this, sourceKey);
-            typeof(DataTable<Row>).GetMethod("DropColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [targetKey]);
-            StateHasChanged(); return Task.CompletedTask;
-        }
-
         internal Task ParametersAsync(Dictionary<string, object?> parameters) => SetParametersAsync(ParameterView.FromDictionary(parameters));
 
         internal Task SortAsync(string key)

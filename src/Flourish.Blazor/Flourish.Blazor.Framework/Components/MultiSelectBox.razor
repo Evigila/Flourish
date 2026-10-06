@@ -1,0 +1,185 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<details @attributes="AdditionalAttributes" @ref="Root" id="@RootId" class="@($"f-multi-select-box {Class}".Trim())" data-f-selection-instance="@InstanceId"
+         inert="@(Disabled ? true : (bool?)null)"
+         data-f-selection-static="@(Static ? "true" : null)" data-f-minimum-selected="@MinimumSelected" data-f-maximum-selections="@MaximumSelections"
+         data-f-selection-disabled="@Disabled.ToString().ToLowerInvariant()" data-f-creating="@Creating.ToString().ToLowerInvariant()" data-f-reorder-enabled="@CanReorder.ToString().ToLowerInvariant()"
+         data-f-filtering="@((!string.IsNullOrWhiteSpace(Search)).ToString().ToLowerInvariant())"
+         data-f-selection-caption="@Label" data-f-selection-empty="@EffectiveEmptySelectionText" data-f-selection-count="@EffectiveMultipleSelectionText">
+    <summary id="@(RootId + "-trigger")" class="f-dropdown-trigger" aria-controls="@PanelId" aria-labelledby="@LabelledBy"
+             aria-disabled="@Locked.ToString().ToLowerInvariant()"><span data-f-selection-label>@EffectiveLabel</span> <ExpansionIndicator /></summary>
+    <div id="@PanelId" class="f-multi-select-panel f-dropdown-panel f-menu-panel" popover="manual" role="group" aria-label="@EffectiveLabel">
+        @if (Searchable || CreateRequested is not null)
+        {
+            <input class="f-input f-multi-select-search" type="search" form="@(InstanceId + "-search")"
+                   value="@Search" maxlength="@NewItemMaximumLength" autocomplete="off"
+                   aria-label="@Ui("Selection_SearchOrAdd", "Search or add")" disabled="@Locked"
+                   @oninput="SearchChanged" @oninput:stopPropagation @onkeydown="SearchKeyDownAsync" @onkeydown:stopPropagation />
+        }
+        @if (!Items.Any(Matches))
+        {
+            <p class="f-multi-select-empty">@(string.IsNullOrWhiteSpace(Search) ? EffectiveEmptyText : Ui("Selection_NoResults", "No results found."))</p>
+        }
+        @foreach (var option in Items)
+        {
+            var reorderable = CanReorder && !Locked && string.IsNullOrWhiteSpace(Search) && !option.Disabled && option.CanReorder;
+            <div @key="option.Key" class="f-multi-select-option" data-f-selection-key="@option.Key" hidden="@(!Matches(option))"
+                 data-f-can-reorder="@option.CanReorder.ToString().ToLowerInvariant()" data-f-option-disabled="@option.Disabled.ToString().ToLowerInvariant()"
+                 draggable="@reorderable.ToString().ToLowerInvariant()" tabindex="@(reorderable ? "0" : "-1")"
+                 aria-disabled="@((Locked || option.Disabled).ToString().ToLowerInvariant())" aria-label="@Texts.Get(new TextReference("Flourish", "Selection_Reorder", "Reorder {0}"), option.Label)">
+                <label class="f-dropdown-item @(option.Selected ? "is-selected" : null)">
+                    <input type="checkbox" checked="@option.Selected" data-f-selection-key="@option.Key" data-f-fixed="@(!option.CanDeselect ? "true" : null)"
+                           disabled="@(Locked || option.Disabled || !option.CanDeselect || (option.Selected && SelectedCount <= MinimumSelected) || (!option.Selected && SelectedCount >= MaximumSelections))" />
+                    <span>@option.Label</span>
+                </label>
+            </div>
+        }
+        @if (CanCreate)
+        {
+            <Button Variant="ButtonVariant.Quiet" Class="f-multi-select-create" Disabled="@Locked" Busy="@Creating"
+                    OnClick="CreateAsync">@(Creating ? Ui("Selection_Adding", "Adding…") : Ui("Selection_Add", "Add \"{0}\"", Search.Trim()))</Button>
+        }
+    </div>
+</details>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<MultiSelectOption> Items { get; set; } = [];
+    [Parameter] public EventCallback<MultiSelectChange> Changed { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public string? LabelledBy { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter] public string EmptyText { get; set; } = "No options available.";
+    [Parameter] public string EmptySelectionText { get; set; } = "None selected";
+    [Parameter] public string MultipleSelectionText { get; set; } = "items selected";
+    [Parameter] public int MinimumSelected { get; set; }
+    [Parameter] public int MaximumSelections { get; set; } = int.MaxValue;
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool CanReorder { get; set; }
+    [Parameter] public bool Searchable { get; set; }
+    [Parameter] public Func<string, Task<bool>>? CreateRequested { get; set; }
+    [Parameter] public int NewItemMaximumLength { get; set; } = 100;
+    /// <summary>Already-rendered native choices emit a library DOM event rather than requiring a circuit.</summary>
+    [Parameter] public bool Static { get; set; }
+
+    private string EffectiveEmptyText => DefaultText(nameof(EmptyText), EmptyText, "Selection_NoOptions", "No options available.");
+    private string EffectiveEmptySelectionText => DefaultText(nameof(EmptySelectionText), EmptySelectionText, "Selection_NoneSelected", "None selected");
+    private string EffectiveMultipleSelectionText => DefaultText(nameof(MultipleSelectionText), MultipleSelectionText, "Selection_Count", "items selected");
+    private string EffectiveLabel => Label ?? (SelectedCount switch {
+        0 => EffectiveEmptySelectionText,
+        1 => Items.First(option => option.Selected).Label,
+        _ => $"{SelectedCount.ToString(Texts.FormatCulture)} {EffectiveMultipleSelectionText}"
+    });
+    private int SelectedCount => Items.Count(option => option.Selected);
+    private bool Locked => Disabled || Creating;
+    private bool Matches(MultiSelectOption option) => string.IsNullOrWhiteSpace(Search) || option.Label.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase);
+    private bool CanCreate => CreateRequested is not null && !string.IsNullOrWhiteSpace(Search) && Search.Trim().Length <= NewItemMaximumLength
+        && SelectedCount < MaximumSelections && !Items.Any(option => string.Equals(option.Label.Trim(), Search.Trim(), StringComparison.OrdinalIgnoreCase));
+    private string Search = string.Empty;
+    private bool Creating;
+    private readonly string InstanceId = "f-selection-" + Guid.NewGuid().ToString("N");
+    private string RootId => Id ?? InstanceId;
+    private string PanelId => RootId + "-panel";
+    private ElementReference Root;
+    private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
+    private DotNetObjectReference<MultiSelectBox>? Self;
+    private bool Disposed;
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Items);
+        ArgumentOutOfRangeException.ThrowIfNegative(MinimumSelected);
+        ArgumentOutOfRangeException.ThrowIfNegative(MaximumSelections);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(NewItemMaximumLength);
+        if (Id is not null && string.IsNullOrWhiteSpace(Id)) throw new ArgumentException("Provide a nonempty identifier.", nameof(Id));
+        if (Items.Any(option => option is null || string.IsNullOrWhiteSpace(option.Key) || string.IsNullOrWhiteSpace(option.Label)
+            || (!option.CanDeselect && !option.Selected)) || Items.Select(option => option.Key).Distinct(StringComparer.Ordinal).Count() != Items.Count)
+            throw new ArgumentException("Choices require unique keys, readable labels and selected required members.", nameof(Items));
+        if (MinimumSelected > Items.Count || MinimumSelected > MaximumSelections || SelectedCount < MinimumSelected || SelectedCount > MaximumSelections)
+            throw new ArgumentOutOfRangeException(nameof(MinimumSelected), "The selection must satisfy its configured bounds.");
+        if (Static && (Searchable || CreateRequested is not null)) throw new ArgumentException("Search and asynchronous creation require an interactive component.", nameof(Static));
+        if (Disabled) Search = string.Empty;
+    }
+
+    [JSInvokable]
+    public async Task ApplyAsync(string[] orderedKeys, string[] selectedKeys)
+    {
+        if (Disposed || Locked || Static || orderedKeys is null || selectedKeys is null) return;
+        var known = Items.Select(option => option.Key).ToHashSet(StringComparer.Ordinal);
+        if (orderedKeys.Length != Items.Count || orderedKeys.Distinct(StringComparer.Ordinal).Count() != Items.Count
+            || orderedKeys.Any(key => !known.Contains(key)) || selectedKeys.Distinct(StringComparer.Ordinal).Count() != selectedKeys.Length
+            || selectedKeys.Any(key => !known.Contains(key))) return;
+        var selected = selectedKeys.ToHashSet(StringComparer.Ordinal);
+        if (selected.Count < MinimumSelected || selected.Count > MaximumSelections || Items.Any(option => (!option.CanDeselect || option.Disabled) && option.Selected != selected.Contains(option.Key))) return;
+        var previous = Items.Select(option => option.Key).ToArray();
+        for (var index = 0; index < Items.Count; index++)
+            if ((!CanReorder || !string.IsNullOrWhiteSpace(Search) || Items[index].Disabled || !Items[index].CanReorder) && orderedKeys[index] != previous[index]) return;
+        await Changed.InvokeAsync(new MultiSelectChange(orderedKeys.ToArray(), selected));
+    }
+
+    private void SearchChanged(ChangeEventArgs args)
+    {
+        if (Disposed || Locked) return;
+        Search = args.Value?.ToString() ?? string.Empty;
+        if (Search.Length > NewItemMaximumLength) Search = Search[..NewItemMaximumLength];
+    }
+    private Task SearchKeyDownAsync(KeyboardEventArgs args) => args.Key == "Enter" ? CreateAsync() : Task.CompletedTask;
+    private async Task CreateAsync()
+    {
+        if (Disposed || Locked || !CanCreate || CreateRequested is null) return;
+        Creating = true;
+        try { if (await CreateRequested(Search.Trim()) && !Disposed) Search = string.Empty; }
+        finally { Creating = false; }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Disposed) return;
+        try
+        {
+            var module = await GetModuleAsync();
+            if (Disposed || module is null) return;
+            if (!Static) Self ??= DotNetObjectReference.Create(this);
+            await module.InvokeVoidAsync("synchronize", Root, InstanceId, Static ? null : Self);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var loading = ModuleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(ModuleLoading, loading)) ModuleLoading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/multi-select-box.js");
+        if (Disposed) { if (imported is not null) await ReleaseAsync(imported); return null; }
+        Module = imported;
+        return imported;
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        base.Dispose();
+        var module = Module; Module = null;
+        try { if (module is not null) await module.InvokeVoidAsync("detach", InstanceId); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally
+        {
+            Self?.Dispose(); Self = null;
+            if (module is not null) await ReleaseAsync(module);
+        }
+    }
+    private static async ValueTask ReleaseAsync(IJSObjectReference module)
+    {
+        try { await module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

@@ -4,7 +4,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<SelectionDropdownSurface>
+<div class="selection-dropdown-surface">
 <div class="reference-dropdown" @ref="Root" @onkeydown="HandleKeyDownAsync" @onfocusout="CloseIfFocusLeftAsync">
     <button @ref="Trigger" id="@(Id + "-trigger")" class="reference-trigger selection-trigger" type="button"
             aria-haspopup="listbox" aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")"
@@ -24,7 +24,7 @@
             <div id="@(Id + "-options")" class="reference-options" role="listbox" aria-labelledby="@LabelledBy">
                 @if (AllowNone)
                 {
-                    <button type="button" role="option" aria-selected="@((SelectedId is null && string.IsNullOrWhiteSpace(UnlistedName)) ? "true" : "false")"
+                    <button type="button" role="option" aria-selected="@((Value is null && string.IsNullOrWhiteSpace(UnlistedName)) ? "true" : "false")"
                             class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)">@EffectiveEmptySelectionText</button>
                 }
                 @if (ShowUnlisted)
@@ -33,7 +33,7 @@
                 }
                 @foreach (var item in Matches)
                 {
-                    <button type="button" role="option" aria-selected="@(EqualityComparer<TValue?>.Default.Equals(SelectedId, item.Id) ? "true" : "false")"
+                    <button type="button" role="option" aria-selected="@(EqualityComparer<TValue?>.Default.Equals(Value, item.Id) ? "true" : "false")"
                             class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(item.Id)">@item.Name</button>
                 }
                 @if (Matches.Count == 0 && !ShowUnlisted && !AllowNone)
@@ -51,7 +51,7 @@
     }
 </div>
 
-</SelectionDropdownSurface>
+</div>
 
 @code {
     private string EffectiveSearchLabel => DefaultText(nameof(SearchLabel), SearchLabel, "Selection_SearchOrAdd", "Search or add");
@@ -59,9 +59,9 @@
     [Parameter, EditorRequired] public string Id { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string LabelledBy { get; set; } = string.Empty;
     [Parameter, EditorRequired] public IReadOnlyList<ReferenceItem<TValue>> Items { get; set; } = [];
-    [Parameter] public TValue? SelectedId { get; set; }
+    [Parameter] public TValue? Value { get; set; }
     [Parameter] public string? UnlistedName { get; set; }
-    [Parameter] public EventCallback<TValue?> SelectionChanged { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
     [Parameter] public Func<string, Task<TValue?>>? CreateRequested { get; set; }
     [Parameter] public string EmptySelectionText { get; set; } = "None";
     [Parameter] public string SearchLabel { get; set; } = "Search or add";
@@ -79,7 +79,7 @@
     private bool FocusSearch;
     private bool Creating;
     private string Search = string.Empty;
-    private string SelectedName => Items.FirstOrDefault(item => EqualityComparer<TValue?>.Default.Equals(item.Id, SelectedId))?.Name
+    private string SelectedName => Items.FirstOrDefault(item => EqualityComparer<TValue?>.Default.Equals(item.Id, Value))?.Name
         ?? (string.IsNullOrWhiteSpace(UnlistedName) ? EffectiveEmptySelectionText : UnlistedName);
     private IReadOnlyList<ReferenceItem<TValue>> Matches => Items
         .Where(item => string.IsNullOrWhiteSpace(Search)
@@ -87,7 +87,7 @@
         .Take(50).ToArray();
     private bool CanCreate => CreateRequested is not null && !string.IsNullOrWhiteSpace(Search)
         && !Items.Any(item => string.Equals(item.Name.Trim(), Search.Trim(), StringComparison.OrdinalIgnoreCase));
-    private bool ShowUnlisted => SelectedId is null && !string.IsNullOrWhiteSpace(UnlistedName)
+    private bool ShowUnlisted => Value is null && !string.IsNullOrWhiteSpace(UnlistedName)
         && (string.IsNullOrWhiteSpace(Search) || UnlistedName.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
         && !Items.Any(item => string.Equals(item.Name, UnlistedName, StringComparison.OrdinalIgnoreCase));
 
@@ -122,7 +122,7 @@
         if (Disabled || Creating) return;
         IsOpen = false;
         Search = string.Empty;
-        await SelectionChanged.InvokeAsync(id);
+        await ValueChanged.InvokeAsync(id);
         await Trigger.FocusAsync();
     }
 
@@ -136,7 +136,7 @@
             if (id is null) return;
             IsOpen = false;
             Search = string.Empty;
-            await SelectionChanged.InvokeAsync(id);
+            await ValueChanged.InvokeAsync(id);
             await Trigger.FocusAsync();
         }
         finally { Creating = false; }

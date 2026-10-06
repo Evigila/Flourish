@@ -15,7 +15,7 @@
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Outlined" Text="@(ShowArchived ? "查看活动项目" : "查看归档项目")" OnClick="() => ShowArchived = !ShowArchived" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(ShowArchived ? "查看活动项目" : "查看归档项目")" OnClick="() => ShowArchived = !ShowArchived" />
     </div>
     <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
         <UniformGridItem Title="设计" Icon="palette" Text="@(ShowArchived ? "已归档" : "进行中")" />

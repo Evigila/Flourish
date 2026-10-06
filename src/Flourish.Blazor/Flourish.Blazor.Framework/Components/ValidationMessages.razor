@@ -1,0 +1,31 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using System.Linq.Expressions
+@implements IDisposable
+
+@if (Messages.Count > 0)
+{
+    <div id="@Id" class="f-field-errors @Class" role="alert" @attributes="AdditionalAttributes">
+        @foreach (var message in Messages) { <span>@message</span> }
+    </div>
+}
+
+@code {
+    [CascadingParameter] private EditContext? FormContext { get; set; }
+    [Parameter] public Expression<Func<object?>>? For { get; set; }
+    [Parameter] public string? Error { get; set; }
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private EditContext? SubscribedContext;
+    private IReadOnlyList<string> Messages => !string.IsNullOrWhiteSpace(Error) ? new[] { Error! }
+        : FormContext is not null && For is not null ? FormContext.GetValidationMessages(FieldIdentifier.Create(For)).ToArray() : Array.Empty<string>();
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(SubscribedContext, FormContext)) return;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged;
+        SubscribedContext = FormContext;
+        if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged += ValidationChanged;
+    }
+    private void ValidationChanged(object? sender, ValidationStateChangedEventArgs args) => _ = InvokeAsync(StateHasChanged);
+    public void Dispose() { if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
+}

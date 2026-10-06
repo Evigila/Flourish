@@ -2,32 +2,31 @@
 @using ArkheideSystem.Flourish.Blazor.Components.Primitives
 @using ArkheideSystem.Flourish.Blazor.Components.Patterns
 <PageTitle>组合布局 · Examples</PageTitle>
-<RecordListPage Title="Products" SectionTitle="Catalog">
-    <Actions><Button OnClick="() => formOpen = true">Create product</Button></Actions>
-    <Status>@if (message is not null) { <Notice Severity="NotificationSeverity.Information" Subtle="true">@message</Notice> }</Status>
-    <ChildContent>
-        <p>This is the advanced Registry table scenario: column preferences, card roles and templated row commands use Primitives.DataTable. It is not a replacement for the common DataTable or static ListView API.</p>
-        <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable TItem="Entry" Label="Products" PreferenceKey="gallery-sample-records" Items="entries" Columns="columns" ShowSearch="true" DefaultAction="Open" ItemKey="@(item => item.Id)">
-            <Actions Context="item"><Button Variant="ButtonVariant.Quiet" OnClick="() => Inspect(item)">Inspect</Button></Actions>
-        </ArkheideSystem.Flourish.Blazor.Components.Primitives.DataTable>
-    </ChildContent>
-</RecordListPage>
-<ArkheideSystem.Flourish.Blazor.Components.BottomSheet Title="Record details" @bind-IsOpen="inspectOpen">
-    <p>@message</p><p>This sample stores no business data.</p>
-</ArkheideSystem.Flourish.Blazor.Components.BottomSheet>
-<ArkheideSystem.Flourish.Blazor.Components.BottomSheet Title="Create product" @bind-IsOpen="formOpen">
+<PageBody Fluid="false">
+    <PageHeading Title="Products"><Actions><Button OnClick="() => formOpen = true">Create product</Button></Actions></PageHeading>
+    @if (message is not null) { <Notice Severity="NotificationSeverity.Information" Subtle="true">@message</Notice> }
+    <Section Title="Catalog">
+        <p>Registry uses the shared DataTable contract for records, preferences and actions.</p>
+        <DataTable TItem="Entry" Label="Products" Purpose="TablePurpose.Registry" PreferenceKey="gallery-sample-records" Items="entries" Columns="columns" Searchable="true" OnRowOpen="Open" Actions="actions" ItemKey="@(item => item.Id)" />
+    </Section>
+</PageBody>
+<Dialog Presentation="DialogPresentation.BottomSheet" Title="Record details" @bind-IsOpen="inspectOpen">
+    <p>@message</p>
+</Dialog>
+<Dialog Presentation="DialogPresentation.BottomSheet" Title="Create product" @bind-IsOpen="formOpen">
     <ChildContent>
         <FormLayout Columns="1">
             <Field Label="Name" Id="pattern-name"><StandaloneTextBox Id="pattern-name" @bind-Value="name" /></Field>
             <Field Label="SKU" Id="pattern-sku"><StandaloneTextBox Id="pattern-sku" @bind-Value="sku" /></Field>
         </FormLayout>
     </ChildContent>
-    <Actions><Button Variant="ButtonVariant.Filled" OnClick="Complete">Use sample</Button><Button Variant="ButtonVariant.Outlined" OnClick="() => formOpen = false">Cancel</Button></Actions>
-</ArkheideSystem.Flourish.Blazor.Components.BottomSheet>
+    <Actions><Button Variant="ButtonVariant.Primary" OnClick="Complete">Use sample</Button><Button Variant="ButtonVariant.Secondary" OnClick="() => formOpen = false">Cancel</Button></Actions>
+</Dialog>
 @code {
     private sealed record Entry(int Id, string Name, string Sku, decimal Price);
     private readonly IReadOnlyList<Entry> entries = [new(1, "Notebook", "PAP-0096", 12.90m), new(2, "Detergent", "LIMP-0500", 3.49m), new(3, "Chocolate", "ALIM-0100", 5.99m)];
-    private readonly IReadOnlyList<DataColumn<Entry>> columns = [new("name", "Product", item => item.Name, cardField: CardField.Title), new("sku", "SKU", item => item.Sku, cardField: CardField.Identifier), new("price", "Price", item => item.Price.ToString("0.00"), sortValue: item => item.Price)];
+    private readonly IReadOnlyList<TableColumn<Entry>> columns = [new("name", "Product", item => item.Name, CardField: TableCardField.Title), new("sku", "SKU", item => item.Sku, CardField: TableCardField.Identifier), new("price", "Price", item => item.Price, SortValue: item => item.Price)];
+    private IReadOnlyList<RowAction<Entry>> actions => [new("Inspect", item => { Inspect(item); return Task.CompletedTask; })];
     private bool formOpen, inspectOpen;
     private string? name = "", sku = "";
     private string? message;

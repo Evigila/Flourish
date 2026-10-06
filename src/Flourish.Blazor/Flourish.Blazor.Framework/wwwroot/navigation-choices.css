@@ -1,0 +1,4 @@
+/* Native GET choices are links, not a JavaScript tab widget. */
+.f-navigation-choices { display:grid; min-width:0; }
+.f-navigation-choices-nav,.f-navigation-choice-panel { min-width:0; }
+.f-navigation-choice-panel[hidden] { display:none!important; }

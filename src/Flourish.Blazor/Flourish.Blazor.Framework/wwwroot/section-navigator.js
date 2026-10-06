@@ -27,7 +27,7 @@ function discover(state) {
 }
 
 function headingOffset(state) {
-    const heading = state.content.querySelector('.f-page-heading, .page-heading');
+    const heading = state.content.querySelector('.f-page-heading');
     return heading && getComputedStyle(heading).position === 'sticky' ? heading.getBoundingClientRect().height + 12 : 12;
 }
 
@@ -61,7 +61,7 @@ function beginNavigation(state, heading) {
     cancelNavigation(state);
     const navigation = state.navigation = { heading, idleTimer:0, deadlineTimer:0 };
     interruptionEvents.forEach(type => document.addEventListener(type, state.interrupt, { capture:true, passive:true }));
-    // Browsers without scrollend still settle, and continuous events cannot postpone cleanup indefinitely.
+    // Bound the alignment lifetime so continuous events cannot postpone cleanup indefinitely.
     navigation.deadlineTimer = setTimeout(() => finishNavigation(state, navigation), 1000);
     scheduleAlignment(state);
 }
@@ -82,11 +82,11 @@ function refresh(state) {
     state.targets = links(state.root).map(link => ({ link, heading: document.getElementById(idFromLink(link)) }))
         .filter(item => item.heading && state.content.contains(item.heading));
     state.root.hidden = state.targets.length === 0;
-    const pageHeading = state.content.querySelector('.f-page-heading, .page-heading');
+    const pageHeading = state.content.querySelector('.f-page-heading');
     const observed = [state.content, ...(pageHeading ? [pageHeading] : []), ...state.targets.map(item => item.heading)];
     if (!state.observed || observed.length !== state.observed.length || observed.some((node, index) => node !== state.observed[index])) {
-        state.resize?.disconnect();
-        observed.forEach(node => state.resize?.observe(node));
+        state.resize.disconnect();
+        observed.forEach(node => state.resize.observe(node));
         state.observed = observed;
     }
     for (const [heading, id] of state.generatedIds) if (!state.content.contains(heading)) {
@@ -179,7 +179,7 @@ export function synchronize(root, contentId, autoDiscover, reference) {
         document.addEventListener('scroll', state.position, { capture:true, passive:true });
         state.mutation = new MutationObserver(schedule);
         state.mutation.observe(content, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['id','hidden'] });
-        if (typeof ResizeObserver !== 'undefined') { state.resize = new ResizeObserver(schedule); }
+        state.resize = new ResizeObserver(schedule);
         instances.set(root, state);
     }
     state.reference = reference;
@@ -193,7 +193,7 @@ export function detach(root) {
     cancelNavigation(state);
     if (state.frame) cancelAnimationFrame(state.frame);
     state.mutation.disconnect();
-    state.resize?.disconnect();
+    state.resize.disconnect();
     state.content.removeEventListener('scroll', state.scroll);
     root.removeEventListener('click', state.click);
     root.removeEventListener('keydown', state.dismiss);

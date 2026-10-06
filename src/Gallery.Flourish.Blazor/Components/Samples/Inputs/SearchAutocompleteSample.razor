@@ -13,25 +13,25 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
-        <div style="display:grid;gap:8px"><label for="@(Prefix + "-empty")">空候选集</label>
+    <FormLayout Columns="1">
+        <Field Id="@(Prefix + "-empty")" Label="空候选集">
         <ArkheideSystem.Flourish.Blazor.Components.Primitives.SearchAutocomplete TItem="Suggestion" Id="@(Prefix + "-empty")" Items="EmptyItems" ValueSelector="@(item => item.Name)" TextSelector="@(item => item.Name)" @bind-Value="EmptyQuery" EmptyText="没有候选项" ResultsLabel="搜索建议" />
-        </div>
-        <div style="display:grid;gap:8px"><label for="@(Prefix + "-disabled")">禁用</label>
+        </Field>
+        <Field Id="@(Prefix + "-disabled")" Label="禁用">
         <ArkheideSystem.Flourish.Blazor.Components.Primitives.SearchAutocomplete TItem="Suggestion" Id="@(Prefix + "-disabled")" Items="EmptyItems" ValueSelector="@(item => item.Name)" TextSelector="@(item => item.Name)" @bind-Value="EmptyDisabled" Disabled="true" />
-        </div>
-    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        </Field>
+    </FormLayout>
 }
 else
 {
     <ToggleSwitch Label="模拟无候选项" @bind-Value="NoItems" @bind-Value:after="ResetSelection" OnLabel="无数据" OffLabel="示例数据" />
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
-        <div style="display:grid;gap:8px"><label for="@(Prefix + "-venue")">场地名称</label>
+    <FormLayout Columns="1">
+        <Field Id="@(Prefix + "-venue")" Label="场地名称">
         <ArkheideSystem.Flourish.Blazor.Components.Primitives.SearchAutocomplete TItem="Suggestion" Id="@(Prefix + "-venue")" Items="@(NoItems ? EmptyItems : Suggestions)"
                               ValueSelector="@(item => item.Name)" TextSelector="@(item => item.Name)" KeySelector="@(item => item.Id)"
                               @bind-Value="Query" InputChanged="InputChanged" ItemSelected="Selected" SearchCleared="Cleared" Placeholder="输入活动、阅读或会议，选择候选场地" EmptyText="没有匹配的示例场地" ResultsLabel="场地建议" />
-        </div>
-    </ArkheideSystem.Flourish.Blazor.Components.Primitives.FormFields>
+        </Field>
+    </FormLayout>
     <p role="status">@Message</p>
 }
 

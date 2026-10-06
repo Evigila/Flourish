@@ -33,8 +33,8 @@ internal static class ComponentInventoryChecks
         {
             Check(ReferenceEquals(ComponentUsageCatalog.For(typeof(DataTable<string>)), ComponentUsageCatalog.For(typeof(DataTable<>))),
                 "Closed generic controls must use their reviewed generic definition.");
-            Check(ReferenceEquals(ComponentUsageCatalog.For(typeof(Primitives.MultiSelectDropdown<string, int>)),
-                ComponentUsageCatalog.For(typeof(Primitives.MultiSelectDropdown<,>))), "Two-parameter generic normalization differs.");
+            Check(ComponentUsageCatalog.For(typeof(MultiSelectBox)).Kind == ComponentUseKind.General,
+                "The shared multi-selection controller must be a general production control.");
             var unknownRejected = false;
             try { _ = ComponentUsageCatalog.For(typeof(string)); }
             catch (KeyNotFoundException) { unknownRejected = true; }
@@ -46,7 +46,7 @@ internal static class ComponentInventoryChecks
             return Task.CompletedTask;
         }));
 
-        tests.Add(("preferred entry points are current and have no replacement cycles", () =>
+        tests.Add(("composition guidance names current production entries without cycles", () =>
         {
             foreach (var info in ComponentUsageCatalog.Entries.Values)
             {
@@ -63,36 +63,51 @@ internal static class ComponentInventoryChecks
             return Task.CompletedTask;
         }));
 
-        tests.Add(("primitive guidance distinguishes supported features from incomplete helpers and migration debt", () =>
+        tests.Add(("primitive guidance distinguishes production scenarios from construction helpers", () =>
         {
             foreach (var type in new[]
             {
                 typeof(Primitives.EditingGrid), typeof(Primitives.MaskedInput),
-                typeof(Primitives.StandaloneMaskedInput), typeof(Primitives.MultiSelectDropdown<,>),
+                typeof(Primitives.StandaloneMaskedInput),
                 typeof(Primitives.ReferenceDropdown<>), typeof(Primitives.SearchAutocomplete<>),
                 typeof(Primitives.DataPager), typeof(Primitives.NavigationGuard),
-                typeof(Primitives.InteractionBoundary), typeof(Primitives.NoticeTrigger), typeof(Primitives.RowActionMenu)
+                typeof(Primitives.InteractionBoundary), typeof(Primitives.NoticeTrigger)
             })
                 Check(ComponentUsageCatalog.For(type).Kind == ComponentUseKind.Scenario,
                     $"An independent production feature was mislabeled as an internal primitive: {type.Name}.");
 
-            foreach (var type in new[] { typeof(Primitives.ToggleIndicator), typeof(Primitives.SelectionDropdownSurface), typeof(ExpansionIndicator) })
+            foreach (var type in new[] { typeof(ExpansionIndicator), typeof(DropdownSurface) })
                 Check(ComponentUsageCatalog.For(type).Kind == ComponentUseKind.BuildingBlock, $"Incomplete helper lacks its construction-only warning: {type.Name}.");
-            var advanced = ComponentUsageCatalog.For(typeof(Primitives.DataTable<>));
-            var search = ComponentUsageCatalog.For(typeof(Primitives.DataSearch<>));
-            Check(search.Kind == ComponentUseKind.Compatibility && search.PreferredEntry == typeof(DataSearch<>)
-                && search.Guidance.Contains("委托同一", StringComparison.Ordinal), "Legacy search must truthfully name its single canonical renderer.");
-            Check(advanced.Kind == ComponentUseKind.Compatibility && advanced.PreferredEntry == typeof(DataTable<>)
-                && advanced.Guidance.Contains("仍有独立实现", StringComparison.Ordinal), "Legacy table guidance must name the preferred entry without falsely claiming a shared implementation.");
-            var outline = ComponentUsageCatalog.For(typeof(Primitives.PageContents));
-            Check(outline.Kind == ComponentUseKind.Compatibility && outline.PreferredEntry == typeof(SectionNavigator)
-                && outline.Guidance.Contains("不得用于业务页面", StringComparison.Ordinal), "Static directory cannot stand in for the active business section indicator.");
-            var grid = ComponentUsageCatalog.For(typeof(Primitives.UniformGrid));
-            Check(grid.Kind == ComponentUseKind.Compatibility && grid.PreferredEntry is null
-                && grid.Guidance.Contains("不等价", StringComparison.Ordinal), "The fluid legacy grid must not be presented as a drop-in tile-grid alias.");
-            var sheet = ComponentUsageCatalog.For(typeof(Primitives.BottomSheet));
-            Check(sheet.Kind == ComponentUseKind.Compatibility && sheet.PreferredEntry is null
-                && sheet.Guidance.Contains("OnClose", StringComparison.Ordinal), "The independent sheet close contract must not be hidden by a false replacement pointer.");
+            Check(ComponentUsageCatalog.For(typeof(DataTable<>)).Kind == ComponentUseKind.Scenario
+                && ComponentUsageCatalog.For(typeof(DataSearch<>)).Kind == ComponentUseKind.Scenario,
+                "Canonical record browsing and column search must be production scenarios.");
+            Check(ComponentUsageCatalog.For(typeof(SectionNavigator)).Kind == ComponentUseKind.Scenario
+                && ComponentUsageCatalog.For(typeof(UniformGrid)).Kind == ComponentUseKind.Scenario
+                && ComponentUsageCatalog.For(typeof(Dialog)).Kind == ComponentUseKind.General,
+                "The standard directory, grid and dialog variation must have explicit current usage.");
+            return Task.CompletedTask;
+        }));
+
+        tests.Add(("retired public renderers and compatibility usage classifications do not exist", () =>
+        {
+            var assembly = typeof(Button).Assembly;
+            const string prefix = "ArkheideSystem.Flourish.Blazor.Components.Primitives.";
+            foreach (var name in new[]
+            {
+                "AppIcon", "BottomSheet", "DataTable`1", "DataSearch`1", "DisclosureSection",
+                "FilledIdentityCard", "FormActionBar", "FormFields", "FormSurface", "Glyph",
+                "PageContent", "PageContents", "PageHeading", "PageLoading", "RecordPageHeading",
+                "RowActionMenu", "StatusNotice", "ToggleSection", "ToggleSwitch", "UniformGrid", "MultiSelectDropdown`2", "SelectionDropdownSurface", "ToggleIndicator", "AccessSurface"
+            })
+                Check(assembly.GetType(prefix + name) is null, $"Retired public renderer remains available: {name}.");
+            foreach (var name in new[] { "DisplayOptions", "DisplayOption", "DisplayOptionsChange", "ConfirmationHost", "ReconnectDialog", "BottomSheet", "StaticDialog", "StandaloneNumberBox" })
+                Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Components." + name) is null, "Retired display contract remains available: " + name);
+            Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.Patterns.RecordListPage") is null, "Retired record-page wrapper remains available.");
+            Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Hosting.ConfirmationService") is null, "Retired confirmation service remains available.");
+            Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.TableSurface") is null,
+                "Retired TableSurface renderer remains available.");
+            Check(!Enum.GetNames<ComponentUseKind>().Contains("Compatibility", StringComparer.Ordinal),
+                "The catalog must not advertise a compatibility component family.");
             return Task.CompletedTask;
         }));
     }

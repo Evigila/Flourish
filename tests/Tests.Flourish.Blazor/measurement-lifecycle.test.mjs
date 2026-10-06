@@ -3,7 +3,7 @@ import fs from "node:fs";
 import vm from "node:vm";
 import test from "node:test";
 
-const source = fs.readFileSync(new URL("../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/data-table-columns.js", import.meta.url), "utf8");
+const source = fs.readFileSync(new URL("../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/editing-grid-columns.js", import.meta.url), "utf8");
 class Element {}
 class Observer {
     static instances = [];
@@ -17,6 +17,12 @@ const runtime = vm.createContext({ Element, MutationObserver: Observer });
 vm.runInContext(source.replace(/^export /gm, ""), runtime);
 const api = vm.runInContext("({ connect, dispose })", runtime);
 
+class Resize {
+    constructor(callback) { this.callback = callback; this.disconnected = false; }
+    observe(root) { this.root = root; }
+    disconnect() { this.disconnected = true; }
+}
+
 function fixture() {
     const listeners = new Map(), viewListeners = new Map(), fontListeners = new Map(), frames = new Map();
     let probes = 0, font = "400 17px Segoe UI", frameKey = 0;
@@ -25,7 +31,7 @@ function fixture() {
     const makeCells = widths => widths.map((width, cellIndex) => Object.assign(new Element(), {
         cellIndex, colSpan: 1, matches: () => false,
         computedStyle: { font, letterSpacing: "normal", paddingLeft: "20px", paddingRight: "20px" },
-        querySelector: selector => selector === ".data-column-sort, .cell-select-marker" ? null : ({ cloneNode: () => ({ naturalWidth: width, style: { setProperty() {} } }) })
+        querySelector: selector => selector === ".cell-select-marker" ? null : ({ cloneNode: () => ({ naturalWidth: width, style: { setProperty() {} } }) })
     }));
     const rows = [{ cells: makeCells([40, 44]) }, { cells: makeCells([60, 44]) }];
     const table = Object.assign(new Element(), {
@@ -39,6 +45,7 @@ function fixture() {
         setAttribute() {}, focus() {}, setPointerCapture(id) { this.pointer = id; }, hasPointerCapture(id) { return this.pointer === id; }, releasePointerCapture() { this.pointer = null; }
     });
     const view = {
+        ResizeObserver: Resize,
         getComputedStyle: element => element === table ? { font, letterSpacing: "normal" } : element.computedStyle,
         addEventListener: (name, fn) => viewListeners.set(name, fn), removeEventListener: name => viewListeners.delete(name),
         requestAnimationFrame: fn => { const id = ++frameKey; frames.set(id, fn); return id; }, cancelAnimationFrame: id => frames.delete(id)

@@ -8,14 +8,14 @@
     {
         <span class="primary-nav-item is-disabled" role="link" tabindex="0" aria-disabled="true"
               aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" Filled="@Filled" /></span>
+            <span class="primary-nav-symbol"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" Filled="@Filled" Class="primary-navigation-icon" /></span>
         </span>
     }
     else
     {
         <NavLink class="@NavigationClass" ActiveClass="is-active" href="@Href" Match="@Match"
                  aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><AppIcon Name="@Icon" Size="primary" Filled="@Filled" /></span>
+            <span class="primary-nav-symbol"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" Filled="@Filled" Class="primary-navigation-icon" /></span>
         </NavLink>
     }
     <span id="@TooltipId" class="primary-navigation-tooltip" role="tooltip" popover="manual"

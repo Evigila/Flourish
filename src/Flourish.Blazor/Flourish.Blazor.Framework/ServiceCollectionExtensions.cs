@@ -17,15 +17,6 @@ public static class ServiceCollectionExtensions
         return Register(services, builder => configure?.Invoke(builder));
     }
 
-    [Obsolete("Use AddFlourishFramework.")]
-    public static IServiceCollection AddFlourish(
-        this IServiceCollection services,
-        Action<IApplicationBuilder>? configure = null)
-    {
-        ArgumentNullException.ThrowIfNull(services);
-        return Register(services, builder => configure?.Invoke(builder));
-    }
-
     private static IServiceCollection Register(IServiceCollection services, Action<ApplicationBuilder> configure)
     {
         if (services.Any(service => service.ServiceType == typeof(ApplicationOptions)))
@@ -42,7 +33,7 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<ITextProvider, LiteralTextProvider>();
         services.TryAddScoped<CommandRuntime>();
         services.TryAddScoped<ICommandDispatcher>(provider => provider.GetRequiredService<CommandRuntime>());
-        services.TryAddScoped<ITablePreferences, Components.Primitives.TablePreferences>();
+        services.TryAddScoped<ITablePreferences, Components.TablePreferences>();
         return services;
     }
 }

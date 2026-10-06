@@ -1,4 +1,5 @@
 // Scoped DOM lifetimes adapted from the source tooltip, menu, modal and input behaviors.
+import { rememberInvoker, resolveInvoker } from './primitives/interaction-origin.js';
 const menus = new WeakMap();
 const dialogs = new WeakMap();
 const inputs = new WeakMap();
@@ -27,10 +28,14 @@ export function attachTextSelection(input) {
 }
 export function detachTextSelection(input) { inputs.get(input)?.(); inputs.delete(input); }
 
-function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(visible); }
+function menuUnavailable(element) {
+    return !element || element.disabled || element.matches(':disabled')
+        || element.closest('[disabled],[aria-disabled="true"],[hidden],[inert]') !== null;
+}
+function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(element => visible(element) && !menuUnavailable(element)); }
 function copyTheme(trigger, panel) {
     const style = getComputedStyle(trigger);
-    // Preserve inherited presentation across a DOM portal without depending on a visual package.
+    // Preserve the trigger's scoped surface roles on native top-layer popups.
     const names = new Set(['font-family','font-size','font-weight','line-height','color-scheme']);
     for (let index = 0; index < style.length; index++) {
         const name = style[index];
@@ -79,7 +84,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     if (!trigger || !panel) return;
     const existing = menus.get(panel);
     if (existing) {
-        if (existing.openOnHover !== openOnHover || trigger.disabled) closeMenu(trigger,panel,false);
+        if (existing.openOnHover !== openOnHover || menuUnavailable(trigger)) closeMenu(trigger,panel,false);
         existing.openOnHover = openOnHover;
         trigger.setAttribute('aria-expanded',existing.open ? 'true' : 'false');
         if (existing.open) {
@@ -89,21 +94,21 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         return;
     }
     const state = { trigger, panel, hoverRoot:trigger.closest('.f-action-menu') ?? trigger, openOnHover,
-        itemSelector:'[role="menuitem"]:not([disabled])', disclosure:null,
-        open:false, placeholder:null, restoreTheme:null, maximumHeight:'', maximumHeightPriority:'', cleanup:[] };
+        itemSelector:'[role="menuitem"]:not([disabled])', disclosure:null, dismissOnAction:true,
+        open:false, restoreTheme:null, maximumHeight:'', maximumHeightPriority:'', cleanup:[] };
     const listen = (target, type, callback, options) => {
         target.addEventListener(type, callback, options);
         state.cleanup.push(() => target.removeEventListener(type, callback, options));
     };
     listen(trigger, 'keydown', event => {
-        if (!['ArrowDown','ArrowUp'].includes(event.key) || trigger.disabled) return;
+        if (!['ArrowDown','ArrowUp'].includes(event.key) || menuUnavailable(trigger)) return;
         event.preventDefault();
         event.stopPropagation();
         if (!state.open) openMenu(state,true);
         const items = menuItems(state); (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
     });
     listen(state.hoverRoot, 'pointerenter', event => {
-        if (state.openOnHover && event.pointerType !== 'touch' && !trigger.disabled) openMenu(state,false);
+        if (state.openOnHover && event.pointerType !== 'touch' && !menuUnavailable(trigger)) openMenu(state,false);
     });
     const leave = event => {
         if (!state.openOnHover || !state.open || event.pointerType === 'touch') return;
@@ -112,6 +117,17 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     };
     listen(state.hoverRoot, 'pointerleave', leave);
     listen(panel, 'pointerleave', leave);
+    listen(panel, 'click', event => {
+        const action = event.target?.closest?.('a,button,[role="menuitem"]');
+        if (!action || !panel.contains(action)) return;
+        if (menuUnavailable(action)) {
+            event.preventDefault(); event.stopImmediatePropagation(); return;
+        }
+        if (!state.open || !state.dismissOnAction) return;
+        // Native transport and callback dispatch complete before the shared menu dismisses.
+        rememberInvoker(trigger);
+        queueMicrotask(() => { if (state.open) closeMenu(trigger,panel,false); });
+    }, true);
     listen(document, 'pointerdown', event => {
         if (state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
     }, true);
@@ -119,7 +135,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         if (state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
     });
     listen(document, 'keydown', event => {
-        if (!state.open) return;
+        if (!state.open || event.defaultPrevented) return;
         if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeMenu(trigger,panel,true); return; }
         if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
         const items = menuItems(state); if (!items.length) return;
@@ -136,24 +152,26 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     state.cleanup.push(()=>observer.disconnect());
     menus.set(panel,state);
 }
-export function attachDisclosureMenu(disclosure, trigger, panel) {
+export function attachDisclosureMenu(disclosure, trigger, panel, dismissOnAction=false) {
     if (!disclosure || !trigger || !panel) return;
     attachMenu(trigger,panel);
     const state = menus.get(panel);
+    state.dismissOnAction = dismissOnAction;
+    state.itemSelector = dismissOnAction ? '[role="menuitem"]:not([disabled])' : focusableSelector;
     if (!state.disclosure) {
         state.disclosure = disclosure;
-        state.itemSelector = focusableSelector;
         const synchronize = () => disclosure.open ? openMenu(state,false) : closeMenu(trigger,panel,false);
         disclosure.addEventListener('toggle',synchronize);
         state.cleanup.push(()=>disclosure.removeEventListener('toggle',synchronize));
     }
-    // Native summary activation owns the open state; option clicks never dismiss a multi-selection panel.
+    // Native summary activation owns the open state; selection options remain open, commands dismiss after dispatch.
     if (disclosure.open && !state.open) openMenu(state,false);
     else if (!disclosure.open && state.open) closeMenu(trigger,panel,false);
 }
 function openMenu(state, focusMenu) {
-    if (state.open || state.trigger.disabled) return;
+    if (state.open || menuUnavailable(state.trigger)) return;
     const {trigger,panel} = state;
+    if (typeof panel.showPopover !== 'function') throw new TypeError('Native Popover API is required.');
     if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
     state.restoreTheme = copyTheme(trigger,panel);
     state.maximumHeight = panel.style.getPropertyValue('max-height');
@@ -162,18 +180,14 @@ function openMenu(state, focusMenu) {
     activeMenu = state;
     if (state.disclosure) state.disclosure.open = true;
     panel.setAttribute('data-f-open','');
-    if (typeof panel.showPopover === 'function') panel.showPopover();
-    else {
-        state.placeholder = document.createComment('menu return position');
-        panel.before(state.placeholder); document.body.append(panel);
-    }
+    panel.showPopover();
     trigger.setAttribute('aria-expanded','true');
     positionMenu(state);
     if (focusMenu) menuItems(state)[0]?.focus({preventScroll:true});
 }
 export function toggleMenu(trigger, panel, focusMenu=true) {
     if (!menus.has(panel)) attachMenu(trigger,panel);
-    const state = menus.get(panel); if (!state || trigger.disabled) return;
+    const state = menus.get(panel); if (!state || menuUnavailable(trigger)) return;
     if (state.open) {
         // Pointer clicks on an already hovered top-bar trigger should not flash the menu closed.
         if (state.openOnHover && !focusMenu) return;
@@ -184,12 +198,11 @@ export function toggleMenu(trigger, panel, focusMenu=true) {
 export function closeMenu(trigger,panel,restoreFocus=false) {
     const state = menus.get(panel); if (!state) return;
     const wasOpen = state.open;
-    if (state.open && typeof panel.hidePopover === 'function' && panel.isConnected && panel.matches(':popover-open')) panel.hidePopover();
+    if (state.open && panel.isConnected && panel.matches(':popover-open')) panel.hidePopover();
     panel.removeAttribute('data-f-open');
     state.open = false;
     if (state.disclosure) state.disclosure.open = false;
     trigger.setAttribute('aria-expanded','false');
-    if (state.placeholder?.isConnected) { state.placeholder.replaceWith(panel); state.placeholder = null; }
     state.restoreTheme?.(); state.restoreTheme = null;
     if (wasOpen) {
         if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
@@ -212,34 +225,26 @@ function restoreDialogFocus(state) {
 }
 function closeDialog(state, restore=true) {
     if (state.dialog.open) {
-        if (typeof state.dialog.close === 'function') state.dialog.close(); else state.dialog.removeAttribute('open');
-    }
-    if (state.fallback) {
-        state.fallback.remove(); state.fallback = null;
-        state.inert.forEach(([element,previous])=>{ element.inert = previous; }); state.inert = [];
-        state.dialog.classList.remove('f-dialog-fallback');
-        if (state.placeholder?.isConnected) state.placeholder.replaceWith(state.dialog);
-        state.placeholder = null;
-        state.restoreTheme?.(); state.restoreTheme = null;
+        state.dialog.close();
     }
     if (restore) restoreDialogFocus(state);
 }
-export function synchronizeDialog(dialog,isOpen,reference) {
+export function synchronizeDialog(dialog,isOpen,reference = null) {
     if (!dialog?.isConnected) return;
+    if (isOpen && typeof dialog.showModal !== 'function') throw new TypeError('Native Dialog API is required.');
     let state = dialogs.get(dialog);
     if (!state) {
-        state = { dialog,reference,pending:false,opener:null,fallback:null,placeholder:null,restoreTheme:null,inert:[],cleanup:[] };
+        state = { dialog,reference,pending:false,opener:null,cleanup:[] };
         const cancel = async event => {
             event.preventDefault();
-            if (dialog.getAttribute('aria-busy') === 'true' || state.pending) return;
+            if (dialog.dataset.fDialogDismissible === 'false' || dialog.getAttribute('aria-busy') === 'true' || state.pending) return;
             state.pending = true;
-            try { await state.reference.invokeMethodAsync('RequestCloseAsync'); }
+            try { if (state.reference) await state.reference.invokeMethodAsync('RequestCloseAsync'); else closeDialog(state); }
             catch { /* A reconnect must retain the open form. */ }
             finally { state.pending = false; }
         };
         const keys = event => {
             if (!dialog.open) return;
-            if (event.key === 'Escape' && state.fallback) { cancel(event); return; }
             if (event.key !== 'Tab') return;
             const items = [...dialog.querySelectorAll(focusableSelector)].filter(visible);
             const first = items[0], last = items.at(-1);
@@ -247,6 +252,14 @@ export function synchronizeDialog(dialog,isOpen,reference) {
             if (event.shiftKey && (document.activeElement === first || document.activeElement === dialog)) { event.preventDefault(); last.focus(); }
             else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
         };
+        const close = event => {
+            const control = event.target?.closest?.('[data-f-dialog-close]');
+            if (dialog.dataset.fDialogBrowserControlled !== 'true' || !control || control.closest('dialog') !== dialog) return;
+            if (dialog.dataset.fDialogDismissible === 'false' || dialog.getAttribute('aria-busy') === 'true') return;
+            event.preventDefault(); closeDialog(state);
+        };
+        dialog.addEventListener('click',close);
+        state.cleanup.push(()=>dialog.removeEventListener('click',close));
         dialog.addEventListener('cancel',cancel); dialog.addEventListener('keydown',keys);
         state.cleanup.push(()=>dialog.removeEventListener('cancel',cancel),()=>dialog.removeEventListener('keydown',keys));
         const observer = new MutationObserver(()=>{ if (!dialog.isConnected) detachDialog(dialog); });
@@ -256,20 +269,36 @@ export function synchronizeDialog(dialog,isOpen,reference) {
     state.reference = reference;
     if (isOpen && !dialog.open) {
         if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
-        state.opener = document.activeElement;
-        if (typeof dialog.showModal === 'function') dialog.showModal();
-        else {
-            state.restoreTheme = copyTheme(dialog,dialog);
-            state.placeholder = document.createComment('dialog return position'); dialog.before(state.placeholder);
-            state.fallback = document.createElement('div'); state.fallback.className = 'f-modal-backdrop';
-            for (const sibling of [...document.body.children]) { state.inert.push([sibling,sibling.inert]); sibling.inert = true; }
-            document.body.append(state.fallback,dialog); dialog.classList.add('f-dialog-fallback'); dialog.setAttribute('open','');
-        }
+        state.opener = resolveInvoker(document.activeElement);
+        dialog.showModal();
         dialog.querySelector('[data-f-dialog-body]')?.scrollTo(0,0);
         const requested = [...dialog.querySelectorAll('[autofocus]')].find(element => visible(element) && !element.disabled);
         const target = requested ?? [...dialog.querySelectorAll(focusableSelector)].find(visible);
         if (target) target.focus({preventScroll:true}); else { dialog.tabIndex = -1; dialog.focus({preventScroll:true}); }
     } else if (!isOpen && dialog.open) closeDialog(state);
+}
+/** Selects a keyed view and its declared actions without introducing a second modal controller. */
+export function setDialogView(dialog,key) {
+    if (!dialog?.isConnected) return false;
+    const owned = element => element.closest('dialog') === dialog;
+    const views = [...dialog.querySelectorAll('[data-f-dialog-view]')].filter(owned);
+    if (!views.some(view => view.dataset.fDialogView === key)) return false;
+    for (const view of views) view.hidden = view.dataset.fDialogView !== key;
+    for (const action of [...dialog.querySelectorAll('[data-f-dialog-views]')].filter(owned))
+        action.hidden = !action.dataset.fDialogViews.split(/\s+/).includes(key);
+    dialog.dataset.fDialogActiveView = key;
+    const actions = dialog.querySelector('.f-dialog-actions');
+    if (actions && owned(actions)) {
+        actions.hidden = false;
+        const declared = [...actions.querySelectorAll('[data-f-dialog-views]')].filter(owned);
+        if (declared.length && declared.every(element => element.hidden))
+            actions.hidden = ![...actions.querySelectorAll('button,a[href],input,select,textarea')].some(element => !element.closest('[hidden]'));
+    }
+    if (dialog.open && document.activeElement && dialog.contains(document.activeElement) && !visible(document.activeElement)) {
+        const target = [...dialog.querySelectorAll(focusableSelector)].find(visible);
+        if (target) target.focus({preventScroll:true}); else { dialog.tabIndex = -1; dialog.focus({preventScroll:true}); }
+    }
+    return true;
 }
 export function detachDialog(dialog) {
     const state = dialogs.get(dialog); if (!state) return;

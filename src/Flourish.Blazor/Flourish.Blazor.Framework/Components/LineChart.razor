@@ -3,6 +3,10 @@
 @using System.Globalization
 
 <div @attributes="AdditionalAttributes" class="f-line-chart @Class" data-independent-scales="@IndependentScales.ToString().ToLowerInvariant()">
+    @if (ShowDisplayOptions)
+    {
+        <div class="f-line-chart-controls"><MultiSelectBox Items="DisplayItems" Label="@Ui("Table_Display", "Display")" CanReorder="true" Changed="ApplyDisplayOptions" /></div>
+    }
     @if (VisibleSeries.Count == 0 || Labels.Count == 0)
     {
         <p class="f-line-chart-empty">@EffectiveEmptyText</p>
@@ -74,6 +78,7 @@
     [Parameter] public string? Description { get; set; }
     [Parameter] public bool IndependentScales { get; set; }
     [Parameter] public bool ShowLegend { get; set; } = true;
+    [Parameter] public bool ShowDisplayOptions { get; set; } = true;
     [Parameter] public string MaximumLabel { get; set; } = "Maximum";
     [Parameter] public string PointCaption { get; set; } = "Point";
     [Parameter] public string EmptyText { get; set; } = "No series selected.";
@@ -85,7 +90,18 @@
     private string EffectiveMaximumLabel => DefaultText(nameof(MaximumLabel), MaximumLabel, "Chart_Maximum", "Maximum");
     private string EffectivePointCaption => DefaultText(nameof(PointCaption), PointCaption, "Chart_Point", "Point");
     private string EffectiveEmptyText => DefaultText(nameof(EmptyText), EmptyText, "Chart_NoSeries", "No series selected.");
-    private IReadOnlyList<DataSeries> VisibleSeries => Series.Where(series => series.Visible).ToArray();
+    private readonly HashSet<string> KnownSeries = new(StringComparer.Ordinal);
+    private readonly HashSet<string> HiddenSeries = new(StringComparer.Ordinal);
+    private readonly List<string> SeriesOrder = [];
+    private IReadOnlyList<DataSeries> OrderedSeries => SeriesOrder.Select(key => Series.Single(series => series.Key == key)).ToArray();
+    private IReadOnlyList<DataSeries> VisibleSeries => OrderedSeries.Where(series => !HiddenSeries.Contains(series.Key)).ToArray();
+    private IReadOnlyList<MultiSelectOption> DisplayItems => OrderedSeries.Select(series => new MultiSelectOption(series.Key,series.Label,!HiddenSeries.Contains(series.Key))).ToArray();
+    private void ApplyDisplayOptions(MultiSelectChange change)
+    {
+        SeriesOrder.Clear(); SeriesOrder.AddRange(change.OrderedKeys);
+        HiddenSeries.Clear();
+        foreach (var series in Series) if (!change.SelectedKeys.Contains(series.Key)) HiddenSeries.Add(series.Key);
+    }
     private int SeriesIndex(DataSeries series) => Series.ToList().IndexOf(series) % 4;
     private string Format(DataSeries series, decimal value) => series.Format?.Invoke(value) ?? value.ToString("N", Texts.FormatCulture);
     private double X(int index) => Labels.Count == 1 ? 380 : 40 + index * (680d / (Labels.Count - 1));
@@ -123,6 +139,14 @@
                 throw new ArgumentException("Every chart series requires a unique key, readable label and one value per point label.", nameof(Series));
             if (series.Maximum is <= 0 || series.Maximum < series.Values.DefaultIfEmpty(0).Max())
                 throw new ArgumentException("An explicit chart maximum must be positive and include every value.", nameof(Series));
+        }
+        KnownSeries.IntersectWith(seriesKeys);
+        HiddenSeries.IntersectWith(seriesKeys);
+        SeriesOrder.RemoveAll(key => !seriesKeys.Contains(key));
+        foreach (var series in Series)
+        {
+            if (!SeriesOrder.Contains(series.Key,StringComparer.Ordinal)) SeriesOrder.Add(series.Key);
+            if (KnownSeries.Add(series.Key) && !series.Visible) HiddenSeries.Add(series.Key);
         }
     }
 }

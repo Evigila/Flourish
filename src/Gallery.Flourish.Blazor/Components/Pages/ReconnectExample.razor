@@ -1,0 +1,63 @@
+@page "/examples/overlays/reconnect"
+@using Microsoft.JSInterop
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<PageTitle>重连状态组合 · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="重连状态组合" ParentHref="/controls/overlays/dialogsample" ParentLabel="Dialog" />
+    <Section Title="场景说明">
+        <p>连接中断提示由通用 Dialog 的 BrowserControlled 模式组合 Notice、ProgressBar 和 Button。这里仅切换本地状态，不模拟实际断线或调用服务器。</p>
+        <p>真实宿主保留 Blazor 的 reconnect / resume 协议、固定协议标识和倒计时，并调用库的 synchronizeDialog 与 setDialogView。Dismissible=false 防止提示被 Escape 或背景点击关闭；不另外实现模态或焦点逻辑。</p>
+    </Section>
+    <Section Title="状态示例">
+        <div @ref="Root">
+            <DisplayBoard>
+                <InlineActions>
+                    <Button data-gallery-reconnect-view="reconnecting">正在重连</Button>
+                    <Button data-gallery-reconnect-view="retrying">等待重试</Button>
+                    <Button data-gallery-reconnect-view="failed">重连失败</Button>
+                    <Button data-gallery-reconnect-view="paused">会话暂停</Button>
+                    <Button data-gallery-reconnect-view="resume-failed">恢复失败</Button>
+                </InlineActions>
+            </DisplayBoard>
+            <Dialog Id="@Identifier" Title="服务器连接" BrowserControlled="true" Dismissible="false" Views="Views">
+                <Actions>
+                    <Button data-gallery-reconnect-view="reconnecting" data-f-dialog-views="failed">模拟重试</Button>
+                    <Button data-gallery-reconnect-view="reconnecting" data-f-dialog-views="paused resume-failed">模拟恢复</Button>
+                    <Button Variant="ButtonVariant.Secondary" data-gallery-reconnect-close>结束演示</Button>
+                </Actions>
+            </Dialog>
+        </div>
+    </Section>
+</PageBody>
+
+@code {
+    private readonly string Identifier = "gallery-reconnect-" + Guid.NewGuid().ToString("N");
+    private ElementReference Root;
+    private IJSObjectReference? Module;
+    private bool Disposed;
+    private IReadOnlyList<DialogView> Views =>
+    [
+        new("reconnecting", @<div><Notice Severity="NotificationSeverity.Information">正在重新连接服务器…</Notice><ProgressBar Label="重连进度" /></div>),
+        new("retrying", @<Notice Severity="NotificationSeverity.Warning">连接失败，将于 5 秒后重试。</Notice>),
+        new("failed", @<Notice Severity="NotificationSeverity.Error">无法重新连接，请重试或重新加载页面。</Notice>),
+        new("paused", @<Notice Severity="NotificationSeverity.Information">服务器已暂停此会话。</Notice>),
+        new("resume-failed", @<Notice Severity="NotificationSeverity.Error">无法恢复此会话，请重试或重新加载页面。</Notice>)
+    ];
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || Disposed) return;
+        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./reconnect-example.js");
+        if (Disposed) { await module.DisposeAsync(); return; }
+        Module = module;
+        await Module.InvokeVoidAsync("attach", Root);
+    }
+    public async ValueTask DisposeAsync()
+    {
+        Disposed = true;
+        if (Module is null) return;
+        try { await Module.InvokeVoidAsync("detach", Root); await Module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

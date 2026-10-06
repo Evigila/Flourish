@@ -5,11 +5,12 @@
 @import url('./primitives/primitives.css');
 @import url('./patterns/navigation-surface.css');
 @import url('./patterns/content-surface.css');
-@import url('./theme-aliases.css');
 @import url('./native-overrides.css');
 @import url('./display-board.css');
 @import url('./split-button.css');
 @import url('./dropdown.css');
+@import url('./multi-select-box.css');
+@import url('./navigation-choices.css');
 @import url('./uniform-grid.css');
 @import url('./section-navigator.css');
 @import url('./line-chart.css');

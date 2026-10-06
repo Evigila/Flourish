@@ -14,3 +14,5 @@
 /* Native details do not set the interactive popover controller's data-f-open flag. */
 .f-split-button > .f-split-button-menu[open] > .f-menu-panel { display:block; }
 .f-split-button-menu-content { display:grid; min-width:0; gap:4px; }
+/* Menu action hit/hover/focus rectangles use the common column, not Button's content width. */
+.f-split-button-menu-content > .f-button { box-sizing:border-box; width:100%; min-width:0; max-width:100%; justify-self:stretch; align-self:stretch; }

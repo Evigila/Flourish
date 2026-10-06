@@ -5,7 +5,7 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.PrimaryNavigationItem")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.PrimaryNavigationItem", Description = "虚构访客的模块导航。悬停或键盘聚焦可查看名称和禁用原因；点击可切换示例选中状态。")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Routing
@@ -18,7 +18,6 @@
 </div>
 @if (!Preview)
 {
-    <p>虚构访客的模块导航。悬停或键盘聚焦可查看名称和禁用原因；点击可切换示例选中状态。</p>
     <p role="status">当前模块：@(Selected == "documents" ? "资料" : "归档")（虚构）。</p>
 }
 

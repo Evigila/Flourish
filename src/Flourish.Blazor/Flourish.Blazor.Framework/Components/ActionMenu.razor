@@ -73,33 +73,40 @@ else
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (Disposed) return;
-        var module = await GetModuleAsync();
-        if (Disposed || module is null) return;
-        var native = ChildContent is not null;
-        if (MenuAttached && (AttachedNative != native || AttachedTrigger.Id != Trigger.Id || AttachedPanel.Id != Panel.Id))
+        try
         {
-            await module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel);
-            MenuAttached = false;
-            if (Disposed) return;
+            var module = await GetModuleAsync();
+            if (Disposed || module is null) return;
+            var native = ChildContent is not null;
+            if (MenuAttached && (AttachedNative != native || AttachedTrigger.Id != Trigger.Id || AttachedPanel.Id != Panel.Id))
+            {
+                await module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel);
+                MenuAttached = false;
+                if (Disposed) return;
+            }
+            if (native && !NativeEnhanced)
+            {
+                // Static SSR retains an ordinary details opening with one native content DOM.
+                // Only an available browser controller opts the same panel into the top layer.
+                NativeEnhanced = true;
+                StateHasChanged();
+                return;
+            }
+            AttachedNative = native;
+            AttachedTrigger = Trigger;
+            AttachedPanel = Panel;
+            MenuAttached = true;
+            if (native)
+            {
+                await module.InvokeVoidAsync("attachDisclosureMenu", Disclosure, Trigger, Panel, true);
+                if (!Disposed && (Disabled || Executing)) await module.InvokeVoidAsync("closeMenu", Trigger, Panel, true);
+            }
+            else await module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);
         }
-        if (native && !NativeEnhanced)
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
         {
-            // Static SSR retains an ordinary details opening with one native content DOM.
-            // Only an available browser controller opts the same panel into the top layer.
-            NativeEnhanced = true;
-            StateHasChanged();
-            return;
+            // A closing circuit cannot install or refresh a document controller.
         }
-        AttachedNative = native;
-        AttachedTrigger = Trigger;
-        AttachedPanel = Panel;
-        MenuAttached = true;
-        if (native)
-        {
-            await module.InvokeVoidAsync("attachDisclosureMenu", Disclosure, Trigger, Panel);
-            if (!Disposed && (Disabled || Executing)) await module.InvokeVoidAsync("closeMenu", Trigger, Panel, true);
-        }
-        else await module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);
     }
     private async Task<IJSObjectReference?> GetModuleAsync()
     {
@@ -111,7 +118,7 @@ else
     private async Task<IJSObjectReference?> ImportModuleAsync()
     {
         var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
-        if (Disposed) { await imported.DisposeAsync(); return null; }
+        if (Disposed) { await ReleaseModuleAsync(imported); return null; }
         Module = imported;
         return imported;
     }
@@ -136,10 +143,18 @@ else
     public async ValueTask DisposeAsync()
     {
         if (Disposed) return;
-        base.Dispose();
         Disposed = true;
-        if (Module is null) return;
-        try { if (MenuAttached) await Module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel); await Module.DisposeAsync(); }
+        base.Dispose();
+        var module = Module;
+        Module = null;
+        if (module is null) return;
+        try { if (MenuAttached) await module.InvokeVoidAsync("detachMenu", AttachedTrigger, AttachedPanel); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { MenuAttached = false; await ReleaseModuleAsync(module); }
+    }
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference module)
+    {
+        try { await module.DisposeAsync(); }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 }

@@ -2,24 +2,19 @@ import { updateCompactHeading, resetCompactHeading } from '../shell.js';
 
 const surfaces = new WeakMap();
 const topControls = new WeakMap();
-export function synchronize(root, stage, top) {
+export function synchronize(root, stage) {
     let state = surfaces.get(root);
     if (state?.stage !== stage) {
         dispose(root);
-        state = {stage, top, observer: null};
-        state.update = () => {
-            updateCompactHeading(root, stage);
-            if (state.top) state.top.hidden = stage.scrollTop < 280;
-        };
+        state = {stage, observer: null};
+        state.update = () => updateCompactHeading(root, stage);
         stage.addEventListener('scroll', state.update, {passive:true});
         state.observer = new MutationObserver(() => { if (!root.isConnected) dispose(root); });
         state.observer.observe(document.body, {childList:true, subtree:true});
         surfaces.set(root, state);
     }
-    state.top = top;
     state.update();
 }
-export function scrollToTop(stage) { stage.scrollTo({top:0,behavior:'auto'}); }
 export function synchronizeBackToTop(root, contentId, threshold) {
     const content = document.getElementById(contentId);
     let state = topControls.get(root);
@@ -51,7 +46,8 @@ export function synchronizeBackToTop(root, contentId, threshold) {
         document.addEventListener('scroll', state.update, { capture:true, passive:true });
         state.mutation = new MutationObserver(state.update);
         state.mutation.observe(document.body, { childList:true, subtree:true });
-        if (typeof ResizeObserver !== 'undefined') { state.resize = new ResizeObserver(state.update); state.resize.observe(content); }
+        state.resize = new ResizeObserver(state.update);
+        state.resize.observe(content);
         topControls.set(root, state);
     }
     state.threshold = threshold;
@@ -65,7 +61,7 @@ export function disposeBackToTop(root) {
     window.removeEventListener('resize', state.update);
     document.removeEventListener('scroll', state.update, true);
     state.mutation.disconnect();
-    state.resize?.disconnect();
+    state.resize.disconnect();
     root.removeAttribute('data-enhanced');
     root.style.removeProperty('--f-back-to-top-left');
     root.style.removeProperty('--f-back-to-top-top');

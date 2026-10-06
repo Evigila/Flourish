@@ -29,7 +29,7 @@ else
 {
     <div class="f-inline-actions">
         <Button Icon="save" Text="保存草稿" Busy="Saving" BusyLabel="正在保存" OnClick="SaveAsync" />
-        <Button Variant="ButtonVariant.Outlined" Icon="restart_alt" Text="重置" Disabled="Saving" OnClick="Reset" />
+        <Button Variant="ButtonVariant.Secondary" Icon="restart_alt" Text="重置" Disabled="Saving" OnClick="Reset" />
         <Button Variant="ButtonVariant.Quiet" Icon="info" Text="使用说明" OnClick="() => HelpVisible = !HelpVisible" />
     </div>
     <p role="status">已保存 @SavedCount 次。</p>
@@ -38,7 +38,7 @@ else
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private static readonly ButtonVariant[] Variants = [ButtonVariant.Filled, ButtonVariant.Outlined,
+    private static readonly ButtonVariant[] Variants = [ButtonVariant.Primary, ButtonVariant.Secondary,
         ButtonVariant.Danger, ButtonVariant.Quiet, ButtonVariant.Underline, ButtonVariant.Elevated];
     private bool Saving, HelpVisible;
     private int SavedCount;

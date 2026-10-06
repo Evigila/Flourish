@@ -8,36 +8,13 @@ public static class IconCatalog
 {
     private static readonly FrozenDictionary<string, string> Glyphs = LoadGlyphs();
 
-    /// <summary>All supported official names, ordered ordinally. Legacy aliases are also accepted by Icon.</summary>
+    /// <summary>All supported official names, ordered ordinally.</summary>
     public static IReadOnlyList<string> Names { get; } = Array.AsReadOnly(Glyphs.Keys.Order(StringComparer.Ordinal).ToArray());
 
-    /// <summary>Checks official icon names and compatibility aliases.</summary>
-    public static bool Contains(string? name) => Glyphs.ContainsKey(ResolveName(name));
+    /// <summary>Checks only official icon names.</summary>
+    public static bool Contains(string? name) => name is not null && Glyphs.ContainsKey(name);
 
-    internal static string ResolveName(string? name) => name switch
-    {
-        "user" => "person",
-        "grid" => "grid_view",
-        "page" or "document" => "description",
-        "sun" => "light_mode",
-        "moon" => "dark_mode",
-        "more" => "more_horiz",
-        "plus" => "add",
-        "play" => "play_arrow",
-        "arrow-left" => "arrow_back",
-        "arrow-up" => "arrow_upward",
-        "chevron-down" => "expand_more",
-        "boxes" or "products" => "inventory_2",
-        "building" or "company" => "apartment",
-        "customers" => "groups",
-        "orders" => "shopping_cart",
-        "invoices" => "receipt_long",
-        "inventory" => "warehouse",
-        null => "",
-        _ => name,
-    };
-
-    internal static string Glyph(string? name) => Glyphs.TryGetValue(ResolveName(name), out var value)
+    internal static string Glyph(string? name) => Glyphs.TryGetValue(name ?? string.Empty, out var value)
         ? value : Glyphs["help_outline"];
 
     private static FrozenDictionary<string, string> LoadGlyphs()

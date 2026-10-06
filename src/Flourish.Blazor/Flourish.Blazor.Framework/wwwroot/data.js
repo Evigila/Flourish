@@ -1,5 +1,5 @@
 // Widths belong to a component instance, never to a translated header or a global table preference.
-import { attachDisclosureMenu, detachMenu } from './controls.js';
+import { initializeStatic, setReordering, detach as detachSelection } from './multi-select-box.js';
 
 const instances = new Map();
 const canvas = document.createElement('canvas');
@@ -70,7 +70,7 @@ function cancelDrag(state, restore) {
     if (drag.button.hasPointerCapture?.(drag.pointerId)) drag.button.releasePointerCapture(drag.pointerId);
 }
 function connect(root, instanceId) {
-    const state = { root, widths: new Map(), drag: null, display: null, listeners: [] };
+    const state = { root, widths: new Map(), drag: null, listeners: [] };
     const on = (target, name, handler, options) => {
         target.addEventListener(name, handler, options);
         state.listeners.push(() => target.removeEventListener(name, handler, options));
@@ -120,9 +120,7 @@ function connect(root, instanceId) {
     on(root, 'pointercancel', event => { if (state.drag?.pointerId === event.pointerId) cancelDrag(state, true); });
     on(root, 'lostpointercapture', event => { if (state.drag?.pointerId === event.pointerId) cancelDrag(state, true); });
     on(root, 'keydown', event => {
-        if (event.key === 'Escape') {
-            cancelDrag(state, true);
-        }
+        if (event.key === 'Escape') cancelDrag(state, true);
         const page = event.target.closest?.('[data-f-page]');
         if (page && event.key === 'Enter') {
             // Prevent a surrounding EditForm submit; dispatch the same page-change path as blur.
@@ -150,26 +148,12 @@ function connect(root, instanceId) {
     instances.set(instanceId, state);
     return state;
 }
-function synchronizeDisplay(state) {
-    const disclosure = state.root.querySelector('.f-data-display');
-    const trigger = disclosure?.querySelector('summary');
-    // An older-browser portal temporarily moves the same renderer-owned panel outside the details.
-    const panel = disclosure?.querySelector('.f-data-display-options')
-        ?? (state.display?.disclosure === disclosure && state.display.panel.isConnected ? state.display.panel : null);
-    if (state.display && (state.display.disclosure !== disclosure || state.display.panel !== panel)) {
-        detachMenu(state.display.trigger,state.display.panel);
-        state.display = null;
-    }
-    if (!disclosure || !trigger || !panel) return;
-    attachDisclosureMenu(disclosure,trigger,panel);
-    state.display = { disclosure,trigger,panel };
-}
 export function synchronize(root, instanceId) {
     if (!root?.isConnected) return;
     let state = instances.get(instanceId);
     if (state && state.root !== root) { detach(instanceId); state = null; }
     state ??= connect(root, instanceId);
-    synchronizeDisplay(state);
+    initializeStatic(root);
     connectDirectory(state);
     const table = root.querySelector('[data-f-table]');
     if (!table) return;
@@ -184,7 +168,7 @@ export function detach(instanceId) {
     const state = instances.get(instanceId);
     if (!state) return;
     cancelDrag(state, false);
-    if (state.display) detachMenu(state.display.trigger,state.display.panel);
+    for (const display of state.root.querySelectorAll('[data-f-selection-static="true"]')) detachSelection(display.dataset.fSelectionInstance);
     state.directory?.empty?.remove();
     state.listeners.forEach(remove => remove());
     instances.delete(instanceId);
@@ -210,7 +194,7 @@ export function setColumnWidth(root, instanceId, key, width) {
     if (!state || state.root !== root) return;
     const table = root.querySelector('[data-f-table]');
     const col = table && columns(table).find(candidate => candidate.dataset.fColumn === key);
-    const declared = col || [...root.querySelectorAll('[data-f-display-column]')].some(choice => choice.dataset.fDisplayColumn === key);
+    const declared = col || [...root.querySelectorAll('input[data-f-selection-key]')].some(choice => choice.dataset.fSelectionKey === key);
     if (!declared) return;
     if (width === null) {
         state.widths.delete(key);
@@ -303,37 +287,25 @@ function connectDirectory(state) {
         if (target.matches?.('[data-f-search-column]')) { state.directory.columnKey = target.value; state.directory.page = 1; }
         else if (target.matches?.('[data-f-page]')) state.directory.page = Math.max(1,Number(target.value) || 1);
         else if (target.matches?.('[data-f-page-size]')) { state.directory.pageSize = Math.max(1,Number(target.value) || 10); state.directory.page = 1; }
-        else if (target.matches?.('[data-f-display-column]')) {
-            const key = target.dataset.fDisplayColumn;
-            for (const cell of table.querySelectorAll('[data-f-column]')) if (cell.dataset.fColumn === key) cell.hidden = !target.checked;
-            const choices = [...state.root.querySelectorAll('[data-f-display-column]')];
-            const shown = choices.filter(choice => choice.checked).length;
-            for (const choice of choices) choice.disabled = choice.dataset.fFixed === 'true' || (shown === 1 && choice.checked);
-            const lastKey = choices.filter(choice => choice.checked).at(-1)?.dataset.fDisplayColumn;
-            for (const cell of table.querySelectorAll('[data-f-column]')) {
-                if (cell.dataset.fColumn === lastKey) cell.dataset.fLastColumn = 'true';
-                else delete cell.dataset.fLastColumn;
-            }
-            synchronize(state.root, state.root.dataset.fInstance);
-        } else return;
+        else return;
         event.stopPropagation(); updateDirectory(state);
     });
     on('click', event => {
-        const target = event.target.closest?.('[data-f-page-previous],[data-f-page-next],[data-f-sort-key],[data-f-sort-reset],[data-f-view]');
+        const target = event.target.closest?.('[data-f-page-previous],[data-f-page-next],[data-f-sort-key],[data-f-view]');
         if (!target || target.disabled) return;
         event.preventDefault(); event.stopPropagation();
         if (target.hasAttribute('data-f-page-previous')) state.directory.page--;
         else if (target.hasAttribute('data-f-page-next')) state.directory.page++;
-        else if (target.hasAttribute('data-f-sort-reset')) { state.directory.sortKey = null; state.directory.page = 1; }
         else if (target.dataset.fSortKey) {
             const key = target.dataset.fSortKey;
-            if (target.dataset.fSortDirection) { state.directory.sortKey = key; state.directory.descending = target.dataset.fSortDirection === 'descending'; }
-            else if (state.directory.sortKey !== key) { state.directory.sortKey = key; state.directory.descending = true; }
+            if (state.directory.sortKey !== key) { state.directory.sortKey = key; state.directory.descending = true; }
             else if (state.directory.descending) state.directory.descending = false;
             else state.directory.sortKey = null;
             state.directory.page = 1;
         } else if (target.dataset.fView) {
-            state.root.classList.toggle('f-data-progressive-cards', target.dataset.fView === 'cards');
+            const cards = target.dataset.fView === 'cards';
+            state.root.classList.toggle('f-data-progressive-cards', cards);
+            for (const display of state.root.querySelectorAll('[data-f-selection-static="true"]')) setReordering(display,!cards);
             for (const button of state.root.querySelectorAll('[data-f-view]')) {
                 const selected = button === target;
                 button.classList.toggle('f-data-view-selected', selected); button.setAttribute('aria-pressed', String(selected));
@@ -343,48 +315,30 @@ function connectDirectory(state) {
         }
         updateDirectory(state);
     });
-    on('keydown', event => {
-        const button = event.target.closest?.('[data-f-reorder]');
-        if (!button || button.disabled || !['ArrowUp','ArrowDown'].includes(event.key)) return;
-        const options = [...state.root.querySelectorAll('.f-data-column-option')];
-        const current = button.closest('.f-data-column-option');
-        const movable = options.filter(option => !option.querySelector('[data-f-reorder]')?.disabled);
-        const destination = movable.indexOf(current) + (event.key === 'ArrowUp' ? -1 : 1);
-        if (destination < 0 || destination >= movable.length) return;
-        event.preventDefault(); event.stopPropagation();
-        reorderDirectory(state, current, movable[destination]);
-    });
-    on('dragstart', event => { state.directory.dragging = event.target.closest?.('.f-data-column-option'); });
-    on('dragover', event => { if (event.target.closest?.('.f-data-column-option')) event.preventDefault(); });
-    on('drop', event => {
-        const target = event.target.closest?.('.f-data-column-option');
-        if (!state.directory.dragging || !target) return;
-        event.preventDefault(); event.stopPropagation(); reorderDirectory(state, state.directory.dragging, target); state.directory.dragging = null;
+    on('flourish-selection-change', event => {
+        if (event.target !== state.root.querySelector('[data-f-table-selection="true"]')) return;
+        const {orderedKeys,selectedKeys} = event.detail ?? {};
+        if (!Array.isArray(orderedKeys) || !Array.isArray(selectedKeys)) return;
+        event.stopPropagation();
+        const visible = new Set(selectedKeys), lastKey = orderedKeys.filter(key=>visible.has(key)).at(-1);
+        for (const cell of table.querySelectorAll('[data-f-column]')) {
+            cell.hidden = !visible.has(cell.dataset.fColumn);
+            if (cell.dataset.fColumn === lastKey) cell.dataset.fLastColumn = 'true';
+            else delete cell.dataset.fLastColumn;
+        }
+        const groups = [table.querySelector('colgroup'),...table.querySelectorAll('tr')];
+        for (const group of groups.filter(Boolean)) {
+            const spacer = group.querySelector('.f-data-spacer');
+            for (const key of orderedKeys) {
+                const cell = [...group.children].find(child=>child.dataset?.fColumn === key);
+                if (cell) group.insertBefore(cell,spacer);
+            }
+        }
+        synchronize(state.root,state.root.dataset.fInstance);
+        updateDirectory(state);
     });
     state.root.dataset.fDirectoryEnhanced = 'true';
     updateDirectory(state);
-}
-
-function reorderDirectory(state, source, target) {
-    if (source === target || source.querySelector('[data-f-reorder]')?.disabled || target.querySelector('[data-f-reorder]')?.disabled) return;
-    const options = [...state.root.querySelectorAll('.f-data-column-option')];
-    const sourceIndex = options.indexOf(source), targetIndex = options.indexOf(target);
-    if (sourceIndex < 0 || targetIndex < 0) return;
-    const movable = options.filter(option => !option.querySelector('[data-f-reorder]')?.disabled);
-    const targetSlot = movable.indexOf(target);
-    movable.splice(movable.indexOf(source),1); movable.splice(targetSlot,0,source);
-    const slots = options.map((option,index) => movable.includes(option) ? index : -1).filter(index => index >= 0);
-    slots.forEach((slot,index) => { options[slot] = movable[index]; });
-    for (const option of options) option.parentElement.append(option);
-    const keys = options.map(option => option.querySelector('[data-f-display-column]')?.dataset.fDisplayColumn);
-    const groups = [state.directory.table.querySelector('colgroup'),...state.directory.table.querySelectorAll('tr')];
-    for (const group of groups.filter(Boolean)) {
-        const spacer = group.querySelector('.f-data-spacer');
-        for (const key of keys) {
-            const cell = [...group.children].find(child => child.dataset?.fColumn === key);
-            if (cell) group.insertBefore(cell, spacer);
-        }
-    }
 }
 
 export function initializeDirectories() {
@@ -393,11 +347,7 @@ export function initializeDirectories() {
     for (const [id,state] of instances) if (state.directory && !state.root.isConnected) detach(id);
 }
 
-if (typeof document.querySelectorAll === 'function') {
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeDirectories, { once:true });
-    else initializeDirectories();
-    if (typeof MutationObserver === 'function' && document.documentElement) {
-        const observer = new MutationObserver(initializeDirectories);
-        observer.observe(document.documentElement, { childList:true, subtree:true });
-    }
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeDirectories, { once:true });
+else initializeDirectories();
+const directoryObserver = new MutationObserver(initializeDirectories);
+directoryObserver.observe(document.documentElement, { childList:true, subtree:true });

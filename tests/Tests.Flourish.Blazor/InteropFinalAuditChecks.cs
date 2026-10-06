@@ -136,6 +136,61 @@ internal static class InteropFinalAuditChecks
                 });
             }));
         }
+        tests.Add(("one action menu enhances native commands and detaches before changing to generated actions", async () =>
+        {
+            await WithComponent<MenuProbe>(new DeferredJs(), new(), async (component, javascript, html) =>
+            {
+                await component.SetNativeAsync(true);
+                Require(html().Contains("data-f-native-menu", StringComparison.Ordinal) && !html().Contains("data-f-enhanced", StringComparison.Ordinal),
+                    "Native SSR fabricated an initialized popup instead of an ordinary disclosure.");
+                await component.InteractiveRenderAsync();
+                Require(javascript.Imports == 1 && javascript.Module.BehaviorCalls == 0, "Native enhancement attached before the same DOM acquired its native popup attributes.");
+                await component.InteractiveRenderAsync();
+                var native = javascript.Module.Calls.Single(call => call.Identifier == "attachDisclosureMenu");
+                Require(native.Arguments?.Length == 4 && native.Arguments[3] is true,
+                    "The actual native command entry used the selection popup's keep-open policy.");
+                await component.SetNativeAsync(false);
+                await component.InteractiveRenderAsync();
+                Require(javascript.Module.Calls.Select(call => call.Identifier).SequenceEqual(["attachDisclosureMenu", "detachMenu", "attachMenu"]),
+                    "Changing content protocol retained an old listener owner or created another menu controller.");
+                await component.DisposeAsync();
+                Require(javascript.Module.CleanupCalls == 2 && javascript.Module.Releases == 1, "Mode change and disposal confused current menu ownership.");
+            });
+        }));
+        tests.Add(("action menu replacement DOM detaches the old pair before binding the current elements", async () =>
+        {
+            await WithComponent<MenuProbe>(new DeferredJs(), new(), async (component, javascript, _) =>
+            {
+                await component.InteractiveRenderAsync();
+                component.ReplaceElements();
+                await component.InteractiveRenderAsync();
+                Require(javascript.Module.Calls.Select(call => call.Identifier).SequenceEqual(["attachMenu", "detachMenu", "attachMenu"]),
+                    "Replacement element references reused a stale menu controller.");
+                var attached = javascript.Module.Calls.Last().Arguments!;
+                Require(((ElementReference)attached[0]!).Id == "replacement-trigger" && ((ElementReference)attached[1]!).Id == "replacement-panel",
+                    "The current menu attached to stale element references.");
+                await component.DisposeAsync(); await component.DisposeAsync();
+                Require(javascript.Module.CleanupCalls == 2 && javascript.Module.Releases == 1, "Replaced DOM leaked its current proxy or repeated teardown.");
+            });
+        }));
+        tests.Add(("action menu preserves unrelated interop failures while releasing its owned proxy", async () =>
+        {
+            foreach (var phase in new[] { "behavior", "cleanup", "release" })
+                await WithComponent<MenuProbe>(new DeferredJs(), new(), async (component, javascript, _) =>
+                {
+                    var failure = new InvalidOperationException("Unrelated " + phase + " failure");
+                    if (phase == "behavior") javascript.Module.FailBehavior = failure;
+                    else await component.InteractiveRenderAsync();
+                    if (phase == "cleanup") javascript.Module.FailCleanup = failure;
+                    if (phase == "release") javascript.Module.FailRelease = failure;
+                    var propagated = false;
+                    try { if (phase == "behavior") await component.InteractiveRenderAsync(); else await component.DisposeAsync(); }
+                    catch (InvalidOperationException error) when (ReferenceEquals(error, failure)) { propagated = true; }
+                    Require(propagated, "The current lifecycle swallowed an unrelated " + phase + " failure.");
+                    await component.DisposeAsync();
+                    Require(javascript.Module.Releases == 1, "An unrelated failure skipped release or caused a second proxy release.");
+                });
+        }));
         tests.Add(("reference dropdown ignores a focus result that arrives after disposal", async () =>
         {
             await WithBridge(BridgeKind.Reference, new DeferredJs(), async (component, javascript) =>
@@ -218,15 +273,12 @@ internal static class InteropFinalAuditChecks
     };
     private static string Attribute(string tag, string name) => Regex.Match(tag, $"\\b{Regex.Escape(name)}=\"([^\"]*)\"").Groups[1].Value;
     private static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
-    private enum BridgeKind { Stage, RowMenu, Reference, Content, Navigation, Table }
+    private enum BridgeKind { Stage, Menu, Reference, Content, Navigation, Table }
 
     private static Task WithBridge(BridgeKind kind, DeferredJs javascript, Func<IComponent, DeferredJs, Task> verify) => kind switch
     {
         BridgeKind.Stage => WithComponent<StageProbe>(javascript, new() { [nameof(OfferStage.AutoRotate)] = false }, (component, js, _) => verify(component, js)),
-        BridgeKind.RowMenu => WithComponent<Primitives.RowActionMenu>(javascript, new()
-        {
-            [nameof(Primitives.RowActionMenu.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Action"))
-        }, (component, js, _) => verify(component, js)),
+        BridgeKind.Menu => WithComponent<MenuProbe>(javascript, new(), (component, js, _) => verify(component, js)),
         BridgeKind.Content => WithComponent<ContentProbe>(javascript, new(), (component, js, _) => verify(component, js)),
         BridgeKind.Navigation => WithComponent<NavigationProbe>(javascript, new(), (component, js, _) => verify(component, js)),
         BridgeKind.Table => WithComponent<TableProbe>(javascript, new(), (component, js, _) => verify(component, js)),
@@ -239,7 +291,7 @@ internal static class InteropFinalAuditChecks
     private static Task InvokeBridge(BridgeKind kind, IComponent component) => kind switch
     {
         BridgeKind.Stage => ((StageProbe)component).InteractiveRenderAsync(),
-        BridgeKind.RowMenu => InvokePrivate(typeof(Primitives.RowActionMenu), component, "ToggleAsync"),
+        BridgeKind.Menu => ((MenuProbe)component).InteractiveRenderAsync(),
         BridgeKind.Content => ((ContentProbe)component).InteractiveRenderAsync(),
         BridgeKind.Navigation => ((NavigationProbe)component).InteractiveRenderAsync(),
         BridgeKind.Table => ((TableProbe)component).InteractiveRenderAsync(),
@@ -284,6 +336,24 @@ internal static class InteropFinalAuditChecks
     {
         public StageProbe() { }
         internal Task InteractiveRenderAsync() => base.OnAfterRenderAsync(false);
+    }
+    private sealed class MenuProbe : ActionMenu
+    {
+        public MenuProbe() { }
+        internal Task InteractiveRenderAsync() => base.OnAfterRenderAsync(false);
+        internal Task SetNativeAsync(bool native) => SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+        {
+            [nameof(ChildContent)] = native ? (RenderFragment)(builder =>
+            {
+                builder.OpenComponent<Button>(0); builder.AddAttribute(1, nameof(Button.Text), "Native action");
+                builder.AddAttribute(2, nameof(Button.AdditionalAttributes), new Dictionary<string, object> { ["role"] = "menuitem" }); builder.CloseComponent();
+            }) : null
+        }));
+        internal void ReplaceElements()
+        {
+            typeof(ActionMenu).GetField("Trigger", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(this, new ElementReference("replacement-trigger"));
+            typeof(ActionMenu).GetField("Panel", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(this, new ElementReference("replacement-panel"));
+        }
     }
     private sealed class ContentProbe : Patterns.ContentSurface
     {
@@ -333,6 +403,8 @@ internal static class InteropFinalAuditChecks
         internal int CleanupCalls { get; private set; }
         internal Exception? FailCleanup { get; set; }
         internal Exception? FailRelease { get; set; }
+        internal Exception? FailBehavior { get; set; }
+        internal List<(string Identifier, object?[]? Arguments)> Calls { get; } = [];
         internal bool DisconnectRelease { get; set; }
         internal bool DelayFocus { get; set; }
         internal bool DelaySynchronization { get; set; }
@@ -345,18 +417,20 @@ internal static class InteropFinalAuditChecks
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
-            if (identifier is "dispose" or "detach")
+            Calls.Add((identifier, args));
+            if (identifier is "dispose" or "detach" or "detachMenu")
             {
                 CleanupCalls++;
                 return FailCleanup is not null ? ValueTask.FromException<TValue>(FailCleanup) : ValueTask.FromResult(default(TValue)!);
             }
             BehaviorCalls++;
+            if (FailBehavior is not null) return ValueTask.FromException<TValue>(FailBehavior);
             if (identifier == "containsFocus")
             {
                 FocusStarted.TrySetResult();
                 return DelayFocus ? new ValueTask<TValue>(CompleteFocusAsync<TValue>()) : ValueTask.FromResult((TValue)(object)false);
             }
-            if (identifier is not "synchronize" and not "toggle") throw new InvalidOperationException("Unexpected audit module call: " + identifier);
+            if (identifier is not "synchronize" and not "toggle" and not "attachMenu" and not "attachDisclosureMenu") throw new InvalidOperationException("Unexpected audit module call: " + identifier);
             if (identifier == "synchronize")
             {
                 SynchronizationStarted.TrySetResult();

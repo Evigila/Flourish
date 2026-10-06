@@ -13,6 +13,83 @@ internal static class PresentationChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("all chrome slots center injected roots without button-specific paint or document margins", () =>
+        {
+            var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css");
+            const string scope = ":is(.shell-header,.f-titlebar) .f-topbar-slot";
+            var slot = Rule(layout, scope);
+            Check(slot.Contains("display:flex") && slot.Contains("align-items:center") && slot.Contains("align-self:center"), "Chrome slots do not own their common centering contract.");
+            var roots = Rule(layout, scope + " > *, " + scope + " > form > *");
+            Check(roots.Contains("align-self:center") && roots.Contains("margin-block:0"), "Injected buttons or form controls can override chrome centering with document-flow alignment.");
+            var groupedRoots = Rule(layout, scope + " > .f-inline-actions > *, " + scope + " > form > .f-inline-actions > *");
+            Check(groupedRoots.Contains("align-self:center") && groupedRoots.Contains("margin-block:0"), "Different-height grouped controls retain start alignment inside chrome.");
+            Check(Rule(layout, scope + " > form").Contains("align-items:center"), "Native form transport loses chrome alignment.");
+            var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/controls.css");
+            Check(Rule(design, ".f-button").Contains("align-self:start") && Regex.IsMatch(design, @"\.f-inline-actions\s*\{[^}]*margin-top:\s*16px"), "The regression no longer exercises the real document defaults overridden by stronger chrome selectors.");
+            foreach (var rule in new[] { slot, roots, groupedRoots })
+                Check(!Regex.IsMatch(rule, @"background|color:|border|height:|!important"), "Chrome alignment reskins, fixes the height of, or force-overrides an injected control.");
+            Check(!ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/behavior.css").Contains(".shell-header-actions > .f-inline-actions"), "The old group-only alignment patch survived.");
+            var shell = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ApplicationShell.razor");
+            foreach (var track in new[] { "start", "center", "end" })
+                Check(shell.Contains($"class=\"f-titlebar-{track} f-topbar-slot\""), "ApplicationShell injection bypassed the common slot: " + track);
+            return Task.CompletedTask;
+        }));
+
+        tests.Add(("shell header centers direct controls of every variant beside the account identity", async () =>
+        {
+            foreach (var variant in Enum.GetValues<ButtonVariant>())
+            {
+                var html = await Render<Primitives.ShellHeader>(new()
+                {
+                    ["HomeHref"] = "/", ["HomeAriaLabel"] = "Home", ["LogoPath"] = "/logo.svg", ["BrandName"] = "Project",
+                    ["IdentityName"] = "Account", ["IdentityHref"] = "/account/",
+                    ["EndActions"] = ButtonFragment(variant, "Sign out", "/logout/", native: true)
+                });
+                Check(Regex.Matches(html, "class=\"f-topbar-slot\"").Count == 1, "A direct end action did not receive exactly one library alignment slot.");
+                Check(Regex.IsMatch(html, @"<div class=""f-topbar-slot"">\s*<a\b[^>]*href=""/logout/"""), "Direct native sign-out escaped the standard slot.");
+                Check(html.Contains("f-button-" + variant.ToString().ToLowerInvariant()) && html.Contains("data-enhance-nav=\"false\""), "Alignment changed a control variant or native navigation.");
+                Check(html.Contains("shell-header-identity") && html.Contains("href=\"/account/\""), "Account identity was dropped or replaced with a host control.");
+            }
+        }));
+
+        tests.Add(("shell header service leading grouped and native form actions share the same slot", async () =>
+        {
+            RenderFragment grouped = builder =>
+            {
+                builder.OpenComponent<InlineActions>(0);
+                builder.AddAttribute(1, "ChildContent", (RenderFragment)(actions =>
+                {
+                    actions.AddContent(0, ButtonFragment(ButtonVariant.Elevated, "Enter", "/login/"));
+                    actions.AddContent(1, ButtonFragment(ButtonVariant.Elevated, "Create", "/signup/"));
+                }));
+                builder.CloseComponent();
+            };
+            RenderFragment native = builder =>
+            {
+                builder.OpenElement(0, "form");
+                builder.AddAttribute(1, "method", "post");
+                builder.AddAttribute(2, "action", "/logout/");
+                builder.AddMarkupContent(3, "<input type=\"hidden\" name=\"__RequestVerificationToken\" value=\"fixture\">");
+                builder.OpenComponent<Button>(4);
+                builder.AddAttribute(5, "Type", "submit");
+                builder.AddAttribute(6, "Variant", ButtonVariant.Quiet);
+                builder.AddAttribute(7, "Icon", "logout");
+                builder.CloseComponent();
+                builder.CloseElement();
+            };
+            var parameters = new Dictionary<string, object?> { ["HomeHref"] = "/", ["HomeAriaLabel"] = "Home", ["LogoPath"] = "/logo.svg", ["BrandName"] = "Project" };
+            var empty = await Render<Primitives.ShellHeader>(parameters);
+            Check(!empty.Contains("f-topbar-slot") && !empty.Contains("shell-header-actions"), "Omitted fragments leave empty chrome tracks.");
+            parameters["Services"] = ButtonFragment(ButtonVariant.Quiet, "Services");
+            parameters["LeadingActions"] = grouped;
+            parameters["EndActions"] = native;
+            var html = await Render<Primitives.ShellHeader>(parameters);
+            Check(Regex.Matches(html, "class=\"f-topbar-slot\"").Count == 3, "One of the service, leading or end fragments bypasses common alignment.");
+            Check(html.Contains("class=\"f-inline-actions\"") && Regex.Matches(html, "f-button-elevated").Count == 2, "Grouped actions were flattened or reskinned.");
+            Check(Regex.Matches(html, "<form\\b").Count == 1 && html.Contains("method=\"post\" action=\"/logout/\"") && html.Contains("name=\"__RequestVerificationToken\" value=\"fixture\""), "Alignment changed the single native POST transport.");
+            Check(Regex.IsMatch(html, @"<button\b[^>]*type=""submit""[^>]*class=""[^""]*f-button-quiet"), "Native sign-out lost its real library submit control.");
+        }));
+
         tests.Add(("card retains its original default title and child DOM", async () =>
         {
             var plain = await Render<Card>(new() { ["Title"] = "Title <safe>", ["ChildContent"] = Text("Body <safe>") });
@@ -32,12 +109,26 @@ internal static class PresentationChecks
             Check(!Regex.IsMatch(card, @"<(?:h[1-6]|main|form)\b"), "Large body type introduced a page heading or transport boundary.");
         }));
 
+        tests.Add(("stacked prominent card keeps copy before a single real action without changing ordinary cards", async () =>
+        {
+            var card = await Render<Card>(new() { ["Prominent"] = true, ["Stacked"] = true, ["Text"] = "Support <safe>", ["Actions"] = ButtonFragment(ButtonVariant.Elevated, "Request") });
+            Check(card.Contains("f-card f-card-prominent f-card-stacked") && card.IndexOf("f-card-prominent-copy", StringComparison.Ordinal) < card.IndexOf("f-card-prominent-actions", StringComparison.Ordinal), "Stacked prominent card lost copy/action DOM order.");
+            Check(Regex.Matches(card, "f-card-prominent-actions").Count == 1 && Regex.Matches(card, "<button\\b").Count == 1 && card.Contains("f-button-elevated"), "Stacking duplicates or replaces the real action.");
+            Check(card.Contains("Support &lt;safe&gt;") && !Regex.IsMatch(card, @"<h[1-6]\b"), "Stacked copy lost encoding or paragraph semantics.");
+            var empty = await Render<Card>(new() { ["Prominent"] = true, ["Stacked"] = true, ["Text"] = new string('x', 400) });
+            Check(!empty.Contains("f-card-prominent-actions") && empty.Contains(new string('x', 400)), "Stacked no-action card clips copy or leaves an empty action slot.");
+            var ordinary = await Render<Card>(new() { ["Stacked"] = true, ["Title"] = "Ordinary" });
+            Check(ordinary.Contains("<h3>Ordinary</h3>") && !ordinary.Contains("f-card-stacked"), "Stacked changed ordinary card geometry.");
+            var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
+            Check(Rule(layout, ".f-card.f-card-prominent.f-card-stacked").Contains("flex-direction:column") && Rule(layout, ".f-card-stacked > .f-card-prominent-actions, .f-card-stacked > .f-card-prominent-copy").Contains("flex:0 1 auto"), "Stacked card still uses the horizontal fixed-basis action column.");
+        }));
+
         tests.Add(("prominent card supports no actions and optional title copy while ordinary new slots remain additive", async () =>
         {
             var card = await Render<Card>(new() { ["Prominent"] = true, ["Title"] = "Title <safe>", ["Text"] = new string('x', 300) });
             Check(!card.Contains("f-card-prominent-actions", StringComparison.Ordinal) && !Regex.IsMatch(card, @"<h[1-6]\b"), "No-action Card retained an empty action column or separate heading.");
             Check(card.Contains("Title &lt;safe&gt;", StringComparison.Ordinal) && card.Contains(new string('x', 300), StringComparison.Ordinal), "Long text was truncated during rendering.");
-            var ordinary = await Render<Card>(new() { ["Title"] = "Heading", ["Text"] = "Body", ["Actions"] = ButtonFragment(ButtonVariant.Outlined, "Action") });
+            var ordinary = await Render<Card>(new() { ["Title"] = "Heading", ["Text"] = "Body", ["Actions"] = ButtonFragment(ButtonVariant.Secondary, "Action") });
             Check(ordinary.Contains("<h3>Heading</h3>", StringComparison.Ordinal) && ordinary.Contains("<p>Body</p>", StringComparison.Ordinal) && ordinary.Contains("f-inline-actions", StringComparison.Ordinal), "Additive ordinary Card slots changed their meaning.");
             Check(!ordinary.Contains("f-card-prominent", StringComparison.Ordinal), "Optional text/actions alone enabled prominent geometry.");
         }));
@@ -75,7 +166,7 @@ internal static class PresentationChecks
         tests.Add(("document and access root overscroll disables vertical bounce without locking native or business scroll", () =>
         {
             var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
-            var roots = Rule(layout, "html:has(.f-document-surface,main.access-surface,.f-access-document), body:has(.f-document-surface,main.access-surface,.f-access-document)");
+            var roots = Rule(layout, "html:has(.f-document-surface), body:has(.f-document-surface)");
             Check(roots.Trim() == "overscroll-behavior-y:none;", "Root policy changed horizontal navigation, native scrolling or unrelated documents.");
             var document = Rule(layout, ".content-surface.f-document-surface");
             Check(document.Contains("height:auto", StringComparison.Ordinal) && document.Contains("overflow:visible", StringComparison.Ordinal), "Bounce suppression changed document flow into a clipped business shell.");
@@ -112,14 +203,14 @@ internal static class PresentationChecks
                 var html = await Render<PresentationBand>(new()
                 {
                     ["Title"] = "Features <safe>", ["TitleId"] = "features-title", ["Tone"] = tone,
-                    ["ChildContent"] = Text("Content"), ["Actions"] = ButtonFragment(ButtonVariant.Outlined, "Learn"),
+                    ["ChildContent"] = Text("Content"), ["Actions"] = ButtonFragment(ButtonVariant.Secondary, "Learn"),
                     ["AdditionalAttributes"] = new Dictionary<string, object> { ["id"] = "features" }
                 });
                 Check(Regex.IsMatch(html, "^<section[^>]*class=\"f-presentation-band f-presentation-" + tone.ToString().ToLowerInvariant()), "Band tone or full-width root differs.");
                 Check(html.Contains("aria-labelledby=\"features-title\"", StringComparison.Ordinal)
                     && html.Contains("<h2 id=\"features-title\">Features &lt;safe&gt;</h2>", StringComparison.Ordinal), "Band title naming or encoding was lost.");
                 Check(Regex.IsMatch(html, @"<section\b[^>]*>\s*<div\b[^>]*class=""f-content-container(?:\s[^""]*)?"""), "Full-width background and inner limit were not separate layers: " + html);
-                Check(html.Contains("f-button-outlined", StringComparison.Ordinal), "A band reskinned its standard action.");
+                Check(html.Contains("f-button-secondary", StringComparison.Ordinal), "A band reskinned its standard action.");
             }
             var untitled = await Render<PresentationBand>(new() { ["ChildContent"] = Text("Plain") });
             Check(!untitled.Contains("aria-labelledby", StringComparison.Ordinal) && !untitled.Contains("<h2", StringComparison.Ordinal), "An untitled band references a missing title.");
@@ -132,16 +223,17 @@ internal static class PresentationChecks
             await Reject<PresentationBand>(new() { ["Tone"] = (PresentationTone)int.MaxValue }, "Tone");
         }));
 
-        tests.Add(("presentation banners share a 450px minimum and opt-in dots without losing native attributes", async () =>
+        tests.Add(("presentation banners share an 800px minimum and opt-in dots without losing native attributes", async () =>
         {
             var bandDefault = await Render<PresentationBand>(new());
             var heroDefault = await Render<PresentationHero>(new() { ["Title"] = "Product" });
-            foreach (var html in new[] { bandDefault, heroDefault })
+            var accessDefault = await RenderDocumentBand(new());
+            foreach (var html in new[] { bandDefault, heroDefault, accessDefault })
             {
-                Check(html.Contains("--f-band-min-height:450px;", StringComparison.Ordinal), "The standard banner minimum is not 450px.");
+                Check(html.Contains("--f-band-min-height:800px;", StringComparison.Ordinal), "The standard banner minimum is not 800px.");
                 Check(!html.Contains("f-presentation-dotted", StringComparison.Ordinal), "A production banner enables decorative dots by default.");
             }
-            foreach (var minimum in new[] { 0, 240, 720 })
+            foreach (var minimum in new[] { 0, 240, 450, 960 })
             {
                 var attributes = new Dictionary<string, object>
                 {
@@ -210,36 +302,33 @@ internal static class PresentationChecks
             }
         }));
 
-        tests.Add(("access surface banner owns one main and delegates full-height dots and palette roles to the standard band", async () =>
+        tests.Add(("access surface owns one main and delegates full-height dots and palette roles to the standard band", async () =>
         {
-            foreach (var emphasized in new[] { false, true })
+            foreach (var tone in Enum.GetValues<PresentationTone>())
             {
-                var legacy = await Render<Primitives.AccessSurface>(new() { ["Emphasized"] = emphasized, ["Dotted"] = true, ["ChildContent"] = Text("Legacy content") });
-                Check(Regex.Matches(legacy, @"<main\b").Count == 1
-                    && legacy.Contains("access-surface", StringComparison.Ordinal)
-                    && legacy.Contains("themed-access-surface", StringComparison.Ordinal) == emphasized
-                    && !legacy.Contains("f-presentation-band", StringComparison.Ordinal)
-                    && !legacy.Contains("f-presentation-dotted", StringComparison.Ordinal), "The default compatibility access scene changed to the new banner or dot mode.");
-                var automatic = await Render<Primitives.AccessSurface>(new() { ["Banner"] = true, ["Emphasized"] = emphasized, ["ChildContent"] = NativeAccessForm() });
-                Check(!automatic.Contains("f-presentation-dotted", StringComparison.Ordinal), "An access banner enables dots without an explicit request.");
+                var automatic = await RenderDocumentBand(new() { ["Tone"] = tone, ["ChildContent"] = NativeAccessForm() });
+                Check(!automatic.Contains("f-presentation-dotted", StringComparison.Ordinal), "An access surface enables dots without an explicit request.");
                 foreach (var dotted in new[] { false, true })
                 {
-                    var html = await Render<Primitives.AccessSurface>(new()
+                    var html = await RenderDocumentBand(new()
                     {
-                        ["Banner"] = true, ["Dotted"] = dotted, ["Emphasized"] = emphasized, ["ChildContent"] = NativeAccessForm()
+                        ["Dotted"] = dotted, ["Tone"] = tone, ["ChildContent"] = NativeAccessForm()
                     });
                     Check(Regex.Matches(html, @"<main\b").Count == 1 && Regex.Matches(html, @"<section\b").Count == 1
-                        && html.StartsWith("<main class=\"f-access-document\">", StringComparison.Ordinal), "Banner mode nested a second main or duplicated the standard band.");
+                        && html.Contains("f-document-surface", StringComparison.Ordinal), "Access surface nested a second main or duplicated the standard band.");
                     Check(html.Contains("f-presentation-fullheight", StringComparison.Ordinal)
-                        && html.Contains(emphasized ? "f-presentation-surface" : "f-presentation-canvas", StringComparison.Ordinal)
-                        && html.Contains("f-presentation-dotted", StringComparison.Ordinal) == dotted, "Access banner did not forward full height, role tone or explicit dots.");
+                        && html.Contains("f-presentation-" + tone.ToString().ToLowerInvariant(), StringComparison.Ordinal)
+                        && html.Contains("f-presentation-dotted", StringComparison.Ordinal) == dotted, "Access surface did not forward full height, role tone or explicit dots.");
                     Check(Regex.Matches(html, @"class=""f-content-container(?:\s[^""]*)?""").Count == 1,
-                        "Access banner created a second content-width layer.");
+                        "Access surface created a second content-width layer.");
                     Check(Regex.Matches(html, @"<form\b").Count == 1
                         && html.Contains("method=\"post\" action=\"/auth/login\" data-enhance=\"false\"", StringComparison.Ordinal)
                         && html.Contains("name=\"__RequestVerificationToken\" value=\"fixture-token\"", StringComparison.Ordinal), "Access scene rewrote or nested native transport or anti-forgery content.");
                 }
             }
+            await Reject<PresentationBand>(new() { ["Tone"] = (PresentationTone)int.MaxValue }, "Tone");
+            Check(typeof(PresentationBand).Assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface") is null,
+                "The generic document composition retained an access-only wrapper.");
         }));
 
         tests.Add(("logo displayer encodes configured identity and preserves image title context and description order", async () =>
@@ -291,10 +380,10 @@ internal static class PresentationChecks
             var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
             var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css");
             var full = Rule(layout, ".f-presentation-band.f-presentation-fullheight");
-            Check(Regex.IsMatch(full, @"min-height\s*:\s*max\(\s*100dvh\s*,\s*var\(--f-band-min-height,\s*450px\)\s*\)"),
+            Check(Regex.IsMatch(full, @"min-height\s*:\s*max\(\s*100dvh\s*,\s*var\(--f-band-min-height,\s*800px\)\s*\)"),
                 "Full-height mode does not combine the viewport and configured minimum without a fixed height.");
-            foreach (var declarations in new[] { full, Rule(layout, ".f-access-document"), Rule(layout, ".f-logo-displayer"), Rule(layout, ".f-logo-displayer-title") })
-                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|max-height)\s*:|(?:^|;)\s*overflow(?:-[xy])?\s*:\s*(?:hidden|clip)\b"), "Access banner or brand copy is fixed-height or clipped.");
+            foreach (var declarations in new[] { full, Rule(layout, ".content-surface.f-document-surface"), Rule(layout, ".f-logo-displayer"), Rule(layout, ".f-logo-displayer-title") })
+                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|max-height)\s*:\s*(?!auto\b)|(?:^|;)\s*overflow(?:-[xy])?\s*:\s*(?:hidden|clip)\b"), "Access banner or brand copy is fixed-height or clipped.");
             var title = Rule(design, ".f-logo-displayer > .f-logo-displayer-title");
             Check(Regex.IsMatch(title, @"font-size\s*:\s*clamp\(\s*56px\s*,\s*8vw\s*,\s*80px\s*\)"), "Brand title stopped using its artistic 56–80px scale.");
             Check(Regex.IsMatch(Rule(layout, ".f-logo-displayer"), @"(?:^|;)\s*display\s*:\s*grid\s*(?:;|$)")
@@ -354,7 +443,7 @@ internal static class PresentationChecks
             var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css");
             var band = Rule(layout, ".f-presentation-band");
             var content = Rule(layout, ".f-presentation-hero-content");
-            Check(Regex.IsMatch(band, @"(?:^|;)\s*min-height\s*:\s*var\(--f-band-min-height,\s*450px\)"), "Banner CSS does not consume the shared minimum-height contract.");
+            Check(Regex.IsMatch(band, @"(?:^|;)\s*min-height\s*:\s*var\(--f-band-min-height,\s*800px\)"), "Banner CSS does not consume the shared minimum-height contract.");
             Check(Regex.IsMatch(content, @"(?:^|;)\s*display\s*:\s*grid\s*(?:;|$)")
                 && Regex.IsMatch(content, @"(?:^|;)\s*gap\s*:\s*40px\s*(?:;|$)"), "Artistic copy spacing relies on paragraph margins that the foundation reset can override.");
             foreach (var declarations in new[]
@@ -400,17 +489,18 @@ internal static class PresentationChecks
         {
             var html = await Render<PresentationFooter>(new()
             {
-                ["BrandName"] = "Product", ["Watermark"] = "Large brand", ["Copyright"] = "Copyright 2026", ["LinksLabel"] = "Footer links",
-                ["Actions"] = ButtonFragment(ButtonVariant.Elevated, "Pricing", "/pricing/", native: true)
-            });
+                ["Copyright"] = "Copyright 2026", ["LinksLabel"] = "Footer links",
+                ["Actions"] = ButtonFragment(ButtonVariant.Underline, "Pricing", "/pricing/", native: true)
+            }, "Product");
             Check(Regex.IsMatch(html, "^<footer class=\"f-presentation-footer\""), "Footer lost native semantics.");
-            Check(html.Contains("<span class=\"f-presentation-watermark\" aria-hidden=\"true\">Large brand</span>", StringComparison.Ordinal), "Decorative background wordmark is not hidden from accessibility text.");
+            Check(html.Contains("<span class=\"f-presentation-watermark\" aria-hidden=\"true\">Product</span>", StringComparison.Ordinal), "Decorative project wordmark is not hidden from accessibility text.");
             Check(html.Contains("f-content-container f-presentation-footer-content", StringComparison.Ordinal)
                 && html.Contains("<strong>Product</strong>", StringComparison.Ordinal)
                 && html.Contains("aria-label=\"Footer links\"", StringComparison.Ordinal), "Footer content lost limit, identity or link naming.");
-            Check(html.Contains("f-button-elevated", StringComparison.Ordinal) && html.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Footer did not retain the actual standard native link.");
-            var fallback = await Render<PresentationFooter>(new() { ["BrandName"] = "Default wordmark" });
-            Check(fallback.Contains("aria-hidden=\"true\">Default wordmark</span>", StringComparison.Ordinal), "An omitted watermark did not use the brand text.");
+            Check(html.Contains("f-button-underline", StringComparison.Ordinal) && html.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Footer did not retain the actual standard native link.");
+            var fallback = await Render<PresentationFooter>(new());
+            Check(fallback.Contains("<strong>Application</strong>", StringComparison.Ordinal)
+                && fallback.Contains("aria-hidden=\"true\">Application</span>", StringComparison.Ordinal), "An unconfigured footer did not use the shared default project identity.");
         }));
 
         tests.Add(("presentation footer derives encoded identity from project configuration and keeps copyright independent", async () =>
@@ -425,13 +515,9 @@ internal static class PresentationChecks
             var noCopyright = await Render<PresentationFooter>(new(), project);
             Check(!noCopyright.Contains("ARKHEIDE", StringComparison.Ordinal) && !noCopyright.Contains("©", StringComparison.Ordinal)
                 && !noCopyright.Contains("<span></span>", StringComparison.Ordinal), "A generic footer invented an organization, copyright or empty copyright element.");
-            var legacy = await Render<PresentationFooter>(new()
-            {
-                ["BrandName"] = "Explicit <brand>", ["Watermark"] = "Explicit <watermark>"
-            }, project);
-            Check(legacy.Contains("<strong>Explicit &lt;brand&gt;</strong>", StringComparison.Ordinal)
-                && legacy.Contains("aria-hidden=\"true\">Explicit &lt;watermark&gt;</span>", StringComparison.Ordinal)
-                && !legacy.Contains("Configured", StringComparison.Ordinal), "Explicit compatibility identity overrides were overwritten by configuration.");
+            Check(typeof(PresentationFooter).GetProperty("BrandName") is null
+                && typeof(PresentationFooter).GetProperty("Watermark") is null,
+                "Footer exposes alternate identity parameters instead of the configured project name.");
         }));
 
         tests.Add(("offer stage SSR leaves every offer and action readable before progressive enhancement", async () =>
@@ -441,12 +527,14 @@ internal static class PresentationChecks
                 ["Id"] = "offers", ["Label"] = "Five offers", ["LinkScopeId"] = "prices", ["ChildContent"] = Cards(5)
             });
             Check(Regex.Matches(html, @"<article\b[^>]*class=""f-offer-card""").Count == 5, "SSR dropped or duplicated an offer.");
-            Check(Regex.Matches(html, "class=\"f-offer-details\"").Count == 5 && Regex.Matches(html, "f-button-filled").Count == 5, "SSR concealed offer details or controls.");
+            Check(Regex.Matches(html, "class=\"f-offer-details\"").Count == 5 && Regex.Matches(html, "f-button-primary").Count == 5, "SSR concealed offer details or controls.");
             Check(!Regex.IsMatch(html, @"data-offer-ready|data-active|\shidden(?:=|\s|>)|class=""f-offer-details""[^>]*aria-hidden=""true""|aria-hidden=""true""[^>]*class=""f-offer-details"""), "Enhancement-only inactive state escaped into SSR: " + html);
             Check(html.Contains("role=\"list\"", StringComparison.Ordinal) && Regex.Matches(html, "role=\"listitem\"").Count == 5,
                 "Offer collection lost list semantics.");
             Check(Regex.Matches(html, "class=\"f-offer-compact-title\" aria-hidden=\"true\"").Count == 5,
                 "Decorative duplicate titles are not hidden from screen readers.");
+            Check(Regex.Matches(html, "<p class=\"f-offer-title\"").Count == 5 && !Regex.IsMatch(html, @"<h[1-6]\b"),
+                "Offer labels generated extra page headings or disappeared.");
         }));
 
         tests.Add(("offer contracts reject invalid or duplicate target IDs and too-fast rotations", async () =>
@@ -580,7 +668,7 @@ internal static class PresentationChecks
 
         tests.Add(("access form actions remain inside the host native form without inventing a second transport boundary", async () =>
         {
-            var html = await Render<Primitives.AccessSurface>(new() { ["Banner"] = true, ["ChildContent"] = NativeAccessForm() });
+            var html = await RenderDocumentBand(new() { ["ChildContent"] = NativeAccessForm() });
             Check(Regex.Matches(html, @"<form\b").Count == 1
                 && Regex.IsMatch(html, @"<form\b[^>]*>[\s\S]*<div class=""f-access-form-actions"">[\s\S]*</div>[\s\S]*</form>"),
                 "The Actions slot escaped the host's single native form.");
@@ -603,11 +691,11 @@ internal static class PresentationChecks
             RenderFragment actions = builder =>
             {
                 builder.AddContent(0, ButtonFragment(ButtonVariant.Elevated, "Login", "/login/", native: true));
-                builder.AddContent(1, ButtonFragment(ButtonVariant.Outlined, "Cancel"));
+                builder.AddContent(1, ButtonFragment(ButtonVariant.Secondary, "Cancel"));
             };
             var html = await Render<AccessActions>(new() { ["Label"] = "Entry actions", ["ChildContent"] = actions });
             Check(html.StartsWith("<nav class=\"f-access-actions\" aria-label=\"Entry actions\"", StringComparison.Ordinal), "Access actions lost their named group.");
-            Check(html.Contains("f-button-elevated", StringComparison.Ordinal) && html.Contains("f-button-outlined", StringComparison.Ordinal), "An action wrapper changed the consumer's chosen variants.");
+            Check(html.Contains("f-button-elevated", StringComparison.Ordinal) && html.Contains("f-button-secondary", StringComparison.Ordinal), "An action wrapper changed the consumer's chosen variants.");
             Check(html.Contains("href=\"/login/\"", StringComparison.Ordinal) && html.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Native entry navigation changed.");
             Check(!html.Contains("f-uniform-grid", StringComparison.Ordinal) && !html.Contains("f-form-actions", StringComparison.Ordinal), "Access actions became oversized business action tiles.");
         }));
@@ -668,7 +756,7 @@ internal static class PresentationChecks
             builder.AddAttribute(1, "Id", duplicateIds ? "duplicate-offer" : $"offer-{index}");
             builder.AddAttribute(2, "Title", $"Offer {index}");
             builder.AddAttribute(3, "Description", $"Description {index}");
-            builder.AddAttribute(4, "ChildContent", ButtonFragment(ButtonVariant.Filled, $"Action {index}"));
+            builder.AddAttribute(4, "ChildContent", ButtonFragment(ButtonVariant.Primary, $"Action {index}"));
             builder.CloseComponent();
         }
     };
@@ -692,6 +780,18 @@ internal static class PresentationChecks
             return component;
         }
     }
+    private static Task<string> RenderDocumentBand(Dictionary<string, object?> parameters) =>
+        Render<ContentSurface>(new()
+        {
+            ["DocumentFlow"] = true,
+            ["ChildContent"] = (RenderFragment)(builder =>
+            {
+                builder.OpenComponent<PresentationBand>(0);
+                builder.AddAttribute(1, nameof(PresentationBand.FullHeight), true);
+                builder.AddMultipleAttributes(2, parameters);
+                builder.CloseComponent();
+            })
+        });
     private static string ReadSource(string relativePath)
     {
         foreach (var start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })

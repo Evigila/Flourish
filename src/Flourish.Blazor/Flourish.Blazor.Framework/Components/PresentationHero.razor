@@ -13,7 +13,7 @@
     [Parameter] public string? Subtitle { get; set; }
     [Parameter] public string? Description { get; set; }
     [Parameter] public PresentationTone Tone { get; set; }
-    [Parameter] public int MinHeight { get; set; } = 450;
+    [Parameter] public int MinHeight { get; set; } = PresentationBand.DefaultMinHeight;
     [Parameter] public bool Dotted { get; set; }
     [Parameter] public bool FullHeight { get; set; }
     [Parameter] public string TitleId { get; set; } = $"presentation-hero-{Guid.NewGuid():N}";

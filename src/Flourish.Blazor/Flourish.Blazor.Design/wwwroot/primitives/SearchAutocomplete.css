@@ -13,7 +13,7 @@
     color: inherit;
     background: transparent;
     border: 0;
-    border-radius: calc(var(--control-radius) - 2px);
+    border-radius: calc(var(--f-radius-control) - 2px);
     font: inherit;
     font-size: 17px;
     font-weight: 400;

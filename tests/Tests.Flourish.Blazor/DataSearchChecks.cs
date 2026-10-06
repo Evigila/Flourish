@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
-using Primitive = ArkheideSystem.Flourish.Blazor.Components.Primitives;
 
 internal static class DataSearchChecks
 {
@@ -156,18 +155,6 @@ internal static class DataSearchChecks
                 try { await WithComponent<DataSearch<string>>(parameters, (_, _, _) => Task.CompletedTask); } catch (ArgumentException) { rejected=true; }
                 Require(rejected, "Invalid search state reached the native controls.");
             }
-        }));
-        tests.Add(("legacy column search is a true adapter to the same renderer and preserves its callback payload", async () =>
-        {
-            var requests = new List<Primitive.DataSearchRequest>();
-            var oldColumns = new Primitive.DataColumn<string>[] { new("first", "First <field>", value => value), new("second", "Second", value => value) };
-            await WithComponent<Primitive.DataSearch<string>>(new() { ["Columns"] = oldColumns, ["Value"] = "legacy", ["Changed"] = EventCallback.Factory.Create<Primitive.DataSearchRequest>(requests, (Primitive.DataSearchRequest request) => requests.Add(request)) }, async (_, components, html) =>
-            {
-                var search = components.OfType<DataSearch<string>>().Single();
-                Require(components.OfType<Field>().Count() == 2 && html().Contains("f-data-search", StringComparison.Ordinal) && !html().Contains("quick-filter-field", StringComparison.Ordinal), "Legacy search retained its old independent renderer.");
-                await Invoke(search, "ChangeValueAsync", "new");
-                Require(requests.SequenceEqual([new Primitive.DataSearchRequest("first", "new")]), "Compatibility forwarding changed its first-column payload.");
-            });
         }));
     }
     private static EventCallback<TableSearchRequest> Callback(List<TableSearchRequest> calls) => EventCallback.Factory.Create<TableSearchRequest>(calls, (TableSearchRequest request) => calls.Add(request));

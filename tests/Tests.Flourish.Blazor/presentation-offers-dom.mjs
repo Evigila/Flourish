@@ -156,10 +156,17 @@ test('narrow and reduced-motion modes are readable static layouts and release en
     assert.ok(root.children.every(card => card.dataset.active === 'false'));
     dispose(root);
     const noMedia = fixture({ matchMedia: false }), native = noMedia.stage();
-    synchronize(native, null);
+    assert.throws(() => synchronize(native, null), TypeError, 'A missing native media API must fail instead of selecting an old browser layout.');
     assert.equal(native.dataset.offerReady, undefined);
     assert.ok(native.children.every(card => card.dataset.active === undefined));
     assert.equal(noMedia.timers.size, 0);
+});
+
+test('a missing required MutationObserver is not treated as a supported static browser mode', () => {
+    const f = fixture({ mutationObserver: false }), root = f.stage();
+    assert.throws(() => synchronize(root, null), TypeError);
+    assert.equal(root.dataset.offerReady, undefined);
+    assert.equal(f.timers.size, 0);
 });
 
 test('pointer focus and document visibility pause rotation while focus prevents unrelated card activation', () => {

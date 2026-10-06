@@ -4,10 +4,10 @@
     margin: 0;
     padding: 8px 12px;
     border: 1px solid var(--f-border);
-    border-radius: var(--radius-small, 4px);
+    border-radius: var(--f-radius-small, 4px);
     color: var(--f-text);
     background: var(--f-surface);
-    box-shadow: var(--shadow-card);
+    box-shadow: var(--f-shadow-card);
     font: 400 17px/1.4 "Segoe UI", sans-serif;
     text-align: left;
 }
@@ -15,8 +15,7 @@
     width: 8px;
     height: 100%;
 }
-@media (prefers-reduced-motion: reduce) {
-.primary-navigation-tooltip {
+@media (prefers-reduced-motion: reduce) {.primary-navigation-tooltip {
     animation: none;
     transition: none;
 }

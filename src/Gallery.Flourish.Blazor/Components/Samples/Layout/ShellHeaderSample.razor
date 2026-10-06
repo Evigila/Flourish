@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ShellHeader")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ShellHeader", Description = "切换身份可比较动作组与退出图标的布局；这里只记录本地操作，不执行认证或退出。")]
 @using System
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
@@ -15,13 +15,25 @@
 <div id="@Id" @onclick:preventDefault>
     @if (Preview)
     {
-        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="Logo" BrandName="应用名称" />
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="@Logo" BrandName="应用名称" />
     }
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="Logo" BrandName="@(Preview ? "应用名称" : "资料中心（虚构）")" ContextName="@(Preview ? null : "共享资料")" IdentityName="@(Preview || !Identity ? null : "示例访客")" IdentityAriaLabel="虚构的演示身份">
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="@Logo" BrandName="@(Preview ? "应用名称" : "资料中心（虚构）")" ContextName="@(Preview ? null : "共享资料")" IdentityName="@(Preview || !Identity ? null : "示例访客")" IdentityAriaLabel="虚构的演示身份">
         <Services>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Label="资料" Items="Links" /> }</Services>
-        <EndActions><ArkheideSystem.Flourish.Blazor.Components.Button Icon="refresh" OnClick="Refresh" aria-label="刷新示例" /></EndActions>
+        <EndActions>
+            @if (Identity && !Preview)
+            {
+                <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Quiet" Icon="logout" OnClick="Refresh" aria-label="模拟退出" />
+            }
+            else
+            {
+                <ArkheideSystem.Flourish.Blazor.Components.InlineActions>
+                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">进入</ArkheideSystem.Flourish.Blazor.Components.Button>
+                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">创建账号</ArkheideSystem.Flourish.Blazor.Components.Button>
+                </ArkheideSystem.Flourish.Blazor.Components.InlineActions>
+            }
+        </EndActions>
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader>
-    @if (!Preview) { <p role="status">已刷新 @Count 次。顶部的品牌和菜单链接保持在本示例中。</p> }
+    @if (!Preview) { <p role="status">已模拟操作 @Count 次。</p> }
 </div>
 
 @code {

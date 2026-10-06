@@ -1,7 +1,7 @@
 /* Display composition shares existing controls; this file owns layout and progressive enhancement only. */
 .f-content-container { box-sizing:border-box; width:100%; max-width:var(--f-content-width,1180px); min-width:0; margin-inline:auto; padding-inline:24px; }
 /* Keep native vertical document scrolling, but suppress the root's boundary bounce/pull. */
-html:has(.f-document-surface,main.access-surface,.f-access-document), body:has(.f-document-surface,main.access-surface,.f-access-document) { overscroll-behavior-y:none; }
+html:has(.f-document-surface), body:has(.f-document-surface) { overscroll-behavior-y:none; }
 .content-surface.f-document-surface { display:flex; height:auto; min-height:100dvh; flex-direction:column; overflow:visible; }
 .f-document-surface-header { position:sticky; top:0; z-index:50; flex:0 0 auto; }
 .content-surface.f-document-surface > .content-stage { flex:1 0 auto; overflow:visible; overscroll-behavior:auto; }
@@ -9,10 +9,9 @@ html:has(.f-document-surface,main.access-surface,.f-access-document), body:has(.
 /* Website page titles stay in document flow; only the top bar owns sticky chrome. */
 .f-document-surface .f-page-heading { position:static; }
 .f-document-surface .f-page-body.f-page-full > .f-page-heading { padding-inline:max(24px,calc((100% - var(--f-content-width,1180px))/2 + 24px)); }
-.f-presentation-band { box-sizing:border-box; display:flex; align-items:center; width:100%; min-width:0; min-height:var(--f-band-min-height,450px); }
-.f-presentation-band.f-presentation-fullheight { min-height:max(100dvh,var(--f-band-min-height,450px)); }
-.f-access-document { margin:0; min-width:0; }
-body:has(.f-access-document) { margin:0; }
+.f-presentation-band { box-sizing:border-box; display:flex; align-items:center; width:100%; min-width:0; min-height:var(--f-band-min-height,800px); }
+.f-presentation-band.f-presentation-fullheight { min-height:max(100dvh,var(--f-band-min-height,800px)); }
+body:has(.f-document-surface) { margin:0; }
 .f-logo-displayer { display:grid; justify-items:center; gap:24px; min-width:0; text-align:center; }
 .f-logo-displayer-logo { display:block; width:96px; height:96px; object-fit:contain; }
 .f-logo-displayer-title { display:grid; min-width:0; }
@@ -43,8 +42,8 @@ body:has(.f-access-document) { margin:0; }
  .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] { grid-column:span 2; }
  .f-offer-stage[data-offer-ready] .f-offer-card::before { position:absolute; z-index:0; inset:0; content:""; pointer-events:none; transform:scaleX(1); transform-origin:left center; }
  .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true]::before { transform:scaleX(0); }
- .f-offer-stage[data-offer-ready] .f-offer-card h3 { opacity:0; }
- .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] h3 { opacity:1; }
+ .f-offer-stage[data-offer-ready] .f-offer-card > .f-offer-title { opacity:0; }
+ .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] > .f-offer-title { opacity:1; }
  .f-offer-stage[data-offer-ready] .f-offer-compact-title { position:absolute; z-index:1; top:18px; right:18px; display:block; writing-mode:vertical-rl; text-orientation:mixed; pointer-events:none; }
  .f-offer-stage[data-offer-ready] .f-offer-card[data-active=true] .f-offer-compact-title { opacity:0; }
  .f-offer-stage[data-offer-ready] .f-offer-details { position:relative; z-index:1; visibility:hidden; opacity:0; pointer-events:none; }
@@ -64,6 +63,8 @@ body:has(.f-access-document) { margin:0; }
 .f-card-prominent > .f-card-prominent-actions { display:flex; flex:0 1 240px; flex-direction:column; align-items:flex-start; min-width:0; max-width:100%; gap:12px; }
 .f-card-prominent > .f-card-prominent-copy { display:grid; flex:1 1 0; min-width:0; gap:16px; overflow-wrap:anywhere; }
 .f-card-prominent-actions > .f-button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+.f-card.f-card-prominent.f-card-stacked { flex-direction:column; align-items:stretch; }
+.f-card-stacked > .f-card-prominent-actions, .f-card-stacked > .f-card-prominent-copy { flex:0 1 auto; }
 @media(max-width:760px) {
  .f-card.f-card-prominent { flex-direction:column; align-items:stretch; }
  .f-card-prominent > .f-card-prominent-actions { flex:0 1 auto; }

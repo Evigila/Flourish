@@ -1,0 +1,14 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CopyText", Description = "原值可选择，特殊字符按文本显示；此控件不自动读取或写入剪贴板。")]
+
+<CopyText Value="@Value" />
+@if (!Preview)
+{
+    <Button Variant="ButtonVariant.Secondary" OnClick="Change">切换虚构原值</Button>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private string Value = "DEMO-001";
+    private void Change() => Value = Value == "DEMO-001" ? "<demo>&文本" : "DEMO-001";
+}

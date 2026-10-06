@@ -6,7 +6,7 @@
 @using System.Collections.Generic
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CodeBlock")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CodeBlock", Description = "示例文本编码显示，不会执行。")]
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
 @if (Preview) { <CodeBlock Text="" Language="razor" /> }
@@ -14,7 +14,6 @@ else
 {
     <Field Label="模拟代码语言" Id="@Id"><SelectBox TValue="string" Options="Languages" @bind-Value="Language" /></Field>
     <CodeBlock Text="@(Language == "razor" ? RazorExample : CSharpExample)" Language="@Language" />
-    <p>示例文本被编码显示，不会执行。</p>
 }
 @code {
     [Parameter] public bool Preview { get; set; }

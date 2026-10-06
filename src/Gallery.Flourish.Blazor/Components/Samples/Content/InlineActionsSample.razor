@@ -1,0 +1,15 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("InlineActions")]
+
+<InlineActions>
+    <Button OnClick="Increment">增加示例</Button>
+    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">重置</Button>
+</InlineActions>
+@if (!Preview) { <p role="status">已操作 @Count 次；不保存真实数据。</p> }
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Count;
+    private void Increment() => Count++;
+    private void Reset() => Count = 0;
+}

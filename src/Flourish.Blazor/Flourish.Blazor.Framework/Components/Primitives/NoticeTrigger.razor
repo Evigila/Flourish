@@ -1,13 +1,14 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@using ArkheideSystem.Flourish.Abstract
 @inherits TextComponentBase
-<span class="notice-trigger @NoticePresentation.CssClass(Severity)">
+<span class="notice-trigger @NoticePresentation.CssClass(Severity, Subtle)">
     <button class="notice-trigger-button" type="button" aria-label="@Label" aria-describedby="@DescriptionId">
         <svg class="notice-trigger-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            @if (Severity == NoticeSeverity.Error)
+            @if (Severity == NotificationSeverity.Error)
             {
                 <path d="M6 6 18 18 M18 6 6 18" />
             }
-            else if (Severity == NoticeSeverity.Success)
+            else if (Severity == NotificationSeverity.Success)
             {
                 <path d="m4 12 5 5 11-11" />
             }
@@ -26,15 +27,17 @@
     public RenderFragment? ChildContent { get; set; }
 
     [Parameter, EditorRequired]
-    public NoticeSeverity Severity { get; set; } = NoticeSeverity.Warning;
+    public NotificationSeverity Severity { get; set; } = NotificationSeverity.Warning;
+
+    [Parameter] public bool Subtle { get; set; }
 
     private readonly string DescriptionId = $"notice-trigger-{Guid.NewGuid():N}";
     private string Label => Severity switch
     {
-        NoticeSeverity.Error => Ui("Notice_Error", "Error"),
-        NoticeSeverity.Warning => Ui("Notice_Warning", "Warning"),
-        NoticeSeverity.Success => Ui("Notice_Success", "Success"),
-        NoticeSeverity.Information or NoticeSeverity.Subtle => Ui("Notice_Information", "Information"),
+        NotificationSeverity.Error => Ui("Notice_Error", "Error"),
+        NotificationSeverity.Warning => Ui("Notice_Warning", "Warning"),
+        NotificationSeverity.Success => Ui("Notice_Success", "Success"),
+        NotificationSeverity.Information => Ui("Notice_Information", "Information"),
         _ => Ui("Notice_Information", "Information")
     };
 }

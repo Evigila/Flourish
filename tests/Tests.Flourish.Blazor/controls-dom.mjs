@@ -11,12 +11,13 @@ class Style {
   removeProperty(name){ this.values.delete(name); }
 }
 class Node {
-  attrs=new Map(); events=new Map(); style=new Style(); isConnected=true; disabled=false;
+  attrs=new Map(); events=new Map(); style=new Style(); isConnected=true; disabled=false; dataset={};
   hidden=false; children=[]; id=''; rect={left:20,right:80,top:100,bottom:136,width:60,height:36};
-  classList={add(){},remove(){}};
+  classList={add(){},remove(){},toggle(){}};
   addEventListener(type,fn,options){ const list=this.events.get(type)??[];list.push(fn);this.events.set(type,list);(this.eventOptions??=new Map()).set(fn,options); }
   removeEventListener(type,fn){ this.events.set(type,(this.events.get(type)??[]).filter(f=>f!==fn)); }
   emit(type,event){ for(const fn of [...(this.events.get(type)??[])])fn(event); }
+  dispatchEvent(event){ if(!event.target)Object.defineProperty(event,'target',{value:this});this.emit(event.type,event); if(event.bubbles && !event.cancelBubble && !event.propagationStopped)this.parentElement?.dispatchEvent(event);return true; }
   setAttribute(name,value){ this.attrs.set(name,value);if(name==='open')this.open=true; }
   getAttribute(name){ return this.attrs.get(name)??null; }
   removeAttribute(name){ this.attrs.delete(name);if(name==='open')this.open=false; }
@@ -24,7 +25,7 @@ class Node {
   getBoundingClientRect(){ const limits=this.style.getPropertyValue('max-height').match(/[\d.]+(?=px)/g)?.map(Number);return limits?.length?{...this.rect,height:Math.min(this.rect.height,...limits)}:this.rect; }
   contains(node){ return node===this||this.children.includes(node); }
   closest(){ return null; }
-  matches(selector){ return selector===':popover-open'?this.popoverOpen===true:true; }
+  matches(selector){ return selector===':popover-open'?this.popoverOpen===true:selector===':disabled'?this.disabled:true; }
   querySelectorAll(){ return this.children; }
   querySelector(){ return null; }
   focus(){ document.activeElement=this; }
@@ -52,7 +53,9 @@ globalThis.CSS={escape:value=>value};
 globalThis.HTMLInputElement=Node;
 globalThis.requestAnimationFrame=fn=>{fn();return 1;};globalThis.cancelAnimationFrame=()=>{};
 const code=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js',import.meta.url),'utf8');
-const controlsUrl='data:text/javascript;base64,'+Buffer.from(code).toString('base64');
+const originCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/interaction-origin.js',import.meta.url),'utf8');
+const originUrl='data:text/javascript;base64,'+Buffer.from(originCode).toString('base64');
+const controlsUrl='data:text/javascript;base64,'+Buffer.from(code.replace(/(["'])\.\/primitives\/interaction-origin\.js\1/,JSON.stringify(originUrl))).toString('base64');
 const api=await import(controlsUrl);
 const event=key=>({key,defaultPrevented:false,propagationStopped:false,preventDefault(){this.defaultPrevented=true;},stopPropagation(){this.propagationStopped=true;}});
 const trigger=new Node();const panel=new Node();const first=new Node(),second=new Node();panel.children=[first,second];
@@ -132,7 +135,10 @@ check('Display outside interaction closes without taking focus and disposal remo
 });
 
 const dataCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js',import.meta.url),'utf8');
-const dataApi=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace("'./controls.js'",JSON.stringify(controlsUrl))).toString('base64'));
+const selectionCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/multi-select-box.js',import.meta.url),'utf8');
+const selectionUrl='data:text/javascript;base64,'+Buffer.from(selectionCode.replace("'./controls.js'",JSON.stringify(controlsUrl))).toString('base64');
+const selectionApi=await import(selectionUrl);
+const dataApi=await import('data:text/javascript;base64,'+Buffer.from(dataCode.replace("'./multi-select-box.js'",JSON.stringify(selectionUrl))).toString('base64'));
 check('Progressive directory searches declared visible text with culture-aware accents and column boundaries',()=>{
   const rows=[{index:0,cells:{name:'João',country:'Brasil'}},{index:1,cells:{name:'Ana',country:'Portugal'}}];
   assert.deepEqual(dataApi.processDirectory(rows,'JOAO','name',null,false,'pt-BR'),[rows[0]]);
@@ -171,6 +177,8 @@ check('Progressive canonical directory pages searches sorts and switches cards o
   f.query.value='joao';f.root.emit('input',{...event(''),target:f.query});assert.deepEqual(f.rows.map(row=>row.hidden),[false,true,true]);assert.equal(f.label.textContent,'Items 1-1 / Total 1');
   f.query.value='';f.root.emit('input',{...event(''),target:f.query});f.sort.dataset.fSortKey='name';f.root.emit('click',{...event(''),target:f.sort});
   assert.deepEqual(f.body.children.map(row=>row.index),[0,2,1]);
+  f.root.emit('click',{...event(''),target:f.sort});assert.deepEqual(f.body.children.map(row=>row.index),[1,2,0]);
+  f.root.emit('click',{...event(''),target:f.sort});assert.deepEqual(f.body.children.map(row=>row.index),[0,1,2]);
   f.view.dataset.fView='cards';f.root.emit('click',{...event(''),target:f.view});assert.equal(f.root.cards,true);
   assert.equal(new Set(f.body.children).size,3);assert.deepEqual([...f.rows].sort((a,b)=>a.index-b.index),f.rows);dataApi.detach('progressive-owned');
 });
@@ -181,36 +189,45 @@ check('Progressive native POST action stays the same unique form after paging so
   dataApi.synchronize(f.root,'progressive-post');f.root.emit('dblclick',{...event(''),target:surface});assert.equal(form.submitted,1);
   assert.equal(new Set(f.body.children).size,3);dataApi.detach('progressive-post');assert.equal(f.root.events.get('dblclick').length,0);assert.equal(f.root.events.get('input').length,0);assert.equal(f.root.events.get('change').length,0);
 });
-const emptyDataRoot=new Node(),emptyDisclosure=new Node(),emptySummary=new Node(),emptyDisplayPanel=new Node();
-emptyDisclosure.children=[emptySummary,emptyDisplayPanel];emptyDisplayPanel.rect={width:200,height:100};emptyDisplayPanel.children=[new Node()];
-emptyDataRoot.querySelector=selector=>selector==='.f-data-display'?emptyDisclosure:null;
-emptyDisclosure.querySelector=selector=>selector==='summary'?emptySummary:selector==='.f-data-display-options'?emptyDisplayPanel:null;
-check('DataTable wires display positioning even with no rendered rows and rerenders do not duplicate handlers',()=>{
+function selectionFixture(id,keys=[],isStatic=false) {
+  const root=new Node(),summary=new Node(),panel=new Node(),caption=new Node(),snapshots=[];
+  root.dataset={fSelectionInstance:id,fSelectionStatic:String(isStatic),fSelectionDisabled:'false',fReorderEnabled:'true',fMinimumSelected:'0',fMaximumSelections:'2147483647',fFiltering:'false',fCreating:'false',fSelectionEmpty:'None selected',fSelectionCount:'items selected'};
+  summary.children=[caption];summary.querySelector=selector=>selector==='[data-f-selection-label]'?caption:null;
+  root.children=[summary,panel];panel.rect={left:0,right:300,top:0,bottom:200,width:300,height:200};
+  panel.append=row=>{panel.children=panel.children.filter(child=>child!==row);panel.children.push(row);};
+  const options=keys.map(key=>{
+    const row=new Node(),choice=new Node(),label=new Node(),text=new Node();row.key=key;text.textContent=key;
+    row.dataset={fSelectionKey:key,fCanReorder:String(key!=='fixed'),fOptionDisabled:'false'};
+    choice.dataset={fSelectionKey:key,...(key==='fixed'?{fFixed:'true'}:{})};choice.checked=true;
+    choice.tagName='INPUT';choice.type='checkbox';choice.parentElement=label;label.parentElement=row;row.parentElement=panel;
+    label.children=[choice,text];row.children=[label];choice.closest=selector=>selector==='label'?label:selector==='.f-multi-select-option'?row:null;
+    label.closest=selector=>selector==='.f-multi-select-option'?row:null;
+    row.closest=selector=>selector==='.f-multi-select-option'?row:row.getAttribute('aria-disabled')==='true'&&selector.includes('aria-disabled')?row:null;
+    row.querySelector=selector=>selector==='input[data-f-selection-key]'?choice:selector==='label > span'?text:null;return row;
+  });
+  panel.children=[...options];
+  panel.querySelectorAll=()=>panel.children.flatMap(row=>[row,inputOf(row)]);
+  root.querySelector=selector=>selector==='summary'?summary:selector==='.f-multi-select-panel'?panel:null;
+  root.querySelectorAll=selector=>selector==='.f-multi-select-option'?panel.children:[];
+  root.contains=node=>node===root||node===summary||node===panel||options.some(row=>row===node||row.children.includes(node)||inputOf(row)===node);
+  const proxy={invokeMethodAsync(name,...args){snapshots.push({name,args});return Promise.resolve();}};
+  const transfer=()=>({values:new Map(),setData(type,value){this.values.set(type,value);}});
+  return{root,summary,panel,caption,options,snapshots,proxy,transfer};
+}
+const inputOf=row=>row.querySelector('input[data-f-selection-key]');
+const emptyDataRoot=new Node(),emptyDisplay=selectionFixture('empty-display',[],true);
+emptyDisplay.root.parentElement=emptyDataRoot;
+emptyDataRoot.querySelector=()=>null;
+emptyDataRoot.querySelectorAll=selector=>selector==='[data-f-selection-static="true"]'?[emptyDisplay.root]:[];
+check('Empty DataTable attaches the actual standard display once and preserves an open popup on synchronization',()=>{
   dataApi.synchronize(emptyDataRoot,'empty-data');dataApi.synchronize(emptyDataRoot,'empty-data');
-  assert.equal(emptyDisclosure.events.get('toggle').length,1);emptyDisclosure.open=true;emptyDisclosure.emit('toggle',{});assert.equal(emptyDisplayPanel.popoverOpen,true);
-  dataApi.synchronize(emptyDataRoot,'empty-data');assert.equal(emptyDisclosure.open,true);assert.equal(emptyDisplayPanel.popoverOpen,true);
+  assert.equal(emptyDisplay.root.events.get('toggle').length,1);
+  emptyDisplay.root.open=true;emptyDisplay.root.emit('toggle',{});assert.equal(emptyDisplay.panel.popoverOpen,true);
+  dataApi.synchronize(emptyDataRoot,'empty-data');assert.equal(emptyDisplay.root.open,true);assert.equal(emptyDisplay.panel.popoverOpen,true);
 });
-check('DataTable disposal closes its display popup and removes the shared lifecycle',()=>{
-  dataApi.detach('empty-data');assert.equal(emptyDisclosure.open,false);assert.equal(emptyDisplayPanel.popoverOpen,false);
-  assert.equal(emptyDisclosure.events.get('toggle').length,0);assert.equal(emptySummary.events.get('keydown').length,0);
-});
-check('Older-browser display portals survive table rerenders and restore their native disclosure on close',()=>{
-  const root=new Node(),details=new Node(),summary=new Node(),panel=new Node(),option=new Node();
-  panel.showPopover=undefined;panel.rect={width:200,height:100};panel.children=[option];details.children=[summary,panel];
-  root.querySelector=selector=>selector==='.f-data-display'?details:null;
-  details.querySelector=selector=>selector==='summary'?summary:selector==='.f-data-display-options'&&details.children.includes(panel)?panel:null;
-  const originalAppend=document.body.append;
-  panel.before=placeholder=>{
-    details.children.splice(details.children.indexOf(panel),0,placeholder);
-    placeholder.replaceWith=returned=>{details.children.splice(details.children.indexOf(placeholder),1,returned);document.body.children=document.body.children.filter(node=>node!==returned);};
-  };
-  document.body.append=function(...nodes){for(const node of nodes){if(node===panel)details.children=details.children.filter(child=>child!==panel);this.children.push(node);}};
-  try {
-    dataApi.synchronize(root,'legacy-data');details.open=true;details.emit('toggle',{});assert.equal(document.body.children.includes(panel),true);
-    dataApi.synchronize(root,'legacy-data');assert.equal(details.open,true);assert.equal(details.events.get('toggle').length,1);
-    document.emit('pointerdown',{target:option});assert.equal(details.open,true);
-    document.emit('pointerdown',{target:new Node()});assert.equal(details.open,false);assert.equal(details.children.includes(panel),true);assert.equal(document.body.children.includes(panel),false);
-  } finally {dataApi.detach('legacy-data');document.body.append=originalAppend;}
+check('Static DataTable disposal releases its actual standard display controller',()=>{
+  dataApi.detach('empty-data');assert.equal(emptyDisplay.root.open,false);assert.equal(emptyDisplay.panel.popoverOpen,false);
+  assert.equal(emptyDisplay.root.events.get('toggle').length,0);assert.equal(emptyDisplay.summary.events.get('keydown').length,0);
 });
 
 function nativeDataFixture(kind='list') {
@@ -302,9 +319,77 @@ check('Idle Escape awaits controlled close bridge',()=>{assert.equal(closeReques
 check('Controlled close returns focus',()=>{api.synchronizeDialog(dialog,false,reference);assert.equal(dialog.open,false);assert.equal(document.activeElement,opener);});
 check('Modal disposal removes native handlers',()=>{api.detachDialog(dialog);assert.equal(dialog.events.get('cancel').length,0);assert.equal(dialog.events.get('keydown').length,0);});
 
+function dialogViewFixture(){
+  const root=new Node(),pending=new Node(),failed=new Node(),paused=new Node(),retry=new Node(),resume=new Node(),footer=new Node(),nestedView=new Node();
+  root.dataset={fDialogBrowserControlled:'true',fDialogDismissible:'false'};
+  pending.dataset={fDialogView:'pending'};failed.dataset={fDialogView:'failed'};paused.dataset={fDialogView:'paused'};
+  retry.dataset={fDialogViews:'failed'};resume.dataset={fDialogViews:'failed paused'};nestedView.dataset={fDialogView:'nested'};
+  footer.children=[retry,resume];root.children=[pending,failed,paused,retry,resume,footer];
+  for(const child of root.children)child.closest=selector=>selector==='dialog'?root:child.hidden?child:null;
+  nestedView.closest=selector=>selector==='dialog'?new Node():null;
+  root.querySelectorAll=selector=>selector==='[data-f-dialog-view]'?[pending,failed,paused,nestedView]:selector==='[data-f-dialog-views]'?[retry,resume]:selector==='[autofocus]'?[]:[retry,resume].filter(child=>!child.hidden);
+  root.querySelector=selector=>selector==='.f-dialog-actions'?footer:null;
+  return {root,pending,failed,paused,retry,resume,footer,nestedView};
+}
+const nativeViews=dialogViewFixture();
+check('Keyed generic dialog views preserve native geometry and declare per-view standard actions',()=>{
+  assert.equal(api.setDialogView(nativeViews.root,'pending'),true);assert.equal(nativeViews.pending.hidden,false);assert.equal(nativeViews.failed.hidden,true);
+  assert.equal(nativeViews.retry.hidden,true);assert.equal(nativeViews.resume.hidden,true);assert.equal(nativeViews.footer.hidden,true);
+  assert.equal(nativeViews.nestedView.hidden,false);assert.equal(nativeViews.root.dataset.fDialogActiveView,'pending');
+  assert.equal(api.setDialogView(nativeViews.root,'failed'),true);assert.equal(nativeViews.failed.hidden,false);assert.equal(nativeViews.pending.hidden,true);
+  assert.equal(nativeViews.retry.hidden,false);assert.equal(nativeViews.resume.hidden,false);assert.equal(nativeViews.footer.hidden,false);
+  assert.equal(api.setDialogView(nativeViews.root,'paused'),true);assert.equal(nativeViews.retry.hidden,true);assert.equal(nativeViews.resume.hidden,false);
+});
+check('Unknown view keys cannot corrupt the active view or reach a nested dialog',()=>{
+  const before=nativeViews.root.dataset.fDialogActiveView;assert.equal(api.setDialogView(nativeViews.root,'unknown'),false);assert.equal(api.setDialogView(nativeViews.root,'nested'),false);
+  assert.equal(nativeViews.root.dataset.fDialogActiveView,before);assert.equal(nativeViews.paused.hidden,false);assert.equal(nativeViews.nestedView.hidden,false);
+});
+const nativeOpener=new Node();document.activeElement=nativeOpener;
+api.setDialogView(nativeViews.root,'failed');api.synchronizeDialog(nativeViews.root,true);
+check('Browser dialog opens without a circuit reference and moves focus away from a newly hidden action',()=>{
+  assert.equal(nativeViews.root.open,true);assert.equal(document.activeElement,nativeViews.retry);
+  api.setDialogView(nativeViews.root,'paused');assert.equal(document.activeElement,nativeViews.resume);assert.equal(nativeViews.root.open,true);
+});
+check('Non-dismissable browser dialog prevents Escape and its close action',()=>{
+  const cancel=event();nativeViews.root.emit('cancel',cancel);assert.equal(cancel.defaultPrevented,true);assert.equal(nativeViews.root.open,true);
+  const target=new Node();target.closest=()=>target;nativeViews.root.emit('click',{target,preventDefault(){}});assert.equal(nativeViews.root.open,true);
+});
+check('Busy browser dialog retains its native modal until an enabled dismissal restores the opener',()=>{
+  nativeViews.root.dataset.fDialogDismissible='true';nativeViews.root.setAttribute('aria-busy','true');nativeViews.root.emit('cancel',event());assert.equal(nativeViews.root.open,true);
+  nativeViews.root.setAttribute('aria-busy','false');nativeViews.root.emit('cancel',event());assert.equal(nativeViews.root.open,false);assert.equal(document.activeElement,nativeOpener);
+});
+check('Browser dialog disposal releases native close cancel and focus listeners without circuit callbacks',()=>{
+  api.synchronizeDialog(nativeViews.root,true);api.detachDialog(nativeViews.root);assert.equal(nativeViews.root.open,false);
+  for(const type of ['click','cancel','keydown'])assert.equal(nativeViews.root.events.get(type).length,0);
+  nativeViews.root.emit('cancel',event());assert.equal(nativeViews.root.open,false);
+});
+
+check('Keyed actions inside InlineActions hide and restore the same native dialog footer',()=>{
+  const fixture=dialogViewFixture(),group=new Node();group.children=[fixture.retry,fixture.resume];fixture.footer.children=[group];
+  group.closest=selector=>selector==='dialog'?fixture.root:group.hidden?group:null;
+  fixture.footer.querySelectorAll=()=>group.children;
+  api.setDialogView(fixture.root,'pending');assert.equal(group.hidden,false);assert.equal(fixture.footer.hidden,true);
+  api.setDialogView(fixture.root,'failed');assert.equal(fixture.footer.hidden,false);assert.equal(fixture.retry.hidden,false);assert.equal(fixture.resume.hidden,false);
+  api.setDialogView(fixture.root,'pending');assert.equal(fixture.footer.hidden,true);
+  api.setDialogView(fixture.root,'paused');assert.equal(fixture.footer.hidden,false);assert.equal(fixture.retry.hidden,true);assert.equal(fixture.resume.hidden,false);
+});
+check('Native browser close actions only dismiss the nearest owned dialog including nested icon sources',()=>{
+  const outer=new Node(),inner=new Node(),outerClose=new Node(),innerClose=new Node(),innerIcon=new Node();
+  outer.dataset={fDialogBrowserControlled:'true',fDialogDismissible:'true'};inner.dataset={...outer.dataset};outer.children=[outerClose];inner.children=[innerClose];
+  outerClose.closest=selector=>selector==='dialog'?outer:null;innerClose.closest=selector=>selector==='dialog'?inner:null;
+  innerIcon.closest=selector=>selector==='[data-f-dialog-close]'?innerClose:inner;
+  api.synchronizeDialog(outer,true);api.synchronizeDialog(inner,true);
+  let prevented=0;const click={target:innerIcon,preventDefault(){prevented++;}};
+  outer.emit('click',click);assert.equal(outer.open,true);assert.equal(inner.open,true);assert.equal(prevented,0);
+  inner.emit('click',click);assert.equal(inner.open,false);assert.equal(outer.open,true);assert.equal(prevented,1);
+  const outerIcon=new Node();outerIcon.closest=selector=>selector==='[data-f-dialog-close]'?outerClose:outer;
+  outer.emit('click',{target:outerIcon,preventDefault(){prevented++;}});assert.equal(outer.open,false);assert.equal(prevented,2);
+  api.detachDialog(inner);api.detachDialog(outer);
+});
+
 check('Validation skips disabled or invisible errors',()=>{const root=new Node(),disabled=new Node(),hidden=new Node(),invalid=new Node();disabled.disabled=true;hidden.hidden=true;root.children=[disabled,hidden,invalid];assert.equal(api.focusFirstInvalid(root),true);assert.equal(document.activeElement,invalid);assert.equal(invalid.scrolled,true);});
-const fallbackMenuTrigger=new Node(),fallbackMenu=new Node();fallbackMenu.showPopover=undefined;fallbackMenu.children=[new Node()];fallbackMenu.rect={width:190,height:80};fallbackMenuTrigger.computedTheme={'--f-danger':'#ffb4ab','color-scheme':'dark'};
-check('Older-browser menu portal retains scope theme',()=>{api.toggleMenu(fallbackMenuTrigger,fallbackMenu);assert.equal(document.body.children.includes(fallbackMenu),true);assert.equal(fallbackMenu.style.getPropertyValue('color-scheme'),'dark');api.closeMenu(fallbackMenuTrigger,fallbackMenu);assert.equal(fallbackMenu.style.getPropertyValue('--f-danger'),'');api.detachMenu(fallbackMenuTrigger,fallbackMenu);});
+const unsupportedMenuTrigger=new Node(),unsupportedMenu=new Node();unsupportedMenu.showPopover=undefined;
+check('Menu requires the native Popover API and never creates a compatibility portal',()=>{assert.throws(()=>api.toggleMenu(unsupportedMenuTrigger,unsupportedMenu),/Native Popover API/);assert.equal(document.body.children.includes(unsupportedMenu),false);api.detachMenu(unsupportedMenuTrigger,unsupportedMenu);});
 const chromeTrigger=new Node(),surfacePanel=new Node();
 const lightRoleFrame={
   '--f-primary':'#153A32','--f-accent':'#16745F','--f-canvas':'#F3F5F5','--f-surface':'#FFFFFF','--f-text':'#112924','--f-muted':'#4F645D',
@@ -325,9 +410,8 @@ check('A popup copies all palette roles but normalizes chrome hover and deep-cli
   for(const name of Object.keys(lightRoleFrame).filter(name=>name!=='--f-danger'))assert.equal(surfacePanel.style.getPropertyValue(name),'',`${name} was not restored`);
   assert.equal(surfacePanel.style.getPropertyValue('--f-row-hover'),'');assert.equal(surfacePanel.style.getPropertyValue('--f-row-active'),'');api.detachMenu(chromeTrigger,surfacePanel);
 });
-const fallbackDialog=new Node(),background=new Node(),returnButton=new Node();fallbackDialog.showModal=undefined;fallbackDialog.id='fallback';fallbackDialog.children=[new Node()];fallbackDialog.computedTheme={'--f-danger':'#ffb4ab','--f-body-size':'17px','color-scheme':'dark'};background.inert=false;document.body.children=[background];document.activeElement=returnButton;
-check('Older-browser modal copies theme and inerts background',()=>{api.synchronizeDialog(fallbackDialog,true,reference);assert.equal(fallbackDialog.open,true);assert.equal(background.inert,true);assert.equal(fallbackDialog.style.getPropertyValue('--f-danger'),'#ffb4ab');assert.equal(fallbackDialog.style.getPropertyValue('color-scheme'),'dark');});
-check('Older-browser modal close restores inert flags, focus and theme',()=>{api.synchronizeDialog(fallbackDialog,false,reference);assert.equal(background.inert,false);assert.equal(fallbackDialog.style.getPropertyValue('--f-danger'),'');assert.equal(document.activeElement,returnButton);api.detachDialog(fallbackDialog);});
+const unsupportedDialog=new Node();unsupportedDialog.showModal=undefined;
+check('Dialog requires the native modal API without constructing a compatibility backdrop',()=>{assert.throws(()=>api.synchronizeDialog(unsupportedDialog,true,reference),/Native Dialog API/);assert.equal(Boolean(unsupportedDialog.open),false);assert.equal(document.body.children.includes(unsupportedDialog),false);});
 check('Text selection keeps ordinary replacement but preserves masked carets',()=>{
   const input=new Node();input.type='text';input.value='AB-1234';input.dataset={};let selections=0;input.select=()=>selections++;
   document.activeElement=input;api.attachTextSelection(input);input.emit('focus',{});assert.equal(selections,1);
@@ -351,30 +435,175 @@ check('Mask formatting precedes bound event reads and keeps a normalized mid-tex
   document.emit('input',{target:input});assert.equal(input.value,'AB-12');assert.equal(input.selectionStart,5);assert.equal(input.selectionEnd,5);
   input.value='AB-12x3';input.selectionStart=6;document.emit('input',{target:input});assert.equal(input.value,'AB-123');assert.equal(input.selectionStart,5);
 });
-check('Progressive column dragging has the same bidirectional move and fixed-slot contract',()=>{
-  const f=progressiveFixture(),parent=new Node(),group=new Node(),spacer=new Node();
-  const keys=['name','fixed','code','detail'];
-  const options=keys.map(key=>{
-    const option=new Node(),handle=new Node(),input=new Node();handle.disabled=key==='fixed';input.dataset={fDisplayColumn:key};
-    option.key=key;option.parentElement=parent;option.closest=()=>option;
-    option.querySelector=selector=>selector==='[data-f-reorder]'?handle:selector==='[data-f-display-column]'?input:null;return option;
-  });
-  parent.children=[...options];parent.append=option=>{parent.children=parent.children.filter(child=>child!==option);parent.children.push(option);};
+function columnReorderFixture(progressive=true){
+  const f=progressiveFixture(),group=new Node(),spacer=new Node();
+  if(!progressive)f.root.dataset.fProgressive='false';
+  const keys=['name','fixed','code','detail'],display=selectionFixture('display-'+Math.random(),keys,progressive);
+  display.root.parentElement=f.root;display.root.dataset.fTableSelection='true';
+  const rootQuery=f.root.querySelector;
+  f.root.querySelector=selector=>selector==='[data-f-table-selection="true"]'?display.root:rootQuery(selector);
   group.children=[...keys.map(key=>{const col=new Node();col.dataset={fColumn:key};return col;}),spacer];
   group.querySelector=()=>spacer;group.insertBefore=(cell,before)=>{group.children=group.children.filter(child=>child!==cell);group.children.splice(group.children.indexOf(before),0,cell);};
   const rootAll=f.root.querySelectorAll;
-  f.root.querySelectorAll=selector=>selector==='.f-data-column-option'?parent.children:rootAll(selector);
+  f.root.querySelectorAll=selector=>selector==='[data-f-selection-static="true"]'?(progressive?[display.root]:[]):rootAll(selector);
   const table=f.root.querySelector('[data-f-table]'),tableQuery=table.querySelector;
   table.querySelector=selector=>selector==='colgroup'?group:tableQuery(selector);
-  dataApi.synchronize(f.root,'progressive-order');
-  const drag=(source,target)=>{f.root.emit('dragstart',{target:source});f.root.emit('drop',{...event(''),target});};
+  table.querySelectorAll=selector=>selector==='[data-f-column]'?group.children.filter(col=>col.dataset.fColumn):[];
+  return{...f,parent:display.panel,display:display.root,group,keys,options:display.options,transfer:display.transfer,controls:display};
+}
+check('Progressive display items drag through the unique controller with a real payload and fixed slots',()=>{
+  const f=columnReorderFixture(),{parent,group,keys,options}=f;dataApi.synchronize(f.root,'progressive-order');
+  const drag=(source,target)=>{
+    const dataTransfer=f.transfer(),start={...event(''),target:source,dataTransfer};
+    f.display.emit('dragstart',start);
+    if(!start.defaultPrevented){assert.equal(dataTransfer.values.get('text/plain'),source.key);assert.equal(dataTransfer.effectAllowed,'move');}
+    f.display.emit('dragover',{...event(''),target,dataTransfer});
+    f.display.emit('drop',{...event(''),target});f.display.emit('dragend',event(''));
+  };
   drag(options[0],options[3]);
   assert.deepEqual(parent.children.map(option=>option.key),['code','fixed','detail','name']);
-  assert.deepEqual(group.children.filter(col=>col.dataset).map(col=>col.dataset.fColumn),['code','fixed','detail','name']);
-  drag(options[0],options[2]);
-  assert.deepEqual(parent.children.map(option=>option.key),keys);
-  drag(options[0],options[1]);assert.deepEqual(parent.children.map(option=>option.key),keys);
-  dataApi.detach('progressive-order');
+  assert.deepEqual(group.children.filter(col=>col.dataset.fColumn).map(col=>col.dataset.fColumn),['code','fixed','detail','name']);
+  drag(options[0],options[2]);assert.deepEqual(parent.children.map(option=>option.key),keys);
+  drag(options[0],options[1]);drag(options[1],options[3]);assert.deepEqual(parent.children.map(option=>option.key),keys);
+  assert.ok(options.every(option=>option.getAttribute('data-f-dragging')===null));dataApi.detach('progressive-order');
+});
+check('Progressive table ignores a generic nested selector event without altering column state',()=>{
+  const f=columnReorderFixture();dataApi.synchronize(f.root,'progressive-isolation');
+  const unrelated=selectionFixture('unrelated-selection',['name','fixed','code','detail'],true);
+  f.root.emit('flourish-selection-change',{...event(''),target:unrelated.root,detail:{orderedKeys:['detail','code','fixed','name'],selectedKeys:['detail']}});
+  assert.deepEqual(f.group.children.filter(col=>col.dataset.fColumn).map(col=>col.dataset.fColumn),f.keys);
+  assert.ok(f.group.children.filter(col=>col.dataset.fColumn).every(col=>!col.hidden));
+  dataApi.detach('progressive-isolation');
+});
+check('Progressive standard display keyboard moves whole rows and Cards only freezes ordering',()=>{
+  const f=columnReorderFixture();dataApi.synchronize(f.root,'progressive-row-keys');
+  const key={...event('ArrowUp'),target:f.options[2]};f.display.emit('keydown',key);
+  assert.equal(key.defaultPrevented,true);assert.deepEqual(f.parent.children.map(option=>option.key),['code','fixed','name','detail']);
+  const fixed={...event('ArrowDown'),target:f.options[1]};f.display.emit('keydown',fixed);assert.equal(fixed.defaultPrevented,false);
+  f.view.dataset.fView='cards';f.root.emit('click',{...event(''),target:f.view});
+  assert.ok(f.options.every(option=>option.getAttribute('draggable')==='false'));
+  assert.equal(inputOf(f.options[2]).disabled,false,'Cards must not disable visibility selection');
+  const locked={...event(''),target:f.options[0],dataTransfer:f.transfer()};f.display.emit('dragstart',locked);assert.equal(locked.defaultPrevented,true);
+  f.view.dataset.fView='table';f.root.emit('click',{...event(''),target:f.view});
+  assert.equal(f.options[1].getAttribute('draggable'),'false');assert.ok(f.options.filter(option=>option.key!=='fixed').every(option=>option.getAttribute('draggable')==='true'));
+  dataApi.detach('progressive-row-keys');assert.ok([...f.display.events.values()].every(list=>list.length===0));
+});
+check('Interactive standard display publishes the same validated full snapshot rather than invoking a table-specific controller',()=>{
+  const f=columnReorderFixture(false),child=new Node();child.closest=()=>f.options[0];
+  selectionApi.synchronize(f.display,f.display.dataset.fSelectionInstance,f.controls.proxy);
+  const dataTransfer=f.transfer();f.display.emit('dragstart',{...event(''),target:child,dataTransfer});
+  assert.equal(dataTransfer.values.get('text/plain'),'name');assert.equal(f.options[0].getAttribute('data-f-dragging'),'');
+  f.display.emit('drop',{...event(''),target:f.options[3]});
+  assert.deepEqual(f.controls.snapshots.at(-1),{name:'ApplyAsync',args:[['code','fixed','detail','name'],['code','fixed','detail','name']]});
+  const fixed={...event(''),target:f.options[1],dataTransfer:f.transfer()};f.display.emit('dragstart',fixed);assert.equal(fixed.defaultPrevented,true);
+  const absent={...event(''),target:f.options[0]};f.display.emit('dragstart',absent);assert.equal(absent.defaultPrevented,true);
+  selectionApi.detach(f.display.dataset.fSelectionInstance);assert.ok([...f.display.events.values()].every(list=>list.length===0));
+});
+check('Display row reorder keys stop at the unique controller instead of also navigating the popup',()=>{
+  const f=selectionFixture('keyboard-popup',['one','two']);
+  selectionApi.synchronize(f.root,'keyboard-popup',f.proxy);f.root.open=true;f.root.emit('toggle',{});f.options[0].focus();
+  const down={...event('ArrowDown'),target:f.options[0]};f.root.emit('keydown',down);document.emit('keydown',down);
+  assert.equal(down.defaultPrevented,true);assert.equal(down.propagationStopped,true);assert.equal(document.activeElement,f.options[0]);
+  selectionApi.detach('keyboard-popup');assert.equal(f.root.open,false);
+});
+check('Standard display dragging cannot cross component instances or use a cancelled source',()=>{
+  const first=selectionFixture('first-display',['one','two']),second=selectionFixture('second-display',['one','two']);
+  selectionApi.synchronize(first.root,'first-display',first.proxy);selectionApi.synchronize(second.root,'second-display',second.proxy);
+  first.root.emit('dragstart',{...event(''),target:first.options[0],dataTransfer:first.transfer()});
+  second.root.emit('drop',{...event(''),target:second.options[1]});assert.equal(second.snapshots.length,0);
+  first.root.emit('keydown',{...event('Escape'),target:first.options[0]});first.root.emit('drop',{...event(''),target:first.options[1]});assert.equal(first.snapshots.length,0);
+  first.root.emit('dragstart',{...event(''),target:second.options[0],dataTransfer:first.transfer()});first.root.emit('drop',{...event(''),target:first.options[1]});assert.equal(first.snapshots.length,0);
+  selectionApi.detach('first-display');selectionApi.detach('second-display');
+});
+check('Standard display visibility rejects fixed minimum and disabled choices through real change listeners',()=>{
+  const f=selectionFixture('visibility',['fixed','one','two']);f.root.dataset.fMinimumSelected='1';
+  selectionApi.synchronize(f.root,'visibility',f.proxy);
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});assert.equal(inputOf(f.options[0]).checked,true);assert.equal(f.snapshots.length,0);
+  inputOf(f.options[1]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});assert.equal(f.snapshots.length,1);
+  inputOf(f.options[2]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[2])});assert.equal(f.snapshots.length,2);
+  assert.equal(inputOf(f.options[0]).disabled,true);
+  f.root.dataset.fSelectionDisabled='true';selectionApi.synchronize(f.root,'visibility',f.proxy);
+  inputOf(f.options[1]).checked=true;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});assert.equal(inputOf(f.options[1]).checked,false);assert.equal(f.snapshots.length,2);
+  selectionApi.detach('visibility');
+});
+check('The same display controller preserves native top-layer outside-close and Escape focus restoration',()=>{
+  const f=selectionFixture('display-close',['one']);selectionApi.synchronize(f.root,'display-close',f.proxy);
+  f.root.open=true;f.root.emit('toggle',{});assert.equal(f.panel.popoverOpen,true);
+  const outside=new Node();outside.focus();document.emit('pointerdown',{target:outside});assert.equal(f.root.open,false);assert.equal(document.activeElement,outside);
+  f.root.open=true;f.root.emit('toggle',{});document.emit('keydown',event('Escape'));assert.equal(f.root.open,false);assert.equal(document.activeElement,f.summary);
+  selectionApi.detach('display-close');
+});
+check('Minimum visible protects the final unfixed checkbox and remains recoverable',()=>{
+  const f=selectionFixture('last-visible',['one','two']);f.root.dataset.fMinimumSelected='1';
+  inputOf(f.options[1]).checked=false;selectionApi.synchronize(f.root,'last-visible',f.proxy);
+  assert.equal(inputOf(f.options[0]).disabled,true);
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});
+  assert.equal(inputOf(f.options[0]).checked,true);assert.equal(f.snapshots.length,0);
+  inputOf(f.options[1]).checked=true;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});
+  assert.equal(inputOf(f.options[0]).disabled,false);assert.equal(f.snapshots.length,1);selectionApi.detach('last-visible');
+});
+check('Removed or now-disabled rows cannot complete an earlier standard display drag',()=>{
+  const f=selectionFixture('stale-drag',['one','two']);selectionApi.synchronize(f.root,'stale-drag',f.proxy);
+  f.root.emit('dragstart',{...event(''),target:f.options[0],dataTransfer:f.transfer()});
+  f.options[0].isConnected=false;selectionApi.synchronize(f.root,'stale-drag',f.proxy);
+  f.root.emit('drop',{...event(''),target:f.options[1]});assert.equal(f.snapshots.length,0);
+  f.options[0].isConnected=true;f.root.emit('dragstart',{...event(''),target:f.options[0],dataTransfer:f.transfer()});
+  f.options[0].dataset.fOptionDisabled='true';selectionApi.synchronize(f.root,'stale-drag',f.proxy);
+  f.root.emit('drop',{...event(''),target:f.options[1]});assert.equal(f.snapshots.length,0);selectionApi.detach('stale-drag');
+});
+check('MultiSelectBox maximum selections blocks unchecked choices and remains recoverable',()=>{
+  const f=selectionFixture('selection-maximum',['one','two']);f.root.dataset.fMaximumSelections='1';
+  inputOf(f.options[1]).checked=false;selectionApi.synchronize(f.root,'selection-maximum',f.proxy);
+  assert.equal(inputOf(f.options[1]).disabled,true);assert.equal(inputOf(f.options[0]).disabled,false);
+  inputOf(f.options[1]).checked=true;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});
+  assert.equal(inputOf(f.options[1]).checked,false);assert.equal(f.snapshots.length,0);
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});
+  assert.equal(inputOf(f.options[1]).disabled,false);assert.equal(f.snapshots.length,1);selectionApi.detach('selection-maximum');
+});
+check('MultiSelectBox filtering prevents partial reorder while preserving full selection snapshots',()=>{
+  const f=selectionFixture('selection-filter',['one','two']);f.root.dataset.fFiltering='true';f.options[1].hidden=true;
+  selectionApi.synchronize(f.root,'selection-filter',f.proxy);
+  assert.ok(f.options.every(row=>row.getAttribute('draggable')==='false'));
+  const drag={...event(''),target:f.options[0],dataTransfer:f.transfer()};f.root.emit('dragstart',drag);assert.equal(drag.defaultPrevented,true);
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});
+  assert.deepEqual(f.snapshots.at(-1),{name:'ApplyAsync',args:[['one','two'],['two']]});
+  f.root.dataset.fFiltering='false';f.options[1].hidden=false;selectionApi.synchronize(f.root,'selection-filter',f.proxy);
+  assert.ok(f.options.every(row=>row.getAttribute('draggable')==='true'));selectionApi.detach('selection-filter');
+});
+check('MultiSelectBox pending creation freezes delayed selection and drag then recovers',()=>{
+  const f=selectionFixture('selection-create',['one','two']);f.root.dataset.fCreating='true';
+  selectionApi.synchronize(f.root,'selection-create',f.proxy);
+  assert.ok(f.options.every(row=>inputOf(row).disabled&&row.getAttribute('draggable')==='false'));
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});
+  assert.equal(inputOf(f.options[0]).checked,true);assert.equal(f.snapshots.length,0);
+  f.root.dataset.fCreating='false';selectionApi.synchronize(f.root,'selection-create',f.proxy);
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});
+  assert.equal(f.snapshots.length,1);selectionApi.detach('selection-create');
+});
+check('Standalone native MultiSelectBox emits selected keys once and detach removes its listeners',()=>{
+  const f=selectionFixture('selection-static',['one','two'],true),events=[];
+  f.root.addEventListener('flourish-selection-change',evt=>events.push(evt.detail));
+  selectionApi.synchronize(f.root,'selection-static');selectionApi.synchronize(f.root,'selection-static');
+  inputOf(f.options[1]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});
+  assert.deepEqual(events,[{orderedKeys:['one','two'],selectedKeys:['one']}]);
+  selectionApi.detach('selection-static');assert.equal(f.root.events.get('change').length,0);
+  assert.equal(f.root.events.get('dragstart').length,0);assert.equal(f.summary.events.get('keydown').length,0);
+});
+check('Native selection caption follows all memberships and preserves an explicit host label',()=>{
+  const f=selectionFixture('selection-caption',['First <account>','Second account'],true),events=[];
+  f.root.dataset.fSelectionEmpty='No account selected';f.root.dataset.fSelectionCount='accounts selected';
+  f.root.addEventListener('flourish-selection-change',evt=>events.push(evt.detail));
+  selectionApi.synchronize(f.root,'selection-caption');assert.equal(f.caption.textContent,'2 accounts selected');
+  f.options[1].hidden=true;f.root.dataset.fFiltering='true';selectionApi.synchronize(f.root,'selection-caption');
+  assert.equal(f.caption.textContent,'2 accounts selected','Filtered members must still contribute to the caption');
+  inputOf(f.options[1]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});
+  assert.equal(f.caption.textContent,'First <account>');
+  assert.deepEqual(events.at(-1),{orderedKeys:['First <account>','Second account'],selectedKeys:['First <account>']});
+  inputOf(f.options[0]).checked=false;f.root.emit('change',{...event(''),target:inputOf(f.options[0])});assert.equal(f.caption.textContent,'No account selected');
+  f.root.dataset.fSelectionCaption='Accounts';f.caption.textContent='Accounts';
+  inputOf(f.options[1]).checked=true;f.root.emit('change',{...event(''),target:inputOf(f.options[1])});
+  assert.equal(f.caption.textContent,'Accounts','A caller label must retain its identity while selection changes');
+  selectionApi.detach('selection-caption');
 });
 function measuredTableFixture() {
   const root=new Node(),table=new Node(),action=new Node();
@@ -407,26 +636,26 @@ check('Manual widths survive measurements, reject invalid values, reset naturall
 });
 check('Declared hidden column widths are cached without accepting absent unknown keys',()=>{
   const f=measuredTableFixture();
-  const choices=f.cols.map(col=>({dataset:{fDisplayColumn:col.dataset.fColumn}}));
-  f.root.querySelectorAll=selector=>selector==='[data-f-display-column]'?choices:[];
+  const choices=f.cols.map(col=>({dataset:{fSelectionKey:col.dataset.fColumn}}));
+  f.root.querySelectorAll=selector=>selector==='input[data-f-selection-key]'?choices:[];
   dataApi.synchronize(f.root,'hidden-width');f.cols[0].hidden=true;
   dataApi.setColumnWidth(f.root,'hidden-width','name',487);dataApi.setColumnWidth(f.root,'hidden-width','unknown',777);
   f.cols[0].hidden=false;
-  const unknown=new Node();unknown.dataset={fColumn:'unknown'};f.cols.push(unknown);choices.push({dataset:{fDisplayColumn:'unknown'}});
+  const unknown=new Node();unknown.dataset={fColumn:'unknown'};f.cols.push(unknown);choices.push({dataset:{fSelectionKey:'unknown'}});
   dataApi.synchronize(f.root,'hidden-width');
   assert.equal(f.cols[0].style.width,'487px');assert.equal(f.handles[0].getAttribute('aria-valuenow'),'487');
   assert.equal(unknown.style.width,'72px');dataApi.detach('hidden-width');
 });
 check('Cards can set and reset declared widths before returning to the table without accepting unknown keys',()=>{
-  const f=measuredTableFixture(),choices=f.cols.map(col=>({dataset:{fDisplayColumn:col.dataset.fColumn}}));
-  f.root.querySelectorAll=selector=>selector==='[data-f-display-column]'?choices:[];
+  const f=measuredTableFixture(),choices=f.cols.map(col=>({dataset:{fSelectionKey:col.dataset.fColumn}}));
+  f.root.querySelectorAll=selector=>selector==='input[data-f-selection-key]'?choices:[];
   dataApi.synchronize(f.root,'cards-width');
   const originalQuery=f.root.querySelector;f.root.querySelector=()=>null;
   dataApi.setColumnWidth(f.root,'cards-width','name',451);dataApi.setColumnWidth(f.root,'cards-width','code',511);
   dataApi.setColumnWidth(f.root,'cards-width','code',Infinity);dataApi.setColumnWidth(f.root,'cards-width','unknown',900);
   dataApi.setColumnWidth(f.root,'cards-width','name',null);
   f.root.querySelector=originalQuery;const unknown=new Node();unknown.dataset={fColumn:'unknown'};
-  f.cols.push(unknown);choices.push({dataset:{fDisplayColumn:'unknown'}});dataApi.synchronize(f.root,'cards-width');
+  f.cols.push(unknown);choices.push({dataset:{fSelectionKey:'unknown'}});dataApi.synchronize(f.root,'cards-width');
   assert.equal(f.cols[0].style.width,'320px');assert.equal(f.cols[1].style.width,'511px');
   assert.equal(f.handles[1].getAttribute('aria-valuenow'),'511');assert.equal(unknown.style.width,'72px');dataApi.detach('cards-width');
 });

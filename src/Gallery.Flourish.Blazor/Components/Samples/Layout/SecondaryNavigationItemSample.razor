@@ -1,7 +1,6 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [SampleFor("Primitives.SecondaryNavigationItem")]
+@attribute [SampleFor("Primitives.SecondaryNavigationItem", Description = "只适用于自定义导航宿主；常规应用使用 Program ConfigureNavigation，由 ApplicationShell 统一生成导航。")]
 <nav aria-label="自定义宿主演示导航"><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="展示目录" Href="/examples/display" /><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="产品横幅" Href="/examples/display/product" /></nav>
-@if (!Preview) { <p>只适用于自定义导航宿主；常规应用使用 Program ConfigureNavigation，由 ApplicationShell 统一生成导航。</p> }
 @code {
     [Parameter] public bool Preview { get; set; }
 

@@ -34,7 +34,7 @@ export function attach(container) {
     };
     const hide = () => {
         clearTimers();
-        if (state.open && typeof tooltip.hidePopover === 'function' && tooltip.matches(':popover-open')) {
+        if (state.open && tooltip.matches(':popover-open')) {
             tooltip.hidePopover();
         }
         tooltip.removeAttribute('data-open');
@@ -50,7 +50,7 @@ export function attach(container) {
         state.open = true;
         tooltip.setAttribute('data-open', '');
         // The native top layer escapes neighbouring stacking contexts and overflow clipping.
-        if (typeof tooltip.showPopover === 'function') tooltip.showPopover();
+        tooltip.showPopover();
         position();
     };
     const requestShow = (delay) => {

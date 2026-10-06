@@ -49,7 +49,7 @@ internal static class CatalogChecks
         Equal("false", typeof(Controls.AccessPanel), "Wide");
         Equal("false", typeof(Controls.AccessPanel), "Emphasized");
         Equal("false", typeof(ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface), "DocumentFlow");
-        Equal("ButtonVariant.Filled", typeof(Controls.Button), "Variant");
+        Equal("ButtonVariant.Primary", typeof(Controls.Button), "Variant");
         Equal("\"button\"", typeof(Controls.Button), "Type");
         Equal("\"\"", typeof(Controls.Button), "Icon");
         Equal(string.Empty, typeof(Controls.Button), "Href");
@@ -85,15 +85,19 @@ internal static class CatalogChecks
         Equal("\"No items.\"", typeof(Controls.ListView<>), "EmptyMessage");
         foreach (var name in new[] { "ItemKey", "RowHeaderKey", "CellTemplate", "Caption", "Class", "AdditionalAttributes" })
             Equal(string.Empty, typeof(Controls.ListView<>), name);
-        Equal(string.Empty, typeof(Primitives.ReferenceDropdown<>), "SelectedId");
-        Equal("[]", typeof(Primitives.MultiSelectDropdown<,>), "SelectedValues");
+        Equal(string.Empty, typeof(Primitives.ReferenceDropdown<>), "Value");
+        Equal("[]", typeof(Controls.MultiSelectBox), "Items");
+        Equal("0", typeof(Controls.MultiSelectBox), "MinimumSelected");
+        Equal("2147483647", typeof(Controls.MultiSelectBox), "MaximumSelections");
+        Equal("false", typeof(Controls.MultiSelectBox), "CanReorder");
+        Equal("false", typeof(Controls.MultiSelectBox), "Searchable");
         Equal("new GridInteractions()", typeof(Primitives.EditingGrid), "Interactions");
 
         foreach (var type in new[] { typeof(Controls.UniformGridButton), typeof(Controls.UniformGridItem) })
         {
             var entry = Entry(type);
             Check(entry.ApiParameters.All(parameter => parameter.Name != "Shape"), "Shape is not a child component parameter.");
-            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Filled", "Centered" })
+            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Centered" })
             {
                 var contextual = entry.ApiParameters.Single(parameter => parameter.Name == $"UniformGrid.{name}");
                 var actual = Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == name);
@@ -103,16 +107,26 @@ internal static class CatalogChecks
             }
         }
         Equal("2", typeof(Controls.UniformGridButton), "FormActions.Columns");
+        Check(Entry(typeof(Controls.UniformGrid)).ApiParameters.All(parameter => parameter.Name != "Filled")
+            && Entry(typeof(Controls.PresentationFooter)).ApiParameters.All(parameter => parameter.Name is not ("BrandName" or "Watermark")),
+            "Gallery still documents retired compatibility parameters.");
         Check(Entry(typeof(Primitives.SearchAutocomplete<>)).ApiParameters.Single(parameter => parameter.Name == "FilterItems")
             .Description.Contains("启用", StringComparison.Ordinal), "Boolean filtering must not be described as a function.");
-        var multipleSelection = Entry(typeof(Primitives.MultiSelectDropdown<,>)).ApiParameters.Single(parameter => parameter.Name == "SelectionChanged");
-        Check(multipleSelection.Description.Contains("切换单个 TValue", StringComparison.Ordinal)
-            && multipleSelection.Description.Contains("不能用于 @bind-SelectedValues", StringComparison.Ordinal),
-            "A toggle notification must not be documented as a collection binding callback.");
-        var referenceSelection = Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.Single(parameter => parameter.Name == "SelectionChanged");
+        var multipleSelection = Entry(typeof(Controls.MultiSelectBox)).ApiParameters.Single(parameter => parameter.Name == "Changed");
+        Check(multipleSelection.Type.Contains("MultiSelectChange", StringComparison.Ordinal),
+            "Generic multi-selection must publish the shared ordered selection snapshot.");
+        Check(Entry(typeof(Controls.MultiSelectBox)).ApiParameters.All(parameter => parameter.Name is not ("SelectedValues" or "SelectionChanged" or "MinimumVisible")),
+            "Retired selection or display-specific contracts remain documented.");
+        var referenceSelection = Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.Single(parameter => parameter.Name == "ValueChanged");
         Check(referenceSelection.Description.Contains("nullable TValue", StringComparison.Ordinal)
-            && referenceSelection.Description.Contains("不是 @bind-SelectedId", StringComparison.Ordinal),
-            "Reference selection must state its actual nullable-ID notification contract.");
+            && referenceSelection.Description.Contains("@bind-Value 自动更新", StringComparison.Ordinal),
+            "Reference selection must state its actual nullable Value/ValueChanged binding contract.");
+        Check(Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.All(parameter => parameter.Name is not ("SelectedId" or "SelectionChanged")),
+            "Reference dropdown still exposes the retired selection parameter family.");
+        foreach (var type in new[] { typeof(ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface), typeof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface), typeof(Primitives.ShellHeader) })
+            Check(Entry(type).ApiParameters.Any(parameter => parameter.Name == "Class")
+                && Entry(type).ApiParameters.All(parameter => parameter.Name != "CssClass"),
+                $"{type.Name} must use the single Class parameter contract.");
         Console.WriteLine($"Catalog audit: {entries.Length} components, {entries.Sum(entry => entry.ApiParameters.Count)} rows, "
             + $"{entries.Sum(entry => entry.ApiParameters.Count(parameter => parameter.DefaultValue.Length > 0))} documented defaults.");
     }

@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ServiceMenu")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ServiceMenu", Description = "虚构帮助中心。菜单提供指向实际示例段落的导航链接。")]
 @using System
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
@@ -16,7 +16,6 @@
 }
 else
 {
-    <p>虚构帮助中心。菜单提供指向实际示例段落的导航链接。</p>
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Id="@(Id + "-menu")" Label="帮助章节" Items="Links" />
     <section id="@(Id + "-start")"><h3>快速开始（虚构）</h3><p>创建工作区后，将资料加入目录。</p></section>
     <section id="@(Id + "-sharing")"><h3>共享资料（虚构）</h3><p>共享链接与访问权限由应用负责处理。</p></section>

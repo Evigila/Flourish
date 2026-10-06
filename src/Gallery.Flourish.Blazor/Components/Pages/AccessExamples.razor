@@ -6,112 +6,108 @@
 @inject IAppearanceService Appearance
 
 <PageTitle>@Title · Gallery</PageTitle>
-<ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface Emphasized="true" Banner="true" Dotted="true">
-    <AccessPanel Wide="AccountsPage" Emphasized="true" aria-labelledby="access-example-title">
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface DocumentFlow="true" ContentId="access-example-content" DocumentKey="@Navigation.Uri">
+<PresentationBand FullHeight="true" Tone="PresentationTone.Surface" Dotted="true">
+    <AccessPanel Wide="AccountsPage" aria-labelledby="access-example-title">
         <Brand>
             <LogoDisplayer ContextName="@Title"
-                TitleId="access-example-title" HeadingLevel="1" Description="@L(AccountsPage ? TextKey.Access_AccountsDescription : TextKey.Access_LoginDescription)" />
+                TitleId="access-example-title" HeadingLevel="1" Description="@(AccountsPage ? L(TextKey.Access_AccountsDescription) : null)" />
         </Brand>
         <ChildContent>
-            <AccessFormSurface>
-                <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_DemoOnly)</Notice>
-                @if (AccountsPage)
+            <p>@L(TextKey.Access_DemoOnly)</p>
+            @if (AccountsPage)
+            {
+                @if (State.Accounts.Count == 0)
                 {
-                    @if (State.Accounts.Count == 0)
-                    {
-                        <EmptyState Title="@L(TextKey.Access_Empty)">
-                            <ChildContent><p>@L(TextKey.Access_EmptyDescription)</p></ChildContent>
-                            <Actions>
-                                <Button OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
-                                <Button Variant="ButtonVariant.Outlined" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
-                            </Actions>
-                        </EmptyState>
-                    }
-                    else
-                    {
-                        <FormLayout Columns="2">
-                            @foreach (var account in State.Accounts)
-                            {
-                                <Card @key="account.Id" Title="@account.Name">
-                                    <p>@account.Email</p>
-                                    @if (account.Disabled)
-                                    {
-                                        <Notice Severity="NotificationSeverity.Warning" Announce="false">@L(TextKey.Access_DisabledAccount)</Notice>
-                                    }
-                                    <AccessActions Label="@L(TextKey.Access_AccountActions)">
-                                        <Button Disabled="@(State.Busy || account.Disabled)" OnClick="@(() => ChooseAccount(account.Id))">@L(TextKey.Access_Choose)</Button>
-                                        <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="@(() => RemoveAccount(account.Id))">@L(TextKey.Access_Remove)</Button>
-                                    </AccessActions>
-                                </Card>
-                            }
-                        </FormLayout>
-                        <AccessActions Label="@L(TextKey.Access_ListActions)">
-                            <Button Variant="ButtonVariant.Outlined" Disabled="State.Busy" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
-                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="ClearAccounts">@L(TextKey.Access_Clear)</Button>
-                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
-                            <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="SimulateStaleSelection">@L(TextKey.Access_StaleSelection)</Button>
-                        </AccessActions>
-                    }
-                    @if (State.SelectionRejected)
-                    {
-                        <Notice Severity="NotificationSeverity.Error">@L(TextKey.Access_SelectionRejected)</Notice>
-                    }
-                    @if (AccountsChanged)
-                    {
-                        <Notice Severity="NotificationSeverity.Information">@L(TextKey.Access_AccountsChanged)</Notice>
-                    }
+                    <EmptyState Title="@L(TextKey.Access_Empty)">
+                        <ChildContent><p>@L(TextKey.Access_EmptyDescription)</p></ChildContent>
+                        <Actions>
+                            <Button OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
+                            <Button Variant="ButtonVariant.Secondary" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
+                        </Actions>
+                    </EmptyState>
                 }
                 else
                 {
-                    @if (State.SelectedAccountId is not null)
+                    @foreach (var account in State.Accounts)
                     {
-                        <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_Selected)</Notice>
+                        <UniformGrid @key="account.Id" Columns="2" NarrowColumns="1" aria-label="@account.Name">
+                            <UniformGridButton Title="@account.Name" Text="@account.Email" Icon="person"
+                                               Disabled="@(State.Busy || account.Disabled)" OnClick="@(() => ChooseAccount(account.Id))"
+                                               aria-label="@($"{L(TextKey.Access_Choose)} {account.Email}")" />
+                            <UniformGridButton Variant="UniformGridVariant.Danger" Title="@L(TextKey.Access_Remove)" Text="@account.Email" Icon="delete"
+                                               Disabled="State.Busy" OnClick="@(() => RemoveAccount(account.Id))"
+                                               aria-label="@($"{L(TextKey.Access_Remove)} {account.Email}")" />
+                        </UniformGrid>
+                        @if (account.Disabled)
+                        {
+                            <Notice Severity="NotificationSeverity.Warning" Announce="false">@account.Email · @L(TextKey.Access_DisabledAccount)</Notice>
+                        }
                     }
-                    @if (!Interactive)
-                    {
-                        <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_InteractiveRequired)</Notice>
-                    }
-                    <form method="post" novalidate @onsubmit="SubmitAsync" @onsubmit:preventDefault aria-busy="@State.Busy.ToString().ToLowerInvariant()">
-                        <AccessFormSurface>
-                            <ChildContent>
-                                <Field Label="@L(TextKey.Display_Email)" Id="access-example-email" Required="true" Error="@EmailError">
-                                    <StandaloneTextBox Id="access-example-email" Type="email" @bind-Value="State.Email" Disabled="LoginLocked" MaxLength="254" name="demo-email" autocomplete="off" />
-                                </Field>
-                                <Field Label="@L(TextKey.Display_Password)" Id="access-example-password" Required="true" Error="@PasswordError">
-                                    <StandaloneTextBox Id="access-example-password" Type="password" @bind-Value="State.Password" Disabled="LoginLocked" MaxLength="120" name="demo-password" autocomplete="off" />
-                                </Field>
-                                <StandaloneCheckBox Label="@L(TextKey.Access_Remember)" @bind-Value="State.RememberEmail" Disabled="LoginLocked" />
-                                <Field Label="@L(TextKey.Access_Outcome)" Id="access-example-outcome">
-                                    <StandaloneSelectBox TValue="AccessExampleOutcome" Id="access-example-outcome" @bind-Value="State.OutcomeChoice" Options="OutcomeOptions" Disabled="LoginLocked" />
-                                </Field>
-                            </ChildContent>
-                            <Actions>
-                                <SplitButton Text="@L(TextKey.Display_Submit)" Type="submit" FullWidth="true" Disabled="@(!Interactive)"
-                                             Busy="State.Busy" BusyLabel="@L(TextKey.Access_Busy)" SecondaryLabel="@L(TextKey.Access_SubmitMenu)">
-                                    <MenuContent>
-                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RecoveryDemo)</Button>
-                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RegistrationDemo)</Button>
-                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access">@L(TextKey.Display_Back)</Button>
-                                        <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" OnClick="ResetLogin">@L(TextKey.Access_Reset)</Button>
-                                    </MenuContent>
-                                </SplitButton>
-                            </Actions>
-                        </AccessFormSurface>
-                    </form>
-                    @if (State.Result is { } result)
-                    {
-                        <Notice Severity="@(result == AccessExampleOutcome.Accepted ? NotificationSeverity.Success : NotificationSeverity.Error)">
-                            @L(result switch { AccessExampleOutcome.Accepted => TextKey.Access_Accepted, AccessExampleOutcome.Rejected => TextKey.Access_Rejected, _ => TextKey.Access_Unavailable })
-                        </Notice>
-                    }
-                }
-                <Section Title="@L(TextKey.Access_Appearance)">
-                    <AccessActions Label="@L(TextKey.Access_Appearance)">
-                        <LanguagePicker />
-                        <Button Variant="ButtonVariant.Quiet" OnClick="ToggleTheme">@L(TextKey.Nav_Theme)</Button>
+                    <AccessActions Label="@L(TextKey.Access_ListActions)">
+                        <Button Variant="ButtonVariant.Secondary" Disabled="State.Busy" OnClick="OtherAccount">@L(TextKey.Access_OtherAccount)</Button>
+                        <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="ClearAccounts">@L(TextKey.Access_Clear)</Button>
+                        <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="RestoreAccounts">@L(TextKey.Access_Restore)</Button>
+                        <Button Variant="ButtonVariant.Quiet" Disabled="State.Busy" OnClick="SimulateStaleSelection">@L(TextKey.Access_StaleSelection)</Button>
                     </AccessActions>
-                </Section>
-            </AccessFormSurface>
+                }
+                @if (State.SelectionRejected)
+                {
+                    <Notice Severity="NotificationSeverity.Error">@L(TextKey.Access_SelectionRejected)</Notice>
+                }
+                @if (AccountsChanged)
+                {
+                    <Notice Severity="NotificationSeverity.Information">@L(TextKey.Access_AccountsChanged)</Notice>
+                }
+            }
+            else
+            {
+                @if (State.SelectedAccountId is not null)
+                {
+                    <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_Selected)</Notice>
+                }
+                @if (!Interactive)
+                {
+                    <Notice Severity="NotificationSeverity.Information" Announce="false">@L(TextKey.Access_InteractiveRequired)</Notice>
+                }
+                <form method="post" novalidate @onsubmit="SubmitAsync" @onsubmit:preventDefault aria-busy="@State.Busy.ToString().ToLowerInvariant()">
+                    <AccessFormSurface>
+                        <ChildContent>
+                            <Field Label="@L(TextKey.Display_Email)" Id="access-example-email" Required="true" Error="@EmailError">
+                                <StandaloneTextBox Id="access-example-email" Type="email" @bind-Value="State.Email" Disabled="LoginLocked" MaxLength="254" name="demo-email" autocomplete="off" />
+                            </Field>
+                            <Field Label="@L(TextKey.Display_Password)" Id="access-example-password" Required="true" Error="@PasswordError">
+                                <StandaloneTextBox Id="access-example-password" Type="password" @bind-Value="State.Password" Disabled="LoginLocked" MaxLength="120" name="demo-password" autocomplete="off" />
+                            </Field>
+                            <StandaloneCheckBox Label="@L(TextKey.Access_Remember)" @bind-Value="State.RememberEmail" Disabled="LoginLocked" />
+                            <Field Label="@L(TextKey.Access_Outcome)" Id="access-example-outcome">
+                                <StandaloneSelectBox TValue="AccessExampleOutcome" Id="access-example-outcome" @bind-Value="State.OutcomeChoice" Options="OutcomeOptions" Disabled="LoginLocked" />
+                            </Field>
+                        </ChildContent>
+                        <Actions>
+                            <SplitButton Text="@L(TextKey.Access_LoginSubmit)" Type="submit" FullWidth="true" Disabled="@(!Interactive)"
+                                         Busy="State.Busy" BusyLabel="@L(TextKey.Access_Busy)" SecondaryLabel="@L(TextKey.Access_SubmitMenu)">
+                                <MenuContent>
+                                    <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RecoveryDemo)</Button>
+                                    <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access#display-access-title">@L(TextKey.Access_RegistrationDemo)</Button>
+                                    <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" Href="/examples/display/access">@L(TextKey.Display_Back)</Button>
+                                    <Button Variant="ButtonVariant.Quiet" Disabled="LoginLocked" OnClick="ResetLogin">@L(TextKey.Access_Reset)</Button>
+                                </MenuContent>
+                            </SplitButton>
+                        </Actions>
+                    </AccessFormSurface>
+                </form>
+                @if (State.Result is { } result)
+                {
+                    <Notice Severity="@(result == AccessExampleOutcome.Accepted ? NotificationSeverity.Success : NotificationSeverity.Error)">
+                        @L(result switch { AccessExampleOutcome.Accepted => TextKey.Access_Accepted, AccessExampleOutcome.Rejected => TextKey.Access_Rejected, _ => TextKey.Access_Unavailable })
+                    </Notice>
+                }
+            }
+            <AccessActions Label="@L(TextKey.Access_Appearance)">
+                <LanguagePicker MaxWidth="16rem" />
+                <Button Variant="ButtonVariant.Quiet" OnClick="ToggleTheme">@L(TextKey.Nav_Theme)</Button>
+            </AccessActions>
         </ChildContent>
         <Actions>
             @if (!AccountsPage)
@@ -124,7 +120,8 @@
             }
         </Actions>
     </AccessPanel>
-</ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessSurface>
+</PresentationBand>
+</ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
 
 @code {
     private readonly AccessExampleState State = new();
@@ -132,7 +129,7 @@
     private bool AccountsChanged, Disposed, Interactive;
     private bool LoginLocked => State.Busy || !Interactive;
     private bool AccountsPage => new Uri(Navigation.Uri).AbsolutePath.TrimEnd('/').EndsWith("/accounts", StringComparison.OrdinalIgnoreCase);
-    private string Title => L(AccountsPage ? TextKey.Nav_DisplayAccounts : TextKey.Nav_DisplayLogin);
+    private string Title => L(AccountsPage ? TextKey.Nav_DisplayAccounts : TextKey.Access_LoginTitle);
     private string L(string key) => Localization.Parse(key);
     private string? EmailError => State.EmailError switch
     {

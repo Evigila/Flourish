@@ -21,13 +21,13 @@
         </div>
     </PrimaryNavigation>
     <SecondaryNavigation>
-        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 0 ? ButtonVariant.Filled : ButtonVariant.Underline)" OnClick="ShowDocuments" aria-current="@(Page == 0 ? "page" : null)">全部资料</ArkheideSystem.Flourish.Blazor.Components.Button>
-        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 1 ? ButtonVariant.Filled : ButtonVariant.Underline)" OnClick="ShowArchived" aria-current="@(Page == 1 ? "page" : null)">已归档</ArkheideSystem.Flourish.Blazor.Components.Button>
+        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 0 ? ButtonVariant.Primary : ButtonVariant.Underline)" OnClick="ShowDocuments" aria-current="@(Page == 0 ? "page" : null)">全部资料</ArkheideSystem.Flourish.Blazor.Components.Button>
+        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 1 ? ButtonVariant.Primary : ButtonVariant.Underline)" OnClick="ShowArchived" aria-current="@(Page == 1 ? "page" : null)">已归档</ArkheideSystem.Flourish.Blazor.Components.Button>
     </SecondaryNavigation>
     <ChildContent>
         @if (!Preview)
         {
-            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="@(Page == 0 ? "全部资料（虚构）" : "已归档（虚构）")" />
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Page == 0 ? "全部资料（虚构）" : "已归档（虚构）")" />
                 @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>资料 @row</h2><p>这是虚构记录。滚动只发生在示例正文区域，顶部栏保持可见。</p></section> }
             </div>
         }

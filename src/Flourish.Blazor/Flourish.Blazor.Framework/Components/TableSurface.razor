@@ -1,9 +1,0 @@
-@namespace ArkheideSystem.Flourish.Blazor.Components
-<div class="f-table-surface">
-    <table @attributes="AdditionalAttributes" class="f-static-table @Class">@ChildContent</table>
-</div>
-@code {
-    [Parameter] public string? Class { get; set; }
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-}

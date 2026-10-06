@@ -5,7 +5,7 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NavigationGuard")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NavigationGuard", Description = "此行为组件不生成可见内容。空白草稿不会阻止离开。\n虚构的本地草稿。明确启用后，此组件会保护当前 Gallery 页面，包括刷新和离开；保存或停用后解除。")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
@@ -15,11 +15,9 @@
 @if (Preview)
 {
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.NavigationGuard HasUnsavedChanges="false" />
-    <p>此行为组件不生成可见内容。空白草稿不会阻止离开。</p>
 }
 else
 {
-    <p>虚构的本地草稿。明确启用后，此组件会保护当前 Gallery 页面，包括刷新和离开；保存或停用后解除。</p>
     <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="启用当前页面的离开确认" @bind-Value="Enabled" />
     @if (Enabled)
     {

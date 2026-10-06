@@ -49,13 +49,11 @@ export function attach(root, content) {
         root.style.setProperty('--f-shell-primary-size', (primary?.getBoundingClientRect().width ?? 0) + 'px');
     };
     measureLayout();
-    if (typeof ResizeObserver === 'function') {
-        const observer = new ResizeObserver(measureLayout);
-        for (const element of [root.querySelector('.f-titlebar'),root.querySelector('.f-primary-navigation')]) {
-            if (element) observer.observe(element);
-        }
-        removers.push(() => observer.disconnect());
+    const observer = new ResizeObserver(measureLayout);
+    for (const element of [root.querySelector('.f-titlebar'),root.querySelector('.f-primary-navigation')]) {
+        if (element) observer.observe(element);
     }
+    removers.push(() => observer.disconnect());
     const updateHeading = () => {
         state.frame = 0;
         updateCompactHeading(root, content);
@@ -76,7 +74,7 @@ export function attach(root, content) {
         };
         const hide = () => {
             clearTimeout(timer); clearTimeout(leaveTimer);
-            if (typeof tip.hidePopover === 'function' && tip.matches(':popover-open')) tip.hidePopover();
+            if (tip.matches(':popover-open')) tip.hidePopover();
             tip.removeAttribute('data-open');
             if (state.activeTip?.tip === tip) state.activeTip = null;
         };
@@ -84,7 +82,7 @@ export function attach(root, content) {
             if (dismissed || (!hovered && !focused && !overTip)) return;
             state.activeTip?.hide();
             tip.setAttribute('data-open','');
-            if (typeof tip.showPopover === 'function') tip.showPopover();
+            tip.showPopover();
             state.activeTip = { tip, hide, position };
             position();
         };

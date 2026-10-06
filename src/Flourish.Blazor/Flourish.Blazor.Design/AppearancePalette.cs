@@ -44,6 +44,6 @@ public sealed record AppearancePalette(string Primary, string Accent, string Dar
         return .2126 * Channel(1) + .7152 * Channel(3) + .0722 * Channel(5);
     }
 
-    internal string CssVariables =>
+    public string CssVariables =>
         $"--f-primary-light:{Primary};--f-accent-light:{Accent};--f-primary-dark:{DarkPrimary};--f-accent-dark:{DarkAccent}";
 }

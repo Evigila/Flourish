@@ -37,19 +37,6 @@
                     @if (_view == TableView.Cards) { <span>@EffectiveText.Cards</span> }
                 </button>
             </div>
-            @if ((ShowSortControls || Progressive) && Columns.Any(column => column.Sortable))
-            {
-                <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Sort_Label", "Sorting"))">
-                    <ChildContent>
-                        <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-reset OnClick="_ => SetSortAsync(null)">@EffectiveText.SortDefault</Button>
-                        @foreach (var column in Columns.Where(column => column.Sortable))
-                        {
-                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" data-f-sort-direction="descending" OnClick="_ => SetSortAsync(column, TableSortDirection.Descending)">@column.Header: @EffectiveText.SortDescending</Button>
-                            <Button Class="f-menu-item f-dropdown-item" Variant="ButtonVariant.Quiet" role="menuitem" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" data-f-sort-direction="ascending" OnClick="_ => SetSortAsync(column, TableSortDirection.Ascending)">@column.Header: @EffectiveText.SortAscending</Button>
-                        }
-                    </ChildContent>
-                </ActionMenu>
-            }
             @if (BulkEditRequested.HasDelegate || !string.IsNullOrWhiteSpace(SpreadsheetEditHref))
             {
                 <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Table_AdvancedEdit", "Advanced editing"))">
@@ -65,25 +52,9 @@
                     </ChildContent>
                 </ActionMenu>
             }
-            <details class="f-data-display">
-                <summary class="f-dropdown-trigger" aria-controls="@($"{_instanceId}-display")">@EffectiveText.Display <ExpansionIndicator /></summary>
-                <div id="@($"{_instanceId}-display")" class="f-data-display-options f-dropdown-panel f-menu-panel" popover="manual">
-                    @foreach (var column in OrderedColumns)
-                    {
-                        <div class="f-data-column-option" draggable="@(CanReorderColumn(column) ? "true" : "false")" @ondragstart="() => _draggingColumn = column.Key" @ondragend="() => _draggingColumn = null" @ondragover:preventDefault @ondrop="() => DropColumn(column.Key)">
-                        <label class="f-dropdown-item @(!_hidden.Contains(column.Key) ? "is-selected" : null)">
-                            <input type="checkbox" checked="@(!_hidden.Contains(column.Key))"
-                                   data-f-display-column="@column.Key"
-                                   data-f-fixed="@(!column.CanHide ? "true" : null)"
-                                   disabled="@(BulkEditing || EditingBusy || !column.CanHide || (!_hidden.Contains(column.Key) && _visibleColumns.Count == 1))"
-                                   @onchange="() => ToggleColumn(column.Key)" />
-                            <span>@column.Header</span>
-                        </label>
-                        <Button Variant="ButtonVariant.Quiet" Class="f-data-reorder" Disabled="@(!CanReorderColumn(column))" data-f-reorder aria-label="@Texts.Get(new TextReference("Flourish", "Table_Reorder", "Reorder {0}"), column.Header)" @onkeydown="(KeyboardEventArgs args) => ReorderColumnWithKeyboard(column, args)"><span aria-hidden="true">↕</span></Button>
-                        </div>
-                    }
-                </div>
-            </details>
+            <MultiSelectBox data-f-table-selection="true" Items="DisplayItems" Label="@EffectiveText.Display" MinimumSelected="@(Columns.Count > 0 ? 1 : 0)"
+                            Disabled="@(BulkEditing || EditingBusy)" CanReorder="@(_view == TableView.Table)" Static="@Progressive"
+                            Changed="ApplyDisplayOptions" />
         </div>
         }
     </div>
@@ -103,7 +74,7 @@
     else if (_rows.Count > 0 && (_view == TableView.Table || Purpose != TablePurpose.Registry || BulkEditing || Progressive))
     {
         <div class="f-data-scroll" tabindex="0" role="region" aria-label="@RecordsText">
-            <table @ref="_table" class="f-data-table" data-f-table>
+            <table class="f-data-table" data-f-table>
                 <caption class="f-data-sr-only">@RecordsText</caption>
                 <colgroup>
                     @if (BulkEditing) { <col class="f-data-selection-column" /> }
@@ -244,7 +215,6 @@
     [Parameter] public bool AllEditSelected { get; set; }
     [Parameter] public EventCallback BulkEditRequested { get; set; }
     [Parameter] public string? SpreadsheetEditHref { get; set; }
-    [Parameter] public bool ShowSortControls { get; set; }
     [Parameter] public int PageSize { get; set; } = 10;
     [Parameter] public EventCallback<int> PageSizeChanged { get; set; }
     [Parameter] public TableView View { get; set; } = TableView.Table;
@@ -306,7 +276,6 @@
     private readonly HashSet<string> _hidden = new(StringComparer.Ordinal);
     private readonly HashSet<string> _knownColumns = new(StringComparer.Ordinal);
     private readonly List<string> _columnOrder = [];
-    private string? _draggingColumn;
     private object? _incomingResetKey;
     private readonly Dictionary<string, double> _manualWidths = new(StringComparer.Ordinal);
     private readonly Dictionary<string, double?> _widthUpdates = new(StringComparer.Ordinal);
@@ -325,7 +294,6 @@
     private bool _initialized;
     private bool _hasActions;
     private int _page = 1;
-    private ElementReference _table;
     private ElementReference _root;
     private readonly string _instanceId = Guid.NewGuid().ToString("N");
     private IJSObjectReference? _module;
@@ -336,35 +304,17 @@
     private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)_pageSize));
     private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;
     private int LastItem => (int)Math.Min((long)_page * _pageSize, _processed.Count);
-    private string SearchLabel => Columns.FirstOrDefault(column => column.Key == _searchColumn)?.Header ?? EffectiveText.SearchContent;
     private bool RetainsEditingRows => Purpose is TablePurpose.Pool or TablePurpose.Worklist;
     private IReadOnlyList<TableColumn<TItem>> OrderedColumns => _columnOrder.Select(key => Columns.First(column => column.Key == key)).ToArray();
-    private bool CanReorderColumn(TableColumn<TItem> column) => Purpose == TablePurpose.Registry && _view == TableView.Table
-        && !BulkEditing && !EditingBusy && (column.CanReorder ?? column.CanHide);
-    private void MoveColumn(string sourceKey, string targetKey)
+    private IReadOnlyList<MultiSelectOption> DisplayItems => OrderedColumns.Select(column => new MultiSelectOption(
+        column.Key, column.Header, !_hidden.Contains(column.Key), column.CanHide, column.CanReorder ?? column.CanHide)).ToArray();
+    private void ApplyDisplayOptions(MultiSelectChange change)
     {
-        var moveable = OrderedColumns.Where(CanReorderColumn).Select(column => column.Key).ToList();
-        if (!moveable.Contains(sourceKey) || !moveable.Contains(targetKey)) return;
-        var targetIndex = moveable.IndexOf(targetKey);
-        moveable.Remove(sourceKey); moveable.Insert(targetIndex, sourceKey);
-        var slots = _columnOrder.Select((key, index) => (key, index)).Where(entry => moveable.Contains(entry.key)).Select(entry => entry.index).ToArray();
-        for (var index = 0; index < slots.Length; index++) _columnOrder[slots[index]] = moveable[index];
+        if (BulkEditing || EditingBusy || Purpose != TablePurpose.Registry) return;
+        _columnOrder.Clear(); _columnOrder.AddRange(change.OrderedKeys);
+        _hidden.Clear();
+        foreach (var column in Columns) if (!change.SelectedKeys.Contains(column.Key)) _hidden.Add(column.Key);
         Rebuild();
-    }
-    private void DropColumn(string targetKey)
-    {
-        if (_draggingColumn is null) return;
-        MoveColumn(_draggingColumn, targetKey); _draggingColumn = null;
-    }
-    private void ReorderColumnWithKeyboard(TableColumn<TItem> column, KeyboardEventArgs args)
-    {
-        if (!CanReorderColumn(column) || args.Key is not ("ArrowUp" or "ArrowDown")) return;
-        var moveable = OrderedColumns.Where(CanReorderColumn).ToArray();
-        var index = Array.FindIndex(moveable, candidate => candidate.Key == column.Key);
-        var destination = index + (args.Key == "ArrowUp" ? -1 : 1);
-        if (destination < 0 || destination >= moveable.Length) return;
-        var first = _columnOrder.IndexOf(column.Key); var second = _columnOrder.IndexOf(moveable[destination].Key);
-        (_columnOrder[first], _columnOrder[second]) = (_columnOrder[second], _columnOrder[first]); Rebuild();
     }
     private Task ToggleSelectionAsync(TItem item) => EditingBusy ? Task.CompletedTask : ToggleEditSelection.InvokeAsync(item);
     private Task ToggleAllSelectionAsync() => EditingBusy ? Task.CompletedTask : ToggleAllEditSelection.InvokeAsync();
@@ -373,20 +323,6 @@
         if (BulkEditing || EditingBusy) return;
         await ChangeView(TableView.Table);
         await BulkEditRequested.InvokeAsync();
-    }
-    private IReadOnlyList<MenuAction> SortActions => new[]
-        { new MenuAction(EffectiveText.SortDefault, () => SetSortAsync(null), BulkEditing || EditingBusy) }
-        .Concat(Columns.Where(column => column.Sortable).SelectMany(column => new[]
-        {
-            new MenuAction($"{column.Header}: {EffectiveText.SortDescending}", () => SetSortAsync(column, TableSortDirection.Descending), EditingBusy || BulkEditing),
-            new MenuAction($"{column.Header}: {EffectiveText.SortAscending}", () => SetSortAsync(column, TableSortDirection.Ascending), EditingBusy || BulkEditing)
-        })).ToArray();
-    private Task SetSortAsync(TableColumn<TItem>? column, TableSortDirection direction = TableSortDirection.Default)
-    {
-        if (BulkEditing || EditingBusy || Purpose != TablePurpose.Registry) return Task.CompletedTask;
-        _sortKey = column?.Key; _sortDirection = column is null ? TableSortDirection.Default : direction;
-        SaveSortPreference(); _page = 1; Rebuild();
-        return Task.CompletedTask;
     }
     private RenderFragment CellContent(TItem item, TableColumn<TItem> column, string text) => column.UsesTemplate && CellTemplate is not null
         ? CellTemplate(new TableCellContext<TItem>(item, column, text)) : builder => builder.AddContent(0, Shown(text));
@@ -550,15 +486,6 @@
             _sortKey, _sortDirection == TableSortDirection.Descending));
     }
 
-    private async Task ChangeQuery(ChangeEventArgs args)
-    {
-        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
-        var value = args.Value?.ToString() ?? string.Empty;
-        if (value.Length > SearchMaximumLength) value = value[..SearchMaximumLength];
-        _query = value; _page = 1;
-        if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(_searchColumn, value));
-        else Rebuild();
-    }
     private async Task ChangeSearchAsync(TableSearchRequest request)
     {
         if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
@@ -570,22 +497,6 @@
         _searchColumn = key; _query = query; _page = 1;
         if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(key, query));
         else Rebuild();
-    }
-    private async Task ChangeSearchColumn(ChangeEventArgs args)
-    {
-        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
-        var key = args.Value?.ToString() ?? string.Empty;
-        if (!string.IsNullOrEmpty(key) && Columns.All(column => column.Key != key || !column.Searchable)) return;
-        _searchColumn = key; _page = 1;
-        if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(key, _query));
-        else Rebuild();
-    }
-    private void ToggleColumn(string key)
-    {
-        var column = Columns.FirstOrDefault(candidate => candidate.Key == key);
-        if (BulkEditing || EditingBusy || Purpose != TablePurpose.Registry || column is null || !column.CanHide
-            || !_hidden.Contains(key) && _visibleColumns.Count <= 1) return;
-        if (!_hidden.Add(key)) _hidden.Remove(key); Rebuild();
     }
     private async Task ChangeView(TableView view) { if (EditingBusy || BulkEditing || !await CanLeavePageAsync()) return; _view = view; Rebuild(); await ViewChanged.InvokeAsync(view); }
     private void SortColumn(TableColumn<TItem> column)

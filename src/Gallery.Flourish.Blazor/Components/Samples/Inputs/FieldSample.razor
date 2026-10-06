@@ -21,7 +21,7 @@
 }
 else
 {
-    <EditForm Model="Model" FormName="Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
+    <EditForm Model="Model" FormName="@Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
         <DataAnnotationsValidator />
         <FormLayout Columns="1">
             <Field Label="邮箱" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)">

@@ -15,7 +15,6 @@ export function synchronize(root, linkScopeId, autoRotate = true, interval = 220
     // Duplicate or absent target IDs cannot be enhanced safely; leave every offer readable.
     if (!cards.length || cards.some(card => !card.id) || new Set(cards.map(card => card.id)).size !== cards.length) return;
     const window = document.defaultView;
-    if (!window?.matchMedia) return;
     const media = window.matchMedia(mediaQuery);
     const interactionRoot = root.closest?.(".f-offer-presentation") ?? root;
     const removers = [];
@@ -82,18 +81,18 @@ export function synchronize(root, linkScopeId, autoRotate = true, interval = 220
         }
     }
     listen(media, "change", mode);
-    const observer = window.MutationObserver ? new window.MutationObserver(() => {
+    const observer = new window.MutationObserver(() => {
         if (!root.isConnected) dispose(root);
         else synchronize(root, linkScopeId, autoRotate, interval);
-    }) : null;
-    observer?.observe(document.documentElement, { childList: true, subtree: true });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
     stages.set(root, {
         same: (next, nextLinks, scopeId, rotate, duration) => scopeId === linkScopeId && rotate === autoRotate && duration === interval && next.length === cards.length && next.every((card, i) => card === cards[i]) && nextLinks.length === links.length && nextLinks.every((link, i) => link === links[i]),
         activeId: () => cards[index]?.id,
         dispose: () => {
             disposed = true;
             stop();
-            observer?.disconnect();
+            observer.disconnect();
             removers.forEach(remove => remove());
             root.removeAttribute("data-offer-ready");
             root.style.removeProperty("--f-offer-columns");

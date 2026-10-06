@@ -1,0 +1,7 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<div class="f-inline-actions">@ChildContent</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

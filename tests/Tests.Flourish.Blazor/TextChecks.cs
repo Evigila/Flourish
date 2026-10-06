@@ -91,7 +91,7 @@ internal static class TextChecks
                 "Footer guessed a translation token or replaced independently supplied copyright.");
         }));
 
-        tests.Add(("presentation footer live project names are scope isolated unsubscribe and preserve explicit overrides", async () =>
+        tests.Add(("presentation footer live project names are scope isolated unsubscribe and preserve manual copyright", async () =>
         {
             using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName(Ref("Project"))));
             using var first = provider.CreateScope();
@@ -105,16 +105,15 @@ internal static class TextChecks
             };
             var outputA = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(automaticParameters)));
             var outputB = await b.Dispatcher.InvokeAsync(() => b.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(automaticParameters)));
-            var explicitOutput = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(new Dictionary<string, object?>
+            var manualOutput = await a.Dispatcher.InvokeAsync(() => a.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(new Dictionary<string, object?>
             {
-                [nameof(PresentationFooter.BrandName)] = "Explicit <brand>",
-                [nameof(PresentationFooter.Watermark)] = "Explicit <watermark>",
-                [nameof(PresentationFooter.Copyright)] = "Explicit host copyright"
+                [nameof(PresentationFooter.Copyright)] = "Manual <copyright> & owner"
             })));
-            var explicitBefore = await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString);
-            Require(explicitBefore.Contains("<strong>Explicit &lt;brand&gt;</strong>", StringComparison.Ordinal)
-                && explicitBefore.Contains("aria-hidden=\"true\">Explicit &lt;watermark&gt;</span>", StringComparison.Ordinal),
-                "Explicit footer identities were replaced or inserted without encoding.");
+            var manualBefore = await a.Dispatcher.InvokeAsync(manualOutput.ToHtmlString);
+            Require(manualBefore.Contains("<strong>en-US:App/Project</strong>", StringComparison.Ordinal)
+                && manualBefore.Contains("aria-hidden=\"true\">en-US:App/Project</span>", StringComparison.Ordinal)
+                && manualBefore.Contains("Manual &lt;copyright&gt; &amp; owner", StringComparison.Ordinal),
+                "Configured footer identity or manually supplied copyright was not encoded.");
             var textsA = (TrackingTextProvider)first.ServiceProvider.GetRequiredService<ITextProvider>();
             var textsB = (TrackingTextProvider)second.ServiceProvider.GetRequiredService<ITextProvider>();
             Require(textsA.Subscribers == 2 && textsB.Subscribers == 1, "Each footer must subscribe once to its own scoped text provider.");
@@ -129,8 +128,11 @@ internal static class TextChecks
                 "Footer title and watermark did not update together on a scoped language change.");
             Require(changed.Contains("id=\"project-footer\"", StringComparison.Ordinal)
                 && changed.Contains("Host copyright", StringComparison.Ordinal), "Language refresh changed native footer identity or manual copyright.");
-            Require(await a.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString) == explicitBefore,
-                "Language refresh overwrote explicit compatibility brand, watermark or copyright.");
+            var manualChanged = await a.Dispatcher.InvokeAsync(manualOutput.ToHtmlString);
+            Require(manualChanged.Contains("<strong>zh-CN:App/Project</strong>", StringComparison.Ordinal)
+                && manualChanged.Contains("aria-hidden=\"true\">zh-CN:App/Project</span>", StringComparison.Ordinal)
+                && manualChanged.Contains("Manual &lt;copyright&gt; &amp; owner", StringComparison.Ordinal),
+                "Language refresh failed to update the shared identity or replaced manual copyright.");
             Require(textsB.Culture == "en-US" && (await b.Dispatcher.InvokeAsync(outputB.ToHtmlString)).Contains("<strong>en-US:App/Project</strong>", StringComparison.Ordinal),
                 "A footer language change leaked to another user scope.");
             await Task.Run(() => textsA.Select("pt-BR"));
@@ -275,7 +277,7 @@ internal static class TextChecks
             using var scope = provider.CreateScope();
             var text = (TrackingTextProvider)scope.ServiceProvider.GetRequiredService<ITextProvider>();
             await using var renderer = Renderer(scope);
-            var dialog = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<Dialog>(ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(Dialog.Title)] = "Title" })));
+            var dialog = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<Dialog>(ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(Dialog.Title)] = "Title", [nameof(Dialog.IsOpen)] = true })));
             var board = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<DisplayBoard>(ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(DisplayBoard.CopyText)] = "<script>sample</script>" })));
             var controlSubscribers = text.Subscribers;
             Require(controlSubscribers >= 2, "Controls and nested buttons did not subscribe to their local provider.");
@@ -285,7 +287,7 @@ internal static class TextChecks
             Require(text.Subscribers == controlSubscribers, "Nested controls added duplicate subscriptions on text refresh.");
             await renderer.DisposeAsync();
             Require(text.Subscribers == 0, "Async-disposed controls retained text subscriptions.");
-            var explicitDialog = await Render<Dialog>(scope, new() { [nameof(Dialog.Title)] = "Title", [nameof(Dialog.CloseLabel)] = "Close" });
+            var explicitDialog = await Render<Dialog>(scope, new() { [nameof(Dialog.Title)] = "Title", [nameof(Dialog.CloseLabel)] = "Close", [nameof(Dialog.IsOpen)] = true });
             Require(explicitDialog.Contains("aria-label=\"Close\"") && !explicitDialog.Contains("Flourish/Dialog_Close"), "Explicit Close was treated as omitted.");
         }));
 

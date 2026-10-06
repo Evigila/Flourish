@@ -68,13 +68,14 @@ else if (TopicKey is "product" or "pricing" or "access")
                     @for (var index = 0; index < Offers.Count; index++)
                     {
                         <OfferCard Id="@($"display-offer-{index}")" Title="@Offers[index]" Description="@Localization.Parse(TextKey.Display_OfferDescription)">
-                            <Button Variant="ButtonVariant.Outlined" Disabled="true">@Price(index) · @Localization.Parse(TextKey.Display_DemoOnly)</Button>
+                            <Button Variant="ButtonVariant.Secondary" Disabled="true">@Price(index) · @Localization.Parse(TextKey.Display_DemoOnly)</Button>
                         </OfferCard>
                     }
                 </OfferStage>
             </PresentationBand>
             <PresentationBand Tone="PresentationTone.Canvas" aria-label="@Localization.Parse(TextKey.Display_CustomLicense)">
-                <Card Prominent="true" Text="@Localization.Parse(TextKey.Display_CustomLicense)">
+                <Card Prominent="true" Stacked="true" Title="@Localization.Parse(TextKey.Display_CustomLicense)"
+                      Text="@Localization.Parse(TextKey.Display_CustomSupport)">
                     <Actions><Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Display_RequestCustomLicense)</Button></Actions>
                 </Card>
             </PresentationBand>
@@ -82,23 +83,23 @@ else if (TopicKey is "product" or "pricing" or "access")
         else
         {
             <PresentationBand Tone="PresentationTone.Surface">
-                <AccessPanel Emphasized="true">
+                <AccessPanel>
                     <Brand>
                         <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="Lumen" ContextName="@Localization.Parse(TextKey.Nav_DisplayAccess)"
                             TitleId="display-access-title" Description="@Localization.Parse(TextKey.Access_Overview)" />
                     </Brand>
                     <ChildContent>
-                        <AccessFormSurface>
-                            <Notice Severity="NotificationSeverity.Information" Announce="false">@Localization.Parse(TextKey.Access_DemoOnly)</Notice>
+                        <AccessActions Label="@Localization.Parse(TextKey.Nav_DisplayAccess)">
+                            <p>@Localization.Parse(TextKey.Access_DemoOnly)</p>
                             <Button Variant="ButtonVariant.Elevated" Href="/examples/display/login">@Localization.Parse(TextKey.Nav_DisplayLogin)</Button>
                             <Button Variant="ButtonVariant.Elevated" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
-                        </AccessFormSurface>
+                        </AccessActions>
                     </ChildContent>
                     <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
                 </AccessPanel>
             </PresentationBand>
         }
-        <PresentationFooter BrandName="Lumen" Watermark="Lumen" Copyright="@Localization.Parse(TextKey.Display_Disclaimer)">
+        <PresentationFooter Copyright="@Localization.Parse(TextKey.Display_Disclaimer)">
             <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button></Actions>
         </PresentationFooter>
     </PageBody>

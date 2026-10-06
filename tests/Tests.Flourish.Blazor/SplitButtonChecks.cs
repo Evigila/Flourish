@@ -141,6 +141,42 @@ internal static class SplitButtonChecks
                 Require(primaryCalls == 1, "The native-menu mode disabled its independent primary action.");
             });
         }));
+        tests.Add(("native split menus render differently sized labels as direct standard Quiet Buttons in one library-owned column", async () =>
+        {
+            var labels = new[] { "Voltar", "Criar conta", "Esquecer senha e recuperar acesso à conta com segurança" };
+            var routes = new[] { "/", "/signup/", "/forgot-password/" };
+            RenderFragment items = builder =>
+            {
+                for (var index = 0; index < labels.Length; index++)
+                {
+                    builder.OpenComponent<Button>(0);
+                    builder.AddAttribute(1, nameof(Button.Href), routes[index]);
+                    builder.AddAttribute(2, nameof(Button.Text), labels[index]);
+                    builder.AddAttribute(3, nameof(Button.Variant), ButtonVariant.Quiet);
+                    builder.CloseComponent();
+                }
+            };
+            await WithButton(new()
+            {
+                [nameof(SplitButton.Type)] = "submit", [nameof(SplitButton.Text)] = "Entrar",
+                [nameof(SplitButton.FullWidth)] = true, [nameof(SplitButton.MenuContent)] = items
+            }, (_, html) =>
+            {
+                var output = html();
+                var content = Regex.Match(output, "<div\\b[^>]*class=\"f-split-button-menu-content\"[^>]*>(?<items>.*?)</div>", RegexOptions.Singleline);
+                Require(content.Success, "The library-owned native menu column was not rendered.");
+                var actions = Regex.Matches(content.Groups["items"].Value, "<a\\b[^>]*>").Select(match => match.Value).ToArray();
+                Require(actions.Length == labels.Length && !content.Groups["items"].Value.Contains("<div", StringComparison.Ordinal), "A host wrapper replaced the direct standard menu actions.");
+                for (var index = 0; index < labels.Length; index++)
+                {
+                    Require(HasClass(actions[index], "f-button") && HasClass(actions[index], "f-button-quiet"), "A split menu action stopped using the standard Button renderer.");
+                    Require(Attribute(actions[index], "href") == routes[index], "The layout repair changed a native action's navigation destination.");
+                    Require(Attribute(actions[index], "style") is null, "A menu action requires consumer-owned width or hover geometry.");
+                    Require(WebUtility.HtmlDecode(content.Groups["items"].Value).Contains(labels[index], StringComparison.Ordinal), "A long or short menu label was removed instead of sharing the menu width.");
+                }
+                return Task.CompletedTask;
+            });
+        }));
         tests.Add(("native menu relationships map explicit summary controls or generate a stable real content ID", async () =>
         {
             foreach (var controls in new string?[] { null, "mapped-menu" })
@@ -325,7 +361,7 @@ internal static class SplitButtonChecks
                     ".f-menu-panel" => true,
                     ".f-menu-panel:not(:popover-open):not([data-f-open])" => !interactiveOpen,
                     ".f-menu-panel[data-f-open]" => interactiveOpen,
-                    ".f-data-display-options.f-menu-panel[data-f-open]" => false,
+                    ".f-multi-select-panel[data-f-open]" => false,
                     ".f-dropdown-surface > .f-menu-panel" => nativeSplit || nativeActionMenu,
                     ".f-dropdown-surface[open] > .f-menu-panel" => (nativeSplit || nativeActionMenu) && open,
                     ".f-split-button > .f-split-button-menu[open] > .f-menu-panel" => nativeSplit && open,

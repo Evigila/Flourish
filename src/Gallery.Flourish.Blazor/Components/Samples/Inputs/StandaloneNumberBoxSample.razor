@@ -1,9 +1,0 @@
-@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
-@attribute [SampleFor("StandaloneNumberBox")]
-<Field Label="协议边界演示数量" Id="@Id"><StandaloneNumberBox Id="@Id" name="quantity" Min="0" Max="100" Step="1" @bind-Value="Quantity" /></Field>
-<p role="status">原生提交字符串：@Quantity</p>
-@if (!Preview) { <p>宿主负责业务数值解析和校验；EditForm 数值模型使用 NumberBox。</p> }
-@code {
-    [Parameter] public bool Preview { get; set; }
-    private string? Quantity = "3"; private readonly string Id = "standalone-number-" + Guid.NewGuid().ToString("N");
-}

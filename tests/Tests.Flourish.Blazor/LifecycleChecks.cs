@@ -1,5 +1,5 @@
 using ArkheideSystem.Flourish.Blazor;
-using ArkheideSystem.Flourish.Blazor.Components.Primitives;
+using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +21,7 @@ internal static class LifecycleChecks
                 Require(javascript.Imports == 0 && javascript.Module.States.Count == 0, "A closed sheet initialized browser listeners.");
                 await sheet.OpenAsync(true);
                 Require(html().Contains("Draft field", StringComparison.Ordinal), "First opening did not render the form.");
-                Require(html().Contains("<footer class=\"bottom-sheet-actions f-dialog-actions\">Draft action</footer>", StringComparison.Ordinal),
+                Require(html().Contains("<footer class=\"f-dialog-actions\">Draft action</footer>", StringComparison.Ordinal),
                     "First opening did not render a separate standard action footer.");
                 await sheet.InteractiveRenderAsync();
                 await sheet.InteractiveRenderAsync();
@@ -69,9 +69,9 @@ internal static class LifecycleChecks
         {
             var output = await renderer.RenderComponentAsync<SheetProbe>(ParameterView.FromDictionary(new Dictionary<string, object?>
             {
-                [nameof(BottomSheet.Id)] = "lazy-sheet", [nameof(BottomSheet.Title)] = "Generic form",
-                [nameof(BottomSheet.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Draft field")),
-                [nameof(BottomSheet.Actions)] = (RenderFragment)(builder => builder.AddContent(0, "Draft action"))
+                [nameof(Dialog.Id)] = "lazy-sheet", [nameof(Dialog.Title)] = "Generic form", [nameof(Dialog.Presentation)] = DialogPresentation.BottomSheet,
+                [nameof(Dialog.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Draft field")),
+                [nameof(Dialog.Actions)] = (RenderFragment)(builder => builder.AddContent(0, "Draft action"))
             }));
             await verify(activator.Sheet ?? throw new InvalidOperationException("Sheet was not constructed."), javascript, output.ToHtmlString);
         });
@@ -91,7 +91,7 @@ internal static class LifecycleChecks
             return component;
         }
     }
-    private sealed class SheetProbe : BottomSheet
+    private sealed class SheetProbe : Dialog
     {
         public SheetProbe() { }
         internal Task InteractiveRenderAsync() => base.OnAfterRenderAsync(false);
@@ -123,8 +123,8 @@ internal static class LifecycleChecks
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
-            if (identifier == "synchronize") States.Add((bool)args![1]!);
-            else if (identifier == "dispose") DisposeCalls++;
+            if (identifier == "synchronizeDialog") States.Add((bool)args![1]!);
+            else if (identifier == "detachDialog") DisposeCalls++;
             else throw new InvalidOperationException("Unexpected module call: " + identifier);
             return ValueTask.FromResult(default(TValue)!);
         }

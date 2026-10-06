@@ -13,7 +13,7 @@
            id="@Identifier" required="@InputSemantics.Required(Field, AdditionalAttributes)"
            aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)"
            aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
-           class="masked-input-control"
+           class="f-input masked-input-control"
            @bind:get="FormattedValue" @bind:set="HandleInputAsync" @bind:event="oninput"
            data-input-mask="@Mask"
            inputmode="@InputMode" />

@@ -1,10 +1,10 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("PresentationBand")]
+@attribute [SampleFor("PresentationBand", Description = "默认最小高度 800px，内容可自然增高；点阵默认关闭，本例仅为 Primary 开启。横幅使用全宽背景与居中内容轨道。")]
 @foreach (var tone in Enum.GetValues<PresentationTone>())
 {
     <PresentationBand Title="@($"展示横幅 · {tone}")" Tone="tone" Dotted="@(tone == PresentationTone.Primary)">
         <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">完整案例</Button></Actions>
-        <ChildContent><p>默认最小高度 450px，长内容自然增高；点阵默认关闭，此处仅 Primary 显式开启。相邻横幅推荐使用不同标准颜色。背景全宽、内容居中，不需要宿主 CSS。</p></ChildContent>
+        <ChildContent><p>整理灵感，开始下一个项目。</p></ChildContent>
     </PresentationBand>
 }
 @code {

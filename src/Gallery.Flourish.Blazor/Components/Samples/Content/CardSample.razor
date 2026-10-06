@@ -6,14 +6,14 @@
 @using System.Collections.Generic
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Card")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Card", Description = "Prominent 使用大字号段落，Stacked 控制纵排。移除动作后正文占满宽度；长文场景用于检查自然换行和高度增长。")]
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
 @if (Preview)
 {
     <Card />
     <Card Title="带标题的空卡片" />
-    <Card Prominent="true" Text="把展示标题收进大字号正文，左侧使用标准 Elevated 动作。">
+    <Card Prominent="true" Text="把想法整理为共享资料。">
         <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/pricing">了解虚构方案</Button></Actions>
     </Card>
 }
@@ -21,25 +21,26 @@ else
 {
     <Button Variant="ButtonVariant.Secondary" OnClick="() => Selected = !Selected">切换虚构项目</Button>
     <Card Title="@(Selected ? "模拟项目 B" : "模拟项目 A")">
-        <p>适用于选择、摘要或预览；这是虚构的项目描述。</p>
+        <p>整理项目资料，与成员分享进展。</p>
         <p>演示状态：@(Selected ? "处理中" : "草稿")</p>
     </Card>
     <Section Title="展示场景变种">
         <AccessActions Label="卡片演示设置">
             <StandaloneCheckBox Label="使用大卡片变种" @bind-Value="Prominent" />
-            <StandaloneCheckBox Label="显示左侧动作" @bind-Value="ShowActions" />
+            <StandaloneCheckBox Label="始终上下排列" @bind-Value="Stacked" />
+            <StandaloneCheckBox Label="显示动作" @bind-Value="ShowActions" />
             <StandaloneCheckBox Label="长文与长动作名称" @bind-Value="LongText" />
         </AccessActions>
-        <Card Prominent="Prominent" Text="@PresentationText" Actions="PresentationActions" />
-        <p role="status">本地动作触发 @ActionCount 次。无动作时正文占满宽度；窄屏纵排，长内容自然增长，不裁剪。Prominent 中 Title 也进入正文而不生成 h3；Text 使用 H1 字号的 p，不新增页面 h1。</p>
+        <Card Prominent="Prominent" Stacked="Stacked" Text="@PresentationText" Actions="PresentationActions" />
+        <p role="status">本地动作触发 @ActionCount 次。</p>
     </Section>
 }
 @code {
     [Parameter] public bool Preview { get; set; }
-    private bool Selected, Prominent = true, ShowActions = true, LongText;
+    private bool Selected, Prominent = true, ShowActions = true, LongText, Stacked;
     private int ActionCount;
     private string PresentationText => LongText
         ? "将介绍与下一步动作放在同一张标准卡片中。此处使用较长的虚构说明验证自然换行与高度增长。pricing-example-with-a-long-unbroken-resource-name-must-wrap-without-clipping。即使翻译后的正文变长、视口变窄或移除左侧动作，卡片也不应固定高度或隐藏必要内容。"
-        : "将介绍与下一步动作放在同一张标准卡片中，正文保持段落语义，不额外增加页面标题。";
+        : "把项目想法整理为可共享的资料。";
     private RenderFragment? PresentationActions => ShowActions ? @<Button Variant="ButtonVariant.Elevated" OnClick="() => ActionCount++">@(LongText ? "浏览本地虚构报价方案的全部说明（仅为展示）" : "本地演示动作")</Button> : null;
 }

@@ -6,6 +6,7 @@
     @if (TopicKey == "index")
     {
     <Section Title="完整页面">
+        <p>案例数据只存于当前连接，重新连接后重置。</p>
         <UniformGrid>
             <UniformGridButton Title="表单页面" Href="/forms" Text="EditForm 验证、字段布局、保存与未保存修改确认。" />
             <UniformGridButton Title="记录列表" Href="/records" Text="搜索、排序、分页、列显示、列表和卡片切换、行操作。" />
@@ -16,14 +17,13 @@
             <UniformGridButton Title="下拉框与枚举" Href="/examples/enum" Text="将枚举值转换为选项并绑定当前选择。" />
             <UniformGridButton Title="搜索框与列表" Href="/examples/search" Text="按输入查询筛选集合，并处理空结果。" />
         </UniformGrid>
-        <p>案例数据只存于当前连接，重新连接后重置。</p>
     </Section>
     }
     @if (TopicKey == "form")
     {
     <Section Title="创建表单页面">
+        <p>表单模型负责验证规则，应用负责保存。<br />Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。<br />建议主要操作显式使用 Filled，其余操作使用 Outlined。</p>
         <DisplayBoard Dotted="false" Centered="false" CopyText="@FormExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@FormExample" Language="razor" /></DisplayBoard>
-        <p>表单模型负责验证规则，应用负责保存。Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。建议主要操作显式使用 Filled，其余操作使用 Outlined。</p>
     </Section>
     }
     @if (TopicKey == "enum")
@@ -51,8 +51,8 @@
             </ul>
         }
         <p role="status">找到 @FilteredEntries.Count 项</p>
+        <p>ValueChanged 更新输入值，SearchChanged 在延迟后筛选列表。<br />远程查询可使用带 CancellationToken 的 SearchRequested，页面负责应用查询结果。</p>
         <DisplayBoard Dotted="false" Centered="false" CopyText="@SearchExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@SearchExample" Language="razor" /></DisplayBoard>
-        <p>ValueChanged 更新输入值，SearchChanged 在延迟后筛选列表。远程查询可使用带 CancellationToken 的 SearchRequested，页面负责应用查询结果。</p>
     </Section>
     }
     @if (!Topics.ContainsKey(TopicKey))

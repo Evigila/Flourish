@@ -25,6 +25,13 @@
                    EmptyMessage="此组件没有公开组件参数。" /></div>
     </Section>
     <Section Title="场景示例">
+        @if (!string.IsNullOrWhiteSpace(Sample.Description))
+        {
+            @foreach (var paragraph in Sample.Description.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+            {
+                <p>@paragraph</p>
+            }
+        }
         <DisplayBoard><DynamicComponent Type="@Sample.ComponentType" /></DisplayBoard>
     </Section>
     <Section Title="场景代码">
@@ -45,7 +52,6 @@
     {
         ComponentUseKind.General => "通用生产控件",
         ComponentUseKind.Scenario => "专用场景生产控件",
-        ComponentUseKind.Compatibility => "兼容入口：迁移前核对能力差异",
         _ => "构造基元：不作为独立生产控件"
     };
     private static readonly IReadOnlyList<TableColumn<ComponentParameter>> ApiColumns =

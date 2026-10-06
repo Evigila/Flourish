@@ -1,47 +1,11 @@
-@using ArkheideSystem.Flourish.Abstract
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Web
-@using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ApplicationShell")]
-@using System
-@using System.Collections.Generic
-@using Microsoft.AspNetCore.Components
-@using ArkheideSystem.Flourish.Blazor
-@using ArkheideSystem.Flourish.Blazor.Abstract
-@using Controls = ArkheideSystem.Flourish.Blazor.Components
 
-@if (!Preview)
-{
-    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示二级导航" @bind-Value="Secondary" />
-    <p>虚构的资料管理应用。此嵌入示例保留本页，应用的真实链接由宿主配置。</p>
-}
-<style>@((MarkupString)ScopedStyles)</style>
-<div id="@Id" style="position:relative; overflow:hidden; isolation:isolate;" @onclick:preventDefault>
-    <ArkheideSystem.Flourish.Blazor.Components.ApplicationShell NavigationGroups="Groups" ApplicationTitle="@(Preview ? "应用外壳" : "资料中心（虚构）")" HomeHref="@($"#{Id}")">
-        <TitleBarBrand><ArkheideSystem.Flourish.Blazor.Components.Icon Name="folder" /></TitleBarBrand>
-        <TitleBarEnd><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Refresh" Icon="refresh" aria-label="刷新示例资料" /></TitleBarEnd>
-        <ChildContent>
-            <ArkheideSystem.Flourish.Blazor.Components.PageBody>
-                <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Preview ? "" : "资料")" />
-                @if (!Preview)
-                {
-                    <ArkheideSystem.Flourish.Blazor.Components.Section Title="文档列表">
-                        <ul><li>使用说明（虚构）</li><li>版本记录（虚构）</li></ul>
-                        <p role="status">示例刷新次数：@RefreshCount</p>
-                    </ArkheideSystem.Flourish.Blazor.Components.Section>
-                }
-            </ArkheideSystem.Flourish.Blazor.Components.PageBody>
-        </ChildContent>
-    </ArkheideSystem.Flourish.Blazor.Components.ApplicationShell>
-</div>
+<ArkheideSystem.Flourish.Blazor.Components.Notice Subtle="true">
+    Gallery 本身使用唯一的 ApplicationShell。完整外壳案例在独立页面运行，不嵌套主地标、不覆盖导航配置、不注入预览皮肤。
+</ArkheideSystem.Flourish.Blazor.Components.Notice>
+<ArkheideSystem.Flourish.Blazor.Components.Button Href="/examples/shell" Text="打开完整外壳案例" target="_blank" rel="noopener" />
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private readonly string Id = $"shell-sample-{Guid.NewGuid():N}";
-    private bool Secondary = true;
-    private int RefreshCount;
-    private IReadOnlyList<NavigationGroup> Groups => [new("documents", "资料", "folder", [new("全部文档", $"#{Id}", "description", Exact: true), new("已归档", $"#{Id}", "archive")], !Preview && Secondary)];
-    private void Refresh() => RefreshCount++;
-    private string ScopedStyles => $"#{Id} > .f-shell {{ height:420px; min-height:0; }} #{Id} .f-titlebar-center {{ display:none; }} #{Id} .f-skip-link {{ position:absolute; }} #{Id} .f-secondary-navigation {{ position:relative; }} #{Id} .f-navigation-backdrop {{ position:absolute; }}";
 }

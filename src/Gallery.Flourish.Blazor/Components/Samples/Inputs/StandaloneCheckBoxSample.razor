@@ -1,8 +1,7 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
-@attribute [SampleFor("StandaloneCheckBox")]
+@attribute [SampleFor("StandaloneCheckBox", Description = "原生提交值为 yes；不保存会话或提交凭据。业务模型验证使用 CheckBox。")]
 <StandaloneCheckBox Label="保留演示选择" name="remember" SubmissionValue="yes" @bind-Value="Remember" />
 <p role="status">本地选中：@Remember</p>
-@if (!Preview) { <p>原生提交值为 yes；不保存会话或提交凭据。业务模型验证使用 CheckBox。</p> }
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool Remember;

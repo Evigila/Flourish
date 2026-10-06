@@ -2,26 +2,24 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SplitButton")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SplitButton", Description = "上方通过 MenuContent 展示原生导航；完整登录页演示表单提交。恢复与注册仅链接到演示总览。\n下方使用受控次按钮展开导出格式，所有动作只更新本地状态。")]
 @inherits LocalizedComponentBase
 
-<SplitButton Text="@Localization.Parse(TextKey.Nav_DisplayLogin)" Href="/examples/display/login" FullWidth="FullWidth"
-             SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled">
-    <MenuContent>
-        <Button Variant="ButtonVariant.Quiet" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
-        <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RecoveryDemo)</Button>
-        <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RegistrationDemo)</Button>
-        <Button Variant="ButtonVariant.Quiet" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button>
-    </MenuContent>
-</SplitButton>
 @if (!Preview)
 {
+    <SplitButton Text="@Localization.Parse(TextKey.Nav_DisplayLogin)" Href="/examples/display/login" FullWidth="FullWidth"
+                 SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled">
+        <MenuContent>
+            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
+            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RecoveryDemo)</Button>
+            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RegistrationDemo)</Button>
+            <Button Variant="ButtonVariant.Quiet" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button>
+        </MenuContent>
+    </SplitButton>
     <AccessActions Label="@Localization.Parse(TextKey.Access_SubmitMenu)">
         <StandaloneCheckBox Label="@Explain("Fill the available width", "填满可用宽度")" @bind-Value="FullWidth" />
         <StandaloneCheckBox Label="@Explain("Disable primary action and menu", "禁用主动作与菜单")" @bind-Value="MenuDisabled" />
     </AccessActions>
-    <p>@Explain("MenuContent supplies native navigation links. Recovery and registration point only to the existing demonstration overview, never to an authentication workflow. Type=submit is exercised by the complete login page. The example below preserves legacy externally controlled secondary actions.",
-        "MenuContent 提供原生导航链接。恢复与注册只指向现有演示总览，不执行认证流程。完整登录页演示 Type=submit。下方保留旧式由外部控制的次要动作。")</p>
 }
 
 @if (Preview)

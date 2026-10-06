@@ -15,7 +15,7 @@
 @if (Preview)
 {
     <label id="@(Prefix + "-empty-label")">空选项</label>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-empty")" LabelledBy="@(Prefix + "-empty-label")" Items="EmptyItems" SelectedId="EmptyId" SelectionChanged="SelectEmpty" EmptySelectionText="未选择" SearchLabel="搜索选项" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-empty")" LabelledBy="@(Prefix + "-empty-label")" Items="EmptyItems" @bind-Value="EmptyId" EmptySelectionText="未选择" SearchLabel="搜索选项" />
     <label id="@(Prefix + "-disabled-label")">禁用</label>
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-disabled")" LabelledBy="@(Prefix + "-disabled-label")" Items="EmptyItems" Disabled="true" EmptySelectionText="未选择" />
 }
@@ -23,8 +23,8 @@ else
 {
     <ToggleSwitch Label="禁止修改场地" @bind-Value="Locked" OnLabel="禁止" OffLabel="允许" />
     <label id="@(Prefix + "-venue-label")">场地</label>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-venue")" LabelledBy="@(Prefix + "-venue-label")" Items="Venues" SelectedId="VenueId"
-                         SelectionChanged="Select" CreateRequested="Create" Disabled="Locked" EmptySelectionText="未选择场地" SearchLabel="搜索或新增场地" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-venue")" LabelledBy="@(Prefix + "-venue-label")" Items="Venues" @bind-Value="VenueId"
+                         CreateRequested="Create" Disabled="Locked" EmptySelectionText="未选择场地" SearchLabel="搜索或新增场地" />
     <p role="status">当前场地 ID：@(VenueId?.ToString() ?? "未选择")。</p>
 }
 
@@ -35,7 +35,5 @@ else
     private readonly List<ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceItem<int>> Venues = [new(1, "甲"), new(2, "河畔社区阅读与交流活动室（虚构）")];
     private int? EmptyId, VenueId = 1;
     private bool Locked;
-    private void SelectEmpty(int? id) => EmptyId = id;
-    private void Select(int? id) => VenueId = id;
     private Task<int?> Create(string name) { var id = Venues.Count + 1; Venues.Add(new(id, name)); return Task.FromResult<int?>(id); }
 }

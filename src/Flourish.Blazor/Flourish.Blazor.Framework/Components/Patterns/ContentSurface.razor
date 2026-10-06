@@ -3,7 +3,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @CssClass" style="@Style">
+<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @Class" style="@Style">
     <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @if (DocumentFlow && TitleBar is not null) { <div class="f-document-surface-header">@TitleBar</div> }
     else { @TitleBar }
@@ -16,7 +16,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Footer { get; set; }
     [Parameter] public bool DocumentFlow { get; set; }
-    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Class { get; set; }
     [Parameter] public string? ContentClass { get; set; }
     [Parameter] public string? Style { get; set; }
     [Parameter] public object? DocumentKey { get; set; }
@@ -36,7 +36,7 @@
             var activeModule = await GetModuleAsync();
             if (disposed || activeModule is null) return;
             if (DocumentFlow) { await DisposeModuleAsync(); return; }
-            await activeModule.InvokeVoidAsync("synchronize", root, stage, null);
+            await activeModule.InvokeVoidAsync("synchronize", root, stage);
         }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }

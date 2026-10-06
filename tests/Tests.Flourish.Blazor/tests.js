@@ -4,15 +4,25 @@ import { readFile } from 'node:fs/promises';
 
 const documentListeners = new Map();
 globalThis.document = {
+    readyState: 'complete', documentElement: {}, querySelectorAll: () => [],
     createElement: () => ({ getContext: () => ({ font: '', measureText: text => ({ width: text.length * 8 }) }) }),
     addEventListener: (name, handler) => { const handlers = documentListeners.get(name) ?? new Set(); handlers.add(handler); documentListeners.set(name, handlers); },
     removeEventListener: (name, handler) => documentListeners.get(name)?.delete(handler)
 };
+globalThis.MutationObserver = class {
+    constructor(callback) { this.callback = callback; }
+    observe(node) { assert.equal(node, document.documentElement); }
+    disconnect() {}
+};
 globalThis.getComputedStyle = node => ({ fontWeight: '400', fontSize: '17px', fontFamily: 'Segoe UI', paddingLeft: node.tagName ? '16px' : '0px', paddingRight: node.tagName ? '16px' : '0px' });
 const controlsSource = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js', import.meta.url), 'utf8');
-const controlsUrl = `data:text/javascript;base64,${Buffer.from(controlsSource).toString('base64')}`;
+const originSource = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/interaction-origin.js', import.meta.url), 'utf8');
+const originUrl = `data:text/javascript;base64,${Buffer.from(originSource).toString('base64')}`;
+const controlsUrl = `data:text/javascript;base64,${Buffer.from(controlsSource.replace(/(["'])\.\/primitives\/interaction-origin\.js\1/, JSON.stringify(originUrl))).toString('base64')}`;
+const displaySource = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/multi-select-box.js', import.meta.url), 'utf8');
+const displayUrl = `data:text/javascript;base64,${Buffer.from(displaySource.replace("'./controls.js'", JSON.stringify(controlsUrl))).toString('base64')}`;
 const source = (await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js', import.meta.url), 'utf8'))
-    .replace("'./controls.js'", JSON.stringify(controlsUrl));
+    .replace("'./multi-select-box.js'", JSON.stringify(displayUrl));
 const { synchronize, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
 function table(text = 'Alpha', withActions = true, lastDataColumn = true) {
@@ -45,6 +55,7 @@ function root(content = table()) {
         isConnected: true, table: content,
         classList: { add: key => classes.add(key), remove: key => classes.delete(key) },
         querySelector(selector) { return selector === '[data-f-table]' ? this.table : null; },
+        querySelectorAll() { return []; },
         addEventListener(name, handler) { handlers.set(name, handler); },
         removeEventListener(name, handler) { if (handlers.get(name) === handler) handlers.delete(name); },
         dispatch(name, event) { handlers.get(name)?.(event); },

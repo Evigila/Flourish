@@ -1,0 +1,14 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("FormGroup")]
+
+@if (!Preview) { <ToggleSwitch Label="禁用整个字段组" @bind-Value="Disabled" /> }
+<FormGroup Title="虚构联系人" Disabled="Disabled" Columns="1">
+    <Field Label="名称" Id="@Id"><StandaloneTextBox Id="@Id" @bind-Value="Name" /></Field>
+</FormGroup>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = "sample-group-" + Guid.NewGuid().ToString("N");
+    private bool Disabled;
+    private string? Name = "";
+}

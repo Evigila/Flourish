@@ -35,14 +35,14 @@
             }
             @if (TitleBarStart is not null || Options.TopBar.LeftItems.Count > 0)
             {
-                <div class="f-titlebar-start">
+                <div class="f-titlebar-start f-topbar-slot">
                     @TitleBarStart
                     @foreach (var placement in Options.TopBar.LeftItems) { <DynamicComponent Type="@placement.ComponentType" /> }
                 </div>
             }
             @if (Options.TopBar.MenuItems.Count > 0 || Options.TopBar.CenterItems.Count > 0)
             {
-                <div class="f-titlebar-center">
+                <div class="f-titlebar-center f-topbar-slot">
                     @foreach (var menu in Options.TopBar.MenuItems)
                     {
                         <ActionMenu Label="@Label(menu, menu.Label)" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
@@ -60,7 +60,7 @@
                     <button type="submit" class="f-icon-button" aria-label="@SearchCaption"><Icon Name="search" /></button>
                 </form>
             }
-            <div class="f-titlebar-end">
+            <div class="f-titlebar-end f-topbar-slot">
                 @foreach (var placement in Options.TopBar.RightItems) { <DynamicComponent Type="@placement.ComponentType" /> }
                 @TitleBarEnd
             </div>
@@ -101,7 +101,6 @@
 @code {
     /// <summary>Constrains a full application to the viewport; embedded shells leave this disabled.</summary>
     [Parameter] public bool OwnsDocument { get; set; }
-    [Parameter] public IReadOnlyList<NavigationGroup>? NavigationGroups { get; set; }
     [Parameter] public string? ApplicationTitle { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? TitleBarEnd { get; set; }
@@ -143,10 +142,8 @@
     private readonly HashSet<string> expandedItems = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> panelIds = new(StringComparer.OrdinalIgnoreCase);
 
-    private IReadOnlyList<NavigationEntry> PrimaryEntries => NavigationGroups is not null
-        ? ConvertLegacy(NavigationGroups)
-        : Options.PrimaryNavigation.Count > 0 ? Options.PrimaryNavigation : ConvertLegacy(Options.LegacyNavigation);
-    private IReadOnlyList<NavigationEntry> FixedEntries => NavigationGroups is null ? Options.FixedNavigation : Array.Empty<NavigationEntry>();
+    private IReadOnlyList<NavigationEntry> PrimaryEntries => Options.PrimaryNavigation;
+    private IReadOnlyList<NavigationEntry> FixedEntries => Options.FixedNavigation;
     private bool HasSecondary => ActiveEntry?.SecondaryItems.Count > 0;
     private bool HasNavigationTree => ActiveEntry?.SecondaryItems.Any(item => item.ChildItems.Count > 0) == true;
     private NavigationItem? ActiveItem => activeItems.LastOrDefault();
@@ -317,14 +314,6 @@
         var result = await Commands.ExecuteAsync(commandKey, source: source);
         if (result.Status == CommandExecutionStatus.Failed && result.Exception is not null) throw result.Exception;
     }
-
-    private static IReadOnlyList<NavigationEntry> ConvertLegacy(IReadOnlyList<NavigationGroup> groups) => groups
-        .Select(group =>
-        {
-            var first = group.Items.FirstOrDefault(item => !item.Disabled);
-            return new NavigationEntry(group.Label, group.Icon, NavigationEntryKind.Route, first?.Href, Children: group.SecondaryNavigation ? group.Items : Array.Empty<NavigationItem>(), Exact: first?.Exact ?? false, Disabled: first is null);
-        })
-        .ToArray();
 
     private void ThemeChanged(object? sender, EventArgs e) => _ = InvokeAsync(StateHasChanged);
     private void LocationChanged(object? sender, LocationChangedEventArgs e) => _ = InvokeAsync(() =>

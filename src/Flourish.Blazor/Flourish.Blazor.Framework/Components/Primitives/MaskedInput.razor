@@ -16,7 +16,7 @@
            id="@Identifier" required="@InputSemantics.Required(Field, AdditionalAttributes)"
            aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)"
            aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)"
-           class="@($"masked-input-control {CssClass}")"
+           class="@($"f-input masked-input-control {CssClass}")"
            @bind:get="FormattedValue" @bind:set="HandleInput" @bind:event="oninput"
            data-input-mask="@EffectiveMask"
            inputmode="@InputMode" />

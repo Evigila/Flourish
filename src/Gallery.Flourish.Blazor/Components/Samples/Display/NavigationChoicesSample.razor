@@ -1,0 +1,46 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("NavigationChoices", Description = "访问方式通过 GET 链接切换；字段值不会进入地址。")]
+@inject NavigationManager Navigation
+
+<NavigationChoices Id="@Id" Label="选择访问方式" Items="Choices" ActiveKey="@ActiveKey">
+    <ChildContent Context="choice">
+        <AccessFormSurface>
+            @if (choice.Key == "organization")
+            {
+                <Field Id="@(Id + "-username")" Label="组织登录地址"><StandaloneTextBox Type="email" autocomplete="username" /></Field>
+                <Field Id="@(Id + "-password")" Label="组织密码"><StandaloneTextBox Type="password" autocomplete="current-password" /></Field>
+                <Button Disabled="true">模拟组织访问</Button>
+            }
+            else if (choice.Key == "account")
+            {
+                <p>使用虚构账号进行演示。</p>
+                <Button Disabled="true">模拟账号访问</Button>
+            }
+            else
+            {
+                <Field Id="@(Id + "-pass")" Label="访问凭据"><StandaloneTextBox Type="password" autocomplete="off" /></Field>
+                <Button Disabled="true">模拟凭据访问</Button>
+            }
+        </AccessFormSurface>
+    </ChildContent>
+</NavigationChoices>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = "navigation-choices-" + Guid.NewGuid().ToString("N");
+    private static readonly IReadOnlyList<NavigationChoiceItem> Choices =
+    [
+        new("organization", "组织", "/examples/display/access-methods?choice=organization"),
+        new("account", "账号", "/examples/display/access-methods?choice=account"),
+        new("pass", "凭据", "/examples/display/access-methods?choice=pass")
+    ];
+    private string ActiveKey
+    {
+        get
+        {
+            var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
+            var key = query.TryGetValue("choice", out var value) ? value.ToString() : string.Empty;
+            return Choices.Any(choice => choice.Key == key) ? key : "organization";
+        }
+    }
+}

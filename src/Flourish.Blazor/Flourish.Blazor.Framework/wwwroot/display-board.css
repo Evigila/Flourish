@@ -6,7 +6,7 @@
 .f-display-board-centered > .f-display-board-viewport > .f-display-board-content:not(:has(> .f-code-block)) > .f-inline-actions { justify-content:center; }
 .f-display-board-start > .f-display-board-viewport > .f-display-board-content { align-items:flex-start; justify-content:flex-start; }
 .f-display-board-content > * { min-width:0; max-width:100%; }
-.f-display-board-content > :is(.f-root,.f-data,.f-fields,.f-form-actions,.f-form-surface,.form-surface-frame,.form-action-bar,.uniform-grid,.filled-identity-card,.identity-card,.f-card,.f-shell,.navigation-surface,.f-content-surface) { width:100%; }
+.f-display-board-content > :is(.f-root,.f-data,.f-form-actions,.f-card,.f-shell,.navigation-surface) { width:100%; }
 .f-display-board-content > .f-root { background:transparent; }
 .f-display-board > .f-display-board-copy { position:absolute; inset-block-start:1em; inset-inline-end:1em; max-width:calc(100% - 2em); }
 .f-display-board-copyable { min-block-size:4em; }

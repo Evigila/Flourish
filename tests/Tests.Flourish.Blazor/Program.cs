@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Components.Forms;
 using ApplicationTheme = ArkheideSystem.Flourish.Abstract.ApplicationTheme;
+using NotificationSeverity = ArkheideSystem.Flourish.Abstract.NotificationSeverity;
 using CommandExecutionStatus = ArkheideSystem.Flourish.Abstract.CommandExecutionStatus;
 using CommandSource = ArkheideSystem.Flourish.Abstract.CommandSource;
 using ICommandDispatcher = ArkheideSystem.Flourish.Abstract.ICommandDispatcher;
@@ -17,8 +18,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
-
-#pragma warning disable CS0618 // The suite keeps explicit migration coverage for the previous builder API.
 
 var tests = new List<(string Name, Func<Task> Run)>();
 void Test(string name, Action run) => tests.Add((name, () => { run(); return Task.CompletedTask; }));
@@ -52,7 +51,7 @@ Test("contracts and framework keep one-way dependencies after Shared consolidati
     Equal(contracts, typeof(AppearanceState).Assembly);
     Equal(contracts, typeof(TableColumn<Record>).Assembly);
     Equal(contracts, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.GridCell).Assembly);
-    Equal(contracts, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity).Assembly);
+    Equal(typeof(ApplicationTheme).Assembly, typeof(NotificationSeverity).Assembly);
     Equal(typeof(Button).Assembly, typeof(TableData<Record>).Assembly);
     Equal(typeof(Button).Assembly, typeof(ArkheideSystem.Flourish.Blazor.Components.Primitives.InputMaskFormatter).Assembly);
     Check(!contracts.GetReferencedAssemblies().Any(reference => reference.Name is "Flourish.Blazor.Framework" or "Flourish.Blazor.Design" or "Flourish.Blazor.Shared"),
@@ -97,7 +96,7 @@ Test("page bounds survive deletion, empty results, and invalid input", () => {
     Throws<ArgumentOutOfRangeException>(() => TableData<Record>.ClampPage(1, 8, 0));
 });
 Test("runtime appearance is scoped to the user circuit", () => {
-    var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign();
+    var services = new ServiceCollection(); services.AddFlourishFramework(); services.AddFlourishDesign();
     using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     using var first = provider.CreateScope(); using var second = provider.CreateScope();
     var a = first.ServiceProvider.GetRequiredService<IAppearanceService>(); var b = second.ServiceProvider.GetRequiredService<IAppearanceService>();
@@ -106,38 +105,39 @@ Test("runtime appearance is scoped to the user circuit", () => {
     Equal("#153A32", b.Current.Primary); Equal(ApplicationTheme.Light, b.Current.Theme);
 });
 Test("unchanged appearance does not emit duplicate state notifications", () => {
-    var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign(); using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
+    var services = new ServiceCollection(); services.AddFlourishFramework(); services.AddFlourishDesign(); using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
     var appearance = scope.ServiceProvider.GetRequiredService<IAppearanceService>(); var count = 0;
     appearance.Changed += (_, _) => count++;
     appearance.SetColors("#153a32", "#16745f"); appearance.SetTheme(ApplicationTheme.Light); Equal(0, count);
     appearance.SetTheme(ApplicationTheme.Dark); appearance.SetTheme(ApplicationTheme.Dark); Equal(1, count);
 });
-Test("duplicate host registration is rejected", () => { var services = new ServiceCollection(); services.AddFlourish(); services.AddFlourishDesign(); Throws<InvalidOperationException>(() => services.AddFlourish()); });
+Test("duplicate framework registration is rejected", () => { var services = new ServiceCollection(); services.AddFlourishFramework(); services.AddFlourishDesign(); Throws<InvalidOperationException>(() => services.AddFlourishFramework()); });
 Test("captured startup and nested builders cannot mutate completed options", () => {
-    IApplicationBuilder? app = null; ITitleBarBuilder? title = null; IAppearanceBuilder? appearance = null; ILayoutBuilder? layout = null; INavigationGroupBuilder? group = null;
+    IFrameworkBuilder? framework = null; IProjectBuilder? project = null; ITopBarBuilder? top = null;
+    IAppearanceBuilder? appearance = null; ILayoutBuilder? layout = null; ISubNavigationBuilder? secondary = null;
     var services = new ServiceCollection();
-    services.AddFlourish(builder => {
-        app = builder;
-        builder.UseTitleBar(value => { title = value; value.SetApplicationTitle("Test"); });
-
+    services.AddFlourishFramework(builder => {
+        framework = builder;
+        builder.ConfigureProject(value => { project = value; value.SetProjectName("Test"); });
+        builder.ConfigureTopBar(value => { top = value; value.SetSearch(); });
         builder.ConfigureLayout(value => layout = value);
-        builder.UseNavigation(value => value.AddGroup("pages", "Pages", "page", value => { group = value; value.AddItem("Home", "/"); }));
+        builder.ConfigureNavigation(value => value.AddNav("Pages", "description", "/", value => { secondary = value; value.AddSubNav("Home", "home", "/", exact: true); }));
     });
     services.AddFlourishDesign(value => appearance = value);
-    Throws<InvalidOperationException>(() => app!.UseTitleBar());
-    Throws<InvalidOperationException>(() => title!.SetApplicationTitle("Late"));
+    Throws<InvalidOperationException>(() => framework!.ConfigureTopBar(_ => { }));
+    Throws<InvalidOperationException>(() => project!.SetProjectName("Late"));
+    Throws<InvalidOperationException>(() => top!.SetSearch(false));
     Throws<InvalidOperationException>(() => appearance!.SetTheme(ApplicationTheme.Dark));
     Throws<InvalidOperationException>(() => layout!.SetContentWidth(900));
-    Throws<InvalidOperationException>(() => group!.AddItem("Late", "/late"));
-    Throws<InvalidOperationException>(() => group!.SetSecondaryNavigation(false));
+    Throws<InvalidOperationException>(() => secondary!.AddSubNav("Late", "description", "/late"));
 });
-Test("navigation rejects external/scheme-relative routes and duplicate keys", () => {
+Test("navigation rejects external/scheme-relative routes and duplicate destinations", () => {
     foreach (var href in new[] { "https://example.test", "//example.test", "javascript:alert(1)", "/a\\b" }) {
         var services = new ServiceCollection();
-        Throws<ArgumentException>(() => services.AddFlourish(app => app.UseNavigation(nav => nav.AddGroup("pages", "Pages", "page", group => group.AddItem("Bad", href)))));
+        Throws<ArgumentException>(() => services.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav.AddNav("Pages", "description", "/pages", secondary => secondary.AddSubNav("Bad", "description", href)))));
     }
     var duplicate = new ServiceCollection();
-    Throws<ArgumentException>(() => duplicate.AddFlourish(app => app.UseNavigation(nav => { nav.AddGroup("same", "One", "page", group => group.AddItem("Home", "/")); nav.AddGroup("same", "Two", "page", group => group.AddItem("Next", "/next")); })));
+    Throws<ArgumentException>(() => duplicate.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav.AddNav("One", "description", "/same").AddNav("Two", "description", "/same"))));
 });
 Test("framework registration keeps commands scoped to each user circuit", () => {
     var services = new ServiceCollection();
@@ -147,9 +147,9 @@ Test("framework registration keeps commands scoped to each user circuit", () => 
         .ConfigureTopBar(top => top.AddMenu("Actions", menu => menu.AddMenuItem("Run", TestCommandParser.CommandKey)))
         .ConfigureNavigation(navigation => navigation
             .AddNav("Home", "home", "/", exact: true)
-            .AddNavButton("Run", "play", TestCommandParser.CommandKey)
+            .AddNavButton("Run", "play_arrow", TestCommandParser.CommandKey)
             .AddFixedNav("Settings", "settings", "/settings")
-            .AddFixedNavButton("Run fixed", "play", TestCommandParser.CommandKey))
+            .AddFixedNavButton("Run fixed", "play_arrow", TestCommandParser.CommandKey))
         .SetCommandParser<TestCommandParser>());
     using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     using var first = provider.CreateScope();
@@ -190,7 +190,7 @@ AsyncTest("primary and secondary landing routes can also be their selected child
                 .AddSubNav("Input overview", "home", "/controls/inputs")
                 .AddSubNav("Repeated overview", "home", "/CONTROLS/INPUTS/"))))));
 });
-Test("nested secondary builders retain the original leaf overload and freeze at completion", () => {
+Test("leaf and branch secondary builders freeze at completion", () => {
     ISubNavigationBuilder? secondary = null, third = null;
     var services = new ServiceCollection();
     services.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
@@ -202,16 +202,16 @@ Test("nested secondary builders retain the original leaf overload and freeze at 
                     children.AddSubNav("Select", "list", "/controls/inputs/select", true, false);
                 });
         })));
-    Throws<InvalidOperationException>(() => secondary!.AddSubNav("Late", "page", "/late"));
-    Throws<InvalidOperationException>(() => third!.AddSubNav("Late child", "page", "/late-child"));
-    Throws<InvalidOperationException>(() => third!.AddSubNav("Late branch", "page", "/late-branch", children => children.AddSubNav("Leaf", "page", "/late-leaf")));
+    Throws<InvalidOperationException>(() => secondary!.AddSubNav("Late", "description", "/late"));
+    Throws<InvalidOperationException>(() => third!.AddSubNav("Late child", "description", "/late-child"));
+    Throws<InvalidOperationException>(() => third!.AddSubNav("Late branch", "description", "/late-branch", children => children.AddSubNav("Leaf", "description", "/late-leaf")));
 });
 Test("nested navigation rejects unsafe and duplicated routes across the entire shell", () => {
     foreach (var target in new[] { "https://example.test", "//example.test", "javascript:alert(1)", "/bad\\route" }) {
         var services = new ServiceCollection();
         Throws<ArgumentException>(() => services.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
             .AddNav("Controls", "widgets", "/controls", secondary => secondary
-                .AddSubNav("Inputs", "input", "/controls/inputs", third => third.AddSubNav("Unsafe", "page", target))))));
+                .AddSubNav("Inputs", "input", "/controls/inputs", third => third.AddSubNav("Unsafe", "description", target))))));
     }
     var repeatedChildren = new ServiceCollection();
     Throws<ArgumentException>(() => repeatedChildren.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
@@ -223,12 +223,12 @@ Test("nested navigation rejects unsafe and duplicated routes across the entire s
     Throws<ArgumentException>(() => repeatedAcrossLevels.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
         .AddNav("Controls", "widgets", "/controls", secondary => secondary
             .AddSubNav("Inputs", "input", "/controls/inputs", third => third.AddSubNav("Select", "list", "/controls/select"))
-            .AddSubNav("Repeated", "page", "/controls/select")))));
+            .AddSubNav("Repeated", "description", "/controls/select")))));
     var repeatedAcrossModules = new ServiceCollection();
     Throws<ArgumentException>(() => repeatedAcrossModules.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
         .AddNav("Controls", "widgets", "/controls", secondary => secondary
             .AddSubNav("Inputs", "input", "/controls/inputs", third => third.AddSubNav("Select", "list", "/controls/select")))
-        .AddNav("Repeated module", "page", "/controls/select"))));
+        .AddNav("Repeated module", "description", "/controls/select"))));
 });
 Test("navigation children remain optional and record copies expose their current child collection", () => {
     var leaf = new NavigationItem("Leaf", "/leaf");
@@ -238,13 +238,17 @@ Test("navigation children remain optional and record copies expose their current
     Check(ReferenceEquals(children, branch.ChildItems), "A record copy retained stale child metadata.");
     Equal(0, (branch with { Children = null }).ChildItems.Count);
 });
-AsyncTest("the bundled icon catalog renders official names and retains legacy aliases", async () => {
+AsyncTest("the bundled icon catalog renders only official names", async () => {
+    Equal("description", new Icon().Name);
+    Equal("description", new NavigationItem("Default", "/default").Icon);
+    var defaultHtml = await Render<Icon>(new());
+    Check(defaultHtml.Contains("data-icon=\"description\""), "The default icon retained a deleted alias.");
     Equal(4299, IconCatalog.Names.Count, "The pinned Material Symbols name map did not load.");
     Check(IconCatalog.Contains("inventory_2") && IconCatalog.Contains("search"), "Official icon names were missing.");
-    Check(IconCatalog.Contains("user") && IconCatalog.Contains("arrow-left"), "Legacy icon names lost compatibility.");
+    Check(!IconCatalog.Contains("user") && !IconCatalog.Contains("arrow-left"), "Retired icon aliases remain available.");
     Check(!IconCatalog.Contains("an_unknown_icon") && !IconCatalog.Contains(null), "Unknown names were accepted.");
-    var html = await Render<Icon>(new() { ["Name"] = "user" });
-    Check(html.Contains("data-icon=\"person\"") && html.Contains("aria-hidden=\"true\""), "The icon alias or decorative semantics were lost.");
+    var html = await Render<Icon>(new() { ["Name"] = "person" });
+    Check(html.Contains("data-icon=\"person\"") && html.Contains("aria-hidden=\"true\""), "The official icon or decorative semantics were lost.");
     Check(!html.Contains(">person<"), "The icon rendered a text ligature instead of a mapped glyph.");
 });
 AsyncTest("program configuration renders top bar menus, explicit navigation and fixed commands", async () => {
@@ -258,16 +262,18 @@ AsyncTest("program configuration renders top bar menus, explicit navigation and 
             .InjectToCenter<TestInjectedComponent>()
             .InjectToRight<TestInjectedComponent>())
         .ConfigureNavigation(navigation => navigation
-            .AddNav("Records", "list", "/records", secondary => secondary.AddSubNav("Detail", "page", "/records/sample"))
-            .AddNavButton("Run", "play", TestCommandParser.CommandKey)
+            .AddNav("Records", "list", "/records", secondary => secondary.AddSubNav("Detail", "description", "/records/sample"))
+            .AddNavButton("Run", "play_arrow", TestCommandParser.CommandKey)
             .AddFixedNav("Settings", "settings", "/settings")
-            .AddFixedNavButton("Run fixed", "play", TestCommandParser.CommandKey))
+            .AddFixedNavButton("Run fixed", "play_arrow", TestCommandParser.CommandKey))
         .SetCommandParser<TestCommandParser>(), "/records/sample");
     Check(html.Contains("Configured application"), "Configured application name was not rendered.");
     Check(html.Contains("src=\"app.svg\""), "Configured application icon was not rendered.");
     Check(html.Contains("Run action"), "Configured top bar menu item was not rendered.");
     Check(html.Contains("f-action-menu-hover"), "Configured top bar menus did not use hover mode.");
     Equal(3, html.Split("Scoped injection", StringSplitOptions.None).Length - 1, "Configured top bar components were not created in all three regions.");
+    foreach (var track in new[] { "start", "center", "end" })
+        Check(TagsWithClass(html, "f-titlebar-" + track).Single() is { } tag && AttributeValue(tag, "class")!.Split(' ').Contains("f-topbar-slot"), "Configured top-bar injection bypasses common centering: " + track);
     Check(html.Contains("f-secondary-navigation") && html.Contains("href=\"/records/sample\" class=\"f-secondary-item is-selected\""), "Explicit secondary navigation was not selected.");
     Check(html.Contains("f-primary-navigation-fixed") && html.Contains("aria-label=\"Run fixed\""), "Fixed command navigation was not rendered.");
 });
@@ -278,13 +284,12 @@ Test("palette configuration emits mode seeds without deriving extra colors", () 
     var custom = AppearancePalette.Create("#55aaee", "#ffee99");
     Equal("#55AAEE", custom.Primary); Equal(custom.Primary, custom.DarkPrimary);
     Equal("#FFEE99", custom.Accent); Equal(custom.Accent, custom.DarkAccent);
-    var legacy = ThemePalette.FromColors(null, null);
-    Check(legacy.CssVariables.Contains("--f-primary-light:#153A32", StringComparison.Ordinal)
-        && legacy.CssVariables.Contains("--f-accent-light:#16745F", StringComparison.Ordinal)
-        && legacy.CssVariables.Contains("--f-primary-dark:#BBD7C9", StringComparison.Ordinal)
-        && legacy.CssVariables.Contains("--f-accent-dark:#75CBB2", StringComparison.Ordinal)
-        && !legacy.CssVariables.Contains("--f-primary:", StringComparison.Ordinal),
-        "Legacy palette output bypassed mode-specific role selection.");
+    Check(defaults.CssVariables.Contains("--f-primary-light:#153A32", StringComparison.Ordinal)
+        && defaults.CssVariables.Contains("--f-accent-light:#16745F", StringComparison.Ordinal)
+        && defaults.CssVariables.Contains("--f-primary-dark:#BBD7C9", StringComparison.Ordinal)
+        && defaults.CssVariables.Contains("--f-accent-dark:#75CBB2", StringComparison.Ordinal)
+        && !defaults.CssVariables.Contains("--f-primary:", StringComparison.Ordinal),
+        "Palette output bypassed mode-specific role selection.");
     Check(AppearancePalette.Contrast("#000000", "#FFFFFF") > 20
         && AppearancePalette.Contrast("#153A32", "#153A32") == 1,
         "The retained contrast utility no longer reports standard ratios.");
@@ -294,10 +299,16 @@ Test("invalid colors and CSS font declarations cannot reach theme variables", ()
     var services = new ServiceCollection(); Throws<ArgumentException>(() => services.AddFlourishDesign(appearance => appearance.SetFont("Segoe UI; color:red")));
 });
 
-async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = null, Action<IApplicationBuilder>? configure = null, string path = "/records") where TComponent : IComponent {
+async Task<string> Render<TComponent>(Dictionary<string, object?>? parameters = null, Action<IFrameworkBuilder>? configure = null, string path = "/records") where TComponent : IComponent {
     var services = new ServiceCollection();
     services.AddLogging(); services.AddSingleton<NavigationManager>(new TestNavigation(path)); services.AddSingleton<IJSRuntime>(new FakeJs());
-    services.AddFlourish(configure ?? (builder => builder.UseTitleBar(title => title.SetApplicationTitle("Test Application")).UseNavigation(nav => nav.AddGroup("records", "Records", "list", group => group.AddItem("List", "/records", exact: true).AddItem("Unavailable", "/disabled", disabled: true)))));
+    services.AddFlourishFramework(builder => {
+        builder.ConfigureProject(project => project.SetProjectName("Test Application")).ConfigureTopBar(_ => { });
+        if (configure is not null) configure(builder);
+        else builder.ConfigureNavigation(nav => nav.AddNav("Records", "list", "/records", secondary => secondary
+            .AddSubNav("List", "list", "/records", exact: true)
+            .AddSubNav("Unavailable", "block", "/disabled", disabled: true)));
+    });
     using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
     await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
     return await renderer.Dispatcher.InvokeAsync(async () => {
@@ -382,10 +393,9 @@ AsyncTest("button Busy preserves native submit and disabled semantics", async ()
     Equal(1, TagsWithClass(html, "f-sr-only").Count, "Busy status is not functionally hidden.");
     Equal("status", AttributeValue(TagsWithClass(html, "f-busy-text").Single(), "role"));
 });
-AsyncTest("standard button variants retain compatible filled and outlined identities", async () => {
+AsyncTest("standard button variants expose one explicit identity per variant", async () => {
     foreach (var (variant, expectedClass) in new[] {
-        (ButtonVariant.Filled, "f-button-filled"), (ButtonVariant.Primary, "f-button-filled"),
-        (ButtonVariant.Outlined, "f-button-outlined"), (ButtonVariant.Secondary, "f-button-outlined"),
+        (ButtonVariant.Primary, "f-button-primary"), (ButtonVariant.Secondary, "f-button-secondary"),
         (ButtonVariant.Danger, "f-button-danger"), (ButtonVariant.Quiet, "f-button-quiet"),
         (ButtonVariant.Underline, "f-button-underline"), (ButtonVariant.Elevated, "f-button-elevated") }) {
         var html = await Render<Button>(new() { ["Variant"] = variant });
@@ -402,9 +412,9 @@ AsyncTest("button text and icon parameters infer icon-only geometry while preser
     var icon = await Render<Button>(new() { ["Icon"] = "add", ["AdditionalAttributes"] = new Dictionary<string, object> { ["aria-label"] = "Create record" } });
     Equal(1, TagsWithClass(icon, "f-button-icon").Count);
     Equal("Create record", AttributeValue(OpeningTags(icon, "button").Single(), "aria-label"));
-    var legacy = await Render<Button>(new() { ["Icon"] = "add", ["ChildContent"] = (RenderFragment)(builder => builder.AddContent(0, "Legacy label")) });
-    Equal(0, TagsWithClass(legacy, "f-button-icon").Count);
-    Check(legacy.Contains("Legacy label"), "The compatible content slot was dropped.");
+    var slotted = await Render<Button>(new() { ["Icon"] = "add", ["ChildContent"] = (RenderFragment)(builder => builder.AddContent(0, "Slotted label")) });
+    Equal(0, TagsWithClass(slotted, "f-button-icon").Count);
+    Check(slotted.Contains("Slotted label"), "The semantic content slot was dropped.");
     var blank = await Render<Button>();
     Equal(0, TagsWithClass(blank, "f-icon").Count, "An empty default Icon rendered a fallback glyph.");
 });
@@ -441,16 +451,12 @@ AsyncTest("fragment buttons remain on their current document under a root base h
     Equal("https://other.example/help#buttons", AttributeValue(OpeningTags(external, "a").Single(), "href"));
 });
 AsyncTest("page heading parent navigation uses the standard underline button above the title", async () => {
-    foreach (var html in new[] {
-        await Render<PageHeading>(new() { ["Title"] = "Draft", ["ParentLabel"] = "Records", ["ParentHref"] = "/records" }),
-        await Render<ArkheideSystem.Flourish.Blazor.Components.Primitives.RecordPageHeading>(new() {
-            ["Title"] = "Draft", ["ParentLabel"] = "Records", ["ParentHref"] = "/records" }) }) {
-        var parent = TagsWithClass(html, "f-button-underline").Single();
-        Equal("/records", AttributeValue(parent, "href"));
-        Equal(1, TagsWithClass(html, "f-icon").Count);
-        Check(html.IndexOf(parent, StringComparison.Ordinal) < html.IndexOf("<h1", StringComparison.Ordinal), "Parent navigation was rendered after the title.");
-        Check(html.Contains("Records"), "The parent button lost its text.");
-    }
+    var html = await Render<PageHeading>(new() { ["Title"] = "Draft", ["ParentLabel"] = "Records", ["ParentHref"] = "/records" });
+    var parent = TagsWithClass(html, "f-button-underline").Single();
+    Equal("/records", AttributeValue(parent, "href"));
+    Equal(1, TagsWithClass(html, "f-icon").Count);
+    Check(html.IndexOf(parent, StringComparison.Ordinal) < html.IndexOf("<h1", StringComparison.Ordinal), "Parent navigation was rendered after the title.");
+    Check(html.Contains("Records"), "The parent button lost its text.");
 });
 AsyncTest("uniform grid button forwards native and busy semantics without a wrapping element", async () => {
     var html = await Render<UniformGridButton>(new() {
@@ -520,18 +526,17 @@ AsyncTest("form layout composes model-bound multiline input without interpolatin
     Check(html.Contains("&lt;unsafe textarea&gt;") && !html.Contains("<unsafe textarea>"), "Textarea content became HTML.");
 });
 AsyncTest("bottom sheet keeps its accessible title and Busy close policy", async () => {
-    var html = await Render<BottomSheet>(new() { ["Id"] = "review", ["Title"] = "Review <record>", ["IsOpen"] = true, ["Busy"] = true, ["CloseLabel"] = "Close review" });
+    var html = await Render<Dialog>(new() { ["Presentation"] = DialogPresentation.BottomSheet, ["Id"] = "review", ["Title"] = "Review <record>", ["IsOpen"] = true, ["Busy"] = true, ["CloseLabel"] = "Close review" });
     Check(html.Contains("f-bottom-sheet") && html.Contains("aria-modal=\"true\"") && html.Contains("aria-labelledby=\"review-title\""), "Modal title relationship is missing.");
     Check(html.Contains("aria-busy=\"true\"") && html.Contains("disabled") && html.Contains("aria-label=\"Close review\""), "A Busy sheet can be dismissed through its close control.");
     Check(html.Contains("Review &lt;record&gt;"), "Dialog title was not encoded.");
 });
 AsyncTest("notice indicators expose named glyph buttons and unique encoded descriptions", async () => {
-    var names = new Dictionary<ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity, string> {
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Error] = "Error",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Warning] = "Warning",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Success] = "Success",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Information] = "Information",
-        [ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Subtle] = "Information"
+    var names = new Dictionary<NotificationSeverity, string> {
+        [NotificationSeverity.Error] = "Error",
+        [NotificationSeverity.Warning] = "Warning",
+        [NotificationSeverity.Success] = "Success",
+        [NotificationSeverity.Information] = "Information"
     };
     var ids = new HashSet<string>(StringComparer.Ordinal);
     foreach (var (severity, name) in names) {
@@ -546,34 +551,47 @@ AsyncTest("notice indicators expose named glyph buttons and unique encoded descr
         Check(!button.Contains(name), "The old text severity badge remained in the button.");
     }
 });
+AsyncTest("subtle notice presentation retains its explicit information severity", async () => {
+    var html = await Render<ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>(new() {
+        ["Severity"] = NotificationSeverity.Information, ["Subtle"] = true,
+        ["ChildContent"] = (RenderFragment)(builder => builder.AddContent(0, "Additional <information>")) });
+    Check(TagsWithClass(html, "notice-subtle").Count == 1 && html.Contains("aria-label=\"Information\""), "Subtle presentation changed the information severity or lost its named trigger.");
+    Check(html.Contains("Additional &lt;information&gt;") && html.Contains("role=\"note\""), "Subtle help text lost encoding or note semantics.");
+});
 AsyncTest("dialog close guard retains values on refusal and rejects concurrent close", async () => {
-    var dialog = new Dialog(); var closed = 0; var gateCalls = 0;
-    void Set(string property, object? value) => typeof(Dialog).GetProperty(property)!.SetValue(dialog, value);
-    Set("IsOpen", true); Set("Busy", true); Set("IsOpenChanged", EventCallback.Factory.Create<bool>(new object(), (bool _) => closed++));
-    await dialog.RequestCloseAsync(); Equal(0, closed);
-    Set("Busy", false); Set("CanClose", (Func<Task<bool>>)(() => Task.FromResult(false)));
-    await dialog.RequestCloseAsync(); Equal(0, closed);
+    await using var fixture = new DialogFixture(); var closed = 0; var gateCalls = 0;
+    await fixture.Render<Dialog>(new() { ["Title"] = "Guard", ["IsOpen"] = true, ["Busy"] = true,
+        ["IsOpenChanged"] = EventCallback.Factory.Create<bool>(fixture, (bool _) => closed++) });
+    var dialog = fixture.Component<Dialog>();
+    Task Set(Dictionary<string, object?> parameters) => fixture.Dispatch(() => dialog.SetParametersAsync(ParameterView.FromDictionary(parameters)));
+    await fixture.Dispatch(() => dialog.RequestCloseAsync()); Equal(0, closed);
+    await Set(new() { ["Busy"] = false, ["CanClose"] = (Func<Task<bool>>)(() => Task.FromResult(false)) });
+    await fixture.Dispatch(() => dialog.RequestCloseAsync()); Equal(0, closed);
     var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-    Set("CanClose", (Func<Task<bool>>)(() => { gateCalls++; return completion.Task; }));
-    var first = dialog.RequestCloseAsync(); await dialog.RequestCloseAsync(); Equal(1, gateCalls);
-    completion.SetResult(true); await first; Equal(1, closed);
-    await dialog.DisposeAsync(); await dialog.RequestCloseAsync(); Equal(1, closed);
+    await Set(new() { ["CanClose"] = (Func<Task<bool>>)(() => { gateCalls++; return completion.Task; }) });
+    Task? first = null;
+    await fixture.Dispatch(() => { first = dialog.RequestCloseAsync(); return Task.CompletedTask; });
+    await fixture.Dispatch(() => dialog.RequestCloseAsync()); Equal(1, gateCalls);
+    completion.SetResult(true); await first!; Equal(1, closed);
+    await fixture.Dispatch(async () => { await dialog.DisposeAsync(); await dialog.RequestCloseAsync(); }); Equal(1, closed);
 });
 
-AsyncTest("host-supplied navigation and title override configured shell data", async () => {
-    IReadOnlyList<NavigationGroup> runtime = [new("allowed", "Allowed module", "page", [new("Allowed page", "/records", Exact: true)])];
-    var html = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime, ["ApplicationTitle"] = "Organization <North>" });
-    Check(html.Contains("Allowed module") && html.Contains("Allowed page") && !html.Contains("Unavailable"), "Shell merged configured navigation into the host's filtered override.");
+AsyncTest("configured allowed navigation and runtime title remain distinct from omitted routes", async () => {
+    var html = await Render<ApplicationShell>(new() { ["ApplicationTitle"] = "Organization <North>" },
+        configure: framework => framework.ConfigureNavigation(nav => nav
+            .AddNav("Allowed module", "description", "/records", secondary => secondary.AddSubNav("Allowed page", "description", "/records", exact: true))));
+    Check(html.Contains("Allowed module") && html.Contains("Allowed page") && !html.Contains("Unavailable"), "The configured permission-filtered navigation gained an omitted route.");
     Check(html.Contains("Organization &lt;North&gt;") && !html.Contains("Test Application"), "Runtime organization title was not substituted and encoded.");
-    var empty = await Render<ApplicationShell>(new() { ["NavigationGroups"] = Array.Empty<NavigationGroup>(), ["ApplicationTitle"] = "Account" });
-    Check(empty.Contains("f-no-navigation") && !empty.Contains("f-primary-navigation"), "An empty host navigation leaked startup routes.");
+    var empty = await Render<ApplicationShell>(new() { ["ApplicationTitle"] = "Account" }, configure: framework => framework.ConfigureNavigation(_ => { }));
+    Check(empty.Contains("f-no-navigation") && !empty.Contains("f-primary-navigation"), "An empty configured navigation gained startup routes.");
 });
 AsyncTest("nested routes select only the most specific secondary item", async () => {
-    IReadOnlyList<NavigationGroup> runtime = [new("records", "Records", "list", [new("List", "/records"), new("Detail", "/records/sample")])];
-    var detail = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime }, path: "/records/sample");
+    Action<IFrameworkBuilder> configure = framework => framework.ConfigureNavigation(nav => nav
+        .AddNav("Records", "list", "/records", secondary => secondary.AddSubNav("List", "list", "/records").AddSubNav("Detail", "description", "/records/sample")));
+    var detail = await Render<ApplicationShell>(configure: configure, path: "/records/sample");
     Equal(1, detail.Split("aria-current=\"page\"", StringSplitOptions.None).Length - 1);
     Check(detail.Contains("href=\"/records/sample\" class=\"f-secondary-item is-selected\""), "The parent route displaced the specific detail page.");
-    var other = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime }, path: "/records/other");
+    var other = await Render<ApplicationShell>(configure: configure, path: "/records/other");
     Equal(1, other.Split("aria-current=\"page\"", StringSplitOptions.None).Length - 1);
     Check(other.Contains("href=\"/records\" class=\"f-secondary-item is-selected\""), "The parent stopped matching an unlisted record.");
 });
@@ -662,10 +680,11 @@ AsyncTest("a shorter child prefix cannot displace its more specific parent desti
     Check(!TagsWithClass(html, "f-third-item").Any(tag => AttributeValue(tag, "aria-current") == "page"), "A shorter child route overrode the more specific parent.");
 });
 AsyncTest("disabled parent branches disable their descendants and exclude them from route selection", async () => {
-    IReadOnlyList<NavigationGroup> runtime = [new("controls", "Controls", "widgets", [
-        new("Overview", "/controls"),
-        new("Unavailable category", "/controls/blocked", Disabled: true, Children: [new("Unavailable leaf", "/controls/blocked/leaf")])])];
-    var html = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime }, path: "/controls/blocked/leaf");
+    var html = await Render<ApplicationShell>(configure: framework => framework.ConfigureNavigation(nav => nav
+        .AddNav("Controls", "widgets", "/controls", secondary => secondary
+            .AddSubNav("Overview", "home", "/controls")
+            .AddSubNav("Unavailable category", "block", "/controls/blocked", third => third
+                .AddSubNav("Unavailable leaf", "description", "/controls/blocked/leaf"), disabled: true))), path: "/controls/blocked/leaf");
     var selected = OpeningTags(html, "a").Single(tag => AttributeValue(tag, "aria-current") == "page");
     Equal("/controls", AttributeValue(selected, "href"));
     var child = TagsWithClass(html, "f-third-item").Single();
@@ -682,20 +701,25 @@ AsyncTest("disabled parent branches disable their descendants and exclude them f
     Equal("false", AttributeValue(toggle, "aria-expanded"));
 });
 AsyncTest("branch collapse survives same-path rerenders while navigation reopens the current branch per shell instance", async () => {
-    var branch = new NavigationItem("Inputs", "/controls/inputs", Children: [
-        new("Select", "/controls/inputs/select", Exact: true), new("Text", "/controls/inputs/text", Exact: true)]);
-    IReadOnlyList<NavigationGroup> groups = [new("controls", "Controls", "widgets", [branch])];
     var navigation = new TestNavigation("/controls/inputs/select");
     var activator = new ShellActivator();
     var services = new ServiceCollection();
     services.AddLogging(); services.AddSingleton<NavigationManager>(navigation); services.AddSingleton<IJSRuntime>(new FakeJs());
-    services.AddSingleton<IComponentActivator>(activator); services.AddFlourishFramework();
+    services.AddSingleton<IComponentActivator>(activator);
+    services.AddFlourishFramework(framework => framework.ConfigureNavigation(nav => nav
+        .AddNav("Controls", "widgets", "/controls", secondary => secondary
+            .AddSubNav("Inputs", "input", "/controls/inputs", third => third
+                .AddSubNav("Select", "list", "/controls/inputs/select", exact: true)
+                .AddSubNav("Text", "text_fields", "/controls/inputs/text", exact: true)))));
     using var provider = services.BuildServiceProvider(); using var firstScope = provider.CreateScope();
     await using var renderer = new HtmlRenderer(firstScope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
     await renderer.Dispatcher.InvokeAsync(async () => {
-        var parameters = new Dictionary<string, object?> { [nameof(ApplicationShell.NavigationGroups)] = groups };
+        var parameters = new Dictionary<string, object?>();
         var output = await renderer.RenderComponentAsync<ApplicationShell>(ParameterView.FromDictionary(parameters));
         var shell = activator.Instances.Single();
+        var configuredPrimaryNavigation = (IReadOnlyList<NavigationEntry>)typeof(ApplicationShell)
+            .GetProperty("PrimaryEntries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(shell)!;
+        var branch = configuredPrimaryNavigation.Single().SecondaryItems.Single();
         var toggleMethod = typeof(ApplicationShell).GetMethod("ToggleItem", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("Navigation branch handler was not found.");
         var toggle = EventCallback.Factory.Create(shell, (Action)(() => toggleMethod.Invoke(shell, [branch])));
@@ -761,8 +785,7 @@ AsyncTest("branch collapse survives same-path rerenders while navigation reopens
     });
 });
 AsyncTest("rail-only navigation omits secondary chrome while keeping the module", async () => {
-    IReadOnlyList<NavigationGroup> runtime = [new("overview", "Overview", "home", [new("Home", "/", Exact: true)], SecondaryNavigation: false)];
-    var html = await Render<ApplicationShell>(new() { ["NavigationGroups"] = runtime });
+    var html = await Render<ApplicationShell>(configure: framework => framework.ConfigureNavigation(nav => nav.AddNav("Overview", "home", "/", exact: true)));
     Check(html.Contains("f-no-secondary") && html.Contains("f-primary-navigation") && !html.Contains("f-secondary-navigation"), "A module without secondary pages reserved a phantom rail.");
 });
 AsyncTest("shell brand and start slots render without host-owned layout markup", async () => {
@@ -806,8 +829,16 @@ GridChecks.Register(tests);
 DropdownChecks.Register(tests);
 LifecycleChecks.Register(tests);
 DataTableChecks.Register(tests);
+MultiSelectBoxChecks.Register(tests);
 ListViewChecks.Register(tests);
 SplitButtonChecks.Register(tests);
+ButtonUnavailableChecks.Register(tests);
+DialogResultChecks.Register(tests);
+ValidationMessagesChecks.Register(tests);
+NavigationChoicesChecks.Register(tests);
+DialogViewChecks.Register(tests);
+NavigationGuardChecks.Register(tests);
+NoCompatibilityApiChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);

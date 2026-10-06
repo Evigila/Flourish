@@ -1,6 +1,6 @@
 @page "/"
 <PageTitle>Native controls</PageTitle>
-<ApplicationShell>
+<ApplicationShell OwnsDocument="true">
     <ChildContent>
         <PageBody>
             <PageHeading Title="Native controls" />
@@ -16,13 +16,13 @@
             <Button OnClick="() => sheet = true">Open sheet</Button>
             <label for="masked">Masked native input</label>
             <ArkheideSystem.Flourish.Blazor.Components.Primitives.StandaloneMaskedInput id="masked" Mask="000.000.000-00" @bind-Value="masked" />
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeSeverity.Information">Native notice content</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection Label="Native disclosure"><p>Disclosure content</p></ArkheideSystem.Flourish.Blazor.Components.Primitives.DisclosureSection>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="ArkheideSystem.Flourish.Abstract.NotificationSeverity.Information">Native notice content</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>
+            <Disclosure Title="Native disclosure"><p>Disclosure content</p></Disclosure>
             <ProgressBar Value="35" Label="Progress" />
             <DataTable TItem="Entry" Items="entries" Columns="columns" Label="Entries" />
         </PageBody>
         <Dialog @bind-IsOpen="dialog" Title="Dialog"><p>Dialog content</p></Dialog>
-        <BottomSheet @bind-IsOpen="sheet" Title="Sheet"><p>Sheet content</p></BottomSheet>
+        <Dialog @bind-IsOpen="sheet" Title="Sheet" Presentation="DialogPresentation.BottomSheet"><p>Sheet content</p></Dialog>
     </ChildContent>
 </ApplicationShell>
 @code {

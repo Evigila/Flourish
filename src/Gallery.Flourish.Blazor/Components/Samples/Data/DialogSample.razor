@@ -9,7 +9,7 @@
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Dialog")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Dialog", Description = "确认操作直接使用 Dialog；Actions 中使用 Button。ShowAsync 返回关闭结果，CloseAsync(true) 表示确认。关闭许可和忙碌状态由同一通用控件管理；底部面板使用 Presentation.BottomSheet。浏览器协议场景另见重连示例。")]
 
 <div class="f-inline-actions">
     <Button Variant="ButtonVariant.Secondary" OnClick="() => Open(DialogPresentation.Centered)">打开居中对话框</Button>
@@ -19,32 +19,57 @@
 {
     <CheckBox Label="模拟未完成输入，阻止关闭" @bind-Value="PreventClose" />
     <p role="status">已归档 @CompletedCount 次。</p>
+    <Button Variant="ButtonVariant.Underline" Href="/examples/overlays/reconnect">重连状态组合示例</Button>
 }
-<Dialog Title="@(Preview ? "空白对话框" : "归档演示草稿")" @bind-IsOpen="IsOpen" Presentation="Presentation" Busy="Busy" CanClose="CanCloseAsync" CloseLabel="关闭">
+<Dialog @ref="Modal" Title="@(Preview ? "空白对话框" : "归档演示草稿")" Presentation="Presentation" Busy="Busy" CanClose="CanCloseAsync" CloseLabel="关闭">
     <ChildContent>
-        @if (!Preview) { <p>示例草稿 A 为虚构数据。确认只更新本地计数。</p> }
+        @if (!Preview)
+        {
+            <p>确认归档演示草稿 A？</p>
+            @if (Presentation == DialogPresentation.BottomSheet)
+            {
+                <Field Label="备注" Id="@(Identifier + "-note")"><StandaloneTextBox Id="@(Identifier + "-note")" @bind-Value="Note" Multiline="true" Rows="3" /></Field>
+            }
+        }
     </ChildContent>
     <Actions>
         @if (!Preview)
         {
             <Button Busy="Busy" BusyLabel="正在归档" OnClick="CompleteAsync">确认归档</Button>
-            <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="() => IsOpen = false">取消</Button>
+            <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="CancelAsync">取消</Button>
         }
     </Actions>
 </Dialog>
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private bool IsOpen, Busy, PreventClose;
+    private Dialog? Modal;
+    private readonly string Identifier = "dialog-sample-" + Guid.NewGuid().ToString("N");
+    private string? Note = "虚构草稿备注。";
+    private bool Busy, PreventClose;
     private int CompletedCount;
     private DialogPresentation Presentation;
-    private void Open(DialogPresentation presentation) { Presentation = presentation; IsOpen = true; }
+    private async Task Open(DialogPresentation presentation)
+    {
+        Presentation = presentation;
+        var result = await Modal!.ShowAsync();
+        if (result is true) CompletedCount++;
+    }
+    private Task CancelAsync() => Modal!.CloseAsync();
     private Task<bool> CanCloseAsync() => Task.FromResult(!PreventClose || Preview);
     private async Task CompleteAsync()
     {
         if (Busy) return;
         Busy = true;
-        try { await Task.Delay(600); CompletedCount++; PreventClose = false; IsOpen = false; }
+        try
+        {
+            await Task.Delay(600);
+            PreventClose = false;
+            Busy = false;
+            await InvokeAsync(StateHasChanged);
+            await Task.Yield();
+            await Modal!.CloseAsync(true);
+        }
         finally { Busy = false; }
     }
 }

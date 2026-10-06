@@ -22,7 +22,7 @@
 else
 {
     <ToggleSwitch Label="改用单列" @bind-Value="SingleColumn" OnLabel="单列" OffLabel="双列" />
-    <EditForm Model="Model" FormName="Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
+    <EditForm Model="Model" FormName="@Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
         <DataAnnotationsValidator />
         <FormLayout Columns="@(SingleColumn ? 1 : 2)">
             <Field Label="报名人" Id="@(Prefix + "-name")" Required="true" For="@(() => Model.Name)"><TextBox @bind-Value="Model.Name" /></Field>

@@ -1,0 +1,8 @@
+.f-multi-select-panel { min-width:min(260px,80vw); max-width:min(380px,calc(100vw - 40px)); max-height:min(420px,70dvh); }
+.f-multi-select-panel label { color:var(--f-text); font-weight:400; overflow-wrap:anywhere; cursor:pointer; }
+.f-multi-select-panel input[type=checkbox] { display:grid; place-content:center; appearance:none; width:var(--f-control-height,48px); height:var(--f-control-height,48px); flex:0 0 var(--f-control-height,48px); margin:0; border:1px solid var(--f-border); border-radius:6px; background:var(--f-surface); cursor:inherit; }
+.f-multi-select-panel input[type=checkbox]:checked { border-color:var(--f-border); background:var(--f-primary); }
+.f-multi-select-panel input[type=checkbox]:active:not(:disabled) { background:var(--f-target-click); }
+.f-multi-select-panel input[type=checkbox]:checked:active:not(:disabled) { background:var(--f-primary-click); }
+.f-multi-select-panel input[type=checkbox]:checked::after { content:''; display:block; width:6px; height:11px; margin:0; border-right:2px solid var(--f-accent-ink); border-bottom:2px solid var(--f-accent-ink); transform:rotate(45deg); }
+.f-multi-select-panel input[type=checkbox]:disabled { opacity:.55; cursor:not-allowed; }

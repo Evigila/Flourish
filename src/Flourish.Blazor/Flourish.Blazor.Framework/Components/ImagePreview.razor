@@ -1,0 +1,16 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<figure class="f-image-preview">
+    <img src="@Url" alt="@Alt" />
+    @if (ChildContent is not null || Actions is not null)
+    {
+        <figcaption>@ChildContent @if (Actions is not null) { <InlineActions>@Actions</InlineActions> }</figcaption>
+    }
+</figure>
+
+@code {
+    [Parameter, EditorRequired] public string Url { get; set; } = "";
+    [Parameter, EditorRequired] public string Alt { get; set; } = "";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
+}

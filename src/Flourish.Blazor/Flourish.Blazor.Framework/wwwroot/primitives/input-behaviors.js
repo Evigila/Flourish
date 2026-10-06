@@ -32,15 +32,6 @@ document.addEventListener("input", event => {
     input.setSelectionRange(formattedPrefix.length, formattedPrefix.length);
 }, { capture: true });
 
-document.addEventListener("dragstart", event => {
-    const option = event.target instanceof Element
-        ? event.target.closest("[data-column-drag-key][draggable='true']")
-        : null;
-    if (!option || !event.dataTransfer) return;
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", option.dataset.columnDragKey ?? "");
-});
-
 function normalizeMaskValue(mask, value) {
     const candidates = Array.from(value).filter(character => /[0-9A-Za-z]/.test(character));
     const result = [];

@@ -1,0 +1,68 @@
+@using ArkheideSystem.Flourish.Blazor.Components
+@using Microsoft.AspNetCore.Components
+@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Threading.Tasks
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("MultiSelectBox", Description = "最多选择三个标签。“阅读”保持选中并固定位置；“暂未开放”不可选择。开启排序后，可拖拽完整行或聚焦行后用上下键调整顺序。\n表格与图表同样复用 MultiSelectBox。它们将显示成员映射为选项，并明确设置“显示”标签和排序；库负责保留列与序列状态，业务页提供原始数据。")]
+
+@if (Preview)
+{
+    <MultiSelectBox Id="@(Prefix + "-choices")" Label="活动标签" Items="PreviewOptions" EmptySelectionText="未选择" MultipleSelectionText="个标签已选择" />
+    <MultiSelectBox Id="@(Prefix + "-empty")" Label="空选项" Items="EmptyOptions" EmptyText="没有选项" EmptySelectionText="未选择" />
+    <MultiSelectBox Id="@(Prefix + "-disabled")" Label="禁用" Items="PreviewOptions" Disabled="true" />
+}
+else
+{
+    <FormLayout>
+        <ToggleSwitch Label="搜索与新增" @bind-Value="Searchable" />
+        <ToggleSwitch Label="允许排序" @bind-Value="CanReorder" />
+        <ToggleSwitch Label="禁用控件" @bind-Value="Disabled" />
+    </FormLayout>
+    <MultiSelectBox Id="@(Prefix + "-tags")" Label="活动标签" Items="Tags" Changed="AcceptSelection"
+                    MinimumSelected="1" MaximumSelections="3" CanReorder="CanReorder" Searchable="Searchable"
+                    CreateRequested="@(Searchable ? CreateTag : null)" NewItemMaximumLength="40" Disabled="Disabled"
+                    EmptyText="没有匹配标签" EmptySelectionText="未选择" MultipleSelectionText="个标签已选择" />
+    <p role="status">已选标签：@string.Join("、", Tags.Where(option => option.Selected).Select(option => option.Label))</p>
+    <Button Variant="ButtonVariant.Secondary" OnClick="Reset" Disabled="Disabled">恢复标签</Button>
+    <InlineActions>
+        <Button Variant="ButtonVariant.Underline" Href="/controls/data/datatablesample">表格示例</Button>
+        <Button Variant="ButtonVariant.Underline" Href="/controls/data/linechartsample">图表示例</Button>
+    </InlineActions>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Prefix = "sample-multi-select-" + Guid.NewGuid().ToString("N");
+    private static readonly IReadOnlyList<MultiSelectOption> EmptyOptions = [];
+    private static readonly IReadOnlyList<MultiSelectOption> PreviewOptions = [new("reading", "阅读"), new("photography", "摄影与影像制作交流小组（虚构）")];
+    private IReadOnlyList<MultiSelectOption> Tags = InitialTags();
+    private bool Searchable = true;
+    private bool CanReorder;
+    private bool Disabled;
+    private int NextTagId;
+
+    private static IReadOnlyList<MultiSelectOption> InitialTags() =>
+    [
+        new("reading", "阅读", Selected: true, CanDeselect: false, CanReorder: false),
+        new("photography", "摄影与影像制作交流小组（虚构）"),
+        new("discussion", "交流"),
+        new("outdoors", "户外探索（虚构）"),
+        new("unavailable", "暂未开放", Disabled: true)
+    ];
+
+    private void AcceptSelection(MultiSelectChange change) => Tags = change.OrderedKeys
+        .Select(key => Tags.Single(option => option.Key == key) with { Selected = change.SelectedKeys.Contains(key) }).ToArray();
+
+    private Task<bool> CreateTag(string name)
+    {
+        if (Disabled || Tags.Count(option => option.Selected) >= 3 || Tags.Any(option => string.Equals(option.Label, name, StringComparison.OrdinalIgnoreCase)))
+            return Task.FromResult(false);
+        Tags = [.. Tags, new("created-" + ++NextTagId, name, Selected: true)];
+        StateHasChanged();
+        return Task.FromResult(true);
+    }
+
+    private void Reset() => Tags = InitialTags();
+}

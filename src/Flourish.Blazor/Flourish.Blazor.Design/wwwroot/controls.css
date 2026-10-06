@@ -22,6 +22,8 @@
 .f-button-elevated:hover:not(:disabled):not([aria-disabled=true]){background:var(--f-target-preview)}
 .f-button-elevated:active:not(:disabled):not([aria-disabled=true]){background:var(--f-target-click)}
 .f-button:disabled,.f-button[aria-disabled=true]{color:var(--f-disabled);background:transparent;border-color:var(--f-border);box-shadow:none;cursor:not-allowed}
+/* Availability removes interaction, not the Elevated variant's surface/elevation identity. */
+.f-button.f-button-elevated:disabled,.f-button.f-button-elevated[aria-disabled=true]{background:var(--f-surface);box-shadow:var(--f-shadow-control)}
 .f-button:focus-visible,.f-input:focus-visible,.f-checkbox:focus-visible,.f-toggle:focus-visible,.f-menu-trigger:focus-visible,.f-menu-item:focus-visible,.f-disclosure>summary:focus-visible,.f-dialog-close:focus-visible{outline:3px solid var(--f-accent);outline-offset:3px}
 .f-button-primary:focus-visible{box-shadow:0 0 0 2px var(--f-surface)}
 .f-form-layout{display:grid;grid-template-columns:repeat(var(--f-form-columns,2),minmax(0,1fr));gap:24px;min-width:0}
@@ -52,12 +54,12 @@
 .f-toggle[aria-checked="true"] .f-toggle-thumb{transform:translateX(22px)}
 .f-toggle:hover:not(:disabled){color:var(--f-accent-text)}.f-toggle:focus-visible{outline-offset:4px}.f-toggle:disabled{opacity:.55;cursor:default}
 .f-toggle:active:not(:disabled) .f-toggle-track{background:var(--f-primary-click)}
-.f-notice{display:grid;gap:6px;padding:13px 16px;border-radius:10px;font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif);color:var(--notice-text,var(--f-info-text));background:var(--notice-background,var(--f-surface));overflow-wrap:anywhere}
-.f-notice-information,.notice-info{--notice-text:var(--f-info-text);--notice-background:var(--f-surface)}
-.f-notice-success,.notice-success{--notice-text:var(--f-surface);--notice-background:var(--f-primary)}
-.f-notice-warning,.notice-warning{--notice-text:var(--f-warning-ink);--notice-background:var(--f-warning-background)}
-.f-notice-error,.notice-error{--notice-text:var(--f-surface);--notice-background:var(--f-danger)}
-.f-notice-subtle,.notice-subtle{--notice-text:var(--f-muted);--notice-background:var(--f-display-board)}
+.f-notice{display:grid;gap:6px;padding:13px 16px;border-radius:10px;font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif);color:var(--f-notice-text,var(--f-info-text));background:var(--f-notice-background,var(--f-surface));overflow-wrap:anywhere}
+.f-notice-information{--f-notice-text:var(--f-info-text);--f-notice-background:var(--f-surface)}
+.f-notice-success{--f-notice-text:var(--f-surface);--f-notice-background:var(--f-primary)}
+.f-notice-warning{--f-notice-text:var(--f-warning-ink);--f-notice-background:var(--f-warning-background)}
+.f-notice-error{--f-notice-text:var(--f-surface);--f-notice-background:var(--f-danger)}
+.f-notice-subtle{--f-notice-text:var(--f-muted);--f-notice-background:var(--f-display-board)}
 .f-loading{display:flex;align-items:center;gap:12px;color:var(--f-muted);font-size:17px}
 .f-spinner{display:inline-block;box-sizing:border-box;width:20px;height:20px;flex:0 0 20px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:f-spin .9s linear infinite}
 @keyframes f-spin{to{transform:rotate(360deg)}}
@@ -68,11 +70,10 @@
 .f-disclosure{min-width:0;margin-block:24px;color:var(--f-text)}.f-disclosure>summary{display:flex;align-items:center;gap:12px;min-height:48px;list-style:none;cursor:pointer;font-size:17px;font-weight:600;padding:8px 0;border-radius:12px}.f-disclosure>summary::-webkit-details-marker{display:none}.f-disclosure-content{display:grid;min-width:0;gap:24px;padding-top:16px}
 .f-action-menu{display:inline-flex}.f-menu-trigger{display:grid;width:var(--f-control-height,48px);height:var(--f-control-height,48px);min-height:var(--f-control-height,48px);place-items:center;padding:0;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--f-text);font-weight:800;letter-spacing:1px;line-height:1;cursor:pointer}.f-menu-trigger:hover:not(:disabled),.f-menu-trigger[aria-expanded="true"]{background:var(--f-target-preview);border-color:var(--f-border)}
 .f-menu-panel{--f-target-preview:var(--f-surface-preview);--f-target-click:var(--f-surface-click);display:none;position:fixed;inset:auto;width:max-content;margin:0;padding:6px;box-sizing:border-box;min-width:190px;max-width:min(320px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;color:var(--f-text);background:var(--f-surface);border:1px solid var(--f-border);border-radius:16px;box-shadow:var(--f-shadow-card,0 1px 2px rgb(from var(--f-primary) r g b / 6%));font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif)}
-.f-menu-panel:not(:popover-open):not([data-f-open]){display:none}.f-menu-panel[data-f-open]{display:block;z-index:1000}.f-menu-item{display:flex;width:100%;min-height:38px;align-items:center;padding:8px 10px;border:0;border-radius:10px;color:inherit;background:transparent;text-align:start;font:inherit;font-weight:400;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.f-menu-item:hover:not(:disabled),.f-menu-item:focus-visible{background:var(--f-target-preview)}.f-menu-danger{color:var(--f-danger)}.f-menu-item:disabled,.f-menu-trigger:disabled{opacity:.55;cursor:not-allowed}
+.f-menu-panel:not(:popover-open):not([data-f-open]){display:none}.f-menu-panel[data-f-open]{display:block;z-index:1000}.f-menu-item{display:flex;width:100%;min-height:38px;align-items:center;padding:8px 10px;border:0;border-radius:10px;color:inherit;background:transparent;text-align:start;font:inherit;font-weight:400;white-space:normal;overflow-wrap:anywhere;cursor:pointer}.f-menu-item:hover:not(:disabled):not([aria-disabled="true"]),.f-menu-item:focus-visible:not(:disabled):not([aria-disabled="true"]){background:var(--f-target-preview)}.f-menu-danger{color:var(--f-danger)}.f-menu-item:disabled,.f-menu-item[aria-disabled="true"],.f-menu-trigger:disabled{opacity:.55;cursor:not-allowed}
 .f-dialog{width:min(640px,calc(100vw - 40px));max-height:calc(100dvh - 40px);padding:0;box-sizing:border-box;color:var(--f-text);background:var(--f-surface);border:1px solid var(--f-border);border-radius:16px;overflow:hidden;font:400 17px/1.45 var(--f-font,"Segoe UI",sans-serif)}
 .f-dialog[open]{display:flex;flex-direction:column}.f-dialog::backdrop{background:rgb(from var(--f-primary) r g b / 40%)}.f-dialog-header{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px}.f-dialog-header h2{margin:0;min-width:0;font-size:28px;font-weight:760;line-height:1.14;overflow-wrap:anywhere}.f-dialog-close{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;padding:0;color:var(--f-text);border:0;border-radius:12px;background:transparent;cursor:pointer}.f-dialog-close svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8}.f-dialog-close:hover:not(:disabled){background:var(--f-target-preview)}.f-dialog-close:active:not(:disabled){background:var(--f-target-click)}.f-dialog-close:disabled{opacity:.55;cursor:not-allowed}.f-dialog-body{min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:24px}.f-dialog-actions{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;gap:12px;padding:16px 24px}
 .f-bottom-sheet{position:fixed;inset:auto 0 0;width:100%;max-width:none;max-height:calc(100dvh - 24px);margin:0;border:0;border-radius:24px 24px 0 0;box-shadow:none}.f-bottom-sheet[open]{animation:f-sheet-enter 180ms ease-out}.f-bottom-sheet .f-dialog-header,.f-bottom-sheet .f-dialog-body,.f-bottom-sheet .f-dialog-actions{width:100%;max-width:960px;box-sizing:border-box;margin-inline:auto}@keyframes f-sheet-enter{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.f-modal-backdrop{position:fixed;inset:0;z-index:1100;background:rgb(from var(--f-primary) r g b / 40%)}.f-dialog-fallback{position:fixed;inset:50% auto auto 50%;z-index:1101;transform:translate(-50%,-50%);margin:0}.f-dialog-fallback.f-bottom-sheet{inset:auto 0 0;transform:none}
 @media(max-width:760px){.f-field-errors{position:static;max-width:none;width:auto;margin-top:1px}}
 @media(max-width:760px){.f-form-layout{grid-template-columns:minmax(0,1fr)}.f-form-actions{grid-template-columns:repeat(var(--f-action-narrow-columns,2),minmax(0,1fr))}.f-bottom-sheet{max-height:calc(100dvh - 12px)}.f-dialog-header,.f-dialog-body,.f-dialog-actions{padding-inline:20px}}
 @media(prefers-reduced-motion:reduce){.f-spinner{animation:none}.f-toggle-track,.f-toggle-thumb{transition:none}.f-bottom-sheet[open]{animation:none}.f-select::picker-icon{transition:none}}
@@ -102,5 +103,5 @@
 /* Pressed feedback is distinct from hover and persistent selection. */
 .f-checkbox:active:not(:disabled){background:var(--f-target-click)}.f-checkbox:checked:active:not(:disabled){background:var(--f-primary-click)}
 .f-menu-trigger:active:not(:disabled){background:var(--f-target-click);border-color:var(--f-border)}
-.f-menu-item:active:not(:disabled){background:var(--f-target-click)}
+.f-menu-item:active:not(:disabled):not([aria-disabled="true"]){background:var(--f-target-click)}
 .f-disclosure>summary:hover{color:var(--f-text);background:var(--f-target-preview)}.f-disclosure>summary:active{color:var(--f-text);background:var(--f-target-click)}.f-disclosure>summary:active .f-toggle-track{background:var(--f-primary-click)}

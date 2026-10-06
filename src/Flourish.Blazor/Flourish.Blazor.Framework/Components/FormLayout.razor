@@ -2,7 +2,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div @ref="Element" @attributes="AdditionalAttributes" class="f-form-layout @Class" style="--f-form-columns:@Columns">@ChildContent</div>
+<div @ref="Element" @attributes="AdditionalAttributes" class="f-form-layout @(FullWidth ? "f-field-full" : null) @Class" style="--f-form-columns:@Columns">@ChildContent</div>
 
 @code {
     private ElementReference Element;
@@ -12,6 +12,7 @@
     private EditContext? SubscribedContext;
     [CascadingParameter] private EditContext? FormContext { get; set; }
     [Parameter] public int Columns { get; set; } = 2;
+    [Parameter] public bool FullWidth { get; set; }
     [Parameter] public bool FocusInvalidFields { get; set; } = true;
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }

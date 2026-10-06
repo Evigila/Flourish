@@ -1,0 +1,9 @@
+/* AccessBrand owns its typography; PresentationBand / AccessPanel own page geometry. */
+.access-brand { gap:22px; margin-bottom:42px; }
+.access-logo, .access-logo img { width:88px; height:88px; max-width:none; }
+.access-brand h1 { margin:0; color:var(--f-text); font-size:var(--f-type-page,50px); font-weight:780; letter-spacing:-.055em; line-height:1.08; }
+.access-brand .access-context { color:var(--f-accent); }
+.access-brand p { max-width:660px; margin:10px 0 0; color:var(--f-muted); font-size:var(--f-type-body,17px); }
+@media(max-width:760px) {
+ .access-logo, .access-logo img { width:72px; height:72px; }
+}

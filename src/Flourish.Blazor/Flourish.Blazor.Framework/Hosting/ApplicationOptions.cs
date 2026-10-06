@@ -3,8 +3,6 @@ using ArkheideSystem.Flourish.Blazor.Abstract;
 using Microsoft.AspNetCore.Components;
 using ICommandParser = ArkheideSystem.Flourish.Abstract.ICommandParser;
 
-#pragma warning disable CS0618 // Compatibility implementation for the previous public builder surface.
-
 namespace ArkheideSystem.Flourish.Blazor.Hosting;
 
 internal sealed record ProjectOptions(
@@ -45,11 +43,10 @@ internal sealed record ApplicationOptions(
     LayoutOptions Layout,
     IReadOnlyList<NavigationEntry> PrimaryNavigation,
     IReadOnlyList<NavigationEntry> FixedNavigation,
-    IReadOnlyList<NavigationGroup> LegacyNavigation,
     Type? CommandParserType,
     IReadOnlyDictionary<object, TextReference> LabelReferences);
 
-internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder, ITopBarBuilder, ITitleBarBuilder, INavigationBuilder, ILayoutBuilder
+internal sealed class ApplicationBuilder : IFrameworkBuilder, IProjectBuilder, ITopBarBuilder, INavigationBuilder, ILayoutBuilder
 {
     private readonly Dictionary<object, TextReference> labelReferences = new(ReferenceEqualityComparer.Instance);
     private bool completed;
@@ -62,7 +59,6 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
     private readonly List<ComponentPlacement> right = [];
     private readonly List<NavigationEntry> primaryNavigation = [];
     private readonly List<NavigationEntry> fixedNavigation = [];
-    private readonly List<NavigationGroup> legacyNavigation = [];
     private readonly HashSet<string> routes = new(StringComparer.OrdinalIgnoreCase);
     private Type? commandParserType;
 
@@ -82,7 +78,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
             Center = center.AsReadOnly(),
             Right = right.AsReadOnly(),
         };
-        return new(project, topBar, layout, primaryNavigation.AsReadOnly(), fixedNavigation.AsReadOnly(), legacyNavigation.AsReadOnly(), commandParserType,
+        return new(project, topBar, layout, primaryNavigation.AsReadOnly(), fixedNavigation.AsReadOnly(), commandParserType,
             new ReadOnlyDictionary<object, TextReference>(new Dictionary<object, TextReference>(labelReferences, ReferenceEqualityComparer.Instance)));
     }
 
@@ -111,13 +107,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         return this;
     }
 
-    IFrameworkBuilder IFrameworkBuilder.ConfigureLayout(Action<ILayoutBuilder> configure)
-    {
-        ConfigureLayout(configure);
-        return this;
-    }
-
-    public IApplicationBuilder ConfigureLayout(Action<ILayoutBuilder> configure)
+    public IFrameworkBuilder ConfigureLayout(Action<ILayoutBuilder> configure)
     {
         Check();
         ArgumentNullException.ThrowIfNull(configure);
@@ -130,22 +120,6 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         Check();
         if (commandParserType is not null) throw new InvalidOperationException("Only one command parser can be configured for an application shell.");
         commandParserType = typeof(TParser);
-        return this;
-    }
-
-    public IApplicationBuilder UseTitleBar(Action<ITitleBarBuilder>? configure = null)
-    {
-        Check();
-        topBar = topBar with { Enabled = true };
-        configure?.Invoke(this);
-        return this;
-    }
-
-    public IApplicationBuilder UseNavigation(Action<INavigationBuilder> configure)
-    {
-        Check();
-        ArgumentNullException.ThrowIfNull(configure);
-        configure(this);
         return this;
     }
 
@@ -201,18 +175,6 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         return this;
     }
 
-    ITopBarBuilder ITopBarBuilder.SetSearch(bool enabled, string label)
-    {
-        SetSearch(enabled, label);
-        return this;
-    }
-
-    ITopBarBuilder ITopBarBuilder.SetNavigationToggle(bool enabled)
-    {
-        SetNavigationToggle(enabled);
-        return this;
-    }
-
     public ITopBarBuilder AddMenu(string menuName, Action<ITopBarMenuBuilder> configure)
     {
         Check();
@@ -245,13 +207,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         return this;
     }
 
-    public ITitleBarBuilder SetApplicationTitle(string title)
-    {
-        SetProjectName(title);
-        return this;
-    }
-
-    public ITitleBarBuilder SetSearch(bool enabled = true, string label = "Search")
+    public ITopBarBuilder SetSearch(bool enabled = true, string label = "Search")
     {
         Check();
         ArgumentException.ThrowIfNullOrWhiteSpace(label);
@@ -259,7 +215,7 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         return this;
     }
 
-    public ITitleBarBuilder SetNavigationToggle(bool enabled = true)
+    public ITopBarBuilder SetNavigationToggle(bool enabled = true)
     {
         Check();
         topBar = topBar with { NavigationToggle = enabled };
@@ -338,21 +294,6 @@ internal sealed class ApplicationBuilder : IApplicationBuilder, IProjectBuilder,
         ArgumentNullException.ThrowIfNull(label);
         AddFixedNavButton(label.FallbackText ?? label.Token, icon, commandKey);
         AttachText(fixedNavigation[^1], label);
-        return this;
-    }
-
-    public INavigationBuilder AddGroup(string key, string label, string icon, Action<INavigationGroupBuilder> configure)
-    {
-        Check();
-        ArgumentException.ThrowIfNullOrWhiteSpace(key);
-        ValidateLabelAndIcon(label, icon);
-        ArgumentNullException.ThrowIfNull(configure);
-        if (legacyNavigation.Any(group => group.Key == key)) throw new ArgumentException("Navigation keys must be unique.", nameof(key));
-        var group = new NavigationGroupBuilder(AddRoute);
-        configure(group);
-        var items = group.Complete();
-        if (items.Count == 0) throw new ArgumentException("A navigation group needs at least one item.", nameof(configure));
-        legacyNavigation.Add(new(key, label, icon, items, group.SecondaryNavigation));
         return this;
     }
 
@@ -491,33 +432,3 @@ internal sealed class SubNavigationBuilder(Func<string, string> addRoute, Action
         return items.AsReadOnly();
     }
 }
-
-internal sealed class NavigationGroupBuilder(Func<string, string> addRoute) : INavigationGroupBuilder
-{
-    private bool completed;
-    private readonly List<NavigationItem> items = [];
-    internal bool SecondaryNavigation { get; private set; } = true;
-
-    public INavigationGroupBuilder SetSecondaryNavigation(bool enabled = true)
-    {
-        if (completed) throw new InvalidOperationException("Navigation group configuration has been completed.");
-        SecondaryNavigation = enabled;
-        return this;
-    }
-
-    public INavigationGroupBuilder AddItem(string label, string href, string icon = "page", bool exact = false, bool disabled = false)
-    {
-        if (completed) throw new InvalidOperationException("Navigation group configuration has been completed.");
-        ArgumentException.ThrowIfNullOrWhiteSpace(label);
-        ArgumentException.ThrowIfNullOrWhiteSpace(icon);
-        items.Add(new(label, addRoute(href), icon, exact, disabled));
-        return this;
-    }
-
-    internal IReadOnlyList<NavigationItem> Complete()
-    {
-        completed = true;
-        return items.AsReadOnly();
-    }
-}
-#pragma warning restore CS0618

@@ -13,7 +13,10 @@
 @import url('./line-chart.css');
 @import url('./data-search.css');
 @import url('./data-table.css');
+@import url('./multi-select-box.css');
+@import url('./navigation-choices.css');
 @import url('./expansion-indicator.css');
+
 @import url('./presentation/layout.css');
 
 
@@ -37,6 +40,11 @@
 .f-titlebar > .f-icon-button { display:none; }
 .f-titlebar-start,.f-titlebar-center,.f-titlebar-end { display:flex; align-items:center; min-width:0; }
 .f-titlebar-end { margin-inline-start:auto; }
+/* Chrome slots own alignment; injected controls keep their variants, not document-flow spacing. */
+:is(.shell-header,.f-titlebar) .f-topbar-slot { display:flex; align-items:center; align-self:center; min-width:0; }
+:is(.shell-header,.f-titlebar) .f-topbar-slot > *, :is(.shell-header,.f-titlebar) .f-topbar-slot > form > * { align-self:center; margin-block:0; }
+:is(.shell-header,.f-titlebar) .f-topbar-slot > .f-inline-actions > *, :is(.shell-header,.f-titlebar) .f-topbar-slot > form > .f-inline-actions > * { align-self:center; margin-block:0; }
+:is(.shell-header,.f-titlebar) .f-topbar-slot > form { display:flex; align-items:center; }
 .f-inline-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; }
 .f-button { position:relative; }
 .f-title-search { display:flex; min-width:0; }
@@ -55,10 +63,10 @@
 .f-secondary-toggle:disabled { cursor:not-allowed; }
 .f-navigation-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .f-navigation-chevron { flex:none; }
-.f-primary-navigation,.f-primary-navigation-main,.f-secondary-navigation,.f-menu-panel { scrollbar-width:none; -ms-overflow-style:none; }
+.f-primary-navigation,.f-primary-navigation-main,.f-secondary-navigation,.f-menu-panel { scrollbar-width:none; }
 .f-primary-navigation::-webkit-scrollbar,.f-primary-navigation-main::-webkit-scrollbar,.f-secondary-navigation::-webkit-scrollbar,.f-menu-panel::-webkit-scrollbar { display:none; width:0; height:0; }
-.navigation-surface .primary-rail,.navigation-surface .secondary-rail,.service-menu-view,.row-action-menu-panel { scrollbar-width:none; -ms-overflow-style:none; }
-.navigation-surface .primary-rail::-webkit-scrollbar,.navigation-surface .secondary-rail::-webkit-scrollbar,.service-menu-view::-webkit-scrollbar,.row-action-menu-panel::-webkit-scrollbar { display:none; width:0; height:0; }
+.navigation-surface .primary-rail,.navigation-surface .secondary-rail,.service-menu-view { scrollbar-width:none; }
+.navigation-surface .primary-rail::-webkit-scrollbar,.navigation-surface .secondary-rail::-webkit-scrollbar,.service-menu-view::-webkit-scrollbar { display:none; width:0; height:0; }
 .f-secondary-item { display:flex; align-items:center; gap:.5em; }
 .f-primary-item { display:flex; align-items:center; }
 .f-primary-command { appearance:none; font:inherit; border:0; cursor:pointer; }
@@ -111,17 +119,16 @@
 .f-dialog-body { min-height:0; overflow:auto; overscroll-behavior:contain; }
 .f-dialog-actions { display:flex; flex:0 0 auto; flex-wrap:wrap; justify-content:flex-end; gap:.75em; }
 .f-bottom-sheet { position:fixed; inset:auto 0 0; width:100%; max-width:none; margin:0; }
-.f-modal-backdrop { position:fixed; inset:0; z-index:1100; }
-.f-dialog-fallback { position:fixed; inset:50% auto auto 50%; z-index:1101; transform:translate(-50%,-50%); margin:0; }
-.f-dialog-fallback.f-bottom-sheet { inset:auto 0 0; transform:none; }
+.f-copy-text { user-select:all; overflow-wrap:anywhere; }
+.f-form-group { border:0; padding:0; margin:0; min-width:0; }
+.f-form-group > legend { margin-block-end:var(--f-field-label-gap,12px); font-weight:var(--f-label-weight,600); }
+.f-image-preview { margin:0; display:grid; gap:var(--f-field-label-gap,12px); min-width:0; }
+.f-image-preview > img { display:block; width:100%; max-height:260px; object-fit:contain; }
+.f-image-preview > figcaption { display:grid; gap:var(--f-field-label-gap,12px); }
+.f-attribution-footer { padding:var(--f-page-gutter,24px); text-align:center; }
 .f-data { width:100%; min-width:0; }
 .f-data-toolbar,.f-data-page-group,.f-data-tools,.f-data-pager-row { display:flex; align-items:center; flex-wrap:wrap; min-width:0; }
 .f-data-tools { margin-inline-start:auto; }
-.f-data-display { position:relative; }
-.f-data-display-options { position:absolute; inset-block-start:100%; inset-inline-end:0; z-index:30; max-width:calc(100vw - 2em); max-height:70dvh; overflow:auto; background:Canvas; color:CanvasText; }
-.f-data-display-options.f-menu-panel { position:fixed; inset:auto; margin:0; width:max-content; }
-.f-data-display-options.f-menu-panel[data-f-open] { display:grid; }
-.f-data-display-options label { display:flex; }
 .f-data-scroll { width:100%; min-width:0; overflow:auto; overscroll-behavior-inline:contain; }
 .f-data-table { width:100%; border-collapse:separate; border-spacing:0; }
 .f-data-table[data-f-sized] { table-layout:fixed; }
@@ -185,3 +192,6 @@ body { margin:0; }
 html:has(.f-shell[data-f-document-shell]),body:has(.f-shell[data-f-document-shell]) { height:100%; min-height:0; overflow:hidden; }
 /* Unlike hidden, clip cannot be scrolled by fragment navigation or scrollIntoView. */
 .f-shell[data-f-document-shell] { position:fixed; inset:0; height:100dvh; min-height:0; overflow:clip; }
+
+.f-dialog [hidden] { display:none; }
+.f-dialog-view { min-width:0; white-space:normal; }

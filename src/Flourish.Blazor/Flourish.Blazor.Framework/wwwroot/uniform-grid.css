@@ -1,19 +1,22 @@
 /* Layout belongs to the framework. The optional Design package supplies the cell skin. */
 .f-uniform-grid {
     display:grid;
-    --f-grid-cell-width:calc(2 * var(--f-grid-cell-max-height,260px));
-    grid-template-columns:repeat(auto-fit,minmax(0,var(--f-grid-cell-width)));
+    --f-grid-cell-width:1fr;
+    /* Rectangle height sets a wrapping threshold, never a maximum track width. */
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-max-height,260px))),1fr));
     grid-auto-flow:row;
     grid-auto-rows:minmax(0,1fr);
     justify-content:start;
     align-items:stretch;
     gap:var(--f-grid-gap,0);
     min-width:0;
-    width:fit-content;
+    width:100%;
     max-width:100%;
 }
 .f-uniform-grid-square {
     --f-grid-cell-width:var(--f-grid-cell-max,280px);
+    grid-template-columns:repeat(auto-fit,minmax(0,var(--f-grid-cell-width)));
+    width:fit-content;
 }
 .f-uniform-grid-centered { margin-inline:auto; }
 .f-uniform-grid-columns { grid-template-columns:repeat(var(--f-grid-columns),minmax(0,var(--f-grid-cell-width))); }
@@ -43,6 +46,7 @@
 .f-uniform-cell-heading { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; min-width:0; max-width:100%; }
 .f-uniform-cell-title,.f-uniform-cell-text { display:block; min-width:0; max-width:100%; overflow-wrap:anywhere; }
 .f-uniform-cell > .f-button-text { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; max-width:100%; }
+.f-uniform-grid-item > .f-button, .f-uniform-grid-item > .f-uniform-cell-copy > .f-button { align-self:center; }
 .f-uniform-cell.f-uniform-grid-button > .f-spinner { position:absolute; inset-block-start:12px; inset-inline-end:12px; }
 .f-uniform-cell.f-uniform-icon-support,
 .f-uniform-cell.f-uniform-grid-button.f-uniform-icon-support {

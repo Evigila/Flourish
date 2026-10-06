@@ -14,12 +14,12 @@
 @if (Preview)
 {
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="应用名称" TitleId="@(Id + "-plain")" />
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="应用名称" LogoPath="Logo" TitleId="@(Id + "-logo")" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="应用名称" LogoPath="@Logo" TitleId="@(Id + "-logo")" />
 }
 else
 {
     <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示入口上下文" @bind-Value="ShowContext" />
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="资料中心（虚构）" ContextName="@(ShowContext ? "访客入口" : null)" Description="使用虚构演示账户查看共享资料。" LogoPath="Logo" TitleId="Id" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.AccessBrand BrandName="资料中心（虚构）" ContextName="@(ShowContext ? "访客入口" : null)" Description="使用虚构演示账户查看共享资料。" LogoPath="@Logo" TitleId="@Id" />
 }
 
 @code {

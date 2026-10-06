@@ -1,9 +1,0 @@
-@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [SampleFor("TableSurface")]
-<p>兼容构造入口，不提供行模型、格式或完整表格能力。新代码使用 ListView，动态能力使用 DataTable。</p>
-<Button Variant="ButtonVariant.Underline" Href="/controls/data/listviewsample">查看生产控件 ListView</Button>
-@if (!Preview) { <CodeBlock Text="<!-- TableSurface 仅保留已有手写表格边界；新代码使用 ListView<TItem>。 -->" Language="razor" /> }
-@code {
-    [Parameter] public bool Preview { get; set; }
-
-}

@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Abstract;
+using ArkheideSystem.Flourish.Blazor.Components;
 using ArkheideSystem.Flourish.Blazor.Components.Patterns;
 using ArkheideSystem.Flourish.Blazor.Components.Primitives;
 using Microsoft.AspNetCore.Components;
@@ -139,12 +140,12 @@ internal static class GridChecks
                 builder.OpenComponent<DataTable<NativeRecord>>(0);
                 builder.AddAttribute(1, "Label", "Native records");
                 builder.AddAttribute(2, "Items", new[] { new NativeRecord("Alpha <native>") });
-                builder.AddAttribute(3, "Columns", new[] { new DataColumn<NativeRecord>("name", "Name", item => item.Name) });
+                builder.AddAttribute(3, "Columns", new[] { new TableColumn<NativeRecord>("name", "Name", item => item.Name) });
                 builder.AddAttribute(4, "PreferenceKey", "native-records");
-                builder.AddAttribute(5, "ShowSearch", true);
+                builder.AddAttribute(5, "Searchable", true);
                 builder.CloseComponent();
-                builder.OpenComponent<FilledIdentityCard>(6);
-                builder.AddAttribute(7, "Facts", new[] { new IdentityFact("Name", "Alpha <native>") });
+                builder.OpenComponent<IdentityCard>(6);
+                builder.AddAttribute(7, "ChildContent", (RenderFragment)(content => content.AddContent(0, "Alpha <native>")));
                 builder.CloseComponent();
                 builder.OpenComponent<ToggleSwitch>(8);
                 builder.AddAttribute(9, "Label", "Native toggle");
@@ -164,7 +165,7 @@ internal static class GridChecks
             Require(content.Contains("content-stage", StringComparison.Ordinal) && content.Contains("native-account-content", StringComparison.Ordinal), "The content surface did not expose its content target.");
             foreach (var html in new[] { navigation, content })
             {
-                Require(html.Contains("Alpha &lt;native&gt;", StringComparison.Ordinal) && html.Contains("filled-identity-card", StringComparison.Ordinal) && html.Contains("role=\"switch\"", StringComparison.Ordinal) && html.Contains("role=\"grid\"", StringComparison.Ordinal), "A Framework-only primitive failed to render within a pattern.");
+                Require(html.Contains("Alpha &lt;native&gt;", StringComparison.Ordinal) && html.Contains("f-identity-card", StringComparison.Ordinal) && html.Contains("role=\"switch\"", StringComparison.Ordinal) && html.Contains("role=\"grid\"", StringComparison.Ordinal), "A Framework-only production control failed to render within a pattern.");
                 Require(!html.Contains("f-root", StringComparison.Ordinal) && !html.Contains("--f-primary", StringComparison.Ordinal), "A Framework pattern introduced skin or theme markup.");
             }
         }));

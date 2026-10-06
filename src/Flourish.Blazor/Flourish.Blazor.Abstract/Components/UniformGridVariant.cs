@@ -6,6 +6,5 @@ public enum UniformGridVariant
     Elevated,
     Filled,
     Outlined,
-    Danger,
-    Outline = Outlined
+    Danger
 }

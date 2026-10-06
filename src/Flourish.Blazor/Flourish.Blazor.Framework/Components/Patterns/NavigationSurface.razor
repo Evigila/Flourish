@@ -3,7 +3,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div @ref="root" class="navigation-surface @CssClass" style="@Style">
+<div @ref="root" class="navigation-surface @Class" style="@Style">
     <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @TitleBar
     <div class="app-body @(ShowSecondary && SecondaryNavigation is not null ? "has-secondary-navigation" : null)">
@@ -25,7 +25,7 @@
     [Parameter] public bool ShowSecondary { get; set; } = true;
     [Parameter] public RenderFragment? SecondaryNavigation { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public string? CssClass { get; set; }
+    [Parameter] public string? Class { get; set; }
     [Parameter] public string? ContentClass { get; set; }
     [Parameter] public string? Style { get; set; }
     [Parameter] public object? DocumentKey { get; set; }
@@ -46,7 +46,7 @@
         try {
             var activeModule = await GetModuleAsync();
             if (disposed || activeModule is null) return;
-            await activeModule.InvokeVoidAsync("synchronize", root, stage, null);
+            await activeModule.InvokeVoidAsync("synchronize", root, stage);
         }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }

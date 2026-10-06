@@ -2,7 +2,7 @@
 @using ArkheideSystem.Flourish.Abstract
 
 <div @attributes="AdditionalAttributes" class="f-notice @(Subtle ? "f-notice-subtle" : "f-notice-" + Severity.ToString().ToLowerInvariant()) @Class"
-     role="@(Announce ? !Subtle && Severity is NotificationSeverity.Error or NotificationSeverity.Warning ? "alert" : "status" : null)">
+     role="@(Role ?? (Announce ? !Subtle && Severity is NotificationSeverity.Error or NotificationSeverity.Warning ? "alert" : "status" : null))">
     @if (!string.IsNullOrWhiteSpace(Title)) { <strong>@Title</strong> }
     @ChildContent
 </div>
@@ -10,9 +10,14 @@
 @code {
     [Parameter] public NotificationSeverity Severity { get; set; } = NotificationSeverity.Information;
     [Parameter] public bool Announce { get; set; } = true;
+    [Parameter] public string? Role { get; set; }
     [Parameter] public bool Subtle { get; set; }
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Severity)) throw new ArgumentOutOfRangeException(nameof(Severity));
+    }
 }

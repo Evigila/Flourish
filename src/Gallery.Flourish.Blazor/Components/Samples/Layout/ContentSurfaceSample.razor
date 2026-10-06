@@ -5,7 +5,7 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Patterns.ContentSurface")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Patterns.ContentSurface", Description = "DocumentKey 变化替换正文滚动区域；DocumentFlow=true 切换为文档滚动，独立访问页由 ContentSurface 与 FullHeight PresentationBand 组合。")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
@@ -17,12 +17,16 @@
     <ChildContent>
         @if (!Preview)
         {
-            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.Primitives.PageHeading Title="@(Document == 0 ? "快速开始（虚构）" : "常见问题（虚构）")" /><p>DocumentKey 变化会替换正文滚动节点。</p>
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Document == 0 ? "快速开始（虚构）" : "常见问题（虚构）")" /><p>帮助中心正文。</p>
                 @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>说明 @row</h2><p>这是一段虚构的帮助说明，用来体验固定顶部栏与正文滚动。</p></section> }
             </div>
         }
     </ChildContent>
 </ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
+@if (!Preview)
+{
+    <InlineActions><Button Variant="ButtonVariant.Underline" Href="/examples/display/login">完整登录页</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/accounts">账号选择页</Button></InlineActions>
+}
 
 @code {
     [Parameter] public bool Preview { get; set; }

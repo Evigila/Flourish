@@ -1,6 +1,6 @@
 .shell-header {
     width: 100%;
-    height: var(--topbar-height, 68px);
+    height: var(--f-topbar-height, 68px);
     color: var(--f-chrome-ink, var(--f-surface));
     background: var(--f-chrome, var(--f-primary));
     border-bottom: 1px solid var(--f-border);
@@ -116,8 +116,7 @@ a.shell-header-identity:focus-visible {
     outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
-@media (max-width: 760px) {
-.shell-header-logo {
+@media (max-width: 760px) {.shell-header-logo {
     width: 60px;
     padding: 7px;
 }
