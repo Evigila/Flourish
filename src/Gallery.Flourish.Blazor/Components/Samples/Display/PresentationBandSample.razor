@@ -1,10 +1,11 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("PresentationBand", Description = "默认最小高度 800px，内容可自然增高；点阵默认关闭，本例仅为 Primary 开启。横幅使用全宽背景与居中内容轨道。")]
+@attribute [SampleFor("PresentationBand", DescriptionKey = "Key.Sample_PresentationBandSample_Description")]
 @foreach (var tone in Enum.GetValues<PresentationTone>())
 {
-    <PresentationBand Title="@($"展示横幅 · {tone}")" Tone="tone" Dotted="@(tone == PresentationTone.Primary)">
-        <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">完整案例</Button></Actions>
-        <ChildContent><p>整理灵感，开始下一个项目。</p></ChildContent>
+    <PresentationBand Title="@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_PresentationBandTitle), tone)" Tone="tone" Dotted="@(tone == PresentationTone.Primary)">
+        <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">@Localization.Parse(TextKey.Sample_FullExample)</Button></Actions>
+        <ChildContent><p>@Localization.Parse(TextKey.Sample_OrganizeInspirationAndStartYourNextProject)</p></ChildContent>
     </PresentationBand>
 }
 @code {

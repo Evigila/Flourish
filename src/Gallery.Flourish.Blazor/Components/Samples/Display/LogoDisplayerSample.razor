@@ -1,10 +1,10 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("LogoDisplayer", Description = "默认使用已配置的项目身份；覆盖仅作用于当前示例。")]
+@attribute [SampleFor("LogoDisplayer", DescriptionKey = "Key.Sample_LogoDisplayerSample_Description")]
 @inherits LocalizedComponentBase
 
 @if (!Preview)
 {
-    <StandaloneCheckBox Label="@Explain("Show an explicit identity override", "显示显式身份覆盖")" @bind-Value="OverrideIdentity" />
+    <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_ShowAnExplicitIdentityOverride)" @bind-Value="OverrideIdentity" />
 }
 <LogoDisplayer LogoPath="@(OverrideIdentity ? "gallery.svg" : null)"
                ProjectName="@(OverrideIdentity ? Localization.Parse(TextKey.Display_DemoOnly) : null)"
@@ -19,5 +19,4 @@
     [Parameter] public bool Preview { get; set; }
     private bool OverrideIdentity;
     private readonly string TitleId = "logo-displayer-sample-" + Guid.NewGuid().ToString("N");
-    private string Explain(string english, string chinese) => Localization.Culture == "zh-CN" ? chinese : english;
 }

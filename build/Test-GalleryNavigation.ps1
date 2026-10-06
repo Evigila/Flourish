@@ -60,4 +60,18 @@ foreach ($case in @(
 $html = Get-Gallery '/controls/data/datatablesample'
 Assert ($html.Contains('data-f-search-query')) 'DataTable did not render its shared search input.'
 Assert (-not [regex]::IsMatch($html,'<input\b[^>]*data-f-search-query[^>]*value="RemoteQuery"')) 'Remote query was rendered as a literal instead of the current search value.'
+# The restored organization scene shares one operation surface for every method.
+foreach ($choice in @('organization','account','pass')) {
+    $path='/examples/display/access-methods?choice='+$choice
+    $html=Get-Gallery $path
+    Assert ($html.Contains('f-presentation-hero-layout') -and $html.Contains('f-presentation-hero-side')) ($path+': split organization/operation layout disappeared.')
+    Assert ($html.Contains('f-presentation-title-words')) ($path+': organization title lost its stacked-word composition.')
+    Assert ([regex]::Matches($html,'<div\b[^>]*class="f-access-form-surface\b').Count -eq 1) ($path+': expected one shared operation surface, not nested/per-mode boards.')
+    Assert ($html.Contains('f-access-form-primary') -and $html.Contains('f-navigation-choices-compact')) ($path+': primary operation area or compact native choices missing.')
+    Assert ($html.Contains('href="/examples/display/login"')) ($path+': Colligere demo login lost its native destination.')
+    foreach ($field in @('username','password','pass')) {
+        Assert ([regex]::IsMatch($html,'<label\b[^>]*for="navigation-choices-[a-f0-9]+-'+$field+'"')) ($path+': '+$field+' label is not linked to its actual input.')
+        Assert ([regex]::IsMatch($html,'<input\b[^>]*id="navigation-choices-[a-f0-9]+-'+$field+'"')) ($path+': '+$field+' input lost its standard identity.')
+    }
+}
 Write-Output ($checks.ToString() + ' actual Gallery HTTP checks passed.')

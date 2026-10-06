@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Tests.Gallery.Flourish.Blazor</AssemblyName>
+    <RootNamespace>ArkheideSystem.Tests.Gallery.Flourish.Blazor</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
+    <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../../src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj" />
+  </ItemGroup>
+</Project>

@@ -75,31 +75,6 @@ gap: 6px;
     padding: 18px;
 }
 
-.navigation-surface .secondary-rail  a {
-padding: 9px 12px;
-    color: var(--f-muted);
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 650;
-    text-decoration: none;
-}
-
-.navigation-surface .secondary-rail  a:hover {
-color: var(--f-text);
-    background: var(--f-target-preview, var(--f-preview-light));
-}
-
-.navigation-surface .secondary-rail  a.is-active {
-color: var(--f-surface);
-    background: var(--f-primary);
-    font-weight: 780;
-}
-
-.navigation-surface .secondary-rail  a:focus-visible {
-outline: 3px solid var(--f-accent);
-    outline-offset: -3px;
-}
-
 .navigation-surface .application-stage {
 background: var(--f-canvas);
     scrollbar-gutter: stable;
@@ -244,10 +219,6 @@ width: 4px;
     height: 28px;
 }
 
-.navigation-surface .secondary-rail  a {
-min-height: 46px;
-}
-
 @media (max-width: 980px) {.navigation-surface {
     --f-page-gutter: 24px;
     }
@@ -268,9 +239,6 @@ min-height: 46px;
     height: 24px;
     }
 
-    .navigation-surface .secondary-rail  a {
-    min-height: 42px;
-    }
 }
 
 .navigation-surface .primary-rail  .primary-nav-item:active {
@@ -283,11 +251,6 @@ min-height: 46px;
     background: transparent;
 }
 
-.navigation-surface .secondary-rail  a:active {
-    color: var(--f-text);
-    background: var(--f-target-click);
-}
-
 .navigation-surface .primary-rail .primary-nav-item.is-active:is(:hover, :focus-visible) {
     color: var(--f-surface);
     background: var(--f-accent);
@@ -295,14 +258,6 @@ min-height: 46px;
 .navigation-surface .primary-rail .primary-nav-item.is-active:active {
     color: var(--f-surface);
     background: var(--f-accent-click);
-}
-.navigation-surface .secondary-rail a.is-active:is(:hover, :focus-visible) {
-    color: var(--f-surface);
-    background: var(--f-primary);
-}
-.navigation-surface .secondary-rail a.is-active:active {
-    color: var(--f-surface);
-    background: var(--f-primary-click);
 }
 
 /* Native validated values retain this surface's established Accent role. */

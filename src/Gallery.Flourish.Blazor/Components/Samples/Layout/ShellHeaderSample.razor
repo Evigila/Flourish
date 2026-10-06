@@ -1,39 +1,40 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ShellHeader", Description = "切换身份可比较动作组与退出图标的布局；这里只记录本地操作，不执行认证或退出。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ShellHeader", DescriptionKey = "Key.Sample_ShellHeaderSample_Description")]
 @using System
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 
-@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示示例身份" @bind-Value="Identity" /> }
+@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_ShowExampleIdentity)" @bind-Value="Identity" /> }
 <div id="@Id" @onclick:preventDefault>
     @if (Preview)
     {
-        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="@Logo" BrandName="应用名称" />
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@Localization.Parse(TextKey.Sample_ApplicationName)" />
     }
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="返回示例首页" LogoPath="@Logo" BrandName="@(Preview ? "应用名称" : "资料中心（虚构）")" ContextName="@(Preview ? null : "共享资料")" IdentityName="@(Preview || !Identity ? null : "示例访客")" IdentityAriaLabel="虚构的演示身份">
-        <Services>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Label="资料" Items="Links" /> }</Services>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@(Preview ? Localization.Parse(TextKey.Sample_ApplicationName) : Localization.Parse(TextKey.Sample_ResourceCenterFictional))" ContextName="@(Preview ? null : Localization.Parse(TextKey.Sample_SharedResources))" IdentityName="@(Preview || !Identity ? null : Localization.Parse(TextKey.Sample_ExampleVisitor))" IdentityAriaLabel="@Localization.Parse(TextKey.Sample_FictionalDemoIdentity)">
+        <Services>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Label="@Localization.Parse(TextKey.Sample_Resources)" Items="Links" /> }</Services>
         <EndActions>
             @if (Identity && !Preview)
             {
-                <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Quiet" Icon="logout" OnClick="Refresh" aria-label="模拟退出" />
+                <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Quiet" Icon="logout" OnClick="Refresh" aria-label="@Localization.Parse(TextKey.Sample_SimulateSignOut)" />
             }
             else
             {
                 <ArkheideSystem.Flourish.Blazor.Components.InlineActions>
-                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">进入</ArkheideSystem.Flourish.Blazor.Components.Button>
-                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">创建账号</ArkheideSystem.Flourish.Blazor.Components.Button>
+                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">@Localization.Parse(TextKey.Sample_Enter)</ArkheideSystem.Flourish.Blazor.Components.Button>
+                    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="Controls.ButtonVariant.Elevated" OnClick="Refresh">@Localization.Parse(TextKey.Sample_CreateAccount)</ArkheideSystem.Flourish.Blazor.Components.Button>
                 </ArkheideSystem.Flourish.Blazor.Components.InlineActions>
             }
         </EndActions>
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader>
-    @if (!Preview) { <p role="status">已模拟操作 @Count 次。</p> }
+    @if (!Preview) { <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_SimulatedActionCount), Count)</p> }
 </div>
 
 @code {
@@ -41,7 +42,7 @@
     private readonly string Id = $"shell-header-sample-{Guid.NewGuid():N}";
     private bool Identity = true;
     private int Count;
-    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> Links => [new("说明文档", $"#{Id}"), new("参考资料", $"#{Id}")];
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> Links => [new(Localization.Parse(TextKey.Sample_Documentation), $"#{Id}"), new(Localization.Parse(TextKey.Sample_ReferenceResources), $"#{Id}")];
     private void Refresh() => Count++;
     private const string Logo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23153A32'/%3E%3Cpath d='M13 13h22v22H13z' fill='%23FFFFFF'/%3E%3C/svg%3E";
 }

@@ -53,10 +53,24 @@
 .f-card.f-card-prominent { padding:clamp(24px,4vw,48px); }
 .f-card-prominent-copy > .f-card-prominent-text { margin:0; font-size:var(--f-type-h1,34px); line-height:1.4; overflow-wrap:anywhere; }
 
-.f-access-form-surface > .f-section { padding-top:0; }
+.f-presentation-hero-split { padding-block:clamp(58px,9vw,116px); }
+.f-presentation-hero-split .f-presentation-hero-content { gap:24px; padding-top:clamp(28px,4vw,42px); }
+.f-presentation-hero-split .f-presentation-hero-content > h1 { max-width:100%; margin:0; font-size:clamp(64px,9.5vw,112px); font-weight:780; line-height:1; }
+.f-presentation-hero-split .f-presentation-hero-content > .f-presentation-hero-description { max-width:620px; font-size:17px; }
+.f-access-form-primary { color:var(--f-primary-ink); background:var(--f-primary); border-color:transparent; }
+.f-access-form-canvas { background:var(--f-canvas); }
+.f-access-form-surface > .f-section { margin:0; padding-top:0; }
+.f-access-form-primary .f-section-heading { margin:0 0 24px; }
+.f-access-form-primary .f-section-heading h2 { margin:0; color:inherit; font-size:clamp(30px,3.8vw,44px); font-weight:750; line-height:1.12; }
 @media(max-width:860px) {
+ .f-presentation-hero-split .f-presentation-hero-content { padding-top:0; }
  .f-presentation-hero-split .f-presentation-hero-content > h1 { font-size:clamp(58px,12vw,88px); }
 }
 @media(max-width:560px) {
+ .f-presentation-hero-split > .f-content-container { padding-inline:18px; }
  .f-presentation-hero-split .f-presentation-hero-content > h1 { font-size:clamp(52px,16vw,72px); }
 }
+
+/* The Primary access variant keeps the same single surface at every width. */
+.f-access-form-primary { padding:clamp(28px,4vw,42px); border-radius:28px; }
+@media(max-width:560px) { .f-access-form-primary { padding:24px 18px; border-radius:22px; } }

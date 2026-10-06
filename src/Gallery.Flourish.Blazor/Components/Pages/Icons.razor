@@ -1,23 +1,24 @@
 @page "/foundations/icons"
-<PageTitle>图标 Icons · Foundations</PageTitle>
+@inherits LocalizedComponentBase
+<PageTitle>@Localization.Parse(TextKey.Nav_Icons) · Gallery</PageTitle>
 <PageBody>
-    <PageHeading Title="图标 Icons" />
-    <Section Title="使用Google Material Design Symbols">
-        <p>Flourish 使用 Google Material Symbols Outlined 图标字体，按 Apache 2.0 许可证发布。<br />字体随 Framework 从当前应用加载，无需向 Google 请求字体。</p>
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_Icons)" />
+    <Section Title="@Localization.Parse(TextKey.Icons_IntroductionTitle)">
+        <p>@Localization.Parse(TextKey.Icons_FontDescription)<br />@Localization.Parse(TextKey.Icons_LocalFont)</p>
         <div class="f-inline-actions">
-            <Button Variant="ButtonVariant.Underline" Href="https://github.com/google/material-design-icons" Text="官方仓库" target="_blank" rel="noopener noreferrer" />
-            <Button Variant="ButtonVariant.Underline" Href="https://github.com/google/material-design-icons/blob/master/LICENSE" Text="Apache 2.0 许可证" target="_blank" rel="noopener noreferrer" />
-            <Button Variant="ButtonVariant.Underline" Href="https://fonts.google.com/icons" Text="官网与图标浏览器" target="_blank" rel="noopener noreferrer" />
-            <Button Variant="ButtonVariant.Underline" Href="https://developers.google.com/fonts/docs/material_symbols" Text="官方使用文档" target="_blank" rel="noopener noreferrer" />
+            <Button Variant="ButtonVariant.Underline" Href="https://github.com/google/material-design-icons" Text="@Localization.Parse(TextKey.Icons_Repository)" target="_blank" rel="noopener noreferrer" />
+            <Button Variant="ButtonVariant.Underline" Href="https://github.com/google/material-design-icons/blob/master/LICENSE" Text="@Localization.Parse(TextKey.Icons_License)" target="_blank" rel="noopener noreferrer" />
+            <Button Variant="ButtonVariant.Underline" Href="https://fonts.google.com/icons" Text="@Localization.Parse(TextKey.Icons_Browser)" target="_blank" rel="noopener noreferrer" />
+            <Button Variant="ButtonVariant.Underline" Href="https://developers.google.com/fonts/docs/material_symbols" Text="@Localization.Parse(TextKey.Icons_Documentation)" target="_blank" rel="noopener noreferrer" />
         </div>
     </Section>
     <Section Title="Material Symbols Outlined">
-        <p>当前图标名称目录包含 @IconCatalog.Names.Count 个名称。</p>
-        <SearchBox Label="搜索图标名称" @bind-Value="Query" SearchChanged="ResetPage" />
-        <p role="status">显示 @VisibleNames.Count / @MatchingNames.Count 个匹配图标。</p>
+        <p>@Localization.Parse(TextKey.Icons_Count, IconCatalog.Names.Count)</p>
+        <SearchBox Label="@Localization.Parse(TextKey.Icons_Search)" @bind-Value="Query" SearchChanged="ResetPage" />
+        <p role="status">@Localization.Parse(TextKey.Icons_Matches, VisibleNames.Count, MatchingNames.Count)</p>
         @if (MatchingNames.Count == 0)
         {
-            <EmptyState Title="没有匹配的图标" />
+            <EmptyState Title="@Localization.Parse(TextKey.Icons_Empty)" />
         }
         else
         {
@@ -29,21 +30,21 @@
             </UniformGrid>
             @if (VisibleNames.Count < MatchingNames.Count)
             {
-                <Button Variant="ButtonVariant.Secondary" OnClick="ShowMore">显示更多</Button>
+                <Button Variant="ButtonVariant.Secondary" OnClick="ShowMore">@Localization.Parse(TextKey.Icons_ShowMore)</Button>
             }
         }
     </Section>
-    <Section Title="调用">
+    <Section Title="@Localization.Parse(TextKey.Icons_Usage)">
         <UniformGrid>
-            <UniformGridItem Title="普通图标" Text="26px · --f-icon-default-size" />
-            <UniformGridItem Title="一级导航图标" Text="24px · --f-icon-primary-size" />
-            <UniformGridItem Title="工具图标" Text="26px · --f-icon-tool-size" />
-            <UniformGridItem Title="搜索与提示图标" Text="22px · --f-icon-information-size" />
+            <UniformGridItem Title="@Localization.Parse(TextKey.Icons_Default)" Text="26px · --f-icon-default-size" />
+            <UniformGridItem Title="@Localization.Parse(TextKey.Icons_Navigation)" Text="24px · --f-icon-primary-size" />
+            <UniformGridItem Title="@Localization.Parse(TextKey.Icons_Tool)" Text="26px · --f-icon-tool-size" />
+            <UniformGridItem Title="@Localization.Parse(TextKey.Icons_Information)" Text="22px · --f-icon-information-size" />
         </UniformGrid>
-        <p>使用官方完整 WOFF2 字体（4,003,088 字节），支持 FILL、wght、GRAD 和 opsz 四个轴。<br />默认使用未填充、400 字重、0 级别和 24 光学尺寸。<br />完整名称表随版本固定，可直接使用 Symbols 新增图标。</p>
-        <p>图标继承父控件颜色。<br />图标本身是装饰性内容，纯图标按钮需要可访问名称。<br />IconCatalog.Names 提供全部名称，Contains 仅检查官方名称。<br />未知名称显示问号图标。</p>
-        <p>原有 user、grid、page、sun、moon、more、plus、play、arrow-left、arrow-up、chevron-down、boxes 和 building 名称保留为别名。<br />AppIcon 和 Glyph 使用相同字体。</p>
-        <DisplayBoard Dotted="false" Centered="false" CopyText="@Example" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@Example" Language="razor" /></DisplayBoard>
+        <p>@Localization.Parse(TextKey.Icons_FontAxes)<br />@Localization.Parse(TextKey.Icons_DefaultAxes)<br />@Localization.Parse(TextKey.Icons_VersionedNames)</p>
+        <p>@Localization.Parse(TextKey.Icons_InheritColor)<br />@Localization.Parse(TextKey.Icons_Accessibility)<br />@Localization.Parse(TextKey.Icons_CatalogContract)<br />@Localization.Parse(TextKey.Icons_Unknown)</p>
+        <p>@Localization.Parse(TextKey.Icons_CurrentNames)</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@Example" CopyLabel="@Localization.Parse(TextKey.Common_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Common_Copied)" CopyingLabel="@Localization.Parse(TextKey.Common_Copying)" CopyFailedLabel="@Localization.Parse(TextKey.Common_CopyFailed)"><CodeBlock Text="@Example" Language="razor" /></DisplayBoard>
     </Section>
 </PageBody>
 @code {

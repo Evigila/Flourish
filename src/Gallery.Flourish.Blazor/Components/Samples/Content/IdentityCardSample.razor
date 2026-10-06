@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,18 +13,18 @@
 @if (Preview)
 {
     <IdentityCard Columns="false" />
-    <IdentityCard Title="双栏空身份卡片" Columns="true" />
-    <IdentityCard Title="有侧栏"><ChildContent><dl></dl></ChildContent><SideContent><dl></dl></SideContent></IdentityCard>
+    <IdentityCard Title="@Localization.Parse(TextKey.Sample_EmptyIdentityCardWithTwoColumns)" Columns="true" />
+    <IdentityCard Title="@Localization.Parse(TextKey.Sample_WithASidebar)"><ChildContent><dl></dl></ChildContent><SideContent><dl></dl></SideContent></IdentityCard>
 }
 else
 {
-    <ToggleSwitch Label="显示模拟身份侧栏" @bind-Value="WithSidebar" />
-    <IdentityCard Title="虚构成员" SideContent="@(WithSidebar ? Sidebar : null)">
-        <dl><div><dt>名称</dt><dd class="f-identity-primary">演示成员</dd></div><div><dt>编号</dt><dd>DEMO-001</dd></div></dl>
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_ShowDemoIdentitySidebar)" @bind-Value="WithSidebar" />
+    <IdentityCard Title="@Localization.Parse(TextKey.Sample_FictionalMember)" SideContent="@(WithSidebar ? Sidebar : null)">
+        <dl><div><dt>@Localization.Parse(TextKey.Record_Name)</dt><dd class="f-identity-primary">演示成员</dd></div><div><dt>@Localization.Parse(TextKey.Sample_Identifier)</dt><dd>DEMO-001</dd></div></dl>
     </IdentityCard>
 }
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool WithSidebar = true;
-    private RenderFragment Sidebar => @<dl><div><dt>模拟访问范围</dt><dd>演示区域</dd></div></dl>;
+    private RenderFragment Sidebar => @<dl><div><dt>@Localization.Parse(TextKey.Sample_DemoAccessScope)</dt><dd>演示区域</dd></div></dl>;
 }

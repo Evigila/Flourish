@@ -1,6 +1,7 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [SampleFor("Primitives.SecondaryNavigationItem", Description = "只适用于自定义导航宿主；常规应用使用 Program ConfigureNavigation，由 ApplicationShell 统一生成导航。")]
-<nav aria-label="自定义宿主演示导航"><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="展示目录" Href="/examples/display" /><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="产品横幅" Href="/examples/display/product" /></nav>
+@attribute [SampleFor("Primitives.SecondaryNavigationItem", DescriptionKey = "Key.Sample_SecondaryNavigationItemSample_Description")]
+<nav aria-label="@Localization.Parse(TextKey.Sample_NavigationHostExample)" style="width:232px;max-width:100%;"><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="@Localization.Parse(TextKey.Sample_CurrentPresentationDirectory)" Href="/examples/display" IsCurrent="true" /><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="@Localization.Parse(TextKey.Sample_LongSecondaryNavigationTitleForTestingTruncationInTheFixedSidebar)" Href="/examples/display/product" /></nav>
 @code {
     [Parameter] public bool Preview { get; set; }
 

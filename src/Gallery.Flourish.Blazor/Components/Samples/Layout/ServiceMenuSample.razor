@@ -1,10 +1,11 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ServiceMenu", Description = "虚构帮助中心。菜单提供指向实际示例段落的导航链接。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.ServiceMenu", DescriptionKey = "Key.Sample_ServiceMenuSample_Description")]
 @using System
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Components
@@ -12,18 +13,18 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Id="@(Id + "-empty")" Label="页面" Items="EmptyLinks" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Id="@(Id + "-empty")" Label="@Localization.Parse(TextKey.Menu_Pages)" Items="EmptyLinks" />
 }
 else
 {
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Id="@(Id + "-menu")" Label="帮助章节" Items="Links" />
-    <section id="@(Id + "-start")"><h3>快速开始（虚构）</h3><p>创建工作区后，将资料加入目录。</p></section>
-    <section id="@(Id + "-sharing")"><h3>共享资料（虚构）</h3><p>共享链接与访问权限由应用负责处理。</p></section>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Id="@(Id + "-menu")" Label="@Localization.Parse(TextKey.Sample_HelpChapters)" Items="Links" />
+    <section id="@(Id + "-start")"><h3>@Localization.Parse(TextKey.Sample_QuickStartFictional)</h3><p>@Localization.Parse(TextKey.Sample_CreateAWorkspaceThenAddResourcesToTheDirectory)</p></section>
+    <section id="@(Id + "-sharing")"><h3>@Localization.Parse(TextKey.Sample_SharedResourcesFictional)</h3><p>@Localization.Parse(TextKey.Sample_TheApplicationManagesSharingLinksAndAccessPermissions)</p></section>
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = $"service-menu-sample-{Guid.NewGuid():N}";
     private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> EmptyLinks = [];
-    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> Links => [new("快速开始", $"#{Id}-start"), new("共享资料", $"#{Id}-sharing")];
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceLink> Links => [new(Localization.Parse(TextKey.Sample_QuickStart), $"#{Id}-start"), new(Localization.Parse(TextKey.Sample_SharedResources), $"#{Id}-sharing")];
 }

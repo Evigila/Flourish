@@ -12,6 +12,77 @@ internal static class SplitButtonChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("primary-only disabled split submits remain locked while native alternatives stay available", async () =>
+        {
+            var calls = 0;
+            var parameters = new Dictionary<string, object?>
+            {
+                [nameof(SplitButton.Type)] = "submit", [nameof(SplitButton.Text)] = "Create account",
+                [nameof(SplitButton.PrimaryDisabled)] = true, [nameof(SplitButton.FullWidth)] = true,
+                [nameof(SplitButton.PrimaryAttributes)] = new Dictionary<string, object> { ["id"] = "registration-submit" },
+                [nameof(SplitButton.MenuContent)] = MenuItems(),
+                [nameof(SplitButton.OnClick)] = EventCallback.Factory.Create<MouseEventArgs>(new object(), (MouseEventArgs _) => calls++)
+            };
+            await WithButton(parameters, async (button, html) =>
+            {
+                var primary = Tag(html(), "button", "f-split-button-primary");
+                Require(HasBooleanAttribute(primary, "disabled") && Attribute(primary, "type") == "submit"
+                    && Attribute(primary, "id") == "registration-submit", "The locked main submit lost its native protocol boundary.");
+                Require(Attribute(primary, "aria-disabled") is null,
+                    "Primary-only native locking leaves redundant ARIA state after a static protocol unlocks the disabled property.");
+                var summary = Tag(html(), "summary", "f-split-button-secondary");
+                Require(!HasBooleanAttribute(summary, "disabled") && Attribute(summary, "aria-disabled") is null
+                    && Attribute(Tag(html(), "a", "alternate-save"), "href") == "/save-copy", "Locking the primary removed or disabled its usable alternative menu.");
+                var menuId = Attribute(Tag(html(), "div", "f-split-button-menu-content"), "id");
+                await Invoke(button, "ClickAsync");
+                Require(calls == 0, "A primary-only disabled action dispatched its callback.");
+                parameters[nameof(SplitButton.PrimaryDisabled)] = false;
+                await button.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                Require(!HasBooleanAttribute(Tag(html(), "button", "f-split-button-primary"), "disabled")
+                    && Attribute(Tag(html(), "div", "f-split-button-menu-content"), "id") == menuId,
+                    "Unlocking the primary changed the native menu or retained its disabled state.");
+                await Invoke(button, "ClickAsync");
+                Require(calls == 1, "The unlocked primary did not dispatch exactly once.");
+            });
+        }));
+        tests.Add(("primary-only disabled split links suppress navigation but preserve the independent secondary callback", async () =>
+        {
+            var primaryCalls = 0; var secondaryCalls = 0;
+            await WithButton(new()
+            {
+                [nameof(SplitButton.Href)] = "/reports", [nameof(SplitButton.PrimaryDisabled)] = true,
+                [nameof(SplitButton.PrimaryAttributes)] = new Dictionary<string, object> { ["HREF"] = "/unsafe" },
+                [nameof(SplitButton.OnClick)] = EventCallback.Factory.Create<MouseEventArgs>(new object(), (MouseEventArgs _) => primaryCalls++),
+                [nameof(SplitButton.OnSecondaryClick)] = EventCallback.Factory.Create<MouseEventArgs>(new object(), (MouseEventArgs _) => secondaryCalls++)
+            }, async (button, html) =>
+            {
+                var link = Tag(html(), "a", "f-split-button-primary");
+                Require(Attribute(link, "href") is null && Attribute(link, "aria-disabled") == "true"
+                    && Attribute(link, "tabindex") == "-1" && Attribute(link, "role") == "link", "A primary-only disabled link remains navigable or tabbable.");
+                Require(!HasBooleanAttribute(Tag(html(), "button", "f-split-button-secondary"), "disabled"), "A primary-only lock disabled its independent secondary button.");
+                await Invoke(button, "ClickAsync"); await Invoke(button, "SecondaryClickAsync");
+                Require(primaryCalls == 0 && secondaryCalls == 1, "Primary-only locking did not separate the two action callbacks.");
+            });
+        }));
+        tests.Add(("global disabled and busy split states take precedence over primary-only locking", async () =>
+        {
+            foreach (var state in new[] { nameof(SplitButton.Disabled), nameof(SplitButton.Busy) })
+                foreach (var primaryDisabled in new[] { false, true })
+                    await WithButton(new()
+                    {
+                        [state] = true, [nameof(SplitButton.PrimaryDisabled)] = primaryDisabled,
+                        [nameof(SplitButton.MenuContent)] = MenuItems()
+                    }, (_, html) =>
+                    {
+                        Require(!html().Contains("<details", StringComparison.Ordinal), "A primary-only setting revived a globally unavailable menu.");
+                        foreach (var cssClass in new[] { "f-split-button-primary", "f-split-button-secondary" })
+                        {
+                            var part = Tag(html(), "button", cssClass);
+                            Require(HasBooleanAttribute(part, "disabled") && Attribute(part, "aria-disabled") == "true", "Global unavailability did not lock both halves.");
+                        }
+                        return Task.CompletedTask;
+                    });
+        }));
         tests.Add(("split links share selection while disclosure expansion remains independent", async () =>
         {
             var parameters = new Dictionary<string, object?>

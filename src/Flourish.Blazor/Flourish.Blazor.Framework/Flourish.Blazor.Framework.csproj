@@ -17,9 +17,9 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <None Remove="Localization/Texts.json" />
-    <Content Remove="Localization/Texts.json" />
-    <EmbeddedResource Include="Localization/Texts.json" LogicalName="Flourish.Blazor.Texts.json" />
+    <None Remove="Localization/Culture.json" />
+    <Content Remove="Localization/Culture.json" />
+    <EmbeddedResource Include="Localization/Culture.json" LogicalName="Flourish.Blazor.Texts.json" />
     <EmbeddedResource Include="Icons/MaterialSymbolsOutlined.codepoints" LogicalName="Flourish.Blazor.Icons.Codepoints" />
     <ProjectReference Include="../Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
   </ItemGroup>

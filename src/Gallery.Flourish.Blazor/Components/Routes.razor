@@ -1,3 +1,5 @@
+@inherits LocalizedComponentBase
+
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(ApplicationLayout)" />
@@ -6,9 +8,9 @@
     <NotFound>
         <LayoutView Layout="typeof(ApplicationLayout)">
             <PageBody>
-                <PageHeading Title="页面不存在" />
-                <p>这条演示路径没有对应页面。</p>
-                <a href="/">返回概览</a>
+                <PageHeading Title="@Localization.Parse(TextKey.Page_NotFound)" />
+                <p>@Localization.Parse(TextKey.NotFound_Route)</p>
+                <a href="/">@Localization.Parse(TextKey.NotFound_Overview)</a>
             </PageBody>
         </LayoutView>
     </NotFound>

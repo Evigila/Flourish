@@ -72,3 +72,13 @@ body:has(.f-document-surface) { margin:0; }
  .f-card.f-card-prominent { flex-direction:column; align-items:stretch; }
  .f-card-prominent > .f-card-prominent-actions { flex:0 1 auto; }
 }
+
+/* A shared asymmetric hero keeps the main copy separate from a bounded operation area. */
+.f-presentation-hero-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(360px,470px); align-items:start; gap:clamp(54px,9vw,120px); }
+.f-presentation-hero-side { min-width:0; }
+.f-presentation-hero-split .f-presentation-hero-content { justify-items:end; text-align:end; }
+.f-presentation-title-words { display:grid; }
+.f-presentation-title-words > span { min-width:0; overflow-wrap:anywhere; }
+@media(max-width:860px) {
+ .f-presentation-hero-layout { grid-template-columns:minmax(0,1fr); gap:48px; }
+}

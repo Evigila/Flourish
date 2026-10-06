@@ -5,13 +5,13 @@
 <div class="f-split-button @(FullWidth ? "f-split-button-full-width" : null) @Class" style="@WidthStyle">
     @if (!string.IsNullOrWhiteSpace(Href))
     {
-        <a @attributes="LinkAttributes" href="@(Unavailable ? null : LinkHref)" class="@PrimaryCss"
-           role="@(Unavailable ? "link" : null)" aria-disabled="@(Unavailable ? "true" : null)" tabindex="@(Unavailable ? -1 : 0)"
-           aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync" @onclick:preventDefault="Unavailable">@PrimaryContent</a>
+        <a @attributes="LinkAttributes" href="@(PrimaryUnavailable ? null : LinkHref)" class="@PrimaryCss"
+           role="@(PrimaryUnavailable ? "link" : null)" aria-disabled="@(PrimaryUnavailable ? "true" : null)" tabindex="@(PrimaryUnavailable ? -1 : 0)"
+           aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync" @onclick:preventDefault="PrimaryUnavailable">@PrimaryContent</a>
     }
     else
     {
-        <button @attributes="PrimaryAttributes" type="@Type" class="@PrimaryCss" disabled="@Unavailable"
+        <button @attributes="PrimaryAttributes" type="@Type" class="@PrimaryCss" disabled="@PrimaryUnavailable"
                 aria-disabled="@(Unavailable ? "true" : null)" aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync">@PrimaryContent</button>
     }
     @if (MenuContent is not null && !Unavailable)
@@ -44,6 +44,8 @@
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public bool? Expanded { get; set; }
     [Parameter] public bool Disabled { get; set; }
+    /// <summary>Disables only the primary action, preserving the secondary action/menu. Native buttons use disabled without redundant primary-only ARIA state.</summary>
+    [Parameter] public bool PrimaryDisabled { get; set; }
     [Parameter] public bool Busy { get; set; }
     [Parameter] public string BusyLabel { get; set; } = "Working...";
     /// <summary>Uses the full parent width, taking precedence over Width without changing navigation-row sizing.</summary>
@@ -67,6 +69,7 @@
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
     private string SecondaryCss => $"f-split-button-secondary {SecondaryClass}{(Selected ? " is-selected" : null)}";
     private bool Unavailable => Disabled || Busy;
+    private bool PrimaryUnavailable => Unavailable || PrimaryDisabled;
     private string? WidthStyle => !FullWidth && Width.HasValue ? FormattableString.Invariant($"width:{Width.Value}px") : null;
     private string? AttributeControls => SecondaryAttributes?.FirstOrDefault(attribute => string.Equals(attribute.Key, "aria-controls", StringComparison.OrdinalIgnoreCase)).Value?.ToString();
     private string MenuRegionId => !string.IsNullOrWhiteSpace(SecondaryControls) ? SecondaryControls
@@ -116,6 +119,6 @@
         if (!string.IsNullOrWhiteSpace(SecondaryControls) && !string.IsNullOrWhiteSpace(AttributeControls) && SecondaryControls != AttributeControls)
             throw new ArgumentException("SecondaryAttributes aria-controls must match SecondaryControls.", nameof(SecondaryAttributes));
     }
-    private Task ClickAsync(MouseEventArgs args) => Unavailable ? Task.CompletedTask : OnClick.InvokeAsync(args);
+    private Task ClickAsync(MouseEventArgs args) => PrimaryUnavailable ? Task.CompletedTask : OnClick.InvokeAsync(args);
     private Task SecondaryClickAsync(MouseEventArgs args) => Unavailable || MenuContent is not null ? Task.CompletedTask : OnSecondaryClick.InvokeAsync(args);
 }

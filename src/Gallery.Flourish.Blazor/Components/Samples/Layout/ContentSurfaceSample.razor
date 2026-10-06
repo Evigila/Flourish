@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -5,27 +6,27 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Patterns.ContentSurface", Description = "DocumentKey 变化替换正文滚动区域；DocumentFlow=true 切换为文档滚动，独立访问页由 ContentSurface 与 FullHeight PresentationBand 组合。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Patterns.ContentSurface", DescriptionKey = "Key.Sample_ContentSurfaceSample_Description")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
 @using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 
-<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ContentId="@Id" DocumentKey="Document" SkipLabel="跳到示例正文">
-    <TitleBar><header class="content-topbar"><strong>@(Preview ? "顶部栏" : "帮助中心（虚构）")</strong>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="ChangeDocument">切换文章</ArkheideSystem.Flourish.Blazor.Components.Button> }</header></TitleBar>
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ContentId="@Id" DocumentKey="Document" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)">
+    <TitleBar><header class="content-topbar"><strong>@(Preview ? Localization.Parse(TextKey.Nav_TopBar) : Localization.Parse(TextKey.Sample_HelpCenterFictional))</strong>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="ChangeDocument">@Localization.Parse(TextKey.Sample_SwitchArticle)</ArkheideSystem.Flourish.Blazor.Components.Button> }</header></TitleBar>
     <ChildContent>
         @if (!Preview)
         {
-            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Document == 0 ? "快速开始（虚构）" : "常见问题（虚构）")" /><p>帮助中心正文。</p>
-                @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>说明 @row</h2><p>这是一段虚构的帮助说明，用来体验固定顶部栏与正文滚动。</p></section> }
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Document == 0 ? Localization.Parse(TextKey.Sample_QuickStartFictional) : Localization.Parse(TextKey.Sample_FrequentlyAskedQuestionsFictional))" /><p>@Localization.Parse(TextKey.Sample_HelpCenterContent)</p>
+                @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_DescriptionNumber), row)</h2><p>@Localization.Parse(TextKey.Sample_ThisFictionalHelpTextDemonstratesAFixedTopBarAndScrollingContent)</p></section> }
             </div>
         }
     </ChildContent>
 </ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
 @if (!Preview)
 {
-    <InlineActions><Button Variant="ButtonVariant.Underline" Href="/examples/display/login">完整登录页</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/accounts">账号选择页</Button></InlineActions>
+    <InlineActions><Button Variant="ButtonVariant.Underline" Href="/examples/display/login">@Localization.Parse(TextKey.Nav_DisplayLogin)</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/accounts">@Localization.Parse(TextKey.Sample_AccountSelectionPage)</Button></InlineActions>
 }
 
 @code {

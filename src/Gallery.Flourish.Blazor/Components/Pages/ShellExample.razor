@@ -1,16 +1,17 @@
 @page "/examples/shell"
+@inherits LocalizedComponentBase
 @layout ArkheideSystem.Gallery.Flourish.Blazor.Components.AccessExampleLayout
 
-<PageTitle>Flourish application shell example</PageTitle>
-<ArkheideSystem.Flourish.Blazor.Components.ApplicationShell OwnsDocument="true" ApplicationTitle="Flourish shell example" HomeHref="/examples/shell">
-    <TitleBarEnd><ArkheideSystem.Flourish.Blazor.Components.Button Icon="refresh" aria-label="Refresh sample" OnClick="Refresh" /></TitleBarEnd>
+<PageTitle>@Localization.Parse(TextKey.Page_Shell) · Gallery</PageTitle>
+<ArkheideSystem.Flourish.Blazor.Components.ApplicationShell OwnsDocument="true" ApplicationTitle="@Localization.Parse(TextKey.Shell_ApplicationTitle)" HomeHref="/examples/shell">
+    <TitleBarEnd><ArkheideSystem.Flourish.Blazor.Components.Button Icon="refresh" aria-label="@Localization.Parse(TextKey.Shell_Refresh)" OnClick="Refresh" /></TitleBarEnd>
     <ChildContent>
         <ArkheideSystem.Flourish.Blazor.Components.PageBody>
-            <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="Application shell" />
-            <ArkheideSystem.Flourish.Blazor.Components.Section Title="One configured shell">
-                <p>Navigation comes exclusively from the current ConfigureNavigation builder. This standalone page mounts one application shell.</p>
-                <p role="status">Refresh count: @RefreshCount</p>
-                <ArkheideSystem.Flourish.Blazor.Components.Button Href="/controls/ApplicationShell" Text="Return to component guide" />
+            <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Page_Shell)" />
+            <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Shell_Heading)">
+                <p>@Localization.Parse(TextKey.Shell_Description)</p>
+                <p role="status">@Localization.Parse(TextKey.Shell_Count, RefreshCount)</p>
+                <ArkheideSystem.Flourish.Blazor.Components.Button Href="/controls/ApplicationShell" Text="@Localization.Parse(TextKey.Shell_ReturnGuide)" />
             </ArkheideSystem.Flourish.Blazor.Components.Section>
         </ArkheideSystem.Flourish.Blazor.Components.PageBody>
     </ChildContent>

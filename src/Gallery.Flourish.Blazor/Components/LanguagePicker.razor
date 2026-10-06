@@ -8,6 +8,6 @@
     [Parameter] public string? MaxWidth { get; set; }
     private string? WidthStyle => MaxWidth is null ? null : $"width:{MaxWidth};max-width:100%";
     private static readonly IReadOnlyList<SelectOption<string>> languages =
-        [new("zh-CN", "中文"), new("en-US", "English")];
+        [new("zh-CN", "中文"), new("en-US", "English"), new("pt-BR", "Português (Brasil)")];
     private void ChangeLanguage(string language) => Localization.SetCulture(language);
 }

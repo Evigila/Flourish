@@ -9,8 +9,9 @@
          data-f-selection-disabled="@Disabled.ToString().ToLowerInvariant()" data-f-creating="@Creating.ToString().ToLowerInvariant()" data-f-reorder-enabled="@CanReorder.ToString().ToLowerInvariant()"
          data-f-filtering="@((!string.IsNullOrWhiteSpace(Search)).ToString().ToLowerInvariant())"
          data-f-selection-caption="@Label" data-f-selection-empty="@EffectiveEmptySelectionText" data-f-selection-count="@EffectiveMultipleSelectionText">
-    <summary id="@(RootId + "-trigger")" class="f-dropdown-trigger" aria-controls="@PanelId" aria-labelledby="@LabelledBy"
-             aria-disabled="@Locked.ToString().ToLowerInvariant()"><span data-f-selection-label>@EffectiveLabel</span> <ExpansionIndicator /></summary>
+    <summary id="@(RootId + "-trigger")" class="@TriggerClass" aria-controls="@PanelId" aria-labelledby="@LabelledBy" aria-label="@EffectiveLabel" title="@EffectiveLabel"
+             aria-disabled="@Locked.ToString().ToLowerInvariant()">@if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /><span class="f-sr-only" data-f-selection-label>@EffectiveLabel</span> }
+             else { <span data-f-selection-label>@EffectiveLabel</span> <ExpansionIndicator /> }</summary>
     <div id="@PanelId" class="f-multi-select-panel f-dropdown-panel f-menu-panel" popover="manual" role="group" aria-label="@EffectiveLabel">
         @if (Searchable || CreateRequested is not null)
         {
@@ -51,6 +52,11 @@
     [Parameter] public string? Id { get; set; }
     [Parameter] public string? Label { get; set; }
     [Parameter] public string? LabelledBy { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    private string TriggerClass => TriggerVariant is { } variant
+        ? $"f-disclosure-button-trigger f-button f-button-{variant.ToString().ToLowerInvariant()} {(!string.IsNullOrWhiteSpace(Icon) ? "f-button-icon" : null)}"
+        : "f-dropdown-trigger";
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public string EmptyText { get; set; } = "No options available.";
@@ -92,6 +98,7 @@
 
     protected override void OnParametersSet()
     {
+        if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         ArgumentNullException.ThrowIfNull(Items);
         ArgumentOutOfRangeException.ThrowIfNegative(MinimumSelected);
         ArgumentOutOfRangeException.ThrowIfNegative(MaximumSelections);

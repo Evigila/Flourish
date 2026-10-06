@@ -77,6 +77,7 @@
       <Platform Solution="*|x86" Project="x86" />
     </Project>
     <Project Path="tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj" />
+    <Project Path="tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj" />
   </Folder>
   <Folder Name="/Solutions/">
     <File Path="src/Flourish.Extensions/Flourish.Extensions.slnx" />

@@ -2,3 +2,7 @@
 .f-navigation-choices { display:grid; min-width:0; }
 .f-navigation-choices-nav,.f-navigation-choice-panel { min-width:0; }
 .f-navigation-choice-panel[hidden] { display:none!important; }
+
+.f-navigation-choices-links { display:grid; grid-template-columns:repeat(var(--f-choice-columns,3),minmax(0,1fr)); gap:8px; min-width:0; }
+.f-navigation-choices-links > .f-button { width:100%; min-width:0; }
+@media(max-width:560px) { .f-navigation-choices-links { grid-template-columns:minmax(0,1fr); } }

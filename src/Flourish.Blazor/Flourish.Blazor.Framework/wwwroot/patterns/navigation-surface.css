@@ -85,9 +85,10 @@ position: relative;
 display: grid;
 }
 
-.navigation-surface .secondary-rail  a {
+.navigation-surface .secondary-rail .f-secondary-item {
 display: flex;
     align-items: center;
+    margin-bottom: 0;
 }
 
 .navigation-surface .application-stage {
@@ -182,7 +183,7 @@ position: absolute;
             align-items: center;
     }
 
-    .navigation-surface .secondary-rail  a {
+    .navigation-surface .secondary-rail .f-secondary-item {
     flex: 0 0 auto;
             white-space: nowrap;
     }

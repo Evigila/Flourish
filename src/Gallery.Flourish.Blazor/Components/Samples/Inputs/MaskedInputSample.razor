@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -14,18 +15,18 @@
 @if (Preview)
 {
     <FormLayout Columns="1">
-        <Field Id="@(Prefix + "-digits")" Label="数字掩码"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-digits")" Mask="0000-0000" @bind-Value="EmptyDigits" /></Field>
-        <Field Id="@(Prefix + "-code")" Label="字母数字掩码"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-code")" Mask="AA-0000" InputMode="text" @bind-Value="EmptyCode" /></Field>
-        <Field Id="@(Prefix + "-disabled")" Label="禁用"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-disabled")" Mask="0000-0000" @bind-Value="EmptyDisabled" disabled /></Field>
+        <Field Id="@(Prefix + "-digits")" Label="@Localization.Parse(TextKey.Sample_DigitMask)"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-digits")" Mask="0000-0000" @bind-Value="EmptyDigits" /></Field>
+        <Field Id="@(Prefix + "-code")" Label="@Localization.Parse(TextKey.Sample_AlphanumericMask)"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-code")" Mask="AA-0000" InputMode="text" @bind-Value="EmptyCode" /></Field>
+        <Field Id="@(Prefix + "-disabled")" Label="@Localization.Parse(TextKey.Sample_Disabled)"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-disabled")" Mask="0000-0000" @bind-Value="EmptyDisabled" disabled /></Field>
     </FormLayout>
 }
 else
 {
     <FormLayout Columns="1">
-        <Field Id="@(Prefix + "-ticket")" Label="示例票号"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-ticket")" Mask="AA-0000" InputMode="text" @bind-Value="Ticket" /></Field>
+        <Field Id="@(Prefix + "-ticket")" Label="@Localization.Parse(TextKey.Sample_DemoTicketNumber)"><ArkheideSystem.Flourish.Blazor.Components.Primitives.MaskedInput id="@(Prefix + "-ticket")" Mask="AA-0000" InputMode="text" @bind-Value="Ticket" /></Field>
     </FormLayout>
-    <p role="status">模型原值：@Ticket；格式化值：@P.InputMaskFormatter.Format("AA-0000", Ticket)。</p>
-    <Button OnClick="Clear">清空票号</Button>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_MaskedValue), Ticket, P.InputMaskFormatter.Format("AA-0000", Ticket))</p>
+    <Button OnClick="Clear">@Localization.Parse(TextKey.Sample_ClearTicketNumber)</Button>
 }
 
 @code {

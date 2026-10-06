@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -5,7 +6,7 @@
 @using System.Linq
 @using System.Collections.Generic
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NavigationGuard", Description = "此行为组件不生成可见内容。空白草稿不会阻止离开。\n虚构的本地草稿。明确启用后，此组件会保护当前 Gallery 页面，包括刷新和离开；保存或停用后解除。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.NavigationGuard", DescriptionKey = "Key.Sample_NavigationGuardSample_Description")]
 @using System
 @using Microsoft.AspNetCore.Components
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
@@ -18,15 +19,15 @@
 }
 else
 {
-    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="启用当前页面的离开确认" @bind-Value="Enabled" />
+    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_EnableLeaveConfirmationForThisPage)" @bind-Value="Enabled" />
     @if (Enabled)
     {
-        <ArkheideSystem.Flourish.Blazor.Components.Primitives.NavigationGuard HasUnsavedChanges="Dirty" Message="示例草稿未保存，是否离开并丢弃？" />
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.NavigationGuard HasUnsavedChanges="Dirty" Message="@Localization.Parse(TextKey.Sample_TheDemoDraftIsUnsavedLeaveAndDiscardIt)" />
     }
-    <ArkheideSystem.Flourish.Blazor.Components.Field Label="草稿标题" Id="@Id"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="Draft" @bind-Value:after="Edit" /></ArkheideSystem.Flourish.Blazor.Components.Field>
-    <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">保存示例草稿</ArkheideSystem.Flourish.Blazor.Components.Button>
-    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@TestHref">测试离开确认（保留同一控件页面）</ArkheideSystem.Flourish.Blazor.Components.Button>
-    <p role="status">@(Dirty ? "存在未保存的虚构草稿。" : "没有未保存的修改。")</p>
+    <ArkheideSystem.Flourish.Blazor.Components.Field Label="@Localization.Parse(TextKey.Sample_DraftTitle)" Id="@Id"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="Draft" @bind-Value:after="Edit" /></ArkheideSystem.Flourish.Blazor.Components.Field>
+    <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">@Localization.Parse(TextKey.Sample_SaveDemoDraft)</ArkheideSystem.Flourish.Blazor.Components.Button>
+    <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@TestHref">@Localization.Parse(TextKey.Sample_TestLeaveConfirmationOnTheSameControlPage)</ArkheideSystem.Flourish.Blazor.Components.Button>
+    <p role="status">@(Dirty ? Localization.Parse(TextKey.Sample_AnUnsavedFictionalDraftExists) : Localization.Parse(TextKey.Sample_NoUnsavedChanges))</p>
 }
 
 @code {

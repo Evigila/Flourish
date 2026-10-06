@@ -7,7 +7,7 @@
 <div @attributes="AdditionalAttributes" class="f-field @(FullWidth ? "f-field-full" : null) @Class">
     <label id="@(LabelId ?? Id + "-label")" class="f-field-label" for="@(ControlId ?? Id)">@Label@if (Required) { <span class="f-required" aria-label="@Ui("Input_Required", "Required")">*</span> }</label>
     <div class="f-field-control"><CascadingValue Value="@Context">@ChildContent</CascadingValue></div>
-    <ValidationMessages Id="@(Id + "-error")" For="For" Error="@Error" />
+    <ValidationMessages Id="@(Id + "-error")" For="For" Error="@Error" MessageFormatter="MessageFormatter" />
 </div>
 
 @code {
@@ -20,6 +20,7 @@
     [Parameter] public bool FullWidth { get; set; }
     [Parameter] public Expression<Func<object?>>? For { get; set; }
     [Parameter] public string? Error { get; set; }
+    [Parameter] public Func<string, string>? MessageFormatter { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }

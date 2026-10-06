@@ -10,6 +10,5 @@
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
     <Deterministic>true</Deterministic>
     <EssentialCultureVersion>1.3.0</EssentialCultureVersion>
-    <RestoreAdditionalProjectSources Condition="Exists('$(MSBuildThisFileDirectory)../Essential/artifacts/packages')">$(RestoreAdditionalProjectSources);$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../Essential/artifacts/packages'))</RestoreAdditionalProjectSources>
   </PropertyGroup>
 </Project>

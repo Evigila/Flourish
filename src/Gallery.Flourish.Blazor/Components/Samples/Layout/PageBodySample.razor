@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,22 +13,22 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false"><p>居中正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="true"><p>流动正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody FullWidth="true"><p>完整宽度正文区域</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false"><p>@Localization.Parse(TextKey.Sample_CenteredContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="true"><p>@Localization.Parse(TextKey.Sample_FluidContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody FullWidth="true"><p>@Localization.Parse(TextKey.Sample_FullWidthContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
 }
 else
 {
-    <Field Label="正文布局" Id="@Id"><SelectBox TValue="string" Options="Modes" @bind-Value="Mode" /></Field>
+    <Field Label="@Localization.Parse(TextKey.Sample_ContentLayout)" Id="@Id"><SelectBox TValue="string" Options="Modes" @bind-Value="Mode" /></Field>
     <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")">
-        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="资料设置（虚构）" />
-        <ArkheideSystem.Flourish.Blazor.Components.Section Title="说明"><p>这个页面采用所选布局。调整窗口宽度可查看正文轨道与边距。</p></ArkheideSystem.Flourish.Blazor.Components.Section>
+        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_ResourceSettingsFictional)" />
+        <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Sample_Description)"><p>@Localization.Parse(TextKey.Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins)</p></ArkheideSystem.Flourish.Blazor.Components.Section>
     </ArkheideSystem.Flourish.Blazor.Components.PageBody>
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private static readonly SelectOption<string>[] Modes = [new("centered", "居中"), new("fluid", "流动"), new("full", "完整宽度")];
+    private SelectOption<string>[] Modes => [new("centered", Localization.Parse(TextKey.Sample_Centered)), new("fluid", Localization.Parse(TextKey.Sample_Fluid)), new("full", Localization.Parse(TextKey.Sample_FullWidth))];
     private readonly string Id = $"page-body-mode-{Guid.NewGuid():N}";
     private string Mode = "centered";
 }

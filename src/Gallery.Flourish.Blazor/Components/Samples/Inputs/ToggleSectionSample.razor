@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,16 +13,16 @@
 
 @if (Preview)
 {
-    <ToggleSection Label="关闭的可选区域" @bind-Value="Off"><div style="min-height:48px"></div></ToggleSection>
-    <ToggleSection Label="开启的可选区域" @bind-Value="On"><div style="min-height:48px"></div></ToggleSection>
-    <ToggleSection Label="禁用区域" @bind-Value="DisabledValue" Disabled="true"><div style="min-height:48px"></div></ToggleSection>
+    <ToggleSection Label="@Localization.Parse(TextKey.Sample_ClosedOptionalSection)" @bind-Value="Off"><div style="min-height:48px"></div></ToggleSection>
+    <ToggleSection Label="@Localization.Parse(TextKey.Sample_OpenOptionalSection)" @bind-Value="On"><div style="min-height:48px"></div></ToggleSection>
+    <ToggleSection Label="@Localization.Parse(TextKey.Sample_DisabledSection)" @bind-Value="DisabledValue" Disabled="true"><div style="min-height:48px"></div></ToggleSection>
 }
 else
 {
-    <ToggleSection Label="提供补充说明" @bind-Value="Enabled">
-        <Field Label="说明" Id="@(Prefix + "-note")"><TextBox @bind-Value="Note" Multiline="true" Rows="3" /></Field>
+    <ToggleSection Label="@Localization.Parse(TextKey.Sample_ProvideAdditionalInformation)" @bind-Value="Enabled">
+        <Field Label="@Localization.Parse(TextKey.Sample_Description)" Id="@(Prefix + "-note")"><TextBox @bind-Value="Note" Multiline="true" Rows="3" /></Field>
     </ToggleSection>
-    <p role="status">@(Enabled ? "当前将提供补充说明。" : "当前不提供补充说明。")</p>
+    <p role="status">@(Enabled ? Localization.Parse(TextKey.Sample_AdditionalInformationWillBeProvided) : Localization.Parse(TextKey.Sample_NoAdditionalInformationWillBeProvided))</p>
 }
 
 @code {

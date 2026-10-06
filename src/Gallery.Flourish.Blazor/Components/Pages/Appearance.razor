@@ -1,66 +1,66 @@
 @page "/foundations"
 @page "/foundations/{Topic}"
-@implements IDisposable
+@inherits LocalizedComponentBase
 @inject IAppearanceService AppearanceService
 <PageTitle>@Title · Gallery</PageTitle>
 <PageBody>
     <PageHeading Title="@Title" />
     @if (TopicKey == "colors")
     {
-    <Section Title="主题">
+    <Section Title="@Localization.Parse(TextKey.Nav_Theme)">
         <UniformGrid Shape="UniformGridShape.Rectangle" Columns="3" Rows="1">
-            <UniformGridButton Title="跟随系统" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)" />
-            <UniformGridButton Title="浅色" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)" />
-            <UniformGridButton Title="深色" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Appearance_System)" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.System)" OnClick="() => ChangeTheme(ApplicationTheme.System)" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Appearance_Light)" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Light)" OnClick="() => ChangeTheme(ApplicationTheme.Light)" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Appearance_Dark)" Disabled="@(AppearanceService.Current.Theme == ApplicationTheme.Dark)" OnClick="() => ChangeTheme(ApplicationTheme.Dark)" />
         </UniformGrid>
-        <p role="status">当前选择：@ThemeLabel</p>
+        <p role="status">@Localization.Parse(TextKey.Appearance_Selection, ThemeLabel)</p>
     </Section>
     }
     @if (TopicKey == "colors")
     {
-    <Section Title="颜色">
-        <p>色块显示整个应用当前模式的标准颜色。<br />焦点使用强调色；边界与描边使用边框色；点击色比对应预览色深，危险操作使用危险色。</p>
+    <Section Title="@Localization.Parse(TextKey.Nav_Colors)">
+        <p>@Localization.Parse(TextKey.Appearance_ColorDescription)<br />@Localization.Parse(TextKey.Appearance_ColorInteractions)</p>
         <EditForm @key="Palette" novalidate OnInvalidSubmit="InvalidSubmit" Model="Palette" OnValidSubmit="ApplyPalette" FormName="palette-example">
             <DataAnnotationsValidator />
             <FormLayout>
-                <Field Label="主色" Id="palette-primary" Required="true" For="@(() => Palette.Primary)">
+                <Field Label="@Localization.Parse(TextKey.Appearance_Primary)" Id="palette-primary" Required="true" For="@(() => Palette.Primary)" MessageFormatter="LocalizeValidation">
                     <TextBox Id="palette-primary" @bind-Value="Palette.Primary" MaxLength="7" />
                 </Field>
-                <Field Label="强调色" Id="palette-accent" Required="true" For="@(() => Palette.Accent)">
+                <Field Label="@Localization.Parse(TextKey.Appearance_Accent)" Id="palette-accent" Required="true" For="@(() => Palette.Accent)" MessageFormatter="LocalizeValidation">
                     <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
                 </Field>
             </FormLayout>
             <div class="f-inline-actions">
-                <Button Variant="ButtonVariant.Primary" Type="submit" Text="应用颜色" />
-                <Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette" Text="恢复默认" />
+                <Button Variant="ButtonVariant.Primary" Type="submit" Text="@Localization.Parse(TextKey.Appearance_Apply)" />
+                <Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette" Text="@Localization.Parse(TextKey.Appearance_Reset)" />
             </div>
         </EditForm>
-        @if (Message is not null) { <Notice Severity="NotificationSeverity.Success">@Message</Notice> }
+        @if (ColorsApplied) { <Notice Severity="NotificationSeverity.Success">@Localization.Parse(TextKey.Appearance_Applied)</Notice> }
         <UniformGrid>
             @foreach (var token in Colors)
             {
-                <UniformGridItem Title="@token.Label"><span aria-hidden="true" style="@($"display:inline-block;width:24px;height:24px;vertical-align:middle;background:var({token.Name});border:1px solid var(--f-border);border-radius:6px")"></span> @token.Name</UniformGridItem>
+                <UniformGridItem Title="@Localization.Parse(token.Label)"><span aria-hidden="true" style="@($"display:inline-block;width:24px;height:24px;vertical-align:middle;background:var({token.Name});border:1px solid var(--f-border);border-radius:6px")"></span> @token.Name</UniformGridItem>
             }
         </UniformGrid>
     </Section>
     }
     @if (TopicKey == "typography")
     {
-    <Section Title="字体 Typography">
+    <Section Title="@Localization.Parse(TextKey.Nav_Typography)">
         <p>Noto Sans · 中文 日本語 한국어 · ABC abc 0123456789 · g j p q y</p>
-        <p>Gallery 配置 Noto Sans 与 Noto Sans CJK SC，使用设备已安装的字体；未安装时按字体栈回退。<br />应用可在 SetFont 中加入 Noto Sans CJK TC、JP、KR 等对应语言的字体。</p>
+        <p>@Localization.Parse(TextKey.Appearance_FontDescription)<br />@Localization.Parse(TextKey.Appearance_FontLanguages)</p>
         <UniformGrid>
-            <UniformGridItem Title="当前字体栈">@AppearanceService.Current.FontFamily</UniformGridItem>
-            <UniformGridItem Title="正文、标签和控件">--f-body-size: 17px；行高 1.55</UniformGridItem>
-            <UniformGridItem Title="标签字重">--f-label-weight: 400</UniformGridItem>
-            <UniformGridItem Title="页面大标题">--f-type-page: 50px；字重 780</UniformGridItem>
-            <UniformGridItem Title="语义标题">H1：34px；H2：28px；H3：20px</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_FontStack)">@AppearanceService.Current.FontFamily</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_BodyType)">@Localization.Parse(TextKey.Appearance_BodyMetrics)</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_LabelWeight)">--f-label-weight: 400</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_PageType)">@Localization.Parse(TextKey.Appearance_PageMetrics)</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_SemanticType)">H1：34px；H2：28px；H3：20px</UniformGridItem>
         </UniformGrid>
     </Section>
     }
     @if (TopicKey == "spacing")
     {
-    <Section Title="间距 Spacing">
+    <Section Title="@Localization.Parse(TextKey.Nav_Spacing)">
         <UniformGrid>
             @foreach (var token in Spacing) { <UniformGridItem Title="@token.Name">@token.Value</UniformGridItem> }
         </UniformGrid>
@@ -68,43 +68,43 @@
     }
     @if (TopicKey == "shape")
     {
-    <Section Title="圆角 Radius 与阴影 Shadows">
+    <Section Title="@Localization.Parse(TextKey.Nav_Shape)">
         <UniformGrid>
             <UniformGridItem Title="--f-radius-small">10px</UniformGridItem>
             <UniformGridItem Title="--f-radius-control">12px</UniformGridItem>
             <UniformGridItem Title="--f-radius-panel">16px</UniformGridItem>
             <UniformGridItem Title="--f-radius-emphasis">28px</UniformGridItem>
-            <UniformGridItem Title="--f-shadow-control">0 2px 6px；使用主色的 16% 透明度</UniformGridItem>
-            <UniformGridItem Title="--f-shadow-popup">0 16px 48px；使用主色的 16% 透明度</UniformGridItem>
-            <UniformGridItem Title="--f-shadow-card">0 18px 52px；使用主色的 16% 透明度</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-control">@Localization.Parse(TextKey.Appearance_ControlShadow)</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-popup">@Localization.Parse(TextKey.Appearance_PopupShadow)</UniformGridItem>
+            <UniformGridItem Title="--f-shadow-card">@Localization.Parse(TextKey.Appearance_CardShadow)</UniformGridItem>
             <UniformGridItem Title="--f-focus-width">3px</UniformGridItem>
         </UniformGrid>
     </Section>
     }
     @if (TopicKey == "dimensions")
     {
-    <Section Title="布局尺寸">
+    <Section Title="@Localization.Parse(TextKey.Nav_Dimensions)">
         <UniformGrid>
             <UniformGridItem Title="--f-control-height / --f-dense-height">48px / 36px</UniformGridItem>
             <UniformGridItem Title="--f-topbar-height">68px</UniformGridItem>
             <UniformGridItem Title="--f-primary-width / --f-secondary-width">76px / 232px</UniformGridItem>
-            <UniformGridItem Title="--f-content-width">1180px 基线；ConfigureLayout 可配置</UniformGridItem>
-            <UniformGridItem Title="--f-page-gutter">24px 基础值；随窗口和流式布局调整</UniformGridItem>
-            <UniformGridItem Title="常用断点">980px / 760px / 520px</UniformGridItem>
+            <UniformGridItem Title="--f-content-width">@Localization.Parse(TextKey.Appearance_ContentWidth)</UniformGridItem>
+            <UniformGridItem Title="--f-page-gutter">@Localization.Parse(TextKey.Appearance_Gutter)</UniformGridItem>
+            <UniformGridItem Title="@Localization.Parse(TextKey.Appearance_Breakpoints)">980px / 760px / 520px</UniformGridItem>
         </UniformGrid>
     </Section>
     }
     @if (TopicKey == "colors")
     {
-    <Section Title="配置 Design">
-        <p>基础令牌由 Design 的 foundation.css 集中定义。<br />应用外壳通过 IThemeProvider 获取整个应用的主题状态。</p>
-        <p><a href="/framework">查看框架接入</a></p>
-        <DisplayBoard Dotted="false" Centered="false" CopyText="@DesignExample" CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…" CopyFailedLabel="未能复制，请选中代码手动复制。"><CodeBlock Text="@DesignExample" Language="csharp" /></DisplayBoard>
+    <Section Title="@Localization.Parse(TextKey.Appearance_Configure)">
+        <p>@Localization.Parse(TextKey.Appearance_Tokens)<br />@Localization.Parse(TextKey.Appearance_ThemeProvider)</p>
+        <p><a href="/framework">@Localization.Parse(TextKey.Appearance_FrameworkLink)</a></p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@DesignExample" CopyLabel="@Localization.Parse(TextKey.Common_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Common_Copied)" CopyingLabel="@Localization.Parse(TextKey.Common_Copying)" CopyFailedLabel="@Localization.Parse(TextKey.Common_CopyFailed)"><CodeBlock Text="@DesignExample" Language="csharp" /></DisplayBoard>
     </Section>
     }
     @if (!Topics.ContainsKey(TopicKey))
     {
-        <EmptyState Title="没有此主题"><Actions><a href="/foundations">返回目录</a></Actions></EmptyState>
+        <EmptyState Title="@Localization.Parse(TextKey.Common_NoTopic)"><Actions><a href="/foundations">@Localization.Parse(TextKey.Common_BackIndex)</a></Actions></EmptyState>
     }
 </PageBody>
 @code {
@@ -115,41 +115,47 @@
         return base.SetParametersAsync(parameters);
     }
     private string TopicKey => Topic?.ToLowerInvariant() ?? "colors";
-    private string Title => Topics.GetValueOrDefault(TopicKey, "页面不存在");
+    private string Title => Localization.Parse(Topics.GetValueOrDefault(TopicKey, TextKey.Page_NotFound));
     private static readonly IReadOnlyDictionary<string, string> Topics = new Dictionary<string, string>
     {
-        ["colors"] = "颜色与主题",
-        ["typography"] = "字体 Typography",
-        ["spacing"] = "间距 Spacing",
-        ["shape"] = "圆角与阴影",
-        ["dimensions"] = "布局尺寸",
+        ["colors"] = TextKey.Nav_Colors,
+        ["typography"] = TextKey.Nav_Typography,
+        ["spacing"] = TextKey.Nav_Spacing,
+        ["shape"] = TextKey.Nav_Shape,
+        ["dimensions"] = TextKey.Nav_Dimensions,
     };
 
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     private PaletteDraft Palette = new();
-    private string? Message;
-    private string ThemeLabel => AppearanceService.Current.Theme switch { ApplicationTheme.Dark => "深色", ApplicationTheme.Light => "浅色", _ => "跟随系统" };
+    private bool ColorsApplied;
+    private string ThemeLabel => Localization.Parse(AppearanceService.Current.Theme switch { ApplicationTheme.Dark => TextKey.Appearance_Dark, ApplicationTheme.Light => TextKey.Appearance_Light, _ => TextKey.Appearance_System });
     private static readonly (string Label, string Name)[] Colors =
-    [ ("主色", "--f-primary"), ("强调色", "--f-accent"), ("画布", "--f-canvas"), ("表面", "--f-surface"),
-      ("正文", "--f-text"), ("辅助文字", "--f-muted"), ("背景板", "--f-display-board"),
-      ("浅目标预览", "--f-preview-light"), ("深目标预览", "--f-preview-dark"),
-      ("浅目标点击", "--f-click-light"), ("深目标点击", "--f-click-dark"),
-      ("危险", "--f-danger"), ("危险预览", "--f-preview-danger"), ("危险点击", "--f-click-danger"),
-      ("Info正文色", "--f-info-text"), ("Warning背景色", "--f-warning-background"), ("边框", "--f-border") ];
+    [ (TextKey.Appearance_Primary, "--f-primary"), (TextKey.Appearance_Accent, "--f-accent"), (TextKey.Appearance_Canvas, "--f-canvas"), (TextKey.Appearance_Surface, "--f-surface"),
+      (TextKey.Appearance_Text, "--f-text"), (TextKey.Appearance_Muted, "--f-muted"), (TextKey.Appearance_Board, "--f-display-board"),
+      (TextKey.Appearance_PreviewLight, "--f-preview-light"), (TextKey.Appearance_PreviewDark, "--f-preview-dark"),
+      (TextKey.Appearance_ClickLight, "--f-click-light"), (TextKey.Appearance_ClickDark, "--f-click-dark"),
+      (TextKey.Appearance_Danger, "--f-danger"), (TextKey.Appearance_DangerPreview, "--f-preview-danger"), (TextKey.Appearance_DangerClick, "--f-click-danger"),
+      (TextKey.Appearance_InfoText, "--f-info-text"), (TextKey.Appearance_WarningBackground, "--f-warning-background"), (TextKey.Appearance_Border, "--f-border") ];
     private static readonly (string Name, string Value)[] Spacing =
     [ ("--f-space-1", "4px"), ("--f-space-2", "8px"), ("--f-space-3", "12px"), ("--f-space-4", "16px"),
       ("--f-space-5", "20px"), ("--f-space-6", "24px"), ("--f-space-8", "32px"), ("--f-space-11", "44px"),
       ("--f-space-16", "64px"), ("--f-space-21", "84px") ];
     protected override void OnInitialized()
     {
+        base.OnInitialized();
         Palette.Primary = AppearanceService.Current.Primary; Palette.Accent = AppearanceService.Current.Accent;
         AppearanceService.Changed += AppearanceChanged;
     }
-    private void InvalidSubmit(EditContext _) => Message = null;
+    private void InvalidSubmit(EditContext _) => ColorsApplied = false;
     private void AppearanceChanged(object? sender, EventArgs args) => _ = InvokeAsync(StateHasChanged);
     private void ChangeTheme(ApplicationTheme theme) => AppearanceService.SetTheme(theme);
-    private void ApplyPalette() { AppearanceService.SetColors(Palette.Primary, Palette.Accent); Message = "主题颜色已应用于当前演示连接。"; }
+    private void ApplyPalette() { AppearanceService.SetColors(Palette.Primary, Palette.Accent); ColorsApplied = true; }
     private void ResetPalette() { Palette = new(); ApplyPalette(); }
-    public void Dispose() => AppearanceService.Changed -= AppearanceChanged;
+    public override void Dispose()
+    {
+        AppearanceService.Changed -= AppearanceChanged;
+        base.Dispose();
+    }
     private const string DesignExample = """
         builder.Services.AddFlourishDesign(design => design
             .SetColors("#153A32", "#16745F")

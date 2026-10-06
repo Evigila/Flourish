@@ -1,11 +1,12 @@
 @page "/not-found"
+@inherits LocalizedComponentBase
 @inject NavigationManager Navigation
-<PageTitle>页面不存在 · 组件演示</PageTitle>
+<PageTitle>@Localization.Parse(TextKey.Page_NotFound) · Gallery</PageTitle>
 <PageBody>
-    <PageHeading Title="页面不存在" />
-    <EmptyState Title="这条路径没有对应页面">
-        <ChildContent><p>从导航继续，或返回主页浏览组件与交互示例。</p></ChildContent>
-        <Actions><Button OnClick="GoHome">返回主页</Button></Actions>
+    <PageHeading Title="@Localization.Parse(TextKey.Page_NotFound)" />
+    <EmptyState Title="@Localization.Parse(TextKey.NotFound_Path)">
+        <ChildContent><p>@Localization.Parse(TextKey.NotFound_Description)</p></ChildContent>
+        <Actions><Button OnClick="GoHome">@Localization.Parse(TextKey.Common_BackHome)</Button></Actions>
     </EmptyState>
 </PageBody>
 

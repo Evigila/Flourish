@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using System
 @using System.Collections.Generic
 @using System.Globalization
@@ -5,15 +6,15 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Microsoft.AspNetCore.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ListView<TItem>", Description = "静态只读 ListView 复用 DataTable 的表格样式和列格式，完整显示宿主传入的 25 条虚构记录。没有搜索、排序、分页、选中或行操作；需要这些动态能力时使用 DataTable。\n名称列提供行标题。说明中的长文本可以换行，null 显示为空；可用列通过只读模板展示带可访问说明的符号。\n同一列契约在空数据时仍保留标题；宿主负责获取数据和选择真实的空状态。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ListView<TItem>", DescriptionKey = "Key.Sample_ListViewSample_Description")]
 
 <ListView TItem="Entry" Items="@(Preview ? Items.Take(3).ToArray() : Items)" Columns="Columns"
-          ItemKey="@(item => item.Id)" RowHeaderKey="name" Culture="SampleCulture" Label="静态虚构用品目录"
-          Caption="只读用品目录，包括名称、说明、单价和可用状态；完整场景包含全部 25 条记录。">
+          ItemKey="@(item => item.Id)" RowHeaderKey="name" Culture="SampleCulture" Label="@Localization.Parse(TextKey.Sample_StaticFictionalSuppliesDirectory)"
+          Caption="@Localization.Parse(TextKey.Sample_ReadOnlySuppliesDirectoryWithNamesDescriptionsUnitPricesAndAvailabilityTheCompleteSceneIncludesAll25Records)">
     <CellTemplate Context="cell">
         @if (cell.Column.Key == "available")
         {
-            <span aria-label="@(cell.Item.Available ? "可用" : "不可用")">@(cell.Item.Available ? "✔" : "✘")</span>
+            <span aria-label="@(cell.Item.Available ? Localization.Parse(TextKey.Sample_Available) : Localization.Parse(TextKey.Sample_Unavailable))">@(cell.Item.Available ? "✔" : "✘")</span>
         }
         else
         {
@@ -23,22 +24,22 @@
 </ListView>
 @if (!Preview)
 {
-    <ListView TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" RowHeaderKey="name" Label="空白只读目录" EmptyMessage="当前没有用品。" />
+    <ListView TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" RowHeaderKey="name" Label="@Localization.Parse(TextKey.Sample_EmptyReadOnlyDirectory)" EmptyMessage="@Localization.Parse(TextKey.Sample_ThereAreNoSupplies)" />
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private sealed record Entry(int Id, string Name, string? Notes, decimal? Price, bool Available);
-    private static readonly CultureInfo SampleCulture = CultureInfo.GetCultureInfo("zh-CN");
+    private CultureInfo SampleCulture => CultureInfo.GetCultureInfo(Localization.Culture);
     private static readonly IReadOnlyList<Entry> Items = Enumerable.Range(1, 25)
         .Select(index => new Entry(index, $"虚构用品 {index:00}", index % 3 == 0 ? null
-            : index == 1 ? "这是用于验证静态列表长文本换行的虚构说明。它完整呈现，不需要动态表格的列宽测量、裁剪提示、控制器或行操作。"
-            : "只读示例说明", index % 4 == 0 ? null : 3.5m + index, index % 2 == 1)).ToArray();
-    private static readonly IReadOnlyList<TableColumn<Entry>> Columns =
+            : index == 1 ? "Key.Sample_ListViewLongNotes"
+            : "Key.Sample_ListViewNotes", index % 4 == 0 ? null : 3.5m + index, index % 2 == 1)).ToArray();
+    private IReadOnlyList<TableColumn<Entry>> Columns =>
     [
-        new("name", "名称", item => item.Name),
-        new("notes", "说明", item => item.Notes),
-        new("price", "单价", item => item.Price, Format: item => item.Price?.ToString("C", SampleCulture)),
-        new("available", "可用", item => item.Available)
+        new("name", Localization.Parse(TextKey.Record_Name), item => item.Name),
+        new("notes", Localization.Parse(TextKey.Sample_Description), item => item.Notes, Format: item => item.Notes is null ? null : Localization.Parse(item.Notes)),
+        new("price", Localization.Parse(TextKey.Sample_UnitPrice), item => item.Price, Format: item => item.Price?.ToString("C", SampleCulture)),
+        new("available", Localization.Parse(TextKey.Sample_Available), item => item.Available)
     ];
 }

@@ -1,15 +1,24 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("InlineActions")]
 
 <InlineActions>
-    <Button OnClick="Increment">增加示例</Button>
-    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">重置</Button>
+    <Button OnClick="Increment">@Localization.Parse(TextKey.Sample_IncrementDemo)</Button>
+    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
 </InlineActions>
-@if (!Preview) { <p role="status">已操作 @Count 次；不保存真实数据。</p> }
+<Field Id="inline-actions-name" Label="@Localization.Parse(TextKey.Sample_ExampleName)">
+    <InlineActions>
+        <StandaloneTextBox @bind-Value="Name" MaxLength="100" />
+        <Button Type="button" Disabled="@string.IsNullOrWhiteSpace(Name)" OnClick="Create">@Localization.Parse(TextKey.Sample_Create)</Button>
+    </InlineActions>
+</Field>
+@if (!Preview) { <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalOnlyActionCount), Count)</p> }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private int Count;
+    private string Name = string.Empty;
+    private void Create() { if (string.IsNullOrWhiteSpace(Name)) return; Count++; Name = string.Empty; }
     private void Increment() => Count++;
     private void Reset() => Count = 0;
 }

@@ -100,10 +100,10 @@
 .f-secondary-toggle { display:flex; flex:0 0 36px; width:36px; min-height:46px; justify-content:center; align-items:center; border:0; padding:0; border-radius:12px; color:var(--f-ink-soft); background:transparent; font:inherit; cursor:pointer; }
 .f-secondary-toggle:hover:not(:disabled) { color:var(--f-text); background:var(--f-target-preview); }
 .f-secondary-toggle.is-selected { background:var(--f-primary); color:var(--f-surface); }
-.f-secondary-row:has(> .f-secondary-item.is-selected):hover > :is(.f-secondary-item,.f-secondary-toggle):not(:disabled) { background:var(--f-primary); color:var(--f-surface)!important; }
+.f-secondary-item.is-selected:is(:hover,:focus-visible):not([aria-disabled=true]):not(:disabled),.f-secondary-row:has(> .f-secondary-item.is-selected):hover > :is(.f-secondary-item,.f-secondary-toggle):not(:disabled) { background:var(--f-primary); color:var(--f-surface)!important; }
 .f-secondary-toggle:disabled { opacity:.5; cursor:not-allowed; }
 .f-secondary-item:active:not([aria-disabled=true]):not(:disabled),.f-secondary-toggle:active:not(:disabled) { background:var(--f-target-click); color:var(--f-text)!important; }
-.f-secondary-row:has(> .f-secondary-item.is-selected) > :is(.f-secondary-item,.f-secondary-toggle):active:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary-click); color:var(--f-surface)!important; }
+.f-secondary-item.is-selected:active:not([aria-disabled=true]):not(:disabled),.f-secondary-row:has(> .f-secondary-item.is-selected) > :is(.f-secondary-item,.f-secondary-toggle):active:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary-click); color:var(--f-surface)!important; }
 .f-secondary-toggle:focus-visible { outline-offset:-3px; }
 .f-navigation-chevron { display:block; }
 .f-third-navigation { margin:0 0 6px; padding:0; border-radius:var(--f-radius-control); background:var(--f-navigation-children-surface); }

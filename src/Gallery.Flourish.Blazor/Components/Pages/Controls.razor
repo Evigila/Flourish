@@ -2,16 +2,17 @@
 @page "/controls/{Category}"
 @page "/controls/{Category}/{ComponentKey}"
 @using ArkheideSystem.Gallery.Flourish.Blazor.Components.Catalog
-<PageTitle>@Title · Controls · Gallery</PageTitle>
+@inherits LocalizedComponentBase
+<PageTitle>@Title · @Localization.Parse(TextKey.Nav_Controls) · Gallery</PageTitle>
 <PageBody>
-    <PageHeading Title="@Title" ParentHref="@(SelectedEntry is null ? null : CategoryHref)" ParentLabel="@($"返回 {CategoryTitle}")" />
+    <PageHeading Title="@Title" ParentHref="@(SelectedEntry is null ? null : CategoryHref)" ParentLabel="@Localization.Parse(TextKey.Page_BackToCategory, CategoryTitle)" />
     @if (SelectedEntry is not null)
     {
         <ComponentGuide Entry="@SelectedEntry" Category="@CategoryKey" ShowDetailLink="false" />
     }
-    else if (ComponentKey is not null || !CatalogSections.Titles.ContainsKey(CategoryKey))
+    else if (ComponentKey is not null || !CatalogSections.TitleKeys.ContainsKey(CategoryKey))
     {
-        <EmptyState Title="没有此控件或分类"><Actions><a href="/controls">返回控件</a></Actions></EmptyState>
+        <EmptyState Title="@Localization.Parse(TextKey.Controls_Missing)"><Actions><a href="/controls">@Localization.Parse(TextKey.Common_BackControls)</a></Actions></EmptyState>
     }
     else
     {
@@ -28,13 +29,13 @@
     [Parameter] public string? Category { get; set; }
     [Parameter] public string? ComponentKey { get; set; }
     private string CategoryKey => Category?.ToLowerInvariant() ?? "actions";
-    private string CategoryTitle => CatalogSections.Titles.GetValueOrDefault(CategoryKey, "控件");
+    private string CategoryTitle => Localization.Parse(CatalogSections.TitleKeys.GetValueOrDefault(CategoryKey, TextKey.Nav_Controls));
     private string CategoryHref => CatalogSections.HrefFor(CategoryKey);
     private ComponentEntry? SelectedEntry => ComponentKey is null ? null
         : SampleCatalog.Find(ComponentKey) is { } entry && CatalogSections.CategoryOf(entry) == CategoryKey ? entry : null;
     private string Title => SelectedEntry?.Name ?? CategoryTitle;
-    private static IReadOnlyDictionary<string, object> EntryAttributes(ComponentEntry entry) =>
-        new Dictionary<string, object> { ["title"] = $"{entry.Name} · {entry.Purpose}", ["aria-label"] = entry.Name };
+    private IReadOnlyDictionary<string, object> EntryAttributes(ComponentEntry entry) =>
+        new Dictionary<string, object> { ["title"] = $"{entry.Name} · {Localization.Parse(entry.PurposeKey)}", ["aria-label"] = entry.Name };
     private string CategoryIcon => CategoryKey switch
     {
         "actions" => "smart_button", "inputs" => "input", "data" => "table_chart",

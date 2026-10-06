@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -11,24 +12,24 @@
 @using Controls = ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 
-@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="暂停此示例区域的交互" @bind-Value="Locked" /> }
+@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_PauseInteractionInThisExampleArea)" @bind-Value="Locked" /> }
 <style>@((MarkupString)ScopedStyles)</style>
 <div id="@Id" style="position:relative; min-height:280px; isolation:isolate;">
     @if (Preview)
     {
         <div style="position:relative; min-height:240px;">
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="true" Title="锁定状态">
-                <Message><p>此区域暂停交互。</p></Message>
-                <ChildContent><ArkheideSystem.Flourish.Blazor.Components.Field Label="输入" Id="@(Id + "-locked-input")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="EmptyValue" /></ArkheideSystem.Flourish.Blazor.Components.Field></ChildContent>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="true" Title="@Localization.Parse(TextKey.Sample_LockedState)">
+                <Message><p>@Localization.Parse(TextKey.Sample_InteractionIsPausedInThisArea)</p></Message>
+                <ChildContent><ArkheideSystem.Flourish.Blazor.Components.Field Label="@Localization.Parse(TextKey.Sample_Input)" Id="@(Id + "-locked-input")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="EmptyValue" /></ArkheideSystem.Flourish.Blazor.Components.Field></ChildContent>
             </ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary>
         </div>
     }
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="Locked" Title="示例暂时不可编辑">
-        <Message><p>虚构的同步操作正在进行。只暂停这个示例区域。</p><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Unlock">完成示例同步</ArkheideSystem.Flourish.Blazor.Components.Button></Message>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary Locked="Locked" Title="@Localization.Parse(TextKey.Sample_ExampleTemporarilyNotEditable)">
+        <Message><p>@Localization.Parse(TextKey.Sample_AFictionalSynchronizationIsInProgressOnlyThisExampleAreaIsPaused)</p><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Unlock">@Localization.Parse(TextKey.Sample_CompleteDemoSynchronization)</ArkheideSystem.Flourish.Blazor.Components.Button></Message>
         <ChildContent>
-            <ArkheideSystem.Flourish.Blazor.Components.Field Label="备注" Id="@(Id + "-note")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="Note" /></ArkheideSystem.Flourish.Blazor.Components.Field>
-            <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">保存备注</ArkheideSystem.Flourish.Blazor.Components.Button>
-            @if (!Preview) { <p role="status">@(Saved ? "已保存虚构备注。" : "这是虚构的本地编辑器。")</p> }
+            <ArkheideSystem.Flourish.Blazor.Components.Field Label="@Localization.Parse(TextKey.Sample_Notes)" Id="@(Id + "-note")"><ArkheideSystem.Flourish.Blazor.Components.TextBox @bind-Value="Note" /></ArkheideSystem.Flourish.Blazor.Components.Field>
+            <ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Save">@Localization.Parse(TextKey.Sample_SaveNotes)</ArkheideSystem.Flourish.Blazor.Components.Button>
+            @if (!Preview) { <p role="status">@(Saved ? Localization.Parse(TextKey.Sample_FictionalNotesSaved) : Localization.Parse(TextKey.Sample_ThisIsAFictionalLocalEditor))</p> }
         </ChildContent>
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.InteractionBoundary>
 </div>

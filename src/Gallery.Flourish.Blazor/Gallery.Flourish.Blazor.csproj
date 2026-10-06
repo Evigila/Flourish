@@ -24,9 +24,6 @@
     <EmbeddedResource Include="Components/Samples/**/*.razor" />
     <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
-    <ProjectReference Include="../Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Arkheide.Essential.Culture.Generator" Version="$(EssentialCultureVersion)" PrivateAssets="all" />
+    <PackageReference Include="Arkheide.Flourish.Extensions.Culture.Blazor" Version="$(VersionPrefix)" />
   </ItemGroup>
 </Project>

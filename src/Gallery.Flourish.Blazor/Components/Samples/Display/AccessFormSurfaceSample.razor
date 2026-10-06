@@ -1,12 +1,13 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("AccessFormSurface")]
 <form @onsubmit="Simulate" @onsubmit:preventDefault>
     <AccessFormSurface>
-        <Field Label="演示邮箱" Id="@Id" Required="true"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" autocomplete="off" /></Field>
-        <Button Type="submit">模拟本地提交</Button>
+        <Field Label="@Localization.Parse(TextKey.Display_Email)" Id="@Id" Required="true"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" autocomplete="off" /></Field>
+        <Button Type="submit">@Localization.Parse(TextKey.Sample_SimulateLocalSubmission)</Button>
     </AccessFormSurface>
 </form>
-<p role="status">本地提交次数：@Count。</p>
+<p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalSubmissionCount), Count)</p>
 @code {
     [Parameter] public bool Preview { get; set; }
     private int Count; private string? Email = "visitor@example.invalid"; private readonly string Id = "access-form-" + Guid.NewGuid().ToString("N"); private void Simulate() => Count++;

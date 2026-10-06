@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -9,71 +10,71 @@
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataTable<TItem>", Description = "全部记录为虚构数据。使用搜索、表头排序、分页和列表／卡片切换；双击记录或通过菜单执行操作。\n列表和卡片复用标准 ActionMenu。GET 打开本 Gallery 的示例链接；POST 只演示原生表单合同，交互就绪后记录本地提交意图，不请求真实服务。模板取代自动 Open，第二行演示不可打开的记录。\n下面仍是标准 DataTable。Worklist 保留所有页的输入实例；Registry 的选择、列编辑器和保存意图由宿主提供，没有第二个表格或真实服务。\n此例模拟宿主查询，不发送网络请求。表格不再二次过滤宿主结果，搜索回调、取消和授权仍属于宿主。\nProgressive 只读取已呈现的可见文字，不嵌入业务对象、隐藏字段或独立搜索／排序值。启用浏览器行为前所有记录和原生 GET 都可读可用；启用后在同一 DOM 上搜索、分页、排序与切换卡片。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DataTable<TItem>", DescriptionKey = "Key.Sample_DataTableSample_Description")]
 
 @if (Preview)
 {
-    <p>列表模式</p>
-    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Table" Text="Captions" Label="空白列表" EmptyMessage="暂无数据" />
-    <p>卡片模式</p>
-    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Cards" Text="Captions" Label="空白卡片" EmptyMessage="暂无数据" />
+    <p>@Localization.Parse(TextKey.Sample_ListMode)</p>
+    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Table" Label="@Localization.Parse(TextKey.Sample_EmptyList)" EmptyMessage="@Localization.Parse(TextKey.Sample_NoDataYet)" />
+    <p>@Localization.Parse(TextKey.Sample_CardMode)</p>
+    <DataTable TItem="Entry" Items="Array.Empty<Entry>()" Columns="Columns" View="TableView.Cards" Label="@Localization.Parse(TextKey.Sample_EmptyCards)" EmptyMessage="@Localization.Parse(TextKey.Sample_NoDataYet)" />
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loaded">有数据</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Empty">空数据</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loading">加载中</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Error">加载失败</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loaded">@Localization.Parse(TextKey.Sample_WithData)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Empty">@Localization.Parse(TextKey.Sample_EmptyData)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Loading">@Localization.Parse(TextKey.Sample_Loading)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => State = DemoState.Error">@Localization.Parse(TextKey.Sample_LoadFailed)</Button>
     </div>
     <DataTable TItem="Entry" Items="ShownItems" Columns="Columns" Actions="Actions" @bind-PageSize="PageSize" @bind-View="View"
                ItemKey="@(item => item.Id)" RowLabel="@(item => item.Name)" OnRowOpen="Open"
-               Loading="@(State == DemoState.Loading)" Error="@(State == DemoState.Error ? "模拟加载失败，请选择有数据重试。" : null)"
-               Label="虚构用品目录" Text="Captions" LoadingMessage="正在加载虚构记录…" EmptyMessage="没有虚构记录" />
+               Loading="@(State == DemoState.Loading)" Error="@(State == DemoState.Error ? Localization.Parse(TextKey.Sample_SimulatedLoadFailureSelectWithDataToRetry) : null)"
+               Label="@Localization.Parse(TextKey.Sample_FictionalSuppliesDirectory)" LoadingMessage="@Localization.Parse(TextKey.Sample_LoadingFictionalRecords)" EmptyMessage="@Localization.Parse(TextKey.Sample_NoFictionalRecords)" />
     <p role="status">@Message</p>
-    <h3 id="native-row-demo">原生 GET / POST 行操作</h3>
+    <h3 id="native-row-demo">@Localization.Parse(TextKey.Sample_NativeGETPOSTRowActions)</h3>
     <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="@(item => item.Id)" RowLabel="@(item => item.Name)"
-               OnRowOpen="Open" RowOpenAvailable="@(item => item.Id == 1)" PreferenceKey="gallery.data-table.native-records" Label="原生传输示例">
+               OnRowOpen="Open" RowOpenAvailable="@(item => item.Id == 1)" PreferenceKey="gallery.data-table.native-records" Label="@Localization.Parse(TextKey.Sample_NativeTransportExample)">
         <RowActionsContent Context="item">
             @if (item.Id == 1)
             {
                 <Button Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem"
-                        Href="@($"/controls/data/datatablesample/?demo={item.Id}#native-row-demo")" target="_blank" rel="noopener" data-record-open>打开示例（GET）</Button>
+                        Href="@($"/controls/data/datatablesample/?demo={item.Id}#native-row-demo")" target="_blank" rel="noopener" data-record-open>@Localization.Parse(TextKey.Sample_OpenExampleGET)</Button>
                 <form method="post" action="/controls/data/datatablesample/" target="_blank" data-enhance="false"
                       @onsubmit="() => SimulatePost(item)" @onsubmit:preventDefault="true">
                     <input type="hidden" name="recordId" value="@item.Id" />
-                    <Button Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem" Type="submit" Disabled="@(!NativeDemoReady)">演示提交（POST）</Button>
+                    <Button Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem" Type="submit" Disabled="@(!NativeDemoReady)">@Localization.Parse(TextKey.Sample_DemoSubmissionPOST)</Button>
                 </form>
             }
             else
             {
-                <Button Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem" Disabled="true">记录不可打开</Button>
+                <Button Variant="ButtonVariant.Quiet" Class="f-menu-item f-dropdown-item" role="menuitem" Disabled="true">@Localization.Parse(TextKey.Sample_RecordCannotBeOpened)</Button>
             }
         </RowActionsContent>
     </DataTable>
-    <h3>同一表格的业务编辑能力</h3>
-    <DataTable TItem="Entry" Items="NativeItems" Columns="EditableColumns" Purpose="TablePurpose.Worklist" PageSize="1" ItemKey="item => item.Id" Label="保留草稿的工作清单">
+    <h3>@Localization.Parse(TextKey.Sample_BusinessEditingInTheSameTable)</h3>
+    <DataTable TItem="Entry" Items="NativeItems" Columns="EditableColumns" Purpose="TablePurpose.Worklist" PageSize="1" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_WorklistWithRetainedDrafts)">
         <CellTemplate Context="cell">
-            <StandaloneTextBox Value="@(Drafts.GetValueOrDefault(cell.Item.Id) ?? cell.Item.Name)" ValueChanged="value => Drafts[cell.Item.Id] = value ?? string.Empty" aria-label="@($"名称 {cell.Item.Id}")" required />
+            <StandaloneTextBox Value="@(Drafts.GetValueOrDefault(cell.Item.Id) ?? cell.Item.Name)" ValueChanged="value => Drafts[cell.Item.Id] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_NameNumber, cell.Item.Id)" required />
         </CellTemplate>
     </DataTable>
-    <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="item => item.Id" Label="可选批量编辑" PreferenceKey="gallery.data-table.bulk"
+    <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_OptionalBulkEditing)" PreferenceKey="gallery.data-table.bulk"
                BulkEditRequested="() => DemoBulk = true" BulkEditing="DemoBulk" AllEditSelected="@(Selected.Count == NativeItems.Count)"
                IsSelectedForEditing="item => Selected.Contains(item.Id)" ToggleEditSelection="ToggleDemoSelection" ToggleAllEditSelection="ToggleAllDemoSelection">
-        <BulkEditCell Context="column"><StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@($"批量 {column.Header}")" /></BulkEditCell>
+        <BulkEditCell Context="column"><StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_BulkColumn, column.Header)" /></BulkEditCell>
         <BulkEditActions>
-            <p>@Selected.Count 项本地选择；未请求真实服务。</p>
+            <p>@Localization.Parse(TextKey.Sample_LocalSelectionCount, Selected.Count)</p>
             <UniformGrid Columns="2" NarrowColumns="1">
-                <UniformGridButton Title="记录编辑意图" OnClick="RecordDemoIntent" />
-                <UniformGridButton Title="结束示例编辑" Variant="UniformGridVariant.Outlined" OnClick="() => DemoBulk = false" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Sample_RecordEditingIntent)" OnClick="RecordDemoIntent" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Sample_EndDemoEditing)" Variant="UniformGridVariant.Outlined" OnClick="() => DemoBulk = false" />
             </UniformGrid>
         </BulkEditActions>
     </DataTable>
-    <h3>同一搜索合同的远端结果模式</h3>
+    <h3>@Localization.Parse(TextKey.Sample_RemoteResultsWithTheSameSearchContract)</h3>
     <DataTable TItem="Entry" Items="RemoteItems" Columns="Columns" SearchMode="TableSearchMode.Remote" SearchColumnKey="@RemoteColumn"
-               SearchQuery="@RemoteQuery" SearchChanged="SimulateRemoteSearch" PaginationResetKey="@((RemoteColumn, RemoteQuery))" ItemKey="item => item.Id" Label="模拟远端目录" />
-    <h3>无电路的渐进目录</h3>
-    <DataTable TItem="Entry" Items="Items" Columns="DirectoryColumns" Progressive="true" RowOpenHref="DirectoryHref" ItemKey="item => item.Id" Label="渐进虚构目录" />
+               SearchQuery="@RemoteQuery" SearchChanged="SimulateRemoteSearch" PaginationResetKey="@((RemoteColumn, RemoteQuery))" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_SimulatedRemoteDirectory)" />
+    <h3>@Localization.Parse(TextKey.Sample_ProgressiveDirectoryWithoutACircuit)</h3>
+    <DataTable TItem="Entry" Items="Items" Columns="DirectoryColumns" Progressive="true" RowOpenHref="DirectoryHref" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_ProgressiveFictionalDirectory)" />
 }
 
 @code {
@@ -91,28 +92,28 @@ else
     private string RemoteQuery = string.Empty;
     private string? RemoteColumn = "name";
     private IReadOnlyList<Entry> RemoteItems => TableData<Entry>.Filter(Items, Columns, RemoteQuery, RemoteColumn, System.Globalization.CultureInfo.CurrentCulture);
-    private static readonly IReadOnlyList<TableColumn<Entry>> EditableColumns = [new("name", "名称", item => item.Name, CanHide: false, UsesTemplate: true)];
-    private static readonly IReadOnlyList<TableColumn<Entry>> DirectoryColumns = [new("name", "名称", item => item.Name, CanHide: false), new("group", "分类", item => item.Group)];
-    private string Message = "尚未执行行操作。";
+    private IReadOnlyList<TableColumn<Entry>> EditableColumns => [new("name", Localization.Parse(TextKey.Record_Name), item => item.Name, CanHide: false, UsesTemplate: true)];
+    private IReadOnlyList<TableColumn<Entry>> DirectoryColumns => [new("name", Localization.Parse(TextKey.Record_Name), item => item.Name, CanHide: false), new("group", Localization.Parse(TextKey.Sample_Category), item => item.Group)];
+    private string MessageKey = "Key.Sample_NoRowActionPerformedYet";
+    private object?[] MessageArguments = [];
+    private string Message => Localization.Parse(MessageKey, MessageArguments);
+    private void SetMessage(string key, params object?[] arguments) { MessageKey = key; MessageArguments = arguments; }
     private readonly IReadOnlyList<Entry> Items = Enumerable.Range(1, 23)
         .Select(index => new Entry(index, $"演示用品 {index:00}", index % 2 == 0 ? "文具" : "日用品", 3.5m + index)).ToArray();
     private IReadOnlyList<Entry> ShownItems => State == DemoState.Loaded ? Items : Array.Empty<Entry>();
     private IReadOnlyList<Entry> NativeItems => Items.Take(2).ToArray();
-    private static readonly IReadOnlyList<TableColumn<Entry>> Columns =
+    private IReadOnlyList<TableColumn<Entry>> Columns =>
     [
-        new("name", "名称", item => item.Name, CanHide: false),
-        new("group", "分类", item => item.Group),
-        new("price", "单价", item => item.Price, Format: item => item.Price.ToString("0.00"))
+        new("name", Localization.Parse(TextKey.Record_Name), item => item.Name, CanHide: false),
+        new("group", Localization.Parse(TextKey.Sample_Category), item => item.Group),
+        new("price", Localization.Parse(TextKey.Sample_UnitPrice), item => item.Price, Format: item => item.Price.ToString("0.00", CultureInfo.GetCultureInfo(Localization.Culture)))
     ];
-    private static readonly TableText Captions = new(SearchBy: "搜索字段", AllColumns: "全部字段", SearchContent: "搜索内容",
-        List: "列表", Cards: "卡片", Display: "显示", Actions: "操作", Open: "查看", Items: "项", Of: "/", Page: "页码",
-        PreviousPage: "上一页", NextPage: "下一页", Width: "宽度", SortDescending: "降序", SortAscending: "升序", SortDefault: "恢复顺序", ResizeHint: "拖动或使用方向键调整列宽", ItemsPerPage: "每页数量", Total: "共", ItemRangeFormat: "{0}{1}-{2} / {3}{4}");
     private IReadOnlyList<RowAction<Entry>> Actions =>
-    [new("加入本地收藏", item => { Message = $"已收藏虚构记录：{item.Name}"; return InvokeAsync(StateHasChanged); })];
-    private void Open(Entry item) => Message = $"打开虚构记录：{item.Name}，分类 {item.Group}，单价 {item.Price:0.00}。";
-    private void SimulatePost(Entry item) => Message = $"已记录虚构 POST 意图：{item.Name}；未请求任何真实服务。";
+    [new(Localization.Parse(TextKey.Sample_AddToLocalFavorites), item => { SetMessage(TextKey.Sample_FavoriteRecord, item.Name); return InvokeAsync(StateHasChanged); })];
+    private void Open(Entry item) => SetMessage(TextKey.Sample_OpenRecord, item.Name, item.Group, item.Price);
+    private void SimulatePost(Entry item) => SetMessage(TextKey.Sample_PostIntent, item.Name);
     private void SimulateRemoteSearch(TableSearchRequest request) { RemoteColumn = request.ColumnKey; RemoteQuery = request.Value; }
-    private void RecordDemoIntent() => Message = $"已记录 {Selected.Count} 项的本地编辑意图。";
+    private void RecordDemoIntent() => SetMessage(TextKey.Sample_EditIntent, Selected.Count);
     private static string DirectoryHref(Entry _) => "/controls/data/datatablesample/#native-row-demo";
     private void ToggleDemoSelection(Entry item) { if (!Selected.Remove(item.Id)) Selected.Add(item.Id); }
     private void ToggleAllDemoSelection() { if (Selected.Count == NativeItems.Count) Selected.Clear(); else Selected.UnionWith(NativeItems.Select(item => item.Id)); }

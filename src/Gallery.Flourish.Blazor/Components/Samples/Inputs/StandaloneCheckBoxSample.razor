@@ -1,7 +1,8 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
-@attribute [SampleFor("StandaloneCheckBox", Description = "原生提交值为 yes；不保存会话或提交凭据。业务模型验证使用 CheckBox。")]
-<StandaloneCheckBox Label="保留演示选择" name="remember" SubmissionValue="yes" @bind-Value="Remember" />
-<p role="status">本地选中：@Remember</p>
+@attribute [SampleFor("StandaloneCheckBox", DescriptionKey = "Key.Sample_StandaloneCheckBoxSample_Description")]
+<StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_KeepDemoSelection)" name="remember" SubmissionValue="yes" @bind-Value="Remember" />
+<p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalChecked), Remember ? Localization.Parse(TextKey.Sample_Checked) : Localization.Parse(TextKey.Sample_Unchecked))</p>
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool Remember;

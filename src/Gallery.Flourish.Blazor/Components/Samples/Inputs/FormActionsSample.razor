@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -13,24 +14,24 @@
 
 @if (Preview)
 {
-    <FormActions Columns="2"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /></FormActions>
-    <FormActions Columns="3"><UniformGridButton Title="主操作" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="次操作" Variant="UniformGridVariant.Outlined" /><UniformGridButton Title="禁用操作" Variant="UniformGridVariant.Outlined" Disabled="true" /></FormActions>
+    <FormActions Columns="2"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Outlined" /></FormActions>
+    <FormActions Columns="3"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Outlined" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_DisabledAction)" Variant="UniformGridVariant.Outlined" Disabled="true" /></FormActions>
 }
 else
 {
     <FormActions Columns="3">
-        <UniformGridButton Title="提交报名" Variant="UniformGridVariant.Filled" Busy="Saving" BusyLabel="模拟提交中" OnClick="Submit" />
-        <UniformGridButton Title="保存草稿" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Draft" />
-        <UniformGridButton Title="重置" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Reset" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitRegistration)" Variant="UniformGridVariant.Filled" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_SimulatedSubmissionInProgress)" OnClick="Submit" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SaveDraft)" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Draft" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Reset)" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Reset" />
     </FormActions>
-    <p role="status">@Message</p>
+    <p role="status">@Localization.Parse(Message)</p>
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool Saving;
-    private string Message = "没有执行示例操作。";
-    private async Task Submit() { Saving = true; await Task.Delay(500); Message = "虚构报名已提交，未发送任何网络请求。"; Saving = false; }
-    private void Draft() => Message = "虚构草稿已保留在当前示例中。";
-    private void Reset() => Message = "示例状态已重置。";
+    private string Message = "Key.Sample_NoDemoActionHasBeenPerformed";
+    private async Task Submit() { Saving = true; await Task.Delay(500); Message = "Key.Sample_FictionalRegistrationSubmittedNoNetworkRequestWasSent"; Saving = false; }
+    private void Draft() => Message = "Key.Sample_TheFictionalDraftIsRetainedInThisExample";
+    private void Reset() => Message = "Key.Sample_DemoStateReset";
 }

@@ -16,7 +16,7 @@ Register catalogs and a scoped Culture session through AddCultureBlazor. Registe
 builder.Services.AddCultureBlazor(options => options
     .AddCatalog("App", appCatalog)
     .SetDefaultCulture("en-US")
-    .AddSupportedCultures("en-US", "zh-CN"));
+    .AddSupportedCultures("en-US", "zh-CN", "pt-BR"));
 
 builder.Services.AddFlourishFramework();
 builder.Services.AddFlourishCulture();
@@ -25,6 +25,14 @@ builder.Services.AddFlourishCulture();
 The bridge also works before Framework registration because Framework's default provider uses TryAdd. Repeated AddFlourishCulture calls leave one scoped ITextProvider descriptor. Explicit bridge registration replaces existing text-provider registrations; later explicit replacement remains a host choice.
 
 AddFlourishCulture does not register or reconfigure Culture, catalogs, language defaults, Framework, Design, cookie endpoints or persistence. Missing Culture registration fails DI validation.
+
+## Catalog source and access-key maintenance
+
+Maintain one Culture.json per owning project with en-US, zh-CN and pt-BR values under each key. Gallery uses Essential.Culture.Generator on its single file and resolves generated Texts.Key tokens through the scoped Localization service. Framework owns a separate provider-neutral caption and component-usage catalog, now also physically named Culture.json, without importing the Essential generator. Its embedded logical resource name remains Flourish.Blazor.Texts.json; Gallery's remains Gallery.Texts.json. Register both catalogs when using the standard control captions.
+
+The Blazor source catalogs currently contain 1,483 Gallery keys and 281 Framework keys with complete translations in all three languages. Catalogs are immutable and shared safely; selected language and formatting remain request/circuit scoped. File shape and key lookup match the desktop targets, while desktop global/window UI integration differs from the Blazor scope and renderer lifecycle. See [the Web integration guide](culture-web-integration.md) for the JSON example, generator setup and three-language verification.
+
+Ordinary literal text does not become translated by installing this bridge. Keys must be resolved explicitly, and localized components must observe Changed and unsubscribe on disposal. Hosts own request negotiation and any cookie/preference persistence.
 
 ## Text and events
 
@@ -62,3 +70,11 @@ Checks cover independent users, catalog identity, fallback, explicit formatting,
 Historical verification before the unified package release: Release builds with TreatWarningsAsErrors passed for the combined solution. All 12 Blazor bridge checks and all five existing WPF extension tests passed against local sibling sources. That earlier packing produced Arkheide.Flourish.Extensions.Culture.Blazor.1.0.0 with exactly two package dependencies: Arkheide.Essential.Culture.Blazor 1.3.0 and Arkheide.Flourish.Blazor.Abstract 1.1.0. The package also declares Microsoft.AspNetCore.App, with no Framework, Design or WPF dependency.
 
 The current Blazor release solution includes this console verification and it is executed explicitly by Test-Release.ps1. CI restores Essential 1.3.0 from NuGet without checking out sibling source. Publish Essential first, then the six Flourish packages under a matching v1.1.0 tag, only after separately authorized publication. Former eight-package/culture-v source-checkout instructions are superseded. NuGet emits its advisory about the intentionally omitted README; no README is created.
+
+## Gallery prose and metadata completion on 2026-10-06
+
+Gallery now resolves H2 headings, paragraphs, actions, accessibility labels, examples, table columns and status messages explicitly. ComponentCatalog, ParameterMeaning and SampleFor/SampleCatalog store stable keys instead of localized string snapshots. ComponentUsageInfo.Scenario and Guidance are immutable TextReference values in the Flourish catalog, with English fallbacks when no bridge is installed. Resolve them through ITextProvider.Get in the current scope; this is a source-owned metadata contract migration, not a second compatibility API.
+
+Field and ValidationMessages expose an optional MessageFormatter. Gallery stores annotation errors as access keys and maps their displayed text through the scoped service. Existing errors change language without rerunning validation or changing EditContext messages, field identity or rules. An omitted formatter preserves ordinary host messages; explicit Error also passes through a supplied formatter. ValidationMessages observes provider changes and releases both language and EditContext subscriptions.
+
+See [the implementation and regression report](bugfix-reports/2026-10-06_gallery-prose-localization.md). Code syntax, API identities, brand/font names, language autonyms and actual record/input data remain unchanged.

@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -13,20 +14,20 @@
 @if (Preview)
 {
     <FormLayout>
-        <Field Label="单行文本" Id="@(Prefix + "-single")"><TextBox @bind-Value="EmptyText" /></Field>
-        <Field Label="多行文本" Id="@(Prefix + "-multi")" FullWidth="true"><TextBox @bind-Value="EmptyDescription" Multiline="true" Rows="3" /></Field>
-        <Field Label="密码" Id="@(Prefix + "-password")"><TextBox @bind-Value="EmptyPassword" Type="password" /></Field>
-        <Field Label="禁用" Id="@(Prefix + "-disabled")"><TextBox @bind-Value="EmptyDisabled" Disabled="true" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_SingleLineText)" Id="@(Prefix + "-single")"><TextBox @bind-Value="EmptyText" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_MultilineText)" Id="@(Prefix + "-multi")" FullWidth="true"><TextBox @bind-Value="EmptyDescription" Multiline="true" Rows="3" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Access_OrganizationPassword)" Id="@(Prefix + "-password")"><TextBox @bind-Value="EmptyPassword" Type="password" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_Disabled)" Id="@(Prefix + "-disabled")"><TextBox @bind-Value="EmptyDisabled" Disabled="true" /></Field>
     </FormLayout>
 }
 else
 {
     <FormLayout>
-        <Field Label="活动名称" Id="@(Prefix + "-name")"><TextBox @bind-Value="Name" MaxLength="80" Disabled="Locked" /></Field>
-        <Field Label="活动介绍" Id="@(Prefix + "-description")" FullWidth="true"><TextBox @bind-Value="Description" Multiline="true" Rows="3" MaxLength="300" Disabled="Locked" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_ActivityName)" Id="@(Prefix + "-name")"><TextBox @bind-Value="Name" MaxLength="80" Disabled="Locked" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_ActivityDescription)" Id="@(Prefix + "-description")" FullWidth="true"><TextBox @bind-Value="Description" Multiline="true" Rows="3" MaxLength="300" Disabled="Locked" /></Field>
     </FormLayout>
-    <ToggleSwitch Label="模拟禁止编辑" @bind-Value="Locked" OnLabel="禁止" OffLabel="可编辑" />
-    <p role="status">当前名称：@Name；介绍长度：@(Description?.Length ?? 0) / 300。</p>
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_SimulateEditingBlocked)" @bind-Value="Locked" OnLabel="@Localization.Parse(TextKey.Sample_Blocked)" OffLabel="@Localization.Parse(TextKey.Sample_Editable)" />
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_ActivityTextStatus), Name, Description?.Length ?? 0)</p>
 }
 
 @code {

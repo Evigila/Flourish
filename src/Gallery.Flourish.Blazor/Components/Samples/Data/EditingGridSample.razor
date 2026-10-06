@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -11,62 +12,84 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.EditingGrid", Description = "全部单元格数据为虚构。双击或使用键盘进入编辑。展示文本、金额、日期、多行文本、选择、掩码与链接编辑器。\n复合单元格复用本编辑网格和标准多选控件；宿主只提供值、授权及保存回调，不创建另一个表格。\n字段校验与保存由宿主回调完成。链接单元格跳到板内的本地说明；多单元格粘贴与远程事务通过 GridInteractions 接入。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.EditingGrid", DescriptionKey = "Key.Sample_EditingGridSample_Description")]
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>()" Label="空白编辑网格" EmptyMessage="暂无数据" Text="Captions" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>()" Label="@Localization.Parse(TextKey.Sample_EmptyEditingGrid)" EmptyMessage="@Localization.Parse(TextKey.Sample_NoDataYet)" Text="Captions" />
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => ReadOnly = !ReadOnly">@(ReadOnly ? "启用编辑" : "禁用编辑")</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="UndoAsync" Disabled="@(History.Count == 0)">撤销</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="RedoAsync" Disabled="@(RedoHistory.Count == 0)">重做</Button>
-        <Button OnClick="SaveAsync">保存本地草稿</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => ReadOnly = !ReadOnly">@(ReadOnly ? Localization.Parse(TextKey.Sample_EnableEditing) : Localization.Parse(TextKey.Sample_DisableEditing))</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="UndoAsync" Disabled="@(History.Count == 0)">@Localization.Parse(TextKey.Sample_Undo)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="RedoAsync" Disabled="@(RedoHistory.Count == 0)">@Localization.Parse(TextKey.Sample_Redo)</Button>
+        <Button OnClick="SaveAsync">@Localization.Parse(TextKey.Sample_SaveLocalDraft)</Button>
     </div>
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Quiet" OnClick="ShowValidationError">模拟校验错误</Button>
-        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">恢复虚构数据</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="ShowValidationError">@Localization.Parse(TextKey.Sample_SimulateValidationError)</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">@Localization.Parse(TextKey.Sample_ResetFictionalData)</Button>
     </div>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="Rows" CellChanged="ChangeCell" Interactions="Interactions" EditDisabled="ReadOnly"
-                            MeasurementRevision="Revision" Label="虚构用品编辑网格" TableLabel="虚构用品" Text="Captions" />
-    <p role="status">@Message</p>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="TagColumns" Rows="TagRows" EditDisabled="ReadOnly" Label="标准多选单元格" TableLabel="复合单元格" Text="Captions">
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="LocalizedRows" CellChanged="ChangeCell" Interactions="Interactions" EditDisabled="ReadOnly"
+                            MeasurementRevision="Revision" Label="@Localization.Parse(TextKey.Sample_FictionalSuppliesEditingGrid)" TableLabel="@Localization.Parse(TextKey.Sample_FictionalSupplies)" Text="Captions" />
+    <p role="status">@LocalizeText(Message)</p>
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="TagColumns" Rows="TagRows" EditDisabled="ReadOnly" Label="@Localization.Parse(TextKey.Sample_StandardMultiSelectionCell)" TableLabel="@Localization.Parse(TextKey.Sample_CompositeCell)" Text="Captions">
         <CellTemplate Context="cell">
-            <MultiSelectBox Id="@(InfoId + "-tags")" Label="标签" Items="TagOptions" Changed="ChangeTags"
-                            EmptySelectionText="未选择" MultipleSelectionText="已选项目" Disabled="cell.Disabled" />
+            <MultiSelectBox Id="@(InfoId + "-tags")" Label="@Localization.Parse(TextKey.Sample_Tags)" Items="LocalizedTagOptions" Changed="ChangeTags"
+                            EmptySelectionText="@Localization.Parse(TextKey.Sample_NotSelected)" MultipleSelectionText="@Localization.Parse(TextKey.Sample_SelectedItems)" Disabled="cell.Disabled" />
         </CellTemplate>
     </ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid>
-    <p id="@InfoId">链接目标：本地草稿说明。</p>
+    <p id="@InfoId">@Localization.Parse(TextKey.Sample_LinkTargetLocalDraftDetails)</p>
 }
 
 @code {
+    private string LocalizeText(string text) => Localization.TryParse(text, [], out var translated) ? translated : text;
+    private IReadOnlyList<Primitives.GridRow> LocalizedRows => Rows.Select(row => row with
+    {
+        Label = Localization.Parse(TextKey.Sample_FictionalSupplyRecord, row.Cells[0].Display),
+        Cells = row.Cells.Select(cell => cell with
+        {
+            Error = cell.Error is null ? null : LocalizeText(cell.Error),
+            Display = cell.Editor == Primitives.GridEditorKind.Select ? Groups.FirstOrDefault(option => option.Value == cell.Value)?.Label ?? cell.Display
+                : cell.Editor == Primitives.GridEditorKind.Link ? Localization.Parse(TextKey.Sample_ExampleDetails) : cell.Display,
+            Options = cell.Editor == Primitives.GridEditorKind.Select ? Groups : cell.Options,
+            LinkLabel = cell.Editor == Primitives.GridEditorKind.Link ? Localization.Parse(TextKey.Sample_SkipToExampleDetails) : cell.LinkLabel
+        }).ToArray()
+    }).ToArray();
+    private IReadOnlyList<MultiSelectOption> LocalizedTagOptions => TagOptions.Select(option => option with
+    {
+        Label = option.Key switch
+        {
+            "stationery" => Localization.Parse(TextKey.Sample_Stationery),
+            "daily" => Localization.Parse(TextKey.Sample_EverydaySupplies),
+            _ => Localization.Parse(TextKey.Sample_SpareSupplies)
+        }
+    }).ToArray();
     [Parameter] public bool Preview { get; set; }
-    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridColumn> Columns =
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridColumn> Columns =>
     [
-        new("name", "名称", Required: true, Identity: true), new("price", "金额"), new("date", "日期"),
-        new("note", "备注"), new("group", "分类"), new("phone", "联系电话"), new("link", "链接")
+        new("name", Localization.Parse(TextKey.Record_Name), Required: true, Identity: true), new("price", Localization.Parse(TextKey.Amount)), new("date", Localization.Parse(TextKey.Sample_Date)),
+        new("note", Localization.Parse(TextKey.Sample_Notes)), new("group", Localization.Parse(TextKey.Sample_Category)), new("phone", Localization.Parse(TextKey.Sample_ContactPhone)), new("link", Localization.Parse(TextKey.Sample_Link))
     ];
-    private static readonly IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridOption> Groups = [new("stationery", "文具"), new("daily", "日用品")];
-    private static readonly Primitives.GridText Captions = new("{0} 的宽度", "{0} 像素", "拖动或使用方向键调整宽度；Home 恢复自动宽度");
+    private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridOption> Groups => [new("stationery", Localization.Parse(TextKey.Sample_Stationery)), new("daily", Localization.Parse(TextKey.Sample_EverydaySupplies))];
+    private Primitives.GridText Captions => new(Localization.Parse(TextKey.Sample_ColumnWidth), Localization.Parse(TextKey.Sample_PixelCount), Localization.Parse(TextKey.Sample_DragOrUseArrowKeysToResizeHomeRestoresAutomaticWidth));
     private readonly string InfoId = "grid-info-" + Guid.NewGuid().ToString("N");
     private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> Rows = Array.Empty<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>();
     private readonly Stack<IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow>> History = new(), RedoHistory = new();
     private bool ReadOnly;
     private IReadOnlyList<MultiSelectOption> TagOptions = [new("stationery", "文具", Selected: true), new("daily", "日用品"), new("spare", "备品")];
     private string[] SelectedTags => TagOptions.Where(option => option.Selected).Select(option => option.Label).ToArray();
-    private static readonly IReadOnlyList<Primitives.GridColumn> TagColumns = [new("tags", "标签")];
-    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [new(string.Join(';', SelectedTags), $"{SelectedTags.Length} 项", Primitives.GridEditorKind.Template)])];
+    private IReadOnlyList<Primitives.GridColumn> TagColumns => [new("tags", Localization.Parse(TextKey.Sample_Tags))];
+    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [new(string.Join(';', SelectedTags), Localization.Parse(TextKey.Sample_ItemCount, SelectedTags.Length), Primitives.GridEditorKind.Template)])];
     private void ChangeTags(MultiSelectChange change) { if (ReadOnly) return; TagOptions = change.OrderedKeys.Select(key => TagOptions.Single(option => option.Key == key) with { Selected = change.SelectedKeys.Contains(key) }).ToArray(); }
     private long Revision;
-    private string Message = "虚构数据仅在当前组件中保留。";
+    private string Message = "Key.Sample_FictionalDataIsRetainedOnlyInThisComponent";
     private Primitives.GridInteractions Interactions => new()
     {
         Save = SaveAsync, Cancel = ResetAsync, Undo = UndoAsync, Redo = RedoAsync,
         ReportError = message => { Message = message; StateHasChanged(); return Task.CompletedTask; }
     };
-    protected override void OnInitialized() => Rows = CreateRows();
+    protected override void OnInitialized() { base.OnInitialized(); Rows = CreateRows(); }
     private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> CreateRows() =>
     [
         new("demo-1",
@@ -99,39 +122,39 @@ else
         RedoHistory.Clear();
         var cells = Rows[change.Row].Cells.ToArray();
         var value = change.Value ?? "";
-        string? error = change.Column == 0 && string.IsNullOrWhiteSpace(value) ? "请输入名称。" : null;
+        string? error = change.Column == 0 && string.IsNullOrWhiteSpace(value) ? "Key.Sample_EnterAName_Record" : null;
         if (change.Column == 1 && (!decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) || amount < 0))
-            error = "请输入大于等于 0 的金额。";
+            error = "Key.Sample_EnterAnAmountGreaterThanOrEqualTo0";
         var display = current.Editor == Primitives.GridEditorKind.Select ? Groups.FirstOrDefault(option => option.Value == value)?.Label ?? value : value;
         cells[change.Column] = current with { Value = value, Display = display, Changed = true, Error = error };
         var updated = Rows.ToArray();
         updated[change.Row] = Rows[change.Row] with { Cells = cells, Dirty = true };
         Rows = updated;
         Revision++;
-        Message = error ?? "虚构单元格已更新，尚未保存。";
+        Message = error ?? "Key.Sample_FictionalCellUpdatedButNotSaved";
     }
     private Task SaveAsync()
     {
-        if (Rows.Any(row => row.Cells.Any(cell => cell.Error is not null))) { Message = "请修正演示校验错误后保存。"; StateHasChanged(); return Task.CompletedTask; }
+        if (Rows.Any(row => row.Cells.Any(cell => cell.Error is not null))) { Message = "Key.Sample_CorrectDemoValidationErrorsBeforeSaving"; StateHasChanged(); return Task.CompletedTask; }
         Rows = Rows.Select(row => row with { Dirty = false, Cells = row.Cells.Select(cell => cell with { Changed = false }).ToArray() }).ToArray();
         History.Clear(); RedoHistory.Clear(); Revision++;
-        Message = "虚构草稿已保存到本地状态。";
+        Message = "Key.Sample_FictionalDraftSavedToLocalState";
         StateHasChanged();
         return Task.CompletedTask;
     }
     private Task UndoAsync()
     {
-        if (History.TryPop(out var previous)) { RedoHistory.Push(Rows); Rows = previous; Revision++; Message = "已撤销演示修改。"; }
+        if (History.TryPop(out var previous)) { RedoHistory.Push(Rows); Rows = previous; Revision++; Message = "Key.Sample_DemoChangeUndone"; }
         StateHasChanged();
         return Task.CompletedTask;
     }
     private Task RedoAsync()
     {
-        if (RedoHistory.TryPop(out var next)) { History.Push(Rows); Rows = next; Revision++; Message = "已重做演示修改。"; }
+        if (RedoHistory.TryPop(out var next)) { History.Push(Rows); Rows = next; Revision++; Message = "Key.Sample_DemoChangeRedone"; }
         StateHasChanged();
         return Task.CompletedTask;
     }
     private void ShowValidationError() => ChangeCell(new(0, 1, "-1"));
     private Task ResetAsync() { Reset(); return Task.CompletedTask; }
-    private void Reset() { Rows = CreateRows(); History.Clear(); RedoHistory.Clear(); Revision++; ReadOnly = false; Message = "已恢复虚构数据。"; StateHasChanged(); }
+    private void Reset() { Rows = CreateRows(); History.Clear(); RedoHistory.Clear(); Revision++; ReadOnly = false; Message = "Key.Sample_FictionalDataReset"; StateHasChanged(); }
 }

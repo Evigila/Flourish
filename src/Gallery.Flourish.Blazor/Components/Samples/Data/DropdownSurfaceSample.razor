@@ -1,10 +1,11 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [SampleFor("DropdownSurface", Description = "这里只展示原生 details 构造表面；没有选择、菜单焦点或外部点击关闭，不作为独立生产菜单。")]
+@attribute [SampleFor("DropdownSurface", DescriptionKey = "Key.Sample_DropdownSurfaceSample_Description")]
 <DropdownSurface>
-    <Trigger>静态展示入口</Trigger>
-    <ChildContent><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示目录</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">虚构产品</Button></ChildContent>
+    <Trigger>@Localization.Parse(TextKey.Sample_StaticPresentationEntry)</Trigger>
+    <ChildContent><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Sample_PresentationExamples)</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">@Localization.Parse(TextKey.Sample_FictionalProduct)</Button></ChildContent>
 </DropdownSurface>
-@if (!Preview) { <Button Variant="ButtonVariant.Underline" Href="/controls/actions/actionmenusample">普通命令菜单使用 ActionMenu</Button> }
+@if (!Preview) { <Button Variant="ButtonVariant.Underline" Href="/controls/actions/actionmenusample">@Localization.Parse(TextKey.Sample_UseActionMenuForCommandMenus)</Button> }
 @code {
     [Parameter] public bool Preview { get; set; }
 

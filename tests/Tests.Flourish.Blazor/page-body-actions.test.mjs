@@ -36,6 +36,6 @@ test("nested rectangle grids and bounded squares retain distinct sizing without 
   assert.equal(property(rule(css, ".f-uniform-grid-square"), "width"), "fit-content");
   assert.equal(property(rule(css, ".f-uniform-grid-columns"), "grid-template-columns"), "repeat(var(--f-grid-columns),minmax(0,var(--f-grid-cell-width)))");
   const wizard = await read("src/Gallery.Flourish.Blazor/Components/Pages/WizardExample.razor");
-  assert.match(wizard, /<PageBody>\s*@if[\s\S]*?<UniformGrid Columns="2" NarrowColumns="1"/);
+  assert.match(wizard, /<PageBody>\s*<PageHeading Title=[^>]*\/>\s*@if[\s\S]*?<UniformGrid Columns="2" NarrowColumns="1"/);
   assert.doesNotMatch(wizard, /style=|Class=/);
 });

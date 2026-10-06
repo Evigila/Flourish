@@ -93,6 +93,26 @@ check('Guide discovery includes only five owned section headings and excludes co
     const directHeading = new Node('h2'); directHeading.textContent = 'Direct content heading'; local.content.append(directHeading);
     api.synchronize(local.nav, local.content.id, true, referenceFor(local.nav)); assert.equal(local.links().length, 6); api.detach(local.nav);
 });
+check('A replacement main with the same identifier releases the previous route and discovers only the new outline', () => {
+    const local = fixture(), previousId = local.content.id;
+    const markRemoved = node => { node.isConnected = false; node.children.forEach(markRemoved); };
+    markRemoved(local.content);
+    const replacement = new Node('main'); replacement.id = previousId;
+    const current = section('Inventory on the replacement route', 160); replacement.append(current.container);
+    api.synchronize(local.nav, previousId, true, referenceFor(local.nav));
+    assert.equal(local.content.events.get('scroll').length, 0);
+    assert.equal(replacement.events.get('scroll').length, 1);
+    assert.equal(local.one.heading.id, '');
+    assert.equal(local.links().length, 1);
+    assert.equal(local.links()[0].getAttribute('href'), '#' + current.heading.id);
+    local.nav.emit('click', click(local.links()[0]));
+    assert.equal(document.activeElement, current.heading);
+    assert.equal(local.content.scrolled, undefined);
+    markRemoved(current.container); replacement.children = [];
+    api.synchronize(local.nav, previousId, true, referenceFor(local.nav));
+    assert.equal(local.links().length, 0); assert.equal(local.nav.hidden, true);
+    api.detach(local.nav); assert.equal(replacement.events.get('scroll').length, 0);
+});
 check('Sticky heading compaction settles with one content-only correction and updated current section', () => {
     const local = fixture({ sticky:true }); local.nav.emit('click', click(local.links()[1]));
     assert.deepEqual(local.content.scrolled, { top:174, behavior:'smooth' });

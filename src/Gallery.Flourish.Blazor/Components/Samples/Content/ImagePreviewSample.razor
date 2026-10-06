@@ -1,9 +1,10 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ImagePreview")]
 
-<ImagePreview Url="@Logo" Alt="虚构示例标志">
-    <ChildContent>此图片仅用于标准预览案例。</ChildContent>
-    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示页面案例</Button></Actions>
+<ImagePreview Url="@Logo" Alt="@Localization.Parse(TextKey.Sample_FictionalExampleLogo)">
+    <ChildContent>@Localization.Parse(TextKey.Sample_ThisImageIsUsedOnlyForTheStandardPreviewExample)</ChildContent>
+    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Sample_PresentationPageExamples)</Button></Actions>
 </ImagePreview>
 
 @code {

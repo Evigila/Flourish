@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Web
 @using System.Linq
@@ -13,41 +14,42 @@
 
 @if (Preview)
 {
-    <FormLayout Columns="1"><Field Label="单列" Id="@(Prefix + "-one")"><TextBox @bind-Value="EmptyOne" /></Field></FormLayout>
+    <FormLayout Columns="1"><Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_SingleColumn)" Id="@(Prefix + "-one")"><TextBox @bind-Value="EmptyOne" /></Field></FormLayout>
     <FormLayout Columns="2">
-        <Field Label="双列第一项" Id="@(Prefix + "-two-a")"><TextBox @bind-Value="EmptyTwoA" /></Field>
-        <Field Label="双列第二项" Id="@(Prefix + "-two-b")"><TextBox @bind-Value="EmptyTwoB" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_FirstItemInTwoColumns)" Id="@(Prefix + "-two-a")"><TextBox @bind-Value="EmptyTwoA" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_SecondItemInTwoColumns)" Id="@(Prefix + "-two-b")"><TextBox @bind-Value="EmptyTwoB" /></Field>
     </FormLayout>
 }
 else
 {
-    <ToggleSwitch Label="改用单列" @bind-Value="SingleColumn" OnLabel="单列" OffLabel="双列" />
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_UseASingleColumn)" @bind-Value="SingleColumn" OnLabel="@Localization.Parse(TextKey.Sample_SingleColumn)" OffLabel="@Localization.Parse(TextKey.Sample_TwoColumns)" />
     <EditForm Model="Model" FormName="@Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
         <DataAnnotationsValidator />
         <FormLayout Columns="@(SingleColumn ? 1 : 2)">
-            <Field Label="报名人" Id="@(Prefix + "-name")" Required="true" For="@(() => Model.Name)"><TextBox @bind-Value="Model.Name" /></Field>
-            <Field Label="邮箱" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)"><TextBox @bind-Value="Model.Email" Type="email" /></Field>
-            <Field Label="备注" Id="@(Prefix + "-note")" FullWidth="true"><TextBox @bind-Value="Model.Note" Multiline="true" /></Field>
+            <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Registrant)" Id="@(Prefix + "-name")" Required="true" For="@(() => Model.Name)"><TextBox @bind-Value="Model.Name" /></Field>
+            <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Email)" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)"><TextBox @bind-Value="Model.Email" Type="email" /></Field>
+            <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Notes)" Id="@(Prefix + "-note")" FullWidth="true"><TextBox @bind-Value="Model.Note" Multiline="true" /></Field>
         </FormLayout>
-        <FormActions><UniformGridButton Title="提交示例" Variant="UniformGridVariant.Filled" Type="submit" /><UniformGridButton Title="清空姓名" Variant="UniformGridVariant.Outlined" OnClick="ClearName" /></FormActions>
+        <FormActions><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitDemo)" Variant="UniformGridVariant.Filled" Type="submit" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_ClearName)" Variant="UniformGridVariant.Outlined" OnClick="ClearName" /></FormActions>
     </EditForm>
-    <p role="status">@Message</p>
+    <p role="status">@Localization.Parse(Message)</p>
 }
 
 @code {
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     [Parameter] public bool Preview { get; set; }
     private readonly string Prefix = "sample-form-layout-" + Guid.NewGuid().ToString("N");
     private string? EmptyOne, EmptyTwoA, EmptyTwoB;
     private bool SingleColumn;
-    private string Message = "示例提交只保存在此页面。";
+    private string Message = "Key.Sample_DemoSubmissionsAreKeptOnlyOnThisPage";
     private readonly Registration Model = new();
-    private void ClearName() { Model.Name = ""; Message = "姓名已清空；提交后可以检查错误聚焦。"; }
-    private void Submit() => Message = "示例报名已通过本地校验。";
-    private void Invalid() => Message = "请修正表单中的错误。";
+    private void ClearName() { Model.Name = ""; Message = "Key.Sample_NameClearedSubmitToCheckErrorFocus"; }
+    private void Submit() => Message = "Key.Sample_DemoRegistrationPassedLocalValidation";
+    private void Invalid() => Message = "Key.Sample_CorrectTheErrorsInTheForm";
     private sealed class Registration
     {
-        [Required(ErrorMessage = "请输入姓名。")] public string Name { get; set; } = "林晴（虚构）";
-        [Required(ErrorMessage = "请输入邮箱。"), EmailAddress(ErrorMessage = "请输入有效邮箱。")] public string Email { get; set; } = "demo@example.invalid";
+        [Required(ErrorMessage = "Key.Sample_EnterAName")] public string Name { get; set; } = "林晴（虚构）";
+        [Required(ErrorMessage = "Key.Sample_EnterAnEmail"), EmailAddress(ErrorMessage = "Key.Sample_EnterAValidEmail")] public string Email { get; set; } = "demo@example.invalid";
         public string? Note { get; set; } = "虚构示例：希望参加摄影活动。";
     }
 }

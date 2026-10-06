@@ -21,10 +21,10 @@ internal static class ComponentInventoryChecks
                 var info = pair.Value;
                 Check(pair.Key == info.ComponentType && pair.Key == Normalize(pair.Key), "Registry keys must be normalized component definitions.");
                 Check(Enum.IsDefined(info.Kind), $"Unknown usage kind for {pair.Key.FullName}.");
-                Check(!string.IsNullOrWhiteSpace(info.Scenario) && !string.IsNullOrWhiteSpace(info.Guidance),
+                Check(info.Scenario.CatalogId == "Flourish" && info.Guidance.CatalogId == "Flourish" && !string.IsNullOrWhiteSpace(info.Scenario.Token) && !string.IsNullOrWhiteSpace(info.Guidance.FallbackText),
                     $"Missing scenario or guidance for {pair.Key.FullName}.");
                 if (info.Kind is ComponentUseKind.General or ComponentUseKind.Scenario)
-                    Check(info.Guidance.Contains("生产使用", StringComparison.Ordinal), $"Supported usage must be explicit for {pair.Key.FullName}.");
+                    Check(info.Guidance.FallbackText!.StartsWith("Production use:", StringComparison.Ordinal), $"Supported usage must be explicit for {pair.Key.FullName}.");
             }
             return Task.CompletedTask;
         }));

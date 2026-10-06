@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,16 +13,16 @@
 
 @if (Preview)
 {
-    <SearchBox Label="搜索" @bind-Value="EmptyQuery" />
-    <SearchBox Label="禁用搜索" @bind-Value="EmptyDisabled" Disabled="true" />
+    <SearchBox Label="@Localization.Parse(TextKey.Sample_Search)" @bind-Value="EmptyQuery" />
+    <SearchBox Label="@Localization.Parse(TextKey.Sample_DisabledSearch)" @bind-Value="EmptyDisabled" Disabled="true" />
 }
 else
 {
-    <SearchBox Label="搜索示例活动" @bind-Value="Query" SearchChanged="ApplySearch" DebounceMilliseconds="300" />
+    <SearchBox Label="@Localization.Parse(TextKey.Sample_SearchDemoActivities)" @bind-Value="Query" SearchChanged="ApplySearch" DebounceMilliseconds="300" />
     <ul>
         @foreach (var item in Matches) { <li>@item</li> }
     </ul>
-    <p role="status">找到 @Matches.Length 条示例活动。已应用查询：@(AppliedQuery.Length == 0 ? "全部" : AppliedQuery)。</p>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_ActivityMatches), Matches.Length, AppliedQuery.Length == 0 ? Localization.Parse(TextKey.Sample_All) : AppliedQuery)</p>
 }
 
 @code {

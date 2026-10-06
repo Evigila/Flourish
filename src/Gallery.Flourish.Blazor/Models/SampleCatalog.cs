@@ -29,14 +29,14 @@ public static class SampleCatalog
             using var reader = new StreamReader(stream);
             // These two lines register a Gallery example; the remaining component is standalone.
             var source = Regex.Replace(reader.ReadToEnd(), @"^@(namespace|attribute)[^\r\n]*\r?\n", "", RegexOptions.Multiline).Trim();
-            if (!result.TryAdd(registration.ComponentName, new(type, type.Name.ToLowerInvariant(), source, registration.Description)))
+            if (!result.TryAdd(registration.ComponentName, new(type, type.Name.ToLowerInvariant(), source, registration.DescriptionKey)))
                 throw new InvalidOperationException($"More than one sample is registered for {registration.ComponentName}.");
         }
         return result;
     }
 }
 
-public sealed record ComponentSample(Type ComponentType, string Key, string Source, string? Description)
+public sealed record ComponentSample(Type ComponentType, string Key, string Source, string? DescriptionKey)
 {
     public IDictionary<string, object> PreviewParameters { get; } = new Dictionary<string, object> { ["Preview"] = true };
 }

@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -13,22 +14,23 @@
 @if (Preview)
 {
     <FormLayout>
-        <Field Label="整数" Id="@(Prefix + "-integer")"><NumberBox TValue="int?" @bind-Value="EmptyInteger" Step="1" /></Field>
-        <Field Label="小数" Id="@(Prefix + "-decimal")"><NumberBox TValue="decimal?" @bind-Value="EmptyDecimal" Step="0.01" /></Field>
-        <Field Label="禁用" Id="@(Prefix + "-disabled")"><NumberBox TValue="decimal?" @bind-Value="EmptyDisabled" Disabled="true" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Integer)" Id="@(Prefix + "-integer")"><NumberBox TValue="int?" @bind-Value="EmptyInteger" Step="1" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Decimal)" Id="@(Prefix + "-decimal")"><NumberBox TValue="decimal?" @bind-Value="EmptyDecimal" Step="0.01" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Disabled)" Id="@(Prefix + "-disabled")"><NumberBox TValue="decimal?" @bind-Value="EmptyDisabled" Disabled="true" /></Field>
     </FormLayout>
 }
 else
 {
     <FormLayout>
-        <Field Label="人数（1–40）" Id="@(Prefix + "-quantity")"><NumberBox TValue="int?" @bind-Value="Quantity" Step="1" Min="1" Max="40" ParsingErrorMessage="请输入整数。" /></Field>
-        <Field Label="每人材料费" Id="@(Prefix + "-price")"><NumberBox TValue="decimal?" @bind-Value="Price" Step="0.01" Min="0" ParsingErrorMessage="请输入数字。" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Participants140)" Id="@(Prefix + "-quantity")"><NumberBox TValue="int?" @bind-Value="Quantity" Step="1" Min="1" Max="40" ParsingErrorMessage="Key.Sample_EnterAnInteger" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_MaterialsCostPerPerson)" Id="@(Prefix + "-price")"><NumberBox TValue="decimal?" @bind-Value="Price" Step="0.01" Min="0" ParsingErrorMessage="Key.Sample_EnterANumber" /></Field>
     </FormLayout>
-    <p role="status">预估合计：@((Quantity.GetValueOrDefault() * Price.GetValueOrDefault()).ToString("0.00"))。</p>
-    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">恢复示例</Button>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_EstimatedTotal), (Quantity.GetValueOrDefault() * Price.GetValueOrDefault()).ToString("0.00", CultureInfo.GetCultureInfo(Localization.Culture)))</p>
+    <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_ResetExample)</Button>
 }
 
 @code {
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     [Parameter] public bool Preview { get; set; }
     private readonly string Prefix = "sample-number-" + Guid.NewGuid().ToString("N");
     private int? EmptyInteger, Quantity = 8;

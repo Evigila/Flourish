@@ -1,12 +1,12 @@
 # NuGet release and integration
 
-This is the current release contract for Flourish 1.1.0 and its optional Culture integrations. Source scripts and package metadata are authoritative. Local preparation has been verified; this task did not create or push release tags or publish packages to NuGet.org.
+This is the current release contract for Flourish 1.1.0 and Essential.Culture 1.3.0. Release scripts and package metadata are authoritative. The user has selected agent-executed NuGet Trusted Publishing; this documentation update did not create a commit, release tag or push, and did not publish packages. Current preparation results must be reported separately from historical verification.
 
 ## Dependency and release order
 
-Prepare and publish Essential.Culture 1.3.0 first. Wait until all six packages are available from NuGet.org before publishing Flourish 1.1.0. The Flourish workflow restores Essential packages from NuGet; it does not check out or build the Essential source repository.
+Publish and confirm all six Essential.Culture 1.3.0 packages before publishing Flourish 1.1.0. The Flourish workflow restores Essential from NuGet rather than checking out or compiling its source repository.
 
-| Order | Essential.Culture 1.3.0 packages |
+| Order | Essential.Culture 1.3.0 package |
 |---|---|
 | 1 | Arkheide.Essential.Culture.Generator |
 | 2 | Arkheide.Essential.Culture |
@@ -15,120 +15,128 @@ Prepare and publish Essential.Culture 1.3.0 first. Wait until all six packages a
 | 5 | Arkheide.Essential.Culture.WinUI |
 | 6 | Arkheide.Essential.Culture.Blazor |
 
-| Order | Flourish 1.1.0 packages |
+| Order | Flourish 1.1.0 package |
 |---|---|
 | 1 | Arkheide.Flourish.Core |
 | 2 | Arkheide.Flourish.Blazor.Abstract |
-| 3 | Arkheide.Flourish.Blazor.Framework |
-| 4 | Arkheide.Flourish.Blazor.Design |
-| 5 | Arkheide.Flourish.Blazor |
-| 6 | Arkheide.Flourish.Extensions.Culture.Blazor |
+| 3 | Arkheide.Flourish.Extensions.Culture.Blazor |
+| 4 | Arkheide.Flourish.Blazor.Framework |
+| 5 | Arkheide.Flourish.Blazor.Design |
+| 6 | Arkheide.Flourish.Blazor |
 
-This first public release covers Core and Blazor only. WPF and its Culture bridge remain in the source solution for future releases but are not packed or pushed by this release manifest. Shared is retired: its public contracts now live in Abstract, while processing implementations live in Framework. Abstract depends on Core, Framework on Abstract and Design on Framework/Abstract. Core is restored transitively without a separate host installation.
+The current manifest covers exactly these six Core/Blazor Flourish packages. Flourish WPF and its Culture bridge remain outside this release. Shared is retired: contracts live in Abstract and processing implementations in Framework. Abstract depends on Core, Framework on Abstract and Design on Framework/Abstract.
 
-Flourish.Blazor is a dependency-only convenience package that installs Abstract, Framework and Design. Package installation does not register any feature: native hosts call AddFlourishFramework and opt into Design with AddFlourishDesign. To omit the Design package entirely, install Framework directly. The optional Blazor Culture bridge remains separate and references Abstract plus Essential.Culture.Blazor; the five non-extension packages have no Essential dependency.
+Flourish.Blazor is a dependency-only convenience package that automatically installs Abstract, Framework, Design and Flourish.Extensions.Culture.Blazor. The bridge depends on Abstract and Essential.Culture.Blazor, which brings in the Essential runtime and Generator. Consumers of the umbrella do not need a separate Culture bridge installation. To omit both Design and Culture dependencies, install Framework directly. Framework and Design themselves do not depend on Essential. Installing packages does not register services: hosts call AddFlourishFramework, AddFlourishDesign when desired, AddCultureBlazor and AddFlourishCulture to activate those features.
 
-Flourish root Directory.Build.props owns VersionPrefix=1.1.0 and EssentialCultureVersion=1.3.0. Essential owns its 1.3.0 version in src/Essential.Culture/Directory.Build.props. Each repository's scripts/ReleaseSettings.psd1 defines its exact package set and push order.
+Flourish root Directory.Build.props owns VersionPrefix=1.1.0 and EssentialCultureVersion=1.3.0. Essential owns VersionPrefix=1.3.0 under src/Essential.Culture/Directory.Build.props. Each repository's scripts/ReleaseSettings.psd1 defines the exact package set and publication order. Arkheide.* NuGet identities remain stable even though the current Essential GitHub repository is named Essential.Culture.
 
-## Package consumption and local verification
+## Source and package consumption
 
-Flourish libraries, extensions, tests and Gallery use ProjectReference for projects inside Flourish. External Culture references and Gallery's Culture generator are PackageReference dependencies at 1.3.0. The former EssentialCultureRoot and UseLocalEssentialCulture source selection is retired. UseLocalFlourish and UseLocalCultureIntegration are also retired.
+Projects within Flourish use their existing ProjectReference boundaries. External Essential dependencies use PackageReference. Gallery now consumes the Culture bridge through its single Arkheide.Flourish.Extensions.Culture.Blazor PackageReference at VersionPrefix. Its source bridge reference and direct Generator reference are removed. Restore assertions verify the bridge as a package, Abstract/Core as source projects and Essential.Blazor/Core/Generator as transitive packages. Four isolated release consumers independently verify complete package consumption.
 
-When sibling Essential/artifacts/packages exists, Flourish's RestoreAdditionalProjectSources adds that local feed. This changes where NuGet obtains a package; it does not replace PackageReference with a source ProjectReference. Prepare Essential first so that local Flourish builds resolve the same package boundaries used by external consumers.
+The former EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration source-selection switches are retired. The implicit sibling Essential/artifacts/packages restore feed has also been removed. A nearby checkout must not silently change package resolution. For local verification of unpublished Essential packages, explicitly supply EssentialPackageDirectory to scripts/Test-Release.ps1. That parameter supplies a NuGet feed; it never substitutes source ProjectReference dependencies. CI and public consumers restore published Essential packages through their configured NuGet sources.
 
-Essential demos default to PackageReference. Their explicit -p:UseLocalCulture=true mode builds the Culture source and generator for development. Essential's release helper uses that mode to compile the five demos; its package verifier separately inspects the six packed packages. A demo source build alone does not prove package consumption.
+Use a fresh isolated NuGet cache when validating regenerated packages with the same unpublished version. Do not infer package adoption from a source build or a populated shared cache. Four isolated consumers cover Framework alone, the umbrella without Design registration, explicit Design registration and the Culture integration. Public-source restore after publication is a separate acceptance step.
 
-Colligere's intended host integration consumes the convenience package and optional Culture bridge through NuGet PackageReference. A presentation project can reference Framework directly when it needs no Design package. Its local feed permits verification before publication. After publication, restore a clean external consumer from NuGet.org and confirm resolved versions and static assets.
+## Local preparation
 
-For repeated local work with unpublished packages at the same version, use a fresh isolated NuGet cache for the consumer validation, or explicitly retire only the affected package versions after stopping consumers. An existing global cache can otherwise retain an earlier package with the same ID and version.
-
-## Local release preparation
-
-Use Windows, PowerShell 7, the .NET 10 SDK and the existing desktop build requirements. Flourish also runs its existing Node behavior checks. These commands run in the respective roots:
+Use the existing PowerShell 7, .NET 10 and Node tooling. No additional nuget.exe, GitHub CLI or local long-lived NuGet API key is required by this release path. The batch entry forwards to scripts/Publish-Helper.ps1; Prepare is its default and does not publish.
 
 ```powershell
-Set-Location C:\Users\Evigila\source\repos\Essential
-.\publish-helper.bat -Mode Prepare
+Set-Location C:\Users\RC_Auditoria\source\Repos\Essential
+.\scripts\Test-Release.ps1 -ArtifactsPath .\artifacts\release-build
 
-Set-Location C:\Users\Evigila\source\repos\Flourish
-.\publish-helper.bat -Mode Prepare
+Set-Location C:\Users\RC_Auditoria\source\Repos\Flourish
+.\scripts\Test-Release.ps1 -ArtifactsPath .\artifacts\release-build `
+    -EssentialPackageDirectory ..\Essential\artifacts\packages
 ```
 
-The batch entry forwards its arguments to scripts/Publish-Helper.ps1. Prepare calls Test-Release.ps1, which restores the Blazor release solution, builds Release with warnings as errors, runs Core/Blazor/Culture/JS/CSS checks, packs exactly six configured packages, validates their metadata and runs four isolated NuGet-only consumers. Essential separately compiles its desktop/web demos. No desktop Flourish project is included in this release preparation.
+Essential prepares its six libraries, tests and five demos, then validates its isolated Blazor-only package consumer. Flourish preparation now has three phases: restore/build the targeted umbrella and its six-library dependency graph, pack all six candidates and verify the package set; restore the complete Blazor solution using a temporary package-source mapping and fresh cache, assert Gallery package adoption, then build and run tests/JavaScript/CSS/catalog checks; finally run all four isolated package consumers. The candidate Flourish feed bootstraps Gallery before the new bridge version is public. The Essential feed is included only when EssentialPackageDirectory is explicitly supplied. No sibling source dependency or prepopulated shared cache is required.
 
-Preparation replaces .nupkg and .snupkg files inside that repository's artifacts/packages directory before packing. It does not change Git branches, commits, tags, remotes or NuGet.org.
-
-The verifier checks the exact six-package set, IDs and versions, exact internal library dependencies, managed assemblies, dependency-only meta output and required static assets. Four isolated-cache consumers cover Framework alone, the convenience package without Design activation, explicit Design activation and the optional Culture bridge. They use no ProjectReference, publish locally and check SSR, registration, transitive Core, retired Shared absence and HTTP assets.
-
-Parameters:
+ArtifactsPath uses the SDK artifacts layout to isolate output and intermediate files together. Do not isolate only OutDir while sharing normal project obj directories: static-web-asset and compressed-resource manifests can become inconsistent. Preparation replaces local .nupkg/.snupkg files in artifacts/packages; it does not create commits, tags or public releases.
 
 | Entry | Parameter | Meaning |
 |---|---|---|
-| publish-helper.bat / Publish-Helper.ps1 | -Mode Prepare | Runs local preparation; default. |
-| publish-helper.bat / Publish-Helper.ps1 | -Mode Publish | Prepares, validates Git state, asks for the exact release tag and pushes that tag. |
-| publish-helper.bat / Publish-Helper.ps1 | -SkipBuild | Runs package verification instead of fresh restore/build/test/pack. Does not waive Git checks in Publish. |
-| Test-Release.ps1 | -VerifyOnly | Checks existing packages without rebuilding. |
-| Verify-PackageSet.ps1 | -PackageDirectory <path> -Version <version> | Checks an explicit package directory/version; omitted values use repository settings. |
+| publish-helper.bat / Publish-Helper.ps1 | -Mode Prepare | Local preparation; default. |
+| publish-helper.bat / Publish-Helper.ps1 | -Mode Publish | Prepare, validate Git state, confirm and push a release tag. |
+| publish-helper.bat / Publish-Helper.ps1 | -SkipBuild | Verify existing packages; retain all Publish Git/tag checks. |
+| Test-Release.ps1 | -ArtifactsPath | Isolate SDK build output and intermediate files. |
+| Flourish Test-Release.ps1 | -EssentialPackageDirectory | Explicit local Essential NuGet feed for preparation and consumer verification. |
+| Test-Release.ps1 | -VerifyOnly | Inspect existing packages without restore/build/test/pack. |
+| Verify-PackageSet.ps1 | -PackageDirectory / -Version | Inspect an explicit package set and version. |
 
-Use a full Prepare for release acceptance. SkipBuild only verifies artifacts already present and does not establish that they match the current source.
+SkipBuild or VerifyOnly cannot prove that old artifacts match current source. Use a complete preparation for release acceptance and keep its evidence separate from earlier successful runs.
 
-## Trusted Publishing setup owned by the user
+## Trusted Publishing configuration
 
-Create a GitHub environment named nuget in each repository. Add its NUGET_USER secret containing the NuGet.org profile username, not an email or API key. Apply the desired environment approval policy. Register a NuGet.org Trusted Publishing policy with the correct package owner and package scope, using these repository identities:
+Both existing .github/workflows/build.yml files already implement the same authentication mechanism. Their publish jobs require a matching pushed version tag and a successful build job, target the GitHub nuget environment, grant contents: read and id-token: write, and call NuGet/login@v1 with secrets.NUGET_USER. That action supplies a temporary NUGET_API_KEY output for dotnet nuget push. No local or committed long-lived API key is part of this contract.
 
-| Field | Essential | Flourish |
+NUGET_USER is the NuGet.org profile username, not an email or API key. The user supplied Evigila on 2026-10-06 and is configuring the Flourish policy/secret. Completion of the current GitHub secret and NuGet.org account policy has not yet been confirmed. This audit did not read secret values. The October 5 observation that Flourish lacked NUGET_USER is historical and cannot establish its current state.
+
+| Trusted Publishing field | Essential | Flourish |
 |---|---|---|
 | Repository owner | Evigila | Evigila |
-| Repository | Arkheide.Essential.Culture | Flourish |
+| Repository | Essential.Culture | Flourish |
+| GitHub repository ID | 1327295083 | 1246107902 |
 | Workflow file | build.yml | build.yml |
 | Environment | nuget | nuget |
 
-The workflow filename is entered without .github/workflows/. Both publish jobs grant id-token: write and use NuGet/login@v1 to obtain a temporary API key. The workflow uses that result for package push; no long-lived API key is required locally. These setup details follow the [official NuGet Trusted Publishing guidance](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing). Account policy creation, package ownership and environment approvals require the user's authenticated configuration; local scripts do not configure or verify them.
+Use the current GitHub repository identity in the NuGet.org trust policy, rather than the checkout folder or former Arkheide.Essential.Culture repository name. The workflow filename is build.yml, without .github/workflows/. See [official NuGet Trusted Publishing guidance](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing).
 
-Essential's local folder name is Essential, but its current remote repository remains Evigila/Arkheide.Essential.Culture. Use the remote name in its policy.
+Policy permissions must cover creating new package IDs and publishing versions for the intended package owner. Essential's successful five-family 1.2.0 release does not prove that its existing policy includes the new Arkheide.Essential.Culture.Blazor package. Confirm all six Essential IDs. For the initial Flourish policy, the Arkheide.Flourish.* glob can support creating the new IDs; the release manifest and verifier still restrict publication to exactly the six Core/Blazor IDs above. WPF packages remain outside this release. The repository environment alone does not establish NuGet ownership or account-side package authorization.
 
-## Configuration and publication status on 2026-10-05
+Public API checks on 2026-10-06 confirmed both [Essential.Culture's nuget environment](https://api.github.com/repos/Evigila/Essential.Culture/environments/nuget) and [Flourish's nuget environment](https://api.github.com/repos/Evigila/Flourish/environments/nuget). Each returned zero protection rules and null branch policy. Do not assume an environment approval gate exists. Secret presence/value and the NuGet.org account policy remain unverified by this check; the later user-provided profile name Evigila does not by itself confirm configuration completion.
 
-Read-only GitHub inspection by the coordinating task found the nuget environment and NUGET_USER secret name in Evigila/Arkheide.Essential.Culture. Secret values were not retrieved. Their presence does not verify the username's correctness or the NuGet.org account-side trust policy.
+## Workflow evidence checked on 2026-10-06
 
-The coordinating task subsequently created Evigila/Flourish's nuget environment successfully. Its returned protection_rules=[] and branch_policy=null match the observed Essential environment: no required-reviewer protection or branch policy is currently configured. Flourish's NUGET_USER remains unconfigured while the user supplies its NuGet profile username. No API key was requested.
+| Repository/run | Observed result | What it establishes |
+|---|---|---|
+| [Essential.Culture v1.2.0, run 33030395528](https://github.com/Evigila/Essential.Culture/actions/runs/33030395528) | Trusted Publishing login and package-push steps succeeded. | Trusted Publishing worked for that historical release and scope. |
+| [Essential.Culture master, run 37291575812](https://github.com/Evigila/Essential.Culture/actions/runs/37291575812) | Build succeeded; no publication. | A normal branch build does not enter the tag-only publish job. |
+| [Flourish, run 37291596951](https://github.com/Evigila/Flourish/actions/runs/37291596951) | Restore failed; publish was skipped. | That older full-solution run required absent Essential.Blazor and unpublished Wpf 1.3.0 packages. It did not fail at OIDC login. |
 
-A read-only 2026-10-05 query found no public target versions. The coordinating task checked all six Essential 1.3.0 versions and the newly scoped six Flourish 1.1.0 IDs; Flourish returned 404, including the new convenience ID. Prior eight-package release checks remain historical and do not define this Blazor-only manifest. Local verification is preparation, not a public release.
+The failed Flourish run predates the current focused Core/Blazor release manifest and does not establish the outcome of current preparation. Public 1.3.0/1.1.0 package availability and current policy scope still require verification before reporting a new release.
 
-User-owned NuGet.org policies and package ownership/scopes have not been verified. The two environments currently have no protection rules or branch policy; do not assume an environment approval gate exists. Prepare can run without this publishing configuration. Publish remains gated by user confirmation, the script's Git checks and a working Trusted Publishing configuration. See [final local verification](release-verification.md) for the completed checks and remaining release prerequisites.
+## Local preparation verified on 2026-10-06
 
-## User-confirmed publishing
+The complete staged preparation succeeded after the Gallery package migration: Release build zero warnings/errors; Core 367 tests, Blazor 373/373 checks, Culture bridge 12 checks, Gallery 7,234 checks including 124 real-event language-switch/retention checks, Node 66 checks, CSS bundle 21 and SDK integration 194 checks, catalog 21,217 checks and four package consumers totaling 129 checks. Exactly six fresh Flourish 1.1.0 packages passed verification; no WPF package was prepared. Evidence is artifacts/culture-final-release.log and artifacts/package-consumers/01e52f8b29ce48f89c139dfc26a2bfbb. The initial Culture consumer HTTP 500 came from its Minimal API fixture missing [FromServices]; correcting that fixture resolved the check without a production behavior change.
 
-Review, commit and push the intended source and scripts first. Publish requires a clean working tree, including untracked files, the master branch, and HEAD equal to origin/master after a fetch. The version must be a stable three-part VersionPrefix. The tag must not exist and must match that version.
+Essential's preceding full preparation passed 106 tests (Core 61, Generator 20, Blazor 21, WinUI 4), all five Gallery builds with zero warnings/errors and all six fresh 1.3.0 packages. This round changed only release repository metadata afterward: six packages were repacked and verified, and all six nuspec RepositoryUrl/PackageProjectUrl values were checked against the current Essential.Culture URL. Functional tests were not rerun for that metadata-only repack. These results establish local candidates, not public NuGet indexing or account-policy readiness. See [local release verification](release-verification.md) for the retained history and manual acceptance checks.
 
-Only after the user approves the release, run:
+## Historical observations from 2026-10-05
+
+The coordinating task observed the then-named Evigila/Arkheide.Essential.Culture nuget environment and NUGET_USER secret name without reading the secret value or NuGet account policy. It created Flourish's nuget environment with no protection rules or branch policy; Flourish's username request was pending at that time.
+
+The then-current public queries found no target 1.3.0/1.1.0 versions. Earlier eight-package Flourish checks and their 404 results remain historical; the current Flourish manifest contains six Core/Blazor packages. These observations do not establish current remote configuration, credentials, policy or public availability. The historical release-prerequisite note suggesting a required local API key is superseded by the user's Trusted Publishing selection and this verified workflow contract; existing change records remain append-only.
+
+## Authorized publication and remaining boundary
+
+The user has authorized the agent to execute release publication through Trusted Publishing. New source commits still require the user's answer under AGENTS.md. Review and commit the intended release, synchronize master, verify package preparation and policy scope, then use the existing release helper. This documentation task did not execute any commit, tag, push or package publication.
+
+Publish requires a clean tree including untracked files, master, and HEAD equal to fetched origin/master. VersionPrefix must be a stable three-part version; a new annotated tag must exactly match vVersionPrefix. The helper asks for that exact tag before creating and pushing it. CI additionally checks that the release commit is an ancestor of origin/master. Regular master pushes, pull requests and workflow_dispatch only build and verify.
 
 ```powershell
-Set-Location C:\Users\Evigila\source\repos\Essential
+# After preparation, commit review and policy checks:
+Set-Location C:\Users\RC_Auditoria\source\Repos\Essential
 .\publish-helper.bat -Mode Publish
-# At the confirmation prompt, type: v1.3.0
+# Exact confirmation: v1.3.0
+
+# After all six Essential packages are publicly indexed:
+Set-Location C:\Users\RC_Auditoria\source\Repos\Flourish
+.\publish-helper.bat -Mode Publish
+# Exact confirmation: v1.1.0
 ```
 
-The helper creates and pushes an annotated v1.3.0 tag. Monitor the GitHub Build, test, and publish workflow and approve its nuget environment if configured. Confirm all six packages are indexed before continuing:
+The workflow downloads and re-verifies the build's package artifact before pushing in manifest order with --skip-duplicate. Do not replace an existing tag or released package version. A partial publication or failed rerun requires inspection of the actual workflow/package state. Report success only after workflow completion and public NuGet indexing, then restore a clean consumer without sibling source or local-feed assumptions.
 
-```powershell
-Set-Location C:\Users\Evigila\source\repos\Flourish
-.\publish-helper.bat -Mode Publish
-# At the confirmation prompt, type: v1.1.0
-```
+## Source commit authorization on 2026-10-06
 
-The Flourish helper creates and pushes an annotated v1.1.0 tag. Regular master pushes, pull requests and manual workflow dispatch build and verify but do not publish. A matching pushed version tag enables the publish job after the build job succeeds. The publish job downloads and re-verifies the build's packages, then pushes them in ReleaseSettings order with --skip-duplicate.
+The user explicitly authorized one release-preparation commit in Essential and one in Flourish, including the verified pending localization, control, project-naming, package-consumption and release-workflow changes. This resolves the commit-answer requirement under AGENTS.md. NuGet account-policy and NUGET_USER setup completion remains to be confirmed before version-tag publication. This authorization does not claim that packages are publicly available.
 
-A rejected confirmation creates no tag. If CI or publication fails after a tag was pushed, inspect the workflow and package state before acting. Do not replace an existing release tag or overwrite a released NuGet version. --skip-duplicate permits a rerun to skip already published package versions; it does not replace them.
+## Confirmed Trusted Publishing profile on 2026-10-06
 
-## Acceptance checklist
+The user reported completing the corresponding NuGet Trusted Publishing configuration and confirmed the profile username Evigila. The login action now receives that public profile name directly as user: Evigila, following the official action contract. A GitHub variable called nuget is not the same as secrets.NUGET_USER. The workflow therefore no longer requires a NUGET_USER secret or variable; no long-lived API key is introduced. This supersedes the earlier pending username/secret setup statements. The policy's actual authorization and new-package scope still require successful OIDC login and package publication as runtime evidence. The user has also authorized both release-preparation commits and agent-executed publication.
 
-- Both full Prepare runs pass, including package-set verification and required static assets.
-- Essential's six 1.3.0 packages are available before the Flourish tag is pushed.
-- Both remotes use the reviewed master commit, and each repository has the correct nuget policy/environment.
-- The unstyled Framework host works without Design; the styled Gallery resolves Design assets.
-- A clean NuGet consumer resolves Flourish 1.1.0 and Essential 1.3.0 without sibling source projects.
-- SSR/Interactive Server text selections remain scoped; changing one browser session does not alter another.
-- Public publication is reported only after its workflow and NuGet.org package visibility have been confirmed.
+## Clarified environment username on 2026-10-06
 
-This guide supersedes the old independent extension 1.0.0 release and culture-vX.Y.Z tag instructions. Existing dated verification records remain historical evidence.
+The user clarified that nuget names the existing GitHub environment and that NUGET_USER has been configured. Login now reads the named GitHub configuration as vars.NUGET_USER || secrets.NUGET_USER: an Actions Variable is used when present, otherwise the existing Secret is used. The username is not hard-coded. This supersedes the preceding direct-profile input decision while preserving existing Essential secret storage and the user's Flourish variable storage. The user has reported Trusted Publishing setup complete; workflow execution will verify actual login and package-scope authorization. The two agent-created commits are still local and will be updated before their first push.

@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using ArkheideSystem.Flourish.Blazor.Abstract;
 using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns;
 using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives;
 
@@ -19,8 +20,8 @@ public enum ComponentUseKind
 public sealed record ComponentUsageInfo(
     Type ComponentType,
     ComponentUseKind Kind,
-    string Scenario,
-    string Guidance,
+    TextReference Scenario,
+    TextReference Guidance,
     Type? PreferredEntry = null);
 
 /// <summary>Explicit usage inventory of exported Framework production entries and construction helpers.</summary>
@@ -43,102 +44,110 @@ public static class ComponentUsageCatalog
         // Deliberately explicit: adding an exported component must also choose its scope and guidance.
         ComponentUsageInfo[] entries =
         [
-            General<ActionMenu>("统一命令与记录操作菜单", "生产使用：Actions 使用 MenuAction；ChildContent 使用完整的标准 Button 或原生协议表单动作，两者互斥。统一菜单核心管理可用性、键盘、关闭与异步弹窗调用者；OpenOnHover 仅用于 Actions。服务导航仍使用 ServiceMenu。"),
-            Scenario<ApplicationLayout>("业务应用路由布局", "生产使用：作为业务 Router 默认布局，消费 Program 配置并加载框架资源；嵌入示例时关闭 OwnsDocument，展示页使用展示类组合。"),
-            Scenario<ApplicationShell>("业务应用外壳", "生产使用：顶部栏、两级导航、内容滚动和页内导航；不是全宽展示页面的横幅布局。通常由 ApplicationLayout 创建。"),
-            General<Button>("操作与导航", "生产使用：Variant 只决定外观，Disabled / Busy 决定状态；Href 导航，OnClick 执行操作，纯图标按钮必须有可访问名称。"),
-            General<Card>("内容卡片", "生产使用：组织普通内容；不代替页面限宽容器或展示类横幅。"),
-            General<CopyText>("可选择的原值文本", "生产使用：编码后展示 Value，统一代码文本外观；不执行文本或复制副作用，完整复制动作使用 DisplayBoard。"),
-            General<FormGroup>("成组的原生字段", "生产使用：原生 fieldset / legend 与 FormLayout；Disabled 整体禁用原生字段，宿主保留验证与提交。"),
-            General<InlineActions>("紧凑标准动作行", "生产使用：标准 Button 或原生协议内实际控件的换行动作行；只管理统一间距和布局，不发明动作语义。"),
-            Scenario<ImagePreview>("只读图片与说明", "生产使用：标准 figure / img / figcaption，Url 与 Alt 由宿主提供；Actions 使用标准操作，不负责上传、认证或图片数据处理。"),
-            Scenario<AttributionFooter>("紧凑归属说明", "生产使用：以标准 footer / small 展示宿主提供的版权或归属文字，不包含营销品牌艺术字；营销页使用 PresentationFooter。"),
-            Scenario<CheckBox>("绑定模型的布尔输入", "生产使用：使用 @bind-Value 提供 ValueExpression，并可接入 EditForm 验证；原生 POST 或无模型绑定使用 StandaloneCheckBox。"),
-            Scenario<CodeBlock>("代码和文本展示", "生产使用：转义并展示文本，不执行代码；可与 DisplayBoard 组合，不是普通业务内容的默认容器。"),
-            Scenario(typeof(DataTable<>), "统一记录浏览与业务表格", "生产使用：统一 TableColumn / TableSearchRequest；本地或远端搜索、分页、文化格式、Table / Cards、列显隐/顺序/宽度、作用域排序偏好、原生行操作、Registry / Pool / Worklist 和显式批量编辑。Progressive 仅渐进增强已授权且完整可见的 SSR 文本，不支持隐藏默认列、独立搜索/排序值或编辑。"),
-            Scenario(typeof(DataSearch<>), "按列受控搜索", "生产使用：与 DataTable 共用 TableColumn / TableSearchRequest 和标准 Field、选择与文字输入；默认第一个可搜索列，IncludeAllColumns 显式启用空键代表全部列。宿主保留查询和结果；ChildContent 提供同行筛选项，不另建搜索或网格皮肤。"),
-            Scenario(typeof(DateBox<>), "绑定模型的日期输入", "生产使用：InputDate 类型解析与 ValueExpression / EditForm 验证；原生日期 POST 可使用 StandaloneTextBox Type=date。"),
-            General<Dialog>("通用模态与内容视图", "生产使用：IsOpen 受控打开或 ShowAsync 等待任意结果；CloseAsync 返回结果，关闭/取消/销毁为 null。Busy / CanClose 与焦点共用一个核心；Presentation 包含 Centered / BottomSheet。BrowserControlled 预先渲染，由标准浏览器模块独立控制；Views / View 提供键控内容，不包含确认或重连业务。"),
-            General<Disclosure>("原生展开内容", "生产使用：details / summary 展开区；Title 提供触发名称，不用于修改业务布尔字段。"),
-            Scenario<DisplayBoard>("控件演示和可复制内容", "生产使用：预览、点阵背景和复制反馈；不是营销 Hero、表单或业务页面的通用皮肤。"),
-            BuildingBlock<DropdownSurface>("原生下拉内容表面", "组合基元：仅提供 details / summary 和面板，不包含选中值、列表键盘、外部点击关闭或菜单动作模型；选择用 SelectBox / ReferenceDropdown / MultiSelectBox，命令用 ActionMenu。"),
-            General<EmptyState>("真实空结果", "生产使用：没有记录时展示原因与下一步操作；不是加载、失败或无权限状态。"),
-            BuildingBlock<ExpansionIndicator>("装饰性展开标记", "组合基元：aria-hidden 的三角标记，没有交互；由 Button、SplitButton 或选择器提供名称、aria-expanded / aria-controls 和事件。"),
-            General<Field>("字段标签与验证", "生产使用：关联 Label、Id、必填状态、验证错误与输入；不负责提交、授权或持久化。"),
-            Scenario<ValidationMessages>("隐藏和跨字段验证消息", "生产使用：与 Field 共用唯一错误呈现，For 绑定 EditContext 字段、Error 提供显式错误。普通输入使用 Field.For，不重复渲染；隐藏令牌或跨字段错误可独立使用。业务验证、翻译、提交和授权仍由宿主负责。"),
-            Scenario<NavigationChoices>("原生 GET 方式选择", "生产使用：Items采用NavigationChoiceItem，ActiveKey由当前路由确定。原生同站点GET链接和保留挂载面板由库生成，当前项使用aria-current；不是ARIA tabs，不接管认证/POST或授权。ChildContent提供业务表单，禁用不代替授权。"),
-            Scenario<FilePicker>("交互式文件选择", "生产使用：使用 InputFileChangeEventArgs 获取选择；文件类型、大小、授权及服务端验证由业务负责，Accept 不是安全边界。"),
-            Scenario<FormActions>("业务表单操作区", "生产使用：等宽操作区，适合保存、取消和批量业务命令；展示页和登录入口的小型按钮组使用 AccessActions 或普通 Button。"),
-            General<FormLayout>("字段布局", "生产使用：字段列数、输入行为和无效字段聚焦；EditForm 或原生 GET / POST 边界仍由宿主负责。"),
-            General<Icon>("图标呈现", "生产使用：共享自托管图标来源，颜色继承所属控件；装饰图标不提供独立操作语义。"),
-            General<IdentityCard>("身份和记录摘要", "生产使用：通过语义化内容与 SideContent 显示摘要；不是产品展示 Hero 或独立编辑表单。"),
-            Scenario(typeof(ListView<>), "静态只读表格展示", "生产使用：按输入顺序完整展示 TableColumn 数据，可有行标题和只读模板；无搜索、排序、分页、选择、行操作或 JavaScript，不适合交互式记录管理。"),
-            General<LoadingState>("真实加载反馈", "生产使用：状态播报与加载指示；不要通过它掩盖失败、空数据或权限问题。"),
-            General<Notice>("状态与错误通知", "生产使用：NotificationSeverity、Title、Subtle 和播报控制；必须立即可见的错误不能仅放入悬停说明。"),
-            Scenario(typeof(NumberBox<>), "绑定模型的数值输入", "生产使用：类型解析、ValueExpression 和可选 EditForm 验证；原生 POST / 原始文本数值输入使用 StandaloneTextBox Type=number。"),
-            General<PageBody>("业务页面正文宽度", "生产使用：受控正文宽度与边距；直接子区块遵循页面布局。全宽背景且内容限宽的展示区使用 PresentationBand / ContentContainer。"),
-            Scenario<PageHeading>("业务页面和记录标题", "生产使用：可收缩标题、上级链接和操作区；艺术化标题使用 PresentationHero，不以业务大标题强制套用营销版式。"),
-            General<ProgressBar>("任务进度", "生产使用：0–100 的确定进度或 null 的未知进度；状态文本说明真实任务阶段。"),
-            General<ProgressRing>("紧凑任务进度", "生产使用：紧凑位置的确定或未知进度；不是按钮忙碌状态的替代业务逻辑。"),
-            General<SearchBox>("查询文字", "生产使用：防抖与可取消查询回调；候选项选择使用 SearchAutocomplete，按列查询使用 DataSearch。"),
-            General<Section>("业务内容章节", "生产使用：标准标题、章节内容和区级操作；全宽背景与艺术排版使用展示组件。"),
-            Scenario<SectionNavigator>("业务正文页内导航", "生产使用：跟随指定 ContentId 中的标题或显式 Items；适用于业务内容滚动区，不是展示页顶部导航或营销目录。"),
-            Scenario<BackToTop>("正文返回顶部", "生产使用：标准 Elevated 图标按钮与指定 ContentId 的滚动区域协作；保留静态片段链接、减少动态效果和目标焦点，不操作授权或业务导航。"),
-            Scenario<LineChart>("只读多序列折线图", "生产使用：传入标签与数值序列，使用标准主题绘制；独立刻度显式启用并显示最大值，精确值有辅助技术表格。图表不计算业务指标或修改数据。"),
-            General<MultiSelectBox>("通用多项选择与可选排序", "生产使用：业务选项、表格列和图表序列共享一个多选入口。稳定键、完整选中/顺序快照、上下限、固定与禁用项、搜索及异步创建由同一组件负责；排序明确启用，不持有业务持久化或显示状态。"),
-            Scenario(typeof(SelectBox<>), "绑定模型的单值选择", "生产使用：SelectOption 和 ValueExpression / 可选 EditForm 验证；原生 POST 使用 StandaloneSelectBox，带引用搜索创建使用 ReferenceDropdown。"),
-            General<SplitButton>("双动作入口", "生产使用：主动作与次动作独立；MenuContent 复用原生 details 下拉，静态 SSR 可用且次操作不提交表单。未设置插槽时保留宿主回调和受控展开。FullWidth 或 Width 调整总宽，次按钮始终 48px 方形；Busy/Disabled 阻止重复动作。"),
-            Scenario<StandaloneCheckBox>("原生 POST 或无验证模型的布尔输入", "生产使用：Value / ValueChanged、原生属性及提交值；不自动注册 EditContext 验证，绑定模型验证使用 CheckBox。"),
-            Scenario(typeof(StandaloneSelectBox<>), "原生 POST 或无验证模型的单值选择", "生产使用：选项、Value / ValueChanged 和原生属性；不自动注册 EditContext 验证，验证模型选择使用 SelectBox。"),
-            Scenario<StandaloneTextBox>("原生 POST 或无验证模型的文字输入", "生产使用：原生 name / form / autocomplete 等属性与 Value / ValueChanged；服务器承担验证，EditContext 验证使用 TextBox。"),
-            Scenario<TextBox>("绑定模型的文字输入", "生产使用：ValueExpression、类型输入和可选 EditForm 验证；原生 POST 或无验证模型场景使用 StandaloneTextBox。"),
-            General<ToggleSection>("布尔状态控制的内容区", "生产使用：与 ToggleSwitch 共用布尔绑定，隐藏内容保持挂载；原生 disclosure 仅控制展开，不表示业务开关值。"),
-            General<ToggleSwitch>("布尔开关", "生产使用：Value / ValueChanged、状态文字和受控区域；外观变化不应引入另一套开关状态 API。"),
-            Scenario<UniformGrid>("等形状展示单元格", "生产使用：配合 UniformGridItem / UniformGridButton 的形状、尺寸上限、自动列数和外观；只由库管理网格单元的统一布局与交互。"),
-            Scenario<UniformGridButton>("可操作的网格单元格", "生产使用：表单操作和多步向导的有限选项均使用此控件；纯选择步骤只保留 UniformGrid 和按钮文字，不加独立标题、说明或下拉框。长方形默认铺满行并按列均分；正方形仍限制等量宽高。继承 UniformGrid 布局和外观，复用 Button 行为；不是导航栏或登录表单普通按钮的替代。"),
-            Scenario<UniformGridItem>("只读网格单元格", "生产使用：与 UniformGridButton 共享内容结构和样式，不具有 Href / OnClick；有操作需求必须使用真正按钮。"),
+            General<ActionMenu>("Command and record action menus", "Production use: supply MenuAction through Actions, or standard Button/native form actions through ChildContent; the two are exclusive. One core owns availability, keyboard navigation, closing and async dialog callers. OpenOnHover applies only to Actions. Use ServiceMenu for service links."),
+            Scenario<ApplicationLayout>("Business route layout", "Production use: set as the Router default layout to consume Program configuration and load Framework assets. Disable OwnsDocument when embedding examples; compose presentation components for presentation pages."),
+            Scenario<ApplicationShell>("Business application shell", "Production use: top bar, two navigation levels, content scrolling and section navigation. Usually created by ApplicationLayout. Use presentation components for full-width banner pages."),
+            General<Button>("Actions and navigation", "Production use: Variant selects appearance; Disabled and Busy select state. Href navigates and OnClick invokes actions. Icon-only buttons require an accessible name."),
+            General<Card>("Content cards", "Production use: organize ordinary content. Use the dedicated width container or presentation band for page geometry."),
+            General<CopyText>("Selectable original text", "Production use: display encoded Value with standard code typography. No execution or clipboard side effect; use DisplayBoard for a complete copy action."),
+            General<FormGroup>("Grouped native fields", "Production use: native fieldset and legend combined with FormLayout. Disabled disables the group; the host retains validation and submission."),
+            General<InlineActions>("Compact standard action rows", "Production use: wrapping rows of standard Button or actual controls at a native protocol boundary. Field inputs take remaining width and buttons keep natural width. Owns spacing and layout only; use UniformGridButton for finite wizard choices."),
+            Scenario<ImagePreview>("Read-only images and captions", "Production use: standard figure, img and figcaption. The host supplies Url and Alt; Actions uses standard controls. Upload, authentication and image processing remain host responsibilities."),
+            Scenario<AttributionFooter>("Compact attribution", "Production use: standard footer and small for host-supplied copyright or attribution. Use PresentationFooter for marketing wordmarks."),
+            Scenario<CheckBox>("Model-bound boolean input", "Production use: @bind-Value supplies ValueExpression and supports EditForm validation. Use StandaloneCheckBox for native POST or input without a validation model."),
+            Scenario<CodeBlock>("Code and text display", "Production use: encode and display text without execution. May be composed with DisplayBoard; use ordinary content containers for business prose."),
+            Scenario(typeof(DataTable<>), "Record browsing and business tables", "Production use: shared TableColumn and TableSearchRequest; local/remote search, paging, culture-aware formatting, Table/Cards, column visibility/order/width, scoped sort preferences, native row actions, Registry/Pool/Worklist and explicit bulk editing. Progressive enhances complete authorized visible SSR text; hidden defaults, independent search/sort values and editing are unsupported in that mode."),
+            Scenario(typeof(DataSearch<>), "Controlled column search", "Production use: share TableColumn and TableSearchRequest with DataTable and standard fields/select/text input. Defaults to the first searchable column; IncludeAllColumns enables a null key for all columns. The host owns queries/results; ChildContent supplies inline filters."),
+            Scenario(typeof(DateBox<>), "Model-bound date input", "Production use: InputDate parsing, ValueExpression and EditForm validation. Use StandaloneTextBox Type=date for native date POST."),
+            General<Dialog>("Generic modal and content views", "Production use: controlled IsOpen or ShowAsync awaiting a result; CloseAsync returns it, and close/cancel/disposal returns null. Shared Busy, CanClose and focus behavior; Centered/BottomSheet presentations. BrowserControlled prerenders views for the standard browser module. Views/View are keyed content; confirmation/reconnection business state stays with the host."),
+            General<Disclosure>("Native expandable content", "Production use: details/summary disclosure. Title names the trigger; expansion does not change business boolean fields."),
+            Scenario<DisplayBoard>("Control previews and copyable content", "Production use: previews, dotted backgrounds and copy feedback. Use the appropriate presentation/form/page composition for complete scenarios."),
+            BuildingBlock<DropdownSurface>("Native dropdown surface", "Building block: details/summary and panel only. Does not own selected values, list keyboard behavior, outside-click dismissal or command models. Use SelectBox, ReferenceDropdown or MultiSelectBox for selection and ActionMenu for commands."),
+            General<EmptyState>("Actual empty results", "Production use: explain an empty result and the next action. Use the appropriate states for loading, failure or missing permissions."),
+            BuildingBlock<ExpansionIndicator>("Decorative expansion indicator", "Building block: an aria-hidden triangle with no interaction. Button, SplitButton or the selector owns its name, aria-expanded/aria-controls and events."),
+            General<Field>("Field labels and validation", "Production use: associate Label, Id, required state, errors and input. Submission, authorization and persistence remain host responsibilities."),
+            Scenario<ValidationMessages>("Hidden and cross-field validation messages", "Production use: the same error renderer as Field. For binds an EditContext field and Error supplies explicit errors. Use Field.For for ordinary inputs; hidden tokens and cross-field errors can use this entry independently. Business validation, translation, submission and authorization remain with the host."),
+            Scenario<NavigationChoices>("Native GET method selection", "Production use: NavigationChoiceItem items and a route-derived ActiveKey. Compact selects standard Button links; the default is a grid. The library owns same-site GET links and retained panels, with aria-current on the active link. The host supplies forms and retains authentication/POST/authorization. Disabled is not authorization."),
+            Scenario<FilePicker>("Interactive file selection", "Production use: receive selected files through InputFileChangeEventArgs. File type, size, authorization and server validation belong to the host; Accept is not a security boundary."),
+            Scenario<FormActions>("Business form actions", "Production use: equal-width save, cancel and bulk action areas. Use AccessActions or standard Button for compact presentation/login action groups."),
+            General<FormLayout>("Field layout", "Production use: field columns, input behavior and focus on invalid fields. The host retains EditForm or native GET/POST protocol boundaries."),
+            General<Icon>("Icon rendering", "Production use: shared self-hosted icons with inherited control color. Decorative icons do not provide independent action semantics."),
+            General<IdentityCard>("Identity and record summaries", "Production use: semantic content and SideContent for summaries. Compose the dedicated hero or form controls for product presentation and editing."),
+            Scenario(typeof(ListView<>), "Static read-only tables", "Production use: display all TableColumn data in input order, with optional row headings and read-only templates. No search, sorting, paging, selection, row actions or JavaScript. Use DataTable for interactive record management."),
+            General<LoadingState>("Actual loading feedback", "Production use: status announcements and loading indicators. Keep failures, empty results and permission problems visible as their own states."),
+            General<Notice>("Status and error notifications", "Production use: NotificationSeverity, Title, Subtle and announcement control. Errors requiring immediate attention must be directly visible, not available only on hover."),
+            Scenario(typeof(NumberBox<>), "Model-bound numeric input", "Production use: type parsing, ValueExpression and optional EditForm validation. Use StandaloneTextBox Type=number for native POST or raw numeric text."),
+            General<PageBody>("Business page content width", "Production use: controlled content width and gutters; direct child sections follow the page layout. Use PresentationBand/ContentContainer for full-width backgrounds with bounded content."),
+            Scenario<PageHeading>("Business page and record titles", "Production use: collapsible heading, parent link and actions. Use PresentationHero for artistic presentation titles."),
+            General<ProgressBar>("Task progress", "Production use: determinate progress from 0 to 100, or null for indeterminate progress. Status text describes the actual task stage."),
+            General<ProgressRing>("Compact task progress", "Production use: determinate or indeterminate progress in compact areas. Button busy state remains a separate action concern."),
+            General<SearchBox>("Query text", "Production use: debounced, cancellable query callbacks. Use SearchAutocomplete for choosing suggestions and DataSearch for column-based queries."),
+            General<Section>("Business content sections", "Production use: standard heading, section content and section actions. Use presentation components for full-width backgrounds and artistic layouts."),
+            Scenario<SectionNavigator>("In-page business content navigation", "Production use: headings within the specified ContentId or explicit Items. Applies to the business content scroll area; presentation pages use their appropriate navigation composition."),
+            Scenario<BackToTop>("Return to the top of content", "Production use: standard Elevated icon button for the specified ContentId scroll area. Retains static fragment navigation, reduced-motion support and target focus. Does not change authorization or business navigation."),
+            Scenario<LineChart>("Read-only multi-series line charts", "Production use: provide labels and numeric series for standard themed rendering. ControlsContent filters share one responsive toolbar with the built-in display controller. Independent scales are explicit and expose maxima; precise values are available in an accessible table. The chart owns visibility/order, not business calculations or data mutations."),
+            General<MultiSelectBox>("General multi-selection with optional ordering", "Production use: business options, table columns and chart series share one selector. One component owns stable keys, complete selection/order snapshots, limits, fixed/disabled items, search and async creation. Ordering is explicitly enabled; business persistence and display-state ownership remain outside."),
+            Scenario(typeof(SelectBox<>), "Model-bound single selection", "Production use: SelectOption, ValueExpression and optional EditForm validation. Use StandaloneSelectBox for native POST and ReferenceDropdown for searchable references with creation."),
+            General<SplitButton>("Two-action entry", "Production use: independent main and secondary actions. MenuContent uses native details and works with static SSR; the secondary action does not submit. Without a slot, callbacks and controlled expansion remain. FullWidth/Width changes total width; the secondary button stays 48px square. PrimaryDisabled locks only the main action; Busy/Disabled locks both."),
+            Scenario<StandaloneCheckBox>("Boolean input for native POST or unvalidated models", "Production use: Value/ValueChanged, native attributes and submitted values. Does not register EditContext validation; use CheckBox for model validation."),
+            Scenario(typeof(StandaloneSelectBox<>), "Single selection for native POST or unvalidated models", "Production use: options, Value/ValueChanged and native attributes. Does not register EditContext validation; use SelectBox for validated model selection."),
+            Scenario<StandaloneTextBox>("Text input for native POST or unvalidated models", "Production use: native name/form/autocomplete attributes and Value/ValueChanged. The server owns validation; use TextBox for EditContext validation."),
+            Scenario<TextBox>("Model-bound text input", "Production use: ValueExpression, typed input and optional EditForm validation. Use StandaloneTextBox for native POST or input without a validation model."),
+            General<ToggleSection>("Content controlled by a boolean state", "Production use: shared boolean binding with ToggleSwitch; hidden content stays mounted. Native disclosure controls expansion without representing a business switch value."),
+            General<ToggleSwitch>("Boolean switches", "Production use: Value/ValueChanged, status labels and a controlled region. Appearance changes do not create a separate switch-state API."),
+            Scenario<UniformGrid>("Uniform display cells", "Production use: UniformGridItem/UniformGridButton shapes, size limits, automatic columns and variants. The library owns uniform cell layout and interaction."),
+            Scenario<UniformGridButton>("Interactive grid cells", "Production use: finite choices for form actions and multi-step wizards. Keep PageHeading; choice areas contain the grid and button labels without extra step headings or selectors. Rectangles fill rows and divide columns equally; squares retain equal width/height limits. Inherits grid layout/appearance and Button behavior; use standard buttons for navigation bars and login forms."),
+            Scenario<UniformGridItem>("Read-only grid cells", "Production use: shared content structure and appearance with UniformGridButton, without Href or OnClick. Use a real button when actions are required."),
 
-            Scenario<Patterns.ContentSurface>("自定义内容宿主", "生产使用：顶部栏与正文组合，DocumentFlow / Footer 支持文档流展示页；滚动业务区和全宽展示页按明确布局模式选择，不使用宿主 CSS 覆盖另一种模式。"),
-            Scenario<Patterns.NavigationSurface>("自定义业务导航宿主", "生产使用：两级导航与单一业务滚动区；标准应用通常使用 ApplicationLayout，展示页面使用文档流内容宿主。"),
+            Scenario<Patterns.ContentSurface>("Custom content hosts", "Production use: top bar and content composition; DocumentFlow/Footer support document-flow presentation pages. Explicitly choose business-scroll or full-width document layouts without overriding the other mode with host CSS."),
+            Scenario<Patterns.NavigationSurface>("Custom business navigation hosts", "Production use: two navigation levels and one business scroll area. Standard applications usually use ApplicationLayout; presentation pages use a document-flow content host."),
 
-            Scenario<Primitives.AccessBrand>("访问入口品牌", "生产使用：登录、注册和访问入口的标识与说明；TitleId 必须在页面中唯一，不用于营销艺术标题。"),
-            Scenario<Primitives.DataPager>("受控加载结果分页", "生产使用：宿主管理 CurrentPage / PageSize，PageChanged 请求页码；IsLimited 表示仅已加载结果，不承诺服务端总量或自行查询数据。"),
-            Scenario<Primitives.EditingGrid>("电子表格编辑", "生产使用：GridColumn / GridRow / GridCell、键盘、剪贴板及主机编辑命令；不是只读列表或普通 DataTable 的外观变种。宿主负责校验、保存和授权。"),
-            Scenario<Primitives.InteractionBoundary>("临时交互锁定", "生产使用：宿主提供真实锁定原因，inert 暂停编辑；不是身份验证或授权边界，不能代替服务器校验。"),
-            Scenario<Primitives.MaskedInput>("绑定模型的掩码输入", "生产使用：InputBase、ValueExpression 和共享掩码格式化；原生 POST / 无验证模型场景使用 StandaloneMaskedInput，不是普通 TextBox 的纯外观变种。"),
-            Scenario<Primitives.NavigationGuard>("未保存草稿离开确认", "生产使用：HasUnsavedChanges 来自真实草稿状态；交互导航和浏览器离开确认，不是安全、授权或防丢失持久化保证，纯 SSR 无交互保护。"),
-            Scenario<Primitives.NoticeTrigger>("次要状态说明", "生产使用：焦点和悬停可读的状态图标说明；只用于补充信息，必须立即显示的错误或重要警告使用 Notice。"),
-            Scenario<Primitives.PrimaryNavigationItem>("业务外壳一级导航", "生产使用：图标导航轨、当前状态和不可用说明；常规应用从 Program 配置，不用于营销顶部链接或普通动作按钮。"),
-            Scenario(typeof(Primitives.ReferenceDropdown<>), "可搜索的单值引用", "生产使用：值类型标识、可空选择、未收录名称和可选创建；不是普通 SelectBox 的纯外观变种，也不使用多值集合 API。"),
-            Scenario(typeof(Primitives.SearchAutocomplete<>), "搜索候选项选择", "生产使用：查询文字、候选键、键盘活动项和 ItemSelected；远程候选由宿主提供，不等价于 SearchBox 或引用标识选择。"),
-            Scenario<Primitives.SecondaryNavigationItem>("业务外壳二级导航", "生产使用：路径匹配与当前页面链接；常规导航从 Program 配置，不是普通内容链接或营销 CTA。"),
-            Scenario<Primitives.ServiceMenu>("顶部服务导航", "生产使用：ServiceLink 导航目标；不是执行命令的 ActionMenu，也不负责用户授权或会话切换。"),
-            Scenario<Primitives.ShellHeader>("品牌与身份顶部栏", "生产使用：品牌、服务、身份和操作插槽；可作为明确页面宿主的顶部栏，不独立管理整个页面滚动和导航。"),
-            Scenario<Primitives.StandaloneMaskedInput>("原生 POST 或无验证模型的掩码输入", "生产使用：Value / ValueChanged 与原生属性；不自动注册 EditContext 验证，模型验证使用 MaskedInput。"),
+            Scenario<Primitives.AccessBrand>("Access-entry branding", "Production use: identity and context for sign-in, registration and access pages. TitleId must be unique within the page; use presentation controls for marketing titles."),
+            Scenario<Primitives.DataPager>("Paging of controlled loaded results", "Production use: the host manages CurrentPage/PageSize and handles PageChanged. IsLimited means loaded results only; it neither promises a server total nor queries data."),
+            Scenario<Primitives.EditingGrid>("Spreadsheet editing", "Production use: GridColumn/GridRow/GridCell, keyboard, clipboard and host editing commands. Editing is a distinct scenario from a read-only list or ordinary DataTable. The host retains validation, saving and authorization."),
+            Scenario<Primitives.InteractionBoundary>("Temporary interaction lock", "Production use: the host supplies the actual reason and inert suspends editing. This does not authenticate or authorize users and cannot replace server validation."),
+            Scenario<Primitives.MaskedInput>("Model-bound masked input", "Production use: InputBase, ValueExpression and shared mask formatting. Use StandaloneMaskedInput for native POST or no validation model; masking has behavior beyond TextBox appearance."),
+            Scenario<Primitives.NavigationGuard>("Leaving an unsaved draft", "Production use: HasUnsavedChanges reflects actual draft state and protects interactive navigation/browser exit. It is not a security or persistence guarantee; pure SSR has no interactive protection."),
+            Scenario<Primitives.NoticeTrigger>("Secondary status details", "Production use: status icons with details readable on focus/hover. Supplementary information only; use Notice for important warnings or errors that must be immediately visible."),
+            Scenario<Primitives.PrimaryNavigationItem>("Primary business-shell navigation", "Production use: icon navigation rail, current state and unavailable explanation. Configure ordinary navigation through Program; use the appropriate controls for presentation links and actions."),
+            Scenario(typeof(Primitives.ReferenceDropdown<>), "Searchable single references", "Production use: value-type identifiers, nullable selection, unknown labels and optional creation. Retains single-reference semantics rather than plain SelectBox appearance or a multi-value collection API."),
+            Scenario(typeof(Primitives.SearchAutocomplete<>), "Search suggestion selection", "Production use: query text, suggestion keys, keyboard active item and ItemSelected. The host provides remote suggestions. It has selection semantics beyond SearchBox and does not bind a reference identifier."),
+            Scenario<Primitives.SecondaryNavigationItem>("Secondary business-shell navigation", "Production use: route matching and the current-page link. Configure ordinary navigation through Program; use content links or presentation actions for those scenarios."),
+            Scenario<Primitives.ServiceMenu>("Top-level service navigation", "Production use: ServiceLink destinations. Use ActionMenu for commands; user authorization and session switching belong to the host."),
+            Scenario<Primitives.ShellHeader>("Brand and identity header", "Production use: branding, services, identity and action slots. May be the top bar of an explicit page host; it does not own the entire page's scrolling or navigation."),
+            Scenario<Primitives.StandaloneMaskedInput>("Masked input for native POST or unvalidated models", "Production use: Value/ValueChanged and native attributes. Does not register EditContext validation; use MaskedInput for model validation."),
 
-            General<ContentContainer>("中心限宽内容", "生产使用：独立控制内容限宽与水平居中，适用于业务和展示页；背景全宽由 PresentationBand 管理。"),
-            Scenario<PresentationBand>("全宽展示横幅", "生产使用：默认最小高度 800px，长内容自然增长；全宽背景与内部 ContentContainer 分层。Dotted 默认关闭；Tone 使用标准颜色角色，推荐相邻横幅交替颜色。不通过消费端 CSS 覆盖宽度。"),
-            Scenario<PresentationHero>("产品展示艺术标题", "生产使用：展示首页的艺术标题、副标题和标准操作；业务记录、管理标题使用 PageHeading，不将艺术字号应用于业务正文。"),
-            Scenario<LogoDisplayer>("访问和展示页项目标识", "生产使用：上方 Logo、下方项目艺术字，默认读取 ConfigureProject 的名称/标志；项目名支持作用域本地化和实例覆盖。HeadingLevel 选择真实标题语义。不是业务壳顶部品牌或认证控件。"),
-            Scenario<PresentationFooter>("展示网站品牌页脚", "生产使用：全宽页脚、中心内容与装饰水印；标题和水印统一跟随 ConfigureProject 的项目名及其本地化。Copyright 由宿主提供，不复制到业务导航或账户管理面板。"),
-            Scenario<OfferStage>("产品报价展示", "生产使用：展示报价的响应式舞台与选中呈现；价格、许可能力及购买动作由宿主提供，不管理真实订单或许可授权。"),
-            Scenario<OfferCard>("产品报价卡片", "生产使用：报价名称、说明和标准动作；与 OfferStage 组合，业务实体摘要使用 IdentityCard / Card。"),
-            Scenario<AccessPanel>("访问入口内容区", "生产使用：已存在页面宿主中的居中访问面板，不生成第二个 main；配合 AccessFormSurface 与 AccessActions，认证仍由宿主负责。"),
-            Scenario<AccessFormSurface>("访问入口表单内容", "生产使用：登录、注册和恢复入口的标准表单表面；只组织内容，不创建认证状态或改写原生 GET / POST 协议。"),
-            Scenario<AccessActions>("入口和展示页小型动作组", "生产使用：排列标准 Button，不把登录或营销 CTA 强制渲染为大型表单网格单元格；业务等宽操作使用 FormActions。")
+            General<ContentContainer>("Centered bounded content", "Production use: independently control content width and horizontal centering on business or presentation pages. PresentationBand owns the full-width background."),
+            Scenario<PresentationBand>("Full-width presentation bands", "Production use: default minimum height 800px with natural growth. Separate full-width background and internal ContentContainer. Dotted defaults to false; Tone uses standard color roles, with alternating neighboring bands recommended. Do not override widths with consumer CSS."),
+            Scenario<PresentationHero>("Artistic product headings", "Production use: artistic heading, subtitle and standard actions for presentation homepages. Use PageHeading for business records and management pages."),
+            Scenario<LogoDisplayer>("Project identity on access/presentation pages", "Production use: Logo above the artistic project name; reads ConfigureProject by default. Names support scoped localization and instance overrides. HeadingLevel selects actual heading semantics. Branding is distinct from authentication behavior and shell-header identity."),
+            Scenario<PresentationFooter>("Presentation-site brand footer", "Production use: full-width footer, centered content and decorative watermark. Heading/watermark follow the configured localized project name. The host supplies Copyright; business navigation/account panels use their own composition."),
+            Scenario<OfferStage>("Product offer presentation", "Production use: responsive offer stage and selection presentation. The host supplies prices, licensing capabilities and purchase actions, and owns actual orders/authorization."),
+            Scenario<OfferCard>("Product offer cards", "Production use: offer names, descriptions and standard actions, composed with OfferStage. Use IdentityCard/Card for business entity summaries."),
+            Scenario<AccessPanel>("Access-entry content area", "Production use: centered access panel inside an existing page host without creating a second main. Compose with AccessFormSurface/AccessActions; authentication remains host-owned."),
+            Scenario<AccessFormSurface>("Access-entry form content", "Production use: standard form surface for sign-in, registration and recovery, with explicit Surface/Primary/Canvas Tone. Organizes content without owning authentication or changing native GET/POST protocols."),
+            Scenario<AccessActions>("Compact access/presentation action groups", "Production use: arrange standard Button controls for login and presentation actions. Use FormActions for equal-width business form actions.")
         ];
         return entries.ToFrozenDictionary(entry => entry.ComponentType);
     }
 
     private static ComponentUsageInfo General<TComponent>(string scenario, string guidance, Type? preferredEntry = null)
-        => new(typeof(TComponent), ComponentUseKind.General, scenario, guidance, preferredEntry);
+        => new(typeof(TComponent), ComponentUseKind.General, UsageText(typeof(TComponent), "Scenario", scenario), UsageText(typeof(TComponent), "Guidance", guidance), preferredEntry);
 
     private static ComponentUsageInfo Scenario<TComponent>(string scenario, string guidance)
         => Scenario(typeof(TComponent), scenario, guidance);
 
     private static ComponentUsageInfo Scenario(Type componentType, string scenario, string guidance)
-        => new(componentType, ComponentUseKind.Scenario, scenario, guidance);
+        => new(componentType, ComponentUseKind.Scenario, UsageText(componentType, "Scenario", scenario), UsageText(componentType, "Guidance", guidance));
 
     private static ComponentUsageInfo BuildingBlock<TComponent>(string scenario, string guidance, Type? preferredEntry = null)
-        => new(typeof(TComponent), ComponentUseKind.BuildingBlock, scenario, guidance, preferredEntry);
+        => new(typeof(TComponent), ComponentUseKind.BuildingBlock, UsageText(typeof(TComponent), "Scenario", scenario), UsageText(typeof(TComponent), "Guidance", guidance), preferredEntry);
+
+    private static TextReference UsageText(Type componentType, string part, string fallback)
+    {
+        var name = componentType.Name.Split((char)96)[0];
+        if (componentType.Namespace?.EndsWith(".Primitives", StringComparison.Ordinal) == true) name = "Primitives_" + name;
+        else if (componentType.Namespace?.EndsWith(".Patterns", StringComparison.Ordinal) == true) name = "Patterns_" + name;
+        return new("Flourish", $"Usage_{name}_{part}", fallback);
+    }
 }

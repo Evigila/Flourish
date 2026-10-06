@@ -14,8 +14,8 @@
             <aside class="secondary-rail"><nav aria-label="@EffectiveSecondaryLabel">@SecondaryNavigation</nav></aside>
         }
         <main @ref="stage" @key="DocumentKey" class="application-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
-        <SectionNavigator ContentId="@ContentId" />
-        <BackToTop ContentId="@ContentId" Label="@EffectiveTopLabel" />
+        <SectionNavigator @key="(DocumentKey, nameof(SectionNavigator))" ContentId="@ContentId" />
+        <BackToTop @key="(DocumentKey, nameof(BackToTop))" ContentId="@ContentId" Label="@EffectiveTopLabel" />
     </div>
 </div>
 @code {

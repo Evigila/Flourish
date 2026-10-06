@@ -335,7 +335,7 @@ var pageRecords = Enumerable.Range(1, 25).Select(id => new Record(id, $"Record {
 AsyncTest("table defaults to a 10-row page with synchronized controls", async () => {
     var html = WebUtility.HtmlDecode(await Render<DataTable<Record>>(new() { ["Items"] = pageRecords, ["Columns"] = columns, ["ItemKey"] = (Func<Record, object>)(row => row.Id) }));
     Equal(11, html.Split("<tr", StringSplitOptions.None).Length - 1);
-    Check(html.Contains("Items 1-10 / Total 25"), "Actual loaded item count was lost.");
+    Check(html.Contains("<span>1-10 / Total 25</span>"), "Actual loaded item count was lost.");
     Equal(2, html.Split("aria-label=\"Next page\"", StringSplitOptions.None).Length - 1);
     Check(html.Contains("data-f-resize=\"name\"") && html.Contains("aria-valuemin=\"72\""), "Accessible column resizing is absent.");
     Check(html.Contains("Search by") && html.Contains("All columns") && html.Contains("Amount"), "Column search labels are missing.");
@@ -363,7 +363,8 @@ AsyncTest("row text, labels, and formatted values are HTML encoded", async () =>
 });
 AsyncTest("table without row actions does not invent a default opening menu", async () => {
     var html = await Render<DataTable<Record>>(new() { ["Items"] = records, ["Columns"] = columns });
-    Check(!html.Contains("f-action-menu") && !html.Contains("f-data-openable"), "A default record action was inferred.");
+    var rows = System.Text.RegularExpressions.Regex.Match(html, "<tbody>[\\s\\S]*?</tbody>").Value;
+    Check(!rows.Contains("f-action-menu") && !html.Contains("f-data-openable"), "A default record action was inferred.");
 });
 AsyncTest("row opening is explicit and availability keeps denied actions out of menus", async () => {
     var parameters = new Dictionary<string, object?> {
@@ -843,6 +844,7 @@ DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);
 NavigationControlsChecks.Register(tests);
+ChartToolbarChecks.Register(tests);
 DataSearchChecks.Register(tests);
 BrandingChecks.Register(tests);
 TextChecks.Register(tests);

@@ -2,13 +2,13 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SplitButton", Description = "上方通过 MenuContent 展示原生导航；完整登录页演示表单提交。恢复与注册仅链接到演示总览。\n下方使用受控次按钮展开导出格式，所有动作只更新本地状态。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SplitButton", DescriptionKey = "Key.Sample_SplitButtonSample_Description")]
 @inherits LocalizedComponentBase
 
 @if (!Preview)
 {
     <SplitButton Text="@Localization.Parse(TextKey.Nav_DisplayLogin)" Href="/examples/display/login" FullWidth="FullWidth"
-                 SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled">
+                 SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled" PrimaryDisabled="PrimaryDisabled">
         <MenuContent>
             <Button Variant="ButtonVariant.Quiet" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
             <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RecoveryDemo)</Button>
@@ -17,46 +17,47 @@
         </MenuContent>
     </SplitButton>
     <AccessActions Label="@Localization.Parse(TextKey.Access_SubmitMenu)">
-        <StandaloneCheckBox Label="@Explain("Fill the available width", "填满可用宽度")" @bind-Value="FullWidth" />
-        <StandaloneCheckBox Label="@Explain("Disable primary action and menu", "禁用主动作与菜单")" @bind-Value="MenuDisabled" />
+        <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_FillAvailableWidth)" @bind-Value="FullWidth" />
+        <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_DisablePrimaryActionAndMenu)" @bind-Value="MenuDisabled" />
+        <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_DisableOnlyThePrimaryActionAndKeepTheMenu)" @bind-Value="PrimaryDisabled" />
     </AccessActions>
 }
 
 @if (Preview)
 {
     <div class="f-inline-actions">
-        <SplitButton Text="操作" Icon="download" SecondaryLabel="打开选项" />
-        <SplitButton Text="已选中" Icon="check" Selected="true" SecondaryLabel="打开选项" />
-        <SplitButton Text="不可用" Disabled="true" SecondaryLabel="打开选项" />
+        <SplitButton Text="@Localization.Parse(TextKey.Sample_Action)" Icon="download" SecondaryLabel="@Localization.Parse(TextKey.Sample_OpenOptions)" />
+        <SplitButton Text="@Localization.Parse(TextKey.Sample_Checked)" Icon="check" Selected="true" SecondaryLabel="@Localization.Parse(TextKey.Sample_OpenOptions)" />
+        <SplitButton Text="@Localization.Parse(TextKey.Sample_Unavailable)" Disabled="true" SecondaryLabel="@Localization.Parse(TextKey.Sample_OpenOptions)" />
     </div>
 }
 else
 {
     <div class="f-inline-actions">
-        <SplitButton Text="@($"导出 {Format}")" Icon="download" Selected="Selected" Disabled="Disabled"
-                     SecondaryLabel="@(OptionsVisible ? "收起导出选项" : "展开导出选项")" Expanded="OptionsVisible"
+        <SplitButton Text="@Localization.Parse(TextKey.Sample_ExportAction, Format)" Icon="download" Selected="Selected" Disabled="Disabled"
+                     SecondaryLabel="@(OptionsVisible ? Localization.Parse(TextKey.Sample_CollapseExportOptions) : Localization.Parse(TextKey.Sample_ExpandExportOptions))" Expanded="OptionsVisible"
                      SecondaryControls="split-scenario-options" OnClick="Export" OnSecondaryClick="() => OptionsVisible = !OptionsVisible" />
-        <CheckBox Label="选中" @bind-Value="Selected" />
-        <CheckBox Label="禁用" @bind-Value="Disabled" />
+        <CheckBox Label="@Localization.Parse(TextKey.Sample_Selected)" @bind-Value="Selected" />
+        <CheckBox Label="@Localization.Parse(TextKey.Sample_Disabled)" @bind-Value="Disabled" />
     </div>
-    <div id="split-scenario-options" role="region" aria-label="导出格式" hidden="@(!OptionsVisible)">
+    <div id="split-scenario-options" role="region" aria-label="@Localization.Parse(TextKey.Sample_ExportFormat)" hidden="@(!OptionsVisible)">
         <div class="f-inline-actions">
             <Button Variant="ButtonVariant.Quiet" OnClick="ChooseCsv">CSV</Button>
             <Button Variant="ButtonVariant.Quiet" OnClick="ChooseJson">JSON</Button>
         </div>
     </div>
-    <p role="status">导出 @ExportCount 次；上次格式：@LastFormat</p>
+    <p role="status">@Localization.Parse(TextKey.Sample_ExportCount, ExportCount, LastFormat ?? Localization.Parse(TextKey.Sample_NoneYet))</p>
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool Selected, Disabled, OptionsVisible;
-    private bool FullWidth = true, MenuDisabled;
+    private bool FullWidth = true, MenuDisabled, PrimaryDisabled;
     private int ExportCount;
-    private string Format = "CSV", LastFormat = "暂无";
+    private string Format = "CSV";
+    private string? LastFormat;
     private void Export() { ExportCount++; LastFormat = Format; }
     private void ChooseCsv() => ChooseFormat("CSV");
     private void ChooseJson() => ChooseFormat("JSON");
     private void ChooseFormat(string format) { Format = format; OptionsVisible = false; }
-    private string Explain(string english, string chinese) => Localization.Culture == "zh-CN" ? chinese : english;
 }

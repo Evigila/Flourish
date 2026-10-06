@@ -1,11 +1,19 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Blazor.Components
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("LineChart", Description = "共用单位使用默认公共比例；不同单位必须明确启用 IndependentScales，不能把两条相同比例高度误认为相同业务数值。内置显示选择与 DataTable 共用通用 MultiSelectBox；显隐和排序由库持有，业务页只提供序列数据。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("LineChart", DescriptionKey = "Key.Sample_LineChartSample_Description")]
 
-<LineChart Labels="Labels" Series="Data" Title="虚构订单周趋势" Description="两条示例序列分别归一化；图例提供每条序列的最大值，数据表保留所有原始值。" IndependentScales="true" MaximumLabel="最大值" PointCaption="日期" />
+<LineChart Id="example-weekly-orders" Heading="@Localization.Parse(TextKey.Sample_WeeklyOrders)" Labels="Labels" Series="Data" Title="@Localization.Parse(TextKey.Sample_FictionalWeeklyOrderTrend)" Description="@Localization.Parse(TextKey.Sample_TheTwoDemoSeriesAreNormalizedIndependentlyTheLegendShowsEachMaximumAndTheDataTableRetainsAllRawValues)" IndependentScales="true" MaximumLabel="@Localization.Parse(TextKey.Sample_Maximum)" PointCaption="@Localization.Parse(TextKey.Sample_Date)">
+    <ControlsContent>
+        <Field Id="chart-example-period" Label="@Localization.Parse(TextKey.Sample_Period_Demo)">
+            <StandaloneSelectBox @bind-Value="Period"><option value="current">@Localization.Parse(TextKey.Sample_CurrentWeekExample)</option><option value="previous">@Localization.Parse(TextKey.Sample_PreviousWeekExample)</option></StandaloneSelectBox>
+        </Field>
+    </ControlsContent>
+</LineChart>
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private static readonly LineChart.PointLabel[] Labels = [new("mon", "一", "星期一"), new("tue", "二", "星期二"), new("wed", "三", "星期三"), new("thu", "四", "星期四"), new("fri", "五", "星期五"), new("sat", "六", "星期六"), new("sun", "日", "星期日")];
-    private static readonly LineChart.DataSeries[] Data = [new("count", "订单数量", [2, 5, 3, 8, 4, 7, 6], value => value.ToString("N0")), new("amount", "示例金额", [100, 280, 240, 600, 380, 520, 410], value => value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("zh-CN")))];
+    private string Period = "current";
+    private LineChart.PointLabel[] Labels => [new("mon", Localization.Parse(TextKey.Sample_MondayShort), Localization.Parse(TextKey.Sample_Monday)), new("tue", Localization.Parse(TextKey.Sample_TuesdayShort), Localization.Parse(TextKey.Sample_Tuesday)), new("wed", Localization.Parse(TextKey.Sample_WednesdayShort), Localization.Parse(TextKey.Sample_Wednesday)), new("thu", Localization.Parse(TextKey.Sample_ThursdayShort), Localization.Parse(TextKey.Sample_Thursday)), new("fri", Localization.Parse(TextKey.Sample_FridayShort), Localization.Parse(TextKey.Sample_Friday)), new("sat", Localization.Parse(TextKey.Sample_SaturdayShort), Localization.Parse(TextKey.Sample_Saturday)), new("sun", Localization.Parse(TextKey.Sample_SundayShort), Localization.Parse(TextKey.Sample_Sunday))];
+    private LineChart.DataSeries[] Data => [new("count", Localization.Parse(TextKey.Sample_OrderCount), Period == "current" ? [2, 5, 3, 8, 4, 7, 6] : [4, 3, 2, 7, 6, 5, 4], value => value.ToString("N0", CultureInfo.GetCultureInfo(Localization.Culture))), new("amount", Localization.Parse(TextKey.Sample_DemoAmount), Period == "current" ? [100, 280, 240, 600, 380, 520, 410] : [200, 150, 170, 460, 390, 330, 280], value => value.ToString("C", CultureInfo.GetCultureInfo(Localization.Culture)))];
 }

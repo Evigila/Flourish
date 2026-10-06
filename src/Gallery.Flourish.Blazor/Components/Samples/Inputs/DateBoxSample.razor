@@ -1,8 +1,9 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
 @attribute [SampleFor("DateBox<TValue>")]
 <EditForm Model="Draft" FormName="@Id" OnValidSubmit="Submit">
-    <Field Label="演示日期" Id="@Id"><DateBox TValue="DateTime" Id="@Id" @bind-Value="Draft.Date" /></Field>
-    <Button Type="submit">使用演示日期</Button>
+    <Field Label="@Localization.Parse(TextKey.Sample_DemoDate)" Id="@Id"><DateBox TValue="DateTime" Id="@Id" @bind-Value="Draft.Date" /></Field>
+    <Button Type="submit">@Localization.Parse(TextKey.Sample_UseDemoDate)</Button>
 </EditForm>
 @if (!Preview) { <p role="status">@Message</p> }
 @code {
@@ -10,6 +11,7 @@
     private sealed class DemoDraft { public DateTime Date { get; set; } = new(2026, 10, 5); }
     private readonly DemoDraft Draft = new();
     private readonly string Id = "date-sample-" + Guid.NewGuid().ToString("N");
-    private string? Message;
-    private void Submit() => Message = "本地演示日期：" + Draft.Date.ToShortDateString();
+    private bool Submitted;
+    private string? Message => Submitted ? string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalDemoDate), Draft.Date.ToString("d", CultureInfo.GetCultureInfo(Localization.Culture))) : null;
+    private void Submit() => Submitted = true;
 }

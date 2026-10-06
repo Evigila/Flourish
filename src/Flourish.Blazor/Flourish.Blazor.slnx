@@ -6,6 +6,9 @@
   <Project Path="../Flourish.Core/Flourish.Core.csproj" />
   <Project Path="../Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj" />
   <Project Path="../../tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="../../tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj" />
+  </Folder>
   <Project Path="../../tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj" />
   <Project Path="../Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
   <Project Path="../../tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj" />

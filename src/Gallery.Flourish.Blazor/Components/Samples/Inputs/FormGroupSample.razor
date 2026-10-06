@@ -1,9 +1,10 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("FormGroup")]
 
-@if (!Preview) { <ToggleSwitch Label="禁用整个字段组" @bind-Value="Disabled" /> }
-<FormGroup Title="虚构联系人" Disabled="Disabled" Columns="1">
-    <Field Label="名称" Id="@Id"><StandaloneTextBox Id="@Id" @bind-Value="Name" /></Field>
+@if (!Preview) { <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_DisableTheEntireFieldGroup)" @bind-Value="Disabled" /> }
+<FormGroup Title="@Localization.Parse(TextKey.Sample_FictionalContact)" Disabled="Disabled" Columns="1">
+    <Field Label="@Localization.Parse(TextKey.Record_Name)" Id="@Id"><StandaloneTextBox Id="@Id" @bind-Value="Name" /></Field>
 </FormGroup>
 
 @code {

@@ -1,7 +1,8 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("PresentationFooter")]
-<PresentationFooter Copyright="虚构展示声明 · 版权由宿主设置，标题与水印自动跟随项目名">
-    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示目录</Button></Actions>
+<PresentationFooter Copyright="@Localization.Parse(TextKey.Sample_FictionalPresentationNoticeTheHostSetsCopyrightTheHeadingAndWatermarkFollowTheProjectName)">
+    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Sample_PresentationExamples)</Button></Actions>
 </PresentationFooter>
 @code {
     [Parameter] public bool Preview { get; set; }

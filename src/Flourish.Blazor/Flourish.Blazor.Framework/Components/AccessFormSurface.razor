@@ -1,11 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<div class="@($"f-access-form-surface {Class}".Trim())" @attributes="AdditionalAttributes">
+<div class="@($"f-access-form-surface {(Tone != PresentationTone.Surface ? "f-access-form-" + Tone.ToString().ToLowerInvariant() : null)} {Class}".Trim())" @attributes="AdditionalAttributes">
     @ChildContent
     @if (Actions is not null) { <div class="f-access-form-actions">@Actions</div> }
 </div>
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
+    [Parameter] public PresentationTone Tone { get; set; } = PresentationTone.Surface;
+    protected override void OnParametersSet() { if (!Enum.IsDefined(Tone)) throw new ArgumentOutOfRangeException(nameof(Tone)); }
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 }

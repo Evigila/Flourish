@@ -1,8 +1,9 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("OfferCard")]
-<OfferStage Id="@Id" AutoRotate="false" Label="静态虚构报价">
-    <OfferCard Id="@(Id + "-basic")" Title="Basic" Description="只作为 OfferStage 子项使用。"><Button Variant="ButtonVariant.Secondary" Disabled="true">0 · 非商业报价</Button></OfferCard>
-    <OfferCard Id="@(Id + "-team")" Title="Team" Description="不收录许可或价格规则。"><Button Variant="ButtonVariant.Secondary" Disabled="true">10 · 非商业报价</Button></OfferCard>
+<OfferStage Id="@Id" AutoRotate="false" Label="@Localization.Parse(TextKey.Sample_StaticFictionalOffers)">
+    <OfferCard Id="@(Id + "-basic")" Title="Basic" Description="@Localization.Parse(TextKey.Sample_UseOnlyAsAnOfferStageChild)"><Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Sample_0NoncommercialOffer)</Button></OfferCard>
+    <OfferCard Id="@(Id + "-team")" Title="Team" Description="@Localization.Parse(TextKey.Sample_NoLicensingOrPricingRulesAreIncluded)"><Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Sample_10NoncommercialOffer)</Button></OfferCard>
 </OfferStage>
 @code {
     [Parameter] public bool Preview { get; set; }

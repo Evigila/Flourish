@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -5,21 +6,21 @@
 @using System.Collections.Generic
 @using System.Linq
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Icon", Description = "图标为装饰性内容，可访问名称由按钮提供。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Icon", DescriptionKey = "Key.Sample_IconSample_Description")]
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor
 @using ArkheideSystem.Flourish.Blazor.Components
 @if (Preview)
 {
-    <span aria-label="默认图标"><Icon /></span>
+    <span aria-label="@Localization.Parse(TextKey.Sample_DefaultIcon)"><Icon /></span>
     <Icon Name="home" /><Icon Name="search" /><Icon Name="menu" /><Icon Name="close" />
 }
 else
 {
-    <Field Label="演示图标" Id="@Id"><SelectBox TValue="string" Options="Names" @bind-Value="Name" /></Field>
-    <Button Icon="@Name" aria-label="执行模拟图标操作" OnClick="() => Count++" />
-    <p role="status">模拟操作次数：@Count</p>
-    <p role="status">可用图标：@IconCatalog.Names.Count。</p>
+    <Field Label="@Localization.Parse(TextKey.Sample_DemoIcon)" Id="@Id"><SelectBox TValue="string" Options="Names" @bind-Value="Name" /></Field>
+    <Button Icon="@Name" aria-label="@Localization.Parse(TextKey.Sample_RunDemoIconAction)" OnClick="() => Count++" />
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_DemoActionCount), Count)</p>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_AvailableIconCount), IconCatalog.Names.Count)</p>
 }
 @code {
     [Parameter] public bool Preview { get; set; }

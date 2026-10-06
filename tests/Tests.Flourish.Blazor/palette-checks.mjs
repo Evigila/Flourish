@@ -89,6 +89,46 @@ test("shell chrome only adjusts available Quiet buttons, preserving explicit var
   assert.match(controls, /\.f-button-elevated\{[^}]*color:var\(--f-text\);background:var\(--f-surface\);box-shadow:var\(--f-shadow-control\)/);
 });
 
+test("direct secondary navigation uses the canonical palette in every selection interaction state", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const surface = withoutComments(await readFile(join(designCssRoot, "patterns/navigation-surface.css"), "utf8"));
+  const component = await readFile(join(blazorRoot, "Flourish.Blazor.Framework/Components/Primitives/SecondaryNavigationItem.razor"), "utf8");
+  assert.match(component, /ActiveClass="is-selected"/);
+  assert.doesNotMatch(component, /is-active/);
+  assert.match(component, /title="@Label"/);
+  assert.match(component, /<span class="f-navigation-label">@Label<\/span>/);
+  const framework = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/framework.css"), "utf8"));
+  const entry = blockFor(framework, ".f-secondary-item"), label = blockFor(framework, ".f-navigation-label");
+  assert.equal(property(entry, "min-width"), "0");
+  assert.equal(property(entry, "max-width"), "100%");
+  assert.equal(property(label, "flex"), "1");
+  assert.equal(property(label, "min-width"), "0");
+  assert.equal(property(label, "overflow"), "hidden");
+  assert.equal(property(label, "text-overflow"), "ellipsis");
+  assert.equal(property(label, "white-space"), "nowrap");
+  for (const rule of rules(surface)) {
+    if (rule.selector.includes("secondary-rail") && /\ba\b|f-secondary-item/.test(rule.selector))
+      assert.ok(!["color", "background", "background-color"].some(name => property(rule.body, name)),
+        "NavigationSurface must not create a second palette for the same secondary item.");
+  }
+  // Expand the one direct :is interaction arm while preserving real declaration order
+  // and specificity; tree-row arms are outside this direct-link scenario.
+  const styles = rules(foundation + "\n" + surface).flatMap(rule => {
+    if (!rule.selector.includes(".f-secondary-item.is-selected:is(:hover,:focus-visible)")) return [rule];
+    return ["hover", "focus-visible"].map(state => ({ ...rule,
+      selector:rule.selector.replace(":is(:hover,:focus-visible)", ":" + state) }));
+  });
+  for (const selected of [false, true]) for (const states of [[], ["hover"], ["focus-visible"], ["active"], ["hover", "active"]]) {
+    const element = { tag:"a", classes:new Set(["f-secondary-item", ...(selected ? ["is-selected"] : [])]), states:new Set(states), attributes:new Map() };
+    const pressed = states.includes("active"), hovered = states.includes("hover");
+    assert.equal(buttonCascade(styles, element, "color"), selected ? "var(--f-surface)" : pressed || hovered ? "var(--f-text)" : "var(--f-ink-soft)",
+      `Incorrect secondary foreground for selected=${selected}, states=${states}.`);
+    assert.equal(buttonCascade(styles, element, "background"), selected ? pressed ? "var(--f-primary-click)" : "var(--f-primary)"
+      : pressed ? "var(--f-target-click)" : hovered ? "var(--f-target-preview)" : "transparent",
+      `Incorrect secondary background for selected=${selected}, states=${states}.`);
+  }
+});
+
 test("read-only ListView reuses the table surface and exposes complete wrapped values", async () => {
   const design = withoutComments(await readFile(join(designCssRoot, "data.css"), "utf8"));
   const frameworkRoot = join(blazorRoot, "Flourish.Blazor.Framework");

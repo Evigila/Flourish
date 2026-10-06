@@ -1,38 +1,52 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("NavigationChoices", Description = "访问方式通过 GET 链接切换；字段值不会进入地址。")]
+@attribute [SampleFor("NavigationChoices", DescriptionKey = "Key.Sample_NavigationChoicesSample_Description")]
+@inherits LocalizedComponentBase
 @inject NavigationManager Navigation
 
-<NavigationChoices Id="@Id" Label="选择访问方式" Items="Choices" ActiveKey="@ActiveKey">
-    <ChildContent Context="choice">
-        <AccessFormSurface>
-            @if (choice.Key == "organization")
-            {
-                <Field Id="@(Id + "-username")" Label="组织登录地址"><StandaloneTextBox Type="email" autocomplete="username" /></Field>
-                <Field Id="@(Id + "-password")" Label="组织密码"><StandaloneTextBox Type="password" autocomplete="current-password" /></Field>
-                <Button Disabled="true">模拟组织访问</Button>
-            }
-            else if (choice.Key == "account")
-            {
-                <p>使用虚构账号进行演示。</p>
-                <Button Disabled="true">模拟账号访问</Button>
-            }
-            else
-            {
-                <Field Id="@(Id + "-pass")" Label="访问凭据"><StandaloneTextBox Type="password" autocomplete="off" /></Field>
-                <Button Disabled="true">模拟凭据访问</Button>
-            }
+<PresentationHero Title="@Localization.Parse(TextKey.Access_OrganizationName)" StackTitleWords="true" MinHeight="0">
+    <SideContent>
+        <AccessFormSurface Tone="PresentationTone.Primary">
+            <Section Title="@Localization.Parse(TextKey.Access_MethodOrganizationAction)" TitleId="@(Id + "-title")">
+                <NavigationChoices Id="@Id" Label="@Localization.Parse(TextKey.Access_MethodLabel)" Items="Choices" ActiveKey="@ActiveKey" Compact="true">
+                    <ChildContent Context="choice">
+                        @if (choice.Key == "organization")
+                        {
+                            <FormLayout Columns="1">
+                                <Field Id="@(Id + "-username")" Label="@Localization.Parse(TextKey.Access_OrganizationEmail)">
+                                    <StandaloneTextBox Id="@(Id + "-username")" Type="text" inputmode="email" autocomplete="username" />
+                                </Field>
+                                <Field Id="@(Id + "-password")" Label="@Localization.Parse(TextKey.Access_OrganizationPassword)">
+                                    <StandaloneTextBox Id="@(Id + "-password")" Type="password" autocomplete="current-password" />
+                                </Field>
+                            </FormLayout>
+                            <Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Access_MethodOrganizationAction)</Button>
+                        }
+                        else if (choice.Key == "account")
+                        {
+                            <Button Variant="ButtonVariant.Secondary" Href="/examples/display/login" data-enhance-nav="false">@Localization.Parse(TextKey.Access_MethodAccountAction)</Button>
+                        }
+                        else
+                        {
+                            <Field Id="@(Id + "-pass")" Label="@Localization.Parse(TextKey.Access_MethodCredential)">
+                                <StandaloneTextBox Id="@(Id + "-pass")" Type="password" autocomplete="off" />
+                            </Field>
+                            <Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Access_MethodPassAction)</Button>
+                        }
+                    </ChildContent>
+                </NavigationChoices>
+            </Section>
         </AccessFormSurface>
-    </ChildContent>
-</NavigationChoices>
+    </SideContent>
+</PresentationHero>
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = "navigation-choices-" + Guid.NewGuid().ToString("N");
-    private static readonly IReadOnlyList<NavigationChoiceItem> Choices =
+    private IReadOnlyList<NavigationChoiceItem> Choices =>
     [
-        new("organization", "组织", "/examples/display/access-methods?choice=organization"),
-        new("account", "账号", "/examples/display/access-methods?choice=account"),
-        new("pass", "凭据", "/examples/display/access-methods?choice=pass")
+        new("organization", Localization.Parse(TextKey.Access_MethodOrganization), "/examples/display/access-methods?choice=organization"),
+        new("account", Localization.Parse(TextKey.Access_MethodAccount), "/examples/display/access-methods?choice=account"),
+        new("pass", Localization.Parse(TextKey.Access_MethodPass), "/examples/display/access-methods?choice=pass")
     ];
     private string ActiveKey
     {

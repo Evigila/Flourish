@@ -1,7 +1,8 @@
 @page "/error"
-<PageTitle>发生错误 · 组件演示</PageTitle>
+@inherits LocalizedComponentBase
+<PageTitle>@Localization.Parse(TextKey.Page_Error) · Gallery</PageTitle>
 <PageBody>
-    <PageHeading Title="请求未完成" />
-    <p role="alert">演示应用无法完成这次请求，请重新打开页面。</p>
-    <a href="/">返回主页</a>
+    <PageHeading Title="@Localization.Parse(TextKey.Page_Error)" />
+    <p role="alert">@Localization.Parse(TextKey.Error_Request)</p>
+    <a href="/">@Localization.Parse(TextKey.Common_BackHome)</a>
 </PageBody>

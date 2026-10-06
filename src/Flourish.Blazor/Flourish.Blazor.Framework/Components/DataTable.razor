@@ -37,9 +37,9 @@
                     @if (_view == TableView.Cards) { <span>@EffectiveText.Cards</span> }
                 </button>
             </div>
-            @if (BulkEditRequested.HasDelegate || !string.IsNullOrWhiteSpace(SpreadsheetEditHref))
-            {
-                <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Table_AdvancedEdit", "Advanced editing"))">
+                <ActionMenu Label="@Texts.Get(new TextReference("Flourish", "Table_AdvancedEdit", "Advanced editing"))"
+                            Icon="stylus_fountain_pen" TriggerVariant="ButtonVariant.Secondary"
+                            Disabled="@(!CanAdvancedEdit || BulkEditing || EditingBusy)">
                     <ChildContent>
                         @if (BulkEditRequested.HasDelegate)
                         {
@@ -51,8 +51,7 @@
                         }
                     </ChildContent>
                 </ActionMenu>
-            }
-            <MultiSelectBox data-f-table-selection="true" Items="DisplayItems" Label="@EffectiveText.Display" MinimumSelected="@(Columns.Count > 0 ? 1 : 0)"
+            <MultiSelectBox data-f-table-selection="true" Items="DisplayItems" Label="@EffectiveText.Display" Icon="remove_red_eye" TriggerVariant="ButtonVariant.Secondary" MinimumSelected="@(Columns.Count > 0 ? 1 : 0)"
                             Disabled="@(BulkEditing || EditingBusy)" CanReorder="@(_view == TableView.Table)" Static="@Progressive"
                             Changed="ApplyDisplayOptions" />
         </div>
@@ -267,9 +266,9 @@
         SortAscending: Texts.Get(new TextReference("Flourish", "Table_SortAscending", "sort ascending")),
         SortDefault: Texts.Get(new TextReference("Flourish", "Table_SortDefault", "restore default order")),
         ResizeHint: Texts.Get(new TextReference("Flourish", "Table_ResizeHint", "Drag or use arrow keys; Shift changes 50 px; Home restores; Escape cancels.")),
-        ItemsPerPage: Texts.Get(new TextReference("Flourish", "Table_ItemsPerPage", "Items per page")),
+        ItemsPerPage: Texts.Get(new TextReference("Flourish", "Table_ItemsPerPage", "Quantity")),
         Total: Texts.Get(new TextReference("Flourish", "Table_Total", "Total")),
-        ItemRangeFormat: Texts.Get(new TextReference("Flourish", "Table_ItemRangeFormat", "{0} {1}-{2} / {3} {4}")));
+        ItemRangeFormat: Texts.Get(new TextReference("Flourish", "Table_ItemRangeFormat", "{1}-{2} / {3} {4}")));
 
     protected override void OnTextChanged() { localizedTableText = null; if (_initialized) Rebuild(); }
 
@@ -300,6 +299,7 @@
     private Task<IJSObjectReference?>? _moduleLoading;
     private bool _disposed;
     private bool _resizeDirty = true;
+    private bool CanAdvancedEdit => BulkEditRequested.HasDelegate || !string.IsNullOrWhiteSpace(SpreadsheetEditHref);
     private bool ShowCounts => Items.Count > 0 || (!Loading && string.IsNullOrWhiteSpace(Error));
     private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)_pageSize));
     private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;

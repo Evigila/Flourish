@@ -1,11 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @using System.Linq.Expressions
-@implements IDisposable
+@inherits TextComponentBase
 
 @if (Messages.Count > 0)
 {
     <div id="@Id" class="f-field-errors @Class" role="alert" @attributes="AdditionalAttributes">
-        @foreach (var message in Messages) { <span>@message</span> }
+        @foreach (var message in Messages) { <span>@(MessageFormatter is null ? message : MessageFormatter(message))</span> }
     </div>
 }
 
@@ -13,6 +13,7 @@
     [CascadingParameter] private EditContext? FormContext { get; set; }
     [Parameter] public Expression<Func<object?>>? For { get; set; }
     [Parameter] public string? Error { get; set; }
+    [Parameter] public Func<string, string>? MessageFormatter { get; set; }
     [Parameter] public string? Id { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
@@ -27,5 +28,5 @@
         if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged += ValidationChanged;
     }
     private void ValidationChanged(object? sender, ValidationStateChangedEventArgs args) => _ = InvokeAsync(StateHasChanged);
-    public void Dispose() { if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
+    public override void Dispose() { base.Dispose(); if (SubscribedContext is not null) SubscribedContext.OnValidationStateChanged -= ValidationChanged; }
 }

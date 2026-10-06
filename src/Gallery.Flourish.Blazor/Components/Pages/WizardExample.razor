@@ -3,6 +3,7 @@
 
 <PageTitle>@Localization.Parse(TextKey.Nav_DisplayWizard) · Gallery</PageTitle>
 <PageBody>
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_DisplayWizard)" />
     @if (Step == 0)
     {
         <UniformGrid Columns="2" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
@@ -13,15 +14,15 @@
     else if (Step == 1)
     {
         <UniformGrid Columns="3" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
-            <UniformGridButton Title="Standard" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Standard"))" />
-            <UniformGridButton Title="Professional" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Professional"))" Disabled="WorkspaceUse" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Standard)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Standard"))" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Professional)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Professional"))" Disabled="WorkspaceUse" />
             <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Back)" Variant="UniformGridVariant.Outlined" OnClick="@(() => Step = 0)" />
         </UniformGrid>
     }
     else
     {
         <UniformGrid Columns="2" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
-            <UniformGridButton Title="@($"{Localization.Parse(WorkspaceUse ? TextKey.Wizard_Workspace : TextKey.Wizard_Personal)} · {Plan}")" Disabled="true" />
+            <UniformGridButton Title="@($"{Localization.Parse(WorkspaceUse ? TextKey.Wizard_Workspace : TextKey.Wizard_Personal)} · {PlanLabel}")" Disabled="true" />
             <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Restart)" Variant="UniformGridVariant.Outlined" OnClick="Restart" />
         </UniformGrid>
     }
@@ -32,6 +33,7 @@
     private int Step;
     private bool WorkspaceUse;
     private string Plan = string.Empty;
+    private string PlanLabel => Plan == "Standard" ? Localization.Parse(TextKey.Wizard_Standard) : Plan == "Professional" ? Localization.Parse(TextKey.Wizard_Professional) : string.Empty;
 
     private void ChooseUse(bool workspace)
     {

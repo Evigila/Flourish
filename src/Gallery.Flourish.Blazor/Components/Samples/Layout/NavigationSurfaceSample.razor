@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,23 +13,23 @@
 @using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 
-@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="显示二级导航" @bind-Value="Secondary" /> }
-<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="Page" SkipLabel="跳到示例正文" PrimaryLabel="示例模块" SecondaryLabel="示例页面" TopLabel="回到示例顶部">
-    <TitleBar><header class="app-topbar"><strong>@(Preview ? "顶部栏" : "资料中心（虚构）")</strong></header></TitleBar>
+@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_ShowSecondaryNavigation)" @bind-Value="Secondary" /> }
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="@Page" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)" PrimaryLabel="@Localization.Parse(TextKey.Sample_ExampleModules)" SecondaryLabel="@Localization.Parse(TextKey.Sample_ExamplePages)" TopLabel="@Localization.Parse(TextKey.Sample_BackToExampleTop)">
+    <TitleBar><header class="app-topbar"><strong>@(Preview ? Localization.Parse(TextKey.Nav_TopBar) : Localization.Parse(TextKey.Sample_ResourceCenterFictional))</strong></header></TitleBar>
     <PrimaryNavigation>
         <div @onclick="ShowDocuments" @onclick:preventDefault>
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-documents")" Label="资料" Icon="folder" Href="@($"#{Id}")" IsCurrent="true" />
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-documents")" Label="@Localization.Parse(TextKey.Sample_Resources)" Icon="folder" Href="@($"#{Id}")" IsCurrent="true" />
         </div>
     </PrimaryNavigation>
     <SecondaryNavigation>
-        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 0 ? ButtonVariant.Primary : ButtonVariant.Underline)" OnClick="ShowDocuments" aria-current="@(Page == 0 ? "page" : null)">全部资料</ArkheideSystem.Flourish.Blazor.Components.Button>
-        <ArkheideSystem.Flourish.Blazor.Components.Button Variant="@(Page == 1 ? ButtonVariant.Primary : ButtonVariant.Underline)" OnClick="ShowArchived" aria-current="@(Page == 1 ? "page" : null)">已归档</ArkheideSystem.Flourish.Blazor.Components.Button>
+        <div @onclick="ShowDocuments" @onclick:preventDefault><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="@Localization.Parse(TextKey.Sample_AllResources)" Href="@($"#{Id}-documents")" IsCurrent="@(Page == 0)" /></div>
+        <div @onclick="ShowArchived" @onclick:preventDefault><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="@Localization.Parse(TextKey.Sample_Archived)" Href="@($"#{Id}-archived")" IsCurrent="@(Page == 1)" /></div>
     </SecondaryNavigation>
     <ChildContent>
         @if (!Preview)
         {
-            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Page == 0 ? "全部资料（虚构）" : "已归档（虚构）")" />
-                @for (var row = 1; row <= 6; row++) { <section class="page-module"><h2>资料 @row</h2><p>这是虚构记录。滚动只发生在示例正文区域，顶部栏保持可见。</p></section> }
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Page == 0 ? Localization.Parse(TextKey.Sample_AllResourcesFictional) : Localization.Parse(TextKey.Sample_ArchivedFictional))" />
+                @for (var row = 1; row <= (Page == 0 ? 6 : 3); row++) { <ArkheideSystem.Flourish.Blazor.Components.Section Title="@($"{(Page == 0 ? Localization.Parse(TextKey.Sample_Resources) : Localization.Parse(TextKey.Sample_ArchivedResources))} {row}")"><p>@Localization.Parse(TextKey.Sample_ThisIsAFictionalRecordChangingPagesUpdatesTheSectionIndexAndOnlyTheExampleContentAreaScrolls)</p></ArkheideSystem.Flourish.Blazor.Components.Section> }
             </div>
         }
     </ChildContent>

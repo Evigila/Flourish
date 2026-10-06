@@ -642,6 +642,35 @@ internal static class PresentationChecks
             await renderer.Dispatcher.InvokeAsync(() => RequireOfferIconState(output.ToHtmlString(), "Resume rotation", "play_arrow", true));
         }));
 
+        tests.Add(("split hero keeps organization typography and one independent operation column", async () =>
+        {
+            var html = System.Net.WebUtility.HtmlDecode(await Render<PresentationHero>(new()
+            {
+                [nameof(PresentationHero.Title)] = "Demo   Organization",
+                [nameof(PresentationHero.TitleId)] = "split-title",
+                [nameof(PresentationHero.StackTitleWords)] = true,
+                [nameof(PresentationHero.MinHeight)] = 0,
+                [nameof(PresentationHero.SideContent)] = Markup("<form method=\"post\" action=\"/fixture\"><input name=\"secret\"></form>")
+            }));
+            Check(html.Contains("f-presentation-hero-split", StringComparison.Ordinal)
+                && html.Contains("f-presentation-hero-layout", StringComparison.Ordinal)
+                && html.Contains("f-presentation-hero-side", StringComparison.Ordinal), "The generic split hero lost its two semantic areas.");
+            Check(html.Contains("aria-label=\"Demo   Organization\"", StringComparison.Ordinal)
+                && Regex.Matches(html, "<span aria-hidden=\"true\">").Count == 2, "Stacked words lost the complete accessible heading or split on the wrong boundary.");
+            Check(Regex.Matches(html, @"<form\b").Count == 1 && !Regex.IsMatch(html, @"<main\b"), "The layout invented a protocol or document root.");
+            var normal = await Render<PresentationHero>(new() { [nameof(PresentationHero.Title)] = "Ordinary hero" });
+            Check(!normal.Contains("f-presentation-hero-layout", StringComparison.Ordinal) && !normal.Contains("f-presentation-title-words", StringComparison.Ordinal), "An ordinary hero opted into the split typography.");
+            var primary = await Render<AccessFormSurface>(new() { [nameof(AccessFormSurface.Tone)] = PresentationTone.Primary, ["ChildContent"] = Text("Methods") });
+            Check(primary.Contains("f-access-form-primary", StringComparison.Ordinal) && !Regex.IsMatch(primary, @"<(?:main|form)\b"), "The surface tone created an extra layout/protocol boundary.");
+            foreach (var path in new[] { "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css", "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css" })
+            {
+                var css = ReadSource(path);
+                Check(css.Contains("@media(max-width:860px)", StringComparison.Ordinal), "The split hero lost its narrow-screen contract.");
+            }
+            Check(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css")
+                .Contains("minmax(0,1fr) minmax(360px,470px)", StringComparison.Ordinal), "The operation column is no longer bounded independently of the organization column.");
+        }));
+
         tests.Add(("access panel is reusable inside existing main and keeps compact wide and emphasis explicit", async () =>
         {
             var compact = await Render<AccessPanel>(new() { ["Brand"] = Text("Brand"), ["ChildContent"] = Text("Content") });
@@ -790,7 +819,7 @@ internal static class PresentationChecks
             {
                 builder.OpenComponent<PresentationBand>(0);
                 builder.AddAttribute(1, nameof(PresentationBand.FullHeight), true);
-                builder.AddMultipleAttributes(2, parameters);
+                builder.AddMultipleAttributes(2, parameters.Select(pair => new KeyValuePair<string, object>(pair.Key, pair.Value!)));
                 builder.CloseComponent();
             })
         });

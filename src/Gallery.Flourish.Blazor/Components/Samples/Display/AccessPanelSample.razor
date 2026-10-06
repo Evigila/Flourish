@@ -1,10 +1,11 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("AccessPanel")]
-@if (!Preview) { <StandaloneCheckBox Label="宽面板变种" @bind-Value="Wide" /> }
+@if (!Preview) { <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_WidePanelVariant)" @bind-Value="Wide" /> }
 <AccessPanel Wide="Wide">
-    <Brand><h2>Lumen 演示入口</h2></Brand>
-    <ChildContent><AccessFormSurface><Field Label="演示邮箱" Id="@Id"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" /></Field><Button OnClick="() => Entered = true">模拟进入</Button></AccessFormSurface>@if (Entered) { <p role="status">本地演示完成。</p> }</ChildContent>
-    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">展示目录</Button></Actions>
+    <Brand><h2>@Localization.Parse(TextKey.Sample_LumenDemoAccess)</h2></Brand>
+    <ChildContent><AccessFormSurface><Field Label="@Localization.Parse(TextKey.Display_Email)" Id="@Id"><StandaloneTextBox Id="@Id" Type="email" @bind-Value="Email" /></Field><Button OnClick="() => Entered = true">@Localization.Parse(TextKey.Sample_SimulateEntry)</Button></AccessFormSurface>@if (Entered) { <p role="status">@Localization.Parse(TextKey.Sample_LocalDemoCompleted)</p> }</ChildContent>
+    <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Sample_PresentationExamples)</Button></Actions>
 </AccessPanel>
 @code {
     [Parameter] public bool Preview { get; set; }

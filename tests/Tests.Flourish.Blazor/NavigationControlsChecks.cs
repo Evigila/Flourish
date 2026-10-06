@@ -20,6 +20,81 @@ internal static class NavigationControlsChecks
             var css = File.ReadAllText(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/foundation.css"));
             Require(css.Contains(".f-primary-item .f-icon,.primary-nav-item .primary-navigation-icon { --f-icon-size:var(--f-icon-primary-size,24px); width:1em; height:1em; }", StringComparison.Ordinal), "A production primary navigation family missed the shared 24px role.");
         }));
+        tests.Add(("secondary navigation uses one canonical selection state for explicit and route matches", async () =>
+        {
+            foreach (var parameters in new Dictionary<string, object?>[]
+            {
+                new() { [nameof(SecondaryNavigationItem.Label)] = "Current explicit", [nameof(SecondaryNavigationItem.Href)] = "/other", [nameof(SecondaryNavigationItem.IsCurrent)] = true },
+                new() { [nameof(SecondaryNavigationItem.Label)] = "Current route", [nameof(SecondaryNavigationItem.Href)] = "/report", [nameof(SecondaryNavigationItem.Match)] = Microsoft.AspNetCore.Components.Routing.NavLinkMatch.All }
+            })
+            {
+                var html = await Render<SecondaryNavigationItem>(parameters);
+                Require(html.Contains("f-secondary-item is-selected", StringComparison.Ordinal) && !html.Contains("is-active", StringComparison.Ordinal), "A secondary entry bypassed the shared navigation selection state.");
+                if (parameters.TryGetValue(nameof(SecondaryNavigationItem.IsCurrent), out var explicitCurrent) && explicitCurrent is true)
+                    Require(html.Contains("aria-current=\"page\"", StringComparison.Ordinal), "The explicit current secondary entry lost its accessible page state.");
+            }
+            var inactive = await Render<SecondaryNavigationItem>(new() { [nameof(SecondaryNavigationItem.Label)] = "Other", [nameof(SecondaryNavigationItem.Href)] = "/other" });
+            Require(!inactive.Contains("is-selected", StringComparison.Ordinal) && !inactive.Contains("aria-current=", StringComparison.Ordinal), "An unrelated secondary entry became selected.");
+        }));
+        tests.Add(("configured shells and composed secondary entries share the bounded label and full-title contract", async () =>
+        {
+            const string longLabel = "Plugin de sincronização de pedidos e produtos entre estabelecimentos <draft>";
+            var standalone = await Render<SecondaryNavigationItem>(new()
+            {
+                [nameof(SecondaryNavigationItem.Label)] = longLabel,
+                [nameof(SecondaryNavigationItem.Href)] = "/report",
+                [nameof(SecondaryNavigationItem.IsCurrent)] = true
+            });
+            var services = new ServiceCollection(); services.AddLogging();
+            services.AddFlourishFramework(framework => framework.ConfigureNavigation(navigation => navigation
+                .AddNav("Registry", "inventory", "/registry", secondary => secondary.AddSubNav(longLabel, "article", "/report", exact: true))));
+            services.AddSingleton<IJSRuntime>(new CountingJs()); services.AddSingleton<NavigationManager>(new FixedNavigation());
+            using var provider = services.BuildServiceProvider();
+            await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
+            var configured = await renderer.Dispatcher.InvokeAsync(async () => (await renderer.RenderComponentAsync<ApplicationShell>()).ToHtmlString());
+            foreach (var html in new[] { standalone, configured })
+            {
+                var anchor = System.Text.RegularExpressions.Regex.Match(html, "<a\\b(?=[^>]*\\bhref=\"/report\")[^>]*>(?<content>.*?)</a>", System.Text.RegularExpressions.RegexOptions.Singleline);
+                Require(anchor.Success && System.Net.WebUtility.HtmlDecode(anchor.Value).Contains($"title=\"{longLabel}\"", StringComparison.Ordinal), "A navigation entry lost its complete title when the visible label was constrained.");
+                Require(System.Net.WebUtility.HtmlDecode(anchor.Groups["content"].Value).Contains($"<span class=\"f-navigation-label\">{longLabel}</span>", StringComparison.Ordinal), "A navigation entry rendered bare text instead of the canonical shrinking label.");
+                Require(!html.Contains("<draft>", StringComparison.Ordinal), "The shared label bypassed Razor encoding.");
+                Require(anchor.Value.Contains("is-selected", StringComparison.Ordinal), "The compared production entry did not preserve current-route state.");
+            }
+        }));
+        tests.Add(("navigation document replacement recreates its outline and top control with the actual content", async () =>
+        {
+            var activator = new CaptureActivator();
+            var services = new ServiceCollection(); services.AddLogging(); services.AddFlourishFramework();
+            services.AddSingleton<IJSRuntime>(new CountingJs()); services.AddSingleton<NavigationManager>(new FixedNavigation()); services.AddSingleton<IComponentActivator>(activator);
+            using var provider = services.BuildServiceProvider();
+            await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
+            await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                Dictionary<string, object?> Parameters(string route, string title) => new()
+                {
+                    [nameof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface.ContentId)] = "workspace-content",
+                    [nameof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface.DocumentKey)] = route,
+                    [nameof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, title))
+                };
+                var output = await renderer.RenderComponentAsync<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface>(ParameterView.FromDictionary(Parameters("/dashboard", "Dashboard")));
+                var surface = activator.Instances.OfType<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface>().Single();
+                var oldNavigator = activator.Instances.OfType<SectionNavigator>().Single();
+                var oldTop = activator.Instances.OfType<BackToTop>().Single();
+                await oldNavigator.UpdateSectionsAsync([new("monthly-summary", "Monthly summary"), new("weekly-orders", "Weekly orders")]);
+                Require(output.ToHtmlString().Contains("href=\"#weekly-orders\"", StringComparison.Ordinal), "The actual initial navigator did not receive discovered headings.");
+                await surface.SetParametersAsync(ParameterView.FromDictionary(Parameters("/inventory", "Inventory")));
+                var currentNavigator = activator.Instances.OfType<SectionNavigator>().Last();
+                var currentTop = activator.Instances.OfType<BackToTop>().Last();
+                Require(activator.Instances.OfType<SectionNavigator>().Count() == 2 && activator.Instances.OfType<BackToTop>().Count() == 2
+                    && !ReferenceEquals(oldNavigator, currentNavigator) && !ReferenceEquals(oldTop, currentTop), "Replacing the keyed main retained controls attached to the retired document.");
+                Require(output.ToHtmlString().Contains("Inventory", StringComparison.Ordinal) && !output.ToHtmlString().Contains("#weekly-orders", StringComparison.Ordinal), "A new document retained the previous route outline.");
+                await oldNavigator.UpdateSectionsAsync([new("stale-callback", "Stale callback")]);
+                await currentNavigator.UpdateSectionsAsync([new("stock", "Stock")]);
+                Require(output.ToHtmlString().Contains("href=\"#stock\"", StringComparison.Ordinal) && !output.ToHtmlString().Contains("#stale-callback", StringComparison.Ordinal), "A disposed navigator published a late callback into the new document.");
+                await surface.SetParametersAsync(ParameterView.FromDictionary(Parameters("/inventory", "Inventory refreshed")));
+                Require(activator.Instances.OfType<SectionNavigator>().Count() == 2 && activator.Instances.OfType<BackToTop>().Count() == 2, "Refreshing one document needlessly replaced its active controllers.");
+            });
+        }));
         tests.Add(("line charts own SVG, exact accessible values and encoded host data without browser imports", async () =>
         {
             var html = await Render<LineChart>(ChartParameters());

@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -9,26 +10,26 @@
 @using ArkheideSystem.Flourish.Blazor.Components
 @using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataPager", Description = "23 条虚构记录按页展示。页码输入会自动限制到有效范围。")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.DataPager", DescriptionKey = "Key.Sample_DataPagerSample_Description")]
 
 @if (Preview)
 {
-    <p>带范围</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Label="空列表分页" />
-    <p>紧凑模式</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" ShowRange="false" Label="紧凑分页" />
-    <p>不可用状态</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Disabled="true" Label="不可用分页" />
+    <p>@Localization.Parse(TextKey.Sample_WithRange)</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Label="@Localization.Parse(TextKey.Sample_EmptyListPagination)" />
+    <p>@Localization.Parse(TextKey.Sample_CompactMode)</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" ShowRange="false" Label="@Localization.Parse(TextKey.Sample_CompactPagination)" />
+    <p>@Localization.Parse(TextKey.Sample_UnavailableState)</p><ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="0" Disabled="true" Label="@Localization.Parse(TextKey.Sample_UnavailablePagination)" />
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(5)">每页 5 条</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(10)">每页 10 条</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Limited = !Limited">@(Limited ? "完整集合" : "模拟受限集合")</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(5)">@Localization.Parse(TextKey.Sample_5PerPage)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => SetPageSize(10)">@Localization.Parse(TextKey.Sample_10PerPage)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Limited = !Limited">@(Limited ? Localization.Parse(TextKey.Sample_FullCollection) : Localization.Parse(TextKey.Sample_SimulateLimitedCollection))</Button>
     </div>
-    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="23" CurrentPage="Page" PageSize="PageSize" PageChanged="page => Page = page" IsLimited="Limited" Label="虚构记录分页" />
+    <ArkheideSystem.Flourish.Blazor.Components.Primitives.DataPager TotalCount="23" CurrentPage="Page" PageSize="PageSize" PageChanged="page => Page = page" IsLimited="Limited" Label="@Localization.Parse(TextKey.Sample_FictionalRecordPagination)" />
     <ol start="@((Page - 1) * PageSize + 1)">
         @foreach (var value in Enumerable.Range(1, 23).Skip((Page - 1) * PageSize).Take(PageSize))
         {
-            <li>虚构记录 @value.ToString("00")</li>
+            <li>@Localization.Parse(TextKey.Sample_FictionalRecord, value.ToString("00"))</li>
         }
     </ol>
 }

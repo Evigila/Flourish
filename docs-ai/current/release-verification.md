@@ -1,8 +1,44 @@
-# Local release verification on 2026-10-05
+# Local release verification
+
+## Latest preparation: 2026-10-06 Culture package integration
+
+This is the current local release preparation; the older sections below retain their historical scope. The complete staged Flourish preparation completed with exit code 0, zero build warnings/errors and exactly six fresh Core/Blazor 1.1.0 packages. No WPF package is in the manifest. Local packages and successful consumers do not establish public NuGet publication or account-policy completion.
+
+| Check | Result |
+|---|---|
+| Core automated tests | 367 passed |
+| Blazor component checks | 373/373 passed |
+| Culture bridge checks | 12 passed |
+| Gallery rendered/event localization checks | 7,234 passed, including 124 real-event language-switch and state-retention checks |
+| Node behavior checks | 66 passed |
+| CSS bundle / SDK integration checks | 21 / 194 passed |
+| Component catalog checks | 21,217 passed |
+| Four isolated package consumers | 129 checks passed |
+| Exact six-package verification | Fresh 1.1.0 candidates passed; WPF excluded |
+
+Evidence: artifacts/culture-final-release.log and artifacts/package-consumers/01e52f8b29ce48f89c139dfc26a2bfbb. Gallery's restored .nupkg.metadata identifies the current artifacts/packages bridge candidate, confirming it was not an older cached package. The initial Culture consumer HTTP 500 was a Minimal API test-fixture binding error: [FromServices] was missing. The fixture correction restored its check without changing production behavior.
+
+Gallery now has one bridge PackageReference at VersionPrefix, with its source bridge and direct Generator references removed. Test-Release first restores/builds the targeted umbrella dependency graph, packs the six libraries and verifies them. It then restores the complete Blazor solution through a temporary NuGet source mapping and fresh cache, verifies Gallery's bridge-package and transitive Essential dependencies, and runs full build/tests/checks. The final phase runs all four NuGet-only consumers. Explicit EssentialPackageDirectory supplies unpublished Essential candidates; no implicit sibling feed or source fallback is used. This ordering resolves first-release Gallery bootstrap before the bridge exists publicly.
+
+Essential's preceding complete preparation passed 106 tests (61 Core, 20 Generator, 21 Blazor, 4 WinUI), five Gallery builds with zero warnings/errors and six fresh 1.3.0 packages. A subsequent metadata-only repack verified the current Essential.Culture URL in all six nuspec files; functional tests were not repeated for metadata changes.
+
+The user supplied NuGet profile Evigila and is configuring Flourish's Trusted Publishing policy/secret. Current account-policy coverage and configuration completion remain unconfirmed. An Arkheide.Flourish.* policy scope can support creation of the initial package IDs; the release manifest remains strictly the six Core/Blazor packages. Historical OIDC success, environment existence or the profile name alone does not confirm current authorization. The user authorized Trusted Publishing execution, but AGENTS.md still requires the user's answer before a new commit. No new commit, tag, push or public package publication occurred.
+
+Manual acceptance remains user-operated, without Computer Use:
+
+- Start Gallery with the original start.bat and check icons, bundled styles, centered widths and page layouts.
+- Switch en-US, zh-CN and pt-BR on the same page; check collapsing H1, H2/body, documentation, sample status and already-visible validation messages while inputs and selections remain unchanged.
+- Exercise access-method navigation, saved-account selection, SplitButton menus and login layout.
+- Check rounded MaskedInput/StandaloneMaskedInput/SearchAutocomplete controls, MultiSelectBox search/add/select, table display/advanced-edit controls and selection retention.
+- After publication, restore a clean consumer solely from public NuGet sources and repeat culture switching/static-asset checks; current local evidence does not perform that public-index acceptance.
+
+## Historical verification snapshots from 2026-10-05 and earlier 2026-10-06 audit
+
+The following results and configuration observations are retained as dated history. Their earlier current/latest wording, hashes, package scopes and pending requests describe those runs; the latest section above and active release guide supersede them.
 
 This records local verification, not NuGet.org publication. The approved first release now covers six Core/Blazor packages after Shared consolidation and addition of the dependency-only Blazor convenience package.
 
-## Current canonical Account table preparation
+## Previous canonical Account table preparation
 
 The [Account table follow-up](currentproject-changelogs/2026-10-05_230030_support-native-canonical-table-actions.md) passes the complete final scripts/Test-Release.ps1: Release compilation zero warnings/errors; Core 367, Blazor 269/269, Culture bridge 12; all ten configured JavaScript files, 53 Node-runner checks and existing mock suites including 46 controls-DOM cases; CSS bundle 21 and SDK integration 194. Six local 1.1.0 candidates pass identity/dependency/static-asset verification. Four fresh isolated NuGet-only modes pass 95 checks at artifacts/package-consumers/94244e241b8f4867a9daa3793b54b429. Expected package README advisories remain separate from warning-free compilation.
 
@@ -62,7 +98,7 @@ Abstract, Framework and Design were repacked as local unpublished 1.1.0 candidat
 
 Current candidate SHA256: Abstract D5DE44B22F0D2CC019A49EE857BF593DC468830CAB637C008839F96B094560DF; Framework 44F8D91FD5E9075FE83EAC2D25B2733B8C9D9974C9F866D2C2436397F23E9F9E; Design 862E83C166766CAC8A2B6CD6E67E3801BA21EDD9878F751D6BB96AF74D9B20D2. These supersede the earlier local candidate hashes below. This is targeted Blazor/consumer preparation, not a new full Core/desktop/SDK-asset run or public release. Earlier unrelated full-suite failures retain their recorded scope. Browser geometry and theme acceptance remain manual, without Computer Use.
 
-## Current Blazor-only preparation
+## Previous Blazor-only preparation
 
 The final scripts/Test-Release.ps1 completed with exit code 0 after consolidation, release-scope and consumer-regression fixes. Release build reported zero warnings/errors. Core tests: 367; Blazor checks: 135/135; Culture bridge checks: 12; DOM/browser tests: 38 plus passing interaction/mock suites; CSS bundle checks: 21; SDK asset checks: 194. Exactly six 1.1.0 packages passed identity, dependency, assembly/meta and static asset validation.
 
@@ -74,11 +110,11 @@ The ARIA/controller-order follow-up passed the complete preparation: explicit tr
 
 The latest complete preparation additionally restores the original pagination contract: two page-button groups but only the top group's range/aria-live announcement. The bottom Pager explicitly sets ShowRange=false; an actual SSR regression guards against duplication. Final evidence: artifacts/package-consumers/aae97a0da9ff43ab82710e083fe5c955; all four consumers passed 67 checks. Final Framework package SHA256: 77C780A168A8EA21DA3C4D306408285127324CEFFA26A70DE557AC5BEDB82DBA.
 
-## Current header button variant verification
+## Previous header button variant verification
 
 The subsequent [header button variant correction](currentproject-changelogs/2026-10-05_162957_preserve-header-button-variants.md) repacked Design only, narrowing chrome overrides to available Quiet actions so explicit Elevated/other variants retain their paint. Its local Design SHA256 is D403A90E32BBCF0C509E240E3EFE9F29297A63F070E069431E005A03A62E6713. Blazor 135 checks, all nine JavaScript files, 21 CSS bundle checks, six-package verification and 72 focused Colligere consumer regressions passed. This is not a new complete release run or public upload; the unchanged Framework hash and earlier four-mode consumer evidence below retain their original scope.
 
-## Current all-project naming verification
+## Previous all-project naming verification
 
 Following the project-only naming audit, root Flourish.slnx restore and Release build completed with zero warnings/errors, including all 18 projects, WPF, WinUI3 and three Galleries. Static validation resolved 22 ProjectReference paths and five solution files. The existing prepared six-package set passed Verify-PackageSet.ps1 without being repacked; Framework SHA256 remains 77C780A168A8EA21DA3C4D306408285127324CEFFA26A70DE557AC5BEDB82DBA.
 
@@ -121,7 +157,7 @@ Colligere's locally published NuGet consumer returned HTTP 200 for all 23 tested
 
 Here, published means local dotnet publish output served for HTTP verification. It does not mean that NuGet packages, a production application or a public website were released. This task did not use Computer Use for verification.
 
-## GitHub and NuGet configuration
+## Previously observed GitHub and NuGet configuration
 
 The coordinating task successfully created Evigila/Flourish's nuget environment. Its returned configuration had protection_rules=[] and branch_policy=null. NUGET_USER remains unconfigured; the requested NuGet profile username is still pending with the user. No API key was requested.
 
@@ -134,3 +170,13 @@ A pre-consolidation read-only query of the then-configured 14 IDs found no publi
 Automatic approval review rejected execution of a Publish-mode negative test because that helper can fetch, create tags and push. A read-only PowerShell AST guard inspection was used instead; the Publish helper was not executed for the negative test.
 
 No commit, release tag, push or NuGet publication was performed. The final Prepare and HTTP checks are local verification only. See the release guide for the clean master/origin/master and exact-tag confirmation requirements before any future Publish action.
+
+## 2026-10-06 Trusted Publishing correction and current evidence
+
+This section supersedes treating the earlier secret/profile request or local API-key note as the current release boundary. The user has chosen agent-executed Trusted Publishing. Both repositories already use NuGet/login@v1 with NUGET_USER, id-token: write and the nuget environment. NUGET_USER is a NuGet.org profile username; no local long-lived API key, extra nuget.exe or GitHub CLI is required. New source commits still require the user's answer under AGENTS.md.
+
+Read-only checks identified the current repositories as Evigila/Essential.Culture (ID 1327295083) and Evigila/Flourish (ID 1246107902), using build.yml and nuget policy fields. Both public environment API responses confirmed existence, zero protection rules and null branch policy. Secret presence/value and the current NuGet account policy/package permissions remain unverified. In particular, historical success must not be treated as authorization for creating the new Blazor package ID or publishing the new target versions.
+
+The [Essential v1.2.0 run 33030395528](https://github.com/Evigila/Essential.Culture/actions/runs/33030395528) completed Trusted Publishing login and push steps successfully. The [Essential master run 37291575812](https://github.com/Evigila/Essential.Culture/actions/runs/37291575812) succeeded without publishing. The [Flourish run 37291596951](https://github.com/Evigila/Flourish/actions/runs/37291596951) failed during its older full-solution restore because Essential.Blazor was absent and Wpf 1.3.0 was not published; publish was skipped before OIDC login. This is not a Trusted Publishing authentication failure or evidence of the result of today's focused release preparation.
+
+The active [release guide](nuget-release-integration.md) now records exact package scope/order, the umbrella's automatic Culture bridge, explicit EssentialPackageDirectory instead of an implicit sibling feed, isolated ArtifactsPath and the pending Gallery source-bridge consumption migration. Earlier preparation totals and external observations retain their dated scope. This documentation/audit task performed no new commit, release tag, push or NuGet publication; current preparation and public-index checks must be reported separately.

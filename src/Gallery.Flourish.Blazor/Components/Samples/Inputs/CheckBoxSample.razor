@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -13,17 +14,17 @@
 @if (Preview)
 {
     <div style="display:flex;gap:24px;flex-wrap:wrap">
-        <CheckBox Label="未选中" @bind-Value="Empty" />
-        <CheckBox Label="已选中" @bind-Value="Checked" />
-        <CheckBox Label="禁用" @bind-Value="Disabled" Disabled="true" />
+        <CheckBox Label="@Localization.Parse(TextKey.Sample_Unchecked)" @bind-Value="Empty" />
+        <CheckBox Label="@Localization.Parse(TextKey.Sample_Checked)" @bind-Value="Checked" />
+        <CheckBox Label="@Localization.Parse(TextKey.Sample_Disabled)" @bind-Value="Disabled" Disabled="true" />
     </div>
 }
 else
 {
-    <CheckBox Label="投影仪" @bind-Value="Projector" />
-    <CheckBox Label="音箱" @bind-Value="Speaker" />
-    <CheckBox Label="白板" @bind-Value="Whiteboard" />
-    <p role="status">当前选择了 @((Projector ? 1 : 0) + (Speaker ? 1 : 0) + (Whiteboard ? 1 : 0)) 项设备。</p>
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_Projector)" @bind-Value="Projector" />
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_Speaker)" @bind-Value="Speaker" />
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_Whiteboard)" @bind-Value="Whiteboard" />
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_SelectedEquipmentCount), (Projector ? 1 : 0) + (Speaker ? 1 : 0) + (Whiteboard ? 1 : 0))</p>
 }
 
 @code {

@@ -60,6 +60,6 @@ public sealed record TableText(
     string SortAscending = "sort ascending",
     string SortDefault = "restore default order",
     string ResizeHint = "Drag or use arrow keys; Shift changes 50 px; Home restores; Escape cancels.",
-    string ItemsPerPage = "Items per page",
+    string ItemsPerPage = "Quantity",
     string Total = "Total",
-    string ItemRangeFormat = "{0} {1}-{2} / {3} {4}");
+    string ItemRangeFormat = "{1}-{2} / {3} {4}");

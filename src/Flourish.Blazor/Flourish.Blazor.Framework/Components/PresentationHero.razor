@@ -1,12 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<PresentationBand Class="@($"f-presentation-hero {Class}".Trim())" Tone="Tone" MinHeight="MinHeight" Dotted="Dotted" FullHeight="FullHeight" AdditionalAttributes="HeroAttributes">
-    <div class="f-presentation-hero-content">
-        <h1 id="@TitleId">@Title</h1>
-        @if (!string.IsNullOrWhiteSpace(Subtitle)) { <p class="f-presentation-hero-subtitle">@Subtitle</p> }
-        @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-presentation-hero-description">@Description</p> }
-        @ChildContent
-        @if (Actions is not null) { <div class="f-presentation-hero-actions">@Actions</div> }
-    </div>
+<PresentationBand Class="@($"f-presentation-hero {(SideContent is not null ? "f-presentation-hero-split" : null)} {Class}".Trim())" Tone="Tone" MinHeight="MinHeight" Dotted="Dotted" FullHeight="FullHeight" AdditionalAttributes="HeroAttributes">
+    @if (SideContent is not null)
+    {
+        <div class="f-presentation-hero-layout">
+            @MainContent
+            <div class="f-presentation-hero-side">@SideContent</div>
+        </div>
+    }
+    else { @MainContent }
 </PresentationBand>
 @code {
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
@@ -19,8 +20,25 @@
     [Parameter] public string TitleId { get; set; } = $"presentation-hero-{Guid.NewGuid():N}";
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    /// <summary>Optional bounded side column; narrow screens stack it below the main content.</summary>
+    [Parameter] public RenderFragment? SideContent { get; set; }
+    /// <summary>Displays whitespace-separated title words on separate lines without changing its accessible name.</summary>
+    [Parameter] public bool StackTitleWords { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private RenderFragment MainContent => @<div class="f-presentation-hero-content">
+        <h1 id="@TitleId" aria-label="@(StackTitleWords ? Title : null)" class="@(StackTitleWords ? "f-presentation-title-words" : null)">
+            @if (StackTitleWords)
+            {
+                @foreach (var word in Title.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)) { <span aria-hidden="true">@word</span> }
+            }
+            else { @Title }
+        </h1>
+        @if (!string.IsNullOrWhiteSpace(Subtitle)) { <p class="f-presentation-hero-subtitle">@Subtitle</p> }
+        @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-presentation-hero-description">@Description</p> }
+        @ChildContent
+        @if (Actions is not null) { <div class="f-presentation-hero-actions">@Actions</div> }
+    </div>;
     private IReadOnlyDictionary<string, object> HeroAttributes {
         get {
             var attributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);

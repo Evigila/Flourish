@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "defaultProject": "blazor",
+  "projects": [
+    {
+      "id": "blazor",
+      "name": "Gallery.Flourish.Blazor",
+      "path": "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+      "kind": "web",
+      "launchProfile": "http",
+      "description": "Blazor Gallery: http://localhost:5188; .NET SDK only."
+    },
+    {
+      "id": "wpf",
+      "name": "Gallery.Flourish.WPF",
+      "path": "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+      "kind": "wpf",
+      "launchProfile": "",
+      "description": "WPF Gallery: Windows and the compatible .NET SDK."
+    },
+    {
+      "id": "winui",
+      "name": "Gallery.Flourish.WinUI3",
+      "path": "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj",
+      "kind": "winui",
+      "launchProfile": "",
+      "description": "WinUI3 placeholder Gallery: Windows, compatible Windows/XAML tools and a supported architecture. Desktop startup is not certified by the launcher tests."
+    },
+    {
+      "id": "native",
+      "name": "Tests.Flourish.Blazor.Native",
+      "path": "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+      "kind": "web",
+      "launchProfile": "http",
+      "description": "Framework-only diagnostic sample: http://localhost:5189; not the full Gallery."
+    }
+  ]
+}

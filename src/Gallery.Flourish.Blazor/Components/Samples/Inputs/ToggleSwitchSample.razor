@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,14 +13,14 @@
 
 @if (Preview)
 {
-    <ToggleSwitch Label="关闭状态" @bind-Value="Off" OnLabel="开启" OffLabel="关闭" />
-    <ToggleSwitch Label="开启状态" @bind-Value="On" OnLabel="开启" OffLabel="关闭" />
-    <ToggleSwitch Label="禁用状态" @bind-Value="DisabledValue" Disabled="true" OnLabel="开启" OffLabel="关闭" />
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_OffState)" @bind-Value="Off" OnLabel="@Localization.Parse(TextKey.Sample_On)" OffLabel="@Localization.Parse(TextKey.Sample_Off)" />
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_OnState)" @bind-Value="On" OnLabel="@Localization.Parse(TextKey.Sample_On)" OffLabel="@Localization.Parse(TextKey.Sample_Off)" />
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_DisabledState)" @bind-Value="DisabledValue" Disabled="true" OnLabel="@Localization.Parse(TextKey.Sample_On)" OffLabel="@Localization.Parse(TextKey.Sample_Off)" />
 }
 else
 {
-    <ToggleSwitch Label="活动提醒" @bind-Value="Reminder" OnLabel="已启用" OffLabel="已关闭" />
-    <p role="status">@(Reminder ? "示例设置：活动前 15 分钟提醒。" : "示例设置：不会发送活动提醒。")</p>
+    <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_ActivityReminder)" @bind-Value="Reminder" OnLabel="@Localization.Parse(TextKey.Sample_Enabled)" OffLabel="@Localization.Parse(TextKey.Sample_TurnedOff)" />
+    <p role="status">@(Reminder ? Localization.Parse(TextKey.Sample_DemoSettingRemind15MinutesBeforeTheActivity) : Localization.Parse(TextKey.Sample_DemoSettingNoActivityReminderWillBeSent))</p>
 }
 
 @code {

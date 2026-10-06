@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -20,20 +21,20 @@
         @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" Text="@variant.ToString()" /> }
     </div>
     <div class="f-inline-actions">
-        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" aria-label="@($"{variant}：新增")" /> }
-        <Button Text="不可用" Disabled="true" />
-        <Button Icon="save" Text="保存" Busy="true" BusyLabel="处理中" />
+        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" aria-label="@Localization.Parse(TextKey.Sample_VariantAdd, variant)" /> }
+        <Button Text="@Localization.Parse(TextKey.Sample_Unavailable)" Disabled="true" />
+        <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_Save)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" />
     </div>
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Icon="save" Text="保存草稿" Busy="Saving" BusyLabel="正在保存" OnClick="SaveAsync" />
-        <Button Variant="ButtonVariant.Secondary" Icon="restart_alt" Text="重置" Disabled="Saving" OnClick="Reset" />
-        <Button Variant="ButtonVariant.Quiet" Icon="info" Text="使用说明" OnClick="() => HelpVisible = !HelpVisible" />
+        <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_SaveDraft)" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_Saving)" OnClick="SaveAsync" />
+        <Button Variant="ButtonVariant.Secondary" Icon="restart_alt" Text="@Localization.Parse(TextKey.Sample_Reset)" Disabled="Saving" OnClick="Reset" />
+        <Button Variant="ButtonVariant.Quiet" Icon="info" Text="@Localization.Parse(TextKey.Sample_Instructions)" OnClick="() => HelpVisible = !HelpVisible" />
     </div>
-    <p role="status">已保存 @SavedCount 次。</p>
-    @if (HelpVisible) { <p>保存使用 Filled，重置使用 Outlined，低优先级操作使用 Quiet。</p> }
+    <p role="status">@Localization.Parse(TextKey.Sample_SavedCount, SavedCount)</p>
+    @if (HelpVisible) { <p>@Localization.Parse(TextKey.Sample_SaveUsesFilledResetUsesOutlinedAndLowerPriorityActionsUseQuiet)</p> }
 }
 
 @code {

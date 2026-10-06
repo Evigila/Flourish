@@ -1,17 +1,18 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("OfferStage", Description = "AutoRotate 启用时默认提供库内 Quiet 文字暂停/恢复按钮，增强完成后可使用；文字跟随框架本地化，也可用 PauseRotationLabel / ResumeRotationLabel 明确覆盖。焦点、指针与减少动态效果由舞台处理。没有 JavaScript 时仍显示全部报价内容，轮播按钮保持禁用。\nRotationControlIconOnly=true 使用标准 48px 图标按钮：运行时为 pause，用户暂停后为 play_arrow；aria-label 与 data-tooltip 共用同一组本地化或显式标签。仅改变显示，不改变暂停/恢复、减少动态效果与生命周期。")]
+@attribute [SampleFor("OfferStage", DescriptionKey = "Key.Sample_OfferStageSample_Description")]
 <UniformGrid Centered="true" Columns="2" NarrowColumns="1" id="@(Id + "-links")">
     <UniformGridButton Title="Basic" Href="@("#" + Id + "-basic")" />
     <UniformGridButton Title="Plus" Href="@("#" + Id + "-plus")" />
 </UniformGrid>
-<OfferStage Id="@Id" LinkScopeId="@(Id + "-links")" AutoRotate="@(!Preview)" Label="虚构报价">
-    <OfferCard Id="@(Id + "-basic")" Title="Basic" Description="虚构基础方案，不执行许可判断。"><Button Disabled="true">仅作展示</Button></OfferCard>
-    <OfferCard Id="@(Id + "-plus")" Title="Plus" Description="虚构扩展方案，不执行计费。"><Button Disabled="true">仅作展示</Button></OfferCard>
+<OfferStage Id="@Id" LinkScopeId="@(Id + "-links")" AutoRotate="@(!Preview)" Label="@Localization.Parse(TextKey.Sample_FictionalOffers)">
+    <OfferCard Id="@(Id + "-basic")" Title="Basic" Description="@Localization.Parse(TextKey.Sample_FictionalBasicPlanNoLicenseChecksArePerformed)"><Button Disabled="true">@Localization.Parse(TextKey.Display_DemoOnly)</Button></OfferCard>
+    <OfferCard Id="@(Id + "-plus")" Title="Plus" Description="@Localization.Parse(TextKey.Sample_FictionalExtendedPlanNoBillingTakesPlace)"><Button Disabled="true">@Localization.Parse(TextKey.Display_DemoOnly)</Button></OfferCard>
 </OfferStage>
 @if (!Preview) {
-    <OfferStage Id="@(Id + "-icons")" RotationControlIconOnly="true" Label="图标轮播控制示例">
-        <OfferCard Id="@(Id + "-icons-basic")" Title="Basic" Description="图标按钮示例；不执行许可判断。"><Button Disabled="true">仅作展示</Button></OfferCard>
-        <OfferCard Id="@(Id + "-icons-plus")" Title="Plus" Description="同一个报价舞台，不创建独立轮播控制器。"><Button Disabled="true">仅作展示</Button></OfferCard>
+    <OfferStage Id="@(Id + "-icons")" RotationControlIconOnly="true" Label="@Localization.Parse(TextKey.Sample_IconCarouselControlExample)">
+        <OfferCard Id="@(Id + "-icons-basic")" Title="Basic" Description="@Localization.Parse(TextKey.Sample_IconButtonExampleNoLicenseChecksArePerformed)"><Button Disabled="true">@Localization.Parse(TextKey.Display_DemoOnly)</Button></OfferCard>
+        <OfferCard Id="@(Id + "-icons-plus")" Title="Plus" Description="@Localization.Parse(TextKey.Sample_OneOfferStageWithoutASeparateCarouselController)"><Button Disabled="true">@Localization.Parse(TextKey.Display_DemoOnly)</Button></OfferCard>
     </OfferStage>
 }
 @code {

@@ -1,6 +1,7 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("AccessActions", Description = "只排列访问页辅助动作；子项使用标准 Button，链接不代表认证或创建账号。")]
-<AccessActions><Button Variant="ButtonVariant.Underline" Href="/examples/display">返回展示目录</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">查看虚构产品</Button></AccessActions>
+@attribute [SampleFor("AccessActions", DescriptionKey = "Key.Sample_AccessActionsSample_Description")]
+<AccessActions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">@Localization.Parse(TextKey.Sample_ViewFictionalProduct)</Button></AccessActions>
 @code {
     [Parameter] public bool Preview { get; set; }
 

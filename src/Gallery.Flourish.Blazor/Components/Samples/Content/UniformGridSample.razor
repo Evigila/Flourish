@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -12,32 +13,32 @@
 @if (Preview)
 {
     <UniformGrid>
-        <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="空矩形悬浮格面" />
-        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="空矩形填充格面" />
-        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="空矩形描边格面" />
-        <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="空矩形危险操作格面" />
+        <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularElevatedTile)" />
+        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularFilledTile)" />
+        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularOutlinedTile)" />
+        <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularDangerActionTile)" />
     </UniformGrid>
     <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
-        <UniformGridItem aria-label="空方形格面" />
-        <UniformGridItem aria-label="空方形格面" />
-        <UniformGridItem aria-label="空方形格面" />
+        <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
+        <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
+        <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
     </UniformGrid>
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Text="@(Shape == UniformGridShape.Square ? "切换为矩形" : "切换为方形")" OnClick="ToggleShape" />
-        <Button Variant="ButtonVariant.Secondary" Text="@($"切换外观 · {Variant}")" OnClick="ToggleVariant" />
-        <Button Variant="ButtonVariant.Secondary" Text="@(Columns.HasValue ? "自动分列" : "固定三列")" OnClick="ToggleColumns" />
-        <Button Variant="ButtonVariant.Secondary" Text="@(Rows.HasValue ? "自动行数" : "固定两行")" OnClick="ToggleRows" />
-        <Button Variant="ButtonVariant.Secondary" Text="@(IconSupport == false ? "启用图标分区" : "使用连续布局")" OnClick="ToggleIconSupport" />
+        <Button Text="@(Shape == UniformGridShape.Square ? Localization.Parse(TextKey.Sample_SwitchToRectangle) : Localization.Parse(TextKey.Sample_SwitchToSquare))" OnClick="ToggleShape" />
+        <Button Variant="ButtonVariant.Secondary" Text="@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_SwitchAppearance), Variant)" OnClick="ToggleVariant" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(Columns.HasValue ? Localization.Parse(TextKey.Sample_AutomaticColumns) : Localization.Parse(TextKey.Sample_ThreeFixedColumns))" OnClick="ToggleColumns" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(Rows.HasValue ? Localization.Parse(TextKey.Sample_AutomaticRows) : Localization.Parse(TextKey.Sample_TwoFixedRows))" OnClick="ToggleRows" />
+        <Button Variant="ButtonVariant.Secondary" Text="@(IconSupport == false ? Localization.Parse(TextKey.Sample_EnableIconSection) : Localization.Parse(TextKey.Sample_UseContinuousLayout))" OnClick="ToggleIconSupport" />
     </div>
     <UniformGrid Shape="Shape" Variant="Variant" Columns="Columns" Rows="Rows" IconSupport="IconSupport">
-        <UniformGridItem Title="草稿" Icon="palette" Text="待检查" />
-        <UniformGridItem Title="资料" Icon="folder" Text="已归档" />
-        <UniformGridButton Title="打开" Icon="edit" Text="更新次数" OnClick="() => OpenedCount++" />
+        <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Draft)" Icon="palette" Text="@Localization.Parse(TextKey.Sample_PendingReview)" />
+        <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Resources)" Icon="folder" Text="@Localization.Parse(TextKey.Sample_Archived)" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Open)" Icon="edit" Text="@Localization.Parse(TextKey.Sample_UpdateCount)" OnClick="() => OpenedCount++" />
     </UniformGrid>
-    <p role="status">已打开演示草稿 @OpenedCount 次。</p>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_OpenedDraftCount), OpenedCount)</p>
 }
 @code {
     [Parameter] public bool Preview { get; set; }

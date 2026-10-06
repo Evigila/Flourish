@@ -3,16 +3,16 @@ namespace ArkheideSystem.Gallery.Flourish.Blazor.Models;
 /// <summary>Groups Gallery component documentation by use without changing library metadata.</summary>
 public static class CatalogSections
 {
-    public static IReadOnlyDictionary<string, string> Titles { get; } = new Dictionary<string, string>
+    public static IReadOnlyDictionary<string, string> TitleKeys { get; } = new Dictionary<string, string>
     {
-        ["actions"] = "按钮与菜单",
-        ["inputs"] = "输入与选择",
-        ["data"] = "数据与列表",
-        ["overlays"] = "对话框与弹层",
-        ["feedback"] = "状态反馈",
-        ["progress"] = "进度",
-        ["content"] = "内容与组合",
-        ["layout"] = "外壳与布局"
+        ["actions"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Actions,
+        ["inputs"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Inputs,
+        ["data"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Data,
+        ["overlays"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Overlays,
+        ["feedback"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Feedback,
+        ["progress"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Progress,
+        ["content"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Content,
+        ["layout"] = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key.Nav_Layout
     };
 
     public static string HrefFor(string category) => category == "actions" ? "/controls" : $"/controls/{category}";

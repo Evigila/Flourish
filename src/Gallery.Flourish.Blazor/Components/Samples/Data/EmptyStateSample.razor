@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,25 +13,25 @@
 
 @if (Preview)
 {
-    <EmptyState Title="暂无数据" />
-    <EmptyState Title="暂无数据">
-        <ChildContent><p>可以提供简短说明。</p></ChildContent>
-        <Actions><Button Variant="ButtonVariant.Secondary">添加</Button></Actions>
+    <EmptyState Title="@Localization.Parse(TextKey.Sample_NoDataYet)" />
+    <EmptyState Title="@Localization.Parse(TextKey.Sample_NoDataYet)">
+        <ChildContent><p>@Localization.Parse(TextKey.Sample_AShortDescriptionCanBeProvided)</p></ChildContent>
+        <Actions><Button Variant="ButtonVariant.Secondary">@Localization.Parse(TextKey.Sample_Add)</Button></Actions>
     </EmptyState>
 }
 else
 {
     @if (!HasItem)
     {
-        <EmptyState Title="尚未添加演示附件">
-            <ChildContent><p>添加第一项后，空状态会被真实的本地列表替换。</p></ChildContent>
-            <Actions><Button OnClick="() => HasItem = true">添加演示附件</Button></Actions>
+        <EmptyState Title="@Localization.Parse(TextKey.Sample_NoDemoAttachmentsAddedYet)">
+            <ChildContent><p>@Localization.Parse(TextKey.Sample_AddingTheFirstItemReplacesTheEmptyStateWithTheLocalList)</p></ChildContent>
+            <Actions><Button OnClick="() => HasItem = true">@Localization.Parse(TextKey.Sample_AddDemoAttachment)</Button></Actions>
         </EmptyState>
     }
     else
     {
         <ul><li>示例说明.txt（虚构）</li></ul>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => HasItem = false">清空列表</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => HasItem = false">@Localization.Parse(TextKey.Sample_ClearList)</Button>
     }
 }
 

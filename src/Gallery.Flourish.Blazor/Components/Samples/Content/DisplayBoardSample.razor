@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("DisplayBoard")]
 @using System
@@ -7,21 +8,21 @@
 @if (Preview)
 {
     <DisplayBoard />
-    <DisplayBoard Dotted="false" CopyText="" CopyLabel="复制代码" CopiedLabel="已复制">
+    <DisplayBoard Dotted="false" CopyText="" CopyLabel="@Localization.Parse(TextKey.Sample_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Sample_Copied)">
         <CodeBlock Text="" Language="razor" />
     </DisplayBoard>
 }
 else
 {
-    <CheckBox Label="显示点阵" @bind-Value="Dotted" />
-    <CheckBox Label="内容居中" @bind-Value="Centered" />
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_ShowDotPattern)" @bind-Value="Dotted" />
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_CenterContent)" @bind-Value="Centered" />
     <DisplayBoard Dotted="Dotted" Centered="Centered">
-        <Button Icon="add" Text="创建演示项" OnClick="() => Count++" />
-        <span role="status">已创建 @Count 个演示项</span>
+        <Button Icon="add" Text="@Localization.Parse(TextKey.Sample_CreateDemoItem)" OnClick="() => Count++" />
+        <span role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_CreatedItemsCount), Count)</span>
     </DisplayBoard>
     <DisplayBoard Dotted="false" CopyText="@Example"
-                  CopyLabel="复制代码" CopiedLabel="已复制" CopyingLabel="正在复制…"
-                  CopyFailedLabel="未能复制，请选中代码手动复制。">
+                  CopyLabel="@Localization.Parse(TextKey.Sample_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Sample_Copied)" CopyingLabel="@Localization.Parse(TextKey.Sample_Copying)"
+                  CopyFailedLabel="@Localization.Parse(TextKey.Sample_CouldNotCopySelectTheCodeAndCopyItManually)">
         <CodeBlock Text="@Example" Language="razor" />
     </DisplayBoard>
 }

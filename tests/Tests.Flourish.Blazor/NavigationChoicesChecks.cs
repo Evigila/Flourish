@@ -30,6 +30,83 @@ internal static class NavigationChoicesChecks
             }
             Require(!Regex.IsMatch(html, "role=\"(?:tablist|tab|tabpanel)\"|aria-selected=|aria-controls="), "Native GET links were falsely described as an interactive ARIA tab widget.");
         }));
+        tests.Add(("compact navigation choices use standard buttons without changing native GET destinations", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(NavigationChoices.Compact)] = true;
+            await WithComponent(parameters, (_, activator, html) =>
+            {
+                var output = html();
+                Require(output.Contains("class=\"f-navigation-choices-links\"", StringComparison.Ordinal)
+                    && output.Contains("--f-choice-columns:3", StringComparison.Ordinal), "Compact choices did not expose the three-column library layout.");
+                var buttons = activator.Instances.OfType<Button>().ToArray();
+                Require(buttons.Length == 3 && !activator.Instances.OfType<UniformGridButton>().Any(), "Compact choices did not instantiate the standard Button renderer exclusively.");
+                foreach (var key in new[] { "organization", "account", "pass" })
+                {
+                    var choice = OpeningTag(output, "a", "entry-" + key + "-choice");
+                    var selected = key == "organization";
+                    Require(choice.Contains("f-button ", StringComparison.Ordinal)
+                        && choice.Contains(selected ? "f-button-secondary" : "f-button-quiet", StringComparison.Ordinal)
+                        && !choice.Contains("f-uniform-grid-button", StringComparison.Ordinal), "Compact choice appearance bypassed standard button variants.");
+                    Require(choice.Contains("href=\"/entry?method=" + key + "\"", StringComparison.Ordinal)
+                        && choice.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Compact mode changed a native GET destination or enhanced-navigation boundary.");
+                    Require(choice.Contains("aria-current=\"page\"", StringComparison.Ordinal) == selected, "Compact mode selected the wrong route.");
+                    Require(Regex.IsMatch(OpeningTag(output, "section", "entry-" + key + "-panel"), @"\shidden(?:\s|=|>)") == !selected, "Compact mode exposed an inactive native panel.");
+                }
+                Require(Regex.Matches(output, "<form method=\"post\"").Count == 3
+                    && !Regex.IsMatch(output, "role=\"(?:tablist|tab|tabpanel)\"|aria-selected=|aria-controls="), "Compact mode dropped native forms or invented interactive ARIA tabs.");
+                return Task.CompletedTask;
+            });
+        }));
+        tests.Add(("compact navigation choices retain disabled panels while removing disabled GET activation", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(NavigationChoices.Compact)] = true;
+            parameters[nameof(NavigationChoices.Items)] = new NavigationChoiceItem[]
+            {
+                new("organization", "Organization", "/entry?method=organization"), new("account", "Account", "/entry?method=account", Disabled:true)
+            };
+            var html = await Render(parameters);
+            var disabled = OpeningTag(html, "a", "entry-account-choice");
+            Require(disabled.Contains("f-button-quiet", StringComparison.Ordinal)
+                && !disabled.Contains("href=", StringComparison.Ordinal)
+                && disabled.Contains("aria-disabled=\"true\"", StringComparison.Ordinal)
+                && disabled.Contains("tabindex=\"-1\"", StringComparison.Ordinal), "A disabled compact choice retained navigation or bypassed standard disabled appearance.");
+            Require(Regex.IsMatch(OpeningTag(html, "section", "entry-account-panel"), @"\shidden(?:\s|=|>)")
+                && html.Contains("name=\"protocol-secret\" value=\"account\"", StringComparison.Ordinal), "The disabled compact choice discarded its host-owned form panel.");
+            parameters[nameof(NavigationChoices.ActiveKey)] = "account";
+            await Reject(parameters, nameof(NavigationChoices.ActiveKey));
+        }));
+        tests.Add(("compact navigation choices round trip variants without recreating route panels", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(NavigationChoices.ChildContent)] = (RenderFragment<NavigationChoiceItem>)(choice => builder =>
+            {
+                builder.OpenComponent<RetainedPanel>(0);
+                builder.AddAttribute(1, nameof(RetainedPanel.Key), choice.Key);
+                builder.CloseComponent();
+            });
+            await WithComponent(parameters, async (component, activator, html) =>
+            {
+                var panels = activator.Instances.OfType<RetainedPanel>().ToArray();
+                Require(panels.Length == 3, "Every route panel must start mounted.");
+                var originalPanels = Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).ToArray();
+                foreach (var compact in new[] { true, false, true })
+                {
+                    parameters[nameof(NavigationChoices.Compact)] = compact;
+                    await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                    Require(activator.Instances.OfType<RetainedPanel>().SequenceEqual(panels), "Changing Compact recreated host-owned route panel components.");
+                    Require(Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).SequenceEqual(originalPanels), "Changing Compact altered retained panel IDs, content or visibility.");
+                    foreach (var key in new[] { "organization", "account", "pass" })
+                        Require(OpeningTag(html(), "a", "entry-" + key + "-choice").Contains("href=\"/entry?method=" + key + "\"", StringComparison.Ordinal), "Changing Compact rewrote a GET destination.");
+                }
+                parameters[nameof(NavigationChoices.ActiveKey)] = "account";
+                await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                Require(activator.Instances.OfType<RetainedPanel>().SequenceEqual(panels)
+                    && !Regex.IsMatch(OpeningTag(html(), "section", "entry-account-panel"), @"\shidden(?:\s|=|>)")
+                    && OpeningTag(html(), "a", "entry-account-choice").Contains("f-button-secondary", StringComparison.Ordinal), "Compact routing recreated panels or selected the wrong standard button.");
+            });
+        }));
         tests.Add(("navigation choices own retained panel structure and encode labels without editing native form content", async () =>
         {
             var parameters = Parameters();
@@ -116,6 +193,8 @@ internal static class NavigationChoicesChecks
             var design = File.ReadAllText(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/navigation-choices.css"));
             Require(framework.Contains(".f-navigation-choice-panel[hidden] { display:none!important; }", StringComparison.Ordinal), "Design styles can accidentally reveal inactive native forms.");
             Require(design.Contains(".f-navigation-choices-nav > .f-uniform-grid { margin-block:0; }", StringComparison.Ordinal), "Native choice composition reintroduced host spacing rules.");
+            Require(framework.Contains(".f-navigation-choices-links { display:grid; grid-template-columns:repeat(var(--f-choice-columns,3),minmax(0,1fr));", StringComparison.Ordinal)
+                && framework.Contains("@media(max-width:560px) { .f-navigation-choices-links { grid-template-columns:minmax(0,1fr); } }", StringComparison.Ordinal), "Compact choices lost equal desktop columns or the narrow single-column layout.");
             return Task.CompletedTask;
         }));
     }

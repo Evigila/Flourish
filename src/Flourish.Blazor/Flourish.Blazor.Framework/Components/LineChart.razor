@@ -2,11 +2,30 @@
 @inherits TextComponentBase
 @using System.Globalization
 
-<div @attributes="AdditionalAttributes" class="f-line-chart @Class" data-independent-scales="@IndependentScales.ToString().ToLowerInvariant()">
-    @if (ShowDisplayOptions)
+<div @attributes="AdditionalAttributes" id="@(string.IsNullOrWhiteSpace(Heading) ? Id : null)" class="f-line-chart @Class" data-independent-scales="@IndependentScales.ToString().ToLowerInvariant()">
+    @if (!string.IsNullOrWhiteSpace(Heading))
     {
-        <div class="f-line-chart-controls"><MultiSelectBox Items="DisplayItems" Label="@Ui("Table_Display", "Display")" CanReorder="true" Changed="ApplyDisplayOptions" /></div>
+        <Section Id="@Id" Title="@Heading" Actions="@(ControlsContent is not null || ShowDisplayOptions ? Controls(true) : null)" ChildContent="@Plot" />
     }
+    else
+    {
+        @Controls(false)
+        @Plot
+    }
+</div>
+
+@code {
+    private RenderFragment Controls(bool inHeading) => @<text>
+    @if (ControlsContent is not null || ShowDisplayOptions)
+    {
+        <div class="@(inHeading ? "f-line-chart-controls f-line-chart-heading-controls" : "f-line-chart-controls")">
+            @if (ControlsContent is not null) { <div class="f-line-chart-controls-content">@ControlsContent</div> }
+            @if (ShowDisplayOptions) { <MultiSelectBox Items="DisplayItems" Label="@Ui("Table_Display", "Display")" Icon="remove_red_eye" TriggerVariant="ButtonVariant.Secondary" CanReorder="true" Changed="ApplyDisplayOptions" /> }
+        </div>
+    }
+    </text>;
+
+    private RenderFragment Plot => @<text>
     @if (VisibleSeries.Count == 0 || Labels.Count == 0)
     {
         <p class="f-line-chart-empty">@EffectiveEmptyText</p>
@@ -66,19 +85,21 @@
             </tbody>
         </table>
     }
-</div>
+    </text>;
 
-@code {
     public sealed record PointLabel(string Key, string Text, string? Tooltip = null);
     public sealed record DataSeries(string Key, string Label, IReadOnlyList<decimal> Values,
         Func<decimal, string>? Format = null, decimal? Maximum = null, bool Visible = true);
     [Parameter, EditorRequired] public IReadOnlyList<PointLabel> Labels { get; set; } = [];
     [Parameter, EditorRequired] public IReadOnlyList<DataSeries> Series { get; set; } = [];
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Heading { get; set; }
     [Parameter] public string? Description { get; set; }
     [Parameter] public bool IndependentScales { get; set; }
     [Parameter] public bool ShowLegend { get; set; } = true;
     [Parameter] public bool ShowDisplayOptions { get; set; } = true;
+    [Parameter] public RenderFragment? ControlsContent { get; set; }
     [Parameter] public string MaximumLabel { get; set; } = "Maximum";
     [Parameter] public string PointCaption { get; set; } = "Point";
     [Parameter] public string EmptyText { get; set; } = "No series selected.";

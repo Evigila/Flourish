@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -14,9 +15,9 @@
 @if (Preview)
 {
     <FormLayout>
-        <Field Label="普通字段" Id="@(Prefix + "-empty")"><TextBox @bind-Value="EmptyValue" /></Field>
-        <Field Label="必填字段" Id="@(Prefix + "-required")" Required="true"><TextBox @bind-Value="EmptyRequired" /></Field>
-        <Field Label="跨列字段" Id="@(Prefix + "-wide")" FullWidth="true"><TextBox @bind-Value="EmptyWide" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_StandardField)" Id="@(Prefix + "-empty")"><TextBox @bind-Value="EmptyValue" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_RequiredField)" Id="@(Prefix + "-required")" Required="true"><TextBox @bind-Value="EmptyRequired" /></Field>
+        <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_FullWidthField)" Id="@(Prefix + "-wide")" FullWidth="true"><TextBox @bind-Value="EmptyWide" /></Field>
     </FormLayout>
 }
 else
@@ -24,28 +25,29 @@ else
     <EditForm Model="Model" FormName="@Prefix" OnValidSubmit="Submit" OnInvalidSubmit="Invalid" novalidate>
         <DataAnnotationsValidator />
         <FormLayout Columns="1">
-            <Field Label="邮箱" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)">
+            <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Email)" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)">
                 <TextBox @bind-Value="Model.Email" @bind-Value:after="ClearResult" Type="email" />
             </Field>
         </FormLayout>
-        <Button Type="submit" Icon="check" Text="验证邮箱" />
+        <Button Type="submit" Icon="check" Text="@Localization.Parse(TextKey.Sample_ValidateEmail)" />
     </EditForm>
-    @if (Message is not null) { <p role="status">@Message</p> }
+    @if (Message is not null) { <p role="status">@Localization.Parse(Message)</p> }
 }
 
 @code {
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     [Parameter] public bool Preview { get; set; }
     private readonly string Prefix = "sample-field-" + Guid.NewGuid().ToString("N");
     private string? EmptyValue, EmptyRequired, EmptyWide;
     private readonly EmailAddressModel Model = new();
     private string? Message;
     private void ClearResult() => Message = null;
-    private void Submit() => Message = "邮箱已通过本地验证。";
+    private void Submit() => Message = "Key.Sample_TheEmailPassedLocalValidation";
     private void Invalid() => Message = null;
     private sealed class EmailAddressModel
     {
-        [Required(ErrorMessage = "请输入邮箱。")]
-        [EmailAddress(ErrorMessage = "请输入有效的邮箱地址。")]
+        [Required(ErrorMessage = "Key.Sample_EnterAnEmail")]
+        [EmailAddress(ErrorMessage = "Key.Sample_EnterAValidEmailAddress")]
         public string Email { get; set; } = "";
     }
 }

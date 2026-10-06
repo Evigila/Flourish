@@ -20,13 +20,13 @@ builder.Services.AddCultureBlazor(culture => culture
     .AddCatalog("Flourish", LocalizationCatalog.Load(frameworkTexts))
     .SetDefaultCatalog("Gallery")
     .SetDefaultCulture("zh-CN")
-    .AddSupportedCultures("zh-CN", "en-US"));
+    .AddSupportedCultures("zh-CN", "en-US", "pt-BR"));
 builder.Services.AddFlourishCulture();
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     options.DefaultRequestCulture = new RequestCulture("zh-CN");
     options.SupportedCultures = new[] { "zh-CN", "en-US", "pt-BR" }.Select(CultureInfo.GetCultureInfo).ToArray();
-    options.SupportedUICultures = new[] { "zh-CN", "en-US" }.Select(CultureInfo.GetCultureInfo).ToArray();
+    options.SupportedUICultures = new[] { "zh-CN", "en-US", "pt-BR" }.Select(CultureInfo.GetCultureInfo).ToArray();
     options.RequestCultureProviders = [new CookieRequestCultureProvider(), new AcceptLanguageHeaderRequestCultureProvider()];
 });
 

@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,14 +13,14 @@
 @if (Preview)
 {
     <Section />
-    <Section Title="有标题的空区域" />
-    <Section Title="带操作的空区域"><Actions><Button Disabled="true">操作</Button></Actions></Section>
+    <Section Title="@Localization.Parse(TextKey.Sample_EmptySectionWithATitle)" />
+    <Section Title="@Localization.Parse(TextKey.Sample_EmptySectionWithActions)"><Actions><Button Disabled="true">@Localization.Parse(TextKey.Sample_Action)</Button></Actions></Section>
 }
 else
 {
-    <Section Title="模拟联系方式">
-        <ChildContent><p>虚构联系人：演示成员；邮箱：sample@example.com。</p><p role="status">检查次数：@Checks</p></ChildContent>
-        <Actions><Button OnClick="() => Checks++">检查模拟信息</Button></Actions>
+    <Section Title="@Localization.Parse(TextKey.Sample_DemoContactDetails)">
+        <ChildContent><p>@Localization.Parse(TextKey.Sample_FictionalContactDemoMemberEmailSampleExampleCom)</p><p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_CheckCount), Checks)</p></ChildContent>
+        <Actions><Button OnClick="() => Checks++">@Localization.Parse(TextKey.Sample_CheckDemoDetails)</Button></Actions>
     </Section>
 }
 @code { [Parameter] public bool Preview { get; set; } private int Checks; }

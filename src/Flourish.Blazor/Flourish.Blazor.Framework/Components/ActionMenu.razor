@@ -7,9 +7,10 @@
 {
     <details @ref="Disclosure" class="f-action-menu @(!NativeEnhanced ? "f-dropdown-surface" : null)" data-f-native-menu data-f-enhanced="@(NativeEnhanced ? "true" : null)"
              inert="@(Disabled || Executing ? true : (bool?)null)">
-        <summary @ref="Trigger" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@EffectiveLabel"
+        <summary @ref="Trigger" class="@TriggerClass" aria-label="@EffectiveLabel" title="@EffectiveLabel"
                  aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="@(NativeEnhanced ? "false" : null)" aria-disabled="@(Disabled || Executing ? "true" : "false")">
             @if (TriggerContent is not null) { @TriggerContent }
+            else if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
             else { <span aria-hidden="true">•••</span> }
         </summary>
         <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel"
@@ -22,10 +23,11 @@
 else
 {
 <span class="f-action-menu @(OpenOnHover ? "f-action-menu-hover" : null)">
-    <button @ref="Trigger" type="button" class="f-menu-trigger @(TriggerContent is not null ? "f-menu-trigger-label" : null)" aria-label="@EffectiveLabel" disabled="@(Disabled || Executing)"
+    <button @ref="Trigger" type="button" class="@TriggerClass" aria-label="@EffectiveLabel" title="@EffectiveLabel" disabled="@(Disabled || Executing)"
             aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="false" @onclick="ToggleAsync">
         @if (TriggerContent is not null) { @TriggerContent }
-        else { <span aria-hidden="true">•••</span> }
+        else if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
+            else { <span aria-hidden="true">•••</span> }
     </button>
     <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
@@ -61,10 +63,16 @@ else
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public RenderFragment? TriggerContent { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    private string TriggerClass => TriggerVariant is { } variant
+        ? $"f-disclosure-button-trigger f-button f-button-{variant.ToString().ToLowerInvariant()} {(TriggerContent is null ? "f-button-icon" : null)}"
+        : $"f-menu-trigger {(TriggerContent is not null ? "f-menu-trigger-label" : null)}";
     /// <summary>Generated Actions only: opens on mouse hover without moving focus and closes when the pointer leaves both regions.</summary>
     [Parameter] public bool OpenOnHover { get; set; }
     protected override void OnParametersSet()
     {
+        if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         if (ChildContent is not null && Actions.Count > 0)
             throw new InvalidOperationException("Provide either Actions or ChildContent, not both.");
         if (ChildContent is not null && OpenOnHover)

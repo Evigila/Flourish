@@ -243,7 +243,7 @@ function updateDirectory(state) {
         const values = [state.root.dataset.fItemsLabel, count ? first + 1 : 0,
             Math.min(first + directory.pageSize, count), state.root.dataset.fTotalLabel, count];
         const label = counter.querySelector('span');
-        if (label) label.textContent = (state.root.dataset.fRangeFormat || '{0} {1}-{2} / {3} {4}')
+        if (label) label.textContent = (state.root.dataset.fRangeFormat || '{1}-{2} / {3} {4}')
             .replace(/\{([0-4])\}/g, (_,index) => String(values[Number(index)]));
     }
     for (const header of directory.table.querySelectorAll('th[data-f-column]')) {

@@ -1,7 +1,8 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("PresentationHero")]
-<PresentationHero Title="Lumen" Subtitle="让想法汇聚一处" Description="虚构产品横幅；艺术标题仅用于展示场景，正文与按钮保持标准样式。">
-    <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/pricing">了解方案</Button><Button Variant="ButtonVariant.Elevated" Href="/examples/display/access">访问案例</Button></Actions>
+<PresentationHero Title="Lumen" Subtitle="@Localization.Parse(TextKey.Display_ProductSubtitle)" Description="@Localization.Parse(TextKey.Sample_FictionalProductBannerTheArtisticTitleIsForPresentationScenesWhileBodyTextAndButtonsUseStandardStyles)">
+    <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/pricing">@Localization.Parse(TextKey.Display_ViewPlans)</Button><Button Variant="ButtonVariant.Elevated" Href="/examples/display/access">@Localization.Parse(TextKey.Sample_AccessExamples)</Button></Actions>
 </PresentationHero>
 @code {
     [Parameter] public bool Preview { get; set; }

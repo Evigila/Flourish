@@ -1,10 +1,15 @@
-param([string]$PackageDirectory, [string]$Version)
+param([string]$PackageDirectory, [string]$Version, [string]$EssentialPackageDirectory)
 . (Join-Path $PSScriptRoot '../scripts/Release-Common.ps1')
 if (!$Version) { $Version = Get-ReleaseVersion }
 if (!$PackageDirectory) { $PackageDirectory = Join-Path $ReleaseRoot 'artifacts/packages' }
 $fixture = Join-Path $ReleaseRoot ('artifacts/package-consumers/' + [Guid]::NewGuid().ToString('N'))
 $cache = Join-Path $fixture 'cache'
-$essentialFeed = [System.IO.Path]::GetFullPath((Join-Path $ReleaseRoot '../Essential/artifacts/packages'))
+if ($EssentialPackageDirectory) {
+    $EssentialPackageDirectory = [System.IO.Path]::GetFullPath($EssentialPackageDirectory)
+    if (!(Test-Path -LiteralPath $EssentialPackageDirectory -PathType Container)) {
+        throw "The explicit Essential package directory does not exist: $EssentialPackageDirectory"
+    }
+}
 New-Item -ItemType Directory -Path $fixture -Force | Out-Null
 $checks = 0
 function Require([bool]$Condition, [string]$Message) {
@@ -17,11 +22,15 @@ function Write-Fixture([string]$Path, [string]$Content) {
 Write-Fixture (Join-Path $fixture 'Directory.Build.props') '<Project />'
 Write-Fixture (Join-Path $fixture 'Directory.Build.targets') '<Project />'
 $sources = '<add key="Flourish" value="{0}" /><add key="nuget.org" value="https://api.nuget.org/v3/index.json" />' -f [System.Security.SecurityElement]::Escape($PackageDirectory)
-if (Test-Path -LiteralPath $essentialFeed) {
-    $sources += '<add key="Essential" value="{0}" />' -f [System.Security.SecurityElement]::Escape($essentialFeed)
+if ($EssentialPackageDirectory) {
+    $sources += '<add key="Essential" value="{0}" />' -f [System.Security.SecurityElement]::Escape($EssentialPackageDirectory)
+}
+$sourceMapping = '<packageSource key="Flourish"><package pattern="Arkheide.Flourish.*" /></packageSource><packageSource key="nuget.org"><package pattern="*" /></packageSource>'
+if ($EssentialPackageDirectory) {
+    $sourceMapping += '<packageSource key="Essential"><package pattern="Arkheide.Essential.Culture*" /></packageSource>'
 }
 $nugetConfig = Join-Path $fixture 'NuGet.Config'
-Write-Fixture $nugetConfig ('<configuration><packageSources><clear />{0}</packageSources></configuration>' -f $sources)
+Write-Fixture $nugetConfig ('<configuration><packageSources><clear />{0}</packageSources><packageSourceMapping><clear />{1}</packageSourceMapping></configuration>' -f $sources,$sourceMapping)
 $program = @'
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Abstract;
@@ -38,16 +47,19 @@ using (var scope = app.Services.CreateScope())
 {
     var hasTheme = scope.ServiceProvider.GetService<IThemeProvider>() is not null;
     if (hasTheme != __EXPECT_THEME__) throw new InvalidOperationException("Design activation does not match registration.");
+__CULTURE_OPT_IN_CHECK__
 }
 __CULTURE_CHECK__
 app.MapStaticAssets();
 app.MapGet("/", () => new RazorComponentResult<App>());
+__CULTURE_ENDPOINT__
 app.Run();
 '@
 $razor = @'
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 @using ArkheideSystem.Flourish.Blazor.Components
+__CULTURE_RAZOR__
 <html>
 <head><HeadOutlet /></head>
 <body><ApplicationLayout Body="@Body" /></body>
@@ -98,6 +110,7 @@ $razor = @'
             panel.CloseComponent();
         }));
         builder.CloseComponent();
+__CULTURE_CONTENT__
     };
     private sealed record SampleRow(string Name, decimal Amount);
     private static readonly IReadOnlyList<SampleRow> Rows = Enumerable.Range(1, 25)
@@ -106,18 +119,32 @@ $razor = @'
     [new("name", "Name", row => row.Name), new("amount", "Amount", row => row.Amount)];
 }
 '@
+$cultureDocument = @'
+{
+  "Greeting": {
+    "en-US": "Hello, package consumer",
+    "zh-CN": "你好，包使用者",
+    "pt-BR": "Olá, consumidor do pacote"
+  },
+  "Amount": {
+    "en-US": "Amount: {0:N2}",
+    "zh-CN": "金额：{0:N2}",
+    "pt-BR": "Valor: {0:N2}"
+  }
+}
+'@
 $cultureRegistration = @'
 using var frameworkCatalog = typeof(ArkheideSystem.Flourish.Blazor.Components.ApplicationShell).Assembly
     .GetManifestResourceStream("Flourish.Blazor.Texts.json")
     ?? throw new InvalidOperationException("The packaged framework catalog is missing.");
+using var appCatalog = typeof(App).Assembly.GetManifestResourceStream("PackageConsumer.Culture.json")
+    ?? throw new InvalidOperationException("The single consumer Culture.json is missing.");
 builder.Services.AddCultureBlazor(options => options
     .AddCatalog("Flourish", LocalizationCatalog.Load(frameworkCatalog))
-    .AddCatalog("App", LocalizationCatalog.FromJson("""
-        { "Greeting": { "en-US": "Hello", "zh-CN": "你好" } }
-        """))
+    .AddCatalog("App", LocalizationCatalog.Load(appCatalog))
     .SetDefaultCatalog("App")
     .SetDefaultCulture("en-US")
-    .AddSupportedCultures("en-US", "zh-CN")
+    .AddSupportedCultures("en-US", "zh-CN", "pt-BR")
     .InitializeWith(_ => new LocalizationSelection("en-US", "en-US")));
 builder.Services.AddFlourishCulture();
 '@
@@ -125,13 +152,40 @@ $cultureCheck = @'
 using (var left = app.Services.CreateScope())
 using (var right = app.Services.CreateScope())
 {
-    left.ServiceProvider.GetRequiredService<ArkheideSystem.Essential.Culture.Blazor.ILocalizationService>().SetCulture("zh-CN");
+    if (!string.Equals(TextKey.Greeting, "Key.Greeting", StringComparison.Ordinal)
+        || !string.Equals(TextKey.Amount, "Key.Amount", StringComparison.Ordinal))
+        throw new InvalidOperationException("Transitive key generation did not use the consumer Culture.json.");
+    var leftLocalization = left.ServiceProvider.GetRequiredService<ILocalizationService>();
+    var rightLocalization = right.ServiceProvider.GetRequiredService<ILocalizationService>();
+    leftLocalization.SetCulture("zh-CN");
     var leftText = left.ServiceProvider.GetRequiredService<ITextProvider>();
     var rightText = right.ServiceProvider.GetRequiredService<ITextProvider>();
-    var greeting = new TextReference("App", "Greeting");
-    if (leftText.Get(greeting) != "你好" || rightText.Get(greeting) != "Hello")
-        throw new InvalidOperationException("Packaged Culture bridge leaked scope or failed translation.");
+    var greeting = new TextReference("App", TextKey.Greeting);
+    if (leftText.Get(greeting) != "你好，包使用者" || rightText.Get(greeting) != "Hello, package consumer")
+        throw new InvalidOperationException("Packaged Culture bridge leaked scope or failed Chinese translation.");
+    leftLocalization.SetCulture("pt-BR");
+    if (leftText.Get(greeting) != "Olá, consumidor do pacote"
+        || rightLocalization.Parse(TextKey.Greeting) != "Hello, package consumer"
+        || leftText.Get(new TextReference("App", TextKey.Amount), 12345.67m) != "Valor: 12.345,67")
+        throw new InvalidOperationException("Packaged Culture bridge failed Portuguese translation, formatting or isolation.");
 }
+'@
+$cultureEndpoint = @'
+app.MapGet("/culture/{culture}", (string culture, [Microsoft.AspNetCore.Mvc.FromServices] ILocalizationService localization) =>
+{
+    localization.SetCulture(culture);
+    return new RazorComponentResult<App>();
+});
+'@
+$cultureRazor = @'
+@inherits ArkheideSystem.Essential.Culture.Blazor.LocalizedComponentBase
+@using TextKey = PackageConsumer.Texts.Key
+'@
+$cultureContent = @'
+        builder.OpenElement(16, "p");
+        builder.AddAttribute(17, "id", "package-culture-greeting");
+        builder.AddContent(18, Localization.Parse(TextKey.Greeting));
+        builder.CloseElement();
 '@
 $modes = @(
     @{ Name='FrameworkOnly'; Meta=$false; Theme=$false; Culture=$false },
@@ -145,24 +199,42 @@ foreach ($mode in $modes) {
     $project = Join-Path $directory 'Consumer.csproj'
     $id = if ($mode.Meta) { 'Arkheide.Flourish.Blazor' } else { 'Arkheide.Flourish.Blazor.Framework' }
     $references = '<PackageReference Include="{0}" Version="{1}" />' -f $id,$Version
-    if ($mode.Culture) { $references += '<PackageReference Include="Arkheide.Flourish.Extensions.Culture.Blazor" Version="{0}" />' -f $Version }
-    $xml = '<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>PackageConsumer</RootNamespace><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors><EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled><EssentialCultureAutoCreate>false</EssentialCultureAutoCreate><EssentialCultureAutoInclude>false</EssentialCultureAutoInclude></PropertyGroup><ItemGroup>{0}</ItemGroup></Project>' -f $references
+    $generatorEnabled = $mode.Culture.ToString().ToLowerInvariant()
+    $cultureItems = if ($mode.Culture) {
+        '<None Remove="Culture.json" /><Content Remove="Culture.json" /><AdditionalFiles Include="Culture.json" /><EmbeddedResource Include="Culture.json" LogicalName="PackageConsumer.Culture.json" />'
+    } else { '' }
+    $xml = '<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>PackageConsumer</RootNamespace><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors><EssentialCultureNamespace>PackageConsumer.Texts</EssentialCultureNamespace><EssentialCultureGeneratorEnabled>{1}</EssentialCultureGeneratorEnabled><EssentialCultureXamlFramework>none</EssentialCultureXamlFramework><EssentialCultureAutoCreate>false</EssentialCultureAutoCreate><EssentialCultureAutoInclude>false</EssentialCultureAutoInclude></PropertyGroup><ItemGroup>{0}</ItemGroup><ItemGroup>{2}</ItemGroup></Project>' -f $references,$generatorEnabled,$cultureItems
     Write-Fixture $project $xml
-    $usings = if ($mode.Culture) { 'using ArkheideSystem.Essential.Culture;' + [Environment]::NewLine + 'using ArkheideSystem.Essential.Culture.Blazor;' } else { '' }
+    if ($mode.Culture) { Write-Fixture (Join-Path $directory 'Culture.json') $cultureDocument }
+    $usings = if ($mode.Culture) { 'using ArkheideSystem.Essential.Culture;' + [Environment]::NewLine + 'using ArkheideSystem.Essential.Culture.Blazor;' + [Environment]::NewLine + 'using TextKey = PackageConsumer.Texts.Key;' } elseif ($mode.Meta) { 'using ArkheideSystem.Essential.Culture.Blazor;' } else { '' }
     $design = if ($mode.Theme) { 'builder.Services.AddFlourishDesign();' } else { '' }
     $culture = if ($mode.Culture) { $cultureRegistration } else { '' }
     $test = if ($mode.Culture) { $cultureCheck } else { '' }
-    Write-Fixture (Join-Path $directory 'Program.cs') ($program.Replace('__CULTURE_USINGS__', $usings).Replace('__DESIGN_REGISTRATION__', $design).Replace('__CULTURE_REGISTRATION__', $culture).Replace('__EXPECT_THEME__', $mode.Theme.ToString().ToLowerInvariant()).Replace('__CULTURE_CHECK__', $test))
-    Write-Fixture (Join-Path $directory 'App.razor') $razor
+    Write-Fixture (Join-Path $directory 'Program.cs') ($program.Replace('__CULTURE_USINGS__', $usings).Replace('__DESIGN_REGISTRATION__', $design).Replace('__CULTURE_REGISTRATION__', $culture).Replace('__EXPECT_THEME__', $mode.Theme.ToString().ToLowerInvariant()).Replace('__CULTURE_CHECK__', $test).Replace('__CULTURE_ENDPOINT__', $(if ($mode.Culture) { $cultureEndpoint } else { '' })).Replace('__CULTURE_OPT_IN_CHECK__', $(if ($mode.Meta) { '    var hasCulture = scope.ServiceProvider.GetService<ILocalizationService>() is not null;' + [Environment]::NewLine + '    if (hasCulture != ' + $mode.Culture.ToString().ToLowerInvariant() + ') throw new InvalidOperationException("Culture activation does not match registration.");' } else { '' })))
+    Write-Fixture (Join-Path $directory 'App.razor') ($razor.Replace('__CULTURE_RAZOR__', $(if ($mode.Culture) { $cultureRazor } else { '' })).Replace('__CULTURE_CONTENT__', $(if ($mode.Culture) { $cultureContent } else { '' })))
     $restoreArguments = @('restore', $project, '--packages', $cache, '--configfile', $nugetConfig)
     Invoke-ReleaseCommand dotnet $restoreArguments
     $assets = Get-Content -LiteralPath (Join-Path $directory 'obj/project.assets.json') -Raw | ConvertFrom-Json
     $libraries = @($assets.libraries.PSObject.Properties.Name)
     Require ($libraries -contains "Arkheide.Flourish.Core/$Version") "$($mode.Name) did not restore Core transitively."
     Require (!$assets.libraries.PSObject.Properties.Where({ $_.Value.type -eq 'project' }).Count) "$($mode.Name) has a source project dependency."
-    Require (!$libraries.Where({ $_ -like '*Flourish.Blazor.Shared/*' }).Count) "$($mode.Name) still depends on retired Shared."
+    Require (!$libraries.Where({ $_ -match '^Arkheide\.(Essential\.Culture|Flourish)(\.[^/]+)*\.Shared/' }).Count) "$($mode.Name) still depends on retired Shared."
     Require (($libraries -contains "Arkheide.Flourish.Blazor.Design/$Version") -eq $mode.Meta) "$($mode.Name) restored the wrong Design package set."
-    Require (($libraries -contains "Arkheide.Flourish.Extensions.Culture.Blazor/$Version") -eq $mode.Culture) "$($mode.Name) restored the wrong Culture bridge package set."
+    Require (($libraries -contains "Arkheide.Flourish.Extensions.Culture.Blazor/$Version") -eq $mode.Meta) "$($mode.Name) restored the wrong Culture bridge package set."
+    $directReferences = @(([xml]$xml).SelectNodes('/Project/ItemGroup/PackageReference') | ForEach-Object { $_.Include })
+    $expectedReferences = @($id)
+    Require (((($directReferences | Sort-Object) -join ',') -ceq (($expectedReferences | Sort-Object) -join ','))) "$($mode.Name) has an unexpected direct package reference."
+    $essentialLibraries = @($libraries.Where({ $_ -match '^Arkheide\.Essential\.Culture(/|\.)' }))
+    Require ($essentialLibraries.Count -eq $(if ($mode.Meta) { 3 } else { 0 })) "$($mode.Name) restored an unexpected Essential Culture package set."
+    foreach ($essentialId in @('Arkheide.Essential.Culture', 'Arkheide.Essential.Culture.Blazor', 'Arkheide.Essential.Culture.Generator')) {
+        Require (($libraries -contains "$essentialId/$($ReleaseSettings.EssentialVersion)") -eq $mode.Meta) "$($mode.Name) restored the wrong transitive $essentialId package."
+    }
+    Require (!$libraries.Where({ $_ -match '^Arkheide\.(Essential\.Culture|Flourish)(\.[^/]+)*\.(Wpf|Avalonia|WinUI|WinUI3)/' }).Count) "$($mode.Name) unexpectedly restored a desktop UI package."
+    if ($mode.Culture) {
+        $generatedProps = Get-Content -LiteralPath (Join-Path $directory 'obj/Consumer.csproj.nuget.g.props') -Raw
+        Require ($generatedProps -match 'buildTransitive.*Arkheide\.Essential\.Culture\.Generator\.props') 'MetaCulture did not import the transitive generator props.'
+        Require (@(Get-ChildItem -LiteralPath $directory -Filter Culture.json -File -Recurse).Count -eq 1) 'MetaCulture did not keep a single Culture.json source.'
+    }
     $publish = Join-Path $directory 'publish'
     Invoke-ReleaseCommand dotnet @('publish', $project, '-c', 'Release', '--no-restore', '-o', $publish)
     $stdout = Join-Path $directory 'server.log'
@@ -207,6 +279,20 @@ foreach ($mode in $modes) {
         if ($mode.Meta) {
             $response = Invoke-WebRequest -Uri "$origin/_content/Arkheide.Flourish.Blazor.Design/design.css" -UseBasicParsing
             Require ($response.StatusCode -eq 200) "$($mode.Name) cannot serve restored Design assets."
+        }
+        if ($mode.Culture) {
+            $greetings = @{
+                'en-US' = 'Hello, package consumer'
+                'zh-CN' = '你好，包使用者'
+                'pt-BR' = 'Olá, consumidor do pacote'
+            }
+            foreach ($language in @('en-US', 'zh-CN', 'pt-BR')) {
+                $localizedPage = Invoke-WebRequest -Uri "$origin/culture/$language" -UseBasicParsing
+                $localizedHtml = [System.Net.WebUtility]::HtmlDecode($localizedPage.Content)
+                Require ($localizedPage.StatusCode -eq 200 -and $localizedHtml.Contains('id="package-culture-greeting"') -and $localizedHtml.Contains($greetings[$language])) "MetaCulture failed generated-key SSR for $language."
+            }
+            $defaultPage = Invoke-WebRequest -Uri "$origin/" -UseBasicParsing
+            Require ([System.Net.WebUtility]::HtmlDecode($defaultPage.Content).Contains($greetings['en-US'])) 'MetaCulture leaked a translated request into another request.'
         }
         Write-Host "Verified $($mode.Name) package graph, registration, SSR and published assets."
     } finally {

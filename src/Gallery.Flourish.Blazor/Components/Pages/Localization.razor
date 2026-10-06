@@ -52,7 +52,7 @@
             .AddCatalog("Flourish", frameworkCatalog)
             .SetDefaultCatalog("App")
             .SetDefaultCulture("zh-CN")
-            .AddSupportedCultures("zh-CN", "en-US"));
+            .AddSupportedCultures("zh-CN", "en-US", "pt-BR"));
         builder.Services.AddFlourishCulture();
         builder.Services.AddFlourishFramework(framework => framework
             .ConfigureNavigation(nav => nav.AddNav(

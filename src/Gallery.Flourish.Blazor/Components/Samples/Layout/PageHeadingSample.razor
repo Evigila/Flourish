@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,18 +13,18 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="页面标题" />
-    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="紧凑标题" Compact="true" />
-    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="带操作标题"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button>操作</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.PageHeading>
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_PageTitle)" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_CompactTitle)" Compact="true" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_TitleWithActions)"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button>@Localization.Parse(TextKey.Sample_Action)</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.PageHeading>
 }
 else
 {
-    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="紧凑标题" @bind-Value="Compact" />
+    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_CompactTitle)" @bind-Value="Compact" />
     <div id="@Id">
-        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Created ? "新建资料（虚构）" : "资料目录（虚构）")" Compact="Compact" ParentLabel="全部资料" ParentHref="@($"#{Id}")">
-            <Actions><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Create">新建资料</ArkheideSystem.Flourish.Blazor.Components.Button></Actions>
+        <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Created ? Localization.Parse(TextKey.Sample_NewResourceFictional) : Localization.Parse(TextKey.Sample_ResourceDirectoryFictional))" Compact="Compact" ParentLabel="@Localization.Parse(TextKey.Sample_AllResources)" ParentHref="@($"#{Id}")">
+            <Actions><ArkheideSystem.Flourish.Blazor.Components.Button OnClick="Create">@Localization.Parse(TextKey.Sample_NewResource)</ArkheideSystem.Flourish.Blazor.Components.Button></Actions>
         </ArkheideSystem.Flourish.Blazor.Components.PageHeading>
-        <p role="status">@(Created ? "已打开虚构的新建资料场景。" : "选择新建资料，查看标题区操作。")</p>
+        <p role="status">@(Created ? Localization.Parse(TextKey.Sample_TheFictionalNewResourceSceneIsOpen) : Localization.Parse(TextKey.Sample_SelectNewResourceToTryTheHeadingAction))</p>
     </div>
 }
 

@@ -1,61 +1,62 @@
 @page "/forms"
-@implements IDisposable
+@inherits LocalizedComponentBase
 @inject RecordStore Store
 @inject NavigationManager Navigation
-<PageTitle>表单 · 组件演示</PageTitle>
+<PageTitle>@FormTitle · Gallery</PageTitle>
 <NavigationLock ConfirmExternalNavigation="Dirty" OnBeforeInternalNavigation="BeforeNavigation" />
 <PageBody>
-    <PageHeading Title="@FormTitle" ParentHref="/records" ParentLabel="列表" />
+    <PageHeading Title="@FormTitle" ParentHref="/records" ParentLabel="@Localization.Parse(TextKey.Nav_Records)" />
     @if (MissingRecord)
     {
-        <EmptyState Title="记录已不存在"><Actions><Button OnClick="Cancel">返回列表</Button></Actions></EmptyState>
+        <EmptyState Title="@Localization.Parse(TextKey.Forms_Missing)"><Actions><Button OnClick="Cancel">@Localization.Parse(TextKey.Common_BackList)</Button></Actions></EmptyState>
     }
     else
     {
         <EditForm @key="Context" novalidate EditContext="Context" OnValidSubmit="SaveAsync" FormName="demo-record">
             <DataAnnotationsValidator />
-            <Section Title="基本信息">
+            <Section Title="@Localization.Parse(TextKey.Forms_Basic)">
                 <FormLayout>
-                    <Field Label="名称" Id="record-name" Required="true" For="@(() => Draft.Name)">
+                    <Field Label="@Localization.Parse(TextKey.Record_Name)" Id="record-name" Required="true" For="@(() => Draft.Name)" MessageFormatter="LocalizeValidation">
                         <TextBox Id="record-name" @bind-Value="Draft.Name" MaxLength="120" Disabled="Busy" />
                     </Field>
-                    <Field Label="分类" Id="record-category" Required="true" For="@(() => Draft.Category)">
+                    <Field Label="@Localization.Parse(TextKey.Common_Category)" Id="record-category" Required="true" For="@(() => Draft.Category)" MessageFormatter="LocalizeValidation">
                         <SelectBox TValue="string" Id="record-category" @bind-Value="Draft.Category" Options="Categories" Disabled="Busy" />
                     </Field>
-                    <Field Label="联系人" Id="record-contact" Required="true" For="@(() => Draft.Contact)">
+                    <Field Label="@Localization.Parse(TextKey.Common_Contact)" Id="record-contact" Required="true" For="@(() => Draft.Contact)" MessageFormatter="LocalizeValidation">
                         <TextBox Id="record-contact" @bind-Value="Draft.Contact" MaxLength="80" Disabled="Busy" />
                     </Field>
-                    <Field Label="邮箱" Id="record-email" Required="true" For="@(() => Draft.Email)">
+                    <Field Label="@Localization.Parse(TextKey.Common_Email)" Id="record-email" Required="true" For="@(() => Draft.Email)" MessageFormatter="LocalizeValidation">
                         <TextBox Id="record-email" Type="email" @bind-Value="Draft.Email" Disabled="Busy" />
                     </Field>
-                    <CheckBox Id="record-active" Label="启用这条记录" @bind-Value="Draft.Active" Disabled="Busy" />
+                    <CheckBox Id="record-active" Label="@Localization.Parse(TextKey.Forms_Active)" @bind-Value="Draft.Active" Disabled="Busy" />
                 </FormLayout>
             </Section>
             <FormActions>
-                <UniformGridButton Title="保存" Variant="UniformGridVariant.Filled" Type="submit" Busy="Busy" />
-                <UniformGridButton Title="取消" Variant="UniformGridVariant.Outlined" Disabled="Busy" OnClick="Cancel" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Common_Save)" Variant="UniformGridVariant.Filled" Type="submit" Busy="Busy" />
+                <UniformGridButton Title="@Localization.Parse(TextKey.Common_Cancel)" Variant="UniformGridVariant.Outlined" Disabled="Busy" OnClick="Cancel" />
             </FormActions>
         </EditForm>
     }
 </PageBody>
-<Dialog Title="放弃未保存的修改" @bind-IsOpen="DiscardOpen" OnClose="KeepEditing" CloseLabel="继续编辑">
-    <ChildContent><p>当前表单的修改尚未保存。继续离开将放弃这些修改。</p></ChildContent>
+<Dialog Title="@Localization.Parse(TextKey.Forms_DiscardTitle)" @bind-IsOpen="DiscardOpen" OnClose="KeepEditing" CloseLabel="@Localization.Parse(TextKey.Forms_KeepEditing)">
+    <ChildContent><p>@Localization.Parse(TextKey.Forms_DiscardBody)</p></ChildContent>
     <Actions>
-        <Button Variant="ButtonVariant.Danger" OnClick="DiscardAndNavigate">放弃修改并离开</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="KeepEditing">继续编辑</Button>
+        <Button Variant="ButtonVariant.Danger" OnClick="DiscardAndNavigate">@Localization.Parse(TextKey.Forms_DiscardAction)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="KeepEditing">@Localization.Parse(TextKey.Forms_KeepEditing)</Button>
     </Actions>
 </Dialog>
 
 @code {
     [SupplyParameterFromQuery] public string? Id { get; set; }
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     private RecordDraft Draft = new();
-    private string FormTitle => Id is null ? "创建记录" : "编辑记录";
+    private string FormTitle => Localization.Parse(Id is null ? TextKey.Page_RecordCreate : TextKey.Page_RecordEdit);
     private EditContext Context = default!;
     private string? BoundId;
     private bool Initialized, Dirty, Busy, DiscardOpen, MissingRecord;
     private string? PendingTarget;
-    private static readonly IReadOnlyList<SelectOption<string>> Categories =
-    [ new("", "请选择"), new("客户", "客户"), new("供应商", "供应商"), new("内部部门", "内部部门") ];
+    private IReadOnlyList<SelectOption<string>> Categories =>
+    [ new("", Localization.Parse(TextKey.Common_Choose)), new("客户", Localization.Parse(TextKey.Forms_Customer)), new("供应商", Localization.Parse(TextKey.Forms_Supplier)), new("内部部门", Localization.Parse(TextKey.Forms_Department)) ];
 
     protected override void OnParametersSet()
     {
@@ -102,5 +103,5 @@
         Context.MarkAsUnmodified();
         Navigation.NavigateTo(target);
     }
-    public void Dispose() { if (Context is not null) Context.OnFieldChanged -= FieldChanged; }
+    public override void Dispose() { if (Context is not null) Context.OnFieldChanged -= FieldChanged; base.Dispose(); }
 }

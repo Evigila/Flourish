@@ -1,10 +1,11 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ApplicationShell")]
 
 <ArkheideSystem.Flourish.Blazor.Components.Notice Subtle="true">
-    Gallery 本身使用唯一的 ApplicationShell。完整外壳案例在独立页面运行，不嵌套主地标、不覆盖导航配置、不注入预览皮肤。
+    @Localization.Parse(TextKey.Sample_GalleryUsesASingleApplicationShellTheFullShellExampleRunsOnASeparatePageWithoutNestingMainLandmarksOverridingN)
 </ArkheideSystem.Flourish.Blazor.Components.Notice>
-<ArkheideSystem.Flourish.Blazor.Components.Button Href="/examples/shell" Text="打开完整外壳案例" target="_blank" rel="noopener" />
+<ArkheideSystem.Flourish.Blazor.Components.Button Href="/examples/shell" Text="@Localization.Parse(TextKey.Sample_OpenFullShellExample)" target="_blank" rel="noopener" />
 
 @code {
     [Parameter] public bool Preview { get; set; }

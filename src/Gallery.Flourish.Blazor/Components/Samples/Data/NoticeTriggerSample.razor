@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -16,19 +17,19 @@
     <div class="f-inline-actions">
         @foreach (var severity in Enum.GetValues<NotificationSeverity>())
         {
-            <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="severity">说明内容</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>
+            <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="severity">@Localization.Parse(TextKey.Sample_DescriptionContent)</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger>
         }
     </div>
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Warning">待检查</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Error">校验失败</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Success">校验通过</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Information">补充信息</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Warning">@Localization.Parse(TextKey.Sample_PendingReview)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Error">@Localization.Parse(TextKey.Sample_ValidationFailed)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Success">@Localization.Parse(TextKey.Sample_ValidationPassed)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Severity = NotificationSeverity.Information">@Localization.Parse(TextKey.Sample_AdditionalInformation)</Button>
     </div>
-    <p>虚构记录 DEMO-001 <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="Severity">@Message</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger></p>
+    <p>@Localization.Parse(TextKey.Sample_NoticeRecord) <ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger Severity="Severity">@Message</ArkheideSystem.Flourish.Blazor.Components.Primitives.NoticeTrigger></p>
 }
 
 @code {
@@ -36,9 +37,9 @@ else
     private NotificationSeverity Severity = NotificationSeverity.Warning;
     private string Message => Severity switch
     {
-        NotificationSeverity.Error => "虚构记录缺少名称，需要补充。",
-        NotificationSeverity.Success => "虚构记录已通过本地检查。",
-        NotificationSeverity.Information => "检查结果仅保留在当前页面；离开页面后不会保存。",
-        _ => "虚构记录尚待检查联系方式。"
+        NotificationSeverity.Error => Localization.Parse(TextKey.Sample_TheFictionalRecordNeedsAName),
+        NotificationSeverity.Success => Localization.Parse(TextKey.Sample_TheFictionalRecordPassedLocalChecks),
+        NotificationSeverity.Information => Localization.Parse(TextKey.Sample_CheckResultsAreKeptOnlyOnThisPageAndAreNotSavedAfterLeaving),
+        _ => Localization.Parse(TextKey.Sample_TheFictionalRecordNeedsContactDetailsReviewed)
     };
 }

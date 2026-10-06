@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -12,25 +13,25 @@
 
 @if (Preview)
 {
-    <ProgressBar Label="确定进度" Value="0" StatusText="尚未开始" />
-    <ProgressBar Label="未知进度" Value="null" StatusText="正在处理…" />
+    <ProgressBar Label="@Localization.Parse(TextKey.Sample_DeterminateProgress)" Value="0" StatusText="@Localization.Parse(TextKey.Sample_NotStarted)" />
+    <ProgressBar Label="@Localization.Parse(TextKey.Sample_IndeterminateProgress)" Value="null" StatusText="@Localization.Parse(TextKey.Sample_Processing_Demo)" />
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(-10)">减少 10%</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(10)">增加 10%</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? "显示确定进度" : "模拟未知进度")</Button>
-        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">重置</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(-10)">@Localization.Parse(TextKey.Sample_DecreaseBy10)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Change(10)">@Localization.Parse(TextKey.Sample_IncreaseBy10)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? Localization.Parse(TextKey.Sample_ShowDeterminateProgress) : Localization.Parse(TextKey.Sample_SimulateIndeterminateProgress))</Button>
+        <Button Variant="ButtonVariant.Quiet" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
     </div>
-    <ProgressBar Label="演示文件导出" Value="@(Unknown ? null : (double?)Percent)" StatusText="@Status" />
+    <ProgressBar Label="@Localization.Parse(TextKey.Sample_DemoFileExport)" Value="@(Unknown ? null : (double?)Percent)" StatusText="@Status" />
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private int Percent = 30;
     private bool Unknown;
-    private string Status => Unknown ? "正在估算导出任务…" : Percent == 100 ? "虚构文件导出完成。" : $"正在导出演示文件：{Percent}%";
+    private string Status => Unknown ? Localization.Parse(TextKey.Sample_EstimatingExportTask) : Percent == 100 ? Localization.Parse(TextKey.Sample_FictionalFileExportCompleted) : Localization.Parse(TextKey.Sample_ExportProgress, Percent);
     private void Change(int amount) { Unknown = false; Percent = Math.Clamp(Percent + amount, 0, 100); }
     private void Reset() { Percent = 30; Unknown = false; }
 }

@@ -235,7 +235,12 @@ internal static class DataTableChecks
                 var rendered = html();
                 Require(rendered.Contains("f-multi-select-panel f-dropdown-panel", StringComparison.Ordinal), "The display selector did not use the shared dropdown panel.");
                 Require(rendered.Contains("f-dropdown-item is-selected", StringComparison.Ordinal), "Visible columns did not expose the shared selected state.");
-                Require(Regex.IsMatch(rendered, "<summary[^>]*class=\"f-dropdown-trigger\"[^>]*><span[^>]*data-f-selection-label[^>]*>Display</span>\\s*<span[^>]*f-expansion-indicator"), "Display options lost the shared trigger or expansion marker.");
+                var display = Regex.Matches(rendered, @"<details\b[^>]*data-f-table-selection[\s\S]*?</details>").Single().Value;
+                var displayTrigger = Regex.Match(display, @"<summary\b[^>]*>[\s\S]*?</summary>").Value;
+                Require(Attribute(displayTrigger, "class").Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("f-button-secondary")
+                    && displayTrigger.Contains("data-icon=\"remove_red_eye\"", StringComparison.Ordinal)
+                    && Regex.IsMatch(displayTrigger, @"<span[^>]*class=""f-sr-only""[^>]*data-f-selection-label[^>]*>Display</span>")
+                    && !displayTrigger.Contains("f-expansion-indicator", StringComparison.Ordinal), "Display options lost the shared icon trigger, accessible label or icon-only presentation.");
                 Require(rendered.Contains("f-button-quiet", StringComparison.Ordinal)
                     && rendered.Contains("f-data-sort-label", StringComparison.Ordinal)
                     && rendered.Contains("f-data-sort-text", StringComparison.Ordinal),
@@ -255,6 +260,89 @@ internal static class DataTableChecks
                     "Search and top/bottom page-size selectors are not styled as standard SelectBox controls.");
                 return Task.CompletedTask;
             });
+        }));
+        tests.Add(("default item ranges omit the item prefix and quantity labels stay concise", async () =>
+        {
+            foreach (var progressive in new[] { false, true })
+            {
+                var parameters = Parameters(pageSize: 2);
+                parameters[nameof(DataTable<Row>.Progressive)] = progressive;
+                await WithTable(parameters, (_, html) =>
+                {
+                    var rendered = WebUtility.HtmlDecode(html());
+                    var count = Regex.Match(rendered, @"<div class=""f-data-count"">([\s\S]*?)</div>").Groups[1].Value;
+                    Require(count == "<span>1-2 / Total 25</span>", "The default item range regained an item prefix or lost its range/total.");
+                    Require(Regex.Matches(rendered, @"<label class=""f-data-page-size"">\s*<span>Quantity</span>").Count == 2, "Page-size selectors kept the verbose quantity label.");
+                    if (progressive)
+                        Require(!Attribute(Tags(rendered, "div", "data-f-range-format").Single(), "data-f-range-format").Contains("{0}", StringComparison.Ordinal), "The browser pager received a prefixed default range.");
+                    return Task.CompletedTask;
+                });
+                parameters[nameof(DataTable<Row>.Items)] = Array.Empty<Row>();
+                await WithTable(parameters, (_, html) =>
+                {
+                    Require(WebUtility.HtmlDecode(html()).Contains("<span>0-0 / Total 0</span>", StringComparison.Ordinal), "The empty default range lost its unprefixed zero values.");
+                    return Task.CompletedTask;
+                });
+            }
+        }));
+        tests.Add(("display and advanced editing keep secondary icon triggers and explicit capability boundaries", async () =>
+        {
+            foreach (var capabilities in new[] { 0, 1, 2, 3 })
+            foreach (var state in new[] { "ready", "bulk", "busy" })
+            {
+                var requested = 0;
+                var parameters = Parameters(pageSize: 2);
+                if ((capabilities & 1) != 0)
+                    parameters[nameof(DataTable<Row>.BulkEditRequested)] = EventCallback.Factory.Create(new object(), () => requested++);
+                if ((capabilities & 2) != 0)
+                    parameters[nameof(DataTable<Row>.SpreadsheetEditHref)] = "/edit-grid?scope=selected";
+                parameters[nameof(DataTable<Row>.BulkEditing)] = state == "bulk";
+                parameters[nameof(DataTable<Row>.EditingBusy)] = state == "busy";
+                await WithTable(parameters, async (table, html) =>
+                {
+                    var rendered = WebUtility.HtmlDecode(html());
+                    var advanced = Regex.Matches(rendered, @"<details\b[^>]*data-f-native-menu[\s\S]*?</details>").Single().Value;
+                    var advancedTrigger = Regex.Match(advanced, @"<summary\b[^>]*>[\s\S]*?</summary>").Value;
+                    var display = Regex.Matches(rendered, @"<details\b[^>]*data-f-table-selection[\s\S]*?</details>").Single().Value;
+                    var displayTrigger = Regex.Match(display, @"<summary\b[^>]*>[\s\S]*?</summary>").Value;
+                    foreach (var trigger in new[] { advancedTrigger, displayTrigger })
+                        Require(Attribute(trigger, "class").Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("f-button-secondary")
+                            && Attribute(trigger, "class").Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains("f-button-icon"), "Table controls do not share the secondary icon variant.");
+                    Require(advancedTrigger.Contains("data-icon=\"stylus_fountain_pen\"", StringComparison.Ordinal)
+                        && !advancedTrigger.Contains(">Advanced editing<", StringComparison.Ordinal), "Advanced editing did not render only the requested icon.");
+                    Require(displayTrigger.Contains("data-icon=\"remove_red_eye\"", StringComparison.Ordinal)
+                        && Regex.IsMatch(displayTrigger, @"<span[^>]*class=""f-sr-only""[^>]*>Display</span>")
+                        && !displayTrigger.Contains("f-expansion-indicator", StringComparison.Ordinal), "Display kept a visible caption or dropdown marker instead of its accessible icon trigger.");
+                    var disabled = capabilities == 0 || state != "ready";
+                    Require(Attribute(advancedTrigger, "aria-disabled") == disabled.ToString().ToLowerInvariant()
+                        && Regex.IsMatch(Regex.Match(advanced, @"<details\b[^>]*>").Value, @"\binert(?:\s|=|>)") == disabled, "Advanced editing was hidden or its disabled/inert boundaries disagree.");
+                    var links = Tags(advanced, "a", "role");
+                    Require(links.Count == ((capabilities & 2) != 0 ? 1 : 0), "Spreadsheet capability did not preserve exactly one native link.");
+                    if (links.Count != 0)
+                        Require(Attribute(links[0], "href") == (state == "ready" ? "/edit-grid?scope=selected" : string.Empty), "The spreadsheet link lost its destination or remained active while editing.");
+                    var bulk = table.MenuButtons.SingleOrDefault(button => button.OnClick.HasDelegate && button.Href is null
+                        && button.AdditionalAttributes?.ContainsKey("role") == true);
+                    Require((bulk is not null) == ((capabilities & 1) != 0), "The bulk menu item did not follow the declared capability.");
+                    if (bulk is not null)
+                    {
+                        await (Task)typeof(Button).GetMethod("ClickAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(bulk, [new MouseEventArgs()])!;
+                        Require(requested == (state == "ready" ? 1 : 0), "The real bulk Button callback was lost or bypassed the disabled boundary.");
+                    }
+                });
+            }
+        }));
+        tests.Add(("shared dropdown options override ordinary Button flex centering", () =>
+        {
+            var rootPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+            var framework = ExpandMenuCss(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css"));
+            var design = ExpandMenuCss(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/design.css"));
+            Require(MenuItemProperty(framework, "display") == "block"
+                && MenuItemProperty(framework, "text-align") == "start", "Unskinned native menu items lost their start alignment.");
+            var combined = framework + "\n" + design;
+            Require(MenuItemProperty(combined, "display") == "flex"
+                && MenuItemProperty(combined, "justify-content") == "flex-start"
+                && MenuItemProperty(combined, "text-align") == "start", "The Design cascade retained ordinary Button centering for menu options.");
+            return Task.CompletedTask;
         }));
         tests.Add(("item range supports localized spacing and unframed totals for populated and empty tables", async () =>
         {
@@ -341,9 +429,9 @@ internal static class DataTableChecks
                 await WithTable(parameters, (_, html) =>
                 {
                     var rendered = html();
-                    Require(Regex.Matches(rendered, "class=\"f-action-menu ").Count == 2, "Native rows did not share the standard ActionMenu.");
-                    var nativeMenus = Regex.Matches(rendered, @"<details\b[^>]*data-f-native-menu[\s\S]*?</details>");
-                    Require(nativeMenus.Count == 2 && nativeMenus.All(menu => !menu.Value.Contains("popover=", StringComparison.Ordinal)), "Static native action slots were hidden behind a JavaScript-only popover.");
+                    Require(Regex.Matches(rendered, "class=\"f-action-menu ").Count == 3, "Native rows and the persistent advanced control did not share the standard ActionMenu.");
+                    var nativeMenus = Regex.Matches(rendered, @"<details\b[^>]*data-f-native-menu[\s\S]*?</details>").Where(menu => menu.Value.Contains("data-record-open", StringComparison.Ordinal)).ToArray();
+                    Require(nativeMenus.Length == 2 && nativeMenus.All(menu => !menu.Value.Contains("popover=", StringComparison.Ordinal)), "Static native action slots were hidden behind a JavaScript-only popover.");
                     Require(!rendered.Contains("row-action-menu", StringComparison.Ordinal), "A second menu family entered the standard table.");
                     Require(Regex.Matches(rendered, "data-record-open").Count == 2, "The declared native opening transports were lost or duplicated.");
                     Require(rendered.Contains("href=\"/native-entry/?record=1\"", StringComparison.Ordinal)
@@ -626,6 +714,38 @@ internal static class DataTableChecks
         return match.Success ? WebUtility.HtmlDecode(match.Groups[1].Value) : string.Empty;
     }
 
+    private static string ExpandMenuCss(string path)
+    {
+        var source = Regex.Replace(File.ReadAllText(path), @"/\*[\s\S]*?\*/", string.Empty);
+        return Regex.Replace(source, "@import\\s+url\\(['\"]([^'\"]+)['\"]\\)\\s*;", match =>
+            ExpandMenuCss(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path)!, match.Groups[1].Value))));
+    }
+
+    // Resolve only the base declarations that apply to a Button menu item. State and
+    // component-specific selectors are outside this alignment regression's scope.
+    private static string MenuItemProperty(string css, string property)
+    {
+        var winner = string.Empty;
+        var specificity = -1;
+        foreach (Match rule in Regex.Matches(css, @"(?<selector>[^{}]+)\{(?<body>[^{}]*)\}"))
+        foreach (var selector in rule.Groups["selector"].Value.Split(',').Select(value => Regex.Replace(value.Trim(), @"\s+", " ")))
+        {
+            var score = selector switch
+            {
+                ".f-button" or ".f-menu-item" => 1,
+                ".f-dropdown-panel .f-dropdown-item" => 2,
+                _ => -1
+            };
+            if (score < specificity || score < 0) continue;
+            foreach (Match declaration in Regex.Matches(rule.Groups["body"].Value, $@"(?:^|;)\s*{Regex.Escape(property)}\s*:\s*(?<value>[^;}}]+)"))
+            {
+                winner = declaration.Groups["value"].Value.Trim();
+                specificity = score;
+            }
+        }
+        return winner;
+    }
+
     private static int RowCount(string html)
     {
         var body = Regex.Match(html, @"<tbody>[\s\S]*?</tbody>");
@@ -647,6 +767,7 @@ internal static class DataTableChecks
             var component = (IComponent)Activator.CreateInstance(componentType)!;
             if (component is DataTableProbe table) Table = table;
             if (component is MultiSelectBox display && Table is not null) Table.Display = display;
+            if (component is Button button && Table is not null) Table.MenuButtons.Add(button);
             return component;
         }
     }
@@ -655,6 +776,7 @@ internal static class DataTableChecks
     {
         public DataTableProbe() { }
         internal MultiSelectBox? Display { get; set; }
+        internal List<Button> MenuButtons { get; } = [];
 
         internal Task OpenAsync(Row row) => (Task)typeof(DataTable<Row>).GetMethod("Open", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [row])!;
         internal async Task QueryAsync(string value)

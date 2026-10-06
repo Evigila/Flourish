@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -13,15 +14,15 @@
 
 @if (Preview)
 {
-    <LoadingState Message="正在加载…" />
-    <LoadingState><span>自定义加载内容</span></LoadingState>
+    <LoadingState Message="@Localization.Parse(TextKey.Sample_Loading_Demo)" />
+    <LoadingState><span>@Localization.Parse(TextKey.Sample_CustomLoadingContent)</span></LoadingState>
 }
 else
 {
-    <Button Busy="Loading" BusyLabel="正在加载" OnClick="LoadAsync">重新加载演示记录</Button>
-    @if (Loading) { <LoadingState Message="正在读取演示记录…" /> }
-    else if (Loaded) { <Notice Severity="NotificationSeverity.Success">已加载演示记录：示例项目 A。</Notice> }
-    else { <EmptyState Title="尚未加载" /> }
+    <Button Busy="Loading" BusyLabel="@Localization.Parse(TextKey.Sample_LoadingInProgress)" OnClick="LoadAsync">@Localization.Parse(TextKey.Sample_ReloadDemoRecords)</Button>
+    @if (Loading) { <LoadingState Message="@Localization.Parse(TextKey.Sample_ReadingDemoRecords)" /> }
+    else if (Loaded) { <Notice Severity="NotificationSeverity.Success">@Localization.Parse(TextKey.Sample_DemoRecordsLoadedDemoProjectA)</Notice> }
+    else { <EmptyState Title="@Localization.Parse(TextKey.Sample_NotLoadedYet)" /> }
 }
 
 @code {

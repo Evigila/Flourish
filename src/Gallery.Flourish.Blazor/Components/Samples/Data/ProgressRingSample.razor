@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -13,19 +14,19 @@
 @if (Preview)
 {
     <div class="f-inline-actions">
-        <ProgressRing Label="确定进度" Value="0" StatusText="尚未开始" />
-        <ProgressRing Label="未知进度" Value="null" StatusText="正在处理…" />
-        <ProgressRing Label="暂停进度" Value="0" Stopped="true" StatusText="已暂停" />
+        <ProgressRing Label="@Localization.Parse(TextKey.Sample_DeterminateProgress)" Value="0" StatusText="@Localization.Parse(TextKey.Sample_NotStarted)" />
+        <ProgressRing Label="@Localization.Parse(TextKey.Sample_IndeterminateProgress)" Value="null" StatusText="@Localization.Parse(TextKey.Sample_Processing_Demo)" />
+        <ProgressRing Label="@Localization.Parse(TextKey.Sample_PausedProgress)" Value="0" Stopped="true" StatusText="@Localization.Parse(TextKey.Sample_Paused)" />
     </div>
 }
 else
 {
     <div class="f-inline-actions">
-        <Button Variant="ButtonVariant.Secondary" OnClick="Advance">推进 10%</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? "确定进度" : "未知进度")</Button>
-        <Button Variant="ButtonVariant.Secondary" OnClick="() => Stopped = !Stopped">@(Stopped ? "继续" : "暂停")</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="Advance">@Localization.Parse(TextKey.Sample_AdvanceBy10)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Unknown = !Unknown">@(Unknown ? Localization.Parse(TextKey.Sample_DeterminateProgress) : Localization.Parse(TextKey.Sample_IndeterminateProgress))</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="() => Stopped = !Stopped">@(Stopped ? Localization.Parse(TextKey.Sample_Resume) : Localization.Parse(TextKey.Sample_Pause))</Button>
     </div>
-    <ProgressRing Label="虚构后台任务" Value="@(Unknown ? null : (double?)Percent)" Stopped="Stopped" StatusText="@Status" />
+    <ProgressRing Label="@Localization.Parse(TextKey.Sample_FictionalBackgroundTask)" Value="@(Unknown ? null : (double?)Percent)" Stopped="Stopped" StatusText="@Status" />
     <p role="status">@Status</p>
 }
 
@@ -33,6 +34,6 @@ else
     [Parameter] public bool Preview { get; set; }
     private int Percent = 40;
     private bool Unknown, Stopped;
-    private string Status => Stopped ? "演示任务已暂停。" : Unknown ? "正在计算剩余时间…" : $"虚构任务已完成 {Percent}%。";
+    private string Status => Stopped ? Localization.Parse(TextKey.Sample_TheDemoTaskIsPaused) : Unknown ? Localization.Parse(TextKey.Sample_CalculatingRemainingTime) : Localization.Parse(TextKey.Sample_TaskProgress, Percent);
     private void Advance() { if (!Stopped) { Unknown = false; Percent = Math.Min(100, Percent + 10); } }
 }

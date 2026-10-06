@@ -4,6 +4,18 @@
 
 The existing split PresentationHero/Primary AccessFormSurface/Compact NavigationChoices composition is now adopted by Colligere's resolved tenant entry. Shared Section spacing, paired Field foreground, Quiet availability paint, operation-action widths and split mobile typography are corrected in the library. Standard control paint remains in controls.css and geometry in Framework; no host skin or new specialized API is required. The [report](bugfix-reports/2026-10-06_organization-access-presentation-corrections.md) supersedes the preceding access-style-gate limitation, records 28 passing Node checks and distinguishes successful production package compilation from the current catalog/localization full-verification blockers.
 
+## 2026-10-06 Secondary label parity and chart heading
+
+Direct SecondaryNavigationItem now uses the configured shell's shrinking f-navigation-label and complete title. LineChart Heading/Id supplies a standard Section H2/anchor with ControlsContent and the owned icon-only display selector in one right-aligned header row. These are library rendering capabilities, not host skin/state adapters. The [follow-up report](bugfix-reports/2026-10-06_secondary-label-parity-and-chart-heading.md) corrects the preceding audit's incomplete configured/direct entry comparison and records the remaining full-style-gate limitation.
+
+## 2026-10-06 Workspace navigation and inline controls
+
+SecondaryNavigationItem uses canonical is-selected and Foundation paint; NavigationSurface no longer adds competing secondary-link paint. SectionNavigator/BackToTop share the DocumentKey lifetime of the replaced main region. LineChart.ControlsContent composes business filters beside its owned display selector; InlineActions supports input plus naturally sized Button inside Field. Gallery and real rendering/lifecycle/CSS regressions exercise these capabilities. See [the report](bugfix-reports/2026-10-06_navigation-selection-and-content-lifetime.md).
+
+## 2026-10-06 account-entry and wizard composition correction
+
+Generic SplitButton.PrimaryDisabled independently locks the primary action while retaining its secondary menu. Disabled/Busy still lock both parts; native form/token attributes remain protocol responsibilities. Gallery documents and demonstrates the capability. Its finite-choice WizardExample retains PageHeading on every step: only the choice area omits extra explanatory titles/selectors. See [the report](bugfix-reports/2026-10-06_split-button-primary-availability.md).
+
 This document explains the maintained directory and file tree from the repository root. Every listed node has a short responsibility description. Flourish owns framework libraries, optional Design libraries and Culture bridges. External Culture dependencies are NuGet packages; application pages and business data remain in their consuming hosts.
 
 ## Current Blazor boundary after the 2026-10-06 breaking refactor
@@ -20,11 +32,19 @@ Browser baseline checks require current native Dialog/Popover, ResizeObserver an
 
 ## General control convergence on 2026-10-06
 
-The [generic-control audit](generic-control-convergence.md) identifies nine removed wrappers/scenarios and remaining groups needing genuine generic capabilities before consolidation. Public component coverage is now 80, with 683 parameter rows and 307 defaults. Confirmation and circuit interruption use the actual general Dialog; BottomSheet is only its Presentation value. StandaloneTextBox owns numeric native text, ContentSurface/PresentationBand compose full-height documents, and PageBody/PageHeading/Section compose lists.
+The [generic-control audit](generic-control-convergence.md) identifies nine removed wrappers/scenarios and remaining groups needing genuine generic capabilities before consolidation. Public component coverage is now 80, with 695 parameter rows and 311 defaults. Confirmation and circuit interruption use the actual general Dialog; BottomSheet is only its Presentation value. StandaloneTextBox owns numeric native text, ContentSurface/PresentationBand compose full-height documents, and PageBody/PageHeading/Section compose lists.
 
-Gallery adds Components/Pages/ReconnectExample.razor at /examples/overlays/reconnect and wwwroot/reconnect-example.js. The example only maps fictional states to the library's controls.js helpers; it does not clone modality or call a server. SampleFor.Description moves technical notes outside the shared DisplayBoard.
+Gallery adds Components/Pages/ReconnectExample.razor at /examples/overlays/reconnect and wwwroot/reconnect-example.js. The example only maps fictional states to the library's controls.js helpers; it does not clone modality or call a server. SampleFor.DescriptionKey identifies localized technical notes and moves technical notes outside the shared DisplayBoard.
 
 The subsequent Gallery string-binding repair corrects NavigationChoicesSample and copied API examples without changing the production control contract. build/Test-GalleryNavigation.ps1 supplies a loopback-only real-endpoint regression for current links, retained panels, query fallbacks, repeated requests and related sample values. See [the diagnosis](bugfix-reports/2026-10-06_144432_gallery-navigation-choice-literal-key.md).
+
+## Three-language Blazor catalog ownership on 2026-10-06
+
+Gallery and Framework each maintain one Localization/Culture.json source with en-US, zh-CN and pt-BR under every key. Gallery has 1,483 application/documentation keys and generates Texts.Key accessors; Framework has 281 provider-neutral caption/usage keys and retains the embedded logical name Flourish.Blazor.Texts.json. The optional bridge resolves both registered catalogs through the request/circuit-scoped Essential adapter. Gallery's language picker and request UI negotiation support all three languages. See [the integration guide](culture-web-integration.md) for generator, desktop lifetime and preference boundaries.
+
+## Restored split access composition on 2026-10-06
+
+PresentationHero.SideContent and StackTitleWords provide the library-owned asymmetric organization/operation layout and accessible stacked title; AccessFormSurface.Tone chooses one operation surface, and NavigationChoices.Compact uses ordinary equal-width Button links. Gallery's /examples/display/access-methods directly composes these existing entries without host CSS, preserving the organization/account/pass query keys. The 860px/560px responsive geometry comes from the verified original Colligere layout at 5394774; that consumer was read only. The current Gallery catalog contains 1,483 complete three-language keys. See [the active API guide](component-api-organization.md) for the public contracts.
 
 ## Maintained tree
 
@@ -50,6 +70,9 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   ├── Test-BlazorPackageConsumers.ps1 — Restores isolated NuGet-only consumers and verifies registration, SSR and locally published static assets.
 │   ├── Test-CssAssets.ps1 — Checks framework and design asset paths and optional theme boundaries.
 │   ├── Test-CssBundle.ps1 — Checks deterministic bundling, import resolution and packaging outputs.
+│   ├── Test-CultureCatalogs.ps1 — Validates both Blazor source catalogs for complete three-language keys, placeholders and line breaks.
+│   ├── Test-GalleryCulture.ps1 — Checks loopback SSR language negotiation, application/control text and formatting in all three languages.
+│   ├── Test-GalleryNavigation.ps1 — Checks loopback sample navigation, retained panels, repeated requests and query fallbacks.
 │   └── Test-CultureIntegration.cjs — Checks live Gallery language changes, independent browser sessions, formatted values and the Framework-only host with a headless browser.
 ├── script/ — Contains local documentation preview commands.
 │   ├── preview-docs-en-us.ps1 — Builds and serves the existing English DocFX site locally.
@@ -226,7 +249,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── IconCatalog.cs — Lists official Material Symbols Outlined names and maps names to font codepoints.
 │   │   │   │   └── MaterialSymbolsOutlined.codepoints — Maps official Material Symbols Outlined names to the codepoints embedded in the Framework assembly.
 │   │   │   ├── Localization/ — Contains library-owned text catalogs independent of the selected translation provider.
-│   │   │   │   └── Texts.json — Contains the framework's English, Chinese and Brazilian Portuguese control text.
+│   │   │   │   └── Culture.json — Contains the framework's English, Chinese and Brazilian Portuguese control text.
 │   │   │   ├── Primitives/ — Contains public local-data and mask processing implementations.
 │   │   │   │   ├── DataPagination.cs — Tracks paging within an already loaded result set.
 │   │   │   │   ├── InputMaskFormatter.cs — Formats and normalizes mask-aware input values.
@@ -887,6 +910,11 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │       ├── MemberRow.cs — Defines sample member data for WPF table demonstrations.
 │       └── Program.cs — Configures WPF Gallery's host, shell, navigation and command parser.
 ├── tests/ — Contains library regression tests and the unthemed Blazor verification host.
+│   ├── Tests.Gallery.Flourish.Blazor/ — Checks actual localized Gallery pages with the scoped Essential service.
+│   │   ├── Program.cs — Exercises language changes, rendered headings, preserved API/data identities and subscription disposal.
+│   │   ├── DynamicSampleChecks.cs — Executes actual sample events and checks translated status with retained export/search/edit/multi-selection state.
+│   │   ├── LocalizedValidationHarness.cs — Exercises real EditForm annotation messages through Field and ValidationMessages without changing stored keys.
+│   │   └── Tests.Gallery.Flourish.Blazor.csproj — References the existing Gallery and ASP.NET framework without new external dependencies.
 │   ├── Tests.Flourish.Blazor/ — Checks Blazor contracts, rendering and browser interop lifetimes.
 │   │   ├── AccessExampleChecks.cs — Checks local login/account fixtures, validation, busy guards, saved-email snapshots, failure/empty states and cancellation.
 │   │   ├── ApiFinalAuditChecks.cs — Checks scoped select formatting, explicit autocomplete ARIA, disabled/creating guards and native checkbox field names.
@@ -907,6 +935,8 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── InteropFinalAuditChecks.cs — Checks reserved offer attributes, single-flight imports, late completion, idempotent/disconnected cleanup and document-flow mode races.
 │   │   ├── LifecycleChecks.cs — Checks JavaScript registration, component disposal and circuit-local state.
 │   │   ├── NavigationControlsChecks.cs — Checks shared directory ownership, BackToTop lifecycle/geometry and chart values/scale boundaries.
+│   │   ├── ChartToolbarChecks.cs — Renders shared chart-filter/display controls and actual field/input/button rows.
+│   │   ├── inline-toolbar-layout.test.mjs — Checks library-owned shared toolbar and flexible input action geometry.
 │   │   ├── ListViewChecks.cs — Checks complete ordered SSR lists, shared formatting, accessibility, templates, validation, no-JavaScript operation and scoped localization disposal.
 │   │   ├── measurement-lifecycle.test.mjs — Checks observer cleanup and measurements across browser component lifetimes.
 │   │   ├── palette-checks.mjs — Audits the seventeen color roles, interaction states, shared notice semantics, aliases and approved paints.
@@ -1114,3 +1144,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 ├── LICENSE.txt — Contains the repository's license terms.
 └── publish-helper.bat — Forwards Prepare or Publish arguments to the PowerShell release helper and returns its exit code.
 ```
+
+## Gallery localization caller adoption on 2026-10-06
+
+Pages, all 80 samples and shared ComponentGuide resolve natural-language UI at render time. Gallery metadata stores PurposeKey/VariantsKey/DescriptionKey; Framework ComponentUsageInfo.Scenario/Guidance now use provider-neutral TextReference entries with English fallbacks. Field delegates optional MessageFormatter to the same ValidationMessages renderer, which observes text-provider changes as well as EditContext updates. Existing business/record values and validation rules remain unchanged. See [the implementation report](bugfix-reports/2026-10-06_gallery-prose-localization.md) and [Culture integration](culture-web-integration.md).

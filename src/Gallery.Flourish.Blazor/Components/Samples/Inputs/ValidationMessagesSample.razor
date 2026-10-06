@@ -1,21 +1,23 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
 @using Microsoft.AspNetCore.Components.Forms
 @using ArkheideSystem.Flourish.Blazor.Components
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("ValidationMessages")]
 
 <EditForm EditContext="Context" OnSubmit="Validate" FormName="@Prefix">
-    <Field Id="@(Prefix + "-name")" Label="名称" For="@(() => Draft.Name)"><TextBox @bind-Value="Draft.Name" /></Field>
-    <ValidationMessages Id="@(Prefix + "-token-error")" For="@(() => Draft.Token)" />
-    <Button Type="submit">验证隐藏协议字段</Button>
+    <Field MessageFormatter="LocalizeValidation" Id="@(Prefix + "-name")" Label="@Localization.Parse(TextKey.Record_Name)" For="@(() => Draft.Name)"><TextBox @bind-Value="Draft.Name" /></Field>
+    <ValidationMessages MessageFormatter="LocalizeValidation" Id="@(Prefix + "-token-error")" For="@(() => Draft.Token)" />
+    <Button Type="submit">@Localization.Parse(TextKey.Sample_ValidateHiddenProtocolField)</Button>
 </EditForm>
 
 @code {
+    private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     [Parameter] public bool Preview { get; set; }
     private readonly string Prefix = "validation-" + Guid.NewGuid().ToString("N");
     private readonly Model Draft = new();
     private EditContext Context = null!;
     private ValidationMessageStore Messages = null!;
-    protected override void OnInitialized() { Context = new(Draft); Messages = new(Context); }
-    private void Validate() { Messages.Clear(); Messages.Add(new FieldIdentifier(Draft, nameof(Model.Token)), "缺少有效令牌。"); Context.NotifyValidationStateChanged(); }
+    protected override void OnInitialized() { base.OnInitialized(); Context = new(Draft); Messages = new(Context); }
+    private void Validate() { Messages.Clear(); Messages.Add(new FieldIdentifier(Draft, nameof(Model.Token)), "Key.Sample_AValidTokenIsMissing"); Context.NotifyValidationStateChanged(); }
     private sealed class Model { public string? Name { get; set; } public string? Token { get; set; } }
 }

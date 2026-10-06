@@ -1,6 +1,7 @@
+@inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
-@attribute [SampleFor("ContentContainer", Description = "背景由外层横幅负责，ContentContainer 为内部内容提供居中限宽轨道。")]
-<ContentContainer><Section Title="居中内容"><p>整理你的项目资料。</p><Button Href="/examples/display/product">完整横幅案例</Button></Section></ContentContainer>
+@attribute [SampleFor("ContentContainer", DescriptionKey = "Key.Sample_ContentContainerSample_Description")]
+<ContentContainer><Section Title="@Localization.Parse(TextKey.Sample_CenteredContent)"><p>@Localization.Parse(TextKey.Sample_OrganizeYourProjectResources)</p><Button Href="/examples/display/product">@Localization.Parse(TextKey.Sample_FullBannerExample)</Button></Section></ContentContainer>
 @code {
     [Parameter] public bool Preview { get; set; }
 

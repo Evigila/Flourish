@@ -21,7 +21,7 @@ internal static class CatalogChecks
         foreach (var entry in entries)
         {
             Check(entry.Usage.ComponentType == entry.ComponentType, $"Usage metadata differs for {entry.Name}.");
-            Check(!string.IsNullOrWhiteSpace(entry.Usage.Scenario) && !string.IsNullOrWhiteSpace(entry.Usage.Guidance),
+            Check(!string.IsNullOrWhiteSpace(entry.Usage.Scenario.Token) && !string.IsNullOrWhiteSpace(entry.Usage.Guidance.Token),
                 $"Intended usage must be explicit for {entry.Name}.");
             if (entry.Usage.PreferredEntry is { } preferred)
                 Check(entries.Any(candidate => candidate.ComponentType == preferred && candidate.IsProductionEntry),
@@ -103,7 +103,7 @@ internal static class CatalogChecks
                 var actual = Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == name);
                 Check(contextual.Type == actual.Type && contextual.DefaultValue == actual.DefaultValue,
                     $"Parent {name} configuration must match the real UniformGrid API.");
-                Check(contextual.Description.Contains("配置在外层 UniformGrid 上", StringComparison.Ordinal), "Parent rows require explicit ownership.");
+                Check(contextual.DescriptionPrefixKey == "Key.Catalog_Parameter_UniformGridOwner" && contextual.DescriptionOwner == type.Name && contextual.DescriptionKey == actual.DescriptionKey, "Parent rows require explicit ownership.");
             }
         }
         Equal("2", typeof(Controls.UniformGridButton), "FormActions.Columns");
@@ -111,15 +111,14 @@ internal static class CatalogChecks
             && Entry(typeof(Controls.PresentationFooter)).ApiParameters.All(parameter => parameter.Name is not ("BrandName" or "Watermark")),
             "Gallery still documents retired compatibility parameters.");
         Check(Entry(typeof(Primitives.SearchAutocomplete<>)).ApiParameters.Single(parameter => parameter.Name == "FilterItems")
-            .Description.Contains("启用", StringComparison.Ordinal), "Boolean filtering must not be described as a function.");
+            .DescriptionKey == "Key.Parameter_FilterItems_bool", "Boolean filtering must not be described as a function.");
         var multipleSelection = Entry(typeof(Controls.MultiSelectBox)).ApiParameters.Single(parameter => parameter.Name == "Changed");
         Check(multipleSelection.Type.Contains("MultiSelectChange", StringComparison.Ordinal),
             "Generic multi-selection must publish the shared ordered selection snapshot.");
         Check(Entry(typeof(Controls.MultiSelectBox)).ApiParameters.All(parameter => parameter.Name is not ("SelectedValues" or "SelectionChanged" or "MinimumVisible")),
             "Retired selection or display-specific contracts remain documented.");
         var referenceSelection = Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.Single(parameter => parameter.Name == "ValueChanged");
-        Check(referenceSelection.Description.Contains("nullable TValue", StringComparison.Ordinal)
-            && referenceSelection.Description.Contains("@bind-Value 自动更新", StringComparison.Ordinal),
+        Check(referenceSelection.DescriptionKey == "Key.Parameter_ValueChanged_Primitives_ReferenceDropdown",
             "Reference selection must state its actual nullable Value/ValueChanged binding contract.");
         Check(Entry(typeof(Primitives.ReferenceDropdown<>)).ApiParameters.All(parameter => parameter.Name is not ("SelectedId" or "SelectionChanged")),
             "Reference dropdown still exposes the retired selection parameter family.");

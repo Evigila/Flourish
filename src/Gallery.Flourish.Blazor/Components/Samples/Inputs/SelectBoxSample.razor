@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Web
@@ -13,13 +14,13 @@
 @if (Preview)
 {
     <FormLayout>
-        <Field Label="空选项" Id="@(Prefix + "-empty")"><SelectBox TValue="string" @bind-Value="EmptyValue" /></Field>
-        <Field Label="禁用" Id="@(Prefix + "-disabled")"><SelectBox TValue="string" @bind-Value="EmptyDisabled" Disabled="true" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_EmptyOptions)" Id="@(Prefix + "-empty")"><SelectBox TValue="string" @bind-Value="EmptyValue" /></Field>
+        <Field Label="@Localization.Parse(TextKey.Sample_Disabled)" Id="@(Prefix + "-disabled")"><SelectBox TValue="string" @bind-Value="EmptyDisabled" Disabled="true" /></Field>
     </FormLayout>
 }
 else
 {
-    <Field Label="参与方式" Id="@(Prefix + "-mode")"><SelectBox TValue="AttendanceMode" @bind-Value="Mode" Options="Modes" /></Field>
+    <Field Label="@Localization.Parse(TextKey.Sample_AttendanceMode)" Id="@(Prefix + "-mode")"><SelectBox TValue="AttendanceMode" @bind-Value="Mode" Options="Modes" /></Field>
     <p role="status">@Recommendation</p>
 }
 
@@ -29,7 +30,7 @@ else
     private string EmptyValue = "", EmptyDisabled = "";
     private AttendanceMode Mode = AttendanceMode.Online;
     private enum AttendanceMode { Online, InPerson, Recorded }
-    private readonly SelectOption<AttendanceMode>[] Modes = Enum.GetValues<AttendanceMode>()
-        .Select(mode => new SelectOption<AttendanceMode>(mode, mode switch { AttendanceMode.Online => "线上", AttendanceMode.InPerson => "到场", _ => "观看录像" })).ToArray();
-    private string Recommendation => Mode switch { AttendanceMode.Online => "虚构会议链接将在活动开始前提供。", AttendanceMode.InPerson => "示例地点：河畔活动室。", _ => "示例录像将在活动结束后开放。" };
+    private SelectOption<AttendanceMode>[] Modes => Enum.GetValues<AttendanceMode>()
+        .Select(mode => new SelectOption<AttendanceMode>(mode, mode switch { AttendanceMode.Online => Localization.Parse(TextKey.Sample_Online), AttendanceMode.InPerson => Localization.Parse(TextKey.Sample_InPerson), _ => Localization.Parse(TextKey.Sample_WatchRecording) })).ToArray();
+    private string Recommendation => Mode switch { AttendanceMode.Online => Localization.Parse(TextKey.Sample_AFictionalMeetingLinkWillBeProvidedBeforeTheActivity), AttendanceMode.InPerson => Localization.Parse(TextKey.Sample_ExampleVenue), _ => Localization.Parse(TextKey.Sample_TheDemoRecordingWillBeAvailableAfterTheActivity) };
 }

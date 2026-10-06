@@ -1,3 +1,4 @@
+@inherits LocalizedComponentBase
 @using ArkheideSystem.Flourish.Abstract
 @using ArkheideSystem.Flourish.Blazor
 @using Microsoft.AspNetCore.Components.Forms
@@ -14,35 +15,36 @@
 @if (Preview)
 {
     <div class="f-inline-actions">
-        <ActionMenu Label="空菜单" Actions="Array.Empty<MenuAction>()" />
-        <ActionMenu Label="文字触发器" Actions="Array.Empty<MenuAction>()"><TriggerContent>更多 <ExpansionIndicator /></TriggerContent></ActionMenu>
-        <ActionMenu Label="不可用菜单" Actions="Array.Empty<MenuAction>()" Disabled="true" />
-        <ActionMenu Label="悬浮菜单" Actions="Array.Empty<MenuAction>()" OpenOnHover="true"><TriggerContent>悬浮菜单 <ExpansionIndicator /></TriggerContent></ActionMenu>
+        <ActionMenu Label="@Localization.Parse(TextKey.Sample_EmptyMenu)" Actions="Array.Empty<MenuAction>()" />
+        <ActionMenu Label="@Localization.Parse(TextKey.Sample_AdvancedEditing)" Icon="stylus_fountain_pen" TriggerVariant="ButtonVariant.Secondary" Actions="Array.Empty<MenuAction>()" Disabled="true" />
+        <ActionMenu Label="@Localization.Parse(TextKey.Sample_TextTrigger)" Actions="Array.Empty<MenuAction>()"><TriggerContent>@Localization.Parse(TextKey.Sample_More) <ExpansionIndicator /></TriggerContent></ActionMenu>
+        <ActionMenu Label="@Localization.Parse(TextKey.Sample_UnavailableMenu)" Actions="Array.Empty<MenuAction>()" Disabled="true" />
+        <ActionMenu Label="@Localization.Parse(TextKey.Sample_HoverMenu)" Actions="Array.Empty<MenuAction>()" OpenOnHover="true"><TriggerContent>@Localization.Parse(TextKey.Sample_HoverMenu) <ExpansionIndicator /></TriggerContent></ActionMenu>
     </div>
 }
 else
 {
-    <CheckBox Label="悬浮打开、移出关闭" @bind-Value="HoverMenu" />
-    <ActionMenu Label="示例草稿 A 的操作" Actions="Actions" OpenOnHover="HoverMenu"><TriggerContent>草稿操作 <ExpansionIndicator /></TriggerContent></ActionMenu>
-    <ActionMenu Label="原生内容记录操作">
-        <Button Variant="ButtonVariant.Quiet" role="menuitem" OnClick="EditDraft">编辑草稿</Button>
-        <Button Variant="ButtonVariant.Quiet" role="menuitem" Disabled="true">发布（不可用）</Button>
-        <Button Variant="ButtonVariant.Danger" role="menuitem" OnClick="DeleteDraft">删除草稿</Button>
+    <CheckBox Label="@Localization.Parse(TextKey.Sample_OpenOnHoverAndCloseOnPointerLeave)" @bind-Value="HoverMenu" />
+    <ActionMenu Label="@Localization.Parse(TextKey.Sample_ActionsForDemoDraftA)" Actions="Actions" OpenOnHover="HoverMenu"><TriggerContent>@Localization.Parse(TextKey.Sample_DraftActions) <ExpansionIndicator /></TriggerContent></ActionMenu>
+    <ActionMenu Label="@Localization.Parse(TextKey.Sample_NativeRecordActions)">
+        <Button Variant="ButtonVariant.Quiet" role="menuitem" OnClick="EditDraft">@Localization.Parse(TextKey.Sample_EditDraft)</Button>
+        <Button Variant="ButtonVariant.Quiet" role="menuitem" Disabled="true">@Localization.Parse(TextKey.Sample_PublishUnavailable)</Button>
+        <Button Variant="ButtonVariant.Danger" role="menuitem" OnClick="DeleteDraft">@Localization.Parse(TextKey.Sample_DeleteDraft)</Button>
     </ActionMenu>
-    <p role="status">@Message</p>
+    <p role="status">@Localization.Parse(Message)</p>
 }
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private string Message = "尚未选择操作。";
+    private string Message = "Key.Sample_NoActionSelectedYet";
     private bool HoverMenu;
     private IReadOnlyList<MenuAction> Actions =>
     [
-        new("复制本地草稿", () => SetMessage("已复制虚构草稿，没有写入外部数据。")),
-        new("发布（示例中不可用）", () => Task.CompletedTask, Disabled: true),
-        new("删除演示草稿", () => SetMessage("已删除本地演示草稿。"), Destructive: true)
+        new(Localization.Parse(TextKey.Sample_CopyLocalDraft), () => SetMessage("Key.Sample_FictionalDraftCopiedNoExternalDataWasWritten")),
+        new(Localization.Parse(TextKey.Sample_PublishUnavailableInDemo), () => Task.CompletedTask, Disabled: true),
+        new(Localization.Parse(TextKey.Sample_DeleteDemoDraft), () => SetMessage("Key.Sample_LocalDemoDraftDeleted"), Destructive: true)
     ];
     private Task SetMessage(string message) { Message = message; return InvokeAsync(StateHasChanged); }
-    private Task EditDraft() => SetMessage("已编辑本地演示草稿。");
-    private Task DeleteDraft() => SetMessage("已删除本地演示草稿。");
+    private Task EditDraft() => SetMessage("Key.Sample_LocalDemoDraftEdited");
+    private Task DeleteDraft() => SetMessage("Key.Sample_LocalDemoDraftDeleted");
 }

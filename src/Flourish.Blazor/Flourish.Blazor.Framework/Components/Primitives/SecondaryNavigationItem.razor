@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<NavLink class="@(IsCurrent ? "f-secondary-item is-active" : "f-secondary-item")" href="@Href" Match="Match" ActiveClass="is-active" aria-current="@(IsCurrent ? "page" : null)">@Label</NavLink>
+<NavLink class="@(IsCurrent ? "f-secondary-item is-selected" : "f-secondary-item")" href="@Href" Match="Match" ActiveClass="is-selected" title="@Label" aria-current="@(IsCurrent ? "page" : null)"><span class="f-navigation-label">@Label</span></NavLink>
 @code {
     [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string Href { get; set; } = string.Empty;
