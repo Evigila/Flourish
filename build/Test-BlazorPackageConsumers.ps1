@@ -1,7 +1,10 @@
-param([string]$PackageDirectory, [string]$Version, [string]$EssentialPackageDirectory)
+param([string]$PackageDirectory, [string]$Version, [string]$EssentialPackageDirectory, [switch]$PublicSource)
 . (Join-Path $PSScriptRoot '../scripts/Release-Common.ps1')
 if (!$Version) { $Version = Get-ReleaseVersion }
-if (!$PackageDirectory) { $PackageDirectory = Join-Path $ReleaseRoot 'artifacts/packages' }
+if ($PublicSource -and ($PackageDirectory -or $EssentialPackageDirectory)) {
+    throw 'PublicSource cannot be combined with local package directories.'
+}
+if (!$PublicSource -and !$PackageDirectory) { $PackageDirectory = Join-Path $ReleaseRoot 'artifacts/packages' }
 $fixture = Join-Path $ReleaseRoot ('artifacts/package-consumers/' + [Guid]::NewGuid().ToString('N'))
 $cache = Join-Path $fixture 'cache'
 if ($EssentialPackageDirectory) {
@@ -28,6 +31,10 @@ if ($EssentialPackageDirectory) {
 $sourceMapping = '<packageSource key="Flourish"><package pattern="Arkheide.Flourish.*" /></packageSource><packageSource key="nuget.org"><package pattern="*" /></packageSource>'
 if ($EssentialPackageDirectory) {
     $sourceMapping += '<packageSource key="Essential"><package pattern="Arkheide.Essential.Culture*" /></packageSource>'
+}
+if ($PublicSource) {
+    $sources = '<add key="nuget.org" value="https://api.nuget.org/v3/index.json" />'
+    $sourceMapping = '<packageSource key="nuget.org"><package pattern="*" /></packageSource>'
 }
 $nugetConfig = Join-Path $fixture 'NuGet.Config'
 Write-Fixture $nugetConfig ('<configuration><packageSources><clear />{0}</packageSources><packageSourceMapping><clear />{1}</packageSourceMapping></configuration>' -f $sources,$sourceMapping)

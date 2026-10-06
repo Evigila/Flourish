@@ -1,6 +1,34 @@
-# Local release verification
+# Release verification
 
-## Current recovery: 2026-10-06 Flourish 1.1.1
+## Latest completed release: 2026-10-06 Flourish 1.1.1
+
+Flourish 1.1.1 completed its GitHub release workflow and uploaded all six packages. Source commit [05ebb4d282eea7130fc9326ef2d15bf43593d5aa](https://github.com/Evigila/Flourish/commit/05ebb4d282eea7130fc9326ef2d15bf43593d5aa) is tagged v1.1.1. [Run 37540483235](https://github.com/Evigila/Flourish/actions/runs/37540483235) completed successfully: [build job 112531999414](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112531999414) passed, including the corrected CSS fixture; [publish job 112533073982](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112533073982) completed Trusted Publishing login and uploaded the six packages in manifest order with Created responses from 22:28:55 to 22:29:01 UTC on 2026-10-06.
+
+All six Flourish 1.1.1 public flat-container indexes now return HTTP 200 and contain 1.1.1. Fresh-cache, public-only verification completed with exit code 0 across FrameworkOnly, MetaNative, MetaDesign and MetaCulture: all 129 checks passed, covering DI activation, SSR, CSS/woff2/JavaScript assets, three languages and generated keys. Evidence: Flourish/artifacts/public-culture-release-1.1.1.log and Flourish/artifacts/package-consumers/027abe99e60f46dbaa1d15a75b670ff6. Its NuGet.Config contains one public NuGet.org source with a wildcard mapping. Every .nupkg.metadata for the six Flourish 1.1.1 packages and Essential.Blazor/Core/Generator 1.3.0 identifies https://api.nuget.org/v3/index.json; no local feed or source project reference is used. Essential's independent public-only consumer also passed. Publication, public indexing and public consumption are complete for both releases.
+
+All six packages use 1.1.1 in manifest order: Arkheide.Flourish.Core, Arkheide.Flourish.Blazor.Abstract, Arkheide.Flourish.Extensions.Culture.Blazor, Arkheide.Flourish.Blazor.Framework, Arkheide.Flourish.Blazor.Design and Arkheide.Flourish.Blazor. Essential stays 1.3.0; Flourish WPF is excluded. Both earlier v1.1.0 runs skipped publication and their tag remains unchanged.
+
+The complete 1.1.1 preparation completed with exit code 0 and zero warnings/errors: Core 367, Blazor 373/373, bridge 12, Gallery 7,234 including 124 actual-event localization/state checks, Node 66, CSS bundle 21 and SDK integration 194, launcher 95, catalog 21,217 and four isolated package consumers totaling 129 checks. Evidence: artifacts/culture-release-1.1.1.log and artifacts/package-consumers/546b4983f8404423b078f00b5526ab74. The successful release build also passed the previously failing CSS fixture. The earlier bug-report limit on CI/tag-run confirmation is superseded by this successful run; public Flourish consumption is also verified; physical browser acceptance remains user-operated.
+
+The workflow reads vars.NUGET_USER || secrets.NUGET_USER under environment nuget. Profile Evigila is configured, and runtime login/upload success verifies this exact release scope without a local long-lived API key. Generated application keys continue to come from one owning Culture.json with en-US/zh-CN/pt-BR; the bridge and Generator are consumed transitively through the production package graph.
+
+Manual acceptance remains user-operated: original Gallery start.bat, icons/styles/layout, same-page H1/H2/body/status/validation translation with retained inputs/selections, access navigation and representative input/multi-select/table/menu controls. No Computer Use was performed. All public indexing and automated public-only consumption checks are complete.
+
+Gallery's conventional bin/obj Release build also passed public restore/build with TreatWarningsAsErrors=true: zero warnings/errors. Command: dotnet build src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj -c Release --configfile artifacts/package-consumers/027abe99e60f46dbaa1d15a75b670ff6/NuGet.Config -p:TreatWarningsAsErrors=true. Evidence: Flourish/artifacts/gallery-public-build-1.1.1.log. This verifies the normal build-output path; Gallery was not launched in a GUI and no actual browser/manual acceptance is claimed.
+
+## Final public verification and documentation boundary
+
+The public-only command & ./build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.1.1 completed with exit code 0. Its single-source NuGet.Config maps all packages to NuGet.org and rejects local package-directory parameters; no project reference or sibling feed participates. All six Flourish package metadata entries and the three transitive Essential metadata entries identify public https://api.nuget.org/v3/index.json.
+
+The initial public attempt failed NU1100 because duplicate names for the same NuGet.org URI collapsed to a restrictive Flourish.* mapping, excluding Microsoft.AspNetCore.App.Internal.Assets 10.0.11. Failed fixture Flourish/artifacts/package-consumers/d1afce7bb6784b64be6730553c6e64a3 retains its original config/assets/diagnostics. The explicit PublicSource verification mode fixes that fixture configuration without altering default local/CI modes or any published nupkg. Final evidence is Flourish/artifacts/public-culture-release-1.1.1.log and Flourish/artifacts/package-consumers/027abe99e60f46dbaa1d15a75b670ff6.
+
+The published tags retain their original source commits. Final technical documentation and the public-verification helper correction will be committed separately under the user's existing commit/publication authorization; they do not create a new release tag or republish packages. Future commits and publication follow AGENTS.md and the user's task-scoped authorization.
+
+## Historical preparation, recovery and configuration snapshots
+
+The retained sections below predate the successful v1.1.1 upload. Their pending source/commit/policy/tag/publication statements, version-specific hashes and counts describe those earlier runs. Current completed release evidence is above; upload, indexing and public consumption have each passed. The pending statements below describe only their dated earlier snapshots.
+
+## Previous recovery: 2026-10-06 Flourish 1.1.1
 
 The six Essential 1.3.0 packages have been uploaded by successful Trusted Publishing run 37537838178, indexed publicly, and consumed from a fresh public-only NuGet cache. Flourish v1.1.0 runs 37539504631 and 37539506569 failed in the isolated CSS package fixture; both publish jobs were skipped. Existing tags are preserved.
 
@@ -8,7 +36,7 @@ The CSS fixture no longer lists a default user cache as a package feed. A contro
 
 Flourish's synchronized version is now 1.1.1, with the same six Core/Blazor packages and Essential 1.3.0 dependency. Complete preparation is in progress using public Essential dependencies; publication and public Flourish package consumption are pending. The following 1.1.0 preparation sections retain their original scope and do not claim publication.
 
-## Latest preparation: 2026-10-06 Culture package integration
+## Previous preparation: 2026-10-06 Culture package integration
 
 This is the current local release preparation; the older sections below retain their historical scope. The complete staged Flourish preparation completed with exit code 0, zero build warnings/errors and exactly six fresh Core/Blazor 1.1.0 packages. No WPF package is in the manifest. Local packages and successful consumers do not establish public NuGet publication or account-policy completion.
 
@@ -188,6 +216,7 @@ Read-only checks identified the current repositories as Evigila/Essential.Cultur
 The [Essential v1.2.0 run 33030395528](https://github.com/Evigila/Essential.Culture/actions/runs/33030395528) completed Trusted Publishing login and push steps successfully. The [Essential master run 37291575812](https://github.com/Evigila/Essential.Culture/actions/runs/37291575812) succeeded without publishing. The [Flourish run 37291596951](https://github.com/Evigila/Flourish/actions/runs/37291596951) failed during its older full-solution restore because Essential.Blazor was absent and Wpf 1.3.0 was not published; publish was skipped before OIDC login. This is not a Trusted Publishing authentication failure or evidence of the result of today's focused release preparation.
 
 The active [release guide](nuget-release-integration.md) now records exact package scope/order, the umbrella's automatic Culture bridge, explicit EssentialPackageDirectory instead of an implicit sibling feed, isolated ArtifactsPath and the pending Gallery source-bridge consumption migration. Earlier preparation totals and external observations retain their dated scope. This documentation/audit task performed no new commit, release tag, push or NuGet publication; current preparation and public-index checks must be reported separately.
+
 ## Completed 1.1.1 preparation on 2026-10-06
 
 The corrected full preparation completed with exit code 0 using public NuGet Essential 1.3.0 dependencies. Production and validation builds have zero warnings/errors. Core 367 tests, Blazor 373/373 checks, Culture bridge 12 checks, Gallery 7,234 checks including 124 actual-event localization/state checks, Node behavior checks, CSS bundle 21, CSS SDK 194, launcher 95, culture/catalog 21,217 and all four package consumers totaling 129 checks passed. Exactly six fresh Core/Blazor 1.1.1 packages passed verification; no Flourish WPF package was prepared.
