@@ -121,6 +121,8 @@
 .f-page-body > .f-notice { margin-top:24px; }
 .f-page-body > .f-data { width:auto; padding-top:clamp(44px,7vw,84px); }
 .f-page-body > .f-display-board { width:auto; }
+/* Full-row controls must leave room for PageBody's horizontal content gutters. */
+.f-page-body > .f-uniform-grid-rectangle,.f-page-body > .f-form-actions { width:auto; }
 .f-page-heading { position:sticky; top:0; z-index:15; background:var(--f-canvas); display:flex; align-items:flex-end; justify-content:space-between; gap:32px; padding:42px var(--f-content-gutter) 32px; min-height:174px; border-bottom:1px solid var(--f-border); }
 .f-heading-title { flex:1 1 320px; min-width:0; }
 .f-page-heading h1 { max-width:100%; font-size:var(--f-type-page,50px); font-weight:780; line-height:1.15; letter-spacing:-.035em; margin:0; }
