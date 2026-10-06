@@ -570,8 +570,9 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
     "Primary press does not win the equal-specificity cascade.");
 
   for (const variant of ["secondary", "quiet", "elevated"]) {
-    const hover = one("controls", `${variant} button hover`, rule => hasSelector(rule, `.f-button-${variant}:hover`) && !rule.selector.includes(":active"));
-    const press = one("controls", `${variant} button press`, rule => hasSelector(rule, `.f-button-${variant}:active`));
+    // General variants are distinct from the available Quiet action's Primary-surface context.
+    const hover = one("controls", `${variant} button hover`, rule => hasSelector(rule, `.f-button-${variant}:hover`) && !rule.selector.includes(":active") && !rule.selector.includes(".f-access-form-primary"));
+    const press = one("controls", `${variant} button press`, rule => hasSelector(rule, `.f-button-${variant}:active`) && !rule.selector.includes(".f-access-form-primary"));
     assert.equal(property(hover.body, "background"), "var(--f-target-preview)");
     assert.equal(property(press.body, "background"), "var(--f-target-click)");
   }

@@ -16,6 +16,7 @@
 .f-presentation-hero-content > .f-presentation-hero-subtitle { max-width:900px; margin:0; color:var(--f-muted); font-size:clamp(32px,3.5vw,44px); font-weight:600; line-height:1.24; }
 .f-presentation-hero-content > .f-presentation-hero-description { max-width:760px; margin:0; color:var(--f-muted); font-size:var(--f-type-body,17px); line-height:1.55; }
 .f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description) { color:inherit; }
+.f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-layout > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description) { color:inherit; }
 .f-presentation-hero-actions { gap:12px; margin-top:8px; }
 .f-presentation-footer { min-height:320px; color:var(--f-primary-ink); background:var(--f-primary); }
 .f-presentation-watermark { top:-.38em; left:-.075em; color:var(--f-primary-preview); font-size:clamp(170px,27vw,420px); font-weight:800; letter-spacing:-.08em; line-height:1; }
@@ -51,3 +52,11 @@
 /* The existing f-card role paint is shared by both variants. Only spacing and copy scale differ. */
 .f-card.f-card-prominent { padding:clamp(24px,4vw,48px); }
 .f-card-prominent-copy > .f-card-prominent-text { margin:0; font-size:var(--f-type-h1,34px); line-height:1.4; overflow-wrap:anywhere; }
+
+.f-access-form-surface > .f-section { padding-top:0; }
+@media(max-width:860px) {
+ .f-presentation-hero-split .f-presentation-hero-content > h1 { font-size:clamp(58px,12vw,88px); }
+}
+@media(max-width:560px) {
+ .f-presentation-hero-split .f-presentation-hero-content > h1 { font-size:clamp(52px,16vw,72px); }
+}

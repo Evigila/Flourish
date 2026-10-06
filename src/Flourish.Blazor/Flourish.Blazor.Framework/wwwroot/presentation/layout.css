@@ -34,6 +34,9 @@ body:has(.f-document-surface) { margin:0; }
 .f-access-form-surface { box-sizing:border-box; display:grid; width:100%; gap:16px; }
 .f-access-form-actions { display:grid; min-width:0; margin-top:16px; }
 .f-access-form-surface > form { display:grid; min-width:0; gap:16px; }
+.f-access-form-surface .f-navigation-choice-panel > .f-button,
+.f-access-form-surface .f-navigation-choice-panel .f-form-layout > .f-button,
+.f-access-form-surface > .f-section > .f-button { width:100%; }
 .f-access-actions { display:flex; flex-wrap:wrap; align-items:center; }
 @media(min-width:1100px) and (prefers-reduced-motion:no-preference) {
  .f-offer-presentation:has(.f-offer-stage[data-offer-ready]) > .f-offer-controls { display:flex; justify-content:flex-end; margin-top:12px; }

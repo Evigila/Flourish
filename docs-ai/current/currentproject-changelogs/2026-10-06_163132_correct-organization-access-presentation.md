@@ -1,0 +1,5 @@
+# Correct the shared organization access presentation
+
+The existing split Hero/access scene receives shared corrections for contained Section spacing, paired Field foreground, available Quiet interaction/disabled paint, Framework-owned operation widths, explicit narrow split typography and Primary split copy contrast. Presentation CSS no longer reskins standard buttons; the strict guard is retained. No new portal control, public parameter or compatibility API is introduced.
+
+The [report](../bugfix-reports/2026-10-06_organization-access-presentation-corrections.md) records comparison against the pre-adoption Colligere portal, 28 passing palette/access CSS tests and local Framework/Design Release packing. Colligere's real package consumption passes 94 focused tests and retains three complete-suite baseline failures. Full console/Gallery verification is blocked by current unrelated catalog/documentation and generated localization-key errors. No external dependency/version change, public publication, runtime interruption, staging or commit occurred.

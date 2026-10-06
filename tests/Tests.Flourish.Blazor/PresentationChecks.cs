@@ -482,6 +482,8 @@ internal static class PresentationChecks
                 "Hero styles leak into nested ChildContent containers, headings or another presentation tone.");
             Check(Rule(design, ".f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description)")
                 .Contains("color:inherit", StringComparison.Ordinal), "Primary hero copy does not inherit its paired contrast color.");
+            Check(Rule(design, ".f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-layout > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description)")
+                .Contains("color:inherit", StringComparison.Ordinal), "Split Primary hero copy does not inherit its paired contrast color.");
             return Task.CompletedTask;
         }));
 

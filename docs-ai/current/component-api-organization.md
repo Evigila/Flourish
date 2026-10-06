@@ -113,3 +113,9 @@ Gallery registers every exported component and reflects current parameters/defau
 The gate compares exports, usage metadata and Gallery coverage, and rejects retired public types, obsolete members and aliases. Behavioral tests separately cover native forms, culture, accessibility, availability, callback refusal, retained drafts, confirmation, drag/order, top-layer lifecycle and disposal. Release preparation verifies Framework-only, Design-enabled, Culture-bridge and real isolated NuGet consumers.
 
 Passing source/build/automated gates does not certify physical browser geometry or authenticated workflows. Those require the manual acceptance list in the dated refactor report. No public package upload is implied.
+
+## Organization access presentation corrections
+
+The initial scene reconstruction read Colligere source/history only. Its subsequent adoption uses these production entries directly while retaining business sessions, access policies, antiforgery and native protocol endpoints. No specialized portal control, host skin or compatibility composition is required. Existing organization taglines use Description's body scale rather than an artistic Subtitle.
+
+AccessFormSurface clears its direct Section's page-spacing inset. On Primary, Field and label use the paired ink; Quiet uses the shared Button stylesheet's available-state Primary interaction roles, while explicit variants, inputs and disabled actions retain their own standard skin. Framework owns full-width operation actions. Split titles have explicit 860/560px font scaling and remain bounded/wrapping. See [the correction report](bugfix-reports/2026-10-06_organization-access-presentation-corrections.md); its import-order cascade checks retain the strict ban on presentation CSS repainting standard controls.

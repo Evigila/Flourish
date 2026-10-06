@@ -9,6 +9,10 @@
 .f-button-secondary:hover:not(:disabled):not([aria-disabled=true]),.f-button-quiet:hover:not(:disabled):not([aria-disabled=true]){color:var(--f-text);background:var(--f-target-preview);border-color:var(--f-border)}
 .f-button-secondary:active:not(:disabled):not([aria-disabled=true]),.f-button-quiet:active:not(:disabled):not([aria-disabled=true]){color:var(--f-text);background:var(--f-target-click);border-color:var(--f-border)}
 .f-button-quiet{background:transparent;color:var(--f-accent-text)}
+/* Quiet adapts to the Primary access surface; explicit variants and unavailable actions do not. */
+.f-access-form-primary .f-button-quiet:not(:disabled):not([aria-disabled=true]){--f-target-preview:var(--f-primary-preview);--f-target-click:var(--f-primary-click);color:var(--f-primary-ink)}
+.f-access-form-primary .f-button-quiet:hover:not(:disabled):not([aria-disabled=true]){color:var(--f-primary-ink);background:var(--f-primary-preview);border-color:var(--f-border)}
+.f-access-form-primary .f-button-quiet:active:not(:disabled):not([aria-disabled=true]){color:var(--f-primary-ink);background:var(--f-primary-click);border-color:var(--f-border)}
 .f-button-danger{color:var(--f-surface);background:var(--f-danger)}
 .f-button-danger:hover:not(:disabled):not([aria-disabled=true]){color:var(--f-surface-light);background:var(--f-preview-danger)}
 .f-button-danger:active:not(:disabled):not([aria-disabled=true]){color:var(--f-surface-light);background:var(--f-click-danger)}
@@ -30,6 +34,8 @@
 .f-field,.f-search{position:relative;display:grid;min-width:0;align-content:start;gap:7px;color:var(--f-ink-soft,var(--f-muted));font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif)}
 .f-field-full{grid-column:1/-1}
 .f-field-label{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:17px;font-weight:400;color:var(--f-ink-soft,var(--f-muted))}
+/* Labels inherit the paired surface foreground, not the Field's usual muted body color. */
+.f-access-form-primary .f-field,.f-access-form-primary .f-field-label{color:var(--f-primary-ink)}
 .f-required{margin-left:5px;color:var(--f-danger);font-weight:750}
 .f-field-control{min-width:0;position:relative}
 .f-input{display:block;width:100%;min-width:0;height:var(--f-control-height,48px);padding:0 16px;color:var(--f-text);background:var(--f-surface);border:1px solid var(--f-border);border-radius:12px;font-weight:400}

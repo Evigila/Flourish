@@ -1,5 +1,9 @@
 # currentproject-architecture
 
+## 2026-10-06 Organization access presentation correction
+
+The existing split PresentationHero/Primary AccessFormSurface/Compact NavigationChoices composition is now adopted by Colligere's resolved tenant entry. Shared Section spacing, paired Field foreground, Quiet availability paint, operation-action widths and split mobile typography are corrected in the library. Standard control paint remains in controls.css and geometry in Framework; no host skin or new specialized API is required. The [report](bugfix-reports/2026-10-06_organization-access-presentation-corrections.md) supersedes the preceding access-style-gate limitation, records 28 passing Node checks and distinguishes successful production package compilation from the current catalog/localization full-verification blockers.
+
 This document explains the maintained directory and file tree from the repository root. Every listed node has a short responsibility description. Flourish owns framework libraries, optional Design libraries and Culture bridges. External Culture dependencies are NuGet packages; application pages and business data remain in their consuming hosts.
 
 ## Current Blazor boundary after the 2026-10-06 breaking refactor
