@@ -1,5 +1,13 @@
 # Local release verification
 
+## Current recovery: 2026-10-06 Flourish 1.1.1
+
+The six Essential 1.3.0 packages have been uploaded by successful Trusted Publishing run 37537838178, indexed publicly, and consumed from a fresh public-only NuGet cache. Flourish v1.1.0 runs 37539504631 and 37539506569 failed in the isolated CSS package fixture; both publish jobs were skipped. Existing tags are preserved.
+
+The CSS fixture no longer lists a default user cache as a package feed. A controlled absent-source reproduction produced NU1301; the corrected fixture passes all 194 SDK integration checks using its generated local feed alone. SDK failure output is now included in CI diagnostics. Evidence: artifacts/css-assets-786fc32fa3ad471dbc851e043a8050e3/package-build.log and artifacts/css-assets-a5d5845f3a434c979c37fa2a1bb2c0ae.
+
+Flourish's synchronized version is now 1.1.1, with the same six Core/Blazor packages and Essential 1.3.0 dependency. Complete preparation is in progress using public Essential dependencies; publication and public Flourish package consumption are pending. The following 1.1.0 preparation sections retain their original scope and do not claim publication.
+
 ## Latest preparation: 2026-10-06 Culture package integration
 
 This is the current local release preparation; the older sections below retain their historical scope. The complete staged Flourish preparation completed with exit code 0, zero build warnings/errors and exactly six fresh Core/Blazor 1.1.0 packages. No WPF package is in the manifest. Local packages and successful consumers do not establish public NuGet publication or account-policy completion.
@@ -180,3 +188,8 @@ Read-only checks identified the current repositories as Evigila/Essential.Cultur
 The [Essential v1.2.0 run 33030395528](https://github.com/Evigila/Essential.Culture/actions/runs/33030395528) completed Trusted Publishing login and push steps successfully. The [Essential master run 37291575812](https://github.com/Evigila/Essential.Culture/actions/runs/37291575812) succeeded without publishing. The [Flourish run 37291596951](https://github.com/Evigila/Flourish/actions/runs/37291596951) failed during its older full-solution restore because Essential.Blazor was absent and Wpf 1.3.0 was not published; publish was skipped before OIDC login. This is not a Trusted Publishing authentication failure or evidence of the result of today's focused release preparation.
 
 The active [release guide](nuget-release-integration.md) now records exact package scope/order, the umbrella's automatic Culture bridge, explicit EssentialPackageDirectory instead of an implicit sibling feed, isolated ArtifactsPath and the pending Gallery source-bridge consumption migration. Earlier preparation totals and external observations retain their dated scope. This documentation/audit task performed no new commit, release tag, push or NuGet publication; current preparation and public-index checks must be reported separately.
+## Completed 1.1.1 preparation on 2026-10-06
+
+The corrected full preparation completed with exit code 0 using public NuGet Essential 1.3.0 dependencies. Production and validation builds have zero warnings/errors. Core 367 tests, Blazor 373/373 checks, Culture bridge 12 checks, Gallery 7,234 checks including 124 actual-event localization/state checks, Node behavior checks, CSS bundle 21, CSS SDK 194, launcher 95, culture/catalog 21,217 and all four package consumers totaling 129 checks passed. Exactly six fresh Core/Blazor 1.1.1 packages passed verification; no Flourish WPF package was prepared.
+
+Evidence: artifacts/culture-release-1.1.1.log and artifacts/package-consumers/546b4983f8404423b078f00b5526ab74. The fixture correction has passed local isolated checks and complete release preparation. The new GitHub tag run and public Flourish consumption remain separate acceptance steps; this preparation does not claim their success.

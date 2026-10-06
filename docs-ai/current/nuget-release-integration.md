@@ -1,10 +1,10 @@
 # NuGet release and integration
 
-This is the current release contract for Flourish 1.1.0 and Essential.Culture 1.3.0. Release scripts and package metadata are authoritative. The user has selected agent-executed NuGet Trusted Publishing; this documentation update did not create a commit, release tag or push, and did not publish packages. Current preparation results must be reported separately from historical verification.
+This is the current release contract for Flourish 1.1.1 and Essential.Culture 1.3.0. Release scripts and package metadata are authoritative. The user has authorized commits and agent-executed NuGet Trusted Publishing. Essential 1.3.0 is published and verified through public-only restoration. Flourish v1.1.0 failed before publication; its immutable tag is retained. The corrected Flourish release is 1.1.1 and remains pending verification/publication in the recovery section below.
 
 ## Dependency and release order
 
-Publish and confirm all six Essential.Culture 1.3.0 packages before publishing Flourish 1.1.0. The Flourish workflow restores Essential from NuGet rather than checking out or compiling its source repository.
+Publish and confirm all six Essential.Culture 1.3.0 packages before publishing Flourish 1.1.1. The Flourish workflow restores Essential from NuGet rather than checking out or compiling its source repository.
 
 | Order | Essential.Culture 1.3.0 package |
 |---|---|
@@ -15,7 +15,7 @@ Publish and confirm all six Essential.Culture 1.3.0 packages before publishing F
 | 5 | Arkheide.Essential.Culture.WinUI |
 | 6 | Arkheide.Essential.Culture.Blazor |
 
-| Order | Flourish 1.1.0 package |
+| Order | Flourish 1.1.1 package |
 |---|---|
 | 1 | Arkheide.Flourish.Core |
 | 2 | Arkheide.Flourish.Blazor.Abstract |
@@ -28,7 +28,7 @@ The current manifest covers exactly these six Core/Blazor Flourish packages. Flo
 
 Flourish.Blazor is a dependency-only convenience package that automatically installs Abstract, Framework, Design and Flourish.Extensions.Culture.Blazor. The bridge depends on Abstract and Essential.Culture.Blazor, which brings in the Essential runtime and Generator. Consumers of the umbrella do not need a separate Culture bridge installation. To omit both Design and Culture dependencies, install Framework directly. Framework and Design themselves do not depend on Essential. Installing packages does not register services: hosts call AddFlourishFramework, AddFlourishDesign when desired, AddCultureBlazor and AddFlourishCulture to activate those features.
 
-Flourish root Directory.Build.props owns VersionPrefix=1.1.0 and EssentialCultureVersion=1.3.0. Essential owns VersionPrefix=1.3.0 under src/Essential.Culture/Directory.Build.props. Each repository's scripts/ReleaseSettings.psd1 defines the exact package set and publication order. Arkheide.* NuGet identities remain stable even though the current Essential GitHub repository is named Essential.Culture.
+Flourish root Directory.Build.props owns VersionPrefix=1.1.1 and EssentialCultureVersion=1.3.0. Essential owns VersionPrefix=1.3.0 under src/Essential.Culture/Directory.Build.props. Each repository's scripts/ReleaseSettings.psd1 defines the exact package set and publication order. Arkheide.* NuGet identities remain stable even though the current Essential GitHub repository is named Essential.Culture.
 
 ## Source and package consumption
 
@@ -124,7 +124,7 @@ Set-Location C:\Users\RC_Auditoria\source\Repos\Essential
 # After all six Essential packages are publicly indexed:
 Set-Location C:\Users\RC_Auditoria\source\Repos\Flourish
 .\publish-helper.bat -Mode Publish
-# Exact confirmation: v1.1.0
+# Exact confirmation: v1.1.1
 ```
 
 The workflow downloads and re-verifies the build's package artifact before pushing in manifest order with --skip-duplicate. Do not replace an existing tag or released package version. A partial publication or failed rerun requires inspection of the actual workflow/package state. Report success only after workflow completion and public NuGet indexing, then restore a clean consumer without sibling source or local-feed assumptions.
@@ -140,3 +140,17 @@ The user reported completing the corresponding NuGet Trusted Publishing configur
 ## Clarified environment username on 2026-10-06
 
 The user clarified that nuget names the existing GitHub environment and that NUGET_USER has been configured. Login now reads the named GitHub configuration as vars.NUGET_USER || secrets.NUGET_USER: an Actions Variable is used when present, otherwise the existing Secret is used. The username is not hard-coded. This supersedes the preceding direct-profile input decision while preserving existing Essential secret storage and the user's Flourish variable storage. The user has reported Trusted Publishing setup complete; workflow execution will verify actual login and package-scope authorization. The two agent-created commits are still local and will be updated before their first push.
+## 2026-10-06 CI recovery for Flourish 1.1.1
+
+The Essential release source commit is 983c636bdba7e1a7b74cee33b5c682c9bf06364e, tagged v1.3.0. Its [release run 37537838178](https://github.com/Evigila/Essential.Culture/actions/runs/37537838178) successfully signed in through Trusted Publishing and uploaded all six Essential packages. All six public version indexes include 1.3.0; a fresh-cache, public-only Blazor consumer restored, built with warnings treated as errors, and passed its runtime checks.
+
+Flourish source commit 444ab7f6c19c6e29901fc0008f5e4cf5346e5b0b was pushed and tagged v1.1.0. Runs [37539504631](https://github.com/Evigila/Flourish/actions/runs/37539504631) and [37539506569](https://github.com/Evigila/Flourish/actions/runs/37539506569) failed in Test-CssAssets.ps1's package-build fixture after production compilation and the main tests succeeded. Both publish jobs were skipped, so these failures do not indicate a Trusted Publishing authentication problem or a partial package upload.
+
+The fixture treated USERPROFILE/.nuget/packages as a second package source, although it needs only its own generated package. A controlled reproduction with a nonexistent cache source produced NU1301 at the same fixture. The correction uses only the generated fixture feed and prints captured SDK output on failure. Its complete 194-check CSS integration suite passes without a global cache source. This does not change shipped CSS, controls, assets, or test assertions.
+
+The existing v1.1.0 tag is preserved. Publish-Helper rejects replacement of an existing tag, so all six Flourish package versions move together to 1.1.1 while Essential remains 1.3.0. The nuget environment and NUGET_USER variable already exist; the workflow uses vars.NUGET_USER with the established secret fallback. No local long-lived API key is required. Final 1.1.1 preparation, tag, publication and public consumption results must be recorded separately when observed.
+## Completed 1.1.1 preparation on 2026-10-06
+
+The corrected full preparation completed with exit code 0 using public NuGet Essential 1.3.0 dependencies. Production and validation builds have zero warnings/errors. Core 367 tests, Blazor 373/373 checks, Culture bridge 12 checks, Gallery 7,234 checks including 124 actual-event localization/state checks, Node behavior checks, CSS bundle 21, CSS SDK 194, launcher 95, culture/catalog 21,217 and all four package consumers totaling 129 checks passed. Exactly six fresh Core/Blazor 1.1.1 packages passed verification; no Flourish WPF package was prepared.
+
+Evidence: artifacts/culture-release-1.1.1.log and artifacts/package-consumers/546b4983f8404423b078f00b5526ab74. The fixture correction has passed local isolated checks and complete release preparation. The new GitHub tag run and public Flourish consumption remain separate acceptance steps; this preparation does not claim their success.

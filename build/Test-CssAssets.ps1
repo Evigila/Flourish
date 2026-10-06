@@ -10,7 +10,6 @@ $packageConsumer = Join-Path $fixture 'PackageConsumer'
 $feed = Join-Path $fixture 'feed'
 $packageId = 'Test.Generic.Assets.' + [Guid]::NewGuid().ToString('N')
 $targets = [System.Security.SecurityElement]::Escape((Join-Path $PSScriptRoot 'CssBundle.targets'))
-$cache = [System.Security.SecurityElement]::Escape((Join-Path $env:USERPROFILE '.nuget/packages'))
 New-Item -ItemType Directory -Force -Path (Join-Path $library 'wwwroot/nested'),$consumer,$packageConsumer,$feed | Out-Null
 $checks = 0
 
@@ -22,7 +21,10 @@ function Invoke-Sdk([string] $Name, [string[]] $Arguments) {
     $exitCode = $LASTEXITCODE
     $text = ($output | ForEach-Object { "$_" }) -join [Environment]::NewLine
     Write-File (Join-Path $fixture ($Name + '.log')) $text
-    if ($exitCode -ne 0) { throw "SDK fixture '$Name' failed. See $fixture." }
+    if ($exitCode -ne 0) {
+        Write-Output $text
+        throw "SDK fixture '$Name' failed. See $fixture."
+    }
 }
 function Require([bool] $Condition, [string] $Message) {
     if (!$Condition) { throw $Message }
@@ -248,9 +250,9 @@ $config = Join-Path $fixture 'NuGet.Config'
 Write-File $config (@'
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
-  <packageSources><clear /><add key="fixture" value="%%FEED%%" /><add key="cache" value="%%CACHE%%" /></packageSources>
+  <packageSources><clear /><add key="fixture" value="%%FEED%%" /></packageSources>
 </configuration>
-'@.Replace('%%FEED%%', [System.Security.SecurityElement]::Escape($feed)).Replace('%%CACHE%%', $cache))
+'@.Replace('%%FEED%%', [System.Security.SecurityElement]::Escape($feed)))
 Invoke-Sdk 'project-build' @('build',(Join-Path $consumer 'ProjectConsumer.csproj'),'--configfile',$config,'--verbosity','minimal')
 Assert-Consumer $consumer 'ProjectReference'
 Assert-DevelopmentAssets $consumer 'ProjectConsumer' 'ProjectReference'
