@@ -1,10 +1,10 @@
 # NuGet release and integration
 
-## Authorized Blazor 1.1.2 follow up
+## Current release: Blazor 1.1.2
 
-The user approved release of the previously deferred source corrections and new generic identity/access/page/grid capabilities. Directory.Build.props now owns VersionPrefix 1.1.2; Essential remains 1.3.0. The existing six-package manifest, IDs and dependency order remain unchanged. Full local preparation passed with zero build warnings/errors and 129 isolated package-consumer checks. [Release verification](release-verification.md) records the complete gate. A source commit and clean-master/tag checks precede Trusted Publishing; public indexing and fresh-cache public consumption must complete before Colligere upgrades. The completed 1.1.1 release below is retained as historical evidence.
+The user approved release of the previously deferred source corrections and new generic identity/access/page/grid capabilities. Directory.Build.props owns VersionPrefix 1.1.2; Essential remains 1.3.0. The existing six-package manifest, IDs and dependency order remain unchanged. Full local preparation passed with zero build warnings/errors. Source commit 108fbff8950925b909a70b0b9830226ae8226521 and tag v1.1.2 are pushed; [run 37560362408](https://github.com/Evigila/Flourish/actions/runs/37560362408) successfully uploaded all six packages. Public indexing and independent public-only consumer verification are complete: 129 checks passed with fresh package and HTTP caches in artifacts/package-consumers/b06a15d2f8fc4661be3792ff26ebf464. [Release verification](release-verification.md) records the complete gate and propagation/cache evidence. Colligere may upgrade its two central entries together; no source/local-feed substitution is required. The completed 1.1.1 release below is historical evidence.
 
-## Current release state
+## Previous release state: 1.1.1
 
 Flourish 1.1.1 completed its GitHub release workflow and uploaded all six packages. Source commit [05ebb4d282eea7130fc9326ef2d15bf43593d5aa](https://github.com/Evigila/Flourish/commit/05ebb4d282eea7130fc9326ef2d15bf43593d5aa) is tagged v1.1.1. [Run 37540483235](https://github.com/Evigila/Flourish/actions/runs/37540483235) completed successfully: [build job 112531999414](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112531999414) passed, including the corrected CSS fixture; [publish job 112533073982](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112533073982) completed Trusted Publishing login and uploaded the six packages in manifest order with Created responses from 22:28:55 to 22:29:01 UTC on 2026-10-06.
 

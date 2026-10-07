@@ -2,6 +2,8 @@
 
 ## 2026-10-06 Authorized identity access and full space editor release
 
+The complete gate, Trusted Publishing and public indexing are now complete for all six 1.1.2 packages. Four fresh public-only consumers passed 129 checks. Source commit 108fbff8950925b909a70b0b9830226ae8226521 is tagged v1.1.2; see release-verification.md. The older dated source-only statements below are superseded for these released capabilities, not ongoing consumer blockers.
+
 Blazor 1.1.2 collects the previously deferred source repairs under the user's explicit publication/upgrade authorization. Existing PageBody owns full-height editing and compact short-form spacing; UniformGrid optionally fixes Rectangle cell height; IdentityCard owns its semantic heading and available width; ordinary Button owns structured labels; PresentationFooter supports per-instance identity; NavigationChoices exposes its existing compact button variants. Native access spacing shares one controls.js lifetime through the already-used input-behaviors scanner. Contracts, Gallery, three-language descriptions and real regressions remain paired. See [the release repair report](bugfix-reports/2026-10-06_identity-access-and-editor-release.md). Earlier dated source-only decisions are superseded for these queued fixes, not erased.
 
 ## 2026-10-06 Surface headings and form widths

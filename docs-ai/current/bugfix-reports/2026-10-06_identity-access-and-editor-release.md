@@ -22,9 +22,15 @@ Final complete preparation passed on 2026-10-06: Core 367, Blazor 396/396, bridg
 
 Release preparation uses the existing script and fresh candidate package consumers. New Gallery parameters/defaults, three-language descriptions and actual examples accompany the APIs. The complete gate includes the newly added layout and native access-spacing JavaScript suites. An initial Gallery Razor namespace-alias compilation error was corrected by using actual component names; no release tag was created for that failed preparation. The final preparation log is artifacts/release-1.1.2-preparation-final.log. Publication and public-source consumption will be recorded separately after completion, not inferred from candidate packing.
 
+## Publication completion
+
+The user-authorized source commit 108fbff8950925b909a70b0b9830226ae8226521 and tag v1.1.2 are pushed. GitHub run 37560362408 completed both jobs successfully, and all six packages returned Created during Trusted Publishing. All six public indexes now contain 1.1.2. The independent four-mode public-only consumer completed 129 checks using fresh package and HTTP caches, with evidence in artifacts/public-release-1.1.2.log and artifacts/package-consumers/b06a15d2f8fc4661be3792ff26ebf464. Two earlier restore attempts are retained as propagation and cached-index evidence; they did not pass and did not use a local fallback. This supersedes the pending-publication statement in the preparation section above. Essential remains 1.3.0; no existing version or tag was overwritten.
+
 ## Cleanup and ownership
 
 Twenty-six retired access, Gallery, heading and table verification output directories under Flourish/artifacts were deleted after validating their absolute repository-local paths and untracked generated status. They can be regenerated. Current release/package outputs, preparation logs, historical release evidence and the Gallery asset incident snapshot remain. Source tests are durable regressions, not temporary output; human DocFX material and Git history are unchanged.
+
+Twenty-four obsolete AccessWizardVerification, NavigationParityVerification, TenantPortalVerification and WorkspaceUiVerification project bin directories were also removed after checking resolved paths, untracked generated status and absence of reparse points. Standard Debug/Release output was retained.
 
 ## Manual acceptance
 
