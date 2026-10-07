@@ -1,5 +1,13 @@
 # currentproject-architecture
 
+## 2026-10-06 Authorized identity access and full space editor release
+
+Blazor 1.1.2 collects the previously deferred source repairs under the user's explicit publication/upgrade authorization. Existing PageBody owns full-height editing and compact short-form spacing; UniformGrid optionally fixes Rectangle cell height; IdentityCard owns its semantic heading and available width; ordinary Button owns structured labels; PresentationFooter supports per-instance identity; NavigationChoices exposes its existing compact button variants. Native access spacing shares one controls.js lifetime through the already-used input-behaviors scanner. Contracts, Gallery, three-language descriptions and real regressions remain paired. See [the release repair report](bugfix-reports/2026-10-06_identity-access-and-editor-release.md). Earlier dated source-only decisions are superseded for these queued fixes, not erased.
+
+## 2026-10-06 Surface headings and form widths
+
+ApplicationShell, NavigationSurface and fixed-stage ContentSurface share all compact PageHeading structural rules. Direct Field-owned ReferenceDropdown fills its field, and start-aligned DisplayBoard fills standard form containers. Gallery and production-controller regressions exercise the same entries. The [report](bugfix-reports/2026-10-06_surface-heading-and-form-width.md) records successful source verification and the user's explicit publication deferral: Colligere remains on public 1.1.1 until a future release and upgrade.
+
 ## 2026-10-06 Organization access presentation correction
 
 The existing split PresentationHero/Primary AccessFormSurface/Compact NavigationChoices composition is now adopted by Colligere's resolved tenant entry. Shared Section spacing, paired Field foreground, Quiet availability paint, operation-action widths and split mobile typography are corrected in the library. Standard control paint remains in controls.css and geometry in Framework; no host skin or new specialized API is required. The [report](bugfix-reports/2026-10-06_organization-access-presentation-corrections.md) supersedes the preceding access-style-gate limitation, records 28 passing Node checks and distinguishes successful production package compilation from the current catalog/localization full-verification blockers.

@@ -421,7 +421,7 @@ check('Text selection keeps ordinary replacement but preserves masked carets',()
   api.detachTextSelection(input);assert.equal(input.events.get('focus').length,0);
 });
 const inputBehaviorCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/input-behaviors.js',import.meta.url),'utf8');
-await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode).toString('base64'));
+await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode.replace(/(["'])\.\.\/controls\.js\1/,JSON.stringify(controlsUrl))).toString('base64'));
 check('Primitive focus selection cannot reselect a masked input through its document listener',()=>{
   const input=new Node();input.type='text';input.value='AB-1234';input.dataset={inputMask:'AA-0000'};let selections=0;input.select=()=>selections++;
   document.activeElement=input;document.emit('focusin',{target:input});assert.equal(selections,0);

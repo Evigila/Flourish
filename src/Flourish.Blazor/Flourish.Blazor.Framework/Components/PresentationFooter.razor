@@ -3,17 +3,18 @@
 @using ArkheideSystem.Flourish.Blazor.Hosting
 @inject ApplicationOptions Options
 <footer class="@($"f-presentation-footer {Class}".Trim())" @attributes="AdditionalAttributes">
-    <span class="f-presentation-watermark" aria-hidden="true">@ProjectName</span>
+    <span class="f-presentation-watermark" aria-hidden="true">@EffectiveProjectName</span>
     <ContentContainer Class="f-presentation-footer-content">
-        <div class="f-presentation-footer-identity"><strong>@ProjectName</strong>@if (!string.IsNullOrWhiteSpace(Copyright)) { <span>@Copyright</span> }</div>
+        <div class="f-presentation-footer-identity"><strong>@EffectiveProjectName</strong>@if (!string.IsNullOrWhiteSpace(Copyright)) { <span>@Copyright</span> }</div>
         @if (Actions is not null) { <nav class="f-inline-actions" aria-label="@LinksLabel">@Actions</nav> }
     </ContentContainer>
 </footer>
 @code {
+    [Parameter] public string? ProjectName { get; set; }
     [Parameter] public string? Copyright { get; set; }
     [Parameter] public string? LinksLabel { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-    private string ProjectName => Options.Project.NameText is { } text ? Texts.Get(text) : Options.Project.Name;
+    private string EffectiveProjectName => ProjectName ?? (Options.Project.NameText is { } text ? Texts.Get(text) : Options.Project.Name);
 }

@@ -1,14 +1,21 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
-<div class="f-empty-state @Class">
+<div class="f-empty-state @Class" data-presentation="@(Variant == EmptyStateVariant.Watermark ? "watermark" : null)">
     @if (!string.IsNullOrWhiteSpace(Title)) { <p class="f-empty-title">@Title</p> }
     @ChildContent
     @if (Actions is not null) { <InlineActions>@Actions</InlineActions> }
 </div>
 
 @code {
+    [Parameter] public EmptyStateVariant Variant { get; set; } = EmptyStateVariant.Standard;
     [Parameter] public string? Title { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Variant)) throw new ArgumentOutOfRangeException(nameof(Variant));
+        if (Variant == EmptyStateVariant.Watermark && (ChildContent is not null || Actions is not null))
+            throw new InvalidOperationException("A watermark is passive title-only content. Use the standard empty state for descriptions or actions.");
+    }
 }

@@ -42,6 +42,10 @@ internal static class CatalogChecks
             => Check(Default(type, name) == expected, $"Unexpected {type.Name}.{name} default: {Default(type, name)}.");
 
         Equal("false", typeof(Controls.Button), "Disabled");
+        Equal("\"\"", typeof(Controls.Button), "Description");
+        Equal("\"\"", typeof(Controls.Button), "TrailingText");
+        Equal("HorizontalAlignment.Center", typeof(Controls.InlineActions), "Alignment");
+        Equal("EmptyStateVariant.Standard", typeof(Controls.EmptyState), "Variant");
         Equal("PresentationTone.Canvas", typeof(Controls.PresentationBand), "Tone");
         Equal("2", typeof(Controls.PresentationBand), "HeadingLevel");
         Equal("true", typeof(Controls.OfferStage), "AutoRotate");
@@ -60,6 +64,9 @@ internal static class CatalogChecks
         Equal("UniformGridVariant.Elevated", typeof(Controls.UniformGrid), "Variant");
         Equal("280", typeof(Controls.UniformGrid), "MaxCellSize");
         Equal("260", typeof(Controls.UniformGrid), "MaxCellHeight");
+        Equal(string.Empty, typeof(Controls.UniformGrid), "CellHeight");
+        Equal("false", typeof(Controls.PageBody), "FillHeight");
+        Equal("false", typeof(Controls.PageBody), "CompactSpacing");
         Equal("false", typeof(Controls.UniformGrid), "Centered");
         foreach (var type in new[] { typeof(Controls.UniformGrid), typeof(Controls.UniformGridItem), typeof(Controls.UniformGridButton) })
             Equal(string.Empty, type, "IconSupport");
@@ -97,7 +104,7 @@ internal static class CatalogChecks
         {
             var entry = Entry(type);
             Check(entry.ApiParameters.All(parameter => parameter.Name != "Shape"), "Shape is not a child component parameter.");
-            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "IconSupport", "Variant", "Centered" })
+            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "CellHeight", "IconSupport", "Variant", "Centered" })
             {
                 var contextual = entry.ApiParameters.Single(parameter => parameter.Name == $"UniformGrid.{name}");
                 var actual = Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == name);

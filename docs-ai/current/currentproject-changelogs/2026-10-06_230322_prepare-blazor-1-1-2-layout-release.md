@@ -1,0 +1,5 @@
+# Prepare Blazor 1.1.2 layout release
+
+Include all deferred post-1.1.1 layout corrections and the approved generic identity, access, structured Button, compact/full-height PageBody and exact Rectangle grid-height capabilities. Update existing contracts, Gallery/defaults/three-language metadata and executable regressions rather than introducing host skins or scenario renderers. The manifest still contains six Core/Blazor packages; Essential stays 1.3.0.
+
+Complete release preparation passed with zero build warnings/errors: Core 367, Blazor 396, bridge 12, Gallery 7,266, Node runner 99, CSS 21/194, launcher 95, catalog 21,426 and four isolated package consumers 129. A Gallery alias compilation issue was repaired before publication. [The report](../bugfix-reports/2026-10-06_identity-access-and-editor-release.md) retains causes, cleanup and manual acceptance. Twenty-six obsolete repository-local verification output directories were removed; source tests, logs, historical release evidence and human docs remain. Publication/indexing/public-only verification are subsequent steps, not claimed by this preparation entry.

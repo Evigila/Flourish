@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
 <CascadingValue Name="UniformGridIconSupport" Value="@IconSupport">
-    <div @attributes="AdditionalAttributes" class="f-uniform-grid f-uniform-grid-@Shape.ToString().ToLowerInvariant() f-uniform-grid-variant-@AppearanceName @LayoutClasses @(Centered ? "f-uniform-grid-centered" : null) @Class"
+    <div @attributes="AdditionalAttributes" class="f-uniform-grid f-uniform-grid-@Shape.ToString().ToLowerInvariant() f-uniform-grid-variant-@AppearanceName @LayoutClasses @(Centered ? "f-uniform-grid-centered" : null) @(CellHeight.HasValue ? "f-uniform-grid-fixed-height" : null) @Class"
          style="@GridStyle" data-grid-layout="@Layout">@ChildContent</div>
 </CascadingValue>
 
@@ -13,6 +13,7 @@
     [Parameter] public UniformGridVariant Variant { get; set; } = UniformGridVariant.Elevated;
     [Parameter] public int MaxCellSize { get; set; } = 280;
     [Parameter] public int MaxCellHeight { get; set; } = 260;
+    [Parameter] public double? CellHeight { get; set; }
     [Parameter] public bool? IconSupport { get; set; }
     [Parameter] public bool Centered { get; set; }
     [Parameter] public string? Class { get; set; }
@@ -40,7 +41,8 @@
         Rows.HasValue ? FormattableString.Invariant($"--f-grid-rows:{Rows.Value}") : null,
         NarrowColumns.HasValue ? FormattableString.Invariant($"--f-grid-narrow-columns:{NarrowColumns.Value}") : null,
         Shape == UniformGridShape.Square ? FormattableString.Invariant($"--f-grid-cell-max:{MaxCellSize}px") : null,
-        Shape == UniformGridShape.Rectangle ? FormattableString.Invariant($"--f-grid-cell-max-height:{MaxCellHeight}px") : null
+        Shape == UniformGridShape.Rectangle ? FormattableString.Invariant($"--f-grid-cell-max-height:{MaxCellHeight}px") : null,
+        CellHeight.HasValue ? FormattableString.Invariant($"--f-grid-cell-height:{CellHeight.Value}px") : null
     }.Where(value => value is not null));
     protected override void OnParametersSet()
     {
@@ -51,5 +53,7 @@
         if (MaxCellHeight <= 0) throw new ArgumentOutOfRangeException(nameof(MaxCellHeight));
         if (!Enum.IsDefined(Shape)) throw new ArgumentOutOfRangeException(nameof(Shape));
         if (!Enum.IsDefined(Variant)) throw new ArgumentOutOfRangeException(nameof(Variant));
+        if (CellHeight.HasValue && (!double.IsFinite(CellHeight.Value) || CellHeight.Value <= 0 || Shape != UniformGridShape.Rectangle))
+            throw new ArgumentOutOfRangeException(nameof(CellHeight), "A fixed cell height must be positive and finite, and requires Rectangle shape.");
     }
 }

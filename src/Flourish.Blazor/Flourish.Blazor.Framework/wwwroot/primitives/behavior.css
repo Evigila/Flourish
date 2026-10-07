@@ -333,6 +333,9 @@
     width: var(--f-selection-trigger-width, 240px);
     max-width: 100%;
 }
+.f-field-control > .selection-dropdown-surface {
+    width: 100%;
+}
 .selection-dropdown-surface .selection-trigger {
     display: flex;
     width: 100%;

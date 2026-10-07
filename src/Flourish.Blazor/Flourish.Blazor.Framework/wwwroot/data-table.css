@@ -1,5 +1,8 @@
 .f-data [hidden] { display:none !important; }
-.f-data-bulk-actions { margin-block:16px; }
+.f-data-bulk-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:16px; min-width:0; margin-block:16px; }
+.f-data-bulk-actions > :is(span,p) { margin-inline-end:auto; }
+.f-data-bulk-actions > .f-inline-actions { width:auto; max-width:100%; }
+.f-data-bulk-actions > .f-inline-actions:not([data-alignment]) { justify-content:flex-end; }
 .f-data-selection-column { width:64px; }
 .f-data-table :is(th,td).f-data-selection { width:64px; padding:8px; }
 .f-data-table .f-data-bulk-row td { height:auto; padding:12px; vertical-align:top; }

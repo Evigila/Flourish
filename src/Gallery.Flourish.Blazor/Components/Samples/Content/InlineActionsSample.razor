@@ -6,6 +6,13 @@
     <Button OnClick="Increment">@Localization.Parse(TextKey.Sample_IncrementDemo)</Button>
     <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
 </InlineActions>
+@foreach (var alignment in Enum.GetValues<HorizontalAlignment>())
+{
+    <InlineActions Alignment="alignment">
+        <Button OnClick="Increment">@Localization.Parse(TextKey.Sample_IncrementDemo)</Button>
+        <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
+    </InlineActions>
+}
 <Field Id="inline-actions-name" Label="@Localization.Parse(TextKey.Sample_ExampleName)">
     <InlineActions>
         <StandaloneTextBox @bind-Value="Name" MaxLength="100" />

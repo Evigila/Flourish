@@ -1,4 +1,21 @@
+import { attachAccessFormSpacing, detachAccessFormSpacing } from '../controls.js';
+
 const selectableInputTypes = new Set(["text", "email", "tel", "url", "number"]);
+const accessFormRoots = new Set();
+function synchronizeAccessForms() {
+    for (const root of accessFormRoots) {
+        if (root.isConnected) continue;
+        detachAccessFormSpacing(root); accessFormRoots.delete(root);
+    }
+    for (const root of document.querySelectorAll('.f-access-form-surface')) {
+        if (accessFormRoots.has(root)) continue;
+        attachAccessFormSpacing(root); accessFormRoots.add(root);
+    }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', synchronizeAccessForms, { once:true });
+else synchronizeAccessForms();
+const accessFormObserver = new MutationObserver(synchronizeAccessForms);
+accessFormObserver.observe(document.documentElement, { childList:true, subtree:true });
 
 document.addEventListener("focusin", event => {
     const input = event.target;

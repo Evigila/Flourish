@@ -20,16 +20,16 @@
 }
 else
 {
-    <div class="f-inline-actions">
+    <InlineActions Alignment="HorizontalAlignment.End">
         <Button Variant="ButtonVariant.Secondary" OnClick="() => ReadOnly = !ReadOnly">@(ReadOnly ? Localization.Parse(TextKey.Sample_EnableEditing) : Localization.Parse(TextKey.Sample_DisableEditing))</Button>
         <Button Variant="ButtonVariant.Secondary" OnClick="UndoAsync" Disabled="@(History.Count == 0)">@Localization.Parse(TextKey.Sample_Undo)</Button>
         <Button Variant="ButtonVariant.Secondary" OnClick="RedoAsync" Disabled="@(RedoHistory.Count == 0)">@Localization.Parse(TextKey.Sample_Redo)</Button>
         <Button OnClick="SaveAsync">@Localization.Parse(TextKey.Sample_SaveLocalDraft)</Button>
-    </div>
-    <div class="f-inline-actions">
+    </InlineActions>
+    <InlineActions Alignment="HorizontalAlignment.End">
         <Button Variant="ButtonVariant.Quiet" OnClick="ShowValidationError">@Localization.Parse(TextKey.Sample_SimulateValidationError)</Button>
         <Button Variant="ButtonVariant.Quiet" OnClick="Reset">@Localization.Parse(TextKey.Sample_ResetFictionalData)</Button>
-    </div>
+    </InlineActions>
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="Columns" Rows="LocalizedRows" CellChanged="ChangeCell" Interactions="Interactions" EditDisabled="ReadOnly"
                             MeasurementRevision="Revision" Label="@Localization.Parse(TextKey.Sample_FictionalSuppliesEditingGrid)" TableLabel="@Localization.Parse(TextKey.Sample_FictionalSupplies)" Text="Captions" />
     <p role="status">@LocalizeText(Message)</p>

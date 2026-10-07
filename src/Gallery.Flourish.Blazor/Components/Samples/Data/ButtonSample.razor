@@ -25,9 +25,11 @@
         <Button Text="@Localization.Parse(TextKey.Sample_Unavailable)" Disabled="true" />
         <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_Save)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" />
     </div>
+    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@Localization.Parse(TextKey.Sample_StructuredButtonStatus)" />
 }
 else
 {
+    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@Localization.Parse(TextKey.Sample_StructuredButtonStatus)" Busy="Saving" OnClick="SaveAsync" />
     <div class="f-inline-actions">
         <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_SaveDraft)" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_Saving)" OnClick="SaveAsync" />
         <Button Variant="ButtonVariant.Secondary" Icon="restart_alt" Text="@Localization.Parse(TextKey.Sample_Reset)" Disabled="Saving" OnClick="Reset" />

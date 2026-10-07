@@ -105,6 +105,47 @@ test("The single Primary operation panel clears only its direct Section spacing 
     "Operation geometry leaked into an ordinary Button");
 });
 
+test("Access fields and production action rows share one gap through real native form and retained panel topology", () => {
+  const { surface } = accessFixture();
+  const choices = element("div", ["f-navigation-choices"], surface);
+  const panel = element("section", ["f-navigation-choice-panel"], choices);
+  const nativeForm = element("form", [], panel);
+  const formLayout = element("div", ["f-form-layout"], nativeForm);
+  const inlineActions = element("div", ["f-inline-actions"], formLayout, [], { "data-alignment": "end" });
+  const actionsSlot = element("div", ["f-access-form-actions"], surface);
+  for (const node of [surface, panel, nativeForm, formLayout, actionsSlot])
+    assert.equal(cascade(node, "gap"), "var(--f-access-form-gap)", `The ${node.tag} ${[...node.classes]} introduced a different form/action gap`);
+  assert.equal(cascade(surface, "--f-access-form-gap"), "24px");
+  assert.equal(cascade(actionsSlot, "margin-top"), "0", "The slot added a second gap above actions");
+  assert.equal(cascade(inlineActions, "margin-top"), "0", "The form row added a second gap above actions");
+  assert.equal(cascade(element("div", ["f-inline-actions"], actionsSlot), "margin-top"), "0");
+  const hiddenPanel = element("section", ["f-navigation-choice-panel"], choices, [], { hidden: "" });
+  assert.equal(cascade(hiddenPanel, "display"), "none", "Grid composition made a retained inactive panel visible");
+});
+
+test("Identity cards retain bounded width and start-aligned large name and bold identifier through production styles", () => {
+  const root = element("div", ["f-root"]);
+  const body = element("div", ["f-page-body"], root);
+  const card = element("section", ["f-identity-card"], body);
+  const heading = element("h1", ["f-identity-title"], card);
+  const layout = element("div", ["f-identity-layout"], card);
+  const content = element("div", ["f-identity-content"], layout);
+  const identifier = element("code", ["f-copy-text"], content);
+  for (const viewport of [1200, 760, 360]) {
+    assert.equal(cascade(card, "width", viewport), "auto", "Explicit 100% width adds gutters outside the page");
+    assert.equal(cascade(card, "max-width", viewport), "100%");
+    assert.equal(cascade(card, "box-sizing", viewport), "border-box");
+    assert.equal(cascade(card, "text-align", viewport), "start");
+    assert.equal(cascade(heading, "font-size", viewport), "var(--f-type-page,50px)");
+    assert.equal(cascade(heading, "overflow-wrap", viewport), "anywhere");
+    assert.equal(cascade(heading, "text-align", viewport), "start");
+    assert.equal(cascade(identifier, "font-weight", viewport), "740");
+    assert.equal(inherited(identifier, "color"), "var(--f-primary-ink)");
+    assert.notEqual(cascade(heading, "position", viewport), "sticky");
+    assert.notEqual(cascade(heading, "background", viewport), "var(--f-canvas)");
+  }
+});
+
 test("Split organization typography and operation geometry follow the real 860px and 560px cascades", () => {
   const { hero, layout: heroLayout, content, heading, word, side } = heroFixture();
   for (const [viewport, font, columns, gap] of [

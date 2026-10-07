@@ -1,4 +1,14 @@
 {
+  "Sample_CompactPageSpacing": {
+    "en-US": "Compact form spacing",
+    "zh-CN": "紧凑表单间距",
+    "pt-BR": "Espaçamento compacto de formulário"
+  },
+  "Parameter_CompactSpacing": {
+    "en-US": "Use compact page spacing for short forms and identity summaries: 24px above content and 32px below, without nested Section insets.",
+    "zh-CN": "短表单和身份摘要使用紧凑页面间距：内容上方 24px、下方 32px，避免嵌套 Section 留白叠加。",
+    "pt-BR": "Use espaçamento compacto em formulários curtos e resumos de identidade: 24px acima e 32px abaixo, sem recuos de Section aninhada."
+  },
   "Page_RecordCreate": {
     "en-US": "Create record",
     "zh-CN": "创建记录",
@@ -4160,9 +4170,9 @@
     "pt-BR": "Registrar intenção de edição"
   },
   "Sample_EndDemoEditing": {
-    "en-US": "End demo editing",
-    "zh-CN": "结束示例编辑",
-    "pt-BR": "Encerrar edição de exemplo"
+    "en-US": "Complete",
+    "zh-CN": "完成",
+    "pt-BR": "Concluir"
   },
   "Sample_RemoteResultsWithTheSameSearchContract": {
     "en-US": "Remote results with the same search contract",
@@ -5110,9 +5120,9 @@
     "pt-BR": "Seleciona uma forma de acesso por links GET nativos."
   },
   "Catalog_NavigationChoices_Variants": {
-    "en-US": "Id/Label/Items/ActiveKey are required; NavigationChoiceItem contains Key/Label/Href/Disabled. Compact=true uses equal-width Button links; default is a grid. ChildContent supplies each item's business content.\nLinks fully navigate without JS; inactive panels remain mounted but hidden. See /examples/display/access-methods.",
-    "zh-CN": "Id/Label/Items/ActiveKey必填；NavigationChoiceItem包含Key/Label/Href/Disabled。Compact=true使用等宽普通Button入口，默认仍为网格。ChildContent按项提供业务内容。\n链接完整导航、无JS，非活动面板保持挂载但隐藏。案例 /examples/display/access-methods。",
-    "pt-BR": "Id/Label/Items/ActiveKey são obrigatórios; NavigationChoiceItem contém Key/Label/Href/Disabled. Compact=true usa links Button de largura igual; o padrão é grade. ChildContent fornece conteúdo de cada item.\nLinks navegam sem JS; painéis inativos permanecem montados, mas ocultos. Veja /examples/display/access-methods."
+    "en-US": "Id/Label/Items/ActiveKey are required; NavigationChoiceItem contains Key/Label/Href/Disabled. Compact=true uses equal-width Button links with Variant/ActiveVariant; set both to Elevated for consistent elevation. Default is a grid. ChildContent supplies each item's business content.\nLinks fully navigate without JS; aria-current marks the current route and inactive panels remain mounted but hidden. See /examples/display/access-methods.",
+    "zh-CN": "Id/Label/Items/ActiveKey必填；NavigationChoiceItem包含Key/Label/Href/Disabled。Compact=true使用等宽普通Button入口，Variant/ActiveVariant都设置为Elevated时保持统一浮起样式；默认仍为网格。ChildContent按项提供业务内容。\n链接完整导航、无JS，aria-current标记当前路由，非活动面板保持挂载但隐藏。案例 /examples/display/access-methods。",
+    "pt-BR": "Id/Label/Items/ActiveKey são obrigatórios; NavigationChoiceItem contém Key/Label/Href/Disabled. Compact=true usa links Button iguais com Variant/ActiveVariant; defina ambos como Elevated para elevação uniforme. O padrão é grade. ChildContent fornece o conteúdo de cada item.\nLinks navegam sem JS; aria-current marca a rota atual e painéis inativos permanecem montados, mas ocultos. Veja /examples/display/access-methods."
   },
   "Catalog_Button_Purpose": {
     "en-US": "Triggers actions in headings, toolbars or dialogs, and supports navigation links.",
@@ -5120,9 +5130,34 @@
     "pt-BR": "Aciona ações em títulos, barras ou diálogos e permite links de navegação."
   },
   "Catalog_Button_Variants": {
-    "en-US": "Primary, Secondary, Danger, Quiet, Underline and Elevated appearances; Disabled/Busy describe state. Icon is optional; with empty Text/ChildContent the button becomes icon-only and needs aria-label. Href supplies navigation. Primary/Secondary are the sole filled/outlined entries.",
-    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline、Elevated 六种外观；Disabled / Busy 是状态属性。Icon 可选；Text 与 ChildContent 都为空时自动只显示图标，需提供 aria-label。Href 提供导航目标。Primary 与 Secondary 是填充和描边的唯一入口。",
-    "pt-BR": "Aparências Primary, Secondary, Danger, Quiet, Underline e Elevated; Disabled/Busy descrevem estado. Icon é opcional; sem Text/ChildContent, o botão mostra apenas ícone e exige aria-label. Href fornece navegação. Primary/Secondary são as únicas entradas preenchida/contornada."
+    "en-US": "Primary, Secondary, Danger, Quiet, Underline and Elevated appearances; Disabled/Busy describe state. Icon-only needs aria-label; Href supplies navigation. Description and TrailingText opt into one full-width button with stacked labels and trailing passive text; this mode requires Text and excludes ChildContent.",
+    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline、Elevated 六种外观；Disabled / Busy 是状态属性。仅图标需 aria-label，Href 提供导航。Description 与 TrailingText 启用整行按钮，左侧标签上下排列，末端显示被动文字；此模式必须提供 Text 且不接受 ChildContent。",
+    "pt-BR": "Aparências Primary, Secondary, Danger, Quiet, Underline e Elevated; Disabled/Busy descrevem estado. Somente ícone exige aria-label; Href fornece navegação. Description e TrailingText ativam um único botão de largura total com textos empilhados e texto passivo no fim; exige Text e não aceita ChildContent."
+  },
+  "Parameter_Description_Button": {
+    "en-US": "Passive secondary text below Text; activates the full-width structured label. Requires Text and cannot be combined with ChildContent.",
+    "zh-CN": "Text 下方的被动次要文字；启用整行结构化标签。必须提供 Text，不能与 ChildContent 混用。",
+    "pt-BR": "Texto secundário passivo abaixo de Text; ativa o rótulo estruturado de largura total. Exige Text e não pode ser combinado com ChildContent."
+  },
+  "Parameter_TrailingText_Button": {
+    "en-US": "Passive text aligned at the logical end of the same full-width button; activates the structured label. Does not add another action or control.",
+    "zh-CN": "同一整行按钮末端对齐的被动文字；启用结构化标签，不增加另一项操作或控件。",
+    "pt-BR": "Texto passivo alinhado ao fim lógico do mesmo botão de largura total; ativa o rótulo estruturado. Não adiciona outra ação ou controle."
+  },
+  "Sample_StructuredButtonName": {
+    "en-US": "Example account",
+    "zh-CN": "示例账号",
+    "pt-BR": "Conta de exemplo"
+  },
+  "Sample_StructuredButtonDescription": {
+    "en-US": "example@example.test",
+    "zh-CN": "example@example.test",
+    "pt-BR": "example@example.test"
+  },
+  "Sample_StructuredButtonStatus": {
+    "en-US": "Connected",
+    "zh-CN": "已连接",
+    "pt-BR": "Conectado"
   },
   "Catalog_ExpansionIndicator_Purpose": {
     "en-US": "Decorative expansion triangle inside the button that controls a region.",
@@ -5290,9 +5325,9 @@
     "pt-BR": "Grade de largura igual para diretórios, escolhas de assistentes e resumos de informações."
   },
   "Catalog_UniformGrid_Variants": {
-    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects Filled/Outlined/Danger/default Elevated. The transparent container paints no unused slots. Rectangles use width:100%, fill the row and divide equally; MaxCellHeight defaults to 260px without a width cap.\nAutomatic columns use twice the height as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
-    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 Filled、Outlined、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形默认 width:100%，先铺满容器再按列均分；MaxCellHeight 默认 260px，仅限制高度，不形成宽度上限。\n自动列数使用两倍高度作为换列阈值，轨道仍可继续拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
-    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe Filled/Outlined/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos usam width:100%, preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura.\nColunas automáticas usam duas vezes a altura como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
+    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects Filled/Outlined/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
+    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 Filled、Outlined、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
+    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe Filled/Outlined/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
   },
   "Catalog_UniformGridItem_Purpose": {
     "en-US": "Noninteractive information cell in an equal-width grid.",
@@ -5395,14 +5430,24 @@
     "pt-BR": "Severity usa NotificationSeverity; Announce controla anúncios; Subtle usa aparência discreta; Title adiciona título opcional."
   },
   "Catalog_EmptyState_Purpose": {
-    "en-US": "Actual empty-data state with optional next actions.",
-    "zh-CN": "显示没有数据时的真实状态与可选操作。",
-    "pt-BR": "Estado real sem dados com próximas ações opcionais."
+    "en-US": "Actual empty-data feedback or a passive placeholder in an unused page area.",
+    "zh-CN": "显示真实空数据反馈，或在尚未使用的页面区域显示被动占位。",
+    "pt-BR": "Feedback real de dados vazios ou apresentação passiva em uma área de página ainda não utilizada."
   },
   "Catalog_EmptyState_Variants": {
-    "en-US": "Title describes the actual empty result; Actions offers next steps.",
-    "zh-CN": "Title 描述当前空结果；Actions 提供下一步操作。",
-    "pt-BR": "Title descreve o resultado vazio real; Actions oferece próximos passos."
+    "en-US": "Standard describes an empty result with optional descriptions and actions. Watermark centers a large muted Title in the available PageBody area and accepts no description or actions.",
+    "zh-CN": "Standard 描述空结果并允许说明和操作。Watermark 在 PageBody 可用区域居中显示大型柔和色 Title，不接受说明或操作。",
+    "pt-BR": "Standard descreve um resultado vazio com descrições e ações opcionais. Watermark centraliza um Title grande e discreto na área disponível de PageBody, sem descrição ou ações."
+  },
+  "Parameter_Variant_EmptyState": {
+    "en-US": "Standard retains empty-result feedback; Watermark is passive title-only presentation for an unused page area, not loading, failure or permission feedback.",
+    "zh-CN": "Standard 保留空结果反馈；Watermark 是未使用页面区域的被动纯标题展示，不用于加载、错误或权限反馈。",
+    "pt-BR": "Standard mantém o feedback de resultado vazio; Watermark é uma apresentação passiva somente com título para uma área não utilizada, não para carregamento, falha ou permissões."
+  },
+  "Sample_WelcomeToYourWorkspace": {
+    "en-US": "Welcome to your workspace",
+    "zh-CN": "欢迎使用工作空间",
+    "pt-BR": "Boas-vindas ao seu Workspace"
   },
   "Catalog_LoadingState_Purpose": {
     "en-US": "Content loading feedback.",
@@ -5440,9 +5485,9 @@
     "pt-BR": "Largura e margens consistentes para conteúdo da página."
   },
   "Catalog_PageBody_Variants": {
-    "en-US": "Omitted Fluid inherits Program layout. true uses fluid width, false uses centered maximum width; FullWidth uses the complete content region.",
-    "zh-CN": "Fluid 省略时继承 Program 的布局配置；true 使用流动宽度，false 使用居中最大宽度；FullWidth 使用完整正文区域。",
-    "pt-BR": "Fluid omitido herda o layout de Program. true usa largura fluida, false usa largura máxima centralizada; FullWidth usa toda a região."
+    "en-US": "Omitted Fluid inherits Program layout. true uses fluid width, false uses centered maximum width; FullWidth uses the complete content region. FillHeight fills a fixed shell stage, removes document bottom spacing and gives content the space below the direct PageHeading. Combine FullWidth, FillHeight and a Compact heading with a direct EditingGrid for a full remaining-space editor.",
+    "zh-CN": "Fluid 省略时继承 Program 的布局配置；true 使用流动宽度，false 使用居中最大宽度；FullWidth 使用完整正文区域。FillHeight 填满固定 shell 内容区，移除文档底部留白，将直接子级 PageHeading 下的剩余空间交给正文。FullWidth、FillHeight、Compact 标题与直接子级 EditingGrid 组合为填满可用空间的表格编辑区。",
+    "pt-BR": "Fluid omitido herda o layout de Program. true usa largura fluida, false usa largura máxima centralizada; FullWidth usa toda a região. FillHeight preenche a área fixa do shell, remove o espaço inferior do documento e entrega ao conteúdo o espaço abaixo de PageHeading direto. Combine FullWidth, FillHeight, título Compact e EditingGrid direto para um editor com todo o espaço restante."
   },
   "Catalog_PageHeading_Purpose": {
     "en-US": "Collapsible page heading with actions.",
@@ -5480,9 +5525,9 @@
     "pt-BR": "Exibe valor principal de identidade e informações relacionadas."
   },
   "Catalog_IdentityCard_Variants": {
-    "en-US": "Columns chooses multiple columns; SideContent supplies a side area. Use semantic structures such as dl/dt/dd.",
-    "zh-CN": "Columns 控制分栏；SideContent 提供侧栏；内容使用 dl / dt / dd 等语义结构。",
-    "pt-BR": "Columns escolhe várias colunas; SideContent fornece área lateral. Use estruturas semânticas como dl/dt/dd."
+    "en-US": "Title is the card's own heading. HeadingLevel defaults to 2; use 1 for a large account name and CopyText for its bold identifier. Columns chooses multiple columns; SideContent supplies a side area. Use semantic structures such as dl/dt/dd.",
+    "zh-CN": "Title使用卡片自身标题；HeadingLevel默认2，设为1时以大字体呈现账号名，CopyText呈现加粗ID。Columns控制分栏，SideContent提供侧栏；内容使用dl/dt/dd等语义结构。",
+    "pt-BR": "Title é o título próprio do cartão. HeadingLevel usa 2 por padrão; use 1 para um nome de conta grande e CopyText para seu ID em negrito. Columns escolhe colunas; SideContent fornece área lateral. Use estruturas semânticas como dl/dt/dd."
   },
   "Catalog_Icon_Purpose": {
     "en-US": "Self-hosted Material Symbols Outlined icon.",
@@ -5520,9 +5565,14 @@
     "pt-BR": "Linha padrão com quebra para pequenas ações."
   },
   "Catalog_InlineActions_Variants": {
-    "en-US": "ChildContent directly contains standard Button. Inside Field, input plus button forms a compact creation row: input fills remaining width and button keeps natural width. Large equal-width form actions use UniformGridButton.",
-    "zh-CN": "ChildContent 直接包含标准 Button，也可在 Field 内用输入框加按钮组成紧凑创建行；输入占剩余宽度，按钮保持自然宽度。大型等宽表单操作使用 UniformGridButton。",
-    "pt-BR": "ChildContent contém Button padrão diretamente. Dentro de Field, entrada e botão formam linha compacta de criação: entrada ocupa espaço restante e botão mantém largura natural. Ações grandes iguais usam UniformGridButton."
+    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center (default), or End across the available width. Inside Field, an input fills remaining width and buttons keep natural width. Keep mixed operations here; UniformGridButton is for finite single-semantic choices.",
+    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center（默认）或 End。在 Field 内输入框占剩余宽度，按钮保持自然宽度。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。",
+    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center (padrão) ou End na largura disponível. Dentro de Field, entrada ocupa espaço restante e botões mantêm largura natural. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica."
+  },
+  "Parameter_Alignment_InlineActions": {
+    "en-US": "Logical horizontal alignment of the wrapping action row across available width: Start, Center (default), or End. It does not change button appearance or native form transport.",
+    "zh-CN": "可换行动作行在可用宽度内的逻辑水平对齐：Start、Center（默认）或 End。不改变按钮样式或原生表单传输。",
+    "pt-BR": "Alinhamento horizontal lógico da linha de ações com quebra na largura disponível: Start, Center (padrão) ou End. Não altera aparência dos botões nem transporte nativo do formulário."
   },
   "Catalog_ImagePreview_Purpose": {
     "en-US": "Image with optional caption and standard actions.",
@@ -5558,6 +5608,26 @@
     "en-US": "false uses grid entries; true uses three equal standard Button links with the same GET, current-item and retained-panel contract.",
     "zh-CN": "默认 false 为网格入口；true 使用三等分普通 Button 导航，保持同一 GET、当前项与保留面板合同。",
     "pt-BR": "false usa entradas em grade; true usa três links Button iguais, preservando GET, item atual e painéis montados."
+  },
+  "Parameter_Variant_NavigationChoices": {
+    "en-US": "Standard Button variant for inactive Compact choices. Defaults to Quiet; Elevated preserves the shared control elevation. Does not change native GET or retained panels.",
+    "zh-CN": "Compact非当前项使用的普通Button样式，默认Quiet；Elevated使用统一控件浮起样式，不改变原生GET或保留面板。",
+    "pt-BR": "Variante Button padrão para opções Compact inativas. Usa Quiet por padrão; Elevated mantém a elevação do controle. Não altera GET nativo nem painéis preservados."
+  },
+  "Parameter_ActiveVariant_NavigationChoices": {
+    "en-US": "Standard Button variant for the current Compact choice, defaulting to Secondary. Set both variants to Elevated for matching elevation; aria-current still identifies the current route.",
+    "zh-CN": "Compact当前项的普通Button样式，默认Secondary；两个样式都设为Elevated时统一浮起，当前路由仍由aria-current标记。",
+    "pt-BR": "Variante Button padrão para a opção Compact atual; usa Secondary por padrão. Defina ambas como Elevated para elevação uniforme; aria-current continua marcando a rota atual."
+  },
+  "Parameter_HeadingLevel_IdentityCard": {
+    "en-US": "Native heading level 1–6, defaulting to 2. Level 1 uses the standard large page-title scale for an account name; other levels use the summary heading scale.",
+    "zh-CN": "原生标题级别1–6，默认2；设为1时使用标准页面大标题字号呈现账号名，其他级别使用摘要标题字号。",
+    "pt-BR": "Nível de título nativo de 1–6, com padrão 2. O nível 1 usa o tamanho grande de título de página para o nome da conta; os demais usam o tamanho de resumo."
+  },
+  "Parameter_Title_IdentityCard": {
+    "en-US": "Optional encoded card heading. Supply an account name directly here; the summary owns its heading without nested sticky PageHeading chrome.",
+    "zh-CN": "可选、自动编码的卡片标题；账号名直接传入此处，由摘要控件生成自身标题，无需嵌套粘性PageHeading。",
+    "pt-BR": "Título opcional e codificado do cartão. Forneça o nome da conta diretamente; o resumo controla seu título sem inserir um PageHeading fixo."
   },
   "Parameter_StackTitleWords": {
     "en-US": "false by default. true puts each whitespace-separated title word on its own line, preserving the full aria-label, letters and organization name.",
@@ -6005,9 +6075,19 @@
     "pt-BR": "Lado máximo da célula quadrada, padrão 280px. Não limita células retangulares; deve ser positivo."
   },
   "Parameter_MaxCellHeight": {
-    "en-US": "Maximum rectangular cell height, default 260px; no width limit. Rectangles fill each row then divide it equally; automatic columns use twice the height as their threshold. Does not affect squares. Must be positive; configure on UniformGrid.",
-    "zh-CN": "长方形单元格的最大高度，默认 260px；不限制宽度。矩形先铺满行再按列均分，自动分列仅使用两倍高度作为换列阈值。正方形不受此值影响；必须为正数，在外层 UniformGrid 上配置。",
-    "pt-BR": "Altura máxima da célula retangular, padrão 260px; sem limite de largura. Retângulos preenchem a linha e a dividem igualmente; colunas automáticas usam duas vezes a altura como limite. Não afeta quadrados. Deve ser positiva; configure em UniformGrid."
+    "en-US": "Maximum rectangular cell height, default 260px; no width limit. Rectangles fill and divide each row; automatic columns use twice this height as their threshold. CellHeight overrides this maximum when supplied. Does not affect squares. Must be positive; configure on UniformGrid.",
+    "zh-CN": "长方形单元格的最大高度，默认 260px；不限制宽度。矩形先铺满行再均分，自动列数使用两倍此高度作为换列阈值。设置 CellHeight 时覆盖该上限。正方形不受此值影响；必须为正数，在外层 UniformGrid 上配置。",
+    "pt-BR": "Altura máxima da célula retangular, padrão 260px; sem limite de largura. Retângulos preenchem e dividem a linha; colunas automáticas usam duas vezes essa altura como limite. CellHeight substitui o máximo quando informado. Não afeta quadrados. Deve ser positiva; configure em UniformGrid."
+  },
+  "Parameter_CellHeight": {
+    "en-US": "Optional fixed rectangular cell height in pixels. Must be positive and finite; overrides MaxCellHeight and the 2:1 aspect ratio at all widths. Omit to retain automatic bounded height. Square rejects this parameter; configure on UniformGrid.",
+    "zh-CN": "可选长方形单元格固定高度，单位像素；必须为有限正数，在所有宽度下覆盖 MaxCellHeight 与 2:1 宽高比。省略时保留有上限的自动高度。Square 拒绝此参数，在外层 UniformGrid 上配置。",
+    "pt-BR": "Altura fixa opcional da célula retangular em pixels. Deve ser positiva e finita; substitui MaxCellHeight e a proporção 2:1 em todas as larguras. Omita para manter altura automática limitada. Square rejeita esse parâmetro; configure em UniformGrid."
+  },
+  "Parameter_FillHeight": {
+    "en-US": "Fill the fixed shell content stage, keep a direct PageHeading and give the remaining height to direct content. Removes document bottom spacing. Use a direct EditingGrid for one internally scrolling editor; default false keeps document flow.",
+    "zh-CN": "填满固定 shell 正文区，保留直接子级 PageHeading，将剩余高度交给直接正文，移除文档底部间距。直接组合 EditingGrid 形成内部滚动的编辑区；默认 false 保留文档流。",
+    "pt-BR": "Preenche a área fixa de conteúdo do shell, preserva PageHeading direto e entrega a altura restante ao conteúdo direto. Remove o espaço inferior do documento. Use EditingGrid direto para rolagem interna; false padrão preserva o fluxo do documento."
   },
   "Parameter_IconSupport": {
     "en-US": "null automatically enables equal vertical halves when Icon exists. true centers the icon above and text below; false keeps continuous layout. Cell values override UniformGrid.",
@@ -6895,9 +6975,9 @@
     "pt-BR": "Rodapé de apresentação com marca, copyright e nome decorativo grande."
   },
   "Catalog_PresentationFooter_Variants": {
-    "en-US": "Title/watermark follow ConfigureProject name and language. Copyright remains independently host-owned. Actions contains standard Underline navigation buttons.",
-    "zh-CN": "标题与水印自动跟随 ConfigureProject 的项目名称和语言。Copyright 由宿主独立提供；Actions 放标准 Underline 导航按钮。",
-    "pt-BR": "Título/marca-d'água seguem nome e idioma de ConfigureProject. Copyright permanece independente e pertence ao host. Actions contém botões de navegação Underline padrão."
+    "en-US": "Title/watermark follow ConfigureProject name and language unless ProjectName overrides this instance. The override never changes shared project configuration. Copyright is optional and independently host-owned. Actions contains standard Underline navigation buttons.",
+    "zh-CN": "标题与水印默认跟随ConfigureProject项目名及语言，ProjectName可仅覆盖当前实例，不修改共享项目配置；Copyright由宿主独立提供，可省略。Actions放标准Underline导航按钮。",
+    "pt-BR": "Título/marca-d'água seguem o nome e idioma de ConfigureProject, salvo substituição por ProjectName nesta instância. A substituição não altera a configuração compartilhada. Copyright é opcional e pertence ao host. Actions contém botões Underline padrão."
   },
   "Catalog_OfferStage_Purpose": {
     "en-US": "Arranges and progressively enhances presentation offer cards.",

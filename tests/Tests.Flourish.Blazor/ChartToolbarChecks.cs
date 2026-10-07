@@ -69,7 +69,7 @@ internal static class ChartToolbarChecks
                 builder.CloseComponent();
             };
             var html = await Render<Field>(new() { [nameof(Field.Id)] = "create-name", [nameof(Field.Label)] = "Name", [nameof(Field.ChildContent)] = content });
-            Require(Regex.IsMatch(html, "<div class=\"f-field-control\"><div class=\"f-inline-actions\"><input"), "Input/actions were not in the same actual field slot.");
+            Require(Regex.IsMatch(html, "<div class=\"f-field-control\"><div class=\"f-inline-actions\" data-alignment=\"center\"><input"), "Input/actions were not in the same actual field slot.");
             Require(html.Contains("id=\"create-name\"", StringComparison.Ordinal) && html.Contains("type=\"submit\"", StringComparison.Ordinal), "Inline layout lost native input/submit semantics.");
         }));
     }

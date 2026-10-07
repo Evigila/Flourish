@@ -19,8 +19,8 @@
 else
 {
     <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_ShowDemoIdentitySidebar)" @bind-Value="WithSidebar" />
-    <IdentityCard Title="@Localization.Parse(TextKey.Sample_FictionalMember)" SideContent="@(WithSidebar ? Sidebar : null)">
-        <dl><div><dt>@Localization.Parse(TextKey.Record_Name)</dt><dd class="f-identity-primary">演示成员</dd></div><div><dt>@Localization.Parse(TextKey.Sample_Identifier)</dt><dd>DEMO-001</dd></div></dl>
+    <IdentityCard Title="@Localization.Parse(TextKey.Sample_FictionalMember)" HeadingLevel="1" Columns="false" SideContent="@(WithSidebar ? Sidebar : null)">
+        <CopyText Value="DEMO-001" />
     </IdentityCard>
 }
 @code {

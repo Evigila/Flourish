@@ -39,6 +39,10 @@ else
         <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Open)" Icon="edit" Text="@Localization.Parse(TextKey.Sample_UpdateCount)" OnClick="() => OpenedCount++" />
     </UniformGrid>
     <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_OpenedDraftCount), OpenedCount)</p>
+    <UniformGrid Columns="2" NarrowColumns="1" CellHeight="100" IconSupport="false">
+        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Save)" Variant="UniformGridVariant.Filled" OnClick="() => OpenedCount++" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Cancel)" Variant="UniformGridVariant.Outlined" OnClick="() => OpenedCount = 0" />
+    </UniformGrid>
 }
 @code {
     [Parameter] public bool Preview { get; set; }

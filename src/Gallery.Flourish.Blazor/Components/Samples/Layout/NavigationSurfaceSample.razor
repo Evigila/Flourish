@@ -28,7 +28,7 @@
     <ChildContent>
         @if (!Preview)
         {
-            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Page == 0 ? Localization.Parse(TextKey.Sample_AllResourcesFictional) : Localization.Parse(TextKey.Sample_ArchivedFictional))" />
+            <div class="page-root"><ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@(Page == 0 ? Localization.Parse(TextKey.Sample_AllResourcesFictional) : Localization.Parse(TextKey.Sample_ArchivedFictional))" ParentLabel="@Localization.Parse(TextKey.Sample_Resources)" ParentHref="@($"#{Id}")" />
                 @for (var row = 1; row <= (Page == 0 ? 6 : 3); row++) { <ArkheideSystem.Flourish.Blazor.Components.Section Title="@($"{(Page == 0 ? Localization.Parse(TextKey.Sample_Resources) : Localization.Parse(TextKey.Sample_ArchivedResources))} {row}")"><p>@Localization.Parse(TextKey.Sample_ThisIsAFictionalRecordChangingPagesUpdatesTheSectionIndexAndOnlyTheExampleContentAreaScrolls)</p></ArkheideSystem.Flourish.Blazor.Components.Section> }
             </div>
         }

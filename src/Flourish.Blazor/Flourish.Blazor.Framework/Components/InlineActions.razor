@@ -1,7 +1,13 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
-<div class="f-inline-actions">@ChildContent</div>
+<div class="f-inline-actions" data-alignment="@Alignment.ToString().ToLowerInvariant()">@ChildContent</div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public HorizontalAlignment Alignment { get; set; } = HorizontalAlignment.Center;
+
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Alignment)) throw new ArgumentOutOfRangeException(nameof(Alignment));
+    }
 }

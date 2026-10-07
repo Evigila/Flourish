@@ -3,7 +3,7 @@
     display:grid;
     --f-grid-cell-width:1fr;
     /* Rectangle height sets a wrapping threshold, never a maximum track width. */
-    grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-max-height,260px))),1fr));
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-max-height,260px)))),1fr));
     grid-auto-flow:row;
     grid-auto-rows:minmax(0,1fr);
     justify-content:start;
@@ -43,6 +43,9 @@
     overflow-wrap:anywhere;
 }
 .f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; max-height:var(--f-grid-cell-max-height,260px); overflow:auto; justify-content:safe center; }
+.f-uniform-grid-fixed-height { grid-auto-rows:var(--f-grid-cell-height); }
+.f-uniform-grid-fixed-height.f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),var(--f-grid-cell-height)); }
+.f-uniform-grid-rectangle.f-uniform-grid-fixed-height > .f-uniform-cell { aspect-ratio:auto; height:var(--f-grid-cell-height); min-height:var(--f-grid-cell-height); max-height:var(--f-grid-cell-height); }
 .f-uniform-cell-heading { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; min-width:0; max-width:100%; }
 .f-uniform-cell-title,.f-uniform-cell-text { display:block; min-width:0; max-width:100%; overflow-wrap:anywhere; }
 .f-uniform-cell > .f-button-text { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; max-width:100%; }

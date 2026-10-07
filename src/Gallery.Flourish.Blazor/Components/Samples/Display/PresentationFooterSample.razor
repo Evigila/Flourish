@@ -1,7 +1,7 @@
 @inherits LocalizedComponentBase
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
 @attribute [SampleFor("PresentationFooter")]
-<PresentationFooter Copyright="@Localization.Parse(TextKey.Sample_FictionalPresentationNoticeTheHostSetsCopyrightTheHeadingAndWatermarkFollowTheProjectName)">
+<PresentationFooter ProjectName="@Localization.Parse(TextKey.Access_OrganizationName)" Copyright="@(Preview ? null : Localization.Parse(TextKey.Sample_FictionalPresentationNoticeTheHostSetsCopyrightTheHeadingAndWatermarkFollowTheProjectName))">
     <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display">@Localization.Parse(TextKey.Sample_PresentationExamples)</Button></Actions>
 </PresentationFooter>
 @code {

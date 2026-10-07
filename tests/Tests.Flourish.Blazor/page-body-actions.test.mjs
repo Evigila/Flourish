@@ -7,6 +7,18 @@ const read = async path => (await readFile(new URL(path, root), "utf8")).replace
 const designRoot = "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/";
 const frameworkRoot = "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/";
 
+test("compact page forms reserve balanced spacing without stacking section insets", async () => {
+  const framework = await read(`${frameworkRoot}framework.css`);
+  assert.equal(property(rule(framework, ".f-page-body.f-page-compact-spacing"), "padding-block"), "0 32px");
+  assert.equal(property(rule(framework, ".f-page-compact-spacing > :is(.f-form-layout,.f-identity-card)"), "margin-block-start"), "24px");
+  assert.equal(property(rule(framework, ".f-page-compact-spacing > .f-section"), "padding-block-start"), "24px");
+  const nested = rule(framework, ".f-page-compact-spacing .f-form-layout > .f-section");
+  assert.equal(property(nested, "padding-block"), "0");
+  assert.equal(property(nested, "margin-block"), "0");
+  const board = await read(`${frameworkRoot}display-board.css`);
+  assert.equal(property(rule(board, ".f-display-board-content > .f-section"), "padding-block"), "0");
+});
+
 function rule(css, selector) {
   const found = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(match => match[1].trim() === selector);
   assert.ok(found, `Missing rule ${selector}`);

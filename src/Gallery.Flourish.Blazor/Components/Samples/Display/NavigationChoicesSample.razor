@@ -7,7 +7,7 @@
     <SideContent>
         <AccessFormSurface Tone="PresentationTone.Primary">
             <Section Title="@Localization.Parse(TextKey.Access_MethodOrganizationAction)" TitleId="@(Id + "-title")">
-                <NavigationChoices Id="@Id" Label="@Localization.Parse(TextKey.Access_MethodLabel)" Items="Choices" ActiveKey="@ActiveKey" Compact="true">
+                <NavigationChoices Id="@Id" Label="@Localization.Parse(TextKey.Access_MethodLabel)" Items="Choices" ActiveKey="@ActiveKey" Compact="true" Variant="ButtonVariant.Elevated" ActiveVariant="ButtonVariant.Elevated">
                     <ChildContent Context="choice">
                         @if (choice.Key == "organization")
                         {
@@ -18,19 +18,21 @@
                                 <Field Id="@(Id + "-password")" Label="@Localization.Parse(TextKey.Access_OrganizationPassword)">
                                     <StandaloneTextBox Id="@(Id + "-password")" Type="password" autocomplete="current-password" />
                                 </Field>
+                                <Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Access_MethodOrganizationAction)</Button>
                             </FormLayout>
-                            <Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Access_MethodOrganizationAction)</Button>
                         }
                         else if (choice.Key == "account")
                         {
-                            <Button Variant="ButtonVariant.Secondary" Href="/examples/display/login" data-enhance-nav="false">@Localization.Parse(TextKey.Access_MethodAccountAction)</Button>
+                            <Button Variant="ButtonVariant.Elevated" Href="/examples/display/login" data-enhance-nav="false">@Localization.Parse(TextKey.Access_MethodAccountAction)</Button>
                         }
                         else
                         {
-                            <Field Id="@(Id + "-pass")" Label="@Localization.Parse(TextKey.Access_MethodCredential)">
-                                <StandaloneTextBox Id="@(Id + "-pass")" Type="password" autocomplete="off" />
-                            </Field>
-                            <Button Variant="ButtonVariant.Secondary" Disabled="true">@Localization.Parse(TextKey.Access_MethodPassAction)</Button>
+                            <FormLayout Columns="1">
+                                <Field Id="@(Id + "-pass")" Label="@Localization.Parse(TextKey.Access_MethodCredential)">
+                                    <StandaloneTextBox Id="@(Id + "-pass")" Type="password" autocomplete="off" />
+                                </Field>
+                                <Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Access_MethodPassAction)</Button>
+                            </FormLayout>
                         }
                     </ChildContent>
                 </NavigationChoices>

@@ -8,7 +8,15 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "Description" when parameter.DeclaringType == typeof(Controls.Button) => "Key.Parameter_Description_Button",
+        "TrailingText" when parameter.DeclaringType == typeof(Controls.Button) => "Key.Parameter_TrailingText_Button",
+        "Variant" when parameter.DeclaringType == typeof(Controls.EmptyState) => "Key.Parameter_Variant_EmptyState",
+        "Alignment" when parameter.DeclaringType == typeof(Controls.InlineActions) => "Key.Parameter_Alignment_InlineActions",
         "Compact" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_Compact_NavigationChoices",
+        "HeadingLevel" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_HeadingLevel_IdentityCard",
+        "Title" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_Title_IdentityCard",
+        "Variant" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_Variant_NavigationChoices",
+        "ActiveVariant" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_ActiveVariant_NavigationChoices",
         "StackTitleWords" => "Key.Parameter_StackTitleWords",
         "SideContent" when parameter.DeclaringType == typeof(Controls.PresentationHero) => "Key.Parameter_SideContent_PresentationHero",
         "Tone" when parameter.DeclaringType == typeof(Controls.AccessFormSurface) => "Key.Parameter_Tone_AccessFormSurface",
@@ -103,6 +111,7 @@ internal static class ParameterMeaning
         "Shape" => "Key.Parameter_Shape",
         "MaxCellSize" => "Key.Parameter_MaxCellSize",
         "MaxCellHeight" => "Key.Parameter_MaxCellHeight",
+        "CellHeight" => "Key.Parameter_CellHeight",
         "IconSupport" => "Key.Parameter_IconSupport",
         "Variant" when (Nullable.GetUnderlyingType(parameter.PropertyType) ?? parameter.PropertyType) == typeof(Controls.UniformGridVariant)
             => parameter.PropertyType == typeof(Controls.UniformGridVariant)
@@ -135,6 +144,8 @@ internal static class ParameterMeaning
         "Required" => "Key.Parameter_Required",
         "Error" => "Key.Parameter_Error",
         "FullWidth" => "Key.Parameter_FullWidth",
+        "FillHeight" => "Key.Parameter_FillHeight",
+        "CompactSpacing" => "Key.Parameter_CompactSpacing",
         "Columns" when parameter.PropertyType == typeof(bool) => "Key.Parameter_Columns_bool",
         "Columns" when parameter.PropertyType == typeof(int) => "Key.Parameter_Columns_int",
         "Columns" when parameter.PropertyType == typeof(int?) => "Key.Parameter_Columns_intNullable",

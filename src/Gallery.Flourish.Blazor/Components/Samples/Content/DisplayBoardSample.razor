@@ -20,6 +20,15 @@ else
         <Button Icon="add" Text="@Localization.Parse(TextKey.Sample_CreateDemoItem)" OnClick="() => Count++" />
         <span role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_CreatedItemsCount), Count)</span>
     </DisplayBoard>
+    <DisplayBoard Dotted="false" Centered="false">
+        <Section Title="@Localization.Parse(TextKey.Sample_Venue)">
+            <FormLayout Columns="1">
+                <Field Id="@VenueFieldId" Label="@Localization.Parse(TextKey.Sample_VenueName)">
+                    <StandaloneTextBox @bind-Value="VenueName" />
+                </Field>
+            </FormLayout>
+        </Section>
+    </DisplayBoard>
     <DisplayBoard Dotted="false" CopyText="@Example"
                   CopyLabel="@Localization.Parse(TextKey.Sample_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Sample_Copied)" CopyingLabel="@Localization.Parse(TextKey.Sample_Copying)"
                   CopyFailedLabel="@Localization.Parse(TextKey.Sample_CouldNotCopySelectTheCodeAndCopyItManually)">
@@ -31,6 +40,8 @@ else
     private bool Dotted = true;
     private bool Centered = true;
     private int Count;
+    private readonly string VenueFieldId = $"board-venue-{Guid.NewGuid():N}";
+    private string? VenueName;
     private const string Example = """
         @using ArkheideSystem.Flourish.Blazor.Components
         <CheckBox Label="显示点阵" @bind-Value="Dotted" />

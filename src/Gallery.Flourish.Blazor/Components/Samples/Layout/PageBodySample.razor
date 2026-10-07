@@ -10,6 +10,8 @@
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("PageBody")]
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
+@using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
 
 @if (Preview)
 {
@@ -20,10 +22,20 @@
 else
 {
     <Field Label="@Localization.Parse(TextKey.Sample_ContentLayout)" Id="@Id"><SelectBox TValue="string" Options="Modes" @bind-Value="Mode" /></Field>
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")">
+    <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_CompactPageSpacing)" @bind-Value="CompactSpacing" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")" CompactSpacing="@CompactSpacing">
         <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_ResourceSettingsFictional)" />
         <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Sample_Description)"><p>@Localization.Parse(TextKey.Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins)</p></ArkheideSystem.Flourish.Blazor.Components.Section>
     </ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ContentId="@GridId" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)">
+        <TitleBar><ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{GridId}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@Localization.Parse(TextKey.Sample_ResourceCenterFictional)" /></TitleBar>
+        <ChildContent>
+            <PageBody FullWidth="true" FillHeight="true">
+                <PageHeading Title="@Localization.Parse(TextKey.Sample_FictionalSupplies)" Compact="true" />
+                <ArkheideSystem.Flourish.Blazor.Components.Primitives.EditingGrid Columns="GridColumns" Rows="GridRows" CellChanged="ChangeCell" Label="@Localization.Parse(TextKey.Sample_FictionalSuppliesEditingGrid)" TableLabel="@Localization.Parse(TextKey.Sample_FictionalSupplies)" />
+            </PageBody>
+        </ChildContent>
+    </ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
 }
 
 @code {
@@ -31,4 +43,16 @@ else
     private SelectOption<string>[] Modes => [new("centered", Localization.Parse(TextKey.Sample_Centered)), new("fluid", Localization.Parse(TextKey.Sample_Fluid)), new("full", Localization.Parse(TextKey.Sample_FullWidth))];
     private readonly string Id = $"page-body-mode-{Guid.NewGuid():N}";
     private string Mode = "centered";
+    private bool CompactSpacing;
+    private readonly string GridId = $"page-body-grid-{Guid.NewGuid():N}";
+    private IReadOnlyList<Primitives.GridColumn> GridColumns => [new("name", Localization.Parse(TextKey.Record_Name), Identity: true)];
+    private IReadOnlyList<Primitives.GridRow> GridRows = Enumerable.Range(1, 24).Select(index => new Primitives.GridRow(index, [new($"DEMO-{index:000}", $"DEMO-{index:000}")])).ToArray();
+    private void ChangeCell(Primitives.GridCellChange change)
+    {
+        GridRows = GridRows.Select((row, index) => index == change.Row ? row with
+        {
+            Cells = [row.Cells[0] with { Value = change.Value, Display = change.Value ?? string.Empty, Changed = true }], Dirty = true
+        } : row).ToArray();
+    }
+    private const string Logo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23153A32'/%3E%3Cpath d='M13 13h22v22H13z' fill='%23FFFFFF'/%3E%3C/svg%3E";
 }

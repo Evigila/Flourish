@@ -15,17 +15,24 @@
 
 @if (Preview)
 {
-    <label id="@(Prefix + "-empty-label")">@Localization.Parse(TextKey.Sample_EmptyOptions)</label>
+    <FormLayout Columns="2">
+    <Field Id="@(Prefix + "-empty")" ControlId="@(Prefix + "-empty-trigger")" Label="@Localization.Parse(TextKey.Sample_EmptyOptions)">
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-empty")" LabelledBy="@(Prefix + "-empty-label")" Items="EmptyItems" @bind-Value="EmptyId" EmptySelectionText="@Localization.Parse(TextKey.Sample_NotSelected)" SearchLabel="@Localization.Parse(TextKey.Sample_SearchOptions)" />
-    <label id="@(Prefix + "-disabled-label")">@Localization.Parse(TextKey.Sample_Disabled)</label>
+    </Field>
+    <Field Id="@(Prefix + "-disabled")" ControlId="@(Prefix + "-disabled-trigger")" Label="@Localization.Parse(TextKey.Sample_Disabled)">
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-disabled")" LabelledBy="@(Prefix + "-disabled-label")" Items="EmptyItems" Disabled="true" EmptySelectionText="@Localization.Parse(TextKey.Sample_NotSelected)" />
+    </Field>
+    </FormLayout>
 }
 else
 {
     <ToggleSwitch Label="@Localization.Parse(TextKey.Sample_PreventVenueChanges)" @bind-Value="Locked" OnLabel="@Localization.Parse(TextKey.Sample_Blocked)" OffLabel="@Localization.Parse(TextKey.Sample_Allowed)" />
-    <label id="@(Prefix + "-venue-label")">@Localization.Parse(TextKey.Sample_Venue)</label>
+    <FormLayout Columns="1">
+    <Field Id="@(Prefix + "-venue")" ControlId="@(Prefix + "-venue-trigger")" Label="@Localization.Parse(TextKey.Sample_Venue)">
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ReferenceDropdown TValue="int" Id="@(Prefix + "-venue")" LabelledBy="@(Prefix + "-venue-label")" Items="Venues" @bind-Value="VenueId"
                          CreateRequested="Create" Disabled="Locked" EmptySelectionText="@Localization.Parse(TextKey.Sample_NoVenueSelected)" SearchLabel="@Localization.Parse(TextKey.Sample_SearchOrCreateAVenue)" />
+    </Field>
+    </FormLayout>
     <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_CurrentVenueId), VenueId?.ToString() ?? Localization.Parse(TextKey.Sample_NotSelected))</p>
 }
 

@@ -3,6 +3,7 @@ import { rememberInvoker, resolveInvoker } from './primitives/interaction-origin
 const menus = new WeakMap();
 const dialogs = new WeakMap();
 const inputs = new WeakMap();
+const accessForms = new WeakMap();
 let activeMenu = null;
 const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 const visible = element => element.getClientRects().length > 0 && !element.closest('[hidden],[inert]');
@@ -27,6 +28,64 @@ export function attachTextSelection(input) {
     inputs.set(input, () => { cancelAnimationFrame(frame); input.removeEventListener('focus', focus); });
 }
 export function detachTextSelection(input) { inputs.get(input)?.(); inputs.delete(input); }
+
+/** Match the visible input-to-input gap before actions while retaining visible field labels. */
+export function attachAccessFormSpacing(root) {
+    if (!root?.isConnected || accessForms.has(root)) return;
+    const managed = new Map();
+    let observed = [];
+    const resize = new ResizeObserver(update);
+    const mutation = new MutationObserver(update);
+    function update() {
+        if (!root.isConnected) { detachAccessFormSpacing(root); return; }
+        const targets = new Map();
+        const labels = new Set();
+        const owns = element => element.closest('.f-access-form-surface') === root;
+        function reserve(action, field) {
+            const label = field?.querySelector(':scope > .f-field-label');
+            if (!label || !owns(field)) return;
+            labels.add(label);
+            const height = label.getClientRects().length ? label.getBoundingClientRect().height : 0;
+            const gap = Number.parseFloat(getComputedStyle(field).rowGap) || 0;
+            targets.set(action, `${height > 0 ? height + gap : 0}px`);
+        }
+        for (const layout of root.querySelectorAll('.f-form-layout')) {
+            if (!owns(layout)) continue;
+            for (const action of layout.children)
+                if (action.matches('.f-button,.f-inline-actions') && action.previousElementSibling?.matches('.f-field'))
+                    reserve(action, action.previousElementSibling);
+        }
+        for (const actions of root.querySelectorAll(':scope > .f-access-form-actions')) {
+            const preceding = [...root.querySelectorAll('.f-field')].filter(field => owns(field) && visible(field)
+                && (field.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING));
+            reserve(actions, preceding.at(-1));
+        }
+        for (const [action, original] of managed) {
+            if (targets.has(action)) continue;
+            if (original) action.style.setProperty('--f-access-action-label-gap', original);
+            else action.style.removeProperty('--f-access-action-label-gap');
+            managed.delete(action);
+        }
+        for (const [action, value] of targets) {
+            if (!managed.has(action)) managed.set(action, action.style.getPropertyValue('--f-access-action-label-gap'));
+            if (action.style.getPropertyValue('--f-access-action-label-gap') !== value)
+                action.style.setProperty('--f-access-action-label-gap', value);
+        }
+        const nextObserved = [root, ...labels];
+        if (nextObserved.length !== observed.length || nextObserved.some((node, index) => node !== observed[index])) {
+            resize.disconnect(); nextObserved.forEach(node => resize.observe(node)); observed = nextObserved;
+        }
+    }
+    accessForms.set(root, () => {
+        resize.disconnect(); mutation.disconnect();
+        for (const [action, original] of managed)
+            if (original) action.style.setProperty('--f-access-action-label-gap', original);
+            else action.style.removeProperty('--f-access-action-label-gap');
+    });
+    mutation.observe(root, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['hidden','class'] });
+    update();
+}
+export function detachAccessFormSpacing(root) { accessForms.get(root)?.(); accessForms.delete(root); }
 
 function menuUnavailable(element) {
     return !element || element.disabled || element.matches(':disabled')

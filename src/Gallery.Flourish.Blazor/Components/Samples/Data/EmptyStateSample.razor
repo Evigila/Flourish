@@ -18,9 +18,14 @@
         <ChildContent><p>@Localization.Parse(TextKey.Sample_AShortDescriptionCanBeProvided)</p></ChildContent>
         <Actions><Button Variant="ButtonVariant.Secondary">@Localization.Parse(TextKey.Sample_Add)</Button></Actions>
     </EmptyState>
+    <EmptyState Variant="EmptyStateVariant.Watermark" Title="@Localization.Parse(TextKey.Sample_WelcomeToYourWorkspace)" />
 }
 else
 {
+    <PageBody>
+        <PageHeading Title="@Localization.Parse(TextKey.Sample_PageTitle)" />
+        <EmptyState Variant="EmptyStateVariant.Watermark" Title="@Localization.Parse(TextKey.Sample_WelcomeToYourWorkspace)" />
+    </PageBody>
     @if (!HasItem)
     {
         <EmptyState Title="@Localization.Parse(TextKey.Sample_NoDemoAttachmentsAddedYet)">

@@ -660,9 +660,9 @@
     "pt-BR": "Rodapé de marca de sites de apresentação"
   },
   "Usage_PresentationFooter_Guidance": {
-    "en-US": "Production use: full-width footer, centered content and decorative watermark. Heading/watermark follow the configured localized project name. The host supplies Copyright; business navigation/account panels use their own composition.",
-    "zh-CN": "生产使用：全宽页脚、中心内容与装饰水印；标题和水印统一跟随 ConfigureProject 的项目名及其本地化。Copyright 由宿主提供，不复制到业务导航或账户管理面板。",
-    "pt-BR": "Uso em produção: rodapé de largura total, conteúdo centralizado e marca d'água decorativa. Título/marca d'água acompanham o nome localizado do projeto configurado. O aplicativo fornece Copyright; navegação de negócio/painéis de conta usam sua própria composição."
+    "en-US": "Production use: full-width footer, centered content and decorative watermark. Heading/watermark follow the configured localized project name unless ProjectName supplies an instance override. Copyright is optional. Business navigation/account panels use their own composition.",
+    "zh-CN": "生产使用：全宽页脚、中心内容与装饰水印；标题和水印默认跟随已配置本地化项目名，ProjectName仅覆盖当前实例；Copyright可省略。业务导航或账户管理面板使用自身组合。",
+    "pt-BR": "Uso em produção: rodapé de largura total, conteúdo centralizado e marca d'água decorativa. Título/marca d'água acompanham o nome localizado configurado, salvo substituição de ProjectName nesta instância. Copyright é opcional. Navegação de negócio/painéis de conta usam sua própria composição."
   },
   "Usage_LogoDisplayer_Scenario": {
     "en-US": "Project identity on access/presentation pages",
@@ -890,9 +890,9 @@
     "pt-BR": "Células de exibição uniformes"
   },
   "Usage_UniformGrid_Guidance": {
-    "en-US": "Production use: UniformGridItem/UniformGridButton shapes, size limits, automatic columns and variants. The library owns uniform cell layout and interaction.",
-    "zh-CN": "生产使用：配合 UniformGridItem / UniformGridButton 的形状、尺寸上限、自动列数和外观；只由库管理网格单元的统一布局与交互。",
-    "pt-BR": "Uso em produção: formas, limites de tamanho, colunas automáticas e variantes de UniformGridItem/UniformGridButton. A biblioteca controla o layout e a interação uniformes das células."
+    "en-US": "Production use: UniformGridItem/UniformGridButton shapes, size limits, automatic columns and variants. Optional CellHeight fixes rectangular row height independently of responsive width and overrides MaxCellHeight. Square shape does not accept a fixed height. The library owns uniform cell layout and interaction.",
+    "zh-CN": "生产使用：配合 UniformGridItem / UniformGridButton 的形状、尺寸上限、自动列数和外观。可选 CellHeight 固定长方形行高，与响应式宽度独立，并覆盖 MaxCellHeight；Square 不接受固定高度。由库管理网格单元的统一布局与交互。",
+    "pt-BR": "Uso em produção: formas, limites de tamanho, colunas automáticas e variantes de UniformGridItem/UniformGridButton. CellHeight opcional fixa a altura retangular independentemente da largura responsiva e substitui MaxCellHeight. Square não aceita altura fixa. A biblioteca controla o layout e a interação uniformes das células."
   },
   "Usage_ToggleSwitch_Scenario": {
     "en-US": "Boolean switches",
@@ -1070,9 +1070,9 @@
     "pt-BR": "Largura do conteúdo de páginas de negócio"
   },
   "Usage_PageBody_Guidance": {
-    "en-US": "Production use: controlled content width and gutters; direct child sections follow the page layout. Use PresentationBand/ContentContainer for full-width backgrounds with bounded content.",
-    "zh-CN": "生产使用：受控正文宽度与边距；直接子区块遵循页面布局。全宽背景且内容限宽的展示区使用 PresentationBand / ContentContainer。",
-    "pt-BR": "Uso em produção: largura e margens controladas; seções filhas diretas seguem o layout da página. Use PresentationBand/ContentContainer para fundos de largura total com conteúdo limitado."
+    "en-US": "Production use: controlled content width and gutters; direct child sections follow the page layout. FillHeight fills a fixed shell stage, retains the direct PageHeading and gives the remaining space to content such as EditingGrid. Use Compact on the heading for immediate collapse. Use PresentationBand/ContentContainer for full-width backgrounds with bounded content.",
+    "zh-CN": "生产使用：受控正文宽度与边距；直接子区块遵循页面布局。FillHeight 填满固定 shell 内容区，保留直接子级 PageHeading，将剩余空间交给 EditingGrid 等正文；标题设置 Compact 可立即进入坍塌状态。全宽背景且内容限宽的展示区使用 PresentationBand / ContentContainer。",
+    "pt-BR": "Uso em produção: largura e margens controladas; seções filhas diretas seguem o layout da página. FillHeight preenche a área fixa do shell, preserva PageHeading direto e entrega o espaço restante ao conteúdo, como EditingGrid. Compact recolhe o título imediatamente. Use PresentationBand/ContentContainer para fundos de largura total com conteúdo limitado."
   },
   "Usage_NumberBox_Scenario": {
     "en-US": "Model-bound numeric input",
@@ -1120,9 +1120,9 @@
     "pt-BR": "Resumos de identidade e registros"
   },
   "Usage_IdentityCard_Guidance": {
-    "en-US": "Production use: semantic content and SideContent for summaries. Compose the dedicated hero or form controls for product presentation and editing.",
-    "zh-CN": "生产使用：通过语义化内容与 SideContent 显示摘要；不是产品展示 Hero 或独立编辑表单。",
-    "pt-BR": "Uso em produção: conteúdo semântico e SideContent para resumos. Componha os controles próprios de destaque ou formulário para apresentação de produtos e edição."
+    "en-US": "Production use: Title is the native summary heading, with HeadingLevel defaulting to 2. Use HeadingLevel=1 for a prominent account name and CopyText for its identifier. SideContent supplies supporting facts. Compose the dedicated hero or form controls for product presentation and editing.",
+    "zh-CN": "生产使用：Title为原生摘要标题，HeadingLevel默认2；设为1时突出账号名，CopyText显示ID。SideContent提供辅助信息；产品展示和编辑使用专门的Hero或表单控件组合。",
+    "pt-BR": "Uso em produção: Title é o título nativo do resumo, com HeadingLevel padrão 2. Use HeadingLevel=1 para destacar o nome da conta e CopyText para seu ID. SideContent fornece informações auxiliares. Apresentação de produtos e edição usam os controles próprios de destaque ou formulário."
   },
   "Usage_Icon_Scenario": {
     "en-US": "Icon rendering",
@@ -1170,9 +1170,9 @@
     "pt-BR": "Seleção de método com GET nativo"
   },
   "Usage_NavigationChoices_Guidance": {
-    "en-US": "Production use: NavigationChoiceItem items and a route-derived ActiveKey. Compact selects standard Button links; the default is a grid. The library owns same-site GET links and retained panels, with aria-current on the active link. The host supplies forms and retains authentication/POST/authorization. Disabled is not authorization.",
-    "zh-CN": "生产使用：Items采用NavigationChoiceItem，ActiveKey由当前路由确定。Compact显式选择普通Button入口，默认网格。原生同站点GET链接和保留挂载面板由库生成，当前项使用aria-current；不是ARIA tabs，不接管认证/POST或授权。ChildContent提供业务表单，禁用不代替授权。",
-    "pt-BR": "Uso em produção: itens NavigationChoiceItem e ActiveKey derivado da rota. Compact usa links Button padrão; o padrão é uma grade. A biblioteca controla links GET do mesmo site e painéis preservados, com aria-current no link ativo. O aplicativo fornece formulários e mantém autenticação/POST/autorização. Disabled não representa autorização."
+    "en-US": "Production use: NavigationChoiceItem items and a route-derived ActiveKey. Compact selects standard Button links with Variant/ActiveVariant; the default is a grid. The library owns same-site GET links and retained panels, with aria-current on the active link. The host supplies forms and retains authentication/POST/authorization. Disabled is not authorization.",
+    "zh-CN": "生产使用：Items采用NavigationChoiceItem，ActiveKey由当前路由确定。Compact使用Variant/ActiveVariant配置普通Button入口，默认网格。库拥有原生同站点GET链接与保留面板，当前项使用aria-current。宿主提供表单并保留认证/POST/授权；禁用不代替授权。",
+    "pt-BR": "Uso em produção: itens NavigationChoiceItem e ActiveKey derivado da rota. Compact usa links Button padrão com Variant/ActiveVariant; o padrão é grade. A biblioteca controla GET do mesmo site e painéis preservados, com aria-current no link ativo. O aplicativo mantém formulários, autenticação/POST/autorização. Disabled não representa autorização."
   },
   "Usage_ValidationMessages_Scenario": {
     "en-US": "Hidden and cross-field validation messages",

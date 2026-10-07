@@ -151,7 +151,8 @@
     [Parameter] public string EmptyMessage { get; set; } = "No records found.";
     [Parameter] public GridText Text { get; set; } = new();
 
-    private double ColumnWidth(string key) => Widths.GetValueOrDefault(key, AutomaticWidths.GetValueOrDefault(key, MinimumWidth));
+    private double AutomaticMinimumWidth(string key) => Columns.First(column => column.Key == key).Identity ? 280 : 220;
+    private double ColumnWidth(string key) => Widths.GetValueOrDefault(key, AutomaticWidths.GetValueOrDefault(key, AutomaticMinimumWidth(key)));
     private string ColumnWidthStyle(string key) => $"width:{ColumnWidth(key).ToString(CultureInfo.InvariantCulture)}px";
     private string TableWidthStyle => $"width:{Columns.Sum(column => ColumnWidth(column.Key)).ToString(CultureInfo.InvariantCulture)}px";
     private string CellClass(GridColumn column, GridCell cell) => string.Join(" ", new[]
@@ -211,7 +212,8 @@
                 foreach (var pair in measured ?? [])
                 {
                     if (!double.IsFinite(pair.Value) || Widths.ContainsKey(pair.Key)) continue;
-                    var width = Math.Clamp(Math.Round(pair.Value), MinimumWidth, MaximumAutomaticWidth);
+                    var minimum = AutomaticMinimumWidth(pair.Key);
+                    var width = Math.Clamp(Math.Round(pair.Value), minimum, Math.Max(minimum, MaximumAutomaticWidth));
                     changed |= !AutomaticWidths.TryGetValue(pair.Key, out var previous) || previous != width;
                     AutomaticWidths[pair.Key] = width;
                 }

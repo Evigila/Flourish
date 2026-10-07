@@ -36,6 +36,7 @@ internal static class UniformGridChecks
             Require(Attribute(grid, "style").Contains("--f-grid-cell-max-height:260px", StringComparison.Ordinal), "Rectangle cells lost their default 260px height cap.");
             Require(!Attribute(grid, "style").Contains("--f-grid-columns", StringComparison.Ordinal), "Automatic layout still emits a fixed column count.");
             Require(!Attribute(grid, "style").Contains("aspect-ratio", StringComparison.Ordinal), "The container itself was shaped as a cell.");
+            Require(!HasClass(grid, "f-uniform-grid-fixed-height") && !Attribute(grid, "style").Contains("--f-grid-cell-height:", StringComparison.Ordinal), "Default rectangles unexpectedly have a fixed height.");
             Require(Tags(html, "f-uniform-grid-item").Count == 3, "The container lost its supplied cells.");
         }));
         tests.Add(("rectangular and square action grids retain one shape-aware layout across all dimension modes", async () =>
@@ -84,6 +85,29 @@ internal static class UniformGridChecks
             var square = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.Shape)] = UniformGridShape.Square,
                 [nameof(UniformGrid.MaxCellHeight)] = 160 }), "div", "f-uniform-grid");
             Require(!Attribute(square, "style").Contains("--f-grid-cell-max-height:", StringComparison.Ordinal), "The Rectangle cap affected Square cells.");
+        }));
+        tests.Add(("fixed rectangular action height stays independent of width dimensions and the ordinary maximum", async () =>
+        {
+            foreach (var height in new[] { 100d, 100.5d, 320d })
+                foreach (var dimensions in new[] { (Columns: (int?)null, Rows: (int?)null), (Columns: (int?)2, Rows: (int?)null),
+                    (Columns: (int?)null, Rows: (int?)2), (Columns: (int?)2, Rows: (int?)2) })
+                {
+                    var grid = Tag(await Render<UniformGrid>(new() {
+                        [nameof(UniformGrid.CellHeight)] = height, [nameof(UniformGrid.MaxCellHeight)] = 80,
+                        [nameof(UniformGrid.Columns)] = dimensions.Columns, [nameof(UniformGrid.Rows)] = dimensions.Rows,
+                        [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.ChildContent)] = ActionCells()
+                    }), "div", "f-uniform-grid");
+                    Require(HasClass(grid, "f-uniform-grid-fixed-height") && HasClass(grid, "f-uniform-grid-rectangle"), "Fixed height did not select the standard rectangular layout.");
+                    Require(Attribute(grid, "style").Contains(FormattableString.Invariant($"--f-grid-cell-height:{height}px"), StringComparison.Ordinal), "Fixed height was localized, rounded or replaced by the normal cap.");
+                    Require(Attribute(grid, "style").Contains("--f-grid-cell-max-height:80px", StringComparison.Ordinal)
+                        && Attribute(grid, "style").Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal), "Fixed height rewrote the independent cap or narrow-screen dimensions.");
+                }
+        }));
+        tests.Add(("fixed rectangular height rejects nonfinite nonpositive and square shape values", async () =>
+        {
+            foreach (var height in new[] { 0d, -1d, double.NaN, double.PositiveInfinity, double.NegativeInfinity })
+                await Reject(new() { [nameof(UniformGrid.CellHeight)] = height }, nameof(UniformGrid.CellHeight));
+            await Reject(new() { [nameof(UniformGrid.Shape)] = UniformGridShape.Square, [nameof(UniformGrid.CellHeight)] = 100d }, nameof(UniformGrid.CellHeight));
         }));
         tests.Add(("uniform grid exposes independent row column and narrow-screen dimensions", async () =>
         {

@@ -58,6 +58,40 @@ internal static class NavigationChoicesChecks
                 return Task.CompletedTask;
             });
         }));
+        tests.Add(("compact navigation choices use selected production button variants without changing retained forms or destinations", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(NavigationChoices.Compact)] = true;
+            parameters[nameof(NavigationChoices.Variant)] = ButtonVariant.Elevated;
+            parameters[nameof(NavigationChoices.ActiveVariant)] = ButtonVariant.Elevated;
+            await WithComponent(parameters, async (component, activator, html) =>
+            {
+                var buttons = activator.Instances.OfType<Button>().ToArray();
+                Require(buttons.Length == 3 && buttons.All(button => button.Variant == ButtonVariant.Elevated), "The selected compact variants bypassed real Button components.");
+                var panels = Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).ToArray();
+                foreach (var key in new[] { "organization", "account", "pass" })
+                {
+                    var choice = OpeningTag(html(), "a", "entry-" + key + "-choice");
+                    Require(choice.Contains("f-button-elevated", StringComparison.Ordinal)
+                        && choice.Contains("href=\"/entry?method=" + key + "\"", StringComparison.Ordinal)
+                        && choice.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Elevated appearance changed native GET navigation.");
+                    Require(choice.Contains("aria-current=\"page\"", StringComparison.Ordinal) == (key == "organization"), "Equal button variants lost the current destination.");
+                }
+                parameters[nameof(NavigationChoices.Variant)] = ButtonVariant.Quiet;
+                parameters[nameof(NavigationChoices.ActiveVariant)] = ButtonVariant.Primary;
+                await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                Require(activator.Instances.OfType<Button>().SequenceEqual(buttons), "Changing a standard variant recreated production choice buttons.");
+                Require(buttons.Single(button => button.Href == "/entry?method=organization").Variant == ButtonVariant.Primary
+                    && buttons.Where(button => button.Href != "/entry?method=organization").All(button => button.Variant == ButtonVariant.Quiet), "Current and ordinary variants did not update independently.");
+                Require(Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).SequenceEqual(panels), "Button variant changes rewrote host-owned native forms.");
+            });
+            foreach (var parameter in new[] { nameof(NavigationChoices.Variant), nameof(NavigationChoices.ActiveVariant) })
+            {
+                var invalid = Parameters();
+                invalid[parameter] = (ButtonVariant)(-1);
+                await Reject(invalid, parameter);
+            }
+        }));
         tests.Add(("compact navigation choices retain disabled panels while removing disabled GET activation", async () =>
         {
             var parameters = Parameters();

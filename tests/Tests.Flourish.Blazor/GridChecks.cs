@@ -15,6 +15,61 @@ internal static class GridChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("compact page spacing is explicit and ordinary pages retain document spacing", async () =>
+        {
+            var compact = await Render<PageBody>(new() { [nameof(PageBody.CompactSpacing)] = true });
+            var ordinary = await Render<PageBody>(new());
+            Require(compact.Contains("f-page-compact-spacing", StringComparison.Ordinal), "Compact form spacing is not selected by the production page.");
+            Require(!ordinary.Contains("f-page-compact-spacing", StringComparison.Ordinal), "Ordinary pages silently changed their spacing.");
+        }));
+        tests.Add(("full-height spreadsheet composes an immediately compact heading and one native grid in either surface", async () =>
+        {
+            RenderFragment body = builder =>
+            {
+                builder.OpenComponent<PageBody>(0);
+                builder.AddAttribute(1, nameof(PageBody.FullWidth), true);
+                builder.AddAttribute(2, nameof(PageBody.FillHeight), true);
+                builder.AddAttribute(3, nameof(PageBody.ChildContent), (RenderFragment)(content =>
+                {
+                    content.OpenComponent<PageHeading>(0);
+                    content.AddAttribute(1, nameof(PageHeading.Title), "Editable records");
+                    content.AddAttribute(2, nameof(PageHeading.Compact), true);
+                    content.CloseComponent();
+                    content.OpenComponent<EditingGrid>(3);
+                    content.AddAttribute(4, nameof(EditingGrid.Columns), new[] { new GridColumn("name", "Name") });
+                    content.AddAttribute(5, nameof(EditingGrid.Rows), new[] { new GridRow("one", [new("Alpha", "Alpha")]) });
+                    content.CloseComponent();
+                }));
+                builder.CloseComponent();
+            };
+            foreach (var html in new[] {
+                await Render<NavigationSurface>(new() { [nameof(NavigationSurface.ChildContent)] = body }),
+                await Render<ContentSurface>(new() { [nameof(ContentSurface.ChildContent)] = body }) })
+            {
+                Require(html.Contains("f-page-full f-page-fill-height", StringComparison.Ordinal), "The full-stage layout was not selected through PageBody.");
+                Require(Attribute(Tag(html, "header"), "data-heading-mode") == "compact", "The first render needs scrolling before its heading becomes compact.");
+                Require(Regex.IsMatch(html, "</header>\\s*<div[^>]*class=\"spreadsheet-scroll\""), "The remaining space has an extra wrapper, action area or explanatory content.");
+                Require(Regex.Matches(html, "role=\"grid\"").Count == 1 && html.Contains("Alpha", StringComparison.Ordinal), "The direct native spreadsheet was lost or duplicated.");
+                Require(!html.Contains("<button", StringComparison.Ordinal) && !html.Contains("f-heading-actions", StringComparison.Ordinal), "The full-stage example includes unrelated action controls.");
+            }
+            var defaultBody = await Render<PageBody>(new());
+            Require(!defaultBody.Contains("f-page-fill-height", StringComparison.Ordinal), "Ordinary pages unexpectedly opted into fixed-height scrolling.");
+        }));
+        tests.Add(("spreadsheet layout retains bounded scrolling and roomy automatic columns without host skins", async () =>
+        {
+            var html = await Render<EditingGrid>(Parameters([new("name", "Name", Identity: true), new("amount", "Amount")],
+                [new("one", [new("Alpha", "Alpha"), new("12", "12")], Dirty: true)]));
+            Require(Regex.IsMatch(html, "data-column-key=\"name\"[^>]*style=\"width:280px\"")
+                && Regex.IsMatch(html, "data-column-key=\"amount\"[^>]*style=\"width:220px\""), "The spreadsheet starts with compressed record columns.");
+            Require(html.Contains("data-column-minimum-width=\"100\"", StringComparison.Ordinal), "Roomier automatic widths removed user-controlled shrinking.");
+            var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+            var framework = await File.ReadAllTextAsync(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/EditingGrid.css"));
+            var design = await File.ReadAllTextAsync(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/EditingGrid.css"));
+            Require(framework.Contains("max-height: 65vh;", StringComparison.Ordinal) && framework.Contains("height: 74px;", StringComparison.Ordinal)
+                && framework.Contains("overscroll-behavior: contain;", StringComparison.Ordinal), "Spreadsheet scrolling or readable headers lost the historical layout.");
+            Require(design.Contains("border-radius: var(--f-radius-control)", StringComparison.Ordinal)
+                && design.Contains(".editing-grid-table tr.is-dirty .identity-column", StringComparison.Ordinal), "The library lost its framed viewport or draft-row cue.");
+        }));
         tests.Add(("grid template uses the existing cell shell and preserves complete values and errors", async () =>
         {
             IReadOnlyList<GridColumn> columns = [new("tags", "Tags")];

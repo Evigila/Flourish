@@ -16,6 +16,30 @@ internal static class DataTableChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("bulk completion uses one ordinary action aligned by the library rather than a wizard grid", async () =>
+        {
+            var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+            var framework = await File.ReadAllTextAsync(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data-table.css"));
+            Require(Regex.IsMatch(framework, @"\.f-data-bulk-actions\s*\{[^}]*justify-content:flex-end"), "The bulk action region does not align completion to its trailing edge.");
+            var sample = await File.ReadAllTextAsync(Path.Combine(root, "src/Gallery.Flourish.Blazor/Components/Samples/Data/DataTableSample.razor"));
+            var actions = Regex.Match(sample, @"<BulkEditActions>([\s\S]*?)</BulkEditActions>").Groups[1].Value;
+            Require(Regex.Matches(actions, @"<Button\b").Count == 1 && !actions.Contains("UniformGrid", StringComparison.Ordinal), "The bulk example mixes completion with a wizard or an extra action.");
+            Require(actions.Contains("RecordDemoIntent(); DemoBulk = false;", StringComparison.Ordinal), "Completion discarded the example's editing intent callback.");
+            var parameters = Parameters(pageSize: 2);
+            parameters[nameof(DataTable<Row>.BulkEditing)] = true;
+            parameters[nameof(DataTable<Row>.BulkEditActions)] = (RenderFragment)(builder =>
+            {
+                builder.OpenComponent<Button>(0);
+                builder.AddAttribute(1, nameof(Button.Text), "Concluir");
+                builder.CloseComponent();
+            });
+            await WithTable(parameters, (_, html) =>
+            {
+                var region = Regex.Match(html(), @"<div class=""f-data-bulk-actions""[^>]*>([\s\S]*?)</div>").Groups[1].Value;
+                Require(Regex.Matches(region, @"<button\b").Count == 1 && Regex.Replace(region, "<[^>]*>", string.Empty).Trim() == "Concluir", "The production table invented a refresh action or rewrote the completion label.");
+                return Task.CompletedTask;
+            });
+        }));
         tests.Add(("record tables and column search export one contract with no retired API aliases", () =>
         {
             var framework = typeof(DataTable<>).Assembly;

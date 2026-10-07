@@ -1,10 +1,12 @@
 @using ArkheideSystem.Flourish.Blazor.Hosting
 @inject ApplicationOptions Options
-<div class="f-page-body @(FullWidth ? "f-page-full" : Fluid ?? Options.Layout.Fluid ? "f-page-fluid" : "f-page-centered")">
+<div class="f-page-body @(FullWidth ? "f-page-full" : Fluid ?? Options.Layout.Fluid ? "f-page-fluid" : "f-page-centered") @(FillHeight ? "f-page-fill-height" : null) @(CompactSpacing ? "f-page-compact-spacing" : null)">
     @ChildContent
 </div>
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool? Fluid { get; set; }
     [Parameter] public bool FullWidth { get; set; }
+    [Parameter] public bool FillHeight { get; set; }
+    [Parameter] public bool CompactSpacing { get; set; }
 }

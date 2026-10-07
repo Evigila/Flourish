@@ -28,7 +28,12 @@ test("presentation layout separates full-width backgrounds from centered content
   assert.equal(property(blockFor(css, ".f-access-panel"), "width"), "min(100%,560px)");
   assert.equal(property(blockFor(css, ".f-access-panel-wide"), "width"), "min(100%,960px)");
   assert.equal(property(blockFor(css, ".f-access-form-surface"), "display"), "grid");
-  assert.equal(property(blockFor(css, ".f-access-form-surface > form"), "display"), "grid");
+  for (const selector of [".f-access-form-surface > form", ".f-access-form-surface .f-navigation-choice-panel", ".f-access-form-surface .f-navigation-choice-panel > form"]) {
+    const rule = rules(css).find(rule => selectorArms(rule.selector).includes(selector));
+    assert.ok(rule, `Missing access composition CSS ${selector}`);
+    assert.equal(property(rule.body, "display"), "grid");
+    assert.equal(property(rule.body, "gap"), "var(--f-access-form-gap)");
+  }
   assert.match(css, /@media\(min-width:1100px\) and \(prefers-reduced-motion:no-preference\)/);
   for (const rule of rules(css)) {
     if (/\.f-offer-(?:details|card\s+h3)\b/.test(rule.selector)
@@ -202,7 +207,7 @@ test("UniformGrid fills rectangular rows while centered square grids retain thei
   assert.equal(property(grid, "max-width"), "100%");
   assert.equal(property(grid, "--f-grid-cell-width"), "1fr");
   assert.equal(property(grid, "grid-template-columns"),
-    "repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-max-height,260px))),1fr))");
+    "repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-max-height,260px)))),1fr))");
   const square = blockFor(css, ".f-uniform-grid-square");
   assert.equal(property(square, "width"), "fit-content");
   assert.equal(property(square, "--f-grid-cell-width"), "var(--f-grid-cell-max,280px)");
@@ -232,6 +237,20 @@ test("UniformGrid explicit rows columns and narrow overrides share uncapped rect
   assert.equal(property(rectangle, "overflow"), "auto");
   assert.equal(property(rectangle, "max-width"), undefined);
   assert.equal(property(blockFor(css, ".f-uniform-grid-rectangle > *"), "aspect-ratio"), "2/1");
+});
+
+test("UniformGrid fixed rectangular heights override the aspect ratio and cap in every responsive row", async () => {
+  const css = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/uniform-grid.css"), "utf8"));
+  assert.equal(property(blockFor(css, ".f-uniform-grid-fixed-height"), "grid-auto-rows"), "var(--f-grid-cell-height)");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-fixed-height.f-uniform-grid-rows"), "grid-template-rows"),
+    "repeat(var(--f-grid-rows),var(--f-grid-cell-height))");
+  const fixed = blockFor(css, ".f-uniform-grid-rectangle.f-uniform-grid-fixed-height > .f-uniform-cell");
+  assert.equal(property(fixed, "aspect-ratio"), "auto");
+  for (const name of ["height", "min-height", "max-height"]) assert.equal(property(fixed, name), "var(--f-grid-cell-height)");
+  assert.ok(css.indexOf(".f-uniform-grid-rectangle.f-uniform-grid-fixed-height > .f-uniform-cell")
+    > css.indexOf(".f-uniform-grid-rectangle > .f-uniform-cell"), "Fixed height must override the ordinary maximum.");
+  const narrow = blockFor(css, ".f-uniform-grid.f-uniform-grid-narrow-columns");
+  assert.equal(property(narrow, "grid-auto-rows"), undefined, "Narrow widths must not reset fixed heights.");
 });
 
 const roles = [

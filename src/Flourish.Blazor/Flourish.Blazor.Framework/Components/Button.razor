@@ -21,6 +21,8 @@ else
     [Parameter] public string Type { get; set; } = "button";
     [Parameter] public string Icon { get; set; } = string.Empty;
     [Parameter] public string Text { get; set; } = string.Empty;
+    [Parameter] public string Description { get; set; } = string.Empty;
+    [Parameter] public string TrailingText { get; set; } = string.Empty;
     [Parameter] public string? Href { get; set; }
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public bool Busy { get; set; }
@@ -33,10 +35,11 @@ else
     private string? LinkRole => AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("role", out var role) ? role?.ToString() : Unavailable ? "link" : null;
     private string? LinkTabIndex => Unavailable ? "-1" : AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("tabindex", out var index) ? index?.ToString() : null;
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
-    private bool IsIconOnly => !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
+    private bool HasStructuredLabel => !string.IsNullOrWhiteSpace(Description) || !string.IsNullOrWhiteSpace(TrailingText);
+    private bool IsIconOnly => !HasStructuredLabel && !string.IsNullOrWhiteSpace(Icon) && string.IsNullOrWhiteSpace(Text) && ChildContent is null;
     private bool IsMenuItem => AdditionalAttributes?.Any(attribute => string.Equals(attribute.Key, "role", StringComparison.OrdinalIgnoreCase)
         && string.Equals(attribute.Value?.ToString(), "menuitem", StringComparison.Ordinal)) == true;
-    private string ButtonClass => $"f-button {VariantClass} {(IsIconOnly ? "f-button-icon" : null)} {(IsMenuItem ? "f-menu-item f-dropdown-item" : null)} {Class}";
+    private string ButtonClass => $"f-button {VariantClass} {(IsIconOnly ? "f-button-icon" : null)} {(HasStructuredLabel ? "f-button-structured" : null)} {(IsMenuItem ? "f-menu-item f-dropdown-item" : null)} {Class}";
     private IReadOnlyDictionary<string, object>? LinkAttributes => AdditionalAttributes is null ? null
         : AdditionalAttributes.Where(attribute => !string.Equals(attribute.Key, "href", StringComparison.OrdinalIgnoreCase))
             .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
@@ -50,8 +53,19 @@ else
         {
             <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" />
         }
-        @if (!string.IsNullOrWhiteSpace(Text)) { <span class="f-button-text">@Text</span> }
-        @ChildContent
+        @if (HasStructuredLabel)
+        {
+            <span class="f-button-label">
+                <span class="f-button-text">@Text</span>
+                @if (!string.IsNullOrWhiteSpace(Description)) { <span class="f-button-description">@Description</span> }
+            </span>
+            @if (!string.IsNullOrWhiteSpace(TrailingText)) { <span class="f-button-trailing">@TrailingText</span> }
+        }
+        else
+        {
+            @if (!string.IsNullOrWhiteSpace(Text)) { <span class="f-button-text">@Text</span> }
+            @ChildContent
+        }
     </text>;
     private string VariantClass => Variant switch
     {
@@ -63,5 +77,11 @@ else
         ButtonVariant.Elevated => "f-button-elevated",
         _ => throw new ArgumentOutOfRangeException(nameof(Variant))
     };
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (HasStructuredLabel && (string.IsNullOrWhiteSpace(Text) || ChildContent is not null))
+            throw new InvalidOperationException("A structured button requires Text as its primary label and does not accept ChildContent. Description and TrailingText are passive text.");
+    }
     private Task ClickAsync(MouseEventArgs args) => Unavailable ? Task.CompletedTask : OnClick.InvokeAsync(args);
 }

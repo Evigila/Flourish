@@ -391,8 +391,10 @@ internal static class PresentationChecks
                 "Logo, project title and context no longer use the intended vertically stacked composition.");
             var surface = Rule(layout, ".f-access-form-surface");
             var actions = Rule(layout, ".f-access-form-actions");
-            Check(Regex.IsMatch(surface, @"(?:^|;)\s*gap\s*:\s*16px\s*(?:;|$)")
-                && Regex.IsMatch(actions, @"(?:^|;)\s*margin-top\s*:\s*16px\s*(?:;|$)"), "Access action separation no longer combines 16px grid gap and 16px additional spacing.");
+            Check(surface.Contains("--f-access-form-gap:24px", StringComparison.Ordinal)
+                && surface.Contains("gap:var(--f-access-form-gap)", StringComparison.Ordinal)
+                && actions.Contains("gap:var(--f-access-form-gap)", StringComparison.Ordinal)
+                && Regex.IsMatch(actions, @"(?:^|;)\s*margin-top\s*:\s*0\s*(?:;|$)"), "Access fields and action rows no longer share one 24px gap without an additional action margin.");
             foreach (var declarations in new[]
             {
                 Rule(layout, ".f-logo-displayer"), Rule(layout, ".f-logo-displayer-title"), Rule(design, ".f-logo-displayer"), title,

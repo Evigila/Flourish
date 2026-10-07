@@ -64,10 +64,7 @@ else
         <BulkEditCell Context="column"><StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_BulkColumn, column.Header)" /></BulkEditCell>
         <BulkEditActions>
             <p>@Localization.Parse(TextKey.Sample_LocalSelectionCount, Selected.Count)</p>
-            <UniformGrid Columns="2" NarrowColumns="1">
-                <UniformGridButton Title="@Localization.Parse(TextKey.Sample_RecordEditingIntent)" OnClick="RecordDemoIntent" />
-                <UniformGridButton Title="@Localization.Parse(TextKey.Sample_EndDemoEditing)" Variant="UniformGridVariant.Outlined" OnClick="() => DemoBulk = false" />
-            </UniformGrid>
+            <Button Variant="ButtonVariant.Secondary" OnClick="() => { RecordDemoIntent(); DemoBulk = false; }">@Localization.Parse(TextKey.Sample_EndDemoEditing)</Button>
         </BulkEditActions>
     </DataTable>
     <h3>@Localization.Parse(TextKey.Sample_RemoteResultsWithTheSameSearchContract)</h3>

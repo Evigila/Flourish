@@ -8,7 +8,7 @@
                 @foreach (var choice in Items)
                 {
                     <Button @key="choice.Key" id="@ChoiceId(choice)" Href="@choice.Href" Disabled="@choice.Disabled"
-                            Variant="@(IsActive(choice) ? ButtonVariant.Secondary : ButtonVariant.Quiet)"
+                            Variant="@(IsActive(choice) ? ActiveVariant : Variant)"
                             aria-current="@(IsActive(choice) ? "page" : null)" data-enhance-nav="false">@choice.Label</Button>
                 }
             </div>
@@ -41,6 +41,8 @@
     [Parameter, EditorRequired] public string ActiveKey { get; set; } = string.Empty;
     [Parameter, EditorRequired] public RenderFragment<NavigationChoiceItem> ChildContent { get; set; } = default!;
     [Parameter] public bool Compact { get; set; }
+    [Parameter] public ButtonVariant Variant { get; set; } = ButtonVariant.Quiet;
+    [Parameter] public ButtonVariant ActiveVariant { get; set; } = ButtonVariant.Secondary;
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
@@ -49,6 +51,8 @@
     private string PanelId(NavigationChoiceItem choice) => $"{Id}-{choice.Key}-panel";
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Variant)) throw new ArgumentOutOfRangeException(nameof(Variant));
+        if (!Enum.IsDefined(ActiveVariant)) throw new ArgumentOutOfRangeException(nameof(ActiveVariant));
         if (!IsIdentifier(Id)) throw new ArgumentException("Provide a stable navigation choice identifier using letters, digits, underscores or hyphens.", nameof(Id));
         ArgumentException.ThrowIfNullOrWhiteSpace(Label);
         ArgumentNullException.ThrowIfNull(Items);

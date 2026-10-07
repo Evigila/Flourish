@@ -31,9 +31,17 @@ body:has(.f-document-surface) { margin:0; }
 .f-offer-compact-title { display:none; }
 .f-access-panel { box-sizing:border-box; width:min(100%,560px); min-width:0; margin-inline:auto; }
 .f-access-panel-wide { width:min(100%,960px); }
-.f-access-form-surface { box-sizing:border-box; display:grid; width:100%; gap:16px; }
-.f-access-form-actions { display:grid; min-width:0; margin-top:16px; }
-.f-access-form-surface > form { display:grid; min-width:0; gap:16px; }
+.f-access-form-surface { --f-access-form-gap:24px; box-sizing:border-box; display:grid; width:100%; min-width:0; gap:var(--f-access-form-gap); }
+.f-access-form-actions { display:grid; min-width:0; gap:var(--f-access-form-gap); margin-top:0; }
+.f-access-form-surface > form,
+.f-access-form-surface .f-navigation-choice-panel,
+.f-access-form-surface .f-navigation-choice-panel > form { display:grid; min-width:0; gap:var(--f-access-form-gap); }
+.f-access-form-surface .f-form-layout { gap:var(--f-access-form-gap); }
+.f-access-form-surface .f-form-layout > .f-inline-actions,
+.f-access-form-actions > .f-inline-actions { margin-top:0; }
+/* An action has no visible label row; reserve that row so actual inputs/actions have equal gaps. */
+.f-access-form-surface .f-form-layout > .f-field + :is(.f-button,.f-inline-actions),
+.f-access-form-surface:has(.f-field) > .f-access-form-actions { margin-block-start:var(--f-access-action-label-gap,calc(17px * 1.55 + 7px)); }
 .f-access-form-surface .f-navigation-choice-panel > .f-button,
 .f-access-form-surface .f-navigation-choice-panel .f-form-layout > .f-button,
 .f-access-form-surface > .f-section > .f-button { width:100%; }

@@ -1,5 +1,19 @@
 # Release verification
 
+## Authorized Blazor 1.1.2 preparation
+
+The user's later 2026-10-06 instruction authorizes publication and the subsequent Colligere upgrade, superseding the preceding source-only restriction. All queued repairs below are included in 1.1.2, alongside IdentityCard heading/width/identifier geometry, per-instance PresentationFooter identity, Compact NavigationChoices variants, label-aware native access spacing, PageBody.FillHeight/CompactSpacing and UniformGrid.CellHeight. Essential remains 1.3.0 and the six-package manifest is unchanged.
+
+Complete preparation passed: Core 367, Blazor 396/396, bridge 12, Gallery 7,266 including 124 actual post-event language/state checks, Node runner 99/99, CSS bundle 21 and SDK integration 194, launcher 95, catalog 21,426, and four isolated candidate consumers totaling 129 checks. Release builds completed with zero warnings/errors. Evidence: artifacts/release-1.1.2-preparation-final.log and artifacts/package-consumers/c6a3001a3d99416b979529e2fcbd886e. Publication, indexing and public-only consumption are separate remaining steps; this section does not claim them complete. [The follow-up report](bugfix-reports/2026-10-06_identity-access-and-editor-release.md) records the repairs and cleanup.
+
+### Earlier source-only verification history
+
+The account-selection follow-up adds generic Button.Description/TrailingText for a stacked primary/secondary label and passive trailing status in one native action. Both default empty; structured mode requires Text and rejects mixed ChildContent. Contracts, defaults, three-language parameter descriptions, real Gallery example and five render/event/layout checks are updated. Release test/Gallery builds passed with zero warnings/errors and console checks passed 387/387. [The structured Button report](bugfix-reports/2026-10-06_structured-button-labels.md) records consumer limitations. No version/publication/consumer upgrade is authorized by this source repair.
+
+The post-1.1.1 Workspace editing follow-up is source-only, with publication explicitly deferred. Include EmptyStateVariant.Watermark (large centered passive title), DataTable bulk-action end alignment and corrected single ordinary Concluir Gallery command, and EditingGrid's framed 65vh scroll/header/initial-width/change-marker restoration. Complete automatic NavigationSurface heading collapse, Field reference sizing, board form width and InlineActions alignment remain queued from the earlier source repairs. No new version has been assigned or published, and public 1.1.1 has not been overwritten.
+
+Latest focused source verification: Release test/Gallery builds passed with zero warnings/errors, Blazor console checks passed 382/382, and surface/toolbar/page-body Node checks passed 19/19. These checks do not replace a future full newly versioned package preparation, fresh-cache package-consumer verification or user-run visual acceptance. [The editing and watermark report](bugfix-reports/2026-10-06_watermark-and-editing-layout.md) records the partial historical restoration and consumer limitations.
+
 ## Latest completed release: 2026-10-06 Flourish 1.1.1
 
 Flourish 1.1.1 completed its GitHub release workflow and uploaded all six packages. Source commit [05ebb4d282eea7130fc9326ef2d15bf43593d5aa](https://github.com/Evigila/Flourish/commit/05ebb4d282eea7130fc9326ef2d15bf43593d5aa) is tagged v1.1.1. [Run 37540483235](https://github.com/Evigila/Flourish/actions/runs/37540483235) completed successfully: [build job 112531999414](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112531999414) passed, including the corrected CSS fixture; [publish job 112533073982](https://github.com/Evigila/Flourish/actions/runs/37540483235/job/112533073982) completed Trusted Publishing login and uploaded the six packages in manifest order with Created responses from 22:28:55 to 22:29:01 UTC on 2026-10-06.

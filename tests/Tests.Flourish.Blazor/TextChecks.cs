@@ -91,6 +91,23 @@ internal static class TextChecks
                 "Footer guessed a translation token or replaced independently supplied copyright.");
         }));
 
+        tests.Add(("presentation footer instance names survive scoped culture updates without changing configured footers", async () =>
+        {
+            using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName(Ref("Project"))));
+            using var scope = provider.CreateScope();
+            await using var renderer = Renderer(scope);
+            var automatic = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<PresentationFooter>());
+            var explicitOutput = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<PresentationFooter>(ParameterView.FromDictionary(new Dictionary<string, object?>
+            {
+                [nameof(PresentationFooter.ProjectName)] = "Organization <safe> & identity"
+            })));
+            var before = await renderer.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString);
+            Require(before.Contains("<strong>Organization &lt;safe&gt; &amp; identity</strong>", StringComparison.Ordinal), "An instance footer name did not use encoded host content.");
+            var texts = (TrackingTextProvider)scope.ServiceProvider.GetRequiredService<ITextProvider>();
+            await Task.Run(() => texts.Select("pt-BR"));
+            Require((await renderer.Dispatcher.InvokeAsync(explicitOutput.ToHtmlString)) == before, "A scoped culture refresh replaced explicit instance identity.");
+            Require((await renderer.Dispatcher.InvokeAsync(automatic.ToHtmlString)).Contains("<strong>pt-BR:App/Project</strong>", StringComparison.Ordinal), "An instance override leaked into a configured footer or suppressed its localization.");
+        }));
         tests.Add(("presentation footer live project names are scope isolated unsubscribe and preserve manual copyright", async () =>
         {
             using var provider = Services(framework => framework.ConfigureProject(project => project.SetProjectName(Ref("Project"))));
