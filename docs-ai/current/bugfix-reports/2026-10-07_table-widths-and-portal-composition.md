@@ -26,3 +26,9 @@ Initial focused JavaScript checks pass: DataTable 8/8, including enter/exit bulk
 3. Organization portal: scroll a short/narrow viewport; footer follows content, not the viewport. Background dots cover the page; login method/actions retain primary fill in light/dark themes.
 
 Unrelated WPF reconstruction and Colligere inventory/performance work remain outside this UI release.
+
+## Completed release evidence
+
+Source 6b5dc255fb97d4313da7e11bce9bab820cc06256 is tagged v1.1.3. [Run 37653211373](https://github.com/Evigila/Flourish/actions/runs/37653211373) successfully uploaded all six packages, with Created responses from 16:38:42 to 16:38:47 UTC. Complete isolated preparation passed with zero build warnings/errors: Core 367, Blazor 403/403, bridge 12, Gallery 7,266, Node 102, CSS 21/194, launcher 95, catalog 21,454 and package consumers 129. Independent public-only consumers pass 129 using fresh package and HTTP caches; all six cached fresh index responses contain 1.1.3 and their package provenance names NuGet.org.
+
+Evidence remains under C:/Users/RC_Auditoria/AppData/Local/Temp/f113/artifacts: release-1.1.3-final.log, public-release-1.1.3.log and package-consumers/372b5d2e51504cd591b7f12110139733. Initial inherited Colligere central package configuration and Windows path-length failures were fixed by a short isolated source path, not by changing production dependencies or bypassing verification. Transient network/index propagation attempts are distinct from the final successful public verification. Public 1.1.2 is not overwritten; Essential stays 1.3.0; the WPF reconstruction remains outside this commit/release.

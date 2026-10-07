@@ -1,5 +1,9 @@
 # NuGet release and integration
 
+## Current stable release: 1.1.3
+
+The user authorized publication of the earlier layout candidate and the table-width fixes on 2026-10-07. Source 6b5dc255fb97d4313da7e11bce9bab820cc06256 is tagged v1.1.3; [run 37653211373](https://github.com/Evigila/Flourish/actions/runs/37653211373) successfully uploaded the same six Core/Blazor packages. All six public indexes contain 1.1.3, and fresh package/HTTP caches with NuGet.org as the only source passed 129 consumer checks. Essential remains 1.3.0; WPF is excluded. Colligere may upgrade both central entries to 1.1.3 and remove its local candidate feed. Earlier candidate restrictions and version-specific sections below are dated history, superseded for this Blazor release. See [the width and portal report](bugfix-reports/2026-10-07_table-widths-and-portal-composition.md).
+
 ## Current release: Blazor 1.1.2
 
 The user approved release of the previously deferred source corrections and new generic identity/access/page/grid capabilities. Directory.Build.props owns VersionPrefix 1.1.2; Essential remains 1.3.0. The existing six-package manifest, IDs and dependency order remain unchanged. Full local preparation passed with zero build warnings/errors. Source commit 108fbff8950925b909a70b0b9830226ae8226521 and tag v1.1.2 are pushed; [run 37560362408](https://github.com/Evigila/Flourish/actions/runs/37560362408) successfully uploaded all six packages. Public indexing and independent public-only consumer verification are complete: 129 checks passed with fresh package and HTTP caches in artifacts/package-consumers/b06a15d2f8fc4661be3792ff26ebf464. [Release verification](release-verification.md) records the complete gate and propagation/cache evidence. Colligere may upgrade its two central entries together; no source/local-feed substitution is required. The completed 1.1.1 release below is historical evidence.

@@ -1,5 +1,9 @@
 # Release verification
 
+## Completed Blazor 1.1.3 release on 2026-10-07
+
+Commit 6b5dc255fb97d4313da7e11bce9bab820cc06256 and tag v1.1.3 completed [run 37653211373](https://github.com/Evigila/Flourish/actions/runs/37653211373). All six uploads returned Created at 16:38:42–16:38:47 UTC. Complete preparation passed with zero build warnings/errors: Core 367, Blazor 403/403, bridge 12, Gallery 7,266, Node 102, CSS bundle 21 and SDK 194, launcher 95, catalog 21,454 and four candidate consumers 129. Independent public-only consumers also passed 129 with fresh package/HTTP caches; six fresh index responses contain 1.1.3 and package provenance names NuGet.org. Evidence is in the isolated C:/Users/RC_Auditoria/AppData/Local/Temp/f113/artifacts release-1.1.3-final.log, public-release-1.1.3.log and package-consumers/372b5d2e51504cd591b7f12110139733. Initial parent-CPM contamination, Windows long-path compilation and transient DNS/network failures were environment checks, preserved separately; they do not replace the successful isolated/public runs. Parallel WPF work is excluded; Essential stays 1.3.0. Older release/candidate sections below retain their dated scope.
+
 ## Latest completed release: 2026-10-06 Flourish 1.1.2
 
 The user's later 2026-10-06 instruction authorizes publication and the subsequent Colligere upgrade, superseding the preceding source-only restriction. All queued repairs below are included in 1.1.2, alongside IdentityCard heading/width/identifier geometry, per-instance PresentationFooter identity, Compact NavigationChoices variants, label-aware native access spacing, PageBody.FillHeight/CompactSpacing and UniformGrid.CellHeight. Essential remains 1.3.0 and the six-package manifest is unchanged.
