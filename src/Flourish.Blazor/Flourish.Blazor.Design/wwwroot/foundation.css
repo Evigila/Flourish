@@ -115,7 +115,7 @@
 .f-root main:is(.f-content-scroll,.application-stage,.content-stage)[tabindex="-1"]:focus { outline:none; }
 .f-page-body { --f-page-gutter:24px; min-height:100%; padding-block:0 clamp(64px,9vw,120px); min-width:0; }
 .f-page-fluid { --f-content-gutter:max(var(--f-page-gutter),calc((100% - var(--f-content-width))/6)); }
-.f-page-centered { --f-content-gutter:max(var(--f-page-gutter),calc((100% - var(--f-content-width))/2)); }
+.f-page-centered { --f-content-gutter:calc(max(var(--f-page-gutter),calc((100% - var(--f-content-width))/2))*var(--f-centered-gutter-scale,1)); }
 .f-page-full { --f-content-gutter:0px; }
 .f-page-body > :not(.f-page-heading) { margin-inline:var(--f-content-gutter); }
 .f-page-body > .f-notice { margin-top:24px; }

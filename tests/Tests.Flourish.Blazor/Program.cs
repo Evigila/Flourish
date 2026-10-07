@@ -845,6 +845,7 @@ DisplayBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);
 NavigationControlsChecks.Register(tests);
+CenteredContentChecks.Register(tests);
 ChartToolbarChecks.Register(tests);
 DataSearchChecks.Register(tests);
 BrandingChecks.Register(tests);

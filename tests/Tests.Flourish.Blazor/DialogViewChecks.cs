@@ -33,6 +33,50 @@ internal static class DialogViewChecks
             }
             Require(!HasAttribute(ViewTag(html, "pending"), "hidden") && HasAttribute(ViewTag(html, "failed"), "hidden"), "The first keyed view is not initially active.");
         }));
+        tests.Add(("Dialog nested action rows retain native form transport and production Buttons", async () =>
+        {
+            foreach (var (nativeForm, nestedRow) in new[] { (false, true), (true, true), (true, false) })
+            {
+                await using var fixture = new DialogFixture();
+                RenderFragment buttons = content =>
+                {
+                    content.OpenComponent<Button>(0);
+                    content.AddAttribute(1, nameof(Button.Text), "Confirm");
+                    content.AddAttribute(2, nameof(Button.Type), nativeForm ? "submit" : "button");
+                    content.CloseComponent();
+                    content.OpenComponent<Button>(3);
+                    content.AddAttribute(4, nameof(Button.Text), "Cancel");
+                    content.CloseComponent();
+                };
+                RenderFragment actions = builder =>
+                {
+                    if (nativeForm)
+                    {
+                        builder.OpenElement(0, "form");
+                        builder.AddAttribute(1, "method", "post");
+                        builder.AddAttribute(2, "action", "/native-confirm");
+                    }
+                    if (nestedRow)
+                    {
+                        builder.OpenComponent<InlineActions>(3);
+                        builder.AddAttribute(4, nameof(InlineActions.ChildContent), buttons);
+                        builder.CloseComponent();
+                    }
+                    else buttons(builder);
+                    if (nativeForm) builder.CloseElement();
+                };
+                var html = await fixture.Read(await fixture.Render<Dialog>(new()
+                {
+                    [nameof(Dialog.Title)] = "Nested actions", [nameof(Dialog.BrowserControlled)] = true,
+                    [nameof(Dialog.Actions)] = actions
+                }));
+                Require(html.Contains("<footer class=\"f-dialog-actions\">"), "The Dialog action footer was lost.");
+                if (nestedRow) Require(Regex.IsMatch(html, @"<footer class=""f-dialog-actions"">[\s\S]*class=""f-inline-actions"" data-alignment=""center"""), "Dialog no longer contains the real shared action row.");
+                Require(fixture.Components.OfType<Button>().Count() == 2 && fixture.Components.OfType<Button>().All(button => !button.OnClick.HasDelegate), "Action layout changed native action ownership.");
+                Require(!html.Contains("style="), "Nested actions require host geometry.");
+                if (nativeForm) Require(html.Contains("method=\"post\" action=\"/native-confirm\"") && html.Contains("type=\"submit\""), "Dialog changed native form transport.");
+            }
+        }));
         tests.Add(("Dialog selected views encode multiline host content and retain independent dialog state", async () =>
         {
             await using var first = new DialogFixture(); await using var second = new DialogFixture();

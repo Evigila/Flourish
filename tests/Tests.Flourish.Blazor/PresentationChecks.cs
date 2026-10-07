@@ -673,6 +673,58 @@ internal static class PresentationChecks
                 .Contains("minmax(0,1fr) minmax(360px,470px)", StringComparison.Ordinal), "The operation column is no longer bounded independently of the organization column.");
         }));
 
+        tests.Add(("organization access dots the whole document band and keeps its primary operation surface and scrolling footer", async () =>
+        {
+            RenderFragment access = builder =>
+            {
+                builder.OpenComponent<AccessFormSurface>(0);
+                builder.AddAttribute(1, nameof(AccessFormSurface.Tone), PresentationTone.Primary);
+                builder.AddAttribute(2, nameof(AccessFormSurface.ChildContent), Markup("<form method=\"post\" action=\"/fixture\"><input name=\"secret\"></form>"));
+                builder.CloseComponent();
+            };
+            RenderFragment hero = builder =>
+            {
+                builder.OpenComponent<PresentationHero>(0);
+                builder.AddAttribute(1, nameof(PresentationHero.Title), "Demo Organization");
+                builder.AddAttribute(2, nameof(PresentationHero.StackTitleWords), true);
+                builder.AddAttribute(3, nameof(PresentationHero.MinHeight), 0);
+                builder.AddAttribute(4, nameof(PresentationHero.FullHeight), true);
+                builder.AddAttribute(5, nameof(PresentationHero.Dotted), true);
+                builder.AddAttribute(6, nameof(PresentationHero.Tone), PresentationTone.Surface);
+                builder.AddAttribute(7, nameof(PresentationHero.SideContent), access);
+                builder.CloseComponent();
+            };
+            RenderFragment footer = builder =>
+            {
+                builder.OpenComponent<PresentationFooter>(0);
+                builder.AddAttribute(1, nameof(PresentationFooter.ProjectName), "Demo Organization");
+                builder.CloseComponent();
+            };
+            var html = await Render<ContentSurface>(new()
+            {
+                [nameof(ContentSurface.DocumentFlow)] = true,
+                [nameof(ContentSurface.ChildContent)] = hero,
+                [nameof(ContentSurface.Footer)] = footer
+            });
+            Check(html.Contains("class=\"f-presentation-band f-presentation-surface f-presentation-dotted f-presentation-fullheight", StringComparison.Ordinal),
+                "The dotted background moved inside the bounded access operation column.");
+            Check(html.Contains("f-access-form-primary", StringComparison.Ordinal)
+                && !html.Contains("f-display-board", StringComparison.Ordinal)
+                && Regex.Matches(html, @"<form\b").Count == 1,
+                "The organization scene lost its primary operation surface or invented a transport wrapper.");
+            Check(Regex.IsMatch(html, @"</main>\s*<footer\b[^>]*class=""f-presentation-footer"""),
+                "The organization footer escaped the document's main-following flow.");
+            var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
+            var document = Rule(layout, ".content-surface.f-document-surface");
+            Check(document.Contains("height:auto", StringComparison.Ordinal) && document.Contains("overflow:visible", StringComparison.Ordinal)
+                && Rule(layout, ".content-surface.f-document-surface > .content-stage").Contains("overflow:visible", StringComparison.Ordinal),
+                "The document clips to the viewport or leaves its footer outside a nested scrolling main.");
+            var footerRules = Rule(layout, ".f-presentation-footer");
+            Check(footerRules.Contains("position:relative", StringComparison.Ordinal)
+                && !footerRules.Contains("position:fixed", StringComparison.Ordinal) && !footerRules.Contains("position:sticky", StringComparison.Ordinal),
+                "The footer occupies a fixed or sticky portion of the viewport.");
+        }));
+
         tests.Add(("access panel is reusable inside existing main and keeps compact wide and emphasis explicit", async () =>
         {
             var compact = await Render<AccessPanel>(new() { ["Brand"] = Text("Brand"), ["ChildContent"] = Text("Content") });

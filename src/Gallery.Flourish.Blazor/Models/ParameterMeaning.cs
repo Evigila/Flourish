@@ -146,6 +146,7 @@ internal static class ParameterMeaning
         "FullWidth" => "Key.Parameter_FullWidth",
         "FillHeight" => "Key.Parameter_FillHeight",
         "CompactSpacing" => "Key.Parameter_CompactSpacing",
+        "CenteredContentGutterScale" => "Key.Parameter_CenteredContentGutterScale",
         "Columns" when parameter.PropertyType == typeof(bool) => "Key.Parameter_Columns_bool",
         "Columns" when parameter.PropertyType == typeof(int) => "Key.Parameter_Columns_int",
         "Columns" when parameter.PropertyType == typeof(int?) => "Key.Parameter_Columns_intNullable",

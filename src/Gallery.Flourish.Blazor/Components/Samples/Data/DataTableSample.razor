@@ -58,10 +58,18 @@ else
             <StandaloneTextBox Value="@(Drafts.GetValueOrDefault(cell.Item.Id) ?? cell.Item.Name)" ValueChanged="value => Drafts[cell.Item.Id] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_NameNumber, cell.Item.Id)" required />
         </CellTemplate>
     </DataTable>
-    <DataTable TItem="Entry" Items="NativeItems" Columns="Columns" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_OptionalBulkEditing)" PreferenceKey="gallery.data-table.bulk"
+    <DataTable TItem="Entry" Items="NativeItems" Columns="BulkColumns" ItemKey="item => item.Id" Label="@Localization.Parse(TextKey.Sample_OptionalBulkEditing)" PreferenceKey="gallery.data-table.bulk"
                BulkEditRequested="() => DemoBulk = true" BulkEditing="DemoBulk" AllEditSelected="@(Selected.Count == NativeItems.Count)"
                IsSelectedForEditing="item => Selected.Contains(item.Id)" ToggleEditSelection="ToggleDemoSelection" ToggleAllEditSelection="ToggleAllDemoSelection">
-        <BulkEditCell Context="column"><StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_BulkColumn, column.Header)" /></BulkEditCell>
+        <BulkEditCell Context="column">
+            @if (column.Key == "group")
+            {
+                <StandaloneSelectBox TValue="string" Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_BulkColumn, column.Header)">
+                    @foreach (var group in Items.Select(item => item.Group).Distinct()) { <option value="@group">@group</option> }
+                </StandaloneSelectBox>
+            }
+            else { <StandaloneTextBox Value="@BulkDrafts.GetValueOrDefault(column.Key)" ValueChanged="value => BulkDrafts[column.Key] = value ?? string.Empty" aria-label="@Localization.Parse(TextKey.Sample_BulkColumn, column.Header)" /> }
+        </BulkEditCell>
         <BulkEditActions>
             <p>@Localization.Parse(TextKey.Sample_LocalSelectionCount, Selected.Count)</p>
             <Button Variant="ButtonVariant.Secondary" OnClick="() => { RecordDemoIntent(); DemoBulk = false; }">@Localization.Parse(TextKey.Sample_EndDemoEditing)</Button>
@@ -99,6 +107,7 @@ else
         .Select(index => new Entry(index, $"演示用品 {index:00}", index % 2 == 0 ? "文具" : "日用品", 3.5m + index)).ToArray();
     private IReadOnlyList<Entry> ShownItems => State == DemoState.Loaded ? Items : Array.Empty<Entry>();
     private IReadOnlyList<Entry> NativeItems => Items.Take(2).ToArray();
+    private IReadOnlyList<TableColumn<Entry>> BulkColumns => [Columns[0], Columns[2], Columns[1]];
     private IReadOnlyList<TableColumn<Entry>> Columns =>
     [
         new("name", Localization.Parse(TextKey.Record_Name), item => item.Name, CanHide: false),

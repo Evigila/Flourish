@@ -1,7 +1,7 @@
 .spreadsheet-scroll {
 background: var(--f-surface);
     border: 1px solid var(--f-border);
-    border-radius: var(--f-radius-control);
+    border-radius: 0;
 }
 
 .editing-grid-table {
@@ -39,11 +39,6 @@ box-shadow: 1px 0 0 var(--f-border);
 
 .editing-grid-table tr.is-dirty .identity-column {
     box-shadow: inset 3px 0 0 var(--f-accent), 1px 0 0 var(--f-border);
-}
-
-.editing-grid-table .spreadsheet-fill {
-padding: 0;
-    border-right: 0;
 }
 
 .editing-grid-table td.is-changed {

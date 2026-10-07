@@ -3,7 +3,8 @@
 @inherits LocalizedComponentBase
 @inject NavigationManager Navigation
 
-<PresentationHero Title="@Localization.Parse(TextKey.Access_OrganizationName)" StackTitleWords="true" MinHeight="0">
+<PresentationHero Title="@Localization.Parse(TextKey.Access_OrganizationName)" StackTitleWords="true" MinHeight="0"
+                  Tone="PresentationTone.Surface" Dotted="true" FullHeight="@(!Preview)">
     <SideContent>
         <AccessFormSurface Tone="PresentationTone.Primary">
             <Section Title="@Localization.Parse(TextKey.Access_MethodOrganizationAction)" TitleId="@(Id + "-title")">

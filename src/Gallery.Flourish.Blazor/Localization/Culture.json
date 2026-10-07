@@ -1,4 +1,14 @@
 {
+  "Sample_HalfCenteredGutters": {
+    "en-US": "Reduce centered side gutters by 50%",
+    "zh-CN": "中心内容两侧留白各减少 50%",
+    "pt-BR": "Reduzir os recuos laterais centrais em 50%"
+  },
+  "Parameter_CenteredContentGutterScale": {
+    "en-US": "Scale each centered PageBody side gutter in this navigation shell only. Finite 0–1; default 1 preserves standard spacing, 0.5 halves each gutter. Fluid and full-width pages remain unchanged.",
+    "zh-CN": "仅缩放当前导航框架内中心 PageBody 的每侧留白。有限值 0–1，默认 1 保持标准间距，0.5 将每侧减半。流式和全宽页面不变。",
+    "pt-BR": "Escala cada recuo lateral de PageBody central apenas nesta estrutura de navegação. Valor finito de 0–1; padrão 1 mantém o espaçamento, 0.5 reduz cada recuo à metade. Páginas fluidas e de largura total não mudam."
+  },
   "Sample_CompactPageSpacing": {
     "en-US": "Compact form spacing",
     "zh-CN": "紧凑表单间距",

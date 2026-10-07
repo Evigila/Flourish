@@ -106,7 +106,7 @@
 .f-page-body:has(> .f-empty-state[data-presentation=watermark]) > .f-page-heading { flex:0 0 auto; }
 .f-empty-state[data-presentation=watermark] { display:grid; place-items:center; flex:1 0 auto; min-width:0; min-height:260px; box-sizing:border-box; padding:32px 0; text-align:center; }
 .f-empty-state[data-presentation=watermark] > .f-empty-title { min-width:0; max-width:100%; margin:0; overflow-wrap:anywhere; }
-.f-page-centered { max-width:var(--f-content-width,none); margin-inline:auto; }
+.f-page-centered { max-width:calc(100% - max(0px,calc(100% - var(--f-content-width,100%)))*var(--f-centered-gutter-scale,1)); margin-inline:auto; }
 .f-page-full { max-width:none; }
 .f-page-heading { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:1em; min-width:0; box-sizing:border-box; }
 .f-heading-title { display:flex; flex:1 1 320px; flex-direction:column; align-items:flex-start; min-width:0; }
@@ -146,6 +146,8 @@
 .f-dialog-close svg { width:1em; height:1em; fill:none; stroke:currentColor; stroke-width:1.8; }
 .f-dialog-body { min-height:0; overflow:auto; overscroll-behavior:contain; }
 .f-dialog-actions { display:flex; flex:0 0 auto; flex-wrap:wrap; justify-content:flex-end; gap:.75em; }
+.f-dialog-actions .f-inline-actions { justify-content:flex-end; margin-block:0; }
+.f-dialog-actions > form { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.75em; min-width:0; max-width:100%; margin:0; }
 .f-bottom-sheet { position:fixed; inset:auto 0 0; width:100%; max-width:none; margin:0; }
 .f-copy-text { user-select:all; overflow-wrap:anywhere; }
 /* Identity summaries own their native heading and available-width geometry. */

@@ -15,7 +15,7 @@ class Observer {
 }
 const runtime = vm.createContext({ Element, MutationObserver: Observer });
 vm.runInContext(source.replace(/^export /gm, ""), runtime);
-const api = vm.runInContext("({ connect, dispose })", runtime);
+const api = vm.runInContext("({ connect, dispose, synchronizeWidth })", runtime);
 
 class Resize {
     constructor(callback) { this.callback = callback; this.disconnected = false; }
@@ -72,6 +72,24 @@ test("unchanged table rerenders reuse measured widths without cloning another hi
     assert.equal(f.probeCount(), 1);
     assert.equal(f.columns[0].style.width, "100px");
     assert.equal(f.listeners.size, 9);
+    api.dispose(f.root);
+});
+
+test("grid width ends at the final real column even when the viewport has unused space", () => {
+    const f = fixture(); api.connect(f.root);
+    assert.equal(f.table.style.width, "184px");
+    assert.equal(f.columns[1].style.width, "84px");
+    f.root.clientWidth = 1600;
+    f.viewListeners.get("resize")(); f.flush();
+    assert.equal(f.table.style.width, "184px");
+    assert.equal(f.columns[1].style.width, "84px");
+    f.columns[1].style.width = "125px";
+    api.synchronizeWidth(f.root);
+    assert.equal(f.table.style.width, "225px");
+    f.columns[0].hidden = true;
+    api.synchronizeWidth(f.root);
+    assert.equal(f.table.style.width, "125px");
+    assert.equal(f.columns.length, 2);
     api.dispose(f.root);
 });
 

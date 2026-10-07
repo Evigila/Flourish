@@ -2,8 +2,9 @@
 @inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject ArkheideSystem.Flourish.Blazor.Hosting.ApplicationOptions Options
 
-<div @ref="root" class="navigation-surface @Class" style="@Style">
+<div @ref="root" class="navigation-surface @Class" style="@RootStyle">
     <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @TitleBar
     <div class="app-body @(ShowSecondary && SecondaryNavigation is not null ? "has-secondary-navigation" : null)">
@@ -28,6 +29,8 @@
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? ContentClass { get; set; }
     [Parameter] public string? Style { get; set; }
+    /// <summary>Scales each centered PageBody side gutter within this shell. Zero through one; one preserves the standard layout.</summary>
+    [Parameter] public double CenteredContentGutterScale { get; set; } = 1;
     [Parameter] public object? DocumentKey { get; set; }
     [Parameter] public string ContentId { get; set; } = "application-content";
     [Parameter] public string SkipLabel { get; set; } = "Skip to content";
@@ -41,6 +44,13 @@
     private IJSObjectReference? module;
     private Task<IJSObjectReference?>? moduleLoading;
     private bool disposed;
+    private string RootStyle => $"{Style};--f-content-width:{Options.Layout.ContentWidth}px;--f-centered-gutter-scale:{CenteredContentGutterScale.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (!double.IsFinite(CenteredContentGutterScale) || CenteredContentGutterScale is < 0 or > 1)
+            throw new ArgumentOutOfRangeException(nameof(CenteredContentGutterScale));
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (disposed) return;
         try {

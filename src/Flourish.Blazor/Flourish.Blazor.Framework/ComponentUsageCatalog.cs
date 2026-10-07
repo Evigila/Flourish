@@ -100,7 +100,7 @@ public static class ComponentUsageCatalog
             Scenario<UniformGridItem>("Read-only grid cells", "Production use: shared content structure and appearance with UniformGridButton, without Href or OnClick. Use a real button when actions are required."),
 
             Scenario<Patterns.ContentSurface>("Custom content hosts", "Production use: top bar and content composition; DocumentFlow/Footer support document-flow presentation pages. Explicitly choose business-scroll or full-width document layouts without overriding the other mode with host CSS."),
-            Scenario<Patterns.NavigationSurface>("Custom business navigation hosts", "Production use: two navigation levels and one business scroll area. Standard applications usually use ApplicationLayout; presentation pages use a document-flow content host."),
+            Scenario<Patterns.NavigationSurface>("Custom business navigation hosts", "Production use: two navigation levels and one business scroll area. ConfigureLayout.SetContentWidth supplies the centered reference width; CenteredContentGutterScale scales each centered PageBody side gutter for this shell only (0 through 1, default 1). Standard applications usually use ApplicationLayout; presentation pages use a document-flow content host."),
 
             Scenario<Primitives.AccessBrand>("Access-entry branding", "Production use: identity and context for sign-in, registration and access pages. TitleId must be unique within the page; use presentation controls for marketing titles."),
             Scenario<Primitives.DataPager>("Paging of controlled loaded results", "Production use: the host manages CurrentPage/PageSize and handles PageChanged. IsLimited means loaded results only; it neither promises a server total nor queries data."),

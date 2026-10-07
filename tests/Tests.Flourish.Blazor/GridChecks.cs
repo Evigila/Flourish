@@ -67,8 +67,10 @@ internal static class GridChecks
             var design = await File.ReadAllTextAsync(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/EditingGrid.css"));
             Require(framework.Contains("max-height: 65vh;", StringComparison.Ordinal) && framework.Contains("height: 74px;", StringComparison.Ordinal)
                 && framework.Contains("overscroll-behavior: contain;", StringComparison.Ordinal), "Spreadsheet scrolling or readable headers lost the historical layout.");
-            Require(design.Contains("border-radius: var(--f-radius-control)", StringComparison.Ordinal)
-                && design.Contains(".editing-grid-table tr.is-dirty .identity-column", StringComparison.Ordinal), "The library lost its framed viewport or draft-row cue.");
+            var viewport = Regex.Match(design, @"\.spreadsheet-scroll\s*\{([^}]*)\}").Groups[1].Value;
+            Require(viewport.Contains("border-radius: 0;", StringComparison.Ordinal)
+                && viewport.Contains("border: 1px solid var(--f-border);", StringComparison.Ordinal)
+                && design.Contains(".editing-grid-table tr.is-dirty .identity-column", StringComparison.Ordinal), "The spreadsheet lost its square framed viewport or draft-row cue.");
         }));
         tests.Add(("grid template uses the existing cell shell and preserves complete values and errors", async () =>
         {
@@ -92,6 +94,28 @@ internal static class GridChecks
             Require(Attribute(Tag(cell, "td"), "aria-invalid") == "true" && Attribute(Tag(cell, "button"), "aria-describedby") == observed!.DescribedBy, "Template validation metadata is detached from its actual error.");
             Require(Regex.IsMatch(Tag(cell, "fieldset"), @"\bdisabled(?:\s|=|>)") && Regex.IsMatch(Tag(cell, "button"), @"\bdisabled(?:\s|=|>)"), "The template does not honor its availability boundary.");
             Require(cell.Contains("f-button", StringComparison.Ordinal) && !cell.Contains("<input", StringComparison.Ordinal), "A parallel default editor was created behind the template.");
+        }));
+        tests.Add(("grid ends at its final declared column instead of creating a viewport filler column", async () =>
+        {
+            IReadOnlyList<GridColumn> columns = [new("name", "Name", Identity: true), new("image", "Image")];
+            var html = await Render<EditingGrid>(Parameters(columns,
+                [new("one", [new("Alpha", "Alpha"), new(null, "View image", GridEditorKind.Link, ReadOnly: true, LinkHref: "/images/alpha")])]));
+            Require(Regex.Matches(html, @"<col\b").Count == columns.Count
+                && Regex.Matches(html, @"<th\b").Count == columns.Count
+                && Regex.Matches(html, @"<td\b").Count == columns.Count,
+                "A blank structural column remains after the final declared field.");
+            Require(!html.Contains("data-column-fill", StringComparison.Ordinal)
+                && !html.Contains("spreadsheet-fill", StringComparison.Ordinal), "The retired filler contract is still rendered.");
+            Require(Attribute(Tag(html, "table"), "style") == "width:500px"
+                && Attribute(Tag(html, "table"), "aria-colcount") == "2", "The table width or accessibility dimensions include undeclared space.");
+            Require(Attribute(Tag(Cells(html).Last(), "a"), "href") == "/images/alpha", "Removing the tail broke the final link editor.");
+            var empty = await Render<EditingGrid>(Parameters(columns, []));
+            Require(Attribute(Tag(empty, "td"), "colspan") == "2", "The empty state spans an undeclared filler column.");
+            var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
+            var framework = await File.ReadAllTextAsync(Path.Combine(root, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/EditingGrid.css"));
+            var table = Regex.Match(framework, @"\.editing-grid-table\s*\{([^}]*)\}").Groups[1].Value;
+            Require(table.Contains("min-width: 0;", StringComparison.Ordinal)
+                && !table.Contains("min-width: 100%;", StringComparison.Ordinal), "Viewport surplus is still forced into declared column widths.");
         }));
         tests.Add(("grid template kind fails closed when its native editor slot is missing", async () =>
         {

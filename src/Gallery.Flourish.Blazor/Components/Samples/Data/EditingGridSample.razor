@@ -79,8 +79,11 @@ else
     private bool ReadOnly;
     private IReadOnlyList<MultiSelectOption> TagOptions = [new("stationery", "文具", Selected: true), new("daily", "日用品"), new("spare", "备品")];
     private string[] SelectedTags => TagOptions.Where(option => option.Selected).Select(option => option.Label).ToArray();
-    private IReadOnlyList<Primitives.GridColumn> TagColumns => [new("tags", Localization.Parse(TextKey.Sample_Tags))];
-    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [new(string.Join(';', SelectedTags), Localization.Parse(TextKey.Sample_ItemCount, SelectedTags.Length), Primitives.GridEditorKind.Template)])];
+    private IReadOnlyList<Primitives.GridColumn> TagColumns => [new("tags", Localization.Parse(TextKey.Sample_Tags)), new("link", Localization.Parse(TextKey.Sample_Link))];
+    private IReadOnlyList<Primitives.GridRow> TagRows => [new("tags-demo", [
+        new(string.Join(';', SelectedTags), Localization.Parse(TextKey.Sample_ItemCount, SelectedTags.Length), Primitives.GridEditorKind.Template),
+        new("#" + InfoId, Localization.Parse(TextKey.Sample_ExampleDetails), Primitives.GridEditorKind.Link, ReadOnly: true,
+            LinkHref: "#" + InfoId, LinkLabel: Localization.Parse(TextKey.Sample_SkipToExampleDetails))])];
     private void ChangeTags(MultiSelectChange change) { if (ReadOnly) return; TagOptions = change.OrderedKeys.Select(key => TagOptions.Single(option => option.Key == key) with { Selected = change.SelectedKeys.Contains(key) }).ToArray(); }
     private long Revision;
     private string Message = "Key.Sample_FictionalDataIsRetainedOnlyInThisComponent";

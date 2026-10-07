@@ -25,7 +25,7 @@ const source = (await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazo
     .replace("'./multi-select-box.js'", JSON.stringify(displayUrl));
 const { synchronize, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
-function table(text = 'Alpha', withActions = true, lastDataColumn = true) {
+function table(text = 'Alpha', withActions = true, lastDataColumn = true, bulk = false) {
     const col = { dataset: { fColumn: 'name', ...(lastDataColumn ? { fLastColumn: 'true' } : {}) }, style: {} };
     const button = {
         dataset: { fResize: 'name' }, attributes: new Map([['aria-valuenow', '72']]), capture: null,
@@ -37,6 +37,8 @@ function table(text = 'Alpha', withActions = true, lastDataColumn = true) {
     };
     const cell = (tagName, textContent) => ({ tagName, dataset: { fColumn: 'name' }, querySelector: selector => selector === '[data-f-resize]' ? button : ({ textContent }) });
     const cells = [cell('TH', 'Name'), cell('TD', text)];
+    if (bulk) cells.push({ ...cell('TD', 'Selecionar Ativo (publicar / reativar) Arquivado Aplicar'.repeat(20)),
+        closest: selector => selector === '.f-data-bulk-row' ? {} : null });
     return {
         col, button, style: {}, attributes: new Map(),
         querySelectorAll(selector) {
@@ -45,7 +47,11 @@ function table(text = 'Alpha', withActions = true, lastDataColumn = true) {
             if (selector === '[data-f-resize]') return [button];
             return [];
         },
-        querySelector(selector) { return selector === 'th.f-data-actions' && withActions ? { getBoundingClientRect: () => ({ width: 80 }) } : null; },
+        querySelector(selector) {
+            if (selector === 'th.f-data-actions' && withActions) return { getBoundingClientRect: () => ({ width: 80 }) };
+            if (selector === 'th.f-data-selection' && bulk) return { getBoundingClientRect: () => ({ width: 64 }) };
+            return null;
+        },
         setAttribute(name, value) { this.attributes.set(name, value); }
     };
 }
@@ -81,6 +87,27 @@ test('natural column widths cap ordinary columns while the last data column igno
     assert.equal(last.table.col.style.width, '1640px');
     assert.equal(last.table.style.minWidth, '1720px');
     detach('short'); detach('capped'); detach('last');
+});
+test('bulk editor option text never expands the last record column and selection width is reserved', () => {
+    const view = root(table('Ativo')); synchronize(view, 'bulk-width');
+    assert.equal(view.table.col.style.width, '80px');
+    view.table = table('Ativo', false, true, true); synchronize(view, 'bulk-width');
+    assert.equal(view.table.col.style.width, '80px');
+    assert.equal(view.table.style.minWidth, '144px');
+    key(view, 'ArrowRight', true);
+    assert.equal(view.table.col.style.width, '130px');
+    view.table = table('Ativo', false, true, true); synchronize(view, 'bulk-width');
+    assert.equal(view.table.col.style.width, '130px');
+    key(view, 'Home'); assert.equal(view.table.col.style.width, '80px');
+    view.table = table('Ativo'); synchronize(view, 'bulk-width');
+    assert.equal(view.table.col.style.width, '80px');
+    detach('bulk-width');
+});
+test('bulk editor text cannot affect capped ordinary columns either', () => {
+    const view = root(table('Alpha', true, false, true)); synchronize(view, 'bulk-ordinary');
+    assert.equal(view.table.col.style.width, '80px');
+    assert.equal(view.table.style.minWidth, '224px');
+    detach('bulk-ordinary');
 });
 test('keyboard resize supports 10/50px steps, minimum bounds and Home natural reset', () => {
     const view = root(); synchronize(view, 'keys');

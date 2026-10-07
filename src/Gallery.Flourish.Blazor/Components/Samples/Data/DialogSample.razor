@@ -36,8 +36,10 @@
     <Actions>
         @if (!Preview)
         {
-            <Button Busy="Busy" BusyLabel="@Localization.Parse(TextKey.Sample_Archiving)" OnClick="CompleteAsync">@Localization.Parse(TextKey.Sample_ConfirmArchive)</Button>
-            <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="CancelAsync">@Localization.Parse(TextKey.Sample_Cancel)</Button>
+            <InlineActions>
+                <Button Busy="Busy" BusyLabel="@Localization.Parse(TextKey.Sample_Archiving)" OnClick="CompleteAsync">@Localization.Parse(TextKey.Sample_ConfirmArchive)</Button>
+                <Button Variant="ButtonVariant.Secondary" Disabled="Busy" OnClick="CancelAsync">@Localization.Parse(TextKey.Sample_Cancel)</Button>
+            </InlineActions>
         }
     </Actions>
 </Dialog>

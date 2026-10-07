@@ -30,6 +30,18 @@ internal static class InlineActionsChecks
                 throw new InvalidOperationException("An unknown alignment reached rendering.");
             }
         }));
+        tests.Add(("Dialog owns end alignment for nested action rows and native forms without changing ordinary rows", () =>
+        {
+            var css = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css");
+            var nested = Regex.Match(css, @"\.f-dialog-actions \.f-inline-actions\s*\{([^}]*)\}");
+            Require(nested.Success && nested.Groups[1].Value.Contains("justify-content:flex-end") && nested.Groups[1].Value.Contains("margin-block:0"), "Nested default-centered actions defeat the Dialog footer alignment.");
+            Require(nested.Index > css.IndexOf(".f-inline-actions[data-alignment=\"center\"]", StringComparison.Ordinal), "An equal-specificity centered row rule wins over the Dialog context.");
+            var nativeForm = Regex.Match(css, @"\.f-dialog-actions > form\s*\{([^}]*)\}").Groups[1].Value;
+            Require(nativeForm.Contains("display:flex") && nativeForm.Contains("flex-wrap:wrap") && nativeForm.Contains("justify-content:flex-end") && nativeForm.Contains("max-width:100%"), "Native action forms lose bounded end alignment.");
+            var sample = ReadSource("src/Gallery.Flourish.Blazor/Components/Samples/Data/DialogSample.razor");
+            Require(Regex.IsMatch(sample, @"<Actions>[\s\S]*<InlineActions>"), "Gallery does not exercise the real Dialog with the default-centered reusable action row.");
+            return Task.CompletedTask;
+        }));
         tests.Add(("inline action CSS owns alignment and boards cannot override explicit choices", () =>
         {
             var css = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css");

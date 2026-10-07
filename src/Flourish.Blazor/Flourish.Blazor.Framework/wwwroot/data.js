@@ -17,6 +17,9 @@ function naturalWidth(table, key, maximum = naturalMaximum) {
     const insets = style => pixels(style.paddingLeft) + pixels(style.paddingRight)
         + pixels(style.borderLeftWidth) + pixels(style.borderRightWidth);
     for (const cell of columnCells(table, key)) {
+        // Editor choices and commands are not record values. Measuring their combined
+        // text makes entering bulk mode change the natural width of the data column.
+        if (cell.closest?.('.f-data-bulk-row')) continue;
         const text = cell.querySelector('.f-data-sort-text,.f-data-cell') ?? cell;
         const style = getComputedStyle(text);
         if (context) context.font = [style.fontWeight,style.fontSize,style.fontFamily].join(' ');
@@ -43,7 +46,9 @@ function refreshMinimum(table) {
     const total = columns(table).reduce((sum, col) => sum + (parseFloat(col.style.width) || minimum), 0);
     const action = table.querySelector('th.f-data-actions');
     const actionWidth = action?.getBoundingClientRect?.().width ?? 0;
-    table.style.minWidth = (total + actionWidth) + 'px';
+    const selection = table.querySelector('th.f-data-selection');
+    const selectionWidth = selection?.getBoundingClientRect?.().width ?? 0;
+    table.style.minWidth = (total + actionWidth + selectionWidth) + 'px';
 }
 function applyWidth(state, key, value, remember) {
     const table = state.root.querySelector('[data-f-table]');

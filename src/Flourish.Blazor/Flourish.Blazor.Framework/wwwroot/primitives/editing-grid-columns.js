@@ -19,7 +19,7 @@ function widthOf(column) {
 
 export function synchronizeWidth(root) {
     const table = root?.querySelector("table[data-resizable-table]");
-    if (table) table.style.width = `${columns(table).filter(column => !column.hidden && !("columnFill" in column.dataset))
+    if (table) table.style.width = `${columns(table).filter(column => !column.hidden)
         .reduce((total, column) => total + widthOf(column), 0)}px`;
 }
 
