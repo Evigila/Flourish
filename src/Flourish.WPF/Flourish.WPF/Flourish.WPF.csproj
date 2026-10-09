@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <PackageId>Arkheide.Flourish.WPF</PackageId>
+    <Description>Convenience package for native Flourish WPF contracts, Framework and optional Design.</Description>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeContentInPack>false</IncludeContentInPack>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj" />
+    <ProjectReference Include="../Flourish.WPF.Framework/Flourish.WPF.Framework.csproj" />
+    <ProjectReference Include="../Flourish.WPF.Design/Flourish.WPF.Design.csproj" />
+  </ItemGroup>
+</Project>

@@ -64,6 +64,7 @@ internal static class Program
             new(typeof(Records), "Key.Nav_Records", [], ["Key.Common_Contact", "Key.Common_Updated", "Key.Records_Label"]),
             new(typeof(RecordDetails), "演示组织", ["Key.Records_ContactInformation"], ["Key.Common_Contact", "Key.Common_Email"], new() { ["Id"] = "sample" }),
             new(typeof(SurfacePatterns), "Key.Page_Products", ["Key.Patterns_Catalog"], ["Key.Patterns_Description", "Key.Patterns_Price"]),
+            new(typeof(TutorialExample), "Key.Nav_Tutorial", ["Key.Sample_TutorialHost"], ["Key.Sample_TutorialDescription", "Key.Sample_TutorialCompany"]),
             new(typeof(Icons), "Key.Nav_Icons", ["Key.Icons_IntroductionTitle", "Key.Icons_Usage"], ["Key.Icons_FontDescription", "Key.Icons_Search"]),
             new(typeof(Localization), "Key.Nav_Localization", ["Key.Localization_IntroTitle", "Key.Localization_Sample"], ["Key.Localization_Introduction"]),
             new(typeof(ReconnectExample), "Key.Page_Reconnect", ["Key.Reconnect_DescriptionTitle", "Key.Reconnect_StatesTitle"], ["Key.Reconnect_Description"]),
@@ -76,7 +77,7 @@ internal static class Program
             await CheckPage(provider, scenario);
 
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 80, "Expected all 80 current component guides; update this guard with an intentional inventory change.");
+        Check(entries.Length == 81, "Expected all 81 current component guides; update this guard with an intentional inventory change.");
         foreach (var entry in entries)
         {
             var sample = SampleCatalog.For(entry);

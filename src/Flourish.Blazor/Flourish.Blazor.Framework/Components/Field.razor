@@ -4,10 +4,17 @@
 @using System.Linq
 @implements IDisposable
 
-<div @attributes="AdditionalAttributes" class="f-field @(FullWidth ? "f-field-full" : null) @Class">
+<div @attributes="AdditionalAttributes" class="f-field @(Actions is not null ? "f-field-with-actions" : null) @(FullWidth ? "f-field-full" : null) @Class">
     <label id="@(LabelId ?? Id + "-label")" class="f-field-label" for="@(ControlId ?? Id)">@Label@if (Required) { <span class="f-required" aria-label="@Ui("Input_Required", "Required")">*</span> }</label>
-    <div class="f-field-control"><CascadingValue Value="@Context">@ChildContent</CascadingValue></div>
-    <ValidationMessages Id="@(Id + "-error")" For="For" Error="@Error" MessageFormatter="MessageFormatter" />
+    <div class="f-field-control">
+        <CascadingValue Value="@Context">@ChildContent</CascadingValue>
+        @if (Actions is not null) { @ValidationContent }
+    </div>
+    @if (Actions is not null)
+    {
+        <div class="f-field-actions">@Actions</div>
+    }
+    else { @ValidationContent }
 </div>
 
 @code {
@@ -23,11 +30,13 @@
     [Parameter] public Func<string, string>? MessageFormatter { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     private EditContext? SubscribedContext;
     private FieldContext Context => new(Id, Required, Messages.Count > 0);
     private IReadOnlyList<string> Messages => !string.IsNullOrWhiteSpace(Error) ? new[] { Error! }
         : FormContext is not null && For is not null ? FormContext.GetValidationMessages(FieldIdentifier.Create(For)).ToArray() : Array.Empty<string>();
+    private RenderFragment ValidationContent => @<ValidationMessages Id="@(Id + "-error")" For="For" Error="@Error" MessageFormatter="MessageFormatter" />;
     protected override void OnParametersSet()
     {
         if (ReferenceEquals(SubscribedContext, FormContext)) return;

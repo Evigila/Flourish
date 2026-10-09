@@ -1,0 +1,37 @@
+{
+  "repository": "https://github.com/google/material-design-icons",
+  "revision": "737e3324305806514d7909874fa1818ae1808232",
+  "family": "Material Symbols Outlined",
+  "license": "Apache-2.0",
+  "defaultAxes": {
+    "FILL": 0,
+    "GRAD": 0,
+    "opsz": 24,
+    "wght": 400
+  },
+  "conversion": "The existing Blazor WOFF2 asset was unpacked to sfnt by Windows DirectWrite IDWriteFactory5.UnpackFontFile. WPF renders native geometry from its default instance. DirectWrite IDWriteFactory6.CreateFontFaceReference extracted all filled glyph paths with FILL=1, GRAD=0, opsz=24, wght=400. The generated JSON snapshot is compressed with built-in Brotli and rendered as native WPF Geometry.",
+  "converter": "scripts/Convert-MaterialIcons.ps1",
+  "sourceSha256": "96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3",
+  "files": [
+    {
+      "path": "MaterialSymbolsOutlined.ttf",
+      "sha256": "ab32756048ad04f3911166bf003485a2ce9233968fe13d833b60a7f20a71f374",
+      "bytes": 10738504
+    },
+    {
+      "path": "MaterialSymbolsOutlined.codepoints",
+      "sha256": "225bd09137103cb7746bc93dc08d08764c9f0c3bd04f4b958d4a3c3c19432dd6",
+      "bytes": 79338
+    },
+    {
+      "path": "LICENSE.txt",
+      "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+      "bytes": 11357
+    },
+    {
+      "path": "MaterialSymbolsFilled.json.br",
+      "sha256": "1ac203400757c192cdcbe23df04e32f98aa5fbcb582d18a9c6589877c5b03ce6",
+      "bytes": 994257
+    }
+  ]
+}

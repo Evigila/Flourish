@@ -1,0 +1,26 @@
+.f-tutorial-trigger { color:inherit; background:transparent; border:0; border-radius:12px; }
+.f-tutorial-trigger:hover:not(:disabled) { background:var(--f-target-preview); }
+.f-tutorial-trigger:focus-visible { outline:3px solid var(--f-accent-text); outline-offset:2px; }
+.f-tutorial-trigger:disabled { opacity:.5; cursor:not-allowed; }
+.f-progress-ring.f-progress-ring-compact { font-size:11px; }
+.f-tutorial-board { padding:24px 40px 32px; border:1px solid var(--f-border); border-radius:24px; box-shadow:var(--f-shadow-popup); }
+.f-tutorial-primary { color:var(--f-primary-ink); background-color:var(--f-primary); --f-tutorial-dot:var(--f-primary-preview); }
+.f-tutorial-surface { color:var(--f-text); background-color:var(--f-surface); --f-tutorial-dot:var(--f-border); }
+.f-tutorial-canvas { color:var(--f-text); background-color:var(--f-canvas); --f-tutorial-dot:var(--f-border); }
+.f-tutorial-dotted { background-image:radial-gradient(circle,var(--f-tutorial-dot) 1px,transparent 1.2px); background-size:18px 18px; }
+.f-tutorial-content { padding-block:40px; }
+.f-tutorial-content h1 { margin:0; font-size:var(--f-type-h1,34px); font-weight:780; line-height:1.2; }
+.f-tutorial-content p { margin:0; max-width:700px; font-size:var(--f-type-body,17px); line-height:1.6; }
+.f-tutorial-header > span { font-size:var(--f-type-body,17px); font-weight:650; }
+.f-tutorial-primary .f-tutorial-header .f-button-quiet,.f-tutorial-primary .f-tutorial-skip .f-button-underline { color:inherit; }
+.f-tutorial-primary .f-tutorial-header .f-button-quiet:hover:not(:disabled) { background:var(--f-primary-preview); }
+.f-tutorial-segment { color:inherit; border:0; border-radius:0; background:transparent; }
+.f-tutorial-segment::after { border-radius:4px; }
+.f-tutorial-segment[aria-current=step]::after { box-shadow:0 0 0 2px currentColor; }
+.f-tutorial-segment:focus-visible { outline:3px solid currentColor; outline-offset:2px; }
+.f-tutorial-segment:disabled { cursor:not-allowed; }
+.f-tutorial-preview { color:var(--f-text); background:var(--f-surface); border:1px solid var(--f-border); border-radius:16px; padding:24px; box-shadow:var(--f-shadow-popup); }
+.f-tutorial-preview > p { margin:0 0 16px; }
+.f-tutorial-preview-title { font-size:var(--f-type-h2,28px); font-weight:750; }
+.f-tutorial-overview li[data-completed=true] .f-icon { color:var(--f-accent-text); }
+@media(max-width:760px) { .f-tutorial-board { padding:20px; } .f-tutorial-content { padding-block:24px; min-height:200px; } }

@@ -1,0 +1,10 @@
+@page "/examples/tutorial"
+@inherits LocalizedComponentBase
+
+<PageTitle>@Localization.Parse(TextKey.Nav_Tutorial) · Gallery</PageTitle>
+<PageBody>
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_Tutorial)" />
+    <Section Title="@Localization.Parse(TextKey.Sample_TutorialHost)">
+        <ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data.TutorialBoardSample />
+    </Section>
+</PageBody>

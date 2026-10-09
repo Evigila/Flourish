@@ -10,7 +10,7 @@
     {
         @foreach (var option in Options)
         {
-            <option value="@BindConverter.FormatValue(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
+            <option value="@Internal.SelectValueConversion.Format(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
         }
     }
 </select>
@@ -24,10 +24,10 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public string ParsingErrorMessage { get; set; } = "Select a valid option.";
     private void Change(ChangeEventArgs args) { if (!Disabled) CurrentValueAsString = args.Value?.ToString(); }
-    protected override string? FormatValueAsString(TValue? value) => BindConverter.FormatValue(value, Texts.FormatCulture)?.ToString();
+    protected override string? FormatValueAsString(TValue? value) => Internal.SelectValueConversion.Format(value, Texts.FormatCulture);
     protected override bool TryParseValueFromString(string? value, out TValue result, out string validationErrorMessage)
     {
-        if (BindConverter.TryConvertTo<TValue>(value, Texts.FormatCulture, out var parsed))
+        if (Internal.SelectValueConversion.TryParse<TValue>(value, Texts.FormatCulture, out var parsed))
         { result = parsed!; validationErrorMessage = ""; return true; }
         result = default!; validationErrorMessage = DefaultText(nameof(ParsingErrorMessage), ParsingErrorMessage, "Input_SelectError", "Select a valid option."); return false;
     }

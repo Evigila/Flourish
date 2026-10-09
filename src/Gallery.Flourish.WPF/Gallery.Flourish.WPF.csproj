@@ -2,38 +2,20 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Gallery.Flourish.WPF</AssemblyName>
     <RootNamespace>ArkheideSystem.Gallery.Flourish.WPF</RootNamespace>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
-    <StartupObject>ArkheideSystem.Gallery.Flourish.WPF.Program</StartupObject>
-    <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
-    <UserSecretsId>Gallery.WPF</UserSecretsId>
-    <ShouldUnsetParentConfigurationAndPlatform>false</ShouldUnsetParentConfigurationAndPlatform>
+    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="$(EssentialCultureVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <ProjectReference Include="../Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj" />
+    <ProjectReference Include="../Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj" />
+    <None Update="Culture.json" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="../Gallery.Flourish.Blazor/wwwroot/gallery.svg" Link="Artwork/gallery.svg" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Flourish.WPF\Flourish.WPF.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="Localization\Culture.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Localization\Culture.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>Culture.json</TargetPath>
-    </None>
-    <None Update="FlourishCulture.Json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

@@ -8,10 +8,19 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "Steps" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_Steps_TutorialBoard",
+        "ActiveStepKey" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_ActiveStepKey_TutorialBoard",
+        "ActiveStepKeyChanged" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_ActiveStepKeyChanged_TutorialBoard",
+        "OnAction" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_OnAction_TutorialBoard",
+        "OnSkip" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_OnSkip_TutorialBoard",
+        "Compact" when parameter.DeclaringType == typeof(Controls.ProgressRing) => "Key.Parameter_Compact_ProgressRing",
+        "ShowValue" when parameter.DeclaringType == typeof(Controls.ProgressRing) => "Key.Parameter_ShowValue_ProgressRing",
         "Description" when parameter.DeclaringType == typeof(Controls.Button) => "Key.Parameter_Description_Button",
         "TrailingText" when parameter.DeclaringType == typeof(Controls.Button) => "Key.Parameter_TrailingText_Button",
         "Variant" when parameter.DeclaringType == typeof(Controls.EmptyState) => "Key.Parameter_Variant_EmptyState",
         "Alignment" when parameter.DeclaringType == typeof(Controls.InlineActions) => "Key.Parameter_Alignment_InlineActions",
+        "Actions" when parameter.DeclaringType == typeof(Controls.Field) => "Key.Parameter_Actions_Field",
+        "ChildContent" when parameter.DeclaringType == typeof(Controls.Field) => "Key.Parameter_ChildContent_Field",
         "Compact" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_Compact_NavigationChoices",
         "HeadingLevel" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_HeadingLevel_IdentityCard",
         "Title" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_Title_IdentityCard",

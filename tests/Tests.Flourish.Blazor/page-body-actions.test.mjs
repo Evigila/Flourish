@@ -41,6 +41,40 @@ test("PageBody direct full-row actions leave room for content gutters", async ()
   assert.equal(property(rule(actions, ".f-form-actions"), "width"), "100%");
 });
 
+test("PageBody bounds direct aligned action rows without changing nested rows or alignment", async () => {
+  const framework = await read(`${frameworkRoot}framework.css`);
+  const baseSelector = ".f-inline-actions[data-alignment]";
+  const pageSelector = ".f-page-body > .f-inline-actions[data-alignment]";
+  const base = rule(framework, baseSelector);
+  const direct = rule(framework, pageSelector);
+  assert.equal(property(base, "width"), "100%");
+  assert.equal(property(base, "min-width"), "0");
+  assert.equal(property(base, "box-sizing"), "border-box");
+  assert.equal(property(direct, "width"), "auto");
+  assert.ok(framework.indexOf(pageSelector) > framework.indexOf(baseSelector));
+  assert.doesNotMatch(direct, /overflow\s*:|max-width\s*:|margin-inline\s*:|justify-content\s*:|!important/);
+  assert.doesNotMatch(framework, /\.f-page-body\s+\.f-inline-actions\[data-alignment\]\s*\{/);
+  for (const [alignment, justification] of [["start", "flex-start"], ["center", "center"], ["end", "flex-end"]]) {
+    assert.equal(property(rule(framework, `.f-inline-actions[data-alignment="${alignment}"]`), "justify-content"), justification);
+  }
+  assert.equal(property(rule(framework, ".f-dialog-actions .f-inline-actions"), "justify-content"), "flex-end");
+  const foundation = await read(`${designRoot}foundation.css`);
+  assert.equal(property(rule(foundation, ".f-page-body > :not(.f-page-heading)"), "margin-inline"), "var(--f-content-gutter)");
+  assert.equal(property(rule(foundation, ".f-page-full"), "--f-content-gutter"), "0px");
+  assert.equal(property(rule(foundation, ".f-page-fluid"), "--f-content-gutter"), "max(var(--f-page-gutter),calc((100% - var(--f-content-width))/6))");
+  assert.equal(property(rule(foundation, ".f-page-centered"), "--f-content-gutter"), "calc(max(var(--f-page-gutter),calc((100% - var(--f-content-width))/2))*var(--f-centered-gutter-scale,1))");
+});
+
+test("Gallery composes direct and nested real actions with page width and compact spacing controls", async () => {
+  const page = await read("src/Gallery.Flourish.Blazor/Components/Samples/Layout/PageBodySample.razor");
+  assert.match(page, /<StandaloneCheckBox[^>]*@bind-Value="CompactSpacing"/);
+  assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.PageBody Fluid="@\(Mode == "fluid"\)" FullWidth="@\(Mode == "full"\)" CompactSpacing="@CompactSpacing">[\s\S]*?<\/ArkheideSystem\.Flourish\.Blazor\.Components\.Section>\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
+  assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.Section[^>]*>[\s\S]*?<InlineActions Alignment="HorizontalAlignment.End">/);
+  const actions = await read("src/Gallery.Flourish.Blazor/Components/Samples/Content/InlineActionsSample.razor");
+  assert.match(actions, /<PageBody Fluid="false" CompactSpacing="true">\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
+  assert.doesNotMatch(actions, /style=|Class=/);
+});
+
 test("nested rectangle grids and bounded squares retain distinct sizing without consumer overrides", async () => {
   const css = await read(`${frameworkRoot}uniform-grid.css`);
   assert.equal(property(rule(css, ".f-uniform-grid"), "width"), "100%");

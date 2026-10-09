@@ -1,0 +1,34 @@
+/* Geometry and native state only; the optional Design package owns the skin. */
+.f-tutorial-entry { display:inline-flex; align-items:center; flex:none; min-width:0; }
+.f-tutorial-trigger { display:grid; place-items:center; width:48px; height:48px; padding:4px; cursor:pointer; }
+.f-tutorial-trigger > span { display:flex; }
+.f-progress-ring.f-progress-ring-compact { display:inline-grid; place-items:center; position:relative; width:36px; height:36px; }
+.f-progress-ring.f-progress-ring-compact svg { width:36px; height:36px; }
+.f-progress-ring-compact > span { position:absolute; }
+.f-tutorial-board,.f-tutorial-board *,.f-tutorial-preview,.f-tutorial-preview * { box-sizing:border-box; }
+.f-tutorial-board:not(:popover-open),.f-tutorial-preview:not(:popover-open) { display:none; }
+.f-tutorial-preview { position:fixed; inset:auto; margin:0; width:max-content; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; }
+.f-tutorial-board { position:fixed; inset:0; margin:auto; width:min(960px,calc(100vw - 48px)); max-height:calc(100dvh - 48px); overflow:auto; }
+.f-tutorial-board:popover-open { display:flex; flex-direction:column; }
+.f-tutorial-board::backdrop { pointer-events:none; background:transparent; }
+.f-tutorial-header { display:flex; align-items:center; justify-content:space-between; gap:24px; min-width:0; }
+.f-tutorial-header > span { min-width:0; overflow-wrap:anywhere; }
+.f-tutorial-content { display:flex; flex-direction:column; justify-content:center; flex:1 1 auto; min-height:240px; min-width:0; gap:24px; }
+.f-tutorial-content :is(h1,p) { min-width:0; max-width:100%; overflow-wrap:anywhere; }
+.f-tutorial-footer { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,auto) minmax(0,1fr); align-items:end; gap:24px; min-width:0; }
+.f-tutorial-skip { justify-self:start; min-width:0; }
+.f-tutorial-actions { justify-self:end; min-width:0; }
+.f-tutorial-footer .f-button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+.f-tutorial-segments { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; min-width:0; }
+.f-tutorial-segment { position:relative; display:block; width:32px; min-height:44px; padding:0; cursor:pointer; }
+.f-tutorial-segment::after { content:''; display:block; width:100%; height:8px; background:currentColor; opacity:.3; }
+.f-tutorial-segment[data-completed=true]::after,.f-tutorial-segment[aria-current=step]::after { opacity:1; }
+.f-tutorial-overview { display:grid; gap:12px; margin:0; padding:0; list-style:none; }
+.f-tutorial-overview li { display:flex; align-items:center; gap:12px; min-width:0; }
+.f-tutorial-overview li > span { min-width:0; overflow-wrap:anywhere; }
+@media(max-width:760px) {
+ .f-tutorial-board { width:calc(100vw - 24px); max-height:calc(100dvh - 24px); }
+ .f-tutorial-footer { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+ .f-tutorial-segments { grid-column:1/-1; grid-row:1; }
+ .f-tutorial-skip,.f-tutorial-actions { grid-row:2; }
+}

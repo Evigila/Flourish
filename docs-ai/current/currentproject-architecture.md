@@ -1,5 +1,13 @@
 # currentproject-architecture
 
+## 2026-10-07 Native WPF reconstruction
+
+The user authorized complete deletion of the former WPF solution implementation and requested current Flourish.Blazor source as the sole UI/UX authority. Four native projects follow Abstract → Framework → optional Design; a dependency-only aggregate installs all three. The native target remains net10.0-windows. The former WPF host/services and legacy branded controls are removed. Core, WinUI and the six-package public Blazor release remain outside this reconstruction.
+
+There are 75 explicit native control entries and executable Gallery factories. The four Standalone native-POST input splits and browser ApplicationLayout merge into native capabilities without aliases. Consumers own business data, acceptance and persistence; Framework owns geometry, selection, keyboard, focus and popup lifetimes. The optional Culture adapter implements the new desktop ITextProvider and uses the current Blazor library catalog directly. See [native WPF integration](wpf-native-integration.md) for use, platform differences, verification and manual acceptance. This supersedes earlier descriptions of the old WPF framework in active guides and dated records.
+
+Human DocFX configuration still names the deleted single-project WPF path. This discrepancy is reported rather than modifying docs/ without a task-scoped exception.
+
 ## 2026-10-06 Authorized identity access and full space editor release
 
 The complete gate, Trusted Publishing and public indexing are now complete for all six 1.1.2 packages. Four fresh public-only consumers passed 129 checks. Source commit 108fbff8950925b909a70b0b9830226ae8226521 is tagged v1.1.2; see release-verification.md. The older dated source-only statements below are superseded for these released capabilities, not ongoing consumer blockers.
@@ -83,11 +91,13 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   ├── Test-CultureCatalogs.ps1 — Validates both Blazor source catalogs for complete three-language keys, placeholders and line breaks.
 │   ├── Test-GalleryCulture.ps1 — Checks loopback SSR language negotiation, application/control text and formatting in all three languages.
 │   ├── Test-GalleryNavigation.ps1 — Checks loopback sample navigation, retained panels, repeated requests and query fallbacks.
+│   ├── Test-WpfPackageConsumers.ps1 — Restores four isolated native NuGet-only consumers from the local candidate feed.
 │   └── Test-CultureIntegration.cjs — Checks live Gallery language changes, independent browser sessions, formatted values and the Framework-only host with a headless browser.
 ├── script/ — Contains local documentation preview commands.
 │   ├── preview-docs-en-us.ps1 — Builds and serves the existing English DocFX site locally.
 │   └── preview-docs-zh-cn.ps1 — Builds and serves the existing Chinese DocFX site locally.
 ├── scripts/ — Contains allowlisted local application startup, release preparation, package inspection and user-confirmed tag publishing commands.
+│   ├── Convert-MaterialIcons.ps1 — Converts existing Blazor WOFF2 artwork through Windows DirectWrite into native outline/filled resources.
 │   ├── Publish-Helper.ps1 — Prepares packages and optionally validates clean master, confirms and pushes the matching release tag.
 │   ├── Release-Common.ps1 — Loads release settings, reads versions, runs checked commands and validates release tag ancestry.
 │   ├── ReleaseSettings.psd1 — Lists the release solution, version source, ordered package IDs, dependencies, required assets and checks.
@@ -414,274 +424,73 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   ├── CultureServiceCollectionExtensions.cs — Registers the scoped text-provider adapter through AddFlourishCulture.
 │   │   │   ├── CultureTextProvider.cs — Resolves catalog-qualified text, formatting and change events from the current localization session.
 │   │   │   └── Flourish.Extensions.Culture.Blazor.csproj — Defines the optional Blazor Culture extension package with public framework contracts and localization dependencies.
-│   │   ├── Flourish.Extensions.Culture.WPF/ — Connects the WPF shell culture service to Essential.Culture.
-│   │   │   ├── AssemblyInfo.cs — Allows the WPF extension tests to inspect internal integration classes.
-│   │   │   ├── EssentialCultureBuilderExtensions.cs — Registers the WPF culture connection through UseEssentialCulture.
-│   │   │   ├── EssentialCultureHostedService.cs — Starts and stops culture synchronization and shell text updates with the application host.
-│   │   │   ├── Flourish.Extensions.Culture.WPF.csproj — Defines the optional WPF Culture extension package and its framework and localization dependencies.
-│   │   │   └── ShellCultureApplicator.cs — Refreshes shell labels from stable localization tokens on the WPF dispatcher.
-│   │   ├── Directory.Build.props — Sets extension package metadata, versions and the optional local Essential.Culture module path.
-│   │   └── Flourish.Extensions.slnx — Opens the WPF and Blazor Culture extensions with their tests.
+│   │   └── Flourish.Extensions.Culture.WPF/ — Optional desktop Essential adapter for the current native ITextProvider.
+│   │       ├── EssentialCultureBuilderExtensions.cs — Disposable provider and FrameworkBuilder integration.
+│   │       └── Flourish.Extensions.Culture.WPF.csproj — References WPF Abstract/Framework and existing Culture.Wpf 1.3.0.
 │   ├── Flourish.WinUI3/ — Contains the WinUI3 library project placeholder.
 │   │   ├── Flourish.WinUI3.csproj — Defines the WinUI3 library placeholder and Windows App SDK dependency.
 │   │   └── Flourish.WinUI3.slnx — Groups the WinUI3 placeholder library and its Gallery host.
-│   ├── Flourish.WPF/ — Contains the existing WPF framework, themes and shell implementation.
-│   │   ├── Abstract/ — Defines public interfaces, options and immutable state contracts.
-│   │   │   ├── FontChangedEventArgs.cs — Carries the changed font scope and values to subscribers.
-│   │   │   ├── FontChangeKind.cs — Identifies whether a font change affects global text, icons or one page.
-│   │   │   ├── IAppearanceBuilder.cs — Declares startup palette, radius and material configuration.
-│   │   │   ├── IAppearanceService.cs — Declares runtime appearance changes.
-│   │   │   ├── IApplicationBuilder.cs — Declares the startup configuration and application build surface.
-│   │   │   ├── IApplicationRuntime.cs — Declares access to the built host and application lifecycle.
-│   │   │   ├── ICustomContentBuilder.cs — Declares injection of application content into shell regions.
-│   │   │   ├── IFontBuilder.cs — Declares global and page-specific font configuration.
-│   │   │   ├── IFontService.cs — Declares runtime text and icon font updates.
-│   │   │   ├── IMaterialEffectService.cs — Declares system backdrop and immersive dark-mode changes.
-│   │   │   ├── IMessageService.cs — Declares modal messages and custom response choices.
-│   │   │   ├── INavigationBuilder.cs — Declares navigation panel and navigation tree configuration.
-│   │   │   ├── INavigationGroupBuilder.cs — Declares the items inside a configured navigation group.
-│   │   │   ├── INavigationService.cs — Declares runtime routes, history, menu and navigation panel operations.
-│   │   │   ├── IProfileFlyoutService.cs — Declares profile flyout presentation separately from authentication.
-│   │   │   ├── IScrollService.cs — Declares runtime smooth-scrolling policy changes.
-│   │   │   ├── IShellRegionService.cs — Declares runtime registration of content in shell regions.
-│   │   │   ├── IShortcutService.cs — Declares shortcut registration, resolution and command dispatch.
-│   │   │   ├── ITitleBarBuilder.cs — Declares title bar branding, search, breadcrumbs and action configuration.
-│   │   │   ├── IToolbarBuilder.cs — Declares default and page-specific toolbar items.
-│   │   │   ├── IToolbarService.cs — Declares runtime changes to the active toolbar.
-│   │   │   ├── ITrayService.cs — Declares notification-area icon, tooltip and menu changes.
-│   │   │   ├── IWindowBuilder.cs — Declares shell sizing, frame and close behavior at startup.
-│   │   │   ├── IWindowService.cs — Declares runtime window size, state and presentation operations.
-│   │   │   ├── MaterialEffect.cs — Lists the supported native window backdrop effects.
-│   │   │   ├── MessageDialogOption.cs — Describes a custom response choice in a message dialog.
-│   │   │   ├── NavigatedEventArgs.cs — Carries the destination and parameter after navigation.
-│   │   │   ├── NavigationRoute.cs — Describes a destination that creates a WPF page.
-│   │   │   ├── NavigationState.cs — Stores the current destination and available history operations.
-│   │   │   ├── PageCacheSnapshot.cs — Stores page cache policy and the currently retained page types.
-│   │   │   ├── PageFontOverride.cs — Stores a font override for one WPF page type.
-│   │   │   ├── ProfileFlyoutState.cs — Stores the current profile flyout state.
-│   │   │   ├── ShortcutRegistrationInfo.cs — Stores an immutable snapshot of a registered shortcut.
-│   │   │   ├── ShortcutRegistrationOptions.cs — Configures shortcut scope, priority and duplicate handling.
-│   │   │   ├── ShortcutRegistryChangedEventArgs.cs — Carries a new shortcut registration snapshot.
-│   │   │   ├── ShortcutResolutionContext.cs — Identifies the active window and page used to resolve a shortcut.
-│   │   │   ├── ThemeColors.cs — Stores brand colors used to derive WPF resources.
-│   │   │   ├── TrayState.cs — Stores an immutable notification-area icon snapshot.
-│   │   │   └── WindowStateSnapshot.cs — Stores an immutable shell window state.
-│   │   ├── Appearance/ — Implements theme, font and native material services.
-│   │   │   ├── AppearanceBuilder.cs — Collects startup colors, corner radii and material settings.
-│   │   │   ├── AppearanceOptions.cs — Stores startup appearance and font settings.
-│   │   │   ├── AppearanceService.cs — Publishes runtime appearance changes and derived theme resources.
-│   │   │   ├── FontBuilder.cs — Configures text and icon fonts and page-specific text scales.
-│   │   │   ├── FontService.cs — Updates global font resources and page-specific overrides at runtime.
-│   │   │   ├── MaterialEffectPlatform.cs — Resolves native backdrop capabilities for the current Windows version.
-│   │   │   ├── MaterialEffectService.cs — Applies the selected Windows material and immersive dark mode.
-│   │   │   └── ThemeService.cs — Applies WPF theme resources to attached application and window scopes.
-│   │   ├── Assets/ — Stores packaged framework artwork or built-in localization resources.
-│   │   │   └── favicon.ico — Provides the packaged Windows application icon.
-│   │   ├── Commands/ — Registers action keys and dispatches their handlers.
-│   │   │   └── ShortcutService.cs — Registers scoped shortcuts and dispatches their commands.
-│   │   ├── Configuration/ — Validates startup options and manages owned persistent settings.
-│   │   │   └── PageTypeValidation.cs — Rejects invalid WPF page types during registration.
-│   │   ├── Controls/ — Contains public WPF control templates and their implementation.
-│   │   │   ├── ActionCard.xaml — Defines the template for action card content and a fixed action region.
-│   │   │   ├── ActionCard.xaml.cs — Presents a title and copy beside a fixed action area.
-│   │   │   ├── BunchedIndicatorAnimator.cs — Moves shared list selection and pointer indicators between item bounds.
-│   │   │   ├── BunchedListBox.xaml — Defines the template for the list's shared hover, press and selection indicator layers.
-│   │   │   ├── BunchedListBox.xaml.cs — Coordinates selection, hover and pressed backgrounds for grouped list items.
-│   │   │   ├── BunchedListBoxInteractionController.cs — Finds item bounds and redirects the parent-owned interaction surface.
-│   │   │   ├── BunchedListBoxItem.xaml — Defines the template for the grouped list item's content and inherited states.
-│   │   │   ├── BunchedListBoxItem.xaml.cs — Provides item content and state for the parent's shared indicators.
-│   │   │   ├── Button.xaml — Defines the template for button variants, content alignment and interaction states.
-│   │   │   ├── Button.xaml.cs — Exposes action content, visual variants and click behavior.
-│   │   │   ├── Card.xaml — Defines the template for card surface variants and content alignment.
-│   │   │   ├── Card.xaml.cs — Groups related content in a surface with selectable visual variants.
-│   │   │   ├── CardButton.xaml — Defines the template for the clickable card's icon, title and descriptive content.
-│   │   │   ├── CardButton.xaml.cs — Combines an icon, title and description in a clickable card.
-│   │   │   ├── CheckBox.xaml — Defines the template for checkbox indicator, label and selection states.
-│   │   │   ├── CheckBox.xaml.cs — Exposes a binary selection value and optional label.
-│   │   │   ├── Chunk.xaml — Defines the template for a full-width section heading, body and supporting content.
-│   │   │   ├── Chunk.xaml.cs — Groups a page section with a title, body and supporting content.
-│   │   │   ├── CodeSpace.xaml — Defines the template for monospaced code and the copy action.
-│   │   │   ├── CodeSpace.xaml.cs — Displays monospaced code and provides a built-in copy action.
-│   │   │   ├── ComboBox.xaml — Defines the template for the selected value, dropdown panel and option states.
-│   │   │   ├── ComboBox.xaml.cs — Selects one value and creates styled item containers.
-│   │   │   ├── ComboBoxItem.xaml — Defines the template for dropdown option content and interaction states.
-│   │   │   ├── ComboBoxItem.xaml.cs — Provides the content container for a dropdown option.
-│   │   │   ├── DataGrid.xaml — Defines the template for table header, row, cell and selection presentation.
-│   │   │   ├── DataGrid.xaml.cs — Wraps the native WPF grid while preserving selection and editing behavior.
-│   │   │   ├── Document.xaml — Defines the template for the rounded reading surface and its paragraphs.
-│   │   │   ├── Document.xaml.cs — Groups readable paragraphs on one document surface.
-│   │   │   ├── GridSplitter.xaml — Defines the template for the draggable resize separator.
-│   │   │   ├── GridSplitter.xaml.cs — Resizes adjacent layout regions using a draggable separator.
-│   │   │   ├── HeaderChunk.xaml — Defines the template for the leading title and emphasized presentation surface.
-│   │   │   ├── HeaderChunk.xaml.cs — Presents a full-width leading title and presentation area.
-│   │   │   ├── HoverReveal.cs — Provides attached settings for pointer reveal behavior.
-│   │   │   ├── HoverRevealAnimator.cs — Applies reveal visuals to template parts.
-│   │   │   ├── HoverRevealInteraction.cs — Tracks pointer entry, press and capture changes for reveal behavior.
-│   │   │   ├── Label.xaml — Defines the template for label content and native access-key display.
-│   │   │   ├── Label.xaml.cs — Displays content labels with native access-key support.
-│   │   │   ├── ListBox.xaml — Defines the template for list surfaces and selection presentation.
-│   │   │   ├── ListBox.xaml.cs — Displays selectable items with semantic presentation modes.
-│   │   │   ├── ListBoxItem.xaml — Defines the template for list item content and interaction states.
-│   │   │   ├── ListBoxItem.xaml.cs — Provides a selectable item container and its interaction states.
-│   │   │   ├── OutputCard.xaml — Defines the template for the scrollable output history surface.
-│   │   │   ├── OutputCard.xaml.cs — Displays append-only output messages in a scrollable card.
-│   │   │   ├── Overlay.xaml — Defines the template for the floating surface and its content host.
-│   │   │   ├── Overlay.xaml.cs — Hosts floating content with configurable placement and open lifetime.
-│   │   │   ├── PageBody.xaml — Defines the template for the scrolling viewport and stacked content host.
-│   │   │   ├── PageBody.xaml.cs — Hosts vertically stacked page content in its scrolling viewport.
-│   │   │   ├── Paragraph.xaml — Defines the template for reading-size text and paragraph spacing.
-│   │   │   ├── Paragraph.xaml.cs — Displays a reading-size paragraph inside a document.
-│   │   │   ├── PasswordBox.xaml — Defines the template for concealed input and focus states.
-│   │   │   ├── PasswordBox.xaml.cs — Edits a concealed password value.
-│   │   │   ├── Presenter.xaml — Defines the template for the selected text and visual content composition.
-│   │   │   ├── Presenter.xaml.cs — Arranges title, copy, body and presentation content in the selected composition.
-│   │   │   ├── PresenterMode.cs — Defines how presentation content shares space with copy and body.
-│   │   │   ├── PresenterPosition.cs — Defines the presentation area's position relative to text content.
-│   │   │   ├── RadioButton.xaml — Defines the template for the option indicator, label and selection states.
-│   │   │   ├── RadioButton.xaml.cs — Selects one option within a mutually exclusive group.
-│   │   │   ├── RoundedClipCoordinator.cs — Keeps template clipping aligned with rounded bounds.
-│   │   │   ├── ScrollBar.xaml — Defines the template for the track, thumb and orientation.
-│   │   │   ├── ScrollBar.xaml.cs — Displays and manipulates a scroll position.
-│   │   │   ├── ScrollViewer.xaml — Defines the template for the scrolling viewport and scrollbars.
-│   │   │   ├── ScrollViewer.xaml.cs — Hosts scrollable content and supports render-based smooth scrolling.
-│   │   │   ├── SearchBox.xaml — Defines the template for the search glyph, input and placeholder.
-│   │   │   ├── SearchBox.xaml.cs — Edits a search query and exposes search and clear actions.
-│   │   │   ├── TextBlock.xaml — Defines the template for semantic text roles and text layout.
-│   │   │   ├── TextBlock.xaml.cs — Displays text using the selected semantic typography role.
-│   │   │   ├── TextBox.xaml — Defines the template for editable text, placeholder and validation presentation.
-│   │   │   ├── TextBox.xaml.cs — Edits text with label, placeholder and validation semantics.
-│   │   │   ├── ToolTip.xaml — Defines the template for the tooltip surface and contextual copy.
-│   │   │   ├── ToolTip.xaml.cs — Displays contextual help near its owner.
-│   │   │   ├── ToolTipPlacement.cs — Chooses tooltip placement from its shell region.
-│   │   │   ├── ToolTipPolicy.cs — Connects participating controls with the configured tooltip policy.
-│   │   │   ├── WindowCaptionButton.xaml — Defines the template for native-sized caption actions and pointer states.
-│   │   │   └── WindowCaptionButton.xaml.cs — Invokes native-sized minimize, maximize or close commands.
-│   │   ├── Hosting/ — Composes startup options and services with the application host.
-│   │   │   ├── ApplicationBuilder.cs — Creates and configures an application before its runtime is built.
-│   │   │   ├── ApplicationCompositionRoot.cs — Registers configured WPF and shared services in the host.
-│   │   │   ├── ApplicationOptions.cs — Collects and validates the shell configuration before registration.
-│   │   │   ├── DefaultApplicationBuilder.cs — Collects WPF shell options and builds the host once.
-│   │   │   ├── HostedApplicationRuntime.cs — Starts the configured host, exposes its services and shows the shell.
-│   │   │   ├── PreferenceLoader.cs — Applies saved theme, font and shell preferences during startup.
-│   │   │   ├── PreferencePersistenceService.cs — Saves selected runtime preference changes to the owned settings store.
-│   │   │   └── ServiceCollectionExtensions.cs — Registers the framework, commands and navigation services.
-│   │   ├── Layout/ — Implements content sizing, alignment and scrolling policy.
-│   │   │   ├── CenteredPageContentLayout.cs — Constrains and centers page content without restricting its scrolling viewport.
-│   │   │   └── ScrollService.cs — Changes WPF smooth-scrolling policy at runtime.
-│   │   ├── Messaging/ — Provides notifications and modal message behavior.
-│   │   │   └── MessageDialogOptionValidator.cs — Checks that message choices have usable labels and unique identifiers.
-│   │   ├── Motion/ — Provides startup and runtime animation policy.
-│   │   │   └── MotionService.cs — Publishes WPF animation resources from runtime motion settings.
-│   │   ├── Navigation/ — Manages destinations, menu state, panel geometry and navigation history.
-│   │   │   ├── FrameNavigationContentHost.cs — Adapts page navigation to a WPF Frame without a separate history policy.
-│   │   │   ├── INavigationContentHost.cs — Defines how a navigation service presents a WPF page.
-│   │   │   ├── INavigationPageProvider.cs — Defines cached page lookup for a registered route.
-│   │   │   ├── IPageFactory.cs — Defines creation of a navigable WPF page.
-│   │   │   ├── NavigablePageRegistration.cs — Stores the page type and cache policy registered for a navigation key.
-│   │   │   ├── NavigablePageRegistrationState.cs — Owns the collection of registered page metadata.
-│   │   │   ├── NavigationBuilder.cs — Collects the navigation panel, groups and items selected at startup.
-│   │   │   ├── NavigationGroupDefinition.cs — Stores a configured group and its child navigation items.
-│   │   │   ├── NavigationItemDefinition.cs — Stores and validates a route or command item in the WPF navigation tree.
-│   │   │   ├── NavigationMenuService.cs — Adapts WPF navigation definitions to the shared menu state.
-│   │   │   ├── NavigationOptions.cs — Stores navigation panel settings and the configured menu tree.
-│   │   │   ├── NavigationPaneColumnLayout.cs — Applies left or right navigation column widths without leaving stale constraints.
-│   │   │   ├── NavigationPanelChangedEventArgs.cs — Carries an updated navigation panel snapshot.
-│   │   │   ├── NavigationPanelDimensions.cs — Defines valid visible and collapsed navigation widths.
-│   │   │   ├── NavigationPanelService.cs — Updates navigation visibility, side, width and open state.
-│   │   │   ├── NavigationPaneTransitionController.cs — Animates navigation opening and closing through render transforms.
-│   │   │   ├── NavigationRouteRegistry.cs — Owns runtime route registrations and page-type metadata.
-│   │   │   ├── NavigationRoutesChangedEventArgs.cs — Carries the current route collection after registration changes.
-│   │   │   ├── NavigationRuntimeFacade.cs — Combines routing, history, caching, menu and panel services behind the public API.
-│   │   │   ├── NavigationService.cs — Creates and presents registered pages and maintains navigation history.
-│   │   │   ├── PageCacheChangedEventArgs.cs — Carries page cache configuration and cached types after a change.
-│   │   │   ├── PageCacheService.cs — Creates, reuses and evicts registered page instances.
-│   │   │   ├── PageTransitionController.cs — Animates a cached page presentation without repeatedly laying out its content.
-│   │   │   └── ServiceProviderPageFactory.cs — Creates pages from dependency injection or an activator fallback.
-│   │   ├── Profile/ — Manages profile identity, remembered credentials and presentation state.
-│   │   │   ├── ProfileFlyoutService.cs — Controls profile flyout visibility and presentation state.
-│   │   │   ├── ProfileImageBrushCache.cs — Reuses image brushes for profile artwork.
-│   │   │   ├── ProfileImageLoader.cs — Loads and resizes profile images while preserving transparency.
-│   │   │   ├── ProfileSecretStore.cs — Stores remembered profile credentials using the configured secrets provider.
-│   │   │   └── ProfileViewOptions.cs — Stores WPF-specific profile page and flyout settings.
-│   │   ├── Projects/ — Manages project metadata, persistent catalogs and active selection.
-│   │   │   ├── DefaultProjectBehavior.cs — Handles the shell's default create, save and activate project commands.
-│   │   │   └── ProjectSaveFileDialog.cs — Abstracts the Windows file dialog used when a project needs a save path.
-│   │   ├── Shell/ — Groups services and views for application chrome.
-│   │   │   ├── Regions/ — Owns application content injected into named shell positions.
-│   │   │   │   ├── ShellRegionOptions.cs — Stores configured custom content by shell region.
-│   │   │   │   ├── ShellRegionRegistration.cs — Describes one application-owned element placed in a shell region.
-│   │   │   │   └── ShellRegionService.cs — Publishes runtime additions and changes to shell region content.
-│   │   │   ├── TitleBar/ — Owns branding, search, breadcrumbs and title bar state.
-│   │   │   │   ├── TitleBarBuilder.cs — Collects startup title bar branding and optional features.
-│   │   │   │   ├── TitleBarLogoLoadCoordinator.cs — Cancels stale logo loads and reuses completed path results.
-│   │   │   │   └── TitleBarVisualAssets.cs — Resolves and loads artwork for title bar branding.
-│   │   │   └── Toolbar/ — Owns default and per-view action groups and toolbar state.
-│   │   │       ├── ToolbarBuilder.cs — Configures default and page-specific toolbar buttons.
-│   │   │       ├── ToolbarOptions.cs — Stores WPF toolbar definitions by page type.
-│   │   │       └── ToolbarService.cs — Adapts WPF page types to shared toolbar state.
-│   │   ├── Themes/ — Contains WPF visual resources and the theme loader.
-│   │   │   ├── Colors/ — Contains light, dark and shared palette resources.
-│   │   │   │   ├── Colors.Dark.xaml — Defines the dark palette's color and brush resources.
-│   │   │   │   ├── Colors.Light.xaml — Defines the light palette's color and brush resources.
-│   │   │   │   └── Colors.xaml — Collects theme color dictionaries and shared brushes.
-│   │   │   ├── Controls.xaml — Collects templates and styles for the WPF control library.
-│   │   │   ├── Generic.xaml — Loads the canonical control and theme resource dictionaries.
-│   │   │   ├── Layout.xaml — Defines shared margins, sizing and layout resources.
-│   │   │   ├── ThemeResources.cs — Loads the WPF control and theme resource dictionaries.
-│   │   │   └── Typography.xaml — Defines text families, font sizes and semantic text resources.
-│   │   ├── ToolTips/ — Owns contextual help timing and placement policy.
-│   │   │   ├── ToolTipPlacementCalculator.cs — Calculates placement from geometry without inspecting the visual tree.
-│   │   │   └── ToolTipService.cs — Publishes tooltip policy resources to WPF scopes.
-│   │   ├── Views/ — Contains internal shell views or Gallery demonstration pages.
-│   │   │   ├── Page/ — Contains built-in WPF pages used by shell features.
-│   │   │   │   ├── ProfilePage.xaml — Defines the built-in profile page's identity fields and image actions.
-│   │   │   │   └── ProfilePage.xaml.cs — Presents the built-in profile form and image selection.
-│   │   │   └── Windows/ — Contains shell windows, floating views and view controllers.
-│   │   │       ├── ApplicationInfoOverlay.xaml — Defines the view layout for application identity and version information.
-│   │   │       ├── ApplicationInfoOverlay.xaml.cs — Displays the application's title, version and supporting information.
-│   │   │       ├── CustomContentBuilder.cs — Registers application-provided content in predefined shell regions.
-│   │   │       ├── MessageBoxWindow.xaml — Defines the view layout for modal message content and response buttons.
-│   │   │       ├── MessageBoxWindow.xaml.cs — Presents a modal message and its response buttons.
-│   │   │       ├── MessageService.cs — Creates message windows and returns the selected response.
-│   │   │       ├── NavigationPaneView.xaml — Defines the view layout for grouped and fixed navigation lists.
-│   │   │       ├── NavigationPaneView.xaml.cs — Displays grouped and fixed navigation items and raises selection requests.
-│   │   │       ├── NotificationHost.xaml — Defines the view layout for active notification cards and their actions.
-│   │   │       ├── NotificationHost.xaml.cs — Displays the shell's active notifications and action buttons.
-│   │   │       ├── ProfileOverlay.xaml — Defines the view layout for profile flyout content.
-│   │   │       ├── ProfileOverlay.xaml.cs — Presents the profile flyout and its configured page content.
-│   │   │       ├── ProjectSelectorController.cs — Connects the shell selector with active project state.
-│   │   │       ├── ShellContentHost.xaml — Defines the view layout for the navigated page and centered content area.
-│   │   │       ├── ShellContentHost.xaml.cs — Hosts the navigated page and shared content layout.
-│   │   │       ├── ShellNavigationController.cs — Connects navigation runtime state with the shell view.
-│   │   │       ├── ShellNotificationController.cs — Reconciles active notifications with displayed shell cards.
-│   │   │       ├── ShellProfileController.cs — Connects profile state and flyout content with shell presentation.
-│   │   │       ├── ShellRegionElementFactory.cs — Creates framework buttons for registered title bar and footer content.
-│   │   │       ├── ShellStatusSurfaceController.cs — Coordinates status flyouts and their selected anchors.
-│   │   │       ├── ShellTitleBarController.cs — Connects branding, search and breadcrumb state with the title bar.
-│   │   │       ├── ShellToolbarController.cs — Selects and reuses toolbar buttons for the active page.
-│   │   │       ├── ShellWindow.xaml — Defines the view layout for the frame, title bar, navigation, toolbar and floating layers.
-│   │   │       ├── ShellWindow.xaml.cs — Hosts the WPF frame, title bar, navigation, toolbar and floating surfaces.
-│   │   │       ├── StatusBarView.xaml — Defines the view layout for status items and flyout anchors.
-│   │   │       ├── StatusBarView.xaml.cs — Displays shell status items and their flyout anchors.
-│   │   │       ├── StatusItemViewCache.cs — Reuses stable status item views while reconciling runtime snapshots.
-│   │   │       ├── StatusOverlay.xaml — Defines the view layout for expanded status information.
-│   │   │       ├── StatusOverlay.xaml.cs — Hosts the expanded information for a selected status item.
-│   │   │       ├── TitleBar.xaml — Defines the view layout for branding, search, breadcrumbs and caption actions.
-│   │   │       ├── TitleBar.xaml.cs — Displays shell identity, search, breadcrumbs, actions and caption buttons.
-│   │   │       ├── ToolbarCommandButtonIndex.cs — Updates only toolbar buttons affected by a command availability change.
-│   │   │       ├── ToolbarView.xaml — Defines the view layout for active page toolbar buttons.
-│   │   │       └── ToolbarView.xaml.cs — Displays and reuses buttons for the current toolbar.
-│   │   ├── Windowing/ — Owns platform window state, close behavior and tray integration.
-│   │   │   ├── ShellFrameController.cs — Switches between native and custom window frames.
-│   │   │   ├── TrayIconService.cs — Creates the Windows notification-area icon and handles its menu commands.
-│   │   │   ├── WindowBuilder.cs — Collects startup window sizes, frame and close options.
-│   │   │   ├── WindowCloseOptionSynchronizer.cs — Keeps shared close policy aligned with WPF tray settings.
-│   │   │   ├── WindowFrameFixService.cs — Attaches native frame fixes to the WPF window.
-│   │   │   ├── WindowOptions.cs — Stores initial window sizing, frame and tray settings.
-│   │   │   └── WindowService.cs — Updates WPF window state and publishes immutable snapshots.
-│   │   ├── AssemblyInfo.cs — Maps public XAML namespaces and grants tests access to internal types.
-│   │   ├── Flourish.WPF.csproj — Defines the existing Windows WPF library, shared Core reference and package assets.
-│   │   └── Flourish.WPF.slnx — Groups the existing WPF library, shared Core, Gallery and tests.
+│   ├── Flourish.WPF/ — Native port of the current Blazor controls; the former WPF framework is retired.
+│   │   ├── Flourish.WPF.Abstract/ — Native public contracts without rendering or Core service dependencies.
+│   │   │   ├── ApplicationContracts.cs — Immutable shell configuration and navigation factories.
+│   │   │   ├── ControlContracts.cs — Shared variants, actions and selection/dialog snapshots.
+│   │   │   ├── TableContracts.cs — Record, editing-grid, search, bulk-edit and chart contracts.
+│   │   │   ├── TextContracts.cs — Catalog-qualified text and desktop provider lifetime.
+│   │   │   └── Flourish.WPF.Abstract.csproj — Packages the Windows-native contracts assembly.
+│   │   ├── Flourish.WPF.Framework/ — Native controls, templates, geometry and interaction lifetimes.
+│   │   │   ├── Controls/ — Implements the explicit native control inventory.
+│   │   │   │   ├── ApplicationShell.cs — Responsive native navigation, async guards, text and focus lifetime.
+│   │   │   │   ├── Button.cs — Shared ordinary/grid button contracts, structured text and busy state.
+│   │   │   │   ├── Content.cs — Shared presentation, access, heading and internal layout/animation helpers.
+│   │   │   │   ├── Data/ — One record core with distinct editing/chart scenarios.
+│   │   │   │   │   ├── DataPager.cs — Native local/remote paging and bounded page input.
+│   │   │   │   │   ├── DataPresentation.cs — Shared native record/card cells and retained custom templates.
+│   │   │   │   │   ├── DataSearch.cs — One shared typed column-search renderer.
+│   │   │   │   │   ├── DataTable.cs — Header sorting, search, display snapshots, selection and bulk proposals.
+│   │   │   │   │   ├── DataText.cs — Optional provider captions and desktop subscription cleanup.
+│   │   │   │   │   ├── EditingGrid.cs — Native spreadsheet editing, atomic proposals and undo/redo.
+│   │   │   │   │   ├── LineChart.cs — Native finite chart geometry, series display and ranges.
+│   │   │   │   │   ├── ListView.cs — Read-only display sharing the table data/column core.
+│   │   │   │   │   └── TableData.cs — Culture-aware local search, stable sorting and numeric comparisons.
+│   │   │   │   ├── Dialog.cs — Modal lifecycle, keyed views, dropdown and notice surfaces.
+│   │   │   │   ├── Forms.cs — Shared binding/external validation and native form/action layouts.
+│   │   │   │   ├── Icon.cs — Native existing artwork with inherited foreground and decorative automation.
+│   │   │   │   ├── InputMaskFormatter.cs — Current Blazor mask normalization reused without alternate semantics.
+│   │   │   │   ├── Inputs.cs — Native text/date/number/reference/search controls and async autocomplete.
+│   │   │   │   ├── Menus.cs — Shared action/split menus and complete-key multi-selection snapshots.
+│   │   │   │   ├── OfferStage.cs — Retained offers, responsive activation, timed rotation and keyboard/pointer state.
+│   │   │   │   ├── Progress.cs — Native progress ranges/drawing and file selection boundary.
+│   │   │   │   └── UniformGrid.cs — Responsive rectangle/square tracks and outer clipping.
+│   │   │   ├── Themes/ — Native templates; Design contains no duplicate templates.
+│   │   │   │   ├── Actions.xaml — Shared buttons, menus, tooltips and scroll templates.
+│   │   │   │   ├── Content.xaml — Shared presentation, access, heading, offer and progress templates.
+│   │   │   │   ├── Data.xaml — Shared table/search/pager/edit/chart templates.
+│   │   │   │   ├── Generic.xaml — Source-assembly native default resource entry.
+│   │   │   │   ├── Inputs.xaml — Native input/selection templates and detached popups.
+│   │   │   │   ├── Resources.xaml — Framework-only system palette and layout constants.
+│   │   │   │   └── Shell.xaml — Desktop/narrow navigation and overlay geometry.
+│   │   │   ├── Icons/ — Existing licensed Material Symbols artwork converted to native resources.
+│   │   │   │   ├── IconCatalog.cs — Cached native glyph outlines and frozen filled vectors.
+│   │   │   │   ├── LICENSE.txt — Existing artwork's Apache-2.0 license, included in the package.
+│   │   │   │   ├── MaterialSymbolsFilled.json.br — Compressed native filled geometry.
+│   │   │   │   ├── MaterialSymbolsOutlined.codepoints — Existing official name-to-glyph mappings.
+│   │   │   │   ├── MaterialSymbolsOutlined.ttf — Converted native variable font resource.
+│   │   │   │   └── source.json — Original artwork identity and reproducible conversion evidence.
+│   │   │   ├── AssemblyInfo.cs — Source-assembly WPF theme discovery.
+│   │   │   ├── ComponentUsageCatalog.cs — Explicit General, Scenario and BuildingBlock classification.
+│   │   │   ├── Converters.cs — Internal native template value converters.
+│   │   │   ├── FrameworkBuilder.cs — Configures project, top bar and route factories.
+│   │   │   ├── FrameworkResources.cs — Loads native templates and shares live resources with detached popups/windows.
+│   │   │   ├── Motion.cs — Inherited reduced-motion policy.
+│   │   │   └── Flourish.WPF.Framework.csproj — Depends only on Abstract and packages native resources.
+│   │   ├── Flourish.WPF.Design/ — Optional current Blazor role palette expressed as native resources.
+│   │   │   ├── AppearancePalette.cs — Computes approved primary/accent color roles.
+│   │   │   ├── DesignResources.cs — Produces native Light, Dark, System and high-contrast resources.
+│   │   │   ├── ThemeSession.cs — Owns runtime theme/color updates and system-event cleanup.
+│   │   │   └── Flourish.WPF.Design.csproj — Depends on Abstract/Framework; introduces no independent control templates.
+│   │   ├── Flourish.WPF/ — Dependency-only convenience package.
+│   │   │   └── Flourish.WPF.csproj — Installs Abstract, Framework and Design without enabling Design automatically.
+│   │   └── Flourish.WPF.slnx — Groups four WPF packages, Gallery, optional Culture bridge and native tests.
 │   ├── Gallery.Flourish.Blazor/ — Hosts the Blazor Gallery and its demonstration pages.
 │   │   ├── Commands/ — Contains Gallery-only command key mappings.
 │   │   │   └── GalleryCommandParser.cs — Maps Gallery menu and theme command keys to scoped handlers.
@@ -813,112 +622,14 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── Gallery.Flourish.WinUI3.csproj — Defines the initial WinUI3 Gallery executable with the preserved Gallery.Flourish.WINUI3 assembly identity.
 │   │   ├── MainWindow.xaml — Defines the placeholder WinUI3 window content.
 │   │   └── MainWindow.xaml.cs — Initializes the placeholder WinUI3 main window.
-│   └── Gallery.Flourish.WPF/ — Hosts the WPF Gallery and its demonstration pages.
-│       ├── Localization/ — Contains localized Gallery interface copy.
-│       │   └── Culture.json — Contains Gallery-specific culture entries consumed by generated localization keys.
-│       ├── Views/ — Contains the WPF Gallery's routed demonstration pages.
-│       │   ├── AboutPage.xaml — Composes Gallery examples for application identity and package information.
-│       │   ├── AboutPage.xaml.cs — Binds interactive sample state for application identity and package information.
-│       │   ├── ActionCardPage.xaml — Composes Gallery examples for action cards with fixed copy and action regions.
-│       │   ├── ActionCardPage.xaml.cs — Binds interactive sample state for action cards with fixed copy and action regions.
-│       │   ├── AppearancePage.xaml — Composes Gallery examples for theme colors, radius and runtime appearance APIs.
-│       │   ├── AppearancePage.xaml.cs — Binds interactive sample state for theme colors, radius and runtime appearance APIs.
-│       │   ├── BackgroundTasksPage.xaml — Composes Gallery examples for background task registration, cancellation and progress.
-│       │   ├── BackgroundTasksPage.xaml.cs — Binds interactive sample state for background task registration, cancellation and progress.
-│       │   ├── BunchedListBoxPage.xaml — Composes Gallery examples for grouped list selection and shared interaction indicators.
-│       │   ├── BunchedListBoxPage.xaml.cs — Binds interactive sample state for grouped list selection and shared interaction indicators.
-│       │   ├── ButtonPage.xaml — Composes Gallery examples for button variants and command invocation.
-│       │   ├── ButtonPage.xaml.cs — Binds interactive sample state for button variants and command invocation.
-│       │   ├── CardButtonPage.xaml — Composes Gallery examples for clickable cards with icons and descriptions.
-│       │   ├── CardButtonPage.xaml.cs — Binds interactive sample state for clickable cards with icons and descriptions.
-│       │   ├── CardPage.xaml — Composes Gallery examples for card surface variants and content composition.
-│       │   ├── CardPage.xaml.cs — Binds interactive sample state for card surface variants and content composition.
-│       │   ├── CheckBoxPage.xaml — Composes Gallery examples for binary selection and fixed checkbox layouts.
-│       │   ├── CheckBoxPage.xaml.cs — Binds interactive sample state for binary selection and fixed checkbox layouts.
-│       │   ├── ChunkPage.xaml — Composes Gallery examples for titled full-width page sections.
-│       │   ├── ChunkPage.xaml.cs — Binds interactive sample state for titled full-width page sections.
-│       │   ├── CodeSpacePage.xaml — Composes Gallery examples for code presentation and copy actions.
-│       │   ├── CodeSpacePage.xaml.cs — Binds interactive sample state for code presentation and copy actions.
-│       │   ├── ComboBoxPage.xaml — Composes Gallery examples for single selection and option containers.
-│       │   ├── ComboBoxPage.xaml.cs — Binds interactive sample state for single selection and option containers.
-│       │   ├── CommandsPage.xaml — Composes Gallery examples for command keys, parser registration and runtime dispatch.
-│       │   ├── CommandsPage.xaml.cs — Binds interactive sample state for command keys, parser registration and runtime dispatch.
-│       │   ├── ConfigurationPage.xaml — Composes Gallery examples for startup configuration entry points.
-│       │   ├── ConfigurationPage.xaml.cs — Binds interactive sample state for startup configuration entry points.
-│       │   ├── ControlLibraryPage.xaml — Composes Gallery examples for the available public WPF controls.
-│       │   ├── ControlLibraryPage.xaml.cs — Binds interactive sample state for the available public WPF controls.
-│       │   ├── CustomHandlerConfigurationPage.xaml — Composes Gallery examples for application content injected into shell regions.
-│       │   ├── CustomHandlerConfigurationPage.xaml.cs — Binds interactive sample state for application content injected into shell regions.
-│       │   ├── DataGridPage.xaml — Composes Gallery examples for native table selection, columns and editing.
-│       │   ├── DataGridPage.xaml.cs — Binds interactive sample state for native table selection, columns and editing.
-│       │   ├── DocumentPage.xaml — Composes Gallery examples for readable paragraphs inside a document surface.
-│       │   ├── DocumentPage.xaml.cs — Binds interactive sample state for readable paragraphs inside a document surface.
-│       │   ├── DynamicToolbarConfigurationPage.xaml — Composes Gallery examples for default and page-specific toolbar configuration.
-│       │   ├── DynamicToolbarConfigurationPage.xaml.cs — Binds interactive sample state for default and page-specific toolbar configuration.
-│       │   ├── GridSplitterPage.xaml — Composes Gallery examples for resizable page layout regions.
-│       │   ├── GridSplitterPage.xaml.cs — Binds interactive sample state for resizable page layout regions.
-│       │   ├── HeaderChunkPage.xaml — Composes Gallery examples for leading titles and presentation layouts.
-│       │   ├── HeaderChunkPage.xaml.cs — Binds interactive sample state for leading titles and presentation layouts.
-│       │   ├── HomePage.xaml — Composes Gallery examples for the WPF Gallery categories and starting links.
-│       │   ├── HomePage.xaml.cs — Binds interactive sample state for the WPF Gallery categories and starting links.
-│       │   ├── LabelPage.xaml — Composes Gallery examples for content labels and access keys.
-│       │   ├── LabelPage.xaml.cs — Binds interactive sample state for content labels and access keys.
-│       │   ├── ListBoxPage.xaml — Composes Gallery examples for selectable list presentation modes.
-│       │   ├── ListBoxPage.xaml.cs — Binds interactive sample state for selectable list presentation modes.
-│       │   ├── MotionConfigurationPage.xaml — Composes Gallery examples for page and navigation animation configuration.
-│       │   ├── MotionConfigurationPage.xaml.cs — Binds interactive sample state for page and navigation animation configuration.
-│       │   ├── NavigationRuntimePage.xaml — Composes Gallery examples for runtime routes, cache, history and navigation panel APIs.
-│       │   ├── NavigationRuntimePage.xaml.cs — Binds interactive sample state for runtime routes, cache, history and navigation panel APIs.
-│       │   ├── OutputCardPage.xaml — Composes Gallery examples for appending messages to a scrollable output history.
-│       │   ├── OutputCardPage.xaml.cs — Binds interactive sample state for appending messages to a scrollable output history.
-│       │   ├── OverlayPage.xaml — Composes Gallery examples for floating content, placement and dismissal behavior.
-│       │   ├── OverlayPage.xaml.cs — Binds interactive sample state for floating content, placement and dismissal behavior.
-│       │   ├── PageBodyPage.xaml — Composes Gallery examples for stacked page content and scrolling layout.
-│       │   ├── PageBodyPage.xaml.cs — Binds interactive sample state for stacked page content and scrolling layout.
-│       │   ├── PasswordBoxPage.xaml — Composes Gallery examples for concealed password input.
-│       │   ├── PasswordBoxPage.xaml.cs — Binds interactive sample state for concealed password input.
-│       │   ├── PresenterPage.xaml — Composes Gallery examples for copy and visual content composition modes.
-│       │   ├── PresenterPage.xaml.cs — Binds interactive sample state for copy and visual content composition modes.
-│       │   ├── ProfileConfigurationPage.xaml — Composes Gallery examples for profile identity and startup profile settings.
-│       │   ├── ProfileConfigurationPage.xaml.cs — Binds interactive sample state for profile identity and startup profile settings.
-│       │   ├── ProjectRuntimePage.xaml — Composes Gallery examples for project catalog, activation and multi-project operations.
-│       │   ├── ProjectRuntimePage.xaml.cs — Binds interactive sample state for project catalog, activation and multi-project operations.
-│       │   ├── RadioButtonPage.xaml — Composes Gallery examples for mutually exclusive option groups.
-│       │   ├── RadioButtonPage.xaml.cs — Binds interactive sample state for mutually exclusive option groups.
-│       │   ├── RuntimeRoutePage.xaml — Composes Gallery examples for runtime registration of navigable pages.
-│       │   ├── RuntimeRoutePage.xaml.cs — Binds interactive sample state for runtime registration of navigable pages.
-│       │   ├── ScrollBarPage.xaml — Composes Gallery examples for scroll position and scrollbar appearance.
-│       │   ├── ScrollBarPage.xaml.cs — Binds interactive sample state for scroll position and scrollbar appearance.
-│       │   ├── ScrollViewerPage.xaml — Composes Gallery examples for scrolling content and smooth-scrolling policy.
-│       │   ├── ScrollViewerPage.xaml.cs — Binds interactive sample state for scrolling content and smooth-scrolling policy.
-│       │   ├── SearchBoxPage.xaml — Composes Gallery examples for search queries and placeholder behavior.
-│       │   ├── SearchBoxPage.xaml.cs — Binds interactive sample state for search queries and placeholder behavior.
-│       │   ├── StatusBarConfigurationPage.xaml — Composes Gallery examples for status items and optional system indicators.
-│       │   ├── StatusBarConfigurationPage.xaml.cs — Binds interactive sample state for status items and optional system indicators.
-│       │   ├── TextBlockPage.xaml — Composes Gallery examples for semantic typography roles.
-│       │   ├── TextBlockPage.xaml.cs — Binds interactive sample state for semantic typography roles.
-│       │   ├── TextBoxPage.xaml — Composes Gallery examples for editable text fields and validation presentation.
-│       │   ├── TextBoxPage.xaml.cs — Binds interactive sample state for editable text fields and validation presentation.
-│       │   ├── TitleBarRuntimePage.xaml — Composes Gallery examples for runtime branding, breadcrumbs, search and title bar APIs.
-│       │   ├── TitleBarRuntimePage.xaml.cs — Binds interactive sample state for runtime branding, breadcrumbs, search and title bar APIs.
-│       │   ├── ToolbarStatusPage.xaml — Composes Gallery examples for toolbar and status content changes at runtime.
-│       │   ├── ToolbarStatusPage.xaml.cs — Binds interactive sample state for toolbar and status content changes at runtime.
-│       │   ├── ToolTipPage.xaml — Composes Gallery examples for contextual help and placement.
-│       │   ├── ToolTipPage.xaml.cs — Binds interactive sample state for contextual help and placement.
-│       │   ├── ToolTipsConfigurationPage.xaml — Composes Gallery examples for tooltip delay and placement configuration.
-│       │   ├── ToolTipsConfigurationPage.xaml.cs — Binds interactive sample state for tooltip delay and placement configuration.
-│       │   ├── WindowCaptionButtonPage.xaml — Composes Gallery examples for minimize, maximize and close actions.
-│       │   ├── WindowCaptionButtonPage.xaml.cs — Binds interactive sample state for minimize, maximize and close actions.
-│       │   ├── WindowRuntimePage.xaml — Composes Gallery examples for window frame, size, close and tray APIs.
-│       │   └── WindowRuntimePage.xaml.cs — Binds interactive sample state for window frame, size, close and tray APIs.
-│       ├── App.xaml — Declares WPF Gallery application resources and theme dictionaries.
-│       ├── App.xaml.cs — Connects the WPF application lifetime with the configured host.
-│       ├── AssemblyInfo.cs — Declares theme lookup and grants the WPF tests access to Gallery internals.
-│       ├── FlourishCulture.Json — Adds Spanish translations for built-in framework culture entries.
-│       ├── Gallery.Flourish.WPF.csproj — Defines the WPF Gallery executable and library references.
-│       ├── GalleryCommandParser.cs — Maps WPF Gallery action keys to runtime service calls.
-│       ├── MemberRow.cs — Defines sample member data for WPF table demonstrations.
-│       └── Program.cs — Configures WPF Gallery's host, shell, navigation and command parser.
+│   └── Gallery.Flourish.WPF/ — Native executable demonstrations and API inventory for every exported control.
+│       ├── App.xaml / App.xaml.cs — Own the desktop application and visible error-reporting lifecycle.
+│       ├── MainWindow.cs — Composes the native ApplicationShell, optional Design and Culture controls.
+│       ├── GalleryCatalog.cs — Requires an executable factory and explicit usage entry for every native control.
+│       ├── SimpleSamples.cs — Demonstrates direct controls and variants.
+│       ├── Samples.cs / Samples.Scenarios.cs — Demonstrate real selection, records, editing, dialogs and compositions.
+│       ├── Culture.json — Contains Gallery-owned runtime captions.
+│       └── Gallery.Flourish.WPF.csproj — References the aggregate and optional Culture bridge.
 ├── tests/ — Contains library regression tests and the unthemed Blazor verification host.
 │   ├── Tests.Gallery.Flourish.Blazor/ — Checks actual localized Gallery pages with the scoped Essential service.
 │   │   ├── Program.cs — Exercises language changes, rendered headings, preserved API/data identities and subscription disposal.
@@ -1035,119 +746,26 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   ├── Tests.Flourish.Extensions.Culture.Blazor/ — Checks scoped translation behavior and the optional Blazor adapter dependency boundary.
 │   │   ├── Program.cs — Runs the adapter registration, fallback, formatting and session isolation checks.
 │   │   └── Tests.Flourish.Extensions.Culture.Blazor.csproj — Defines the Blazor Culture extension verification executable.
-│   ├── Tests.Flourish.Extensions.Culture.WPF/ — Checks WPF culture registration, hosted lifetime and shell label updates.
-│   │   ├── Culture.json — Contains the test translations used by the WPF extension checks.
-│   │   ├── EssentialCultureBuilderExtensionsTests.cs — Checks service registration through the WPF culture builder extension.
-│   │   ├── EssentialCultureHostedServiceTests.cs — Checks startup, culture synchronization and shutdown of the WPF connection.
-│   │   ├── ShellCultureApplicatorTests.cs — Checks shell label translation and refresh behavior.
-│   │   ├── TestAssembly.cs — Runs extension tests serially to protect shared desktop culture state.
-│   │   └── Tests.Flourish.Extensions.Culture.WPF.csproj — Defines the Windows WPF Culture extension test project.
-│   └── Tests.Flourish.WPF/ — Checks WPF configuration, resources, interaction and rendered structure.
-│       ├── Abstract/ — Groups regression checks for abstract.
-│       │   ├── CommandKeyApiContractTests.cs — Checks that public command APIs preserve icon and command-key parameter ordering.
-│       │   └── FlourishServiceCollectionExtensionsTests.cs — Checks that parser and navigable page registrations follow the public API contract.
-│       ├── Controls/ — Groups regression checks for controls.
-│       │   ├── BunchedListBoxTests.cs — Checks that generated containers share parent-owned pointer and selection indicators.
-│       │   ├── FlourishControlStylesTests.cs — Checks that canonical themes load and publish expected typography resources.
-│       │   ├── FlourishControlTextPresenterTests.cs — Checks that control text line boxes and flow spacing remain separate.
-│       │   ├── FlourishDataGridTests.cs — Checks that native grid selection, editing and item counts remain available.
-│       │   ├── FlourishHoverRevealContractTests.cs — Checks that participating templates use one shared reveal layer.
-│       │   ├── FlourishInputStylesTests.cs — Checks that input gutters, alignment and dropdown styles follow shared resources.
-│       │   ├── FlourishPublicControlsTests.cs — Checks that controls, theme resources and XAML namespace mappings remain public.
-│       │   ├── FlourishTitlebarTests.cs — Checks that breadcrumb visibility follows the current navigation state.
-│       │   ├── FlourishXamlArchitectureTests.cs — Checks that folders and public namespaces preserve framework implementation boundaries.
-│       │   ├── GalleryControlPageStructureTests.cs — Checks that control families have dedicated Gallery pages and routes.
-│       │   ├── GalleryNavigationTreeTests.cs — Checks that Gallery configuration, shell and fixed routes use the intended navigation tree.
-│       │   ├── HoverRevealVisualTests.cs — Checks that pointer press and capture loss clear stale reveal animations.
-│       │   ├── PageBodyTests.cs — Checks that implicit page content is stacked and accepted by the body host.
-│       │   ├── PresenterPresentationLayoutTests.cs — Checks that presentation modes retain their fill and alignment contracts.
-│       │   ├── ProfileImageLoaderTests.cs — Checks that profile images are bounded, frozen and retain transparency.
-│       │   └── ToolTipPlacementCalculatorTests.cs — Checks that tooltip geometry selects the intended side and viewport position.
-│       ├── Gallery/ — Groups regression checks for gallery.
-│       │   └── GalleryLocalizationTests.cs — Checks that generated localization keys match concise culture strings.
-│       ├── Hosting/ — Groups regression checks for hosting.
-│       │   └── PreferenceLoaderFontTests.cs — Checks that saved font settings restore only supported typography contracts.
-│       ├── Infrastructure/ — Provides temporary files, test paths and UI-thread helpers.
-│       │   ├── DispatcherTest.cs — Executes assertions on a WPF dispatcher thread.
-│       │   ├── GalleryLocalizationTestResolver.cs — Resolves Gallery XAML localization to English for structure assertions.
-│       │   ├── StaTest.cs — Executes assertions on a single-threaded apartment.
-│       │   ├── TemporaryDirectory.cs — Creates isolated temporary test files and removes them after use.
-│       │   └── TestPaths.cs — Locates source and output paths used by structure assertions.
-│       ├── Internal/ — Groups regression checks for internal.
-│       │   ├── Composition/ — Groups regression checks for composition.
-│       │   │   ├── DefaultFlourishBuilderTests.cs — Checks that configuration callbacks validate arguments and building freezes the builder.
-│       │   │   ├── FlourishCompositionContractTests.cs — Checks that unconfigured features retain defaults without enabling optional shell regions.
-│       │   │   ├── FlourishCustomHandlerBuilderTests.cs — Checks that custom content maps to explicit shell regions through the public contract.
-│       │   │   ├── FlourishDataBuilderTests.cs — Checks that locale and culture configuration preserve persistence policy.
-│       │   │   ├── FlourishDynamicToolbarBuilderTests.cs — Checks that page-specific toolbar helpers preserve public defaults.
-│       │   │   ├── FlourishNavigationBuilderTests.cs — Checks that navigation startup settings and persistence flags remain independent.
-│       │   │   ├── FlourishNavigationEnumValidationTests.cs — Checks that undefined navigation enum values are rejected.
-│       │   │   ├── FlourishRuntimeTests.cs — Checks that the built runtime exposes the host's service provider.
-│       │   │   ├── FlourishTitlebarBuilderTests.cs — Checks that optional title bar pages and features configure the correct startup options.
-│       │   │   ├── FlourishWindowPropertyBuilderTests.cs — Checks that window size, tray and close configuration apply correctly.
-│       │   │   └── NavigationCompositionTests.cs — Checks that registered routes form one valid tree and duplicate keys are rejected.
-│       │   ├── Configuration/ — Groups regression checks for configuration.
-│       │   │   └── FlourishNavigationItemTests.cs — Checks that route and command definitions expose the correct derived state.
-│       │   ├── Imaging/ — Groups regression checks for imaging.
-│       │   │   └── TitleBarLogoLoadCoordinatorTests.cs — Checks that new logo paths cancel stale loads and failed paths are cached.
-│       │   └── Interaction/ — Groups regression checks for interaction.
-│       │       ├── BunchedIndicatorAnimatorTests.cs — Checks that one visible indicator retargets smoothly without restarting opacity.
-│       │       ├── NavigationPaneColumnLayoutTests.cs — Checks that left and right layout changes clear stale column constraints.
-│       │       ├── NavigationPaneTransitionControllerTests.cs — Checks that navigation animations use render geometry and obey width limits.
-│       │       ├── PageTransitionControllerTests.cs — Checks that page transitions avoid relayout and cancellation restores presentation.
-│       │       ├── RoundedClipCoordinatorTests.cs — Checks that rounded clipping preserves uniform and asymmetric corner geometry.
-│       │       ├── ShellToolbarControllerTests.cs — Checks that active toolbar changes reuse cached buttons and ignore unrelated updates.
-│       │       ├── StatusItemViewCacheTests.cs — Checks that status updates reuse views and remove obsolete entries.
-│       │       └── ToolbarCommandButtonIndexTests.cs — Checks that availability changes refresh only matching command buttons.
-│       ├── Services/ — Groups regression checks for services.
-│       │   ├── DefaultProjectBehaviorTests.cs — Checks that default project commands create, save and activate the intended files.
-│       │   ├── FlourishMessageOptionValidatorTests.cs — Checks that modal response choices reject empty or duplicate definitions.
-│       │   ├── FlourishToolbarServiceTests.cs — Checks that page-specific items fall back to the static toolbar when needed.
-│       │   ├── FontServicePageTests.cs — Checks that page fonts cross frame boundaries while preserving explicit local fonts.
-│       │   ├── FontServicePropagationTests.cs — Checks that global font updates replace only affected resource keys.
-│       │   ├── FrameNavigationContentHostTests.cs — Checks that WPF frames use the shared bounded navigation history.
-│       │   ├── MaterialEffectPlatformTests.cs — Checks that backdrop enum values and Windows capability fallbacks remain stable.
-│       │   ├── NavigationRouteAndCacheRuntimeTests.cs — Checks that runtime route ownership and cache policy updates stay synchronized.
-│       │   ├── NavigationRuntimeSurfaceTests.cs — Checks that navigation panel snapshots validate collapsed and visible widths.
-│       │   ├── NavigationServiceTests.cs — Checks that unknown destinations fail before creating a page.
-│       │   ├── PageCacheServiceTests.cs — Checks that cache policy controls page reuse and eviction.
-│       │   ├── ProfileSecretStoreTests.cs — Checks that remembered credentials use the configured secrets provider.
-│       │   ├── RuntimeAppearanceServiceTests.cs — Checks that runtime fonts and appearance changes validate supported values.
-│       │   ├── RuntimeLayoutAndAppearanceServiceTests.cs — Checks that layout changes validate widths and suppress unchanged snapshots.
-│       │   ├── RuntimeMotionPolicyTests.cs — Checks that runtime animation settings update attached policy resources.
-│       │   ├── RuntimeNotificationAndTrayServiceTests.cs — Checks that notification and tray mutations validate and publish runtime state.
-│       │   ├── RuntimeScrollServiceTests.cs — Checks that smooth-scrolling changes publish only new values.
-│       │   ├── RuntimeShellStateServiceTests.cs — Checks that title bar identity and feature changes publish only material updates.
-│       │   ├── RuntimeToolTipPolicyTests.cs — Checks that attached windows follow shared tooltip delay resources.
-│       │   ├── RuntimeWindowServiceTests.cs — Checks that window changes publish immutable state without duplicate events.
-│       │   ├── ServiceProviderPageFactoryTests.cs — Checks that registered pages resolve through DI and missing pages use an activator.
-│       │   ├── ShortcutServiceTests.cs — Checks that scoped shortcut registration, disposal and duplicate handling remain stable.
-│       │   ├── ToolbarStatusRegionRuntimeTests.cs — Checks that runtime toolbar and status content use stable identifiers.
-│       │   └── WindowCloseOptionSynchronizerTests.cs — Checks that WPF tray options synchronize the shared close policy throughout host lifetime.
-│       ├── Windows/ — Groups regression checks for windows.
-│       │   ├── CenteredPageContentLayoutTests.cs — Checks that centering limits content width without constraining its scrolling viewport.
-│       │   ├── DynamicShellIconRoleTests.cs — Checks that dynamic shell glyphs inherit icon typography only where required.
-│       │   ├── FlourishExtractedShellControlsTests.cs — Checks that the shell composes extracted hosts and delegates their events to controllers.
-│       │   ├── FlourishMessageBoxRenderingTests.cs — Checks that modal windows use native frame shadows without reserving extra client space.
-│       │   ├── FlourishNavigationPaneTests.cs — Checks that fixed and grouped selection stay exclusive and raise one user request.
-│       │   ├── FlourishProfilePageRenderingTests.cs — Checks that profile image actions resolve shared buttons and icons correctly.
-│       │   ├── FlourishShellNavigationLayoutTests.cs — Checks that collapsed navigation resets indentation and centers icons.
-│       │   ├── FlourishShellProfileFlyoutTests.cs — Checks that profile content initializes lazily after successful navigation.
-│       │   ├── FlourishShellRenderingContractTests.cs — Checks that floating surfaces and status lists use shared controls and virtualization.
-│       │   ├── FlourishShellTitleBarFlyoutTests.cs — Checks that brand selectors and logos retain direct controls and transparent artwork.
-│       │   ├── FlourishShellWindowFrameTests.cs — Checks that native and custom frames switch without recreating the window.
-│       │   ├── FlourishShellWindowShortcutTests.cs — Checks that text composition and AltGraph input do not trigger shell shortcuts.
-│       │   ├── GalleryOverlayPageTests.cs — Checks that Gallery overlays use real popup hosts and canonical page layout.
-│       │   ├── GalleryProjectRuntimePageTests.cs — Checks that multi-project controls reflect runtime mode and activation state.
-│       │   └── ShellNotificationControllerTests.cs — Checks that notifications reuse the newest views and actions delegate to runtime services.
-│       ├── coverage.runsettings — Configures code coverage collection and its assembly filters.
-│       ├── TestAssembly.cs — Runs WPF test collections serially to avoid process-wide UI state races.
-│       └── Tests.Flourish.WPF.csproj — Defines the Windows WPF regression test project and Gallery references.
+│   ├── Tests.Flourish.Extensions.Culture.WPF/ — Checks provider formatting, fallback, collision and disposal lifetimes.
+│   │   ├── EssentialTextProviderTests.cs — Exercises the current native adapter contract.
+│   │   ├── Culture.json / TestAssembly.cs — Isolate test translations and desktop-global test state.
+│   │   └── Tests.Flourish.Extensions.Culture.WPF.csproj — Uses the existing xUnit/test SDK versions.
+│   └── Tests.Flourish.WPF/ — Native STA/dispatcher assertions and offscreen WPF rendering; no Computer Use.
+│       ├── AppearanceTests.cs — Verifies palette roles, high contrast, icon artwork and live theme resources.
+│       ├── CatalogTests.cs — Verifies exact exported usage entries and every Gallery factory.
+│       ├── ContentTests.cs — Exercises composite geometry, retained offer state, sticky headings and reduced motion.
+│       ├── ControlTests.cs — Exercises native contracts, validation, masks, menus and async input state.
+│       ├── DataTests.cs — Verifies culture-aware records, remote boundaries, retained cells, editing and chart geometry.
+│       ├── NativeTest.cs — STA dispatcher and offscreen PresentationSource fixtures without visible windows.
+│       ├── ShellTests.cs — Exercises real navigation buttons, guards and text-provider lifetimes.
+│       ├── RenderTests.cs — Renders actual native controls at multiple widths/DPI and exports inspectable PNGs.
+│       ├── Usings.cs — Test imports and disabled parallel execution for native dispatcher state.
+│       └── Tests.Flourish.WPF.csproj — References the native layers and Gallery without adding packages.
 ├── .gitattributes — Sets repository text normalization and file handling rules.
 ├── .gitignore — Excludes generated builds, local settings and caches from version control.
 ├── AGENTS.ensure.json — Records the most recent required-documentation audit and repair.
 ├── AGENTS.md — Defines repository ownership, documentation and collaboration rules.
-├── Directory.Build.props — Defines Flourish package version 1.1.0, Culture dependency version 1.3.0, metadata and the optional sibling local package feed.
+├── Directory.Build.props — Defines Flourish package version 1.1.2, Culture dependency version 1.3.0, metadata and the optional sibling local package feed.
 ├── Directory.Build.targets — Rejects architecture-specific library packaging before NuGet generation.
 ├── Flourish.slnx — Groups framework libraries, Galleries and optional extensions, exposes Core at the root, and separates Tests and Solutions.
 ├── global.json — Selects the .NET SDK version used by the repository.

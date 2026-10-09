@@ -1,0 +1,7 @@
+# Add native host-driven tutorial
+
+The user authorized one Flourish-owned tutorial production capability and a separate local `1.1.4-preview.tutorial.1` candidate. TutorialBoard/TutorialStep supplies a compact ring entry, passive hover/focus progress overview and nonmodal Primary dotted panel. Host data owns completion, eligibility, shortcuts and durable skip; closing, selecting and acting never fabricate completion. ActionHref and OnAction are mutually exclusive side-effect paths.
+
+The existing ProgressRing gains Compact/ShowValue rather than a second renderer. Framework/Design assets retain separate geometry/skin ownership, and controls.js owns native Popover opening, dismissal and cleanup without Dialog modal/focus-trap behavior. Source usage guidance, reflected Gallery/API, three languages, the executable sample and /examples/tutorial navigation remain paired. The reviewed inventory intentionally grows from 80 to 81.
+
+Ten rendered-event/state/lifecycle checks and twelve native-controller checks are staged. Parent-agent initial serialized verification reports a zero-warning/error Release build and Framework 426/426; the Gallery inventory count gate was corrected and remaining gates are pending. See the [implementation report](../bugfix-reports/2026-10-08_native-tutorial-board.md) for exact scope and user-operated acceptance. This bounded task did not build, run tests, package, publish, commit, change WPF or touch Colligere.

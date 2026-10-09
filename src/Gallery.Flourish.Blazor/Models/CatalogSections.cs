@@ -35,7 +35,7 @@ public static class CatalogSections
             => "inputs",
         "DataTable<TItem>" or "DataSearch<TItem>" or "ListView<TItem>" or "LineChart"
             or "Primitives.DataPager" or "Primitives.EditingGrid" => "data",
-        "Dialog" or "DropdownSurface" => "overlays",
+        "Dialog" or "DropdownSurface" or "TutorialBoard" => "overlays",
         "Notice" or "EmptyState" or "LoadingState" or "Primitives.NoticeTrigger" => "feedback",
         "ProgressBar" or "ProgressRing" => "progress",
         "ApplicationLayout" or "ApplicationShell" or "PageBody" or "PageHeading" or "SectionNavigator" or "BackToTop"

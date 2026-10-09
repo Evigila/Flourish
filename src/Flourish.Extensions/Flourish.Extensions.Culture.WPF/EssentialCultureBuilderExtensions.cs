@@ -1,33 +1,35 @@
-using System;
-
-using ArkheideSystem.Flourish.Abstract;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using ArkheideSystem.Essential.Culture;
+using ArkheideSystem.Flourish.WPF;
 
 namespace ArkheideSystem.Flourish.Extensions.Culture.WPF;
 
-/// <summary>Connects a Flourish application to Essential.Culture.</summary>
+/// <summary>Configures the same provider-neutral boundary used by Flourish.Blazor.</summary>
 public static class EssentialCultureBuilderExtensions
 {
-    /// <summary>
-    /// Uses <see cref="ILocalizationService" /> as the application's public culture endpoint and
-    /// connects it to Essential.Culture and Flourish shell text.
-    /// </summary>
-    /// <param name="builder">The Flourish builder to configure.</param>
-    /// <returns>The same builder for chained configuration.</returns>
-    public static IApplicationBuilder UseEssentialCulture(this IApplicationBuilder builder)
+    /// <summary>Installs a provider whose lifetime remains owned by the caller.</summary>
+    public static FrameworkBuilder UseEssentialCulture(this FrameworkBuilder builder, EssentialTextProvider provider)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(provider);
+        builder.TextProvider = provider;
+        return builder;
+    }
 
-        return builder.ConfigureServices(
-            (_, services) =>
-            {
-                services.TryAddSingleton<ShellCultureApplicator>();
-                services.TryAddEnumerable(
-                    ServiceDescriptor.Singleton<IHostedService, EssentialCultureHostedService>()
-                );
-            }
-        );
+    /// <summary>Creates a desktop provider and exposes its disposal ownership explicitly.</summary>
+    public static FrameworkBuilder UseEssentialCulture(this FrameworkBuilder builder,
+        out EssentialTextProvider provider, string catalogId = "Application", string? formatCulture = null)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        provider = new EssentialTextProvider(catalogId, formatCulture);
+        return builder.UseEssentialCulture(provider);
+    }
+
+    /// <summary>Connects an independent Essential localization context.</summary>
+    public static FrameworkBuilder UseEssentialCulture(this FrameworkBuilder builder,
+        LocalizationContext context, out EssentialTextProvider provider, string catalogId = "Application")
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        provider = new EssentialTextProvider(context, catalogId);
+        return builder.UseEssentialCulture(provider);
     }
 }

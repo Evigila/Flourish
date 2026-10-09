@@ -51,25 +51,30 @@ internal static class ChartToolbarChecks
             html = await Render<LineChart>(parameters);
             Require(!html.Contains("f-line-chart-controls", StringComparison.Ordinal), "An empty toolbar left a phantom row.");
         }));
-        tests.Add(("inline input actions render real field input and native submit in one control slot", async () =>
+        tests.Add(("field actions render a labeled input and independent native submit in one library row", async () =>
         {
             RenderFragment content = builder =>
             {
+                builder.OpenComponent<StandaloneTextBox>(0);
+                builder.AddAttribute(1, nameof(StandaloneTextBox.Value), "Draft");
+                builder.CloseComponent();
+            };
+            RenderFragment actions = builder =>
+            {
                 builder.OpenComponent<InlineActions>(0);
-                builder.AddAttribute(1, nameof(InlineActions.ChildContent), (RenderFragment)(row =>
+                builder.AddAttribute(1, nameof(InlineActions.Alignment), HorizontalAlignment.End);
+                builder.AddAttribute(2, nameof(InlineActions.ChildContent), (RenderFragment)(row =>
                 {
-                    row.OpenComponent<StandaloneTextBox>(0);
-                    row.AddAttribute(1, nameof(StandaloneTextBox.Value), "Draft");
-                    row.CloseComponent();
-                    row.OpenComponent<Button>(2);
-                    row.AddAttribute(3, nameof(Button.Type), "submit");
-                    row.AddAttribute(4, nameof(Button.Text), "Create");
+                    row.OpenComponent<Button>(0);
+                    row.AddAttribute(1, nameof(Button.Type), "submit");
+                    row.AddAttribute(2, nameof(Button.Text), "Create");
                     row.CloseComponent();
                 }));
                 builder.CloseComponent();
             };
-            var html = await Render<Field>(new() { [nameof(Field.Id)] = "create-name", [nameof(Field.Label)] = "Name", [nameof(Field.ChildContent)] = content });
-            Require(Regex.IsMatch(html, "<div class=\"f-field-control\"><div class=\"f-inline-actions\" data-alignment=\"center\"><input"), "Input/actions were not in the same actual field slot.");
+            var html = await Render<Field>(new() { [nameof(Field.Id)] = "create-name", [nameof(Field.Label)] = "Name", [nameof(Field.Required)] = true,
+                [nameof(Field.ChildContent)] = content, [nameof(Field.Actions)] = actions });
+            Require(Regex.IsMatch(html, "<div class=\"f-field-control\">\\s*<input[^>]*>\\s*</div>\\s*<div class=\"f-field-actions\"><div class=\"f-inline-actions\" data-alignment=\"end\"><button"), "Actions were not outside the labeled input and required context.");
             Require(html.Contains("id=\"create-name\"", StringComparison.Ordinal) && html.Contains("type=\"submit\"", StringComparison.Ordinal), "Inline layout lost native input/submit semantics.");
         }));
     }

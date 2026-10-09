@@ -6,9 +6,9 @@
     <AssemblyName>Flourish.Extensions.Culture.WPF</AssemblyName>
     <PackageId>Arkheide.Flourish.Extensions.Culture.WPF</PackageId>
     <Title>Flourish Culture WPF integration</Title>
-    <Description>Optional integration between the Flourish WPF shell and Essential.Culture.</Description>
+    <Description>Optional provider-neutral native Flourish WPF text integration with Essential.Culture.</Description>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -17,7 +17,7 @@
     <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../Flourish.WPF/Flourish.WPF.csproj" />
+    <ProjectReference Include="../../Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj" />
     <PackageReference Include="Arkheide.Essential.Culture.Wpf" Version="$(EssentialCultureVersion)" />
   </ItemGroup>
 </Project>

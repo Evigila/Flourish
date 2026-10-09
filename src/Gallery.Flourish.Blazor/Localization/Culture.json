@@ -1,4 +1,139 @@
 {
+  "Catalog_TutorialBoard_Purpose": {
+    "en-US": "Host-driven tutorials with a compact progress entry and nonmodal board.",
+    "zh-CN": "宿主驱动的教程，配有缩略进度入口和非模态面板。",
+    "pt-BR": "Tutoriais guiados pelo aplicativo com progresso compacto e painel não modal."
+  },
+  "Catalog_TutorialBoard_Variants": {
+    "en-US": "Primary dotted surface by default; native light dismiss, H1 step title, segmented progress and a shortcut action.",
+    "zh-CN": "默认主色点阵；原生轻量关闭、H1 步骤标题、分段进度和快捷操作。",
+    "pt-BR": "Superfície primária pontilhada por padrão; fechamento nativo, título H1, progresso segmentado e atalho."
+  },
+  "Parameter_Steps_TutorialBoard": {
+    "en-US": "Stable TutorialStep keys and concise content. Completed/Disabled are supplied by the host; clicking is never completion.",
+    "zh-CN": "稳定的 TutorialStep 标识与精简内容；Completed/Disabled 由宿主提供，点击不等于完成。",
+    "pt-BR": "Chaves estáveis de TutorialStep e conteúdo conciso. Completed/Disabled vêm do aplicativo; clicar não significa concluir."
+  },
+  "Parameter_ActiveStepKey_TutorialBoard": {
+    "en-US": "Selected step identity, or null to display the first incomplete step. Must exist in Steps.",
+    "zh-CN": "当前步骤标识；null 显示第一个未完成步骤。非 null 标识必须存在于 Steps。",
+    "pt-BR": "Identidade da etapa selecionada, ou null para a primeira pendente. Deve existir em Steps."
+  },
+  "Parameter_ActiveStepKeyChanged_TutorialBoard": {
+    "en-US": "Publishes step selection only, without changing completion.",
+    "zh-CN": "仅发布步骤选择，不修改完成状态。",
+    "pt-BR": "Publica apenas seleção de etapa, sem alterar a conclusão."
+  },
+  "Parameter_OnAction_TutorialBoard": {
+    "en-US": "Receives the selected step for a host operation, only when ActionHref is empty. Navigation and side effects are mutually exclusive.",
+    "zh-CN": "ActionHref 为空时接收选中的步骤，由宿主执行操作。导航与副作用互斥。",
+    "pt-BR": "Recebe a etapa selecionada para operação do aplicativo somente se ActionHref estiver vazio. Navegação e efeitos são exclusivos."
+  },
+  "Parameter_OnSkip_TutorialBoard": {
+    "en-US": "Requests skipping; the host persists the decision and decides whether to hide the entry. No automatic completion.",
+    "zh-CN": "请求跳过；宿主持久化决定并控制是否隐藏入口。不会自动完成步骤。",
+    "pt-BR": "Solicita pular; o aplicativo persiste a decisão e decide ocultar a entrada. Sem conclusão automática."
+  },
+  "Parameter_Compact_ProgressRing": {
+    "en-US": "Uses the standard compact 36px progress ring for chrome; retains the same SVG and accessibility contract.",
+    "zh-CN": "使用顶部栏用的标准 36px 缩略环；保持相同 SVG 与无障碍合同。",
+    "pt-BR": "Usa o anel compacto padrão de 36px; mantém o mesmo SVG e contrato de acessibilidade."
+  },
+  "Parameter_ShowValue_ProgressRing": {
+    "en-US": "Shows or hides the visible percentage; aria-valuenow remains available.",
+    "zh-CN": "显示或隐藏可见百分比；aria-valuenow 始终存在。",
+    "pt-BR": "Mostra ou oculta a porcentagem visível; aria-valuenow permanece disponível."
+  },
+  "Nav_Tutorial": {
+    "en-US": "Tutorial",
+    "zh-CN": "教程",
+    "pt-BR": "Tutorial"
+  },
+  "Sample_TutorialDescription": {
+    "en-US": "Hover or focus the progress entry to preview milestones; activate it to open the nonmodal board. Completion below is verified by this demonstration host.",
+    "zh-CN": "悬浮或聚焦进度入口以预览步骤；点击打开非模态面板。下方演示由宿主核实完成状态。",
+    "pt-BR": "Passe o ponteiro ou dê foco à entrada para ver etapas; ative-a para abrir o painel não modal. A conclusão abaixo é verificada pelo aplicativo de demonstração."
+  },
+  "Sample_TutorialCompany": {
+    "en-US": "Register a company",
+    "zh-CN": "注册公司",
+    "pt-BR": "Cadastrar uma empresa"
+  },
+  "Sample_TutorialCompanyDescription": {
+    "en-US": "Add the company's identity and legal address.",
+    "zh-CN": "添加公司的身份与法定地址。",
+    "pt-BR": "Adicione a identidade e o endereço legal da empresa."
+  },
+  "Sample_TutorialProducts": {
+    "en-US": "Define products",
+    "zh-CN": "定义商品",
+    "pt-BR": "Definir produtos"
+  },
+  "Sample_TutorialProductsDescription": {
+    "en-US": "Create the definitions shared by all establishments.",
+    "zh-CN": "创建所有场所共用的商品定义。",
+    "pt-BR": "Crie as definições compartilhadas por todos os estabelecimentos."
+  },
+  "Sample_TutorialStock": {
+    "en-US": "Record opening stock",
+    "zh-CN": "记录初始库存",
+    "pt-BR": "Registrar estoque inicial"
+  },
+  "Sample_TutorialStockDescription": {
+    "en-US": "Choose an establishment and record its opening quantities.",
+    "zh-CN": "选择场所并记录其初始数量。",
+    "pt-BR": "Escolha um estabelecimento e registre as quantidades iniciais."
+  },
+  "Sample_TutorialShortcut": {
+    "en-US": "Open this step",
+    "zh-CN": "打开此步骤",
+    "pt-BR": "Abrir esta etapa"
+  },
+  "Sample_TutorialVerify": {
+    "en-US": "Verify selected milestone",
+    "zh-CN": "核实所选步骤",
+    "pt-BR": "Verificar etapa selecionada"
+  },
+  "Sample_TutorialReset": {
+    "en-US": "Reset demonstration",
+    "zh-CN": "重置演示",
+    "pt-BR": "Reiniciar demonstração"
+  },
+  "Sample_TutorialSkipped": {
+    "en-US": "The demonstration host recorded the skip request.",
+    "zh-CN": "演示宿主已记录跳过请求。",
+    "pt-BR": "O aplicativo de demonstração registrou a solicitação de pular."
+  },
+  "Sample_TutorialAction": {
+    "en-US": "Requested shortcut: {0}",
+    "zh-CN": "请求快捷操作：{0}",
+    "pt-BR": "Atalho solicitado: {0}"
+  },
+  "Sample_TutorialHost": {
+    "en-US": "Host-owned completion",
+    "zh-CN": "宿主核实的完成状态",
+    "pt-BR": "Conclusão controlada pelo aplicativo"
+  },
+  "Sample_OptionalBoolean": {
+    "en-US": "Optional Boolean selection",
+    "zh-CN": "可选布尔选择",
+    "pt-BR": "Seleção booleana opcional"
+  },
+  "Sample_BooleanTrue": {
+    "en-US": "Yes",
+    "zh-CN": "是",
+    "pt-BR": "Sim"
+  },
+  "Sample_BooleanFalse": {
+    "en-US": "No",
+    "zh-CN": "否",
+    "pt-BR": "Não"
+  },
+  "Sample_BooleanUnspecified": {
+    "en-US": "Not specified",
+    "zh-CN": "未指定",
+    "pt-BR": "Não informado"
+  },
   "Sample_HalfCenteredGutters": {
     "en-US": "Reduce centered side gutters by 50%",
     "zh-CN": "中心内容两侧留白各减少 50%",
@@ -5305,9 +5440,9 @@
     "pt-BR": "Associa rótulo, entrada, obrigatoriedade e erros de validação."
   },
   "Catalog_Field_Variants": {
-    "en-US": "For connects form validation; Error supplies external errors; FullWidth occupies a row. Id should match the input.",
-    "zh-CN": "For 连接表单验证；Error 传入外部错误；FullWidth 占用整行。Id 应与输入相同。",
-    "pt-BR": "For conecta validação; Error fornece erros externos; FullWidth ocupa a linha. Id deve corresponder à entrada."
+    "en-US": "For connects form validation; Error supplies external errors; FullWidth occupies a row. Id should match the input. ChildContent contains the input; Actions places ordinary buttons beside it, wrapping below on narrow screens. The label and required context remain scoped to the input.",
+    "zh-CN": "For 连接表单验证；Error 传入外部错误；FullWidth 占用整行。Id 应与输入相同。ChildContent 放输入，Actions 放旁边的普通按钮，窄屏时操作换到下一行。标签与必填上下文仅属于输入。",
+    "pt-BR": "For conecta validação; Error fornece erros externos; FullWidth ocupa a linha. Id deve corresponder à entrada. ChildContent contém a entrada; Actions posiciona botões comuns ao lado, passando para a linha seguinte em telas estreitas. Rótulo e obrigatoriedade pertencem apenas à entrada."
   },
   "Catalog_FormLayout_Purpose": {
     "en-US": "Arranges fields and focuses invalid inputs.",
@@ -5575,9 +5710,9 @@
     "pt-BR": "Linha padrão com quebra para pequenas ações."
   },
   "Catalog_InlineActions_Variants": {
-    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center (default), or End across the available width. Inside Field, an input fills remaining width and buttons keep natural width. Keep mixed operations here; UniformGridButton is for finite single-semantic choices.",
-    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center（默认）或 End。在 Field 内输入框占剩余宽度，按钮保持自然宽度。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。",
-    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center (padrão) ou End na largura disponível. Dentro de Field, entrada ocupa espaço restante e botões mantêm largura natural. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica."
+    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center (default), or End across the available width. Use this row in Field.Actions for operations beside a labeled input; place the input in Field.ChildContent. Keep mixed operations here; UniformGridButton is for finite single-semantic choices.",
+    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center（默认）或 End。带标签输入旁的操作将此动作行放进 Field.Actions，输入放进 Field.ChildContent。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。",
+    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center (padrão) ou End na largura disponível. Use esta linha em Field.Actions para operações ao lado de uma entrada rotulada; coloque a entrada em Field.ChildContent. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica."
   },
   "Parameter_Alignment_InlineActions": {
     "en-US": "Logical horizontal alignment of the wrapping action row across available width: Start, Center (default), or End. It does not change button appearance or native form transport.",
@@ -5893,6 +6028,16 @@
     "en-US": "Actions mode opens on mouse entry without taking focus, then closes after leaving trigger and popup. Keyboard/touch activation remains; top-bar menus enable this. Incompatible with native ChildContent, whose details opens by click/keyboard.",
     "zh-CN": "Actions 数据驱动模式：鼠标进入触发区域时打开菜单且不抢焦点，离开触发区和弹窗后关闭；键盘和触屏仍可激活。顶部栏菜单自动启用。与原生 ChildContent 不可同时使用；原生模式采用 details 点击/键盘开口。",
     "pt-BR": "No modo Actions, abre ao entrar com o mouse sem roubar foco e fecha ao sair do acionador e painel. Teclado/toque continuam disponíveis; menus superiores ativam isto. Incompatível com ChildContent nativo, cujo details abre por clique/teclado."
+  },
+  "Parameter_Actions_Field": {
+    "en-US": "Optional ordinary buttons or InlineActions beside the input. The library aligns them with the control and moves them below on narrow screens. They do not inherit this Field's required or validation context; submission and callbacks remain with the caller.",
+    "zh-CN": "可选的输入旁普通按钮或 InlineActions。库将操作与输入对齐，窄屏时移到下一行。操作不继承此 Field 的必填或验证上下文；提交与回调仍由调用方负责。",
+    "pt-BR": "Botões comuns ou InlineActions opcionais ao lado da entrada. A biblioteca alinha as ações ao controle e as move para baixo em telas estreitas. Elas não herdam a obrigatoriedade ou o contexto de validação deste Field; envio e callbacks permanecem com o chamador."
+  },
+  "Parameter_ChildContent_Field": {
+    "en-US": "The labeled input that receives this Field's ID, required state and error description. Put adjacent operation buttons in Actions to keep the label and validation scoped to the input.",
+    "zh-CN": "带标签的输入，接收此 Field 的 ID、必填状态与错误描述。旁边的操作按钮放进 Actions，让标签与验证只属于输入。",
+    "pt-BR": "A entrada rotulada que recebe ID, obrigatoriedade e descrição de erro deste Field. Coloque botões de operações adjacentes em Actions para manter rótulo e validação vinculados à entrada."
   },
   "Parameter_Actions_Content": {
     "en-US": "Razor content slot in the heading or action area.",

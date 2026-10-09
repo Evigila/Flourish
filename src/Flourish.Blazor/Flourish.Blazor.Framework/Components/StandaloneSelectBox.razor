@@ -4,7 +4,7 @@
 @typeparam TValue
 
 <select @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-select @Class"
-    value="@BindConverter.FormatValue(ShownValue, Texts.FormatCulture)" disabled="@Disabled"
+    value="@Internal.SelectValueConversion.Format(ShownValue, Texts.FormatCulture)" disabled="@Disabled"
     required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)"
     aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)" @onchange="ChangeAsync">
     @if (ChildContent is not null) { @ChildContent }
@@ -12,7 +12,7 @@
     {
         @foreach (var option in Options)
         {
-            <option value="@BindConverter.FormatValue(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
+            <option value="@Internal.SelectValueConversion.Format(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
         }
     }
 </select>
@@ -37,7 +37,7 @@
     }
     private async Task ChangeAsync(ChangeEventArgs args)
     {
-        if (Disabled || !BindConverter.TryConvertTo<TValue>(args.Value, Texts.FormatCulture, out var value)) return;
+        if (Disabled || !Internal.SelectValueConversion.TryParse<TValue>(args.Value?.ToString(), Texts.FormatCulture, out var value)) return;
         ShownValue = value;
         await ValueChanged.InvokeAsync(value);
     }

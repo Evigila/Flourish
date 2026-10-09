@@ -480,6 +480,7 @@ builder.Services.AddFlourishFramework(framework =>
                             .AddSubNav(Text(TextKey.Nav_Records, "记录列表"), "list", "/records")
                             .AddSubNav(Text(TextKey.Nav_RecordDetails, "记录详情"), "person", "/records/sample")
                             .AddSubNav(Text(TextKey.Nav_Patterns, "组合布局"), "view_quilt", "/patterns")
+                            .AddSubNav(Text(TextKey.Nav_Tutorial, "教程"), "school", "/examples/tutorial", exact: true)
                             .AddSubNav(
                                 Text(TextKey.Nav_DisplayPages, "展示页面"), "web", "/examples/display",
                                 display => display

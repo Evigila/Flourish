@@ -22,7 +22,7 @@ Outside Windows, use PowerShell 7 directly for Web projects: `./scripts/Start-Pr
 | Selection | Project | Scope |
 | --- | --- | --- |
 | `1`, `blazor` | Gallery.Flourish.Blazor | Default interactive Gallery; existing HTTP profile at `http://localhost:5188`. |
-| `2`, `wpf` | Gallery.Flourish.WPF | Existing Windows WPF Gallery. |
+| `2`, `wpf` | Gallery.Flourish.WPF | Reconstructed native WPF Gallery using the current Blazor control standard; see wpf-native-integration.md. |
 | `3`, `winui` | Gallery.Flourish.WinUI3 | Existing unpackaged WinUI3 placeholder, not the Blazor release scope. |
 | `4`, `native` | Tests.Flourish.Blazor.Native | Framework-only diagnostic Web host at `http://localhost:5189`, not a complete Gallery. |
 

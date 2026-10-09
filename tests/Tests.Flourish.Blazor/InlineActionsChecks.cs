@@ -1,9 +1,11 @@
 using System.Text.RegularExpressions;
+using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 internal static class InlineActionsChecks
 {
@@ -28,6 +30,48 @@ internal static class InlineActionsChecks
                 try { await Render(new() { [nameof(InlineActions.Alignment)] = (HorizontalAlignment)value }); }
                 catch (ArgumentOutOfRangeException error) when (error.ParamName == nameof(InlineActions.Alignment)) { continue; }
                 throw new InvalidOperationException("An unknown alignment reached rendering.");
+            }
+        }));
+        tests.Add(("real page action rows keep direct and nested structure in every page width and spacing mode", async () =>
+        {
+            RenderFragment actions(HorizontalAlignment alignment) => builder =>
+            {
+                builder.OpenComponent<InlineActions>(0);
+                builder.AddAttribute(1, nameof(InlineActions.Alignment), alignment);
+                builder.AddAttribute(2, nameof(InlineActions.ChildContent), (RenderFragment)(buttons =>
+                {
+                    buttons.OpenComponent<Button>(0);
+                    buttons.AddAttribute(1, nameof(Button.Text), "Save <safe>");
+                    buttons.CloseComponent();
+                }));
+                builder.CloseComponent();
+            };
+            RenderFragment content = builder =>
+            {
+                foreach (var alignment in Enum.GetValues<HorizontalAlignment>()) builder.AddContent(0, actions(alignment));
+                builder.OpenComponent<Section>(1);
+                builder.AddAttribute(2, nameof(Section.ChildContent), actions(HorizontalAlignment.End));
+                builder.CloseComponent();
+            };
+            foreach (var (fluid, fullWidth, mode) in new[] { (false, false, "centered"), (true, false, "fluid"), (false, true, "full") })
+            foreach (var compact in new[] { false, true })
+            {
+                var html = await RenderPageBody(new()
+                {
+                    [nameof(PageBody.Fluid)] = fluid,
+                    [nameof(PageBody.FullWidth)] = fullWidth,
+                    [nameof(PageBody.CompactSpacing)] = compact,
+                    [nameof(PageBody.ChildContent)] = content
+                });
+                Require(html.StartsWith($"<div class=\"f-page-body f-page-{mode}", StringComparison.Ordinal), "The actual page width renderer was bypassed.");
+                Require(html.Contains("f-page-compact-spacing", StringComparison.Ordinal) == compact, "Spacing changed the selected page contract.");
+                var direct = html[..html.IndexOf("<section", StringComparison.Ordinal)];
+                Require(Regex.Matches(direct, "class=\"f-inline-actions\"").Count == 3, "A direct page action row gained a wrapper or disappeared.");
+                foreach (var alignment in Enum.GetValues<HorizontalAlignment>())
+                    Require(Regex.Matches(direct, $"data-alignment=\"{alignment.ToString().ToLowerInvariant()}\"").Count == 1, "The page lost an explicit action alignment.");
+                Require(Regex.IsMatch(html, "<section[^>]*>\\s*<div class=\"f-inline-actions\" data-alignment=\"end\">"), "Nested actions no longer use the same production renderer.");
+                Require(Regex.Matches(html, "<button").Count == 4 && html.Contains("Save &lt;safe&gt;", StringComparison.Ordinal), "The production Button or encoded action label was lost.");
+                Require(!html.Contains("style=", StringComparison.Ordinal), "The composition introduces host geometry.");
             }
         }));
         tests.Add(("Dialog owns end alignment for nested action rows and native forms without changing ordinary rows", () =>
@@ -68,6 +112,19 @@ internal static class InlineActionsChecks
         await using var renderer = new HtmlRenderer(services, services.GetRequiredService<ILoggerFactory>());
         return await renderer.Dispatcher.InvokeAsync(async () =>
             (await renderer.RenderComponentAsync<InlineActions>(ParameterView.FromDictionary(parameters))).ToHtmlString());
+    }
+
+    private static async Task<string> RenderPageBody(Dictionary<string, object?> parameters)
+    {
+        var services = new ServiceCollection().AddLogging();
+        services.AddSingleton<NavigationManager>(new TestNavigation());
+        services.AddSingleton<IJSRuntime>(new FakeJs());
+        services.AddFlourishFramework();
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
+        return await renderer.Dispatcher.InvokeAsync(async () =>
+            (await renderer.RenderComponentAsync<PageBody>(ParameterView.FromDictionary(parameters))).ToHtmlString());
     }
 
     private static string ReadSource(string path)

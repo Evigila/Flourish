@@ -1,5 +1,11 @@
 # Optional Blazor Culture integration
 
+## Native WPF supersession on 2026-10-07
+
+The former WPF single-project host/service implementation and its Culture hosting adapter have been deleted under the user's explicit reconstruction request. Current native projects are Flourish.WPF.Abstract, Framework, Design and the dependency-only Flourish.WPF aggregate, targeting net10.0-windows. The rebuilt optional EssentialTextProvider is owned/disposed by its native consumer and configured on FrameworkBuilder; Gallery consumes this bridge. Earlier WPF descriptions below are dated migration evidence, not current APIs. See [native WPF integration](wpf-native-integration.md).
+
+The existing public six-package Core/Blazor 1.1.2 release and scripts/ReleaseSettings.psd1 remain unchanged. Native WPF build/pack verification creates local candidates only; this task does not publish, version-bump or add Windows targets to the already released Blazor packages.
+
 This extension connects the independent Flourish text contract to Essential.Culture.Blazor. The existing WPF extension remains a separate Windows package with its existing public API and lifetime.
 
 ## Dependency boundary

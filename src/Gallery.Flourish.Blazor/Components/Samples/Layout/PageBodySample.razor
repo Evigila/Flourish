@@ -25,7 +25,21 @@ else
     <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_CompactPageSpacing)" @bind-Value="CompactSpacing" />
     <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")" CompactSpacing="@CompactSpacing">
         <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_ResourceSettingsFictional)" />
-        <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Sample_Description)"><p>@Localization.Parse(TextKey.Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins)</p></ArkheideSystem.Flourish.Blazor.Components.Section>
+        <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Sample_Description)">
+            <p>@Localization.Parse(TextKey.Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins)</p>
+            <InlineActions Alignment="HorizontalAlignment.End">
+                <Button OnClick="Increment">@Localization.Parse(TextKey.Sample_IncrementDemo)</Button>
+                <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
+            </InlineActions>
+        </ArkheideSystem.Flourish.Blazor.Components.Section>
+        @foreach (var alignment in Enum.GetValues<HorizontalAlignment>())
+        {
+            <InlineActions Alignment="alignment">
+                <Button OnClick="Increment">@Localization.Parse(TextKey.Sample_IncrementDemo)</Button>
+                <Button Variant="ButtonVariant.Secondary" OnClick="Reset">@Localization.Parse(TextKey.Sample_Reset)</Button>
+            </InlineActions>
+        }
+        <p role="status">@string.Format(System.Globalization.CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalOnlyActionCount), Count)</p>
     </ArkheideSystem.Flourish.Blazor.Components.PageBody>
     <ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface Style="height:420px; min-height:0; position:relative; contain:layout paint;" ContentId="@GridId" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)">
         <TitleBar><ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{GridId}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@Localization.Parse(TextKey.Sample_ResourceCenterFictional)" /></TitleBar>
@@ -44,6 +58,9 @@ else
     private readonly string Id = $"page-body-mode-{Guid.NewGuid():N}";
     private string Mode = "centered";
     private bool CompactSpacing;
+    private int Count;
+    private void Increment() => Count++;
+    private void Reset() => Count = 0;
     private readonly string GridId = $"page-body-grid-{Guid.NewGuid():N}";
     private IReadOnlyList<Primitives.GridColumn> GridColumns => [new("name", Localization.Parse(TextKey.Record_Name), Identity: true)];
     private IReadOnlyList<Primitives.GridRow> GridRows = Enumerable.Range(1, 24).Select(index => new Primitives.GridRow(index, [new($"DEMO-{index:000}", $"DEMO-{index:000}")])).ToArray();

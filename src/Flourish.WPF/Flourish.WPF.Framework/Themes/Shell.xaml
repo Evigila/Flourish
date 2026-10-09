@@ -1,0 +1,168 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:ArkheideSystem.Flourish.WPF.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Actions.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style TargetType="{x:Type c:PrimaryNavigationItem}" BasedOn="{StaticResource {x:Type c:Button}}">
+    <Setter Property="Width" Value="55" />
+    <Setter Property="Height" Value="55" />
+    <Setter Property="Margin" Value="0,0,0,8" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.ChromeInk}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:PrimaryNavigationItem}">
+          <Grid>
+            <Border x:Name="SelectionMarker" Width="4" Height="28" Margin="-10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Background="{DynamicResource Flourish.Brush.Accent}" CornerRadius="0,4,4,0" Visibility="Collapsed" />
+            <Border x:Name="Frame" Background="{TemplateBinding Background}" CornerRadius="18">
+              <c:Icon Name="{TemplateBinding Icon}" Filled="{TemplateBinding IsSelected}" Size="24" Foreground="{TemplateBinding Foreground}"
+                      VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.ChromeHover}" /></Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.Accent}" />
+              <Setter TargetName="SelectionMarker" Property="Visibility" Value="Visible" />
+              <Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.AccentInk}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True"><Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.ChromePressed}" /></Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions><Condition Property="IsSelected" Value="True" /><Condition Property="IsPressed" Value="True" /></MultiTrigger.Conditions>
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.PrimaryPressed}" />
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value=".5" /></Trigger>
+            <DataTrigger Binding="{Binding IsNarrow, RelativeSource={RelativeSource AncestorType={x:Type c:ApplicationShell}}}" Value="True">
+              <Setter TargetName="Frame" Property="CornerRadius" Value="14" />
+              <Setter TargetName="SelectionMarker" Property="Margin" Value="-6,0,0,0" />
+              <Setter TargetName="SelectionMarker" Property="Height" Value="24" />
+            </DataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding IsNarrow, RelativeSource={RelativeSource AncestorType={x:Type c:ApplicationShell}}}" Value="True">
+        <Setter Property="Width" Value="45" /><Setter Property="Height" Value="48" /><Setter Property="Margin" Value="0,0,0,6" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style TargetType="{x:Type c:SecondaryNavigationItem}" BasedOn="{StaticResource {x:Type c:Button}}">
+    <Setter Property="MinHeight" Value="46" />
+    <Setter Property="Padding" Value="12,9" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.Muted}" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:SecondaryNavigationItem}">
+          <Border x:Name="Frame" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" CornerRadius="12">
+            <DockPanel>
+              <c:Icon Name="{TemplateBinding Icon}" Size="26" Foreground="{TemplateBinding Foreground}" Margin="0,0,12,0" VerticalAlignment="Center" />
+              <TextBlock Text="{TemplateBinding Text}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+            </DockPanel>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.SurfaceHover}" /><Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.Text}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.Primary}" />
+              <Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.PrimaryInk}" /><Setter Property="FontWeight" Value="780" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Frame" Property="Background" Value="{DynamicResource Flourish.Brush.SurfacePressed}" /><Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.Text}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value=".5" /></Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding IsNarrow, RelativeSource={RelativeSource AncestorType={x:Type c:ApplicationShell}}}" Value="True"><Setter Property="MinHeight" Value="42" /></DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style TargetType="{x:Type c:ApplicationShell}">
+    <Setter Property="FontFamily" Value="{DynamicResource Flourish.FontFamily}" />
+    <Setter Property="FontSize" Value="17" />
+    <Setter Property="Foreground" Value="{DynamicResource Flourish.Brush.Text}" />
+    <Setter Property="Background" Value="{DynamicResource Flourish.Brush.Canvas}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:ApplicationShell}">
+          <Grid Background="{TemplateBinding Background}">
+            <Grid.RowDefinitions><RowDefinition x:Name="HeaderHeight" Height="68" /><RowDefinition /></Grid.RowDefinitions>
+            <DockPanel Grid.Row="0" Background="{DynamicResource Flourish.Brush.Chrome}" TextElement.Foreground="{DynamicResource Flourish.Brush.ChromeInk}" c:PresentationContext.IsChrome="True">
+              <StackPanel x:Name="PART_TopRight" DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,10,0" VerticalAlignment="Center" />
+              <c:Button x:Name="PART_NavigationToggle" DockPanel.Dock="Left" Icon="menu" Variant="Quiet" Width="40" Padding="0" Visibility="Collapsed"
+                        Foreground="{DynamicResource Flourish.Brush.ChromeInk}" ToolTip="Open navigation" />
+              <Border x:Name="PART_LogoHost" Width="76" Padding="8" DockPanel.Dock="Left">
+                <Image x:Name="PART_Logo" Width="48" Height="48" Stretch="Uniform" />
+              </Border>
+              <TextBlock x:Name="PART_Title" FontWeight="760" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="10,0,22,0" />
+            </DockPanel>
+            <Grid Grid.Row="1" ClipToBounds="True">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition x:Name="SecondaryWidth" Width="Auto" /><ColumnDefinition /></Grid.ColumnDefinitions>
+              <Grid.RowDefinitions><RowDefinition x:Name="SecondaryHeight" Height="0" /><RowDefinition /></Grid.RowDefinitions>
+              <Border x:Name="PART_PrimaryHost" Grid.RowSpan="2" Width="76" Background="{DynamicResource Flourish.Brush.Chrome}">
+                <ScrollViewer Style="{DynamicResource Flourish.ScrollViewer}"><StackPanel x:Name="PART_Primary" HorizontalAlignment="Center" Margin="0,14" /></ScrollViewer>
+              </Border>
+              <ScrollViewer x:Name="PART_Scroll" Grid.Column="2" Grid.RowSpan="2" Style="{DynamicResource Flourish.ScrollViewer}" Focusable="False">
+                <ContentPresenter />
+              </ScrollViewer>
+              <c:Button x:Name="PART_NavigationBackdrop" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Panel.ZIndex="10" Visibility="Collapsed"
+                        Background="{DynamicResource Flourish.Brush.Text}" Padding="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                <c:Button.Template><ControlTemplate TargetType="{x:Type c:Button}"><Border Background="{TemplateBinding Background}" /></ControlTemplate></c:Button.Template>
+              </c:Button>
+              <Border x:Name="PART_SecondaryHost" Grid.Column="1" Grid.RowSpan="2" Panel.ZIndex="20" Width="232" Padding="18"
+                      Background="{DynamicResource Flourish.Brush.SurfaceAlternate}" BorderBrush="{DynamicResource Flourish.Brush.Border}" BorderThickness="0,0,1,0">
+                <ScrollViewer x:Name="SecondaryScroll" Style="{DynamicResource Flourish.ScrollViewer}"><StackPanel x:Name="PART_Secondary" /></ScrollViewer>
+              </Border>
+            </Grid>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="HasNavigation" Value="False"><Setter TargetName="PART_PrimaryHost" Property="Visibility" Value="Collapsed" /></Trigger>
+            <Trigger Property="HasSecondary" Value="False"><Setter TargetName="PART_SecondaryHost" Property="Visibility" Value="Collapsed" /></Trigger>
+            <Trigger Property="IsNarrow" Value="True">
+              <Setter TargetName="HeaderHeight" Property="Height" Value="60" />
+              <Setter TargetName="SecondaryWidth" Property="Width" Value="0" />
+              <Setter TargetName="PART_PrimaryHost" Property="Width" Value="58" />
+              <Setter TargetName="PART_Primary" Property="Margin" Value="0,10" />
+              <Setter TargetName="PART_TopRight" Property="Margin" Value="0,0,4,0" />
+              <Setter TargetName="PART_LogoHost" Property="Width" Value="58" /><Setter TargetName="PART_LogoHost" Property="Padding" Value="7" />
+              <Setter TargetName="PART_Logo" Property="Width" Value="43" /><Setter TargetName="PART_Logo" Property="Height" Value="43" />
+              <Setter TargetName="PART_Title" Property="MaxWidth" Value="170" /><Setter TargetName="PART_Title" Property="Margin" Value="7,0,12,0" />
+              <Setter TargetName="PART_Scroll" Property="Grid.Column" Value="1" /><Setter TargetName="PART_Scroll" Property="Grid.ColumnSpan" Value="2" />
+              <Setter TargetName="PART_Scroll" Property="Grid.Row" Value="1" /><Setter TargetName="PART_Scroll" Property="Grid.RowSpan" Value="1" />
+              <Setter TargetName="PART_SecondaryHost" Property="Grid.ColumnSpan" Value="2" /><Setter TargetName="PART_SecondaryHost" Property="Grid.RowSpan" Value="1" />
+              <Setter TargetName="PART_SecondaryHost" Property="HorizontalAlignment" Value="Stretch" />
+              <Setter TargetName="SecondaryScroll" Property="HorizontalScrollBarVisibility" Value="Auto" /><Setter TargetName="SecondaryScroll" Property="VerticalScrollBarVisibility" Value="Disabled" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions><Condition Property="IsNarrow" Value="True" /><Condition Property="HasSecondary" Value="True" /></MultiTrigger.Conditions>
+              <Setter TargetName="SecondaryHeight" Property="Height" Value="58" /><Setter TargetName="PART_NavigationToggle" Property="Visibility" Value="Visible" />
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions><Condition Property="IsNarrow" Value="True" /><Condition Property="HasSecondary" Value="True" /><Condition Property="HasNavigationTree" Value="True" /></MultiTrigger.Conditions>
+              <Setter TargetName="SecondaryHeight" Property="Height" Value="Auto" />
+              <Setter TargetName="SecondaryScroll" Property="HorizontalScrollBarVisibility" Value="Disabled" /><Setter TargetName="SecondaryScroll" Property="VerticalScrollBarVisibility" Value="Auto" />
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions><Condition Property="IsNarrow" Value="True" /><Condition Property="HasSecondary" Value="True" /><Condition Property="NavigationOpen" Value="True" /></MultiTrigger.Conditions>
+              <Setter TargetName="PART_SecondaryHost" Property="Grid.RowSpan" Value="2" /><Setter TargetName="PART_SecondaryHost" Property="HorizontalAlignment" Value="Left" />
+              <Setter TargetName="PART_NavigationBackdrop" Property="Visibility" Value="Visible" />
+              <Setter TargetName="PART_Scroll" Property="IsHitTestVisible" Value="False" /><Setter TargetName="PART_Scroll" Property="KeyboardNavigation.TabNavigation" Value="None" />
+              <Setter TargetName="SecondaryScroll" Property="HorizontalScrollBarVisibility" Value="Disabled" /><Setter TargetName="SecondaryScroll" Property="VerticalScrollBarVisibility" Value="Auto" />
+            </MultiTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

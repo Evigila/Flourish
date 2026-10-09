@@ -1,0 +1,9 @@
+# Complete tutorial static and browser gates
+
+This record supplements, without editing, the earlier tutorial implementation record. Parent-agent serialized verification passes the zero-warning/error Blazor Release build, Framework 426/426 and Gallery 7,388 checks plus 124 post-event cases. The intentional component inventory is 81.
+
+The complete JavaScript gate identified two tutorial shadow literals that bypassed standard palette roles. The user-authorized narrow repair uses existing --f-shadow-popup for both surfaces; no new color token, guard relaxation or rendering contract is introduced. TutorialBoard's twelve actual-controller regressions are now explicitly registered in ReleaseSettings.JavaScriptTests. All seventeen configured files pass 108/108 Node TAP cases with zero failures/skips; the six self-executing DOM groups additionally describe 138 internal scenarios from that same run.
+
+The four configured auxiliary gates pass: CSS bundle 21, isolated CSS SDK integration 194, launcher 95 and culture integrity 21,906 (1,530 Gallery keys and 288 Framework keys). CSS SDK's first sandbox virtual-Temp attempt hit a NuGet permission refusal; the approved isolated real-Temp rerun passed. Fixture builds do not touch repository bin/obj, launcher SDK commands are mocked plans, and no Aspire or live instance is used.
+
+The final candidate target advances to local `1.1.4-preview.tutorial.3` rather than overwriting already generated `.1`/`.2`. Final package and consumer gates remain with the parent agent. The library production source is now frozen. See the [updated implementation report](../bugfix-reports/2026-10-08_native-tutorial-board.md) for limits and manual acceptance. No public publication, commit, push, WPF work or Colligere edits were performed by this bounded follow-up.

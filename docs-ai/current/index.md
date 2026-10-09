@@ -8,6 +8,7 @@ Use this reading map for active decisions. Current guides describe the implement
 | Controls, styles, public APIs and executable usage | Actual maintained source under `src/Flourish.Blazor/`, Gallery examples and focused tests |
 | Component use classification, final API review, access scenarios and convergence boundaries | [Component API organization](component-api-organization.md) |
 | Implemented local per-user Culture bridge, usage and rollout limits | [Culture Web integration](culture-web-integration.md) |
+| Native WPF four-package reconstruction, usage and manual acceptance | [WPF integration](wpf-native-integration.md) |
 | Two-repository ownership, solution entries and migration | [Solution organization](solution-organization.md) |
 | Optional Culture bridge registration and lifetimes | [Extension bridge](culture-extension-bridge.md) |
 | Package sets, local feed verification and user-confirmed Trusted Publishing | [NuGet release and integration](nuget-release-integration.md) |

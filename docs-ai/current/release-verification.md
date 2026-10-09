@@ -1,8 +1,20 @@
 # Release verification
 
+## Local page action candidate on 2026-10-08
+
+The authorized local-only 1.1.4-preview.fields.3 retains Field.Actions and Boolean conversion and corrects direct PageBody InlineActions width. Blazor-only Release solution build passes with zero warnings/errors; library checks 416, Gallery 7,266 including 124 actual post-event checks, bridge 12, page-action Node checks five, and catalog integrity checks 21,543 all pass. The six-package verifier passes IDs, matching dependency versions and assets. Colligere restores those six versions from its scoped local feed, verifies the packaged CSS rule, builds its complete Release solution without warnings/errors and passes 352 selected Web cases with five database opt-in skips, plus 48/83 selected Core/Application cases. Six company transport Node checks pass.
+
+This is targeted source/local-package verification, not a new full public release gate, browser acceptance or WPF audit. Public 1.1.3, Essential 1.3.0 and both prior candidate feeds are unchanged. No public upload, tag, push or live Aspire restart occurs. Package README advisories remain separate from compilation. See the [page-action correction report](bugfix-reports/2026-10-08_pagebody-inline-actions-width.md).
+
 ## Completed Blazor 1.1.3 release on 2026-10-07
 
 Commit 6b5dc255fb97d4313da7e11bce9bab820cc06256 and tag v1.1.3 completed [run 37653211373](https://github.com/Evigila/Flourish/actions/runs/37653211373). All six uploads returned Created at 16:38:42–16:38:47 UTC. Complete preparation passed with zero build warnings/errors: Core 367, Blazor 403/403, bridge 12, Gallery 7,266, Node 102, CSS bundle 21 and SDK 194, launcher 95, catalog 21,454 and four candidate consumers 129. Independent public-only consumers also passed 129 with fresh package/HTTP caches; six fresh index responses contain 1.1.3 and package provenance names NuGet.org. Evidence is in the isolated C:/Users/RC_Auditoria/AppData/Local/Temp/f113/artifacts release-1.1.3-final.log, public-release-1.1.3.log and package-consumers/372b5d2e51504cd591b7f12110139733. Initial parent-CPM contamination, Windows long-path compilation and transient DNS/network failures were environment checks, preserved separately; they do not replace the successful isolated/public runs. Parallel WPF work is excluded; Essential stays 1.3.0. Older release/candidate sections below retain their dated scope.
+
+## Native WPF supersession on 2026-10-07
+
+The former WPF single-project host/service implementation and its Culture hosting adapter have been deleted under the user's explicit reconstruction request. Current native projects are Flourish.WPF.Abstract, Framework, Design and the dependency-only Flourish.WPF aggregate, targeting net10.0-windows. The rebuilt optional EssentialTextProvider is owned/disposed by its native consumer and configured on FrameworkBuilder; Gallery consumes this bridge. Earlier WPF descriptions below are dated migration evidence, not current APIs. See [native WPF integration](wpf-native-integration.md).
+
+The existing public six-package Core/Blazor 1.1.2 release and scripts/ReleaseSettings.psd1 remain unchanged. Native WPF build/pack verification creates local candidates only; this task does not publish, version-bump or add Windows targets to the already released Blazor packages.
 
 ## Latest completed release: 2026-10-06 Flourish 1.1.2
 

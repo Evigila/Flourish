@@ -1,0 +1,192 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<span class="f-tutorial-entry">
+    <button @ref="Trigger" type="button" class="f-tutorial-trigger" disabled="@(Steps.Count == 0)"
+            aria-label="@TriggerLabel" aria-haspopup="dialog" aria-controls="@BoardId" aria-expanded="@(IsOpen ? "true" : "false")" @onclick="OpenAsync">
+        <span aria-hidden="true"><ProgressRing Label="@EffectiveLabel" Value="@Percent" Stopped="true" Compact="true" ShowValue="false" /></span>
+    </button>
+    <aside @ref="Preview" id="@PreviewId" class="f-tutorial-preview" popover="manual" role="tooltip">
+        <p class="f-tutorial-preview-title">@EffectiveLabel</p>
+        <p>@CompletionText</p>
+        <ol class="f-tutorial-overview">
+            @foreach (var step in Steps)
+            {
+                <li @key="step.Key" data-completed="@(step.Completed ? "true" : "false")">
+                    <Icon Name="@(step.Completed ? "check_circle" : "radio_button_unchecked")" />
+                    <span>@step.Title</span><span class="f-sr-only">@(step.Completed ? Ui("Tutorial_Completed", "Completed") : Ui("Tutorial_Pending", "Pending"))</span>
+                </li>
+            }
+        </ol>
+    </aside>
+    <section @ref="Board" id="@BoardId" class="f-tutorial-board f-tutorial-@Tone.ToString().ToLowerInvariant() @(Dotted ? "f-tutorial-dotted" : null)"
+             popover="auto" role="dialog" aria-modal="false" aria-labelledby="@TitleId" aria-describedby="@DescriptionId" tabindex="-1">
+        <header class="f-tutorial-header">
+            <span>@EffectiveLabel</span>
+            <Button Variant="ButtonVariant.Quiet" Icon="close" OnClick="CloseAsync" aria-label="@EffectiveCloseLabel" />
+        </header>
+        @if (ActiveStep is { } current)
+        {
+            <div class="f-tutorial-content" aria-live="polite">
+                <h1 id="@TitleId">@current.Title</h1>
+                <p id="@DescriptionId">@current.Description</p>
+            </div>
+            <footer class="f-tutorial-footer">
+                <div class="f-tutorial-skip">
+                    @if (OnSkip.HasDelegate) { <Button Variant="ButtonVariant.Underline" Text="@EffectiveSkipLabel" Disabled="@Unavailable" OnClick="SkipAsync" /> }
+                </div>
+                <nav class="f-tutorial-segments" aria-label="@EffectiveLabel">
+                    @foreach (var step in Steps)
+                    {
+                        var selected = step.Key == current.Key;
+                        <button @key="step.Key" type="button" class="f-tutorial-segment" data-completed="@(step.Completed ? "true" : "false")"
+                                disabled="@Unavailable" aria-current="@(selected ? "step" : null)" aria-label="@StepLabel(step)" title="@StepLabel(step)"
+                                @onclick="() => SelectAsync(step.Key)"><span class="f-sr-only">@step.Title</span></button>
+                    }
+                </nav>
+                <div class="f-tutorial-actions">
+                    @if (!string.IsNullOrWhiteSpace(current.ActionText))
+                    {
+                        <Button Variant="ButtonVariant.Elevated" Text="@current.ActionText" Href="@current.ActionHref"
+                                Disabled="@(Unavailable || current.Disabled)" Busy="@Executing" OnClick="ActionAsync" />
+                    }
+                </div>
+            </footer>
+        }
+    </section>
+</span>
+
+@code {
+    private readonly string Identity = "f-tutorial-" + Guid.NewGuid().ToString("N");
+    private string BoardId => Identity + "-board";
+    private string PreviewId => Identity + "-preview";
+    private string TitleId => Identity + "-title";
+    private string DescriptionId => Identity + "-description";
+    private ElementReference Trigger, Preview, Board;
+    private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? Loading;
+    private DotNetObjectReference<TutorialBoard>? Reference;
+    private bool Attached, Executing, Disposed;
+
+    [Parameter, EditorRequired] public IReadOnlyList<TutorialStep> Steps { get; set; } = Array.Empty<TutorialStep>();
+    [Parameter] public string Label { get; set; } = "Getting started";
+    [Parameter] public string CloseLabel { get; set; } = "Close";
+    [Parameter] public string SkipLabel { get; set; } = "Skip tutorial";
+    [Parameter] public string? ActiveStepKey { get; set; }
+    [Parameter] public EventCallback<string> ActiveStepKeyChanged { get; set; }
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
+    [Parameter] public EventCallback<TutorialStep> OnAction { get; set; }
+    [Parameter] public EventCallback OnSkip { get; set; }
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public PresentationTone Tone { get; set; } = PresentationTone.Primary;
+    [Parameter] public bool Dotted { get; set; } = true;
+
+    private bool Unavailable => Busy || Executing;
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Tutorial_Label", "Getting started");
+    private string EffectiveCloseLabel => DefaultText(nameof(CloseLabel), CloseLabel, "Dialog_Close", "Close");
+    private string EffectiveSkipLabel => DefaultText(nameof(SkipLabel), SkipLabel, "Tutorial_Skip", "Skip tutorial");
+    private int CompletedCount => Steps.Count(step => step.Completed);
+    private double Percent => Steps.Count == 0 ? 0 : CompletedCount * 100d / Steps.Count;
+    private string CompletionText => Ui("Tutorial_Progress", "{0} of {1} completed", CompletedCount, Steps.Count);
+    private string TriggerLabel => $"{EffectiveLabel}: {CompletionText}";
+    private TutorialStep? ActiveStep => Steps.FirstOrDefault(step => step.Key == ActiveStepKey)
+        ?? Steps.FirstOrDefault(step => !step.Completed) ?? Steps.FirstOrDefault();
+    private string StepLabel(TutorialStep step) => $"{step.Title}: {(step.Completed ? Ui("Tutorial_Completed", "Completed") : Ui("Tutorial_Pending", "Pending"))}";
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Steps);
+        if (!Enum.IsDefined(Tone)) throw new ArgumentOutOfRangeException(nameof(Tone));
+        if (Steps.Any(step => step is null || string.IsNullOrWhiteSpace(step.Key) || string.IsNullOrWhiteSpace(step.Title))
+            || Steps.Select(step => step.Key).Distinct(StringComparer.Ordinal).Count() != Steps.Count)
+            throw new ArgumentException("Tutorial steps require unique nonempty keys and titles.", nameof(Steps));
+        if (ActiveStepKey is not null && !Steps.Any(step => step.Key == ActiveStepKey))
+            throw new ArgumentException("ActiveStepKey must identify a supplied step.", nameof(ActiveStepKey));
+        if (IsOpen && Steps.Count == 0) throw new InvalidOperationException("An empty tutorial cannot be open.");
+    }
+    private async Task OpenAsync()
+    {
+        if (Disposed || Steps.Count == 0 || IsOpen) return;
+        IsOpen = true;
+        await IsOpenChanged.InvokeAsync(true);
+    }
+    private Task CloseAsync() => RequestCloseAsync();
+    [JSInvokable] public async Task RequestCloseAsync()
+    {
+        if (Disposed || !IsOpen) return;
+        IsOpen = false;
+        await IsOpenChanged.InvokeAsync(false);
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task SelectAsync(string key)
+    {
+        if (Disposed || Unavailable || !Steps.Any(step => step.Key == key)) return;
+        ActiveStepKey = key;
+        await ActiveStepKeyChanged.InvokeAsync(key);
+    }
+    private async Task ActionAsync()
+    {
+        var step = ActiveStep;
+        // A link navigates through Button. Never also invoke a host side effect.
+        if (Disposed || Unavailable || step is null || step.Disabled || !string.IsNullOrWhiteSpace(step.ActionHref)) return;
+        Executing = true;
+        try { await OnAction.InvokeAsync(step); }
+        finally { Executing = false; }
+    }
+    private async Task SkipAsync()
+    {
+        if (Disposed || Unavailable || !OnSkip.HasDelegate) return;
+        Executing = true;
+        try { await OnSkip.InvokeAsync(); }
+        finally { Executing = false; }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Disposed) return;
+        try
+        {
+            var module = await GetModuleAsync();
+            if (Disposed || module is null) return;
+            Reference ??= DotNetObjectReference.Create(this);
+            Attached = true;
+            await module.InvokeVoidAsync("synchronizeTutorialBoard", Trigger, Preview, Board, IsOpen, Reference);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var pending = Loading ??= ImportAsync();
+        try { return await pending; }
+        finally { if (ReferenceEquals(Loading, pending)) Loading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/controls.js");
+        if (Disposed) { await ReleaseAsync(imported); return null; }
+        return Module = imported;
+    }
+    public async ValueTask DisposeAsync()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        base.Dispose();
+        var module = Module;
+        Module = null;
+        try { if (module is not null && Attached) await module.InvokeVoidAsync("detachTutorialBoard", Trigger, Preview, Board); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally
+        {
+            Reference?.Dispose(); Reference = null; Attached = false;
+            if (module is not null) await ReleaseAsync(module);
+        }
+    }
+    private static async ValueTask ReleaseAsync(IJSObjectReference module)
+    {
+        try { await module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

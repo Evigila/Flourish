@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Resources.xaml" />
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Actions.xaml" />
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Inputs.xaml" />
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Content.xaml" />
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Shell.xaml" />
+    <ResourceDictionary Source="/Flourish.WPF.Framework;component/Themes/Data.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

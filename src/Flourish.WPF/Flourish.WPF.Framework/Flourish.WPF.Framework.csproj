@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ArkheideSystem.Flourish.WPF</RootNamespace>
+    <PackageId>Arkheide.Flourish.WPF.Framework</PackageId>
+    <Description>Native WPF components, geometry and interaction with optional Flourish Design.</Description>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <PackageLicenseExpression>MIT AND Apache-2.0</PackageLicenseExpression>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj" />
+    <Resource Include="Icons/MaterialSymbolsOutlined.ttf" />
+    <EmbeddedResource Include="Icons/MaterialSymbolsOutlined.codepoints" LogicalName="Flourish.WPF.Icons.Codepoints" />
+    <EmbeddedResource Include="Icons/MaterialSymbolsFilled.json.br" LogicalName="Flourish.WPF.Icons.Filled" />
+    <EmbeddedResource Include="../../Flourish.Blazor/Flourish.Blazor.Framework/Localization/Culture.json" Link="Localization/Culture.json" LogicalName="Flourish.WPF.Texts.json" />
+    <None Update="Icons/LICENSE.txt" Pack="true" PackagePath="licenses/MaterialSymbols/LICENSE.txt" />
+    <None Update="Icons/source.json" Pack="true" PackagePath="licenses/MaterialSymbols/source.json" />
+  </ItemGroup>
+</Project>

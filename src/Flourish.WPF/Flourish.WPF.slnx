@@ -1,7 +1,10 @@
 <Solution>
-  <Project Path="Flourish.WPF.csproj" />
-  <Project Path="../Flourish.Core/Flourish.Core.csproj" />
+  <Project Path="Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj" />
+  <Project Path="Flourish.WPF.Framework/Flourish.WPF.Framework.csproj" />
+  <Project Path="Flourish.WPF.Design/Flourish.WPF.Design.csproj" />
+  <Project Path="Flourish.WPF/Flourish.WPF.csproj" />
   <Project Path="../Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj" />
+  <Project Path="../Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj" />
   <Project Path="../../tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj" />
-  <Project Path="../../tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj" />
+  <Project Path="../../tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj" />
 </Solution>

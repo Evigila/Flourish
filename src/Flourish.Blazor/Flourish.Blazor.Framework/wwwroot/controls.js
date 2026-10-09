@@ -4,6 +4,7 @@ const menus = new WeakMap();
 const dialogs = new WeakMap();
 const inputs = new WeakMap();
 const accessForms = new WeakMap();
+const tutorialBoards = new WeakMap();
 let activeMenu = null;
 const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 const visible = element => element.getClientRects().length > 0 && !element.closest('[hidden],[inert]');
@@ -139,6 +140,99 @@ function positionMenu(state) {
     const top = openAbove ? trigger.top - panelHeight - gap : trigger.bottom + gap;
     panel.style.top = `${Math.max(12,Math.min(top,height - panelHeight - 12))}px`;
 }
+
+/** One nonmodal tutorial entry: native top-layer board plus a passive hover/focus overview. */
+export function synchronizeTutorialBoard(trigger, preview, board, open, reference) {
+    if (!trigger?.isConnected || !preview?.isConnected || !board?.isConnected) return;
+    if (typeof board.showPopover !== 'function' || typeof preview.showPopover !== 'function')
+        throw new Error('TutorialBoard requires the native Popover API.');
+    let state = tutorialBoards.get(board);
+    if (!state) {
+        state = {trigger,preview,board,reference,requestedOpen:false,wasOpen:false,hover:false,focus:false,timer:null,
+            panel:preview,open:false,openOnHover:true,maximumHeight:preview.style.getPropertyValue('max-height'),
+            maximumHeightPriority:preview.style.getPropertyPriority('max-height')};
+        tutorialBoards.set(board,state);
+        const hidePreview = () => {
+            clearTimeout(state.timer); state.timer = null;
+            if (preview.matches(':popover-open')) preview.hidePopover();
+            state.open = false; trigger.removeAttribute('aria-describedby');
+            state.restorePreviewTheme?.(); state.restorePreviewTheme = null;
+        };
+        const showPreview = () => {
+            clearTimeout(state.timer); state.timer = null;
+            if (trigger.disabled || state.requestedOpen || board.matches(':popover-open')) return;
+            state.restorePreviewTheme?.(); state.restorePreviewTheme = copyTheme(trigger,preview);
+            if (!preview.matches(':popover-open')) preview.showPopover();
+            state.open = true; trigger.setAttribute('aria-describedby',preview.id); positionMenu(state);
+        };
+        const scheduleHide = () => {
+            clearTimeout(state.timer);
+            state.timer = setTimeout(() => { if (!state.hover && !state.focus) hidePreview(); },90);
+        };
+        const enter = () => { state.hover = true; showPreview(); };
+        const leave = () => { state.hover = false; scheduleHide(); };
+        const focus = () => { state.focus = true; showPreview(); };
+        const blur = () => { state.focus = false; scheduleHide(); };
+        const previewEscape = event => {
+            if (event.key === 'Escape' && state.open) { hidePreview(); event.preventDefault(); }
+        };
+        const toggle = event => {
+            if (event.newState === 'open') { state.wasOpen = true; hidePreview(); return; }
+            if (!state.wasOpen) return;
+            state.wasOpen = false; trigger.setAttribute('aria-expanded','false');
+            state.restoreBoardTheme?.(); state.restoreBoardTheme = null;
+            // Restore only focus owned by this board, never steal an outside-click target's focus.
+            if (board.contains(document.activeElement) && trigger.isConnected) trigger.focus({preventScroll:true});
+            if (state.requestedOpen) {
+                state.requestedOpen = false;
+                Promise.resolve(state.reference?.invokeMethodAsync('RequestCloseAsync')).catch(() => {});
+            }
+        };
+        const reposition = () => { if (state.open) positionMenu(state); };
+        const observer = new MutationObserver(() => {
+            if (!trigger.isConnected || !preview.isConnected || !board.isConnected) detachTutorialBoard(trigger,preview,board);
+        });
+        trigger.addEventListener('pointerenter',enter); trigger.addEventListener('pointerleave',leave);
+        preview.addEventListener('pointerenter',enter); preview.addEventListener('pointerleave',leave);
+        trigger.addEventListener('focus',focus); trigger.addEventListener('blur',blur); trigger.addEventListener('keydown',previewEscape);
+        board.addEventListener('toggle',toggle);
+        window.addEventListener('resize',reposition); document.addEventListener('scroll',reposition,true);
+        observer.observe(document.documentElement,{childList:true,subtree:true});
+        state.hidePreview = hidePreview;
+        state.cleanup = () => {
+            observer.disconnect(); hidePreview();
+            trigger.removeEventListener('pointerenter',enter); trigger.removeEventListener('pointerleave',leave);
+            preview.removeEventListener('pointerenter',enter); preview.removeEventListener('pointerleave',leave);
+            trigger.removeEventListener('focus',focus); trigger.removeEventListener('blur',blur); trigger.removeEventListener('keydown',previewEscape);
+            board.removeEventListener('toggle',toggle); window.removeEventListener('resize',reposition); document.removeEventListener('scroll',reposition,true);
+        };
+    }
+    state.reference = reference; state.requestedOpen = open;
+    trigger.setAttribute('aria-expanded',open ? 'true' : 'false');
+    if (open) {
+        state.hidePreview();
+        state.restoreBoardTheme?.(); state.restoreBoardTheme = copyTheme(trigger,board);
+        if (!board.matches(':popover-open')) {
+            board.showPopover(); state.wasOpen = true;
+            // A modeless board has initial focus but neither a trap nor an inert/scroll-locked background.
+            board.focus({preventScroll:true});
+        }
+    } else if (board.matches(':popover-open')) {
+        if (board.contains(document.activeElement) && trigger.isConnected) trigger.focus({preventScroll:true});
+        board.hidePopover(); state.wasOpen = false;
+        state.restoreBoardTheme?.(); state.restoreBoardTheme = null;
+    } else if (state.open) {
+        state.restorePreviewTheme?.(); state.restorePreviewTheme = copyTheme(trigger,preview); positionMenu(state);
+    }
+}
+export function detachTutorialBoard(trigger,preview,board) {
+    const state = tutorialBoards.get(board);
+    if (!state) return;
+    tutorialBoards.delete(board); state.requestedOpen = false; state.cleanup();
+    if (board.matches(':popover-open')) board.hidePopover();
+    state.restoreBoardTheme?.(); trigger.setAttribute('aria-expanded','false');
+}
+
 export function attachMenu(trigger, panel, openOnHover=false) {
     if (!trigger || !panel) return;
     const existing = menus.get(panel);

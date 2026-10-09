@@ -24,3 +24,21 @@ test("inline input takes remaining width without forcing its natural-sized actio
   assert.match(css, /\.f-inline-actions > \.f-input\s*\{[^}]*flex:1 1 0;[^}]*width:auto;[^}]*min-width:0;/);
   assert.match(css, /\.f-field-control > \.f-inline-actions\s*\{[^}]*margin-block-start:0;/);
 });
+
+test("Field Actions use separate label and input tracks with bounded natural-width operations", async () => {
+  const css = await readFile(new URL("wwwroot/framework.css", framework), "utf8");
+  const field = await readFile(new URL("Components/Field.razor", framework), "utf8");
+  assert.match(css, /\.f-field\.f-field-with-actions\s*\{[^}]*display:grid;[^}]*grid-template-columns:minmax\(0,1fr\) fit-content\(50%\);[^}]*column-gap:12px;[^}]*row-gap:var\(--f-field-label-gap,7px\);[^}]*min-width:0;/);
+  assert.match(css, /\.f-field-with-actions > \.f-field-label\s*\{[^}]*grid-column:1;[^}]*grid-row:1;/);
+  assert.match(css, /\.f-field-with-actions > \.f-field-control\s*\{[^}]*grid-column:1;[^}]*grid-row:2;[^}]*position:relative;[^}]*min-width:0;/);
+  assert.match(css, /\.f-field-with-actions > \.f-field-actions\s*\{[^}]*grid-column:2;[^}]*grid-row:2;[^}]*flex-wrap:wrap;[^}]*align-items:flex-start;[^}]*align-self:start;[^}]*min-width:0;[^}]*max-width:100%;/);
+  assert.match(css, /\.f-field-actions > \.f-inline-actions\s*\{[^}]*width:auto;[^}]*max-width:100%;[^}]*margin-block:0;/);
+  assert.match(css, /@media\(max-width:760px\)\{\.f-field\.f-field-with-actions\{grid-template-columns:minmax\(0,1fr\)\}\.f-field-with-actions > \.f-field-actions\{grid-column:1;grid-row:3;justify-self:end\}\}/);
+  assert.doesNotMatch(css, /\.f-field[^{}]*\{[^}]*display:contents|\.f-field-actions[^{}]*\{[^}]*!important/);
+  assert.match(field, /<CascadingValue Value="@Context">@ChildContent<\/CascadingValue>/);
+  assert.match(field, /<div class="f-field-actions">@Actions<\/div>/);
+  assert.doesNotMatch(field, /<CascadingValue[^>]*>[\s\S]*?@Actions[\s\S]*?<\/CascadingValue>/);
+  const design = await readFile(new URL("../Flourish.Blazor.Design/wwwroot/controls.css", framework), "utf8");
+  assert.match(design, /\.f-field-label\{[^}]*justify-content:space-between/);
+  assert.doesNotMatch(design, /\.f-field-with-actions/);
+});

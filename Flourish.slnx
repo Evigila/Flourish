@@ -13,7 +13,10 @@
     <Project Path="src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj" />
   </Folder>
   <Folder Name="/Flourish.WPF/">
-    <Project Path="src/Flourish.WPF/Flourish.WPF.csproj">
+    <Project Path="src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj" />
+    <Project Path="src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj" />
+    <Project Path="src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj" />
+    <Project Path="src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj">
       <Platform Solution="*|Any CPU" Project="AnyCPU" />
       <Platform Solution="*|ARM64" Project="ARM64" />
       <Platform Solution="*|x64" Project="x64" />

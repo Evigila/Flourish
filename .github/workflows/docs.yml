@@ -41,7 +41,7 @@ jobs:
       run: dotnet restore src/Flourish.Core/Flourish.Core.csproj
 
     - name: Restore WPF project
-      run: dotnet restore src/Flourish.WPF/Flourish.WPF.csproj
+      run: dotnet restore src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj
 
     - name: Restore tools
       run: dotnet tool restore

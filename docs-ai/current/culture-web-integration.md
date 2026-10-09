@@ -1,5 +1,11 @@
 # Culture Web integration
 
+## Native WPF supersession on 2026-10-07
+
+The former WPF single-project host/service implementation and its Culture hosting adapter have been deleted under the user's explicit reconstruction request. Current native projects are Flourish.WPF.Abstract, Framework, Design and the dependency-only Flourish.WPF aggregate, targeting net10.0-windows. The rebuilt optional EssentialTextProvider is owned/disposed by its native consumer and configured on FrameworkBuilder; Gallery consumes this bridge. Earlier WPF descriptions below are dated migration evidence, not current APIs. See [native WPF integration](wpf-native-integration.md).
+
+The existing public six-package Core/Blazor 1.1.2 release and scripts/ReleaseSettings.psd1 remain unchanged. Native WPF build/pack verification creates local candidates only; this task does not publish, version-bump or add Windows targets to the already released Blazor packages.
+
 ## Implemented local integration
 
 The 2026-10-05 local integration supersedes this guide's earlier proposed APIs and read-only readiness assessment. Essential.Culture provides immutable catalogs, independent contexts and a scoped Blazor adapter; Gallery uses the separate optional Flourish.Extensions.Culture.Blazor bridge. The later approved package consolidation retires Shared, retaining Abstract/Framework/Design and adding a dependency-only convenience package. Desktop localization APIs remain separate.

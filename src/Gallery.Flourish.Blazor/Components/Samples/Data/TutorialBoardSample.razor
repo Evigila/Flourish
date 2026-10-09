@@ -1,0 +1,47 @@
+@inherits LocalizedComponentBase
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("TutorialBoard")]
+
+<InlineActions>
+    <TutorialBoard Steps="@Steps" @bind-IsOpen="Open" @bind-ActiveStepKey="Selected" OnAction="Shortcut" OnSkip="Skip" />
+    @if (!Preview)
+    {
+        <Button Variant="ButtonVariant.Secondary" Text="@Localization.Parse(TextKey.Sample_TutorialVerify)" OnClick="Verify" />
+        <Button Variant="ButtonVariant.Underline" Text="@Localization.Parse(TextKey.Sample_TutorialReset)" OnClick="Reset" />
+    }
+</InlineActions>
+@if (!Preview)
+{
+    <p>@Localization.Parse(TextKey.Sample_TutorialDescription)</p>
+    <p role="status">@Message</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private bool Open;
+    private string? Selected;
+    private string? MessageKey, ShortcutKey;
+    private readonly HashSet<string> Completed = new(StringComparer.Ordinal);
+    private string Message => MessageKey is null ? string.Empty : ShortcutKey is null
+        ? Localization.Parse(MessageKey) : Localization.Parse(MessageKey, Localization.Parse(ShortcutKey));
+    private IReadOnlyList<TutorialStep> Steps =>
+    [
+        new("company", Localization.Parse(TextKey.Sample_TutorialCompany), Localization.Parse(TextKey.Sample_TutorialCompanyDescription), Localization.Parse(TextKey.Sample_TutorialShortcut), Completed: Completed.Contains("company")),
+        new("products", Localization.Parse(TextKey.Sample_TutorialProducts), Localization.Parse(TextKey.Sample_TutorialProductsDescription), Localization.Parse(TextKey.Sample_TutorialShortcut), Completed: Completed.Contains("products")),
+        new("stock", Localization.Parse(TextKey.Sample_TutorialStock), Localization.Parse(TextKey.Sample_TutorialStockDescription), Localization.Parse(TextKey.Sample_TutorialShortcut), Completed: Completed.Contains("stock"))
+    ];
+    private void Shortcut(TutorialStep step)
+    {
+        MessageKey = TextKey.Sample_TutorialAction;
+        ShortcutKey = step.Key switch { "company" => TextKey.Sample_TutorialCompany, "products" => TextKey.Sample_TutorialProducts, _ => TextKey.Sample_TutorialStock };
+        Open = false;
+    }
+    private void Verify()
+    {
+        // This demo host verifies a milestone. The component never infers completion from a shortcut.
+        var step = Steps.FirstOrDefault(item => item.Key == Selected) ?? Steps.FirstOrDefault(item => !item.Completed);
+        if (step is not null) Completed.Add(step.Key);
+    }
+    private void Skip() { MessageKey = TextKey.Sample_TutorialSkipped; ShortcutKey = null; Open = false; }
+    private void Reset() { Completed.Clear(); Selected = null; MessageKey = ShortcutKey = null; Open = false; }
+}

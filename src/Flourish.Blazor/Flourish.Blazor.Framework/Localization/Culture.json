@@ -1,4 +1,39 @@
 {
+  "Tutorial_Label": {
+    "en-US": "Getting started",
+    "zh-CN": "入门引导",
+    "pt-BR": "Primeiros passos"
+  },
+  "Tutorial_Skip": {
+    "en-US": "Skip tutorial",
+    "zh-CN": "跳过教程",
+    "pt-BR": "Pular tutorial"
+  },
+  "Tutorial_Progress": {
+    "en-US": "{0} of {1} completed",
+    "zh-CN": "已完成 {0}/{1}",
+    "pt-BR": "{0} de {1} concluídos"
+  },
+  "Tutorial_Completed": {
+    "en-US": "Completed",
+    "zh-CN": "已完成",
+    "pt-BR": "Concluído"
+  },
+  "Tutorial_Pending": {
+    "en-US": "Pending",
+    "zh-CN": "待完成",
+    "pt-BR": "Pendente"
+  },
+  "Usage_TutorialBoard_Scenario": {
+    "en-US": "Host-driven onboarding milestones",
+    "zh-CN": "宿主驱动的入门步骤",
+    "pt-BR": "Etapas de integração guiadas pelo aplicativo"
+  },
+  "Usage_TutorialBoard_Guidance": {
+    "en-US": "Production use: one compact progress trigger, passive hover/focus overview and native nonmodal popover board. Steps supplies verified completion; selecting or acting never marks a step complete. ActionHref navigates without OnAction; other shortcuts invoke OnAction. OnSkip only requests host persistence. Tone and Dotted use standard roles; Escape, outside click and close publish IsOpenChanged(false).",
+    "zh-CN": "生产用法：唯一缩略进度入口、悬浮/焦点只读预览和原生非模态弹出板。Steps 提供已核实的完成状态；选取或操作不会自动完成。ActionHref 导航且不调用 OnAction，其余快捷操作调用 OnAction。OnSkip 仅请求宿主持久化。Tone 与 Dotted 使用标准颜色；Escape、外点与关闭发布 IsOpenChanged(false)。",
+    "pt-BR": "Uso em produção: um acionador compacto, prévia passiva ao passar o ponteiro/receber foco e painel popover nativo não modal. Steps fornece conclusão verificada; selecionar ou agir não conclui etapas. ActionHref navega sem OnAction; outros atalhos invocam OnAction. OnSkip apenas solicita persistência ao aplicativo. Tone e Dotted usam papéis padrão; Escape, clique externo e fechar publicam IsOpenChanged(false)."
+  },
   "Chart_Maximum": {
     "en-US": "Maximum",
     "zh-CN": "最大值",
@@ -1190,9 +1225,9 @@
     "pt-BR": "Rótulos e validação de campos"
   },
   "Usage_Field_Guidance": {
-    "en-US": "Production use: associate Label, Id, required state, errors and input. Submission, authorization and persistence remain host responsibilities.",
-    "zh-CN": "生产使用：关联 Label、Id、必填状态、验证错误与输入；不负责提交、授权或持久化。",
-    "pt-BR": "Uso em produção: associe Label, Id, estado obrigatório, erros e entrada. Envio, autorização e persistência permanecem no aplicativo."
+    "en-US": "Production use: associate Label, Id, required state, errors and the input in ChildContent. Optional Actions places ordinary buttons beside the input without extending its label or required context; actions wrap below on narrow screens. Submission, authorization and persistence remain host responsibilities.",
+    "zh-CN": "生产使用：关联 Label、Id、必填状态、验证错误与 ChildContent 内的输入。可选 Actions 将普通按钮放在输入旁，不扩大标签或必填上下文；窄屏时操作换到下一行。提交、授权与持久化仍由宿主负责。",
+    "pt-BR": "Uso em produção: associe Label, Id, obrigatoriedade, erros e a entrada em ChildContent. Actions opcional posiciona botões comuns ao lado da entrada sem ampliar seu rótulo ou contexto obrigatório; ações passam para a linha seguinte em telas estreitas. Envio, autorização e persistência permanecem no aplicativo."
   },
   "Usage_ExpansionIndicator_Scenario": {
     "en-US": "Decorative expansion indicator",
@@ -1330,9 +1365,9 @@
     "pt-BR": "Linhas compactas de ações padrão"
   },
   "Usage_InlineActions_Guidance": {
-    "en-US": "Production use: wrapping rows of standard Button or actual controls at a native protocol boundary. Field inputs take remaining width and buttons keep natural width. Owns spacing and layout only; use UniformGridButton for finite wizard choices.",
-    "zh-CN": "生产使用：标准 Button 或原生协议内实际控件的换行动作行；Field 内输入框占剩余宽度，按钮保持自然宽度。只管理统一间距和布局，不发明动作语义；不是有限选项向导的 UniformGridButton 替代。",
-    "pt-BR": "Uso em produção: linhas com quebra de Button padrão ou controles reais na fronteira de um protocolo nativo. O campo ocupa o espaço restante e os botões mantêm a largura natural. Controla apenas espaçamento e layout; use UniformGridButton para opções finitas de assistentes."
+    "en-US": "Production use: wrapping rows of standard Button or actual controls at a native protocol boundary. Alignment chooses Start, Center (default), or End in the available width. Use Field.Actions for operations beside a labeled input; keep that input in Field.ChildContent. Owns spacing and layout only; use UniformGridButton for finite wizard choices.",
+    "zh-CN": "生产使用：标准 Button 或原生协议内实际控件的换行动作行。Alignment 在可用宽度内选择 Start、Center（默认）或 End。带标签输入旁的操作使用 Field.Actions，输入保留在 Field.ChildContent 中。只管理统一间距和布局；有限选项向导使用 UniformGridButton。",
+    "pt-BR": "Uso em produção: linhas com quebra de Button padrão ou controles reais na fronteira de um protocolo nativo. Alignment escolhe Start, Center (padrão) ou End na largura disponível. Use Field.Actions para operações ao lado de uma entrada rotulada e mantenha a entrada em Field.ChildContent. Controla apenas espaçamento e layout; use UniformGridButton para opções finitas de assistentes."
   },
   "Usage_FormGroup_Scenario": {
     "en-US": "Grouped native fields",

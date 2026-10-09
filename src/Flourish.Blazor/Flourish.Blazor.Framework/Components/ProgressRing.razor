@@ -2,14 +2,14 @@
 @inherits TextComponentBase
 @using System.Globalization
 
-<span class="f-progress-ring @(Stopped ? "f-progress-stopped" : null)" role="progressbar" aria-label="@EffectiveLabel"
+<span class="f-progress-ring @(Stopped ? "f-progress-stopped" : null) @(Compact ? "f-progress-ring-compact" : null)" role="progressbar" aria-label="@EffectiveLabel"
       aria-valuemin="0" aria-valuemax="100" aria-valuenow="@NumericValue" aria-valuetext="@StatusText" title="@StatusText">
     <svg viewBox="0 0 52 52" aria-hidden="true">
         <circle class="f-progress-ring-track" cx="26" cy="26" r="23" />
         <circle class="f-progress-ring-arc" cx="26" cy="26" r="23" pathLength="100" stroke-dasharray="@((Value ?? 28).ToString(CultureInfo.InvariantCulture) + " 100")" />
     </svg>
     @if (Value is null) { <span class="f-progress-ring-native" aria-hidden="true">@(StatusText ?? Ui("Progress_Working", "In progress"))</span> }
-    @if (Value is not null) { <span aria-hidden="true">@Value.Value.ToString("0", Texts.FormatCulture)%</span> }
+    @if (Value is not null && ShowValue) { <span aria-hidden="true">@Value.Value.ToString("0", Texts.FormatCulture)%</span> }
 </span>
 
 @code {
@@ -18,6 +18,10 @@
     [Parameter] public double? Value { get; set; }
     [Parameter] public string? StatusText { get; set; }
     [Parameter] public bool Stopped { get; set; }
+    /// <summary>Compact chrome geometry without a second progress renderer.</summary>
+    [Parameter] public bool Compact { get; set; }
+    /// <summary>Show a visible percentage while retaining accessibility values in either mode.</summary>
+    [Parameter] public bool ShowValue { get; set; } = true;
     private string? NumericValue => Value?.ToString("0.##", CultureInfo.InvariantCulture);
     protected override void OnParametersSet()
     {

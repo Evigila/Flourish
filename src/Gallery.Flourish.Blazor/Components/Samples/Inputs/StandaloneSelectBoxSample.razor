@@ -3,7 +3,19 @@
 @attribute [SampleFor("StandaloneSelectBox<TValue>", DescriptionKey = "Key.Sample_StandaloneSelectBoxSample_Description")]
 <Field Label="@Localization.Parse(TextKey.Sample_ProtocolBoundaryDemoLanguage)" Id="@Id"><StandaloneSelectBox TValue="string" Id="@Id" name="language" Options="Languages" @bind-Value="Language" /></Field>
 <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalSelection), Language)</p>
+@if (!Preview)
+{
+    <Field Label="@Localization.Parse(TextKey.Sample_OptionalBoolean)" Id="@(Id + "-boolean")"><StandaloneSelectBox TValue="bool?" Id="@(Id + "-boolean")" name="optionalBoolean" Options="BooleanOptions" @bind-Value="OptionalValue" /></Field>
+    <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_LocalSelection), BooleanLabel)</p>
+}
 @code {
     [Parameter] public bool Preview { get; set; }
     private string Language = "zh-CN"; private readonly string Id = "standalone-select-" + Guid.NewGuid().ToString("N"); private static readonly IReadOnlyList<SelectOption<string>> Languages = [new("zh-CN", "中文"), new("en-US", "English"), new("pt-BR", "Português")];
+    private bool? OptionalValue;
+    private SelectOption<bool?>[] BooleanOptions => [
+        new(null, Localization.Parse(TextKey.Sample_BooleanUnspecified)),
+        new(true, Localization.Parse(TextKey.Sample_BooleanTrue)),
+        new(false, Localization.Parse(TextKey.Sample_BooleanFalse))];
+    private string BooleanLabel => Localization.Parse(OptionalValue switch {
+        true => TextKey.Sample_BooleanTrue, false => TextKey.Sample_BooleanFalse, _ => TextKey.Sample_BooleanUnspecified });
 }

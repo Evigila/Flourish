@@ -26,10 +26,14 @@ else
         <DataAnnotationsValidator />
         <FormLayout Columns="1">
             <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Email)" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)">
-                <TextBox @bind-Value="Model.Email" @bind-Value:after="ClearResult" Type="email" />
+                <ChildContent><TextBox @bind-Value="Model.Email" @bind-Value:after="ClearResult" Type="email" /></ChildContent>
+                <Actions>
+                    <InlineActions Alignment="HorizontalAlignment.End">
+                        <Button Type="submit" Icon="check" Text="@Localization.Parse(TextKey.Sample_ValidateEmail)" />
+                    </InlineActions>
+                </Actions>
             </Field>
         </FormLayout>
-        <Button Type="submit" Icon="check" Text="@Localization.Parse(TextKey.Sample_ValidateEmail)" />
     </EditForm>
     @if (Message is not null) { <p role="status">@Localization.Parse(Message)</p> }
 }
