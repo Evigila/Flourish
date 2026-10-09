@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <PackageId>Arkheide.Flourish.Blazor</PackageId>
-    <Description>Convenience package for Blazor contracts, framework, design and scoped Culture integration. Register design and Culture services explicitly.</Description>
+    <Description>Convenience package for Blazor contracts, framework, design and scoped Culture integration. Configure Culture through AddFlourishFramework and register Design explicitly.</Description>
     <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
     <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
     <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>

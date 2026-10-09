@@ -15,12 +15,33 @@ internal static class GridChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
-        tests.Add(("compact page spacing is explicit and ordinary pages retain document spacing", async () =>
+        tests.Add(("centered page variants retain direct and form sections without a compact spacing contract", async () =>
         {
-            var compact = await Render<PageBody>(new() { [nameof(PageBody.CompactSpacing)] = true });
-            var ordinary = await Render<PageBody>(new());
-            Require(compact.Contains("f-page-compact-spacing", StringComparison.Ordinal), "Compact form spacing is not selected by the production page.");
-            Require(!ordinary.Contains("f-page-compact-spacing", StringComparison.Ordinal), "Ordinary pages silently changed their spacing.");
+            RenderFragment content = builder =>
+            {
+                builder.OpenComponent<Section>(0);
+                builder.AddAttribute(1, nameof(Section.Title), "Direct section");
+                builder.CloseComponent();
+                builder.OpenComponent<FormLayout>(2);
+                builder.AddAttribute(3, nameof(FormLayout.ChildContent), (RenderFragment)(form =>
+                {
+                    form.OpenComponent<Section>(0);
+                    form.AddAttribute(1, nameof(Section.Title), "Form section");
+                    form.CloseComponent();
+                }));
+                builder.CloseComponent();
+            };
+            foreach (var container in Enum.GetValues<CenteredContainer>())
+            {
+                var html = await Render<PageBody>(new()
+                {
+                    [nameof(PageBody.Fluid)] = false, [nameof(PageBody.CenteredContainer)] = container,
+                    [nameof(PageBody.ChildContent)] = content
+                });
+                Require(html.Contains("f-page-centered-expanded", StringComparison.Ordinal) == (container == CenteredContainer.Expanded), "The production page did not select its centered variant.");
+                Require(Regex.Matches(html, "<section").Count == 2 && html.Contains("Direct section") && html.Contains("Form section"), "Changing horizontal geometry lost a direct or form section.");
+                Require(!html.Contains("f-page-compact-spacing", StringComparison.Ordinal), "The retired compact spacing mode still changes section composition.");
+            }
         }));
         tests.Add(("full-height spreadsheet composes an immediately compact heading and one native grid in either surface", async () =>
         {
@@ -223,7 +244,7 @@ internal static class GridChecks
                 builder.AddAttribute(4, "PreferenceKey", "native-records");
                 builder.AddAttribute(5, "Searchable", true);
                 builder.CloseComponent();
-                builder.OpenComponent<IdentityCard>(6);
+                builder.OpenComponent<Card>(6);
                 builder.AddAttribute(7, "ChildContent", (RenderFragment)(content => content.AddContent(0, "Alpha <native>")));
                 builder.CloseComponent();
                 builder.OpenComponent<ToggleSwitch>(8);
@@ -244,7 +265,7 @@ internal static class GridChecks
             Require(content.Contains("content-stage", StringComparison.Ordinal) && content.Contains("native-account-content", StringComparison.Ordinal), "The content surface did not expose its content target.");
             foreach (var html in new[] { navigation, content })
             {
-                Require(html.Contains("Alpha &lt;native&gt;", StringComparison.Ordinal) && html.Contains("f-identity-card", StringComparison.Ordinal) && html.Contains("role=\"switch\"", StringComparison.Ordinal) && html.Contains("role=\"grid\"", StringComparison.Ordinal), "A Framework-only production control failed to render within a pattern.");
+                Require(html.Contains("Alpha &lt;native&gt;", StringComparison.Ordinal) && html.Contains("<article class=\"f-card\">", StringComparison.Ordinal) && html.Contains("role=\"switch\"", StringComparison.Ordinal) && html.Contains("role=\"grid\"", StringComparison.Ordinal), "A Framework-only production control failed to render within a pattern.");
                 Require(!html.Contains("f-root", StringComparison.Ordinal) && !html.Contains("--f-primary", StringComparison.Ordinal), "A Framework pattern introduced skin or theme markup.");
             }
         }));

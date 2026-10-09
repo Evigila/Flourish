@@ -11,52 +11,36 @@ internal static class PresentationIdentityChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
-        tests.Add(("identity summaries render their own encoded account heading and identifier without page chrome", async () =>
+        tests.Add(("ordinary Cards compose encoded account titles and CopyText identifiers without page chrome", async () =>
         {
             using var services = Services();
             await using var renderer = Renderer(services);
-            foreach (var level in Enumerable.Range(1, 6))
+            var html = await Render<Card>(renderer, new()
             {
-                var html = await Render<IdentityCard>(renderer, new()
+                [nameof(Card.Title)] = "Member <safe> & name",
+                [nameof(Card.ChildContent)] = (RenderFragment)(builder =>
                 {
-                    [nameof(IdentityCard.Title)] = "Member <safe> & name",
-                    [nameof(IdentityCard.HeadingLevel)] = level,
-                    [nameof(IdentityCard.Columns)] = false,
-                    [nameof(IdentityCard.ChildContent)] = (RenderFragment)(builder =>
-                    {
-                        builder.OpenComponent<CopyText>(0);
-                        builder.AddAttribute(1, nameof(CopyText.Value), "ID-<safe>&001");
-                        builder.CloseComponent();
-                    })
-                });
-                Require(html.Contains($"<h{level} class=\"f-identity-title\">Member &lt;safe&gt; &amp; name</h{level}>", StringComparison.Ordinal), "The summary discarded heading semantics or escaped identity content.");
-                Require(html.Contains("<code class=\"f-copy-text\">ID-&lt;safe&gt;&amp;001</code>", StringComparison.Ordinal), "The real CopyText identifier was changed or rendered unsafely.");
-                Require(!html.Contains("f-page-heading", StringComparison.Ordinal) && !html.Contains("f-identity-columns", StringComparison.Ordinal), "An identity name inherited sticky page chrome or unwanted columns.");
-            }
-            Require(new IdentityCard().HeadingLevel == 2, "Ordinary summary headings no longer default to H2.");
-            var untitled = await Render<IdentityCard>(renderer, new() { [nameof(IdentityCard.Title)] = " " });
+                    builder.OpenComponent<CopyText>(0);
+                    builder.AddAttribute(1, nameof(CopyText.Value), "ID-<safe>&001");
+                    builder.CloseComponent();
+                })
+            });
+            Require(html.Contains("<article class=\"f-card\">", StringComparison.Ordinal), "An account summary bypassed the ordinary Card renderer.");
+            Require(html.Contains("<h3>Member &lt;safe&gt; &amp; name</h3>", StringComparison.Ordinal), "The Card discarded its existing H3 title semantics or encoded account content.");
+            Require(html.Contains("<code class=\"f-copy-text\">ID-&lt;safe&gt;&amp;001</code>", StringComparison.Ordinal), "The real CopyText identifier was changed or rendered unsafely.");
+            Require(!html.Contains("f-page-heading", StringComparison.Ordinal) && !Regex.IsMatch(html, @"<h[12]\b"), "A Card account title inherited page heading chrome or introduced a second page heading.");
+            var untitled = await Render<Card>(renderer, new() { [nameof(Card.Title)] = "" });
             Require(!Regex.IsMatch(untitled, @"<h[1-6]\b"), "An absent name produced an empty heading.");
-            foreach (var level in new[] { 0, 7, int.MaxValue })
-            {
-                try { await Render<IdentityCard>(renderer, new() { [nameof(IdentityCard.HeadingLevel)] = level }); }
-                catch (ArgumentOutOfRangeException error) when (error.ParamName == nameof(IdentityCard.HeadingLevel)) { continue; }
-                throw new InvalidOperationException("An invalid identity heading level reached rendering.");
-            }
         }));
-        tests.Add(("identity cards bound page gutters and keep account headings start aligned with bold identifiers", () =>
+        tests.Add(("retired IdentityCard has no exported renderer catalog entry or dedicated style family", () =>
         {
+            Require(typeof(Card).Assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.IdentityCard") is null,
+                "The overlapping IdentityCard renderer is still exported.");
+            Require(!ComponentUsageCatalog.Entries.Keys.Any(type => type.Name == "IdentityCard"), "The retired renderer remains in production usage guidance.");
             var framework = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css");
             var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/controls.css");
-            var pageCard = Rule(framework, ".f-page-body > .f-identity-card");
-            Require(pageCard.Contains("width:auto", StringComparison.Ordinal), "A full-width card adds page gutters outside its 100% width and overflows the viewport.");
-            var card = Rule(framework, ".f-identity-card");
-            Require(card.Contains("box-sizing:border-box", StringComparison.Ordinal) && card.Contains("min-width:0", StringComparison.Ordinal)
-                && card.Contains("max-width:100%", StringComparison.Ordinal) && card.Contains("text-align:start", StringComparison.Ordinal), "Card geometry does not shrink or retain start alignment.");
-            var heading = Rule(framework, ".f-identity-card > .f-identity-title");
-            Require(heading.Contains("overflow-wrap:anywhere", StringComparison.Ordinal) && heading.Contains("text-align:start", StringComparison.Ordinal), "Long account headings escape their card or lose start alignment.");
-            Require(Rule(design, ".f-identity-card > h1.f-identity-title").Contains("font-size:var(--f-type-page,50px)", StringComparison.Ordinal), "An account name lost the standard large heading scale.");
-            var identifier = Rule(design, ".f-identity-content .f-copy-text");
-            Require(identifier.Contains("font-weight:740", StringComparison.Ordinal) && identifier.Contains("color:inherit", StringComparison.Ordinal), "Identifiers no longer use bold paired card text.");
+            Require(!framework.Contains("f-identity-", StringComparison.Ordinal) && !design.Contains("f-identity-", StringComparison.Ordinal),
+                "Dedicated IdentityCard geometry or paint survives the renderer retirement.");
             return Task.CompletedTask;
         }));
         tests.Add(("footer instance project names are encoded and leave global project identity and optional copyright untouched", async () =>
@@ -88,12 +72,6 @@ internal static class PresentationIdentityChecks
     private static HtmlRenderer Renderer(IServiceProvider services) => new(services, services.GetRequiredService<ILoggerFactory>());
     private static Task<string> Render<T>(HtmlRenderer renderer, Dictionary<string, object?> parameters) where T : IComponent => renderer.Dispatcher.InvokeAsync(async () =>
         (await renderer.RenderComponentAsync<T>(ParameterView.FromDictionary(parameters))).ToHtmlString());
-    private static string Rule(string css, string selector)
-    {
-        var match = Regex.Match(css, Regex.Escape(selector) + @"\s*\{([^}]*)\}");
-        Require(match.Success, "Missing library CSS selector: " + selector);
-        return match.Groups[1].Value;
-    }
     private static string ReadSource(string path)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

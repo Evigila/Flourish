@@ -26,7 +26,7 @@ else
 {
     <CheckBox Label="@Localization.Parse(TextKey.Sample_OpenOnHoverAndCloseOnPointerLeave)" @bind-Value="HoverMenu" />
     <ActionMenu Label="@Localization.Parse(TextKey.Sample_ActionsForDemoDraftA)" Actions="Actions" OpenOnHover="HoverMenu"><TriggerContent>@Localization.Parse(TextKey.Sample_DraftActions) <ExpansionIndicator /></TriggerContent></ActionMenu>
-    <ActionMenu Label="@Localization.Parse(TextKey.Sample_NativeRecordActions)">
+    <ActionMenu Label="@Localization.Parse(TextKey.Sample_NativeRecordActions)" OpenOnHover="HoverMenu">
         <Button Variant="ButtonVariant.Quiet" role="menuitem" OnClick="EditDraft">@Localization.Parse(TextKey.Sample_EditDraft)</Button>
         <Button Variant="ButtonVariant.Quiet" role="menuitem" Disabled="true">@Localization.Parse(TextKey.Sample_PublishUnavailable)</Button>
         <Button Variant="ButtonVariant.Danger" role="menuitem" OnClick="DeleteDraft">@Localization.Parse(TextKey.Sample_DeleteDraft)</Button>

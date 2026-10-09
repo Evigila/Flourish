@@ -1,13 +1,14 @@
-.f-uniform-grid {
-    --f-grid-gap:1px;
+.f-uniform-grid,.f-form-actions {
     --f-uniform-cell-background:var(--f-surface);
     --f-uniform-cell-foreground:var(--f-text);
     --f-uniform-cell-interaction-foreground:var(--f-text);
     --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover-border:transparent;
     --f-uniform-cell-hover:var(--f-target-preview);
     --f-uniform-cell-click:var(--f-target-click);
     --f-uniform-cell-shadow:var(--f-shadow-control);
+}
+.f-uniform-grid {
+    --f-grid-gap:1px;
     margin-block:24px;
     gap:var(--f-grid-gap);
     overflow:hidden;
@@ -16,34 +17,22 @@
     background:transparent;
     box-shadow:none;
 }
-.f-uniform-grid-variant-filled,.f-uniform-variant-filled {
+.f-uniform-grid-variant-filled-elevated,.f-uniform-variant-filled-elevated {
     --f-uniform-cell-background:var(--f-primary);
     --f-uniform-cell-foreground:var(--f-primary-ink);
     --f-uniform-cell-interaction-foreground:var(--f-primary-ink);
     --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover-border:var(--f-border);
     --f-uniform-cell-hover:var(--f-primary-preview);
     --f-uniform-cell-click:var(--f-primary-click);
-    --f-uniform-cell-shadow:none;
+    --f-uniform-cell-shadow:var(--f-shadow-control);
     border:0;
     border-radius:var(--f-radius-panel,16px);
-}
-.f-uniform-grid-variant-outlined,.f-uniform-variant-outlined {
-    --f-uniform-cell-background:var(--f-canvas);
-    --f-uniform-cell-foreground:var(--f-text);
-    --f-uniform-cell-interaction-foreground:var(--f-text);
-    --f-uniform-cell-border:var(--f-border);
-    --f-uniform-cell-hover-border:var(--f-border);
-    --f-uniform-cell-hover:var(--f-target-preview);
-    --f-uniform-cell-click:var(--f-target-click);
-    --f-uniform-cell-shadow:none;
 }
 .f-uniform-grid-variant-danger,.f-uniform-variant-danger {
     --f-uniform-cell-background:var(--f-danger);
     --f-uniform-cell-foreground:var(--f-surface);
     --f-uniform-cell-interaction-foreground:var(--f-surface-light);
     --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover-border:var(--f-border);
     --f-uniform-cell-hover:var(--f-preview-danger);
     --f-uniform-cell-click:var(--f-click-danger);
     --f-uniform-cell-shadow:none;
@@ -55,13 +44,12 @@
     --f-uniform-cell-foreground:var(--f-text);
     --f-uniform-cell-interaction-foreground:var(--f-text);
     --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover-border:transparent;
     --f-uniform-cell-hover:var(--f-target-preview);
     --f-uniform-cell-click:var(--f-target-click);
     --f-uniform-cell-shadow:var(--f-shadow-control);
 }
 /* Follow occupied cells instead of shadowing the empty rectangular grid footprint. */
-.f-uniform-grid-variant-elevated { filter:drop-shadow(var(--f-shadow-control)); }
+.f-uniform-grid-variant-elevated,.f-uniform-grid-variant-filled-elevated,.f-form-actions { filter:drop-shadow(var(--f-shadow-control)); }
 .f-uniform-cell,.f-button.f-uniform-grid-button {
     display:flex;
     width:100%;
@@ -90,13 +78,13 @@
 .f-uniform-cell.f-uniform-grid-button:hover:not(:disabled):not([aria-disabled=true]) {
     color:var(--f-uniform-cell-interaction-foreground,var(--f-text));
     background:var(--f-uniform-cell-hover,var(--f-target-preview));
-    border-color:var(--f-uniform-cell-hover-border,transparent);
+    border-color:transparent;
     box-shadow:var(--f-uniform-cell-shadow,var(--f-shadow-control));
 }
 .f-uniform-cell.f-uniform-grid-button:active:not(:disabled):not([aria-disabled=true]) {
     color:var(--f-uniform-cell-interaction-foreground,var(--f-text));
     background:var(--f-uniform-cell-click,var(--f-target-click));
-    border-color:var(--f-border);
+    border-color:transparent;
     box-shadow:none;
     filter:none;
 }
@@ -112,17 +100,9 @@
     opacity:.55;
     cursor:not-allowed;
 }
-.f-uniform-grid > .f-uniform-cell.f-uniform-grid-button:focus-visible { outline-offset:-5px; }
+.f-uniform-grid > .f-uniform-cell.f-uniform-grid-button:focus-visible,.f-form-actions > .f-uniform-cell.f-uniform-grid-button:focus-visible { outline-offset:-5px; }
 .f-form-actions {
-    --f-uniform-cell-background:var(--f-primary);
-    --f-uniform-cell-foreground:var(--f-primary-ink);
-    --f-uniform-cell-interaction-foreground:var(--f-primary-ink);
-    --f-uniform-cell-border:transparent;
-    --f-uniform-cell-hover-border:var(--f-border);
-    --f-uniform-cell-hover:var(--f-primary-preview);
-    --f-uniform-cell-click:var(--f-primary-click);
-    --f-uniform-cell-shadow:none;
     gap:1px;
-    background:var(--f-border);
+    background:transparent;
 }
 .f-form-actions > .f-uniform-cell { max-width:none; min-height:96px; border-radius:0; }

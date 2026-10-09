@@ -4,7 +4,8 @@ $root=Split-Path -Parent $PSScriptRoot
 $checks=0
 $files=@(
     'src/Gallery.Flourish.Blazor/Localization/Culture.json',
-    'src/Flourish.Blazor/Flourish.Blazor.Framework/Localization/Culture.json'
+    'src/Flourish.Blazor/Flourish.Blazor.Framework/Localization/Culture.json',
+    'src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Localization/Culture.json'
 )
 foreach ($file in $files) {
     $document=[System.Text.Json.JsonDocument]::Parse([IO.File]::ReadAllText((Join-Path $root $file)))
@@ -43,5 +44,27 @@ foreach ($source in Get-ChildItem (Join-Path $root 'src/Gallery.Flourish.Blazor'
         if (-not $gallery.Contains($match.Groups[1].Value)) { throw ($source.Name+': missing resource for '+$match.Groups[1].Value) }
         $checks++
     }
+    if ($content -match '(?m)^\s*(?:using|@using|@inject|@inherits)\s+(?:\w+\s*=\s*)?ArkheideSystem\.Essential\.Culture') {
+        throw ($source.Name+': Gallery must consume the Culture extension instead of exposing its Essential implementation.')
+    }
+    $checks++
 }
+$program=[IO.File]::ReadAllText((Join-Path $root 'src/Gallery.Flourish.Blazor/Program.cs'))
+$registrations=@([regex]::Matches($program,'builder\.Services\.([A-Za-z][A-Za-z0-9]*)') | ForEach-Object { $_.Groups[1].Value })
+if ((($registrations | Sort-Object) -join ',') -cne 'AddFlourishDesign,AddFlourishFramework,AddScoped') {
+    throw 'Gallery Program must register services through AddFlourishFramework, AddFlourishDesign and RecordStore only.'
+}
+$checks++
+if ($program -notmatch 'AddScoped<RecordStore>\s*\(' -or $program -notmatch '\.ConfigureCulture\s*\(') {
+    throw 'Gallery must keep its RecordStore and configure localization inside AddFlourishFramework.'
+}
+$checks++
+if ($program -match '\b(?:AddCultureBlazor|AddFlourishCulture|AddFlourishPreferences|UseRequestLocalization|RequestLocalizationOptions|AddJsonFile)\b') {
+    throw 'Gallery Program retains localization setup that belongs to the framework/Culture extension.'
+}
+$checks++
+if (Test-Path -LiteralPath (Join-Path $root 'src/Gallery.Flourish.Blazor/Components/LanguagePicker.razor')) {
+    throw 'Gallery retains a host language picker instead of consuming the extension component.'
+}
+$checks++
 Write-Output ($checks.ToString()+' catalogue integrity checks passed.')

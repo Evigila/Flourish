@@ -24,8 +24,31 @@ public class CatalogTests
         var entries = Assert.IsAssignableFrom<IEnumerable>(catalog.GetProperty("Entries")!.GetValue(null));
         var keys = entries.Cast<object>().Select(pair => (Type)pair.GetType().GetProperty("Key")!.GetValue(pair)!).ToHashSet();
         Assert.All(controls, type => Assert.Contains(type, keys));
-        Assert.DoesNotContain(controls, type => type.Name is "ConfirmationHost" or "ConfirmationService" or "StandaloneTextBox" or "MultiSelectDropdown");
+        Assert.DoesNotContain(controls, type => type.Name is "ConfirmationHost" or "ConfirmationService" or "StandaloneTextBox" or "MultiSelectDropdown" or "IdentityCard");
+        Assert.Null(assembly.GetType("ArkheideSystem.Flourish.WPF.Controls.IdentityCard"));
     }
+
+    [Fact]
+    public void Card_gallery_keeps_identity_content_and_actions_on_the_general_entry() => NativeTest.Run(() =>
+    {
+        var owner = new Window();
+        try
+        {
+            var entry = GalleryCatalog.Entries.Single(item => item.ComponentType == typeof(F.Card));
+            var sample = Assert.IsAssignableFrom<FrameworkElement>(entry.Create(owner, new LiteralProvider()));
+            var stage = NativeTest.Stage(sample, 1000, 1200);
+            var identity = NativeTest.Descendants<F.Card>(stage).Single(card => card.Title == "Ada Lovelace");
+            Assert.Equal(typeof(F.Card), identity.GetType());
+            Assert.True(identity.Stacked);
+            Assert.Equal("Engineering · Active", NativeTest.Part<TextBlock>(identity, "Description").Text);
+            Assert.Equal("person-0001", NativeTest.Descendants<F.CopyText>(identity).Single().Text);
+            var action = Assert.IsType<F.Button>(identity.Actions);
+            Assert.Contains(action, NativeTest.Descendants<F.Button>(identity));
+            action.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            Assert.Equal("Edit ✓", action.Content);
+        }
+        finally { owner.Close(); }
+    });
 
     public static IEnumerable<object[]> Samples() => GalleryCatalog.Entries.Select(entry => new object[] { entry.Route });
 

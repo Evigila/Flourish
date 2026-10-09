@@ -7,6 +7,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
+    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../src/Gallery.Flourish.Blazor/Models/ComponentCatalog.cs" Link="Catalog/ComponentCatalog.cs" />
@@ -15,5 +18,6 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../../src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
+    <ProjectReference Include="../../src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
   </ItemGroup>
 </Project>

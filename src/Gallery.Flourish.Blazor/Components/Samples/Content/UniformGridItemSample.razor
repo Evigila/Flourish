@@ -8,8 +8,7 @@
 {
     <UniformGrid Shape="UniformGridShape.Square">
         <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyElevatedInformationTile)" />
-        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="@Localization.Parse(TextKey.Sample_EmptyFilledInformationTile)" />
-        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="@Localization.Parse(TextKey.Sample_EmptyOutlinedInformationTile)" />
+        <UniformGridItem Variant="UniformGridVariant.FilledElevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyFilledElevatedInformationTile)" />
         <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="@Localization.Parse(TextKey.Sample_EmptyDangerInformationTile)" />
     </UniformGrid>
 }
@@ -18,10 +17,10 @@ else
     <div class="f-inline-actions">
         <Button Variant="ButtonVariant.Secondary" Text="@(ShowArchived ? Localization.Parse(TextKey.Sample_ViewActiveProjects) : Localization.Parse(TextKey.Sample_ViewArchivedProjects))" OnClick="() => ShowArchived = !ShowArchived" />
     </div>
-    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
+    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.FilledElevated">
         <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Design)" Icon="palette" Text="@(ShowArchived ? Localization.Parse(TextKey.Sample_Archived) : Localization.Parse(TextKey.Sample_InProgress))" />
         <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Documents)" Icon="description" Text="@(ShowArchived ? Localization.Parse(TextKey.Sample_Archived) : Localization.Parse(TextKey.Sample_PendingReview))" />
-        <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Components)" Icon="widgets" Text="@(ShowArchived ? Localization.Parse(TextKey.Sample_Archived) : Localization.Parse(TextKey.Sample_PendingPublication))" Variant="UniformGridVariant.Outlined" />
+        <UniformGridItem Title="@Localization.Parse(TextKey.Sample_Components)" Icon="widgets" Text="@(ShowArchived ? Localization.Parse(TextKey.Sample_Archived) : Localization.Parse(TextKey.Sample_PendingPublication))" Variant="UniformGridVariant.Elevated" />
     </UniformGrid>
 }
 

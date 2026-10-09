@@ -1,10 +1,30 @@
 # currentproject-architecture
 
+## 2026-10-09 DisplayBoard preview alignment
+
+Framework DisplayBoard owns centering for direct preview action rows when the enclosing board is centered and no InlineActions alignment was supplied. InlineActions marks explicit parameter presence internally so the shared rule respects explicit Start/Center/End while retaining ordinary page End defaults. The direct-child rule excludes nested pages, forms and dialogs and preserves full-row sizing. No Gallery-specific skin or second layout API is introduced. This supersedes only the earlier same-day decision to remove DisplayBoard action-row centering. See [the correction report](bugfix-reports/2026-10-09_display-board-action-alignment.md).
+
+## 2026-10-09 Culture extension ownership and configuration separation
+
+The user requested a later same-day redesign of the initial browser-persistence implementation. The old AddFlourishCulture, AddFlourishPreferences, Framework BrowserPreferences and Gallery LanguagePicker are removed without aliases; the dated persistence report remains evidence of that superseded design. ConfigureCulture now extends IFrameworkBuilder from the optional Flourish.Extensions.Culture.Blazor project. Framework supplies only the generic ConfigureServices(Action<IServiceCollection, IConfiguration>) registration hook and remains free of Essential/Culture dependencies.
+
+The Culture extension owns catalog stream loading, the internal Essential session, scoped CultureSession, renderer subscriptions, standard request negotiation through IStartupFilter, browser culture persistence and LanguagePicker. Its Razor project depends on Framework and the existing Essential.Culture.Blazor package; Framework depends on Abstract, so this optional integration introduces no cycle. Essential remains the single lookup/formatting core. SelectAsync and SelectFormatAsync serialize the complete save-before-apply transaction, return false on browser/connection/cancellation failure and retain the old pair. Personal choices remain independent by browser/application base path; the standard cookie restores both identifiers before SSR. Core's desktop singleton JSON store is not reused for Web users.
+
+Gallery service registration has three entries: AddFlourishFramework(builder.Configuration, ...ConfigureCulture...), AddFlourishDesign(builder.Configuration) and AddScoped<RecordStore>(). Gallery owns project/navigation/command configuration, application catalog keys, routes, examples and business data; library registrations own their technical setup. Framework automatically adds interactive Razor services in a Web host and loads optional appsettings.Flourish.json below all existing host/business/environment/command-line sources. Non-ConfigurationManager inputs receive file defaults overlaid by the host snapshot. Design reads its own appearance defaults. Gallery appsettings.json remains empty and available for business/host settings. Neither JSON file is rewritten by browser language choices. Theme/palette, keyed control presentation and optional navigation preferences remain follow-up candidates. See [Culture Web integration](culture-web-integration.md) for current APIs and the distinction from historical verification.
+
+## 2026-10-09 PageBody centered-container ownership
+
+Blazor PageBody now owns the Standard/Expanded centered-container choice through CenteredContainer. Expanded halves each horizontal gutter for its own page, including minimum gutters. Framework resets the scale on every PageBody and Design uses it for matching heading/content margins. NavigationSurface still forwards the configured reference width but its former CenteredContentGutterScale is removed. PageBody.CompactSpacing and its vertical CSS/checkbox are removed, with ordinary vertical rhythm restored. Fluid, FullWidth and FillHeight retain their precedence and behavior. Historical release notes preserve the old APIs as release evidence, not current contracts. Native WPF has a separate older PageBody implementation without responsive centered geometry; that parity debt remains outside this Blazor/Gallery correction.
+
+## 2026-10-09 single card summary entry
+
+The user authorized removing IdentityCard because Card already covers its content, identity and record summary capabilities. Card is the maintained Blazor and native WPF entry; consumers compose semantic facts and ordinary actions through its existing content slots. The duplicate component, Gallery/navigation/API registration and identity-only styles are removed without aliases. The native control catalogue now contains 74 entries. Earlier 1.1.2 IdentityCard release evidence remains historical and no longer describes the current API. The 1.1.4-preview ChangeLog records the duplication reason.
+
 ## 2026-10-07 Native WPF reconstruction
 
 The user authorized complete deletion of the former WPF solution implementation and requested current Flourish.Blazor source as the sole UI/UX authority. Four native projects follow Abstract → Framework → optional Design; a dependency-only aggregate installs all three. The native target remains net10.0-windows. The former WPF host/services and legacy branded controls are removed. Core, WinUI and the six-package public Blazor release remain outside this reconstruction.
 
-There are 75 explicit native control entries and executable Gallery factories. The four Standalone native-POST input splits and browser ApplicationLayout merge into native capabilities without aliases. Consumers own business data, acceptance and persistence; Framework owns geometry, selection, keyboard, focus and popup lifetimes. The optional Culture adapter implements the new desktop ITextProvider and uses the current Blazor library catalog directly. See [native WPF integration](wpf-native-integration.md) for use, platform differences, verification and manual acceptance. This supersedes earlier descriptions of the old WPF framework in active guides and dated records.
+There are 74 explicit native control entries and executable Gallery factories after the 2026-10-09 card consolidation. The four Standalone native-POST input splits and browser ApplicationLayout merge into native capabilities without aliases. Consumers own business data, acceptance and persistence; Framework owns geometry, selection, keyboard, focus and popup lifetimes. The optional Culture adapter implements the new desktop ITextProvider and uses the current Blazor library catalog directly. See [native WPF integration](wpf-native-integration.md) for use, platform differences, verification and manual acceptance. This supersedes earlier descriptions of the old WPF framework in active guides and dated records.
 
 Human DocFX configuration still names the deleted single-project WPF path. This discrepancy is reported rather than modifying docs/ without a task-scoped exception.
 
@@ -40,7 +60,7 @@ This document explains the maintained directory and file tree from the repositor
 
 Framework has one interactive record entry: Components.DataTable with Abstract TableColumn/TableSearchRequest, shared TableData and Components.TablePreferences. Primitives.DataTable/DataSearch and their independent contracts, processing helpers and old styles are deleted. ListView is the static comparison scenario; EditingGrid remains a distinct spreadsheet with editing-grid-columns.js, not a second record-list contract. Display ordering acts on whole items; sorting is exposed only through headers, not a toolbar.
 
-The active API is AddFlourishFramework and its project/top-bar/navigation builders. Retired application/title/group builders, NavigationGroups shell adapters, icon/button/grid aliases, ThemePalette and CSS theme aliases are removed. The current component inventory has only General, Scenario and BuildingBlock classifications. See [the current API guide](component-api-organization.md) for supported entry points and ownership.
+The active API is AddFlourishFramework and its project/top-bar/navigation/layout builders, plus the generic extension service hook. Optional ConfigureCulture belongs to the Culture extension; AddFlourishDesign independently activates Design. Retired application/title/group builders, NavigationGroups shell adapters, independent Culture/preference registrations, icon/button/grid aliases, ThemePalette and CSS theme aliases are removed. The current component inventory has only General, Scenario and BuildingBlock classifications. See [the current API guide](component-api-organization.md) for supported entry points and ownership.
 
 Current Framework composition entries include FormGroup.razor, InlineActions.razor, ImagePreview.razor, AttributionFooter.razor and CopyText.razor. The later user-authorized generic-control convergence removes ConfirmationHost/ConfirmationService and ReconnectDialog instead of retaining a renamed host or adapter. Dialog now owns awaiting results, cancellation and browser-controlled keyed views; business and protocol composites instantiate it directly with ordinary Button. Components.Dialog owns lazy/retained content and the one native top-layer lifecycle, including asynchronous row-action focus restoration through primitives/interaction-origin.js. The retired bottom-sheet.js controller is deleted. A native reconnect protocol composite uses Dialog BrowserControlled, DialogView, Notice, ProgressBar and Button. The host owns protocol identifiers and state transitions; controls.js owns view visibility, modality and focus. The reconnect-specific stylesheet is deleted; DialogResultChecks/DialogViewChecks cover the shared lifecycles.
 
@@ -89,6 +109,8 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   ├── Test-CssAssets.ps1 — Checks framework and design asset paths and optional theme boundaries.
 │   ├── Test-CssBundle.ps1 — Checks deterministic bundling, import resolution and packaging outputs.
 │   ├── Test-CultureCatalogs.ps1 — Validates both Blazor source catalogs for complete three-language keys, placeholders and line breaks.
+│   ├── Test-CulturePreferences.ps1 — Checks saved UI/format pairs, defaults, request isolation and browser module delivery on a loopback Gallery host.
+│   ├── Test-ChangeLog.ps1 — Requires localized release notes for stable tags and one next-patch preview before publication.
 │   ├── Test-GalleryCulture.ps1 — Checks loopback SSR language negotiation, application/control text and formatting in all three languages.
 │   ├── Test-GalleryNavigation.ps1 — Checks loopback sample navigation, retained panels, repeated requests and query fallbacks.
 │   ├── Test-WpfPackageConsumers.ps1 — Restores four isolated native NuGet-only consumers from the local candidate feed.
@@ -114,18 +136,19 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   └── Flourish.Blazor.csproj — Installs Abstract, Framework and Design and restores Core transitively, with no packaged assembly.
 │   │   ├── Flourish.Blazor.Abstract/ — Exposes public shell, text-provider, appearance, control and grid contracts.
 │   │   │   ├── Components/ — Defines public control and table metadata independent of rendering implementations.
+│   │   │   │   ├── CenteredContainer.cs — Defines Standard and Expanded centered PageBody widths.
 │   │   │   │   ├── ControlContracts.cs — Defines button/dialog variants, menu actions and typed select options.
 │   │   │   │   ├── PresentationTone.cs — Defines Canvas, Surface and Primary color-role choices for presentation bands.
 │   │   │   │   ├── TableContracts.cs — Defines columns, row actions, sorting/view choices and localizable captions.
 │   │   │   │   ├── UniformGridShape.cs — Defines rectangular and square cell shapes.
-│   │   │   │   └── UniformGridVariant.cs — Defines the unique Elevated, Filled, Outlined and Danger cell paint variants.
+│   │   │   │   └── UniformGridVariant.cs — Defines the unique Elevated, FilledElevated and Danger cell paint variants.
 │   │   │   ├── Primitives/ — Defines specialized selection and editing-grid models; interactive record contracts live in Components.
 │   │   │   │   ├── GridContracts.cs — Describes editing-grid columns, rows, cells, proposed edits and captions.
 │   │   │   │   └── SelectionContracts.cs — Defines service links and typed reference/selection models.
 │   │   │   ├── ApplicationData.cs — Defines navigation, top-bar, placement and appearance records in their established namespaces.
-│   │   │   ├── ApplicationContracts.cs — Declares project branding, top-bar display, navigation, layout and appearance contracts with optional text references.
+│   │   │   ├── ApplicationContracts.cs — Declares shell/appearance contracts, optional text references and a provider-neutral extension registration callback.
 │   │   │   ├── Flourish.Blazor.Abstract.csproj — Defines the public Blazor contracts package with a direct Core dependency.
-│   │   │   ├── ITablePreferences.cs — Declares per-user column widths, visibility and ordering preferences.
+│   │   │   ├── ITablePreferences.cs — Declares keyed sort preferences scoped to one user/circuit.
 │   │   │   └── TextContracts.cs — Declares catalog-qualified text references and the scoped text provider contract without selecting a translation library.
 │   │   ├── Flourish.Blazor.Design/ — Provides optional theme services and visual styles.
 │   │   │   ├── Hosting/ — Composes startup options and services with the application host.
@@ -172,7 +195,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
 │   │   │   ├── AppearancePalette.cs — Validates configurable palette seeds and selects fixed dark defaults without deriving colors.
 │   │   │   ├── AssemblyInfo.cs — Allows the Blazor test project to inspect theme internals.
-│   │   │   ├── DesignServiceCollectionExtensions.cs — Registers optional theme configuration and per-scope appearance services.
+│   │   │   ├── DesignServiceCollectionExtensions.cs — Registers optional per-scope appearance and reads its startup defaults from supplied configuration.
 │   │   │   ├── Flourish.Blazor.Design.csproj — Defines the optional Razor theme package and bundled visual assets.
 │   │   ├── Flourish.Blazor.Framework/ — Implements controls, shell behavior and browser interop.
 │   │   │   ├── Components/ — Contains public shell, page, input, action and data components.
@@ -208,7 +231,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── ApplicationShell.razor — Renders top bar content, route links and separate branch disclosure buttons.
 │   │   │   │   ├── BackToTop.razor — Composes a standard icon button with native fragment fallback and shared region-scrolling lifecycle.
 │   │   │   │   ├── Button.razor — Exposes ordinary action buttons with visual variants, busy states and click behavior.
-│   │   │   │   ├── Card.razor — Groups related content in a surface with selectable visual variants.
+│   │   │   │   ├── Card.razor — Groups ordinary content, identity and record summaries with semantic body content and actions.
 │   │   │   │   ├── CheckBox.razor — Renders a bound checkbox with optional label wrapping and a preserved boolean submission value.
 │   │   │   │   ├── CodeBlock.razor — Displays escaped code text in a formatted block with a language label.
 │   │   │   │   ├── ContentContainer.razor — Centers and constrains content independently from an outer full-width background.
@@ -227,7 +250,6 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── FormActions.razor — Groups the actions at the end of a form.
 │   │   │   │   ├── FormLayout.razor — Composes form content, sections and its action area.
 │   │   │   │   ├── Icon.razor — Renders the official Material Symbols Outlined name through one icon catalog.
-│   │   │   │   ├── IdentityCard.razor — Displays a person's name, initials and supporting facts.
 │   │   │   │   ├── InputSemantics.cs — Combines field identity, required state, invalid state and error descriptions with explicit native attributes.
 │   │   │   │   ├── LineChart.razor — Renders stable decimal series with theme roles, explicit scales and accessible exact values.
 │   │   │   │   ├── ListView.razor — Renders static read-only tabular lists with shared columns, formatting, cell templates and accessible row headers, without JavaScript or table operations.
@@ -262,7 +284,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── UniformGridButton.razor — Exposes an action or link cell with appearance, title, icon, text, busy state and content slot.
 │   │   │   │   └── UniformGridItem.razor — Displays a passive cell with appearance, title, icon, text and optional content.
 │   │   │   ├── Hosting/ — Composes startup options and services with the application host.
-│   │   │   │   ├── ApplicationOptions.cs — Collects immutable project identity and shell options, validating paths and favicon fallback.
+│   │   │   │   ├── ApplicationOptions.cs — Collects immutable shell options, validates identity/assets and freezes extension registration callbacks.
 │   │   │   │   ├── CommandRuntime.cs — Keeps command registrations and dispatch inside the current Blazor scope.
 │   │   │   │   └── LiteralTextProvider.cs — Provides literal fallback text and current formatting when no optional Culture bridge is registered.
 │   │   │   ├── Icons/ — Contains the bundled icon name catalog and its embedded font codepoint map.
@@ -321,7 +343,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   ├── AssemblyInfo.cs — Allows the Blazor test project to inspect framework internals.
 │   │   │   ├── ComponentUsageCatalog.cs — Registers every exported component as a general, scenario or building-block entry with explicit production scope.
 │   │   │   ├── Flourish.Blazor.Framework.csproj — Defines the Razor Framework package, embeds its text catalog and icon map, and includes licensed static font assets without a Culture dependency.
-│   │   │   └── ServiceCollectionExtensions.cs — Registers framework behavior, commands, navigation and the default literal text provider.
+│   │   │   └── ServiceCollectionExtensions.cs — Loads low-priority framework defaults, registers behavior/commands/text and Web-host Razor services, then executes extension callbacks.
 │   │   └── Flourish.Blazor.slnx — Defines the Core/Blazor release solution including the meta package, Culture bridge, Gallery and verification projects.
 │   ├── Flourish.Core/ — Contains platform-independent configuration, commands and runtime state services.
 │   │   ├── Abstract/ — Defines public interfaces, options and immutable state contracts.
@@ -420,10 +442,19 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── AssemblyInfo.cs — Allows platform adapters and tests to access shared internal services.
 │   │   └── Flourish.Core.csproj — Defines the platform-independent .NET library and its service dependencies.
 │   ├── Flourish.Extensions/ — Groups optional integrations owned and packaged by Flourish.
-│   │   ├── Flourish.Extensions.Culture.Blazor/ — Connects the scoped Blazor text provider to Essential.Culture.Blazor.
-│   │   │   ├── CultureServiceCollectionExtensions.cs — Registers the scoped text-provider adapter through AddFlourishCulture.
-│   │   │   ├── CultureTextProvider.cs — Resolves catalog-qualified text, formatting and change events from the current localization session.
-│   │   │   └── Flourish.Extensions.Culture.Blazor.csproj — Defines the optional Blazor Culture extension package with public framework contracts and localization dependencies.
+│   │   ├── Flourish.Extensions.Culture.Blazor/ — Owns optional request/circuit localization and personal browser culture selection.
+│   │   │   ├── Localization/ — Contains extension-owned selector, feedback and usage translations.
+│   │   │   │   └── Culture.json — Embeds the English, Chinese and Brazilian Portuguese Culture catalog.
+│   │   │   ├── wwwroot/ — Contains the extension's browser persistence asset.
+│   │   │   │   └── browser-preferences.js — Writes/verifies the standard culture cookie with the application base path and retention.
+│   │   │   ├── ComponentUsageCatalog.cs — Registers LanguagePicker as a reviewed Scenario production entry.
+│   │   │   ├── CultureBuilder.cs — Validates/freezes application catalogs, default/supported cultures and browser retention.
+│   │   │   ├── CultureFrameworkExtensions.cs — Implements ConfigureCulture, automatic library catalogs and internal request-localization startup.
+│   │   │   ├── CultureSession.cs — Adapts Essential text and serializes persistent UI/format selections within one request/circuit scope.
+│   │   │   ├── LanguagePicker.razor — Composes SelectBox, Dialog and Notice for either UI-language or formatting selection.
+│   │   │   ├── LocalizedComponentBase.cs — Subscribes/disposes scoped culture changes through the component renderer.
+│   │   │   ├── _Imports.razor — Imports existing Flourish contracts/controls for extension components.
+│   │   │   └── Flourish.Extensions.Culture.Blazor.csproj — Defines the optional Razor extension with Framework and existing Essential.Culture.Blazor dependencies.
 │   │   └── Flourish.Extensions.Culture.WPF/ — Optional desktop Essential adapter for the current native ITextProvider.
 │   │       ├── EssentialCultureBuilderExtensions.cs — Disposable provider and FrameworkBuilder integration.
 │   │       └── Flourish.Extensions.Culture.WPF.csproj — References WPF Abstract/Framework and existing Culture.Wpf 1.3.0.
@@ -499,6 +530,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   ├── ComponentGuide.razor — Composes source-owned usage guidance, preferred production links, API tables and compiled examples.
 │   │   │   │   └── ComponentGuide.razor.css — Constrains guide width and spaces the API parameter area.
 │   │   │   ├── Pages/ — Contains routed Gallery pages or verification pages.
+│   │   │   │   ├── ChangeLog.razor — Selects localized release notes at /changelog with primary navigation only.
 │   │   │   │   ├── AccessExamples.razor — Demonstrates independent login and saved-account pages with standard controls, local errors/busy/empty states and no authentication service.
 │   │   │   │   ├── Appearance.razor — Shows Foundations topics, a three-cell rectangular theme chooser and standard palette action buttons.
 │   │   │   │   ├── AppearanceRedirect.razor — Redirects the former appearance route to the Foundations landing page.
@@ -517,12 +549,11 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   └── SurfacePatterns.razor — Demonstrates the advanced Registry table scenario with standard fields, actions, notices and controlled bottom sheets.
 │   │   │   ├── Samples/ — Contains 97 standalone Razor examples compiled and embedded in Gallery for live guides and source display.
 │   │   │   │   ├── Content/ — Contains examples of cards, icons, facts, grids and expandable content.
-│   │   │   │   │   ├── CardSample.razor — Demonstrates empty and titled cards alongside a card with local example content.
+│   │   │   │   │   ├── CardSample.razor — Demonstrates ordinary, prominent and identity summary cards through the shared entry.
 │   │   │   │   │   ├── CodeBlockSample.razor — Demonstrates escaped code text and selectable code language labels.
 │   │   │   │   │   ├── DisclosureSample.razor — Demonstrates initial open states and expandable supporting content.
 │   │   │   │   │   ├── DisplayBoardSample.razor — Demonstrates preview and code boards with variant selection and local action feedback.
 │   │   │   │   │   ├── IconSample.razor — Demonstrates named Material Symbols and a local icon action.
-│   │   │   │   │   ├── IdentityCardSample.razor — Demonstrates identity content with optional columns and side content.
 │   │   │   │   │   ├── SectionSample.razor — Demonstrates titled content sections and section-level actions.
 │   │   │   │   │   ├── UniformGridItemSample.razor — Demonstrates passive information cells and local status changes.
 │   │   │   │   │   └── UniformGridSample.razor — Demonstrates independent cell shapes and appearances with automatic and explicit grid layouts.
@@ -565,6 +596,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │   │   ├── MultiSelectBoxSample.razor — Demonstrates general business multi-selection, search/creation, constraints and optional ordering.
 │   │   │   │   │   ├── NumberBoxSample.razor — Demonstrates integer and decimal binding, numeric ranges and disabled input.
 │   │   │   │   │   ├── ReferenceDropdownSample.razor — Demonstrates single-reference selection with short/long choices and host callbacks.
+│   │   │   │   │   ├── LanguagePickerSample.razor — Demonstrates the extension-owned UI-language and formatting selectors with persistent personal choices.
 │   │   │   │   │   ├── SearchAutocompleteSample.razor — Demonstrates initial matching candidates, filtering, selected IDs and empty states.
 │   │   │   │   │   ├── SearchBoxSample.razor — Demonstrates delayed search changes and filtering a local list.
 │   │   │   │   │   ├── SelectBoxSample.razor — Demonstrates empty and disabled selectors and binding an enum option.
@@ -591,17 +623,18 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   │   │       ├── ServiceMenuSample.razor — Demonstrates a header destination menu linked to local sample sections.
 │   │   │   │       └── ShellHeaderSample.razor — Demonstrates header branding, identity and injected menu content.
 │   │   │   ├── _Imports.razor — Imports component namespaces and Razor directives for descendant files.
-│   │   │   ├── App.razor — Defines the HTML document and interactive Blazor root.
-│   │   │   ├── LanguagePicker.razor — Uses the standard SelectBox to switch the current Blazor session between Chinese and English.
+│   │   │   ├── App.razor — Defines the HTML document/interactive root and reads document language from provider-neutral ITextProvider.
 │   │   │   ├── AccessExampleLayout.razor — Loads public library resources and scoped theme state without adding a second main landmark around independent access pages.
 │   │   │   └── Routes.razor — Routes application pages through the framework layout and handles missing destinations.
 │   │   ├── Localization/ — Contains Gallery-owned translations supplied to the optional Culture extension.
 │   │   │   └── Culture.json — Stores the Gallery text catalog used for generated keys and embedded application translations.
 │   │   ├── Models/ — Contains Gallery-only demonstration and editor data.
+│   │   │   ├── ChangeLog.json — Lists stable tag notes and the next preview in descending version order.
+│   │   │   ├── ChangeLogCatalog.cs — Loads the embedded version catalog and its ReleaseNote data contract.
 │   │   │   ├── AccessExampleState.cs — Defines deterministic local access fixtures, validation, busy snapshots and account selection without authentication or credential persistence.
 │   │   │   ├── BusinessRecord.cs — Defines the editable record used by Gallery examples.
 │   │   │   ├── CatalogSections.cs — Maps components to eight categories and independent page routes for the directory.
-│   │   │   ├── ComponentCatalog.cs — Lists all 97 public components with source-owned usage metadata, snippets, reflected parameters, container configuration and initialized defaults.
+│   │   │   ├── ComponentCatalog.cs — Lists all current Framework and extension production controls with usage metadata, snippets, reflected parameters and initialized defaults.
 │   │   │   ├── PaletteDraft.cs — Holds editable theme values and their validation for the Foundations page.
 │   │   │   ├── ParameterMeaning.cs — Supplies plain parameter explanations from reflected component property names and types.
 │   │   │   ├── SampleCatalog.cs — Associates component entries with compiled examples, route keys, preview parameters and embedded Razor source.
@@ -613,9 +646,10 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── wwwroot/ — Contains static assets served by the application or Razor class library.
 │   │   │   ├── gallery-favicon.svg — Provides a Primary-colored browse icon specifically for browser tabs.
 │   │   │   └── gallery.svg — Provides the white browse logo with visible dimensions reduced by twenty percent.
-│   │   ├── appsettings.json — Sets host logging levels and allowed HTTP hosts.
-│   │   ├── Gallery.Flourish.Blazor.csproj — Defines the Gallery host, embeds examples and translations, and references the optional Flourish Culture extension and Essential key generator.
-│   │   └── Program.cs — Configures shell branding, navigation, commands, Design, request cultures and the optional Culture extension for the Gallery host.
+│   │   ├── appsettings.Flourish.json — Stores framework localization defaults, preference retention and startup appearance configuration.
+│   │   ├── appsettings.json — Reserves an empty configuration object for consumer business/host settings.
+│   │   ├── Gallery.Flourish.Blazor.csproj — Defines the Gallery host, embeds examples/translations and references same-repository Flourish projects plus the transitive Essential key generator.
+│   │   └── Program.cs — Uses Framework/ConfigureCulture, optional Design and RecordStore service entries alongside Gallery navigation and ordinary host routing/endpoints.
 │   ├── Gallery.Flourish.WinUI3/ — Hosts the initial WinUI3 application window; its original assembly and namespaces remain unchanged.
 │   │   ├── App.xaml — Declares the initial WinUI3 application resources.
 │   │   ├── App.xaml.cs — Creates and activates the initial WinUI3 window.
@@ -631,7 +665,8 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │       ├── Culture.json — Contains Gallery-owned runtime captions.
 │       └── Gallery.Flourish.WPF.csproj — References the aggregate and optional Culture bridge.
 ├── tests/ — Contains library regression tests and the unthemed Blazor verification host.
-│   ├── Tests.Gallery.Flourish.Blazor/ — Checks actual localized Gallery pages with the scoped Essential service.
+│   ├── Tests.Gallery.Flourish.Blazor/ — Checks actual localized Gallery pages through the current scoped Culture extension.
+│   │   ├── ChangeLogChecks.cs — Exercises version replacement and language changes without remounting the release page.
 │   │   ├── Program.cs — Exercises language changes, rendered headings, preserved API/data identities and subscription disposal.
 │   │   ├── DynamicSampleChecks.cs — Executes actual sample events and checks translated status with retained export/search/edit/multi-selection state.
 │   │   ├── LocalizedValidationHarness.cs — Exercises real EditForm annotation messages through Field and ValidationMessages without changing stored keys.
@@ -649,6 +684,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── DataSearchChecks.cs — Checks unique canonical search state, input association, disabled callbacks and CSS ownership.
 │   │   ├── DisplayBoardChecks.cs — Checks preview isolation, exact code encoding and the code board's copy control.
 │   │   ├── DropdownChecks.cs — Checks dropdown keyboard selection, closing, validation and native input behavior.
+│   │   ├── FrameworkConfigurationChecks.cs — Checks framework file defaults, host override priority, Design configuration and frozen integration registration.
 │   │   ├── GridChecks.cs — Checks editable grid contracts, selection and host-owned operations.
 │   │   ├── heading-dom.mjs — Checks heading stability when content shrinks, scroll positions clamp or page dimensions change.
 │   │   ├── InputMigrationChecks.cs — Checks standalone POST attributes, typed input behavior and field identity and validation relationships.
@@ -743,8 +779,10 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 │   │   ├── Windowing/ — Groups regression checks for windowing.
 │   │   │   └── WindowCloseServiceTests.cs — Checks that ordered close guards run before platform close and respect cancellation.
 │   │   └── Tests.Flourish.Core.csproj — Defines the shared service regression test project and test dependencies.
-│   ├── Tests.Flourish.Extensions.Culture.Blazor/ — Checks scoped translation behavior and the optional Blazor adapter dependency boundary.
-│   │   ├── Program.cs — Runs the adapter registration, fallback, formatting and session isolation checks.
+│   ├── Tests.Flourish.Extensions.Culture.Blazor/ — Checks extension configuration, translation, personal selection and the optional dependency boundary.
+│   │   ├── BrowserPreferenceChecks.cs — Checks serial save/apply, supported choices, browser failures/retry, isolation, disposal and fresh request selection.
+│   │   ├── browser-preferences.test.mjs — Checks the extension cookie writer, browser isolation and rejected storage against a simulated browser.
+│   │   ├── Program.cs — Runs registration, lookup/fallback, format, session/persistence and lifecycle checks.
 │   │   └── Tests.Flourish.Extensions.Culture.Blazor.csproj — Defines the Blazor Culture extension verification executable.
 │   ├── Tests.Flourish.Extensions.Culture.WPF/ — Checks provider formatting, fallback, collision and disposal lifetimes.
 │   │   ├── EssentialTextProviderTests.cs — Exercises the current native adapter contract.
@@ -765,7 +803,7 @@ Flourish/ — Repository root for framework libraries, optional extensions, Gall
 ├── .gitignore — Excludes generated builds, local settings and caches from version control.
 ├── AGENTS.ensure.json — Records the most recent required-documentation audit and repair.
 ├── AGENTS.md — Defines repository ownership, documentation and collaboration rules.
-├── Directory.Build.props — Defines Flourish package version 1.1.2, Culture dependency version 1.3.0, metadata and the optional sibling local package feed.
+├── Directory.Build.props — Defines Flourish package version 1.1.3, Culture dependency version 1.3.0, metadata and the optional sibling local package feed.
 ├── Directory.Build.targets — Rejects architecture-specific library packaging before NuGet generation.
 ├── Flourish.slnx — Groups framework libraries, Galleries and optional extensions, exposes Core at the root, and separates Tests and Solutions.
 ├── global.json — Selects the .NET SDK version used by the repository.

@@ -1,0 +1,51 @@
+[
+  {
+    "version": "1.1.4-preview",
+    "changeKeys": [
+      "Key.ChangeLog_FieldActions",
+      "Key.ChangeLog_BooleanSelection",
+      "Key.ChangeLog_ActionWidths",
+      "Key.ChangeLog_Tutorials",
+      "Key.ChangeLog_ProgressRing",
+      "Key.ChangeLog_GalleryChangeLog",
+      "Key.ChangeLog_ButtonExamples",
+      "Key.ChangeLog_GridVariants",
+      "Key.ChangeLog_ActionMenuHover",
+      "Key.ChangeLog_FormActionsVariants",
+      "Key.ChangeLog_CardConsolidation",
+      "Key.ChangeLog_ActionAlignment",
+      "Key.ChangeLog_ComposedLayoutGutters",
+      "Key.ChangeLog_RecordListHeading",
+      "Key.ChangeLog_TutorialDisplayBoard",
+      "Key.ChangeLog_CenteredContainers",
+      "Key.ChangeLog_CulturePreferences",
+      "Key.ChangeLog_CultureConfiguration",
+      "Key.ChangeLog_BoardActionAlignment",
+      "Key.ChangeLog_ButtonContentHeight"
+    ]
+  },
+  {
+    "version": "1.1.3",
+    "changeKeys": [
+      "Key.ChangeLog_TableWidths",
+      "Key.ChangeLog_EditorFrame",
+      "Key.ChangeLog_GuttersAndDialogs",
+      "Key.ChangeLog_OrganizationAccess"
+    ]
+  },
+  {
+    "version": "1.1.2",
+    "changeKeys": [
+      "Key.ChangeLog_StructuredButtons",
+      "Key.ChangeLog_IdentityLayout",
+      "Key.ChangeLog_EditorLayout",
+      "Key.ChangeLog_AccessLayout"
+    ]
+  },
+  {
+    "version": "1.1.1",
+    "changeKeys": [
+      "Key.ChangeLog_CssVerification"
+    ]
+  }
+]

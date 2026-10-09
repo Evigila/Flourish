@@ -15,21 +15,22 @@
 @if (Preview)
 {
     <div class="f-inline-actions">
-        @foreach (var variant in Variants) { <Button Variant="variant" Text="@variant.ToString()" /> }
+        @foreach (var variant in Variants) { <Button Variant="variant.Variant" Text="@variant.Label" /> }
     </div>
     <div class="f-inline-actions">
-        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" Text="@variant.ToString()" /> }
+        @foreach (var variant in Variants) { <Button Variant="variant.Variant" Icon="add" Text="@variant.Label" /> }
     </div>
     <div class="f-inline-actions">
-        @foreach (var variant in Variants) { <Button Variant="variant" Icon="add" aria-label="@Localization.Parse(TextKey.Sample_VariantAdd, variant)" /> }
+        @foreach (var variant in Variants) { <Button Variant="variant.Variant" Icon="add" aria-label="@Localization.Parse(TextKey.Sample_VariantAdd, variant.Label)" /> }
         <Button Text="@Localization.Parse(TextKey.Sample_Unavailable)" Disabled="true" />
         <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_Save)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" />
     </div>
-    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@Localization.Parse(TextKey.Sample_StructuredButtonStatus)" />
+    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@Localization.Parse(TextKey.Sample_StructuredButtonStatus)" style="width:24rem;max-width:100%" />
 }
 else
 {
-    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@Localization.Parse(TextKey.Sample_StructuredButtonStatus)" Busy="Saving" OnClick="SaveAsync" />
+    <Button Text="@Localization.Parse(TextKey.Sample_StructuredButtonName)" Description="@Localization.Parse(TextKey.Sample_StructuredButtonDescription)" TrailingText="@(AccountSelected ? Localization.Parse(TextKey.Sample_Selected) : Localization.Parse(TextKey.Sample_StructuredButtonStatus))" OnClick="SelectAccount" style="width:24rem;max-width:100%" />
+    @if (AccountSelected) { <p role="status">@Localization.Parse(TextKey.Sample_AccountSelected, Localization.Parse(TextKey.Sample_StructuredButtonName))</p> }
     <div class="f-inline-actions">
         <Button Icon="save" Text="@Localization.Parse(TextKey.Sample_SaveDraft)" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_Saving)" OnClick="SaveAsync" />
         <Button Variant="ButtonVariant.Secondary" Icon="restart_alt" Text="@Localization.Parse(TextKey.Sample_Reset)" Disabled="Saving" OnClick="Reset" />
@@ -41,10 +42,13 @@ else
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private static readonly ButtonVariant[] Variants = [ButtonVariant.Primary, ButtonVariant.Secondary,
-        ButtonVariant.Danger, ButtonVariant.Quiet, ButtonVariant.Underline, ButtonVariant.Elevated];
-    private bool Saving, HelpVisible;
+    private static readonly (ButtonVariant Variant, string Label)[] Variants =
+        [(ButtonVariant.Primary, "Filled"), (ButtonVariant.Secondary, "Outlined"),
+         (ButtonVariant.Danger, "Danger"), (ButtonVariant.Quiet, "Quiet"),
+         (ButtonVariant.Underline, "Underline"), (ButtonVariant.Elevated, "Elevated")];
+    private bool Saving, HelpVisible, AccountSelected;
     private int SavedCount;
+    private void SelectAccount() => AccountSelected = true;
     private async Task SaveAsync()
     {
         if (Saving) return;

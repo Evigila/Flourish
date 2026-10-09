@@ -28,7 +28,7 @@ public static class ComponentUsageCatalog
         Add(ComponentUseKind.General, "Generic modal and disclosure", "Dialog owns one native modal lifecycle and awaited results. BottomSheet is a presentation value; confirmation uses ordinary Button. Disclosure expansion is separate from ToggleSection's business value.", typeof(F.Dialog), typeof(F.Disclosure));
         Add(ComponentUseKind.General, "Status and progress", "Use explicit semantic states. Progress is read-only; native reduced-motion/high-contrast policy remains library-owned.",
             typeof(F.Notice), typeof(F.NoticeTrigger), typeof(F.EmptyState), typeof(F.LoadingState), typeof(F.InteractionBoundary), typeof(F.ProgressBar), typeof(F.ProgressRing));
-        Add(ComponentUseKind.General, "Content and bounded layout", "Library-owned composition supplies page, section, card and uniform-grid geometry. Consumers supply business data and real actions.",
+        Add(ComponentUseKind.General, "Content and bounded layout", "Library-owned composition supplies page, section, card and uniform-grid geometry. Use Card for identity and record summaries. Consumers supply business data and real actions.",
             typeof(F.Card), typeof(F.PageBody), typeof(F.PageHeading), typeof(F.Section), typeof(F.ContentContainer), typeof(F.UniformGrid), typeof(F.UniformGridItem), typeof(F.UniformGridButton));
         Add(ComponentUseKind.General, "Original text and artwork", "Text is selectable and never executed. Icon uses the same official Material Symbols names/artwork as Blazor. DisplayBoard owns explicit copy feedback.",
             typeof(F.CopyText), typeof(F.CodeBlock), typeof(F.Icon), typeof(F.DisplayBoard));
@@ -38,8 +38,8 @@ public static class ComponentUsageCatalog
         Add(ComponentUseKind.Scenario, "Controlled table operations", "Share TableColumn/TableSearchRequest with DataTable. Native DataTemplate retains cell visual lifetime. ListView remains read-only; EditingGrid is a distinct spreadsheet scenario.",
             typeof(F.DataSearch), typeof(F.DataPager), typeof(F.ListView), typeof(F.EditingGrid));
         Add(ComponentUseKind.Scenario, "Native line chart", "Draw native paths with host-supplied series and labels. Series display uses the general MultiSelectBox; scales, text and selected members remain explicit.", typeof(F.LineChart));
-        Add(ComponentUseKind.Scenario, "Identity and image presentation", "Compose host-provided identity data, image sources, accessible captions and attribution without business processing.",
-            typeof(F.IdentityCard), typeof(F.ImagePreview), typeof(F.AttributionFooter), typeof(F.LogoDisplayer));
+        Add(ComponentUseKind.Scenario, "Image presentation", "Compose host-provided image sources, accessible captions and attribution without business processing.",
+            typeof(F.ImagePreview), typeof(F.AttributionFooter), typeof(F.LogoDisplayer));
         Add(ComponentUseKind.Scenario, "Presentation and access", "PresentationBand owns full-width paint, ContentContainer bounded width and Hero split content. Offers, access state and navigation targets remain host data; OfferStage owns hover/focus/rotation.",
             typeof(F.PresentationBand), typeof(F.PresentationHero), typeof(F.PresentationFooter), typeof(F.OfferStage), typeof(F.OfferCard), typeof(F.AccessBrand), typeof(F.AccessPanel), typeof(F.AccessFormSurface), typeof(F.AccessActions), typeof(F.NavigationChoices));
         Add(ComponentUseKind.BuildingBlock, "Construction only", "The owner supplies interaction and selection semantics. Prefer the general selectors, ActionMenu or Dialog for a complete production entry.", typeof(F.DropdownSurface), typeof(F.ExpansionIndicator));

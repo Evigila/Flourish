@@ -1,10 +1,17 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 
-<div class="f-inline-actions" data-alignment="@Alignment.ToString().ToLowerInvariant()">@ChildContent</div>
+<div class="f-inline-actions" data-alignment-explicit="@(AlignmentIsExplicit ? "true" : null)" data-alignment="@Alignment.ToString().ToLowerInvariant()">@ChildContent</div>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public HorizontalAlignment Alignment { get; set; } = HorizontalAlignment.Center;
+    [Parameter] public HorizontalAlignment Alignment { get; set; } = HorizontalAlignment.End;
+    private bool AlignmentIsExplicit;
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        AlignmentIsExplicit = parameters.TryGetValue<HorizontalAlignment>(nameof(Alignment), out _);
+        return base.SetParametersAsync(parameters);
+    }
 
     protected override void OnParametersSet()
     {

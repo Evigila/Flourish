@@ -45,12 +45,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using PackageConsumer;
 __CULTURE_USINGS__
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorComponents();
-builder.Services.AddFlourishFramework();
+__FRAMEWORK_REGISTRATION__
 __DESIGN_REGISTRATION__
-__CULTURE_REGISTRATION__
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
+await using (var scope = app.Services.CreateAsyncScope())
 {
     var hasTheme = scope.ServiceProvider.GetService<IThemeProvider>() is not null;
     if (hasTheme != __EXPECT_THEME__) throw new InvalidOperationException("Design activation does not match registration.");
@@ -141,51 +139,39 @@ $cultureDocument = @'
 }
 '@
 $cultureRegistration = @'
-using var frameworkCatalog = typeof(ArkheideSystem.Flourish.Blazor.Components.ApplicationShell).Assembly
-    .GetManifestResourceStream("Flourish.Blazor.Texts.json")
-    ?? throw new InvalidOperationException("The packaged framework catalog is missing.");
-using var appCatalog = typeof(App).Assembly.GetManifestResourceStream("PackageConsumer.Culture.json")
-    ?? throw new InvalidOperationException("The single consumer Culture.json is missing.");
-builder.Services.AddCultureBlazor(options => options
-    .AddCatalog("Flourish", LocalizationCatalog.Load(frameworkCatalog))
-    .AddCatalog("App", LocalizationCatalog.Load(appCatalog))
+builder.Services.AddFlourishFramework(builder.Configuration, framework => framework.ConfigureCulture(culture => culture
+    .AddCatalog<App>("App", "PackageConsumer.Culture.json")
     .SetDefaultCatalog("App")
     .SetDefaultCulture("en-US")
-    .AddSupportedCultures("en-US", "zh-CN", "pt-BR")
-    .InitializeWith(_ => new LocalizationSelection("en-US", "en-US")));
-builder.Services.AddFlourishCulture();
+    .AddSupportedCultures("en-US", "zh-CN", "pt-BR")));
 '@
 $cultureCheck = @'
-using (var left = app.Services.CreateScope())
-using (var right = app.Services.CreateScope())
+await using (var left = app.Services.CreateAsyncScope())
+await using (var right = app.Services.CreateAsyncScope())
 {
     if (!string.Equals(TextKey.Greeting, "Key.Greeting", StringComparison.Ordinal)
         || !string.Equals(TextKey.Amount, "Key.Amount", StringComparison.Ordinal))
         throw new InvalidOperationException("Transitive key generation did not use the consumer Culture.json.");
-    var leftLocalization = left.ServiceProvider.GetRequiredService<ILocalizationService>();
-    var rightLocalization = right.ServiceProvider.GetRequiredService<ILocalizationService>();
-    leftLocalization.SetCulture("zh-CN");
+    var leftLocalization = left.ServiceProvider.GetRequiredService<CultureSession>();
+    var rightLocalization = right.ServiceProvider.GetRequiredService<CultureSession>();
     var leftText = left.ServiceProvider.GetRequiredService<ITextProvider>();
     var rightText = right.ServiceProvider.GetRequiredService<ITextProvider>();
     var greeting = new TextReference("App", TextKey.Greeting);
-    if (leftText.Get(greeting) != "你好，包使用者" || rightText.Get(greeting) != "Hello, package consumer")
-        throw new InvalidOperationException("Packaged Culture bridge leaked scope or failed Chinese translation.");
-    leftLocalization.SetCulture("pt-BR");
-    if (leftText.Get(greeting) != "Olá, consumidor do pacote"
+    if (ReferenceEquals(leftLocalization, rightLocalization)
+        || leftText.Get(greeting) != "Hello, package consumer" || rightText.Get(greeting) != "Hello, package consumer")
+        throw new InvalidOperationException("Packaged Culture sessions are not isolated or default catalog was not configured.");
+    if (!leftLocalization.AvailableCultures.SequenceEqual(new[] { "en-US", "zh-CN", "pt-BR" })
         || rightLocalization.Parse(TextKey.Greeting) != "Hello, package consumer"
-        || leftText.Get(new TextReference("App", TextKey.Amount), 12345.67m) != "Valor: 12.345,67")
-        throw new InvalidOperationException("Packaged Culture bridge failed Portuguese translation, formatting or isolation.");
+        || leftText.Get(new TextReference("App", TextKey.Amount), 12345.67m) != "Amount: 12,345.67"
+        || leftText.Get(new TextReference("Flourish", "Board_Copy")) != "Copy")
+        throw new InvalidOperationException("Packaged Culture configuration, formatting or automatic framework catalog failed.");
 }
 '@
 $cultureEndpoint = @'
-app.MapGet("/culture/{culture}", (string culture, [Microsoft.AspNetCore.Mvc.FromServices] ILocalizationService localization) =>
-{
-    localization.SetCulture(culture);
-    return new RazorComponentResult<App>();
-});
+app.MapGet("/culture/{culture}", () => new RazorComponentResult<App>());
 '@
 $cultureRazor = @'
-@inherits ArkheideSystem.Essential.Culture.Blazor.LocalizedComponentBase
+@inherits ArkheideSystem.Flourish.Extensions.Culture.Blazor.LocalizedComponentBase
 @using TextKey = PackageConsumer.Texts.Key
 '@
 $cultureContent = @'
@@ -193,6 +179,12 @@ $cultureContent = @'
         builder.AddAttribute(17, "id", "package-culture-greeting");
         builder.AddContent(18, Localization.Parse(TextKey.Greeting));
         builder.CloseElement();
+        builder.OpenElement(19, "p");
+        builder.AddAttribute(20, "id", "package-culture-amount");
+        builder.AddContent(21, Localization.Parse(TextKey.Amount, 12345.67m));
+        builder.CloseElement();
+        builder.OpenComponent<ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker>(22);
+        builder.CloseComponent();
 '@
 $modes = @(
     @{ Name='FrameworkOnly'; Meta=$false; Theme=$false; Culture=$false },
@@ -213,11 +205,11 @@ foreach ($mode in $modes) {
     $xml = '<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>PackageConsumer</RootNamespace><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors><EssentialCultureNamespace>PackageConsumer.Texts</EssentialCultureNamespace><EssentialCultureGeneratorEnabled>{1}</EssentialCultureGeneratorEnabled><EssentialCultureXamlFramework>none</EssentialCultureXamlFramework><EssentialCultureAutoCreate>false</EssentialCultureAutoCreate><EssentialCultureAutoInclude>false</EssentialCultureAutoInclude></PropertyGroup><ItemGroup>{0}</ItemGroup><ItemGroup>{2}</ItemGroup></Project>' -f $references,$generatorEnabled,$cultureItems
     Write-Fixture $project $xml
     if ($mode.Culture) { Write-Fixture (Join-Path $directory 'Culture.json') $cultureDocument }
-    $usings = if ($mode.Culture) { 'using ArkheideSystem.Essential.Culture;' + [Environment]::NewLine + 'using ArkheideSystem.Essential.Culture.Blazor;' + [Environment]::NewLine + 'using TextKey = PackageConsumer.Texts.Key;' } elseif ($mode.Meta) { 'using ArkheideSystem.Essential.Culture.Blazor;' } else { '' }
+    $usings = if ($mode.Culture) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' + [Environment]::NewLine + 'using TextKey = PackageConsumer.Texts.Key;' } elseif ($mode.Meta) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' } else { '' }
     $design = if ($mode.Theme) { 'builder.Services.AddFlourishDesign();' } else { '' }
-    $culture = if ($mode.Culture) { $cultureRegistration } else { '' }
+    $frameworkRegistration = if ($mode.Culture) { $cultureRegistration } else { 'builder.Services.AddFlourishFramework(builder.Configuration);' }
     $test = if ($mode.Culture) { $cultureCheck } else { '' }
-    Write-Fixture (Join-Path $directory 'Program.cs') ($program.Replace('__CULTURE_USINGS__', $usings).Replace('__DESIGN_REGISTRATION__', $design).Replace('__CULTURE_REGISTRATION__', $culture).Replace('__EXPECT_THEME__', $mode.Theme.ToString().ToLowerInvariant()).Replace('__CULTURE_CHECK__', $test).Replace('__CULTURE_ENDPOINT__', $(if ($mode.Culture) { $cultureEndpoint } else { '' })).Replace('__CULTURE_OPT_IN_CHECK__', $(if ($mode.Meta) { '    var hasCulture = scope.ServiceProvider.GetService<ILocalizationService>() is not null;' + [Environment]::NewLine + '    if (hasCulture != ' + $mode.Culture.ToString().ToLowerInvariant() + ') throw new InvalidOperationException("Culture activation does not match registration.");' } else { '' })))
+    Write-Fixture (Join-Path $directory 'Program.cs') ($program.Replace('__CULTURE_USINGS__', $usings).Replace('__DESIGN_REGISTRATION__', $design).Replace('__FRAMEWORK_REGISTRATION__', $frameworkRegistration).Replace('__EXPECT_THEME__', $mode.Theme.ToString().ToLowerInvariant()).Replace('__CULTURE_CHECK__', $test).Replace('__CULTURE_ENDPOINT__', $(if ($mode.Culture) { $cultureEndpoint } else { '' })).Replace('__CULTURE_OPT_IN_CHECK__', $(if ($mode.Meta) { '    var hasCulture = scope.ServiceProvider.GetService<CultureSession>() is not null;' + [Environment]::NewLine + '    if (hasCulture != ' + $mode.Culture.ToString().ToLowerInvariant() + ') throw new InvalidOperationException("Culture activation does not match registration.");' } else { '' })))
     Write-Fixture (Join-Path $directory 'App.razor') ($razor.Replace('__CULTURE_RAZOR__', $(if ($mode.Culture) { $cultureRazor } else { '' })).Replace('__CULTURE_CONTENT__', $(if ($mode.Culture) { $cultureContent } else { '' })))
     $restoreArguments = @('restore', $project, '--packages', $cache, '--configfile', $nugetConfig)
     Invoke-ReleaseCommand dotnet $restoreArguments
@@ -293,11 +285,20 @@ foreach ($mode in $modes) {
                 'zh-CN' = '你好，包使用者'
                 'pt-BR' = 'Olá, consumidor do pacote'
             }
+            $amounts = @{
+                'en-US' = 'Amount: 12,345.67'
+                'zh-CN' = '金额：12,345.67'
+                'pt-BR' = 'Valor: 12.345,67'
+            }
             foreach ($language in @('en-US', 'zh-CN', 'pt-BR')) {
-                $localizedPage = Invoke-WebRequest -Uri "$origin/culture/$language" -UseBasicParsing
+                $localizedPage = Invoke-WebRequest -Uri "$origin/culture/$language" -Headers @{'Accept-Language'=$language} -UseBasicParsing
                 $localizedHtml = [System.Net.WebUtility]::HtmlDecode($localizedPage.Content)
                 Require ($localizedPage.StatusCode -eq 200 -and $localizedHtml.Contains('id="package-culture-greeting"') -and $localizedHtml.Contains($greetings[$language])) "MetaCulture failed generated-key SSR for $language."
+                Require ($localizedHtml.Contains('id="package-culture-amount"') -and $localizedHtml.Contains($amounts[$language])) "MetaCulture failed request formatting for $language."
+                Require ($localizedHtml.Contains('<option value="pt-BR"')) "MetaCulture did not render its extension-owned supported language picker."
             }
+            $cultureAsset = Invoke-WebRequest -Uri "$origin/_content/Arkheide.Flourish.Extensions.Culture.Blazor/browser-preferences.js" -UseBasicParsing
+            Require ($cultureAsset.StatusCode -eq 200 -and $cultureAsset.Headers['Content-Type'] -match 'javascript' -and $cultureAsset.Content.Contains('saveCulture')) 'MetaCulture cannot serve its packaged browser preference module.'
             $defaultPage = Invoke-WebRequest -Uri "$origin/" -UseBasicParsing
             Require ([System.Net.WebUtility]::HtmlDecode($defaultPage.Content).Contains($greetings['en-US'])) 'MetaCulture leaked a translated request into another request.'
         }

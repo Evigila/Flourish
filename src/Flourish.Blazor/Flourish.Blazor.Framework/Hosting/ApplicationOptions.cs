@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using ArkheideSystem.Flourish.Blazor.Abstract;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ICommandParser = ArkheideSystem.Flourish.Abstract.ICommandParser;
 
 namespace ArkheideSystem.Flourish.Blazor.Hosting;
@@ -61,6 +63,21 @@ internal sealed class ApplicationBuilder : IFrameworkBuilder, IProjectBuilder, I
     private readonly List<NavigationEntry> fixedNavigation = [];
     private readonly HashSet<string> routes = new(StringComparer.OrdinalIgnoreCase);
     private Type? commandParserType;
+    private readonly List<Action<IServiceCollection, IConfiguration>> registrations = [];
+
+    public IFrameworkBuilder ConfigureServices(Action<IServiceCollection, IConfiguration> configure)
+    {
+        Check();
+        ArgumentNullException.ThrowIfNull(configure);
+        registrations.Add(configure);
+        return this;
+    }
+
+    internal void RegisterServices(IServiceCollection services, IConfiguration configuration)
+    {
+        if (!completed) throw new InvalidOperationException("Complete shell configuration before registering integrations.");
+        foreach (var registration in registrations) registration(services, configuration);
+    }
 
     private void Check()
     {

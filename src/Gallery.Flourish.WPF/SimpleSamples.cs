@@ -11,7 +11,6 @@ internal static class SimpleSamples
     internal static object Create(Type type, Window owner, ITextProvider texts) => type.Name switch
     {
         "Card" => Cards(),
-        "IdentityCard" => new F.IdentityCard { Title = "Ada Lovelace", Description = "Engineering", Content = new F.CopyText { Text = "person-0001" }, SideContent = "Active", Actions = Button("Edit") },
         "Section" => new F.Section { Title = "Contact", Content = Form(), Actions = Button("Save") },
         "PageHeading" => Stack(new F.PageHeading { Title = "Record details", Description = "Page headings keep actions next to the current record.", Actions = Button("Edit") }, new F.PageHeading { Title = "Compact record details", Compact = true, Actions = Button("Back", ButtonVariant.Quiet) }),
         "PageBody" => new F.PageBody { Content = Stack(new F.PageHeading { Title = "Business page" }, new F.Section { Title = "Fields", Content = Form() }) },
@@ -97,6 +96,7 @@ internal static class SimpleSamples
         return Stack(field, validate);
     }
     private static object Cards() => Stack(
+        new F.Card { Title = "Ada Lovelace", Description = "Engineering · Active", Stacked = true, Content = new F.CopyText { Text = "person-0001" }, Actions = Button("Edit") },
         new F.Card { Title = "Record summary", Description = "Shared content and action structure", Content = "A record's facts belong to the consumer.", Actions = Button("Open record") },
         new F.Card { Title = "Prominent summary", Description = "Library-owned larger heading", Prominent = true, Content = "Supporting facts", SideContent = "24", Actions = Button("Open", ButtonVariant.Secondary) },
         new F.Card { Title = "Stacked content", Stacked = true, Content = "Content and actions follow the stacked card layout.", Actions = Button("Continue") });

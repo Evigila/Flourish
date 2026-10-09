@@ -40,7 +40,7 @@ For native resource setup, call FrameworkResources.Apply(window) and retain Desi
 
 ## Control and platform contracts
 
-There are 75 reviewed native entries. General, Scenario and BuildingBlock remain the only classifications. Blazor's four Standalone native-POST input splits and browser-only ApplicationLayout are represented by the corresponding native binding/input or shell capability; no duplicate native renderer is kept to mirror an HTTP protocol.
+There are 74 reviewed native entries after the user-authorized 2026-10-09 IdentityCard consolidation into Card. General, Scenario and BuildingBlock remain the only classifications. Blazor's four Standalone native-POST input splits and browser-only ApplicationLayout are represented by the corresponding native binding/input or shell capability; no duplicate native renderer is kept to mirror an HTTP protocol.
 
 DataTable is the interactive record entry. TableColumn uses native BindingPath, and cell templates are DataTemplate instances receiving TableCellContext. ListView shares TableData and columns as a read-only display scenario; EditingGrid remains a distinct spreadsheet scenario with typed GridCellChange proposals, validation and consumer acceptance. Sorting belongs to headers. Table/chart display uses the same MultiSelectBox complete stable-key snapshots, mandatory/fixed choices and reordering. Remote queries remain consumer events and are not filtered again locally. Width/selection/display snapshots can be persisted by consumers; the current table-preference boundary stores sorting rather than introducing a new persistence service.
 

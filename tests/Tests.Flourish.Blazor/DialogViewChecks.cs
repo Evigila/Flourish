@@ -71,7 +71,7 @@ internal static class DialogViewChecks
                     [nameof(Dialog.Actions)] = actions
                 }));
                 Require(html.Contains("<footer class=\"f-dialog-actions\">"), "The Dialog action footer was lost.");
-                if (nestedRow) Require(Regex.IsMatch(html, @"<footer class=""f-dialog-actions"">[\s\S]*class=""f-inline-actions"" data-alignment=""center"""), "Dialog no longer contains the real shared action row.");
+                if (nestedRow) Require(Regex.IsMatch(html, @"<footer class=""f-dialog-actions"">[\s\S]*class=""f-inline-actions"" data-alignment=""end"""), "Dialog no longer contains the real shared action row with its trailing-edge default.");
                 Require(fixture.Components.OfType<Button>().Count() == 2 && fixture.Components.OfType<Button>().All(button => !button.OnClick.HasDelegate), "Action layout changed native action ownership.");
                 Require(!html.Contains("style="), "Nested actions require host geometry.");
                 if (nativeForm) Require(html.Contains("method=\"post\" action=\"/native-confirm\"") && html.Contains("type=\"submit\""), "Dialog changed native form transport.");

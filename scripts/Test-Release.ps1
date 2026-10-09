@@ -17,7 +17,7 @@ try {
     New-Item -ItemType Directory -Path $packages -Force | Out-Null
     Get-ChildItem -LiteralPath $packages -File | Where-Object { $_.Extension -in '.nupkg', '.snupkg' } | ForEach-Object { Remove-Item -LiteralPath $_.FullName }
 
-    # The Gallery consumes the current bridge package, so pack libraries before restoring its solution.
+    # Verify the production package set separately from the source-based Gallery.
     $restoreRoot = Join-Path $ArtifactsPath ('restore/' + [Guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $restoreRoot -Force | Out-Null
     $nugetConfig = Join-Path $restoreRoot 'NuGet.Config'
@@ -42,7 +42,9 @@ try {
     Invoke-ReleaseCommand 'dotnet' (@('restore', $ReleaseSettings.Solution) + $restoreArguments)
     $galleryAssets = Get-Content -LiteralPath (Join-Path $ArtifactsPath 'obj/Gallery.Flourish.Blazor/project.assets.json') -Raw | ConvertFrom-Json -AsHashtable
     foreach ($dependency in @(
-        @{ Id = 'Arkheide.Flourish.Extensions.Culture.Blazor'; Version = $version; Type = 'package' }
+        @{ Id = 'Arkheide.Flourish.Extensions.Culture.Blazor'; Version = $version; Type = 'project' }
+        @{ Id = 'Arkheide.Flourish.Blazor.Framework'; Version = $version; Type = 'project' }
+        @{ Id = 'Arkheide.Flourish.Blazor.Design'; Version = $version; Type = 'project' }
         @{ Id = 'Arkheide.Flourish.Blazor.Abstract'; Version = $version; Type = 'project' }
         @{ Id = 'Arkheide.Flourish.Core'; Version = $version; Type = 'project' }
         @{ Id = 'Arkheide.Essential.Culture.Blazor'; Version = $ReleaseSettings.EssentialVersion; Type = 'package' }
@@ -52,7 +54,7 @@ try {
         $key = $dependency.Id + '/' + $dependency.Version
         if (!$galleryAssets.libraries.ContainsKey($key) -or $galleryAssets.libraries[$key].type -ne $dependency.Type) { throw "Gallery must consume $key as $($dependency.Type)." }
     }
-    Write-Host 'Verified Gallery bridge package and transitive Essential dependencies.'
+    Write-Host 'Verified Gallery source projects and transitive Essential package dependencies.'
     Invoke-ReleaseCommand 'dotnet' @('build', $ReleaseSettings.Solution, '-c', 'Release', '--artifacts-path', $ArtifactsPath, '--no-restore', '--no-incremental', '-p:TreatWarningsAsErrors=true', '-p:ContinuousIntegrationBuild=true')
     Invoke-ReleaseCommand 'dotnet' @('test', $ReleaseSettings.Solution, '-c', 'Release', '--artifacts-path', $ArtifactsPath, '--no-build', '--no-restore')
     foreach ($project in $ReleaseSettings.ConsoleTests) { Invoke-ReleaseCommand 'dotnet' @('run', '--project', $project, '-c', 'Release', '--artifacts-path', $ArtifactsPath, '--no-build', '--no-restore') }

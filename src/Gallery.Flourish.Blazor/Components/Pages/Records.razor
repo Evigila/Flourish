@@ -12,9 +12,11 @@
         <Notice Severity="NotificationSeverity.Information">@Localization.Parse(TextKey.Records_Search, Search) <a href="/records">@Localization.Parse(TextKey.Common_Clear)</a></Notice>
     }
     @if (MessageKey is not null) { <Notice Severity="NotificationSeverity.Success">@Localization.Parse(MessageKey, DeletedName)</Notice> }
-    <DataTable TItem="BusinessRecord" Items="FilteredRecords" Columns="Columns" Actions="Actions"
-               ItemKey="record => record.Id" RowLabel="record => record.Name" OnRowOpen="Open"
-               EmptyMessage="@Localization.Parse(TextKey.Records_Empty)" Culture="Localization.FormatCulture" Label="@Localization.Parse(TextKey.Records_Label)" />
+    <Section Id="records-list" Title="@Localization.Parse(TextKey.Records_Label)">
+        <DataTable TItem="BusinessRecord" Items="FilteredRecords" Columns="Columns" Actions="Actions"
+                   ItemKey="record => record.Id" RowLabel="record => record.Name" OnRowOpen="Open"
+                   EmptyMessage="@Localization.Parse(TextKey.Records_Empty)" Culture="Localization.FormatCulture" Label="@Localization.Parse(TextKey.Records_Label)" />
+    </Section>
 </PageBody>
 <Dialog Title="@Localization.Parse(TextKey.Records_DeleteTitle)" @bind-IsOpen="DeleteOpen" OnClose="CancelDelete" CloseLabel="@Localization.Parse(TextKey.Records_CancelDelete)">
     <ChildContent>

@@ -4,7 +4,6 @@ namespace ArkheideSystem.Flourish.Blazor.Components;
 public enum UniformGridVariant
 {
     Elevated,
-    Filled,
-    Outlined,
+    FilledElevated,
     Danger
 }

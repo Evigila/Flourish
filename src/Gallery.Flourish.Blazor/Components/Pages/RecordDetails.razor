@@ -12,14 +12,14 @@
     @if (Record is { } record)
     {
         <Section>
-        <IdentityCard>
+        <Card>
             <dl>
-                <div><dt>@Localization.Parse(TextKey.Record_Name)</dt><dd class="f-identity-primary">@record.Name</dd></div>
+                <div><dt>@Localization.Parse(TextKey.Record_Name)</dt><dd>@record.Name</dd></div>
                 <div><dt>@Localization.Parse(TextKey.Common_Code)</dt><dd>@record.Code</dd></div>
                 <div><dt>@Localization.Parse(TextKey.Common_Category)</dt><dd>@record.Category</dd></div>
                 <div><dt>@Localization.Parse(TextKey.Common_Status)</dt><dd>@record.Status</dd></div>
             </dl>
-        </IdentityCard>
+        </Card>
         </Section>
         <Section Title="@Localization.Parse(TextKey.Records_ContactInformation)">
             <UniformGrid>

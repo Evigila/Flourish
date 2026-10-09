@@ -68,15 +68,13 @@ else
     private string TriggerClass => TriggerVariant is { } variant
         ? $"f-disclosure-button-trigger f-button f-button-{variant.ToString().ToLowerInvariant()} {(TriggerContent is null ? "f-button-icon" : null)}"
         : $"f-menu-trigger {(TriggerContent is not null ? "f-menu-trigger-label" : null)}";
-    /// <summary>Generated Actions only: opens on mouse hover without moving focus and closes when the pointer leaves both regions.</summary>
+    /// <summary>Opens either action content on mouse hover without moving focus and closes when the pointer leaves both regions.</summary>
     [Parameter] public bool OpenOnHover { get; set; }
     protected override void OnParametersSet()
     {
         if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         if (ChildContent is not null && Actions.Count > 0)
             throw new InvalidOperationException("Provide either Actions or ChildContent, not both.");
-        if (ChildContent is not null && OpenOnHover)
-            throw new InvalidOperationException("Native ChildContent uses a disclosure opening and cannot combine with OpenOnHover.");
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -106,7 +104,7 @@ else
             MenuAttached = true;
             if (native)
             {
-                await module.InvokeVoidAsync("attachDisclosureMenu", Disclosure, Trigger, Panel, true);
+                await module.InvokeVoidAsync("attachDisclosureMenu", Disclosure, Trigger, Panel, true, OpenOnHover);
                 if (!Disposed && (Disabled || Executing)) await module.InvokeVoidAsync("closeMenu", Trigger, Panel, true);
             }
             else await module.InvokeVoidAsync("attachMenu", Trigger, Panel, OpenOnHover);

@@ -19,7 +19,7 @@
             @foreach (var choice in Items)
             {
                 <UniformGridButton @key="choice.Key" id="@ChoiceId(choice)" Href="@choice.Href" Disabled="@choice.Disabled"
-                    Variant="@(IsActive(choice) ? UniformGridVariant.Filled : UniformGridVariant.Outlined)"
+                    Variant="@(IsActive(choice) ? UniformGridVariant.FilledElevated : UniformGridVariant.Elevated)"
                     aria-current="@(IsActive(choice) ? "page" : null)" data-enhance-nav="false">@choice.Label</UniformGridButton>
             }
         </UniformGrid>

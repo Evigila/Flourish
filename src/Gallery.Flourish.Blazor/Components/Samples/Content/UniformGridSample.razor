@@ -14,11 +14,10 @@
 {
     <UniformGrid>
         <UniformGridItem Variant="UniformGridVariant.Elevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularElevatedTile)" />
-        <UniformGridItem Variant="UniformGridVariant.Filled" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularFilledTile)" />
-        <UniformGridItem Variant="UniformGridVariant.Outlined" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularOutlinedTile)" />
+        <UniformGridItem Variant="UniformGridVariant.FilledElevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularFilledElevatedTile)" />
         <UniformGridItem Variant="UniformGridVariant.Danger" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularDangerActionTile)" />
     </UniformGrid>
-    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.Filled">
+    <UniformGrid Shape="UniformGridShape.Square" Variant="UniformGridVariant.FilledElevated">
         <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
         <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
         <UniformGridItem aria-label="@Localization.Parse(TextKey.Sample_EmptySquareTile)" />
@@ -40,8 +39,8 @@ else
     </UniformGrid>
     <p role="status">@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_OpenedDraftCount), OpenedCount)</p>
     <UniformGrid Columns="2" NarrowColumns="1" CellHeight="100" IconSupport="false">
-        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Save)" Variant="UniformGridVariant.Filled" OnClick="() => OpenedCount++" />
-        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Cancel)" Variant="UniformGridVariant.Outlined" OnClick="() => OpenedCount = 0" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Save)" Variant="UniformGridVariant.FilledElevated" OnClick="() => OpenedCount++" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Common_Cancel)" Variant="UniformGridVariant.Elevated" OnClick="() => OpenedCount = 0" />
     </UniformGrid>
 }
 @code {
@@ -54,9 +53,8 @@ else
     private void ToggleShape() => Shape = Shape == UniformGridShape.Rectangle ? UniformGridShape.Square : UniformGridShape.Rectangle;
     private void ToggleVariant() => Variant = Variant switch
     {
-        UniformGridVariant.Elevated => UniformGridVariant.Filled,
-        UniformGridVariant.Filled => UniformGridVariant.Outlined,
-        UniformGridVariant.Outlined => UniformGridVariant.Danger,
+        UniformGridVariant.Elevated => UniformGridVariant.FilledElevated,
+        UniformGridVariant.FilledElevated => UniformGridVariant.Danger,
         _ => UniformGridVariant.Elevated
     };
     private void ToggleColumns() => Columns = Columns.HasValue ? null : 3;

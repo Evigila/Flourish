@@ -1,11 +1,15 @@
 using ArkheideSystem.Flourish.Abstract;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ArkheideSystem.Flourish.Blazor.Abstract;
 
 /// <summary>Configures the framework-owned application shell.</summary>
 public interface IFrameworkBuilder
 {
+    /// <summary>Registers an optional integration using the resolved framework defaults and host overrides.</summary>
+    IFrameworkBuilder ConfigureServices(Action<IServiceCollection, IConfiguration> configure);
     IFrameworkBuilder ConfigureProject(Action<IProjectBuilder> configure);
     IFrameworkBuilder ConfigureTopBar(Action<ITopBarBuilder> configure);
     IFrameworkBuilder ConfigureNavigation(Action<INavigationBuilder> configure);

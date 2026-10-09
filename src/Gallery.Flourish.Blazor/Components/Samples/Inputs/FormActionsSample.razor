@@ -14,15 +14,20 @@
 
 @if (Preview)
 {
-    <FormActions Columns="2"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Outlined" /></FormActions>
-    <FormActions Columns="3"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.Filled" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Outlined" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_DisabledAction)" Variant="UniformGridVariant.Outlined" Disabled="true" /></FormActions>
+    <FormActions Columns="2"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.FilledElevated" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Elevated" /></FormActions>
+    <FormActions Columns="3"><UniformGridButton Title="@Localization.Parse(TextKey.Sample_PrimaryAction)" Variant="UniformGridVariant.FilledElevated" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SecondaryAction)" Variant="UniformGridVariant.Elevated" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_DisabledAction)" Variant="UniformGridVariant.Elevated" Disabled="true" /></FormActions>
+    <FormActions Columns="3">
+        <UniformGridButton Title="FilledElevated" Variant="UniformGridVariant.FilledElevated" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_DefaultElevated)" />
+        <UniformGridButton Title="Danger" Variant="UniformGridVariant.Danger" />
+    </FormActions>
 }
 else
 {
     <FormActions Columns="3">
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitRegistration)" Variant="UniformGridVariant.Filled" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_SimulatedSubmissionInProgress)" OnClick="Submit" />
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SaveDraft)" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Draft" />
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Reset)" Variant="UniformGridVariant.Outlined" Disabled="Saving" OnClick="Reset" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitRegistration)" Variant="UniformGridVariant.FilledElevated" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_SimulatedSubmissionInProgress)" OnClick="Submit" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_SaveDraft)" Variant="UniformGridVariant.Elevated" Disabled="Saving" OnClick="Draft" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Reset)" Variant="UniformGridVariant.Elevated" Disabled="Saving" OnClick="Reset" />
     </FormActions>
     <p role="status">@Localization.Parse(Message)</p>
 }

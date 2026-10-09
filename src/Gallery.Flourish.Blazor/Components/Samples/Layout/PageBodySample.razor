@@ -15,15 +15,15 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false"><p>@Localization.Parse(TextKey.Sample_CenteredContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false"><p>@Localization.Parse(TextKey.Sample_StandardCenteredContainer)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="false" CenteredContainer="CenteredContainer.Expanded"><p>@Localization.Parse(TextKey.Sample_ExpandedCenteredContainer)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
     <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="true"><p>@Localization.Parse(TextKey.Sample_FluidContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
     <ArkheideSystem.Flourish.Blazor.Components.PageBody FullWidth="true"><p>@Localization.Parse(TextKey.Sample_FullWidthContentArea)</p></ArkheideSystem.Flourish.Blazor.Components.PageBody>
 }
 else
 {
     <Field Label="@Localization.Parse(TextKey.Sample_ContentLayout)" Id="@Id"><SelectBox TValue="string" Options="Modes" @bind-Value="Mode" /></Field>
-    <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_CompactPageSpacing)" @bind-Value="CompactSpacing" />
-    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")" CompactSpacing="@CompactSpacing">
+    <ArkheideSystem.Flourish.Blazor.Components.PageBody Fluid="@(Mode == "fluid")" FullWidth="@(Mode == "full")" CenteredContainer="@(Mode == "expanded" ? CenteredContainer.Expanded : CenteredContainer.Standard)">
         <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_ResourceSettingsFictional)" />
         <ArkheideSystem.Flourish.Blazor.Components.Section Title="@Localization.Parse(TextKey.Sample_Description)">
             <p>@Localization.Parse(TextKey.Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins)</p>
@@ -54,10 +54,9 @@ else
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private SelectOption<string>[] Modes => [new("centered", Localization.Parse(TextKey.Sample_Centered)), new("fluid", Localization.Parse(TextKey.Sample_Fluid)), new("full", Localization.Parse(TextKey.Sample_FullWidth))];
+    private SelectOption<string>[] Modes => [new("standard", Localization.Parse(TextKey.Sample_StandardCenteredContainer)), new("expanded", Localization.Parse(TextKey.Sample_ExpandedCenteredContainer)), new("fluid", Localization.Parse(TextKey.Sample_Fluid)), new("full", Localization.Parse(TextKey.Sample_FullWidth))];
     private readonly string Id = $"page-body-mode-{Guid.NewGuid():N}";
-    private string Mode = "centered";
-    private bool CompactSpacing;
+    private string Mode = "standard";
     private int Count;
     private void Increment() => Count++;
     private void Reset() => Count = 0;

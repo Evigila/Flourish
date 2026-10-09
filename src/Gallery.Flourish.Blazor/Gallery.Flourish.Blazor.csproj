@@ -14,6 +14,9 @@
     <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Models/ChangeLog.json" />
+    <None Remove="Models/ChangeLog.json" />
+    <EmbeddedResource Include="Models/ChangeLog.json" LogicalName="Gallery.ChangeLog.json" />
     <None Remove="Localization/Culture.json" />
     <Content Remove="Localization/Culture.json" />
     <AdditionalFiles Include="Localization/Culture.json" />
@@ -24,6 +27,6 @@
     <EmbeddedResource Include="Components/Samples/**/*.razor" />
     <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <ProjectReference Include="../Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj" />
-    <PackageReference Include="Arkheide.Flourish.Extensions.Culture.Blazor" Version="$(VersionPrefix)" />
+    <ProjectReference Include="../Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj" />
   </ItemGroup>
 </Project>

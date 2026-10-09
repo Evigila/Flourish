@@ -7,6 +7,7 @@ function Assert-CleanMaster {
     if ($LASTEXITCODE -ne 0 -or $branch -ne 'master') { throw 'Release requires the master branch.' }
 }
 if ($Mode -eq 'Publish') { Assert-CleanMaster }
+& (Join-Path $ReleaseRoot 'build/Test-ChangeLog.ps1')
 & (Join-Path $PSScriptRoot 'Test-Release.ps1') -VerifyOnly:$SkipBuild
 if ($Mode -eq 'Prepare') { return }
 Assert-CleanMaster
@@ -14,6 +15,7 @@ Invoke-ReleaseCommand 'git' @('-C', $ReleaseRoot, 'fetch', 'origin', 'master', '
 $head = & git -C $ReleaseRoot rev-parse HEAD
 $remote = & git -C $ReleaseRoot rev-parse origin/master
 if ($head -ne $remote) { throw 'Publish requires HEAD to equal origin/master. Commit and push reviewed changes first.' }
+& (Join-Path $ReleaseRoot 'build/Test-ChangeLog.ps1')
 $tag = 'v' + (Get-ReleaseVersion)
 Assert-ReleaseTag $tag
 & git -C $ReleaseRoot rev-parse --verify "refs/tags/$tag" 2>$null | Out-Null

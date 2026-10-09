@@ -1,0 +1,9 @@
+# Persist browser culture preferences
+
+Added opt-in scoped Framework BrowserPreferences with bounded retention and one lazy JS writer for the standard request-culture cookie. Gallery language and number/date format controls persist the complete pair before applying it; request negotiation restores both values before the next SSR frame. Concurrent writes serialize, formatting captures its original UI culture, failures propagate with retry, and disconnected disposal is safe. The optional text bridge and Core desktop singleton services remain independent.
+
+Added Gallery appsettings.Flourish.json for framework default languages, retention and startup appearance; appsettings.json is empty for business/host settings. Browser personal values remain separate from shared server JSON. Updated executable examples, three-language explanations, preview ChangeLog, current technical guides, release JS test/asset requirements and the existing browser acceptance script. Theme/palette, keyed control display and optional navigation persistence are analyzed as follow-up candidates, not claimed as completed features.
+
+Both Release builds passed with zero warnings/errors. Blazor: 443/443. Gallery: 8,197 checks including 464 post-event and 223 ChangeLog checks. Node preference tests: 4/4. Actual loopback HTTP: 8 checks, passed with normal local permissions after sandbox network/key-directory restrictions; the hidden temporary host was closed. Culture integrity: 22,071. ChangeLog validation: 88. Release registration and diff whitespace passed. No Computer Use, dependency/version change, Git commit, tag or publication.
+
+See [the report](../bugfix-reports/2026-10-09_culture-preference-persistence.md) for cause, storage boundaries, other preference candidates, verification limitations and manual acceptance.

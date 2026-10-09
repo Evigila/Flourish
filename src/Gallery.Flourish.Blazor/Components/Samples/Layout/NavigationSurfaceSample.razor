@@ -15,9 +15,8 @@
 
 @if (!Preview) {
     <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_ShowSecondaryNavigation)" @bind-Value="Secondary" />
-    <ArkheideSystem.Flourish.Blazor.Components.StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_HalfCenteredGutters)" @bind-Value="HalfGutters" />
 }
-<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface CenteredContentGutterScale="@(HalfGutters ? 0.5 : 1)" Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="@Page" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)" PrimaryLabel="@Localization.Parse(TextKey.Sample_ExampleModules)" SecondaryLabel="@Localization.Parse(TextKey.Sample_ExamplePages)" TopLabel="@Localization.Parse(TextKey.Sample_BackToExampleTop)">
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="@Page" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)" PrimaryLabel="@Localization.Parse(TextKey.Sample_ExampleModules)" SecondaryLabel="@Localization.Parse(TextKey.Sample_ExamplePages)" TopLabel="@Localization.Parse(TextKey.Sample_BackToExampleTop)">
     <TitleBar><header class="app-topbar"><strong>@(Preview ? Localization.Parse(TextKey.Nav_TopBar) : Localization.Parse(TextKey.Sample_ResourceCenterFictional))</strong></header></TitleBar>
     <PrimaryNavigation>
         <div @onclick="ShowDocuments" @onclick:preventDefault>
@@ -42,7 +41,6 @@
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = $"navigation-sample-{Guid.NewGuid():N}";
     private bool Secondary = true;
-    private bool HalfGutters;
     private int Page;
     private void ShowDocuments() => Page = 0;
     private void ShowArchived() => Page = 1;

@@ -12,6 +12,7 @@ internal static class CatalogChecks
     {
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
         var exported = typeof(Controls.Button).Assembly.GetExportedTypes()
+            .Concat(typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker).Assembly.GetExportedTypes())
             .Where(type => type.IsClass && !type.IsAbstract && typeof(IComponent).IsAssignableFrom(type))
             .OrderBy(type => type.FullName, StringComparer.Ordinal).ToArray();
         var documentedTypes = entries.Select(entry => entry.ComponentType)
@@ -44,7 +45,7 @@ internal static class CatalogChecks
         Equal("false", typeof(Controls.Button), "Disabled");
         Equal("\"\"", typeof(Controls.Button), "Description");
         Equal("\"\"", typeof(Controls.Button), "TrailingText");
-        Equal("HorizontalAlignment.Center", typeof(Controls.InlineActions), "Alignment");
+        Equal("HorizontalAlignment.End", typeof(Controls.InlineActions), "Alignment");
         Equal("EmptyStateVariant.Standard", typeof(Controls.EmptyState), "Variant");
         Equal("PresentationTone.Canvas", typeof(Controls.PresentationBand), "Tone");
         Equal("2", typeof(Controls.PresentationBand), "HeadingLevel");
@@ -66,7 +67,7 @@ internal static class CatalogChecks
         Equal("260", typeof(Controls.UniformGrid), "MaxCellHeight");
         Equal(string.Empty, typeof(Controls.UniformGrid), "CellHeight");
         Equal("false", typeof(Controls.PageBody), "FillHeight");
-        Equal("false", typeof(Controls.PageBody), "CompactSpacing");
+        Equal("CenteredContainer.Standard", typeof(Controls.PageBody), "CenteredContainer");
         Equal("false", typeof(Controls.UniformGrid), "Centered");
         foreach (var type in new[] { typeof(Controls.UniformGrid), typeof(Controls.UniformGridItem), typeof(Controls.UniformGridButton) })
             Equal(string.Empty, type, "IconSupport");

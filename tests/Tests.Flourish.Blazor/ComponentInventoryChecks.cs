@@ -100,7 +100,7 @@ internal static class ComponentInventoryChecks
                 "RowActionMenu", "StatusNotice", "ToggleSection", "ToggleSwitch", "UniformGrid", "MultiSelectDropdown`2", "SelectionDropdownSurface", "ToggleIndicator", "AccessSurface"
             })
                 Check(assembly.GetType(prefix + name) is null, $"Retired public renderer remains available: {name}.");
-            foreach (var name in new[] { "DisplayOptions", "DisplayOption", "DisplayOptionsChange", "ConfirmationHost", "ReconnectDialog", "BottomSheet", "StaticDialog", "StandaloneNumberBox" })
+            foreach (var name in new[] { "DisplayOptions", "DisplayOption", "DisplayOptionsChange", "ConfirmationHost", "ReconnectDialog", "BottomSheet", "StaticDialog", "StandaloneNumberBox", "IdentityCard" })
                 Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Components." + name) is null, "Retired display contract remains available: " + name);
             Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Components.Patterns.RecordListPage") is null, "Retired record-page wrapper remains available.");
             Check(assembly.GetType("ArkheideSystem.Flourish.Blazor.Hosting.ConfirmationService") is null, "Retired confirmation service remains available.");

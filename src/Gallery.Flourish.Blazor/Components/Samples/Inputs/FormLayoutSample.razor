@@ -30,7 +30,7 @@ else
             <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Email)" Id="@(Prefix + "-email")" Required="true" For="@(() => Model.Email)"><TextBox @bind-Value="Model.Email" Type="email" /></Field>
             <Field MessageFormatter="LocalizeValidation" Label="@Localization.Parse(TextKey.Sample_Notes)" Id="@(Prefix + "-note")" FullWidth="true"><TextBox @bind-Value="Model.Note" Multiline="true" /></Field>
         </FormLayout>
-        <FormActions><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitDemo)" Variant="UniformGridVariant.Filled" Type="submit" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_ClearName)" Variant="UniformGridVariant.Outlined" OnClick="ClearName" /></FormActions>
+        <FormActions><UniformGridButton Title="@Localization.Parse(TextKey.Sample_SubmitDemo)" Variant="UniformGridVariant.FilledElevated" Type="submit" /><UniformGridButton Title="@Localization.Parse(TextKey.Sample_ClearName)" Variant="UniformGridVariant.Elevated" OnClick="ClearName" /></FormActions>
     </EditForm>
     <p role="status">@Localization.Parse(Message)</p>
 }

@@ -179,7 +179,9 @@ internal static class NavigationChoicesChecks
                 await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
                 Require(activator.Instances.OfType<RetainedPanel>().SequenceEqual(panels), "Changing ActiveKey recreated hidden panel components.");
                 Require(!Regex.IsMatch(OpeningTag(html(), "section", "entry-account-panel"), @"\shidden(?:\s|=|>)"), "A new current route did not select its panel.");
-                Require(OpeningTag(html(), "a", "entry-account-choice").Contains("f-uniform-variant-filled", StringComparison.Ordinal), "The new current link did not use the standard selected appearance.");
+                Require(OpeningTag(html(), "a", "entry-account-choice").Contains("f-uniform-variant-filled-elevated", StringComparison.Ordinal), "The new current link did not use FilledElevated.");
+                foreach (var key in new[] { "organization", "pass" })
+                    Require(OpeningTag(html(), "a", "entry-" + key + "-choice").Contains("f-uniform-variant-elevated", StringComparison.Ordinal), "An inactive choice did not use Elevated.");
             });
         }));
         tests.Add(("disabled navigation choices keep content but expose no selectable GET destination", async () =>

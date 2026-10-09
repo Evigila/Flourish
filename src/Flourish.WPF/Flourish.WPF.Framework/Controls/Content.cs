@@ -61,7 +61,6 @@ public class Card : ContentControl
         SetValue(HeadingSizePropertyKey, PresentationContext.GetIsPrimary(this) && PresentationContext.GetIsAccessForm(this) ? Math.Clamp(width * .038, 30, 44) : 28d);
     }
 }
-public class IdentityCard : Card { static IdentityCard() => DefaultStyleKeyProperty.OverrideMetadata(typeof(IdentityCard), new FrameworkPropertyMetadata(typeof(IdentityCard))); }
 public class Section : Card { static Section() => DefaultStyleKeyProperty.OverrideMetadata(typeof(Section), new FrameworkPropertyMetadata(typeof(Section))); }
 public class PageHeading : Card
 {

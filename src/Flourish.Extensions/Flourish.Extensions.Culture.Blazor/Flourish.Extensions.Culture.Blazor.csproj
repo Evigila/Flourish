@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
 
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>Flourish.Extensions.Culture.Blazor</AssemblyName>
     <RootNamespace>ArkheideSystem.Flourish.Extensions.Culture.Blazor</RootNamespace>
     <PackageId>Arkheide.Flourish.Extensions.Culture.Blazor</PackageId>
-    <Description>Optional scoped text integration between Flourish.Blazor and Essential.Culture.Blazor.</Description>
+    <StaticWebAssetBasePath>_content/Arkheide.Flourish.Extensions.Culture.Blazor</StaticWebAssetBasePath>
+    <Description>Optional request localization and persistent browser culture selection for Flourish.Blazor.</Description>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -15,7 +16,8 @@
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <ProjectReference Include="../../Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj" />
+    <ProjectReference Include="../../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <PackageReference Include="Arkheide.Essential.Culture.Blazor" Version="$(EssentialCultureVersion)" />
+    <EmbeddedResource Include="Localization/Culture.json" LogicalName="Culture.Texts.json" />
   </ItemGroup>
 </Project>

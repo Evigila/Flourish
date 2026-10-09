@@ -32,6 +32,24 @@ function Test-Choices([string] $Path, [string] $Active, [int] $Instances = 1) {
     }
     Write-Output ('PASS ' + $Path)
 }
+$changeLog = [Net.WebUtility]::HtmlDecode((Get-Gallery '/changelog'))
+$releases = Get-Content -Raw (Join-Path (Split-Path -Parent $PSScriptRoot) 'src/Gallery.Flourish.Blazor/Models/ChangeLog.json') | ConvertFrom-Json
+Assert ($changeLog.Contains('f-no-secondary')) 'ChangeLog must have no secondary navigation.'
+Assert (-not $changeLog.Contains('class="f-secondary-navigation"')) 'ChangeLog unexpectedly rendered secondary navigation.'
+Assert ([regex]::IsMatch($changeLog, '<a\b[^>]*class="f-primary-item is-selected"[^>]*href="/changelog"[^>]*aria-current="true"')) 'ChangeLog is not the selected primary navigation entry.'
+$selectorIndex = $changeLog.IndexOf('id="changelog-version"')
+$subtitleIndex = $changeLog.IndexOf('<h2')
+Assert ($selectorIndex -ge 0 -and $subtitleIndex -ge 0 -and $selectorIndex -lt $subtitleIndex) 'ChangeLog version selector must precede its first subtitle.'
+Assert ($changeLog.Contains('>' + $releases[0].version + '</h2>')) 'ChangeLog must initially display the preview.'
+foreach ($version in $releases.version) {
+    Assert ($changeLog.Contains('<option value="' + $version + '"')) ('ChangeLog is missing version ' + $version)
+}
+Assert (-not $changeLog.Contains('<option value="1.1.0"')) 'The first tag must not have a ChangeLog entry.'
+$overviewHtml = [Net.WebUtility]::HtmlDecode((Get-Gallery '/'))
+$startSection = $overviewHtml.IndexOf('href="/examples"', $overviewHtml.IndexOf('<h1'))
+$changeLogSection = $overviewHtml.IndexOf('href="/changelog"', $overviewHtml.IndexOf('<h1'))
+$setupSection = $overviewHtml.IndexOf('f-code-block', $overviewHtml.IndexOf('<h1'))
+Assert ($startSection -ge 0 -and $changeLogSection -gt $startSection -and $setupSection -gt $changeLogSection) 'Home ChangeLog section must follow Start here and precede setup.'
 Test-Choices '/examples/display/access-methods' 'organization'
 Test-Choices '/examples/display/access-methods?choice=account' 'account'
 Test-Choices '/examples/display/access-methods?choice=pass' 'pass'

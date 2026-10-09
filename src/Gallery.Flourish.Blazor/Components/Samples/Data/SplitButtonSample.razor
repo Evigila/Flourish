@@ -7,15 +7,17 @@
 
 @if (!Preview)
 {
-    <SplitButton Text="@Localization.Parse(TextKey.Nav_DisplayLogin)" Href="/examples/display/login" FullWidth="FullWidth"
-                 SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled" PrimaryDisabled="PrimaryDisabled">
-        <MenuContent>
-            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
-            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RecoveryDemo)</Button>
-            <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RegistrationDemo)</Button>
-            <Button Variant="ButtonVariant.Quiet" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button>
-        </MenuContent>
-    </SplitButton>
+    <div style="width:24rem;max-width:100%">
+        <SplitButton Text="@Localization.Parse(TextKey.Nav_DisplayLogin)" Href="/examples/display/login" FullWidth="FullWidth"
+                     SecondaryLabel="@Localization.Parse(TextKey.Access_SubmitMenu)" Disabled="MenuDisabled" PrimaryDisabled="PrimaryDisabled">
+            <MenuContent>
+                <Button Variant="ButtonVariant.Quiet" Href="/examples/display/accounts">@Localization.Parse(TextKey.Nav_DisplayAccounts)</Button>
+                <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RecoveryDemo)</Button>
+                <Button Variant="ButtonVariant.Quiet" Href="/examples/display/access#display-access-title">@Localization.Parse(TextKey.Access_RegistrationDemo)</Button>
+                <Button Variant="ButtonVariant.Quiet" Href="/examples/display">@Localization.Parse(TextKey.Display_Back)</Button>
+            </MenuContent>
+        </SplitButton>
+    </div>
     <AccessActions Label="@Localization.Parse(TextKey.Access_SubmitMenu)">
         <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_FillAvailableWidth)" @bind-Value="FullWidth" />
         <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_DisablePrimaryActionAndMenu)" @bind-Value="MenuDisabled" />

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Controls = ArkheideSystem.Flourish.Blazor.Components;
 using Patterns = ArkheideSystem.Flourish.Blazor.Components.Patterns;
 using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives;
+using CultureControls = ArkheideSystem.Flourish.Extensions.Culture.Blazor;
 
 namespace ArkheideSystem.Gallery.Flourish.Blazor.Models;
 
@@ -19,6 +20,7 @@ public static class ComponentCatalog
         ]),
         new("Key.Catalog_Group_General_Title", "Key.Catalog_Group_General_Description",
         [
+            new(typeof(CultureControls.LanguagePicker), "Key.Catalog_LanguagePicker_Purpose", "Key.Catalog_LanguagePicker_Variants", "<LanguagePicker MaxWidth=\"16rem\" />\n<LanguagePicker FormatCulture=\"true\" />"),
             new(typeof(Controls.ValidationMessages), "Key.Catalog_ValidationMessages_Purpose", "Key.Catalog_ValidationMessages_Variants", "<ValidationMessages Id=\"token-error\" For=\"@(() => Draft.Token)\" />"),
             new(typeof(Controls.NavigationChoices), "Key.Catalog_NavigationChoices_Purpose", "Key.Catalog_NavigationChoices_Variants", "<NavigationChoices Id=\"methods\" Label=\"访问方式\" Items=\"Methods\" ActiveKey=\"@ActiveMethod\" Compact=\"true\" Variant=\"ButtonVariant.Elevated\" ActiveVariant=\"ButtonVariant.Elevated\"><ChildContent Context=\"method\"><p>@method.Label</p></ChildContent></NavigationChoices>"),
             new(typeof(Controls.Button), "Key.Catalog_Button_Purpose", "Key.Catalog_Button_Variants", "<Button Text=\"示例账号\" Description=\"example@example.test\" TrailingText=\"已连接\" OnClick=\"SelectAsync\" Busy=\"Selecting\" />"),
@@ -37,9 +39,9 @@ public static class ComponentCatalog
             new(typeof(Controls.SearchBox), "Key.Catalog_SearchBox_Purpose", "Key.Catalog_SearchBox_Variants", "<SearchBox Label=\"搜索项目\" @bind-Value=\"Query\" SearchChanged=\"FilterItems\" />"),
             new(typeof(Controls.Field), "Key.Catalog_Field_Purpose", "Key.Catalog_Field_Variants", "<Field Label=\"名称\" Id=\"name\" Required=\"true\" For=\"@(() => Draft.Name)\"><ChildContent><TextBox @bind-Value=\"Draft.Name\" /></ChildContent><Actions><InlineActions Alignment=\"HorizontalAlignment.End\"><Button Type=\"submit\" Text=\"保存\" /></InlineActions></Actions></Field>"),
             new(typeof(Controls.FormLayout), "Key.Catalog_FormLayout_Purpose", "Key.Catalog_FormLayout_Variants", "<FormLayout Columns=\"2\"><Field Label=\"名称\" Id=\"name\"><TextBox Id=\"name\" @bind-Value=\"Draft.Name\" /></Field></FormLayout>"),
-            new(typeof(Controls.FormActions), "Key.Catalog_FormActions_Purpose", "Key.Catalog_FormActions_Variants", "<FormActions Columns=\"2\"><UniformGridButton Title=\"保存\" Variant=\"UniformGridVariant.Filled\" Type=\"submit\" /><UniformGridButton Title=\"取消\" Variant=\"UniformGridVariant.Outlined\" OnClick=\"Cancel\" /></FormActions>"),
+            new(typeof(Controls.FormActions), "Key.Catalog_FormActions_Purpose", "Key.Catalog_FormActions_Variants", "<FormActions Columns=\"2\"><UniformGridButton Title=\"保存\" Variant=\"UniformGridVariant.FilledElevated\" Type=\"submit\" /><UniformGridButton Title=\"取消\" Variant=\"UniformGridVariant.Elevated\" OnClick=\"Cancel\" /></FormActions>"),
             new(typeof(Controls.UniformGrid), "Key.Catalog_UniformGrid_Purpose", "Key.Catalog_UniformGrid_Variants", "<UniformGrid Columns=\"2\" NarrowColumns=\"1\" CellHeight=\"100\" IconSupport=\"false\"><UniformGridButton Title=\"保存\" OnClick=\"Save\" /><UniformGridButton Title=\"取消\" OnClick=\"Cancel\" /></UniformGrid>"),
-            new(typeof(Controls.UniformGridItem), "Key.Catalog_UniformGridItem_Purpose", "Key.Catalog_UniformGridItem_Variants", "<UniformGrid Shape=\"UniformGridShape.Square\"><UniformGridItem Title=\"项目\" Icon=\"folder\" Text=\"12 个演示项目\" Variant=\"UniformGridVariant.Outlined\" /></UniformGrid>"),
+            new(typeof(Controls.UniformGridItem), "Key.Catalog_UniformGridItem_Purpose", "Key.Catalog_UniformGridItem_Variants", "<UniformGrid Shape=\"UniformGridShape.Square\"><UniformGridItem Title=\"项目\" Icon=\"folder\" Text=\"12 个演示项目\" Variant=\"UniformGridVariant.Elevated\" /></UniformGrid>"),
             new(typeof(Controls.SectionNavigator), "Key.Catalog_SectionNavigator_Purpose", "Key.Catalog_SectionNavigator_Variants", "<SectionNavigator ContentId=\"page-content\" Label=\"页面板块\" />"),
             new(typeof(Controls.BackToTop), "Key.Catalog_BackToTop_Purpose", "Key.Catalog_BackToTop_Variants", "<BackToTop ContentId=\"page-content\" Label=\"返回顶部\" />"),
             new(typeof(Controls.LineChart), "Key.Catalog_LineChart_Purpose", "Key.Catalog_LineChart_Variants", "<LineChart Id=\"weekly-orders\" Heading=\"每周订单\" Labels=\"Labels\" Series=\"Series\" Title=\"演示数据\" />"),
@@ -58,7 +60,6 @@ public static class ComponentCatalog
             new(typeof(Controls.PageHeading), "Key.Catalog_PageHeading_Purpose", "Key.Catalog_PageHeading_Variants", "<PageHeading Title=\"项目\"><Actions><Button OnClick=\"Create\">创建</Button></Actions></PageHeading>"),
             new(typeof(Controls.Section), "Key.Catalog_Section_Purpose", "Key.Catalog_Section_Variants", "<Section Title=\"联系方式\"><p>区块内容</p></Section>"),
             new(typeof(Controls.Card), "Key.Catalog_Card_Purpose", "Key.Catalog_Card_Variants", "<Card Prominent=\"true\" Stacked=\"true\" Text=\"介绍与下一步动作\"><Actions><Button Variant=\"ButtonVariant.Elevated\" OnClick=\"Open\">了解方案</Button></Actions></Card>"),
-            new(typeof(Controls.IdentityCard), "Key.Catalog_IdentityCard_Purpose", "Key.Catalog_IdentityCard_Variants", "<IdentityCard Title=\"林晓\" HeadingLevel=\"1\" Columns=\"false\"><CopyText Value=\"DEMO-001\" /></IdentityCard>"),
             new(typeof(Controls.Icon), "Key.Catalog_Icon_Purpose", "Key.Catalog_Icon_Variants", "<Icon Name=\"home\" />"),
             new(typeof(Controls.CodeBlock), "Key.Catalog_CodeBlock_Purpose", "Key.Catalog_CodeBlock_Variants", "<CodeBlock Text=\"@ExampleCode\" Language=\"razor\" />"),
             new(typeof(Controls.FormGroup), "Key.Catalog_FormGroup_Purpose", "Key.Catalog_FormGroup_Variants", "<FormGroup Title=\"联系人\" Disabled=\"Saving\"><Field Label=\"名称\" Id=\"name\"><StandaloneTextBox Id=\"name\" @bind-Value=\"Name\" /></Field></FormGroup>"),
@@ -127,7 +128,9 @@ public sealed class ComponentEntry(Type componentType, string purposeKey, string
     public string Name { get; } = DisplayName(componentType);
     public string Namespace { get; } = componentType.Namespace ?? string.Empty;
     public string PurposeKey { get; } = purposeKey;
-    public Controls.ComponentUsageInfo Usage => Controls.ComponentUsageCatalog.For(ComponentType);
+    public Controls.ComponentUsageInfo Usage => ComponentType.Assembly == typeof(CultureControls.LanguagePicker).Assembly
+        ? CultureControls.ComponentUsageCatalog.For(ComponentType)
+        : Controls.ComponentUsageCatalog.For(ComponentType);
     public bool IsProductionEntry => Usage.Kind is Controls.ComponentUseKind.General or Controls.ComponentUseKind.Scenario;
     public string VariantsKey { get; } = variantsKey;
     public string Example { get; } = example

@@ -46,7 +46,7 @@
 :is(.shell-header,.f-titlebar) .f-topbar-slot > *, :is(.shell-header,.f-titlebar) .f-topbar-slot > form > * { align-self:center; margin-block:0; }
 :is(.shell-header,.f-titlebar) .f-topbar-slot > .f-inline-actions > *, :is(.shell-header,.f-titlebar) .f-topbar-slot > form > .f-inline-actions > * { align-self:center; margin-block:0; }
 :is(.shell-header,.f-titlebar) .f-topbar-slot > form { display:flex; align-items:center; }
-.f-inline-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; }
+.f-inline-actions { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:12px; }
 .f-inline-actions[data-alignment] { width:100%; min-width:0; box-sizing:border-box; }
 .f-page-body > .f-inline-actions[data-alignment] { width:auto; }
 .f-inline-actions[data-alignment="start"] { justify-content:flex-start; }
@@ -98,12 +98,7 @@
 .f-no-titlebar { grid-template-rows:minmax(0,1fr); }
 .f-no-titlebar .f-navigation,.f-no-titlebar .f-content-scroll { grid-row:1; }
 .f-no-secondary .f-navigation { grid-template-columns:minmax(0,1fr); }
-.f-page-body { min-width:0; }
-.f-page-body.f-page-compact-spacing { padding-block:0 32px; }
-.f-page-compact-spacing > :is(.f-form-layout,.f-identity-card) { margin-block-start:24px; }
-.f-page-compact-spacing > .f-form-layout { width:auto; }
-.f-page-compact-spacing > .f-section { padding-block-start:24px; }
-.f-page-compact-spacing .f-form-layout > .f-section { padding-block:0; margin-block:0; }
+.f-page-body { --f-centered-gutter-scale:1; min-width:0; }
 /* A fixed-stage work area keeps its heading and gives the remaining height to content. */
 :is(.f-content-scroll,.application-stage,.content-stage):has(> .f-page-fill-height) { overflow:hidden; }
 .f-page-body.f-page-fill-height { display:flex; flex-direction:column; height:100%; max-height:100%; min-height:0; box-sizing:border-box; padding-block:0; overflow:hidden; }
@@ -115,6 +110,7 @@
 .f-empty-state[data-presentation=watermark] { display:grid; place-items:center; flex:1 0 auto; min-width:0; min-height:260px; box-sizing:border-box; padding:32px 0; text-align:center; }
 .f-empty-state[data-presentation=watermark] > .f-empty-title { min-width:0; max-width:100%; margin:0; overflow-wrap:anywhere; }
 .f-page-centered { max-width:calc(100% - max(0px,calc(100% - var(--f-content-width,100%)))*var(--f-centered-gutter-scale,1)); margin-inline:auto; }
+.f-page-centered-expanded { --f-centered-gutter-scale:0.5; }
 .f-page-full { max-width:none; }
 .f-page-heading { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:1em; min-width:0; box-sizing:border-box; }
 .f-heading-title { display:flex; flex:1 1 320px; flex-direction:column; align-items:flex-start; min-width:0; }
@@ -158,18 +154,6 @@
 .f-dialog-actions > form { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-end; gap:.75em; min-width:0; max-width:100%; margin:0; }
 .f-bottom-sheet { position:fixed; inset:auto 0 0; width:100%; max-width:none; margin:0; }
 .f-copy-text { user-select:all; overflow-wrap:anywhere; }
-/* Identity summaries own their native heading and available-width geometry. */
-.f-identity-card { box-sizing:border-box; width:100%; min-width:0; max-width:100%; container-name:f-identity-card; container-type:inline-size; padding:clamp(24px,4vw,38px); text-align:start; }
-.f-page-body > .f-identity-card { width:auto; }
-.f-identity-card > .f-identity-title { min-width:0; max-width:100%; text-align:start; overflow-wrap:anywhere; }
-.f-identity-layout { display:grid; min-width:0; align-items:start; gap:36px; }
-.f-identity-with-sidebar { grid-template-columns:minmax(0,1fr) minmax(0,240px); }
-.f-identity-content { display:grid; min-width:0; align-content:start; gap:24px; }
-.f-identity-content dl { display:grid; min-width:0; }
-.f-identity-columns dl { grid-template-columns:repeat(2,minmax(0,1fr)); }
-.f-identity-content .f-copy-text { min-width:0; max-width:100%; }
-@container f-identity-card (max-width:680px) { .f-identity-with-sidebar,.f-identity-columns dl { grid-template-columns:minmax(0,1fr); } .f-identity-layout { gap:28px; } }
-@media(max-width:520px) { .f-identity-card { padding:24px; } }
 .f-form-group { border:0; padding:0; margin:0; min-width:0; }
 .f-form-group > legend { margin-block-end:var(--f-field-label-gap,12px); font-weight:var(--f-label-weight,600); }
 .f-image-preview { margin:0; display:grid; gap:var(--f-field-label-gap,12px); min-width:0; }

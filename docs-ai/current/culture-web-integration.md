@@ -1,5 +1,13 @@
 # Culture Web integration
 
+## Framework registration supersession on 2026-10-09
+
+The user requested that Gallery startup expose only AddFlourishFramework, optional AddFlourishDesign and its business RecordStore registration. The later redesign supersedes the earlier same-day persistence design: AddFlourishCulture, AddFlourishPreferences, Framework BrowserPreferences, the Gallery-owned LanguagePicker and direct Essential runtime calls are retired without aliases. Their original implementation and verification remain in the dated persistence report and append-only change records. The current optional Culture extension owns localization setup, request negotiation, browser persistence and the language/format selector.
+
+Gallery calls AddFlourishFramework(builder.Configuration, ...), ConfigureCulture within that callback, AddFlourishDesign(builder.Configuration) and AddScoped<RecordStore>(). Framework registers the standard interactive Razor services when used by an ASP.NET host. The host still owns application routing, exception/status handling, antiforgery and endpoint mapping; a service-only consumer does not create a Web host by registering Framework.
+
+This redesign is a source change after public 1.1.3. Existing released packages and tags retain their original contracts. No package version, package ID, external dependency version or public publication is changed by this source task. Current verification results belong to its new dated change record; historical totals below do not establish acceptance of the redesign.
+
 ## Native WPF supersession on 2026-10-07
 
 The former WPF single-project host/service implementation and its Culture hosting adapter have been deleted under the user's explicit reconstruction request. Current native projects are Flourish.WPF.Abstract, Framework, Design and the dependency-only Flourish.WPF aggregate, targeting net10.0-windows. The rebuilt optional EssentialTextProvider is owned/disposed by its native consumer and configured on FrameworkBuilder; Gallery consumes this bridge. Earlier WPF descriptions below are dated migration evidence, not current APIs. See [native WPF integration](wpf-native-integration.md).
@@ -14,11 +22,11 @@ This integration targets static SSR and Interactive Server on .NET 10. Pure WASM
 
 ## Ownership and dependency direction
 
-- Gallery owns its translated application names, navigation labels, pages, language picker, request negotiation and future preference persistence.
+- Gallery owns its translated application names, navigation labels, pages, executable examples and business data. It supplies its embedded catalog identity/resource name and consumes the extension's current APIs.
 - Framework owns behavior, provider-neutral text references and its embedded standard-caption catalog. It has no reference to Essential.Culture or the extension bridge.
-- Abstract exposes TextReference and ITextProvider. Design remains optional and owns visual presentation only.
-- src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor owns the optional bridge. Its package is Arkheide.Flourish.Extensions.Culture.Blazor; it references only Flourish.Blazor.Abstract and Essential.Culture.Blazor. It does not reference Framework, Design or WPF.
-- Essential.Culture.Blazor registers the request/circuit-local ILocalizationService; immutable parsed catalogs may be shared. Essential.Culture owns translation algorithms and formatting, without a Flourish dependency.
+- Abstract exposes TextReference, ITextProvider and the provider-neutral IFrameworkBuilder.ConfigureServices(Action<IServiceCollection, IConfiguration>) hook. Design remains optional and owns visual presentation only.
+- src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor owns ConfigureCulture, CultureBuilder, CultureSession, LocalizedComponentBase, LanguagePicker, request negotiation and the browser module. Its package is Arkheide.Flourish.Extensions.Culture.Blazor; the Razor project references Framework and the existing Essential.Culture.Blazor package. It does not reference Design or WPF. Framework does not reference this optional extension, so the dependency graph remains acyclic.
+- Essential.Culture.Blazor remains the internal request/circuit-local dictionary and formatting core; immutable parsed catalogs may be shared. Gallery does not register or resolve its runtime service directly. Essential.Culture has no Flourish dependency.
 - Framework supplies a literal fallback provider when no bridge is installed. Framework-only Native retains its ordinary controls and English default captions.
 
 ApplicationData.cs now belongs to Abstract after the approved Shared consolidation. Framework retains reference-identity, immutable startup TextReference metadata separate from navigation/menu records, preserving their public DTO signatures and catalog distinctions. The move changes assembly identity and requires rebuilding existing consumers; no Shared assembly is shipped.
@@ -29,42 +37,34 @@ The desktop bridge is now src/Flourish.Extensions/Flourish.Extensions.Culture.WP
 
 The WPF implementation and UseEssentialCulture entry retain their established behavior after migration into Flourish. Its external Culture version now comes from the shared root 1.3.0 setting, replacing the former extension-local 1.1.0 default. Gallery.Flourish.WPF consumes Culture.Wpf directly rather than this bridge. Neither WPF package is included in the current Core/Blazor release.
 
-The new Blazor bridge is Scoped. It maps Get to TryParseFrom, forwards Changed subscriptions directly and exposes the adapter's UI/format selection. It has no hosted service, Dispatcher, static Localizer access or permanent event subscription.
+The Blazor CultureSession is scoped. Its ITextProvider implementation maps Get to the same Essential TryParseFrom core, forwards Changed subscriptions and exposes the current UI/format pair. An internal IStartupFilter inserts standard request-localization middleware. No desktop Dispatcher, static Localizer setter, process-wide personal selection or permanent event subscription is used.
 
 ## Local source references and packaging
 
 Gallery and both extensions reference their same-repository Flourish projects. All external Culture and generator references use NuGet packages at 1.3.0. Prepare Essential first; when sibling Essential/artifacts/packages exists, Flourish adds that directory as a local NuGet source. It does not select external source projects.
 
-EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration are retired. The current consumer boundary is PackageReference, including WPF. Local package feeds and public NuGet feeds provide the same package identity/version boundary. See [NuGet release and integration](nuget-release-integration.md).
+EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration are retired. External Essential dependencies and independent consumer verification retain PackageReference boundaries. Gallery now references the same-repository Culture extension project so development cannot silently use an older cached bridge package; isolated consumer fixtures still exercise the packaged extension. Local and public NuGet feeds provide the same package identity/version boundary. See [NuGet release and integration](nuget-release-integration.md).
 
-The maintained bridge projects are WPF and Blazor, but only Arkheide.Flourish.Extensions.Culture.Blazor is in the current six-package 1.1.0 Core/Blazor release. Both use Essential packages at the root 1.3.0 version. Publish Essential first. Local verification does not publish packages. See the [bridge guide](culture-extension-bridge.md) and [release contract](nuget-release-integration.md).
+The maintained integration projects are WPF and Blazor. Only Arkheide.Flourish.Extensions.Culture.Blazor belongs to the six-package Core/Blazor release set established at 1.1.0; later stable releases retain those IDs. Both integrations use Essential packages at the root 1.3.0 version. Publish Essential first. Local verification does not publish packages. See the [bridge guide](culture-extension-bridge.md) for migration history and the [release contract](nuget-release-integration.md) for the current source dependency graph.
 
-## Register catalogs and the bridge
+## Register catalogs through Framework
 
-Program loads two independent embedded resources:
+ConfigureCulture automatically loads two library-owned embedded resources:
 
-- Gallery assembly: Gallery.Texts.json, catalog identity Gallery.
 - Framework assembly: Flourish.Blazor.Texts.json, catalog identity Flourish. Standard Framework references require this identity when a translating provider is installed.
+- Culture extension assembly: Culture.Texts.json, catalog identity Culture. It supplies selector captions, persistence feedback and usage metadata.
+
+The host registers its independent application catalog through a marker type and resource name. It does not open either library stream or create an Essential catalog in Program.
 
 ```csharp
-using ArkheideSystem.Essential.Culture;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Abstract;
-using ArkheideSystem.Flourish.Blazor.Components;
+using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
 
-using var appStream = typeof(Program).Assembly.GetManifestResourceStream("Gallery.Texts.json")
-    ?? throw new InvalidOperationException("Missing Gallery catalog.");
-using var frameworkStream = typeof(ApplicationShell).Assembly.GetManifestResourceStream("Flourish.Blazor.Texts.json")
-    ?? throw new InvalidOperationException("Missing Framework catalog.");
-
-builder.Services.AddCultureBlazor(culture => culture
-    .AddCatalog("Gallery", LocalizationCatalog.Load(appStream))
-    .AddCatalog("Flourish", LocalizationCatalog.Load(frameworkStream))
-    .SetDefaultCatalog("Gallery")
-    .SetDefaultCulture("zh-CN")
-    .AddSupportedCultures("zh-CN", "en-US", "pt-BR"));
-builder.Services.AddFlourishCulture();
-builder.Services.AddFlourishFramework(framework => framework
+builder.Services.AddFlourishFramework(builder.Configuration, framework => framework
+    .ConfigureCulture(culture => culture
+        .AddCatalog<Program>("Gallery", "Gallery.Texts.json")
+        .SetDefaultCatalog("Gallery"))
     .ConfigureProject(project => project.SetProjectName(
         new TextReference("Gallery", "Project_Name", "Gallery")))
     .ConfigureTopBar(top => top.AddMenu(
@@ -72,10 +72,13 @@ builder.Services.AddFlourishFramework(framework => framework
         menu => menu.AddMenuItem(new TextReference("Gallery", "Nav_Framework", "框架"), "open-framework")))
     .ConfigureNavigation(nav => nav.AddNav(
         new TextReference("Gallery", "Nav_Home", "主页"), "home", "/", exact: true)));
-// Register the command parser and optional Design as usual.
+builder.Services.AddFlourishDesign(builder.Configuration);
+builder.Services.AddScoped<RecordStore>();
 ```
 
-AddFlourishCulture is an IServiceCollection extension in Microsoft.Extensions.DependencyInjection. It neither registers nor reconfigures Culture catalogs, Framework, Design or HTTP negotiation. It can precede or follow AddFlourishFramework; repeated calls remain idempotent. Keep all registrations before building the host.
+ConfigureCulture is an IFrameworkBuilder extension in ArkheideSystem.Flourish.Extensions.Culture.Blazor. It uses Framework's generic registration hook, registers the translating provider and encapsulates request/circuit initialization and persistence. Framework and Culture configuration each complete once per host; retained builders cannot be modified afterward. No independent AddCultureBlazor, AddFlourishCulture, AddFlourishPreferences or UseRequestLocalization call belongs in Gallery Program.
+
+CultureBuilder exposes AddCatalog<TAssemblyMarker>(catalogId, resourceName), AddCatalog(catalogId, Stream), SetDefaultCatalog, SetDefaultCulture(uiCulture, formatCulture?), AddSupportedCultures and SetRetentionDays. The marker overload owns/disposes its embedded stream; the stream overload reads from the current position and leaves ownership with the caller. Missing resources, duplicate catalog identities, unknown cultures, unsupported defaults and invalid retention fail during registration. Without explicit supported cultures, the default catalog supplies its cultures. Both UI and formatting selections must be supported. Configuration defaults and explicit callback overrides complete before the host is built.
 
 Existing ordinary string builder calls remain literal, including strings that look like Key.Home. Only explicit TextReference overloads translate at render time. References are supported for project name, top-bar search/menu/items and primary/secondary/third/fixed navigation routes or commands. Route, command, icon, column and record identifiers are not translated. Do not call Localizer.Parse or resolve a scoped service at startup to store translated labels in singleton configuration.
 
@@ -95,11 +98,11 @@ Pages now inherit LocalizedComponentBase and parse their title keys while render
 
 New record-create/edit/missing, not-found/error, reconnect, product-scenario, shell and category-back labels have complete en-US, zh-CN and pt-BR entries. That first repair covered rendered primary headings and corresponding browser page titles. The subsequent Gallery prose repair below completes explicit caller adoption for internal headings, descriptions and examples.
 
-Tests.Gallery.Flourish.Blazor exercises actual Gallery pages with the real scoped Essential service and HtmlRenderer, switching en-US to zh-CN to pt-BR and back without remounting the page, then checking subscription release. Test-GalleryCulture.ps1 checks the real PageHeading H1 on 31 HTTP routes in all three languages, so translated navigation alone cannot satisfy the regression.
+The 2026-10-06 Tests.Gallery.Flourish.Blazor harness exercised actual Gallery pages with the real scoped Essential service and HtmlRenderer, switching en-US to zh-CN to pt-BR and back without remounting, then checking subscription release. The current harness uses the extension-facing scope while preserving that underlying core. Test-GalleryCulture.ps1 checks real PageHeading H1 output in all three languages, so translated navigation alone cannot satisfy the regression; the historical 31-route count belongs to that earlier milestone.
 
 ## Single-source catalogs and generated access keys
 
-The 2026-10-06 three-language maintenance uses one Culture.json source file per owning Blazor project, with every access key containing en-US, zh-CN and pt-BR translations. Gallery now owns 1,483 application/documentation keys; Framework owns 281 standard-caption/component-usage keys. An application and a library are separate catalogs, not duplicate per-language files or one mandatory global catalog.
+The 2026-10-06 three-language maintenance established one Culture.json source file per owning Blazor project, with every access key containing en-US, zh-CN and pt-BR translations. That milestone counted 1,483 Gallery application/documentation keys and 281 Framework caption/usage keys. Current source also has the extension-owned Culture catalog; the catalog check reports current totals. Application and library catalogs remain separate, rather than duplicate per-language files or one mandatory global catalog.
 
 ```json
 {
@@ -117,31 +120,33 @@ Framework's physical source is now Localization/Culture.json, renamed from Texts
 
 The JSON schema and access-key lookup are shared with Essential.Culture's desktop targets. Platform lifecycle differs: WPF/Avalonia use the desktop process-wide Localizer and UI binding/dispatcher integration; WinUI uses its window-host/DispatcherQueue integration. Blazor uses immutable catalogs with request/circuit-local UI and format selections, renderer dispatch and subscription disposal. A server must not use a desktop global language setter for different users.
 
-The bridge adapts explicit text references only. It does not discover or translate arbitrary Razor string literals, add catalogs, create language preferences or rewrite user-entered/business values. Gallery technical guides, API descriptions and all 80 samples now use explicit key extraction and render-time lookup. API syntax and business/input data retain their identities.
+The extension resolves explicit keys and TextReference values. It does not discover or translate arbitrary Razor string literals or rewrite user-entered/business values. Gallery technical guides, API descriptions and samples use explicit key extraction and render-time lookup. API syntax and business/input data retain their identities. The new extension-owned LanguagePicker has its own usage entry, Gallery/API navigation and executable sample alongside the existing inventory.
 
 ## Razor usage and language changes
 
 Gallery has one Culture.json AdditionalFile, an independent generated Texts.Key namespace, XamlFramework=none, and disabled automatic copying/creation. It embeds that file as Gallery.Texts.json. Framework's separate standard dictionary is not a second generator input for Gallery, so tokens remain separate by both catalog identity and generated namespace.
 
 ```razor
-@using ArkheideSystem.Essential.Culture.Blazor
+@using ArkheideSystem.Flourish.Extensions.Culture.Blazor
 @using TextKey = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key
 @inherits LocalizedComponentBase
 
 <PageTitle>@Localization.Parse(TextKey.Nav_Home)</PageTitle>
 <PageHeading Title="@Localization.Parse(TextKey.Nav_Home)" />
-<LocalizedText Key="@TextKey.Home_SetupDescription" />
+<p>@Localization.Parse(TextKey.Home_SetupDescription)</p>
+<LanguagePicker />
+<LanguagePicker FormatCulture="true" />
 
 @code {
-    private void UseEnglish() => Localization.SetCulture("en-US");
-    private void UseChineseWithBrazilianFormats()
-        => Localization.SetCulture("zh-CN", "pt-BR");
+    private Task<bool> UseEnglish() => Localization.SelectAsync("en-US");
+    private Task<bool> UseChineseWithBrazilianFormats()
+        => Localization.SelectAsync("zh-CN", "pt-BR");
 }
 ```
 
-LocalizedText refreshes itself; direct Parse properties refresh because LocalizedComponentBase subscribes to the scoped service. Framework components use their own neutral TextComponentBase, dispatch notifications with InvokeAsync and release subscriptions on disposal. ApplicationShell updates branding/menu/navigation/default ARIA strings and its live lang attribute, without resetting selected routes or manual tree expansion.
+The extension's LocalizedComponentBase injects CultureSession, refreshes through the renderer when Changed fires and releases the exact subscription on disposal. Derived initialization overrides must call base. Gallery no longer imports Essential runtime components or its localization base. Framework components retain their provider-neutral TextComponentBase. ApplicationShell updates branding/menu/navigation/default ARIA strings and its live lang attribute, without resetting selected routes or manual tree expansion; the Gallery HTML root reads ITextProvider.Culture.
 
-Gallery's top-bar LanguagePicker composes the standard SelectBox. The home page, /framework/localization and the keyed access examples support English, Chinese and Brazilian Portuguese. The latter demonstrates separate Brazilian formatting, a default-caption table, a localized dialog and code-copy boards. The subsequent Gallery prose completion covers documentation/sample UI throughout the current component inventory. Deliberate code snippets, data and multilingual font demonstrations remain literal.
+The extension's LanguagePicker composes the standard SelectBox, Dialog and Notice. MaxWidth optionally bounds the selector; FormatCulture defaults to false and selects UI culture, while true preserves the current UI culture and changes formatting only. Choices come from CultureSession.AvailableCultures and use each culture's NativeName. Saving temporarily disables the selector; a failed save displays the extension's localized warning and permits retry. ComponentUsageCatalog.For exposes its reviewed Scenario entry. Gallery demonstrates both modes without its own selector or persistence implementation. Deliberate code snippets, data and multilingual font demonstrations remain literal.
 
 ## Standard defaults and explicit overrides
 
@@ -153,9 +158,21 @@ DataTable already uses its Culture parameter for local comparison and display. H
 
 ## HTTP initialization and persistence
 
-Gallery configures RequestLocalizationOptions with zh-CN default, zh-CN/en-US/pt-BR UI and formatting languages. Providers are standard Cookie then Accept-Language. UseRequestLocalization runs before rendering. The scoped Culture service captures those request/circuit cultures for the first translated frame.
+The user confirmed that appsettings.Flourish.json stores common framework defaults and each browser persists its own personal choices. AddFlourishFramework(builder.Configuration, ...) loads this optional file below existing host/business, environment and command-line providers. With ConfigurationManager, its JSON source is inserted at index zero; other IConfiguration inputs receive a snapshot of file defaults overlaid by host values. The file is not reloaded during a running configuration. AddFlourishDesign(builder.Configuration) consumes the appearance defaults through its own optional layer. appsettings.json remains an empty object in Gallery for business/host settings; browser choices never modify either server file. Core's singleton desktop file store is not connected to Web circuits.
 
-SetCulture changes only the current circuit and writes no cookie or ambient/default-thread culture. Reload therefore restores the request's cookie/header selection. The static root html language reflects SSR; live shell lang follows current circuit changes. Cookie writing or user preference storage remains host responsibility. No new persistence endpoint was added to Flourish, the bridge or Gallery in this task; Essential.Culture's independent web demo already shows an antiforgery-protected host POST example.
+ConfigureCulture configures RequestLocalizationOptions from the completed CultureBuilder. Its internal startup filter runs standard Cookie then Accept-Language providers before rendering, with configured defaults as fallback. Scoped initialization captures IRequestCultureFeature when present and otherwise uses the completed defaults. An existing supported personal cookie therefore takes precedence over browser headers and defaults for the first SSR frame.
+
+CultureSession.SelectAsync(uiCulture, formatCulture?) validates both supported selections, lazily imports ./_content/Arkheide.Flourish.Extensions.Culture.Blazor/browser-preferences.js from an interactive event and saves the standard .AspNetCore.Culture cookie. Omitting formatCulture follows UI culture. SelectFormatAsync preserves the latest UI culture after any queued transaction. The default retention is 365 days, configurable from 1 to 3650; browser storage policy may shorten retention. The cookie is scoped to the application base path, uses SameSite=Lax and Secure on HTTPS, and contains only the two culture identifiers. No browser APIs run during prerendering. Module disposal tolerates disconnection/cancellation.
+
+The complete save-and-apply transaction serializes within a circuit. CultureSession returns false for browser storage, cancellation or connection failures and keeps its old pair; a later selection can retry. Successful persistence applies the pair through the one internal Essential session and returns true. Invalid arguments remain visible errors. Consumers no longer coordinate a separate writer with SetCulture. LanguagePicker handles the boolean outcome with ordinary Dialog/Notice feedback. No page reload is required for successful selection, and the next reload restores both identifiers before SSR. No permanent subscription, HTTP mutation endpoint or process-wide default-thread culture setter is added.
+
+```csharp
+// From an interactive event; Localization is the scoped CultureSession:
+var saved = await Localization.SelectAsync("zh-CN", "pt-BR");
+// A custom consumer can display its ordinary feedback when saved is false.
+```
+
+This milestone implements UI/format persistence only. Theme and user-chosen palette are the next natural personal preferences; both currently reset with their scoped AppearanceService. DataTable sorting and future column/series visibility, order, width and page-size preferences require stable opt-in keys and bounded per-control storage. Navigation expansion is optional and needs stable navigation identities. Startup fonts/layout and temporary Gallery demonstrations are not automatically user preferences. Business drafts, search state, selected records and credentials remain outside the generic preference file/store. See [the persistence report](bugfix-reports/2026-10-09_culture-preference-persistence.md).
 
 ## Three-language verification on 2026-10-06
 
@@ -167,7 +184,7 @@ SetCulture changes only the current circuit and writes no cookie or ambient/defa
 
 Evidence is in artifacts/culture-three-build.log, culture-three-catalogs.log, culture-three-http.log, culture-three-navigation.log, culture-three-components.log and culture-three-bridge.log. These checks establish source/catalog consistency, real SSR output and component/bridge contracts. No Computer Use or browser automation was used in this follow-up; interactive visual acceptance remains user-run.
 
-Manual acceptance: restart the Gallery, switch among English, Chinese and Brazilian Portuguese on the home, localization and access-method pages; switch language with a selected method/form value and confirm state is retained; use a second independent browser profile to confirm isolation; verify separate Brazilian numeric/date formatting and reload according to the existing cookie/Accept-Language selection. Live SetCulture does not persist a preference by itself.
+Manual acceptance for the current source: start Gallery through the existing launcher; switch the extension selector among English, Chinese and Brazilian Portuguese and reload; select separate formatting culture and reload; retain method/form/table state during a language change; use another browser profile to verify isolation; block browser storage and check unchanged values, warning and retry; override defaults through host/environment configuration; verify Framework-only consumers omit Culture registration and assets. Historical 2026-10-06 counts above predate this redesign.
 
 ## Verification and remaining work
 
@@ -181,7 +198,7 @@ Verified on 2026-10-05:
 - Framework-only Native SSR returned 200, retained fallback captions and loaded neither Design nor Culture markup. This is narrower evidence than a complete Native browser acceptance run.
 - Framework and bridge NuGet packages are prepared locally. Framework depends on Abstract; the bridge depends on Abstract/Culture.Blazor. Dictionaries are embedded without loose Culture.json/Texts.json. Earlier Abstract/Shared dependency evidence is superseded by the approved Shared consolidation.
 
-Remaining integration work: choose host preference persistence, validate any client/WASM graph, and publish/version packages in dependency order. Gallery guide/sample UI translation is now complete for the current inventory. These are separate from the completed local Server/SSR bridge experiment. Use the actual component tests and user-run acceptance for the affected runtime boundary, and the [directory map](currentproject-architecture.md) to locate source. Retired UI guides are not runtime authority.
+Remaining integration work: validate any client/WASM graph and publish/version packages in dependency order. UI/format browser persistence is completed in source by the 2026-10-09 change; theme/control preference persistence remains separate follow-up scope. Gallery guide/sample UI translation is complete for the current inventory. Use the actual component tests and user-run acceptance for the affected runtime boundary, and the [directory map](currentproject-architecture.md) to locate source. Retired UI guides are not runtime authority.
 
 ## Gallery prose, metadata and validation completion
 

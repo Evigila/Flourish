@@ -147,7 +147,7 @@ internal static class InteropFinalAuditChecks
                 Require(javascript.Imports == 1 && javascript.Module.BehaviorCalls == 0, "Native enhancement attached before the same DOM acquired its native popup attributes.");
                 await component.InteractiveRenderAsync();
                 var native = javascript.Module.Calls.Single(call => call.Identifier == "attachDisclosureMenu");
-                Require(native.Arguments?.Length == 4 && native.Arguments[3] is true,
+                Require(native.Arguments?.Length == 5 && native.Arguments[3] is true && native.Arguments[4] is false,
                     "The actual native command entry used the selection popup's keep-open policy.");
                 await component.SetNativeAsync(false);
                 await component.InteractiveRenderAsync();
@@ -155,6 +155,32 @@ internal static class InteropFinalAuditChecks
                     "Changing content protocol retained an old listener owner or created another menu controller.");
                 await component.DisposeAsync();
                 Require(javascript.Module.CleanupCalls == 2 && javascript.Module.Releases == 1, "Mode change and disposal confused current menu ownership.");
+            });
+        }));
+        tests.Add(("native action menu refreshes hover mode on its current controller and disposes once", async () =>
+        {
+            await WithComponent<MenuProbe>(new DeferredJs(), new(), async (component, javascript, html) =>
+            {
+                await component.SetNativeAsync(true);
+                await component.SetHoverAsync(true);
+                await component.InteractiveRenderAsync();
+                await component.InteractiveRenderAsync();
+                var hovered = javascript.Module.Calls.Single(call => call.Identifier == "attachDisclosureMenu");
+                Require(hovered.Arguments?.Length == 5 && hovered.Arguments[3] is true && hovered.Arguments[4] is true,
+                    "Native hover did not reach the shared menu controller or lost command dismissal.");
+                await component.SetHoverAsync(false);
+                await component.InteractiveRenderAsync();
+                var clicked = javascript.Module.Calls.Last();
+                Require(clicked.Identifier == "attachDisclosureMenu" && clicked.Arguments?.Length == 5 && clicked.Arguments[3] is true && clicked.Arguments[4] is false,
+                    "Turning hover off did not refresh the native command controller.");
+                Require(hovered.Arguments!.Take(3).SequenceEqual(clicked.Arguments!.Take(3)) && javascript.Imports == 1 && javascript.Module.CleanupCalls == 0,
+                    "A mode update replaced native DOM ownership, reimported a module, or detached the active controller.");
+                Require(javascript.Module.Calls.Count == 2 && Regex.Matches(html(), "<details\\b").Count == 1,
+                    "A hover mode change created an independent menu controller or duplicate disclosure.");
+                await component.DisposeAsync();
+                await component.DisposeAsync();
+                Require(javascript.Module.CleanupCalls == 1 && javascript.Module.Releases == 1,
+                    "The refreshed native hover controller was not released exactly once.");
             });
         }));
         tests.Add(("action menu replacement DOM detaches the old pair before binding the current elements", async () =>
@@ -341,6 +367,10 @@ internal static class InteropFinalAuditChecks
     {
         public MenuProbe() { }
         internal Task InteractiveRenderAsync() => base.OnAfterRenderAsync(false);
+        internal Task SetHoverAsync(bool hover) => SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+        {
+            [nameof(OpenOnHover)] = hover
+        }));
         internal Task SetNativeAsync(bool native) => SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
         {
             [nameof(ChildContent)] = native ? (RenderFragment)(builder =>

@@ -116,18 +116,18 @@ internal static class UniformGridChecks
             Require(!HasClass(rows, "f-uniform-grid-columns"), "Rows-only layout invented columns.");
             var explicitGrid = Tag(await Render<UniformGrid>(new() {
                 [nameof(UniformGrid.Rows)] = 2, [nameof(UniformGrid.Columns)] = 6,
-                [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.Variant)] = UniformGridVariant.Filled,
+                [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.Variant)] = UniformGridVariant.FilledElevated,
                 [nameof(UniformGrid.Shape)] = UniformGridShape.Square
             }), "div", "f-uniform-grid");
             var style = Attribute(explicitGrid, "style");
             Require(Attribute(explicitGrid, "data-grid-layout") == "explicit" && style.Contains("--f-grid-columns:6", StringComparison.Ordinal) && style.Contains("--f-grid-rows:2", StringComparison.Ordinal), "The explicit dimensions were not preserved.");
             Require(style.Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal) && HasClass(explicitGrid, "f-uniform-grid-narrow-columns"), "The existing narrow-column API stopped being explicit.");
-            Require(HasClass(explicitGrid, "f-uniform-grid-variant-filled") && HasClass(explicitGrid, "f-uniform-grid-square"), "The selected Filled appearance or cell shape was lost.");
+            Require(HasClass(explicitGrid, "f-uniform-grid-variant-filled-elevated") && HasClass(explicitGrid, "f-uniform-grid-square"), "The selected FilledElevated appearance or cell shape was lost.");
         }));
         tests.Add(("uniform grid shape appearance and configurable cell maximum remain independent", async () =>
         {
             foreach (var shape in new[] { UniformGridShape.Rectangle, UniformGridShape.Square })
-                foreach (var variant in new[] { UniformGridVariant.Elevated, UniformGridVariant.Filled, UniformGridVariant.Outlined, UniformGridVariant.Danger })
+                foreach (var variant in Enum.GetValues<UniformGridVariant>())
                 {
                     var grid = Tag(await Render<UniformGrid>(new() {
                         [nameof(UniformGrid.Shape)] = shape, [nameof(UniformGrid.Variant)] = variant,
@@ -153,7 +153,7 @@ internal static class UniformGridChecks
             var inheritedButton = Tag(await Render<UniformGridButton>(new()), "button", "f-uniform-grid-button");
             Require(!Attribute(inheritedItem, "class").Contains("f-uniform-variant-", StringComparison.Ordinal)
                 && !Attribute(inheritedButton, "class").Contains("f-uniform-variant-", StringComparison.Ordinal), "Default cells override their container's appearance.");
-            foreach (var variant in new[] { UniformGridVariant.Elevated, UniformGridVariant.Filled, UniformGridVariant.Outlined, UniformGridVariant.Danger })
+            foreach (var variant in Enum.GetValues<UniformGridVariant>())
             {
                 var item = Tag(await Render<UniformGridItem>(new() { [nameof(UniformGridItem.Variant)] = variant }), "div", "f-uniform-grid-item");
                 var button = Tag(await Render<UniformGridButton>(new() { [nameof(UniformGridButton.Variant)] = variant }), "button", "f-uniform-grid-button");
@@ -164,9 +164,86 @@ internal static class UniformGridChecks
         tests.Add(("uniform grid appearance has one variant contract without boolean or enum aliases", () =>
         {
             Require(typeof(UniformGrid).GetProperty("Filled") is null, "The retired Filled boolean still competes with Variant.");
-            Require(Enum.GetNames<UniformGridVariant>().SequenceEqual(new[] { "Elevated", "Filled", "Outlined", "Danger" }),
+            Require(Enum.GetNames<UniformGridVariant>().SequenceEqual(new[] { "Elevated", "FilledElevated", "Danger" }),
                 "The grid appearance enum contains aliases or unexpected variants.");
             return Task.CompletedTask;
+        }));
+        tests.Add(("all grid appearances retain inherited cells and the FilledElevated primary Elevated secondary pairing", async () =>
+        {
+            foreach (var variant in Enum.GetValues<UniformGridVariant>())
+            {
+                RenderFragment cells = builder =>
+                {
+                    builder.OpenComponent<UniformGridItem>(0);
+                    builder.AddAttribute(1, nameof(UniformGridItem.Title), "Inherited item");
+                    builder.CloseComponent();
+                    builder.OpenComponent<UniformGridButton>(2);
+                    builder.AddAttribute(3, nameof(UniformGridButton.Title), "Inherited action");
+                    builder.CloseComponent();
+                    builder.OpenComponent<UniformGridButton>(4);
+                    builder.AddAttribute(5, nameof(UniformGridButton.Title), "Primary action");
+                    builder.AddAttribute(6, nameof(UniformGridButton.Variant), UniformGridVariant.FilledElevated);
+                    builder.CloseComponent();
+                    builder.OpenComponent<UniformGridButton>(7);
+                    builder.AddAttribute(8, nameof(UniformGridButton.Title), "Secondary action");
+                    builder.AddAttribute(9, nameof(UniformGridButton.Variant), UniformGridVariant.Elevated);
+                    builder.CloseComponent();
+                };
+                var html = await Render<UniformGrid>(new() {
+                    [nameof(UniformGrid.Variant)] = variant, [nameof(UniformGrid.ChildContent)] = cells
+                });
+                Require(HasClass(Tag(html, "div", "f-uniform-grid"), $"f-uniform-grid-variant-{AppearanceName(variant)}"),
+                    "The container lost its supplied appearance.");
+                var item = Tag(html, "div", "f-uniform-grid-item");
+                var actions = Tags(html, "f-uniform-grid-button");
+                Require(!Attribute(item, "class").Contains("f-uniform-variant-", StringComparison.Ordinal)
+                    && !Attribute(actions[0], "class").Contains("f-uniform-variant-", StringComparison.Ordinal),
+                    "Default cells block the selected container appearance.");
+                Require(HasClass(actions[1], "f-uniform-variant-filled-elevated")
+                    && HasClass(actions[2], "f-uniform-variant-elevated"),
+                    "Explicit primary and secondary appearances were replaced by the container appearance.");
+                foreach (var tag in new[] { item }.Concat(actions))
+                    Require(!HasClass(tag, "f-uniform-variant-filled") && !HasClass(tag, "f-uniform-variant-outlined"),
+                        "A current grid cell still emits a retired appearance class.");
+            }
+        }));
+        tests.Add(("FormActions preserves all current action variants default Elevated and native button semantics", async () =>
+        {
+            RenderFragment cells = builder =>
+            {
+                builder.OpenComponent<UniformGridButton>(0);
+                builder.AddAttribute(1, nameof(UniformGridButton.Title), "Default action");
+                builder.CloseComponent();
+                builder.OpenComponent<UniformGridButton>(2);
+                builder.AddAttribute(3, nameof(UniformGridButton.Title), "Save");
+                builder.AddAttribute(4, nameof(UniformGridButton.Variant), UniformGridVariant.FilledElevated);
+                builder.AddAttribute(5, nameof(UniformGridButton.Type), "submit");
+                builder.AddAttribute(6, nameof(UniformGridButton.AdditionalAttributes), new Dictionary<string, object> { ["form"] = "record-form" });
+                builder.CloseComponent();
+                builder.OpenComponent<UniformGridButton>(7);
+                builder.AddAttribute(8, nameof(UniformGridButton.Title), "Cancel");
+                builder.AddAttribute(9, nameof(UniformGridButton.Variant), UniformGridVariant.Elevated);
+                builder.AddAttribute(10, nameof(UniformGridButton.Href), "/records");
+                builder.CloseComponent();
+                builder.OpenComponent<UniformGridButton>(11);
+                builder.AddAttribute(12, nameof(UniformGridButton.Title), "Delete");
+                builder.AddAttribute(13, nameof(UniformGridButton.Variant), UniformGridVariant.Danger);
+                builder.AddAttribute(14, nameof(UniformGridButton.Disabled), true);
+                builder.CloseComponent();
+            };
+            var html = await Render<FormActions>(new() { [nameof(FormActions.Columns)] = 4, [nameof(FormActions.ChildContent)] = cells });
+            var actions = Tags(html, "f-uniform-grid-button");
+            Require(actions.Count == 4 && Regex.Matches(html, "<div\\b").Count == 1, "FormActions wrapped or replaced its production action cells.");
+            Require(!Attribute(actions[0], "class").Contains("f-uniform-variant-", StringComparison.Ordinal), "The default action blocked shared Elevated defaults.");
+            Require(HasClass(actions[1], "f-uniform-variant-filled-elevated") && Attribute(actions[1], "type") == "submit"
+                && Attribute(actions[1], "form") == "record-form", "Primary appearance changed native form submission.");
+            Require(HasClass(actions[2], "f-uniform-variant-elevated") && actions[2].StartsWith("<a ", StringComparison.Ordinal)
+                && Attribute(actions[2], "href") == "/records", "Secondary appearance changed native navigation.");
+            Require(HasClass(actions[3], "f-uniform-variant-danger") && Regex.IsMatch(actions[3], "\\sdisabled(?:[\\s=>])"),
+                "Danger lost its explicit appearance or availability.");
+            Require(Attribute(Tag(html, "div", "f-form-actions"), "style") == "--f-action-columns:4;--f-action-narrow-columns:2",
+                "The current action variants changed equal-width or narrow-screen layout.");
+            Require(!Regex.IsMatch(html, @"f-uniform-variant-(?:filled|outlined)(?=[\s""])"), "FormActions emitted a retired appearance.");
         }));
         tests.Add(("uniform grid item is passive and shares encoded title icon and text composition with interactive cells", async () =>
         {
@@ -342,8 +419,8 @@ internal static class UniformGridChecks
     private static string Heading(string html) => Regex.Match(html, "<span class=\"f-uniform-cell-heading\">[\\s\\S]*?</strong></span>").Value;
     private static string AppearanceName(UniformGridVariant variant) => variant switch
     {
-        UniformGridVariant.Elevated => "elevated", UniformGridVariant.Filled => "filled",
-        UniformGridVariant.Outlined => "outlined", UniformGridVariant.Danger => "danger",
+        UniformGridVariant.Elevated => "elevated", UniformGridVariant.FilledElevated => "filled-elevated",
+        UniformGridVariant.Danger => "danger",
         _ => throw new ArgumentOutOfRangeException(nameof(variant))
     };
     private static IReadOnlyList<string> Tags(string html, string cssClass) => Regex.Matches(html, "<[a-z][a-z0-9]*\\b[^>]*>").Select(match => match.Value).Where(tag => HasClass(tag, cssClass)).ToArray();

@@ -624,7 +624,7 @@ internal static class DataTableChecks
                     "A late module was retained or reattached after the native menu left.");
             });
         }));
-        tests.Add(("native ActionMenu rejects unsupported hover instead of silently ignoring the public parameter", async () =>
+        tests.Add(("native hover ActionMenu preserves one usable disclosure and native command during SSR", async () =>
         {
             var services = new ServiceCollection();
             services.AddLogging().AddFlourishFramework();
@@ -634,16 +634,19 @@ internal static class DataTableChecks
             await using var renderer = new HtmlRenderer(scope.ServiceProvider, provider.GetRequiredService<ILoggerFactory>());
             await renderer.Dispatcher.InvokeAsync(async () =>
             {
-                try
+                var output = await renderer.RenderComponentAsync<ActionMenu>(ParameterView.FromDictionary(new Dictionary<string, object?>
                 {
-                    await renderer.RenderComponentAsync<ActionMenu>(ParameterView.FromDictionary(new Dictionary<string, object?>
-                    {
-                        [nameof(ActionMenu.ChildContent)] = NativeMenu(new("Name 1", "Detail 1")),
-                        [nameof(ActionMenu.OpenOnHover)] = true
-                    }));
-                }
-                catch (InvalidOperationException exception) when (exception.Message.Contains("OpenOnHover", StringComparison.Ordinal)) { return; }
-                throw new InvalidOperationException("Unsupported native hover was silently ignored.");
+                    [nameof(ActionMenu.ChildContent)] = NativeMenu(new("Name 1", "Detail 1")),
+                    [nameof(ActionMenu.OpenOnHover)] = true
+                }));
+                var html = output.ToHtmlString();
+                Require(Regex.Matches(html, "<details\\b").Count == 1 && Regex.Matches(html, "<summary\\b").Count == 1,
+                    "Hover replaced or duplicated the SSR disclosure trigger.");
+                Require(!html.Contains("popover=", StringComparison.Ordinal) && !html.Contains("data-f-enhanced", StringComparison.Ordinal),
+                    "SSR hover advertised browser enhancement before the native disclosure acquired a controller.");
+                Require(Regex.Matches(html, "data-record-open").Count == 1 && html.Contains("href=\"/native-entry/?record=1\"", StringComparison.Ordinal)
+                    && html.Contains("target=\"_blank\"", StringComparison.Ordinal) && html.Contains("rel=\"noopener\"", StringComparison.Ordinal),
+                    "Hover changed the native command transport or rendered a competing action.");
             });
         }));
     }

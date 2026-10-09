@@ -7,16 +7,21 @@ const read = async path => (await readFile(new URL(path, root), "utf8")).replace
 const designRoot = "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/";
 const frameworkRoot = "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/";
 
-test("compact page forms reserve balanced spacing without stacking section insets", async () => {
+test("centered container variants reset locally and change horizontal gutters without compact form spacing", async () => {
   const framework = await read(`${frameworkRoot}framework.css`);
-  assert.equal(property(rule(framework, ".f-page-body.f-page-compact-spacing"), "padding-block"), "0 32px");
-  assert.equal(property(rule(framework, ".f-page-compact-spacing > :is(.f-form-layout,.f-identity-card)"), "margin-block-start"), "24px");
-  assert.equal(property(rule(framework, ".f-page-compact-spacing > .f-section"), "padding-block-start"), "24px");
-  const nested = rule(framework, ".f-page-compact-spacing .f-form-layout > .f-section");
-  assert.equal(property(nested, "padding-block"), "0");
-  assert.equal(property(nested, "margin-block"), "0");
+  assert.equal(property(rule(framework, ".f-page-body"), "--f-centered-gutter-scale"), "1");
+  const expanded = rule(framework, ".f-page-centered-expanded");
+  assert.equal(Number(property(expanded, "--f-centered-gutter-scale")), 0.5);
+  assert.doesNotMatch(expanded, /(?:padding|margin)(?:-[a-z]+)?\s*:/);
+  assert.doesNotMatch(framework, /f-page-compact-spacing/);
+  assert.ok(framework.indexOf(".f-page-centered-expanded") > framework.indexOf(".f-page-body {"));
+  const foundation = await read(`${designRoot}foundation.css`);
+  assert.equal(property(rule(foundation, ".f-section"), "padding-top"), "clamp(44px,7vw,84px)");
+  assert.equal(property(rule(foundation, ".f-page-body"), "--f-page-gutter"), "24px");
+  assert.doesNotMatch(foundation, /f-page-compact-spacing/);
   const board = await read(`${frameworkRoot}display-board.css`);
   assert.equal(property(rule(board, ".f-display-board-content > .f-section"), "padding-block"), "0");
+  assert.equal(property(rule(board, ".f-display-board-content > :is(.f-root,.f-data,.f-form-actions,.f-card,.f-shell,.navigation-surface,.f-page-body)"), "width"), "100%");
 });
 
 function rule(css, selector) {
@@ -43,6 +48,9 @@ test("PageBody direct full-row actions leave room for content gutters", async ()
 
 test("PageBody bounds direct aligned action rows without changing nested rows or alignment", async () => {
   const framework = await read(`${frameworkRoot}framework.css`);
+  const defaults = rule(framework, ".f-inline-actions");
+  assert.equal(property(defaults, "justify-content"), "flex-end");
+  assert.equal(property(defaults, "flex-wrap"), "wrap");
   const baseSelector = ".f-inline-actions[data-alignment]";
   const pageSelector = ".f-page-body > .f-inline-actions[data-alignment]";
   const base = rule(framework, baseSelector);
@@ -58,6 +66,18 @@ test("PageBody bounds direct aligned action rows without changing nested rows or
     assert.equal(property(rule(framework, `.f-inline-actions[data-alignment="${alignment}"]`), "justify-content"), justification);
   }
   assert.equal(property(rule(framework, ".f-dialog-actions .f-inline-actions"), "justify-content"), "flex-end");
+  const growingInput = rule(framework, ".f-inline-actions > .f-input");
+  assert.equal(property(growingInput, "flex"), "1 1 0");
+  assert.equal(property(growingInput, "width"), "auto");
+  assert.equal(property(growingInput, "min-width"), "0");
+  const board = await read(`${frameworkRoot}display-board.css`);
+  const boardRow = rule(board, ".f-display-board-content > .f-inline-actions");
+  assert.equal(property(boardRow, "width"), "100%");
+  assert.equal(property(boardRow, "box-sizing"), "border-box");
+  const centeredRow = ".f-display-board-centered > .f-display-board-viewport > .f-display-board-content:not(:has(> .f-code-block)) > .f-inline-actions:not([data-alignment-explicit])";
+  assert.equal(property(rule(board, centeredRow), "justify-content"), "center");
+  assert.doesNotMatch(rule(board, centeredRow), /(?:width|flex|overflow)\s*:|!important/);
+  assert.doesNotMatch(board, /\.f-display-board-centered\s+\.f-inline-actions/);
   const foundation = await read(`${designRoot}foundation.css`);
   assert.equal(property(rule(foundation, ".f-page-body > :not(.f-page-heading)"), "margin-inline"), "var(--f-content-gutter)");
   assert.equal(property(rule(foundation, ".f-page-full"), "--f-content-gutter"), "0px");
@@ -65,13 +85,19 @@ test("PageBody bounds direct aligned action rows without changing nested rows or
   assert.equal(property(rule(foundation, ".f-page-centered"), "--f-content-gutter"), "calc(max(var(--f-page-gutter),calc((100% - var(--f-content-width))/2))*var(--f-centered-gutter-scale,1))");
 });
 
-test("Gallery composes direct and nested real actions with page width and compact spacing controls", async () => {
+test("Gallery exposes both centered containers alongside fluid and full pages with actual action rows", async () => {
   const page = await read("src/Gallery.Flourish.Blazor/Components/Samples/Layout/PageBodySample.razor");
-  assert.match(page, /<StandaloneCheckBox[^>]*@bind-Value="CompactSpacing"/);
-  assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.PageBody Fluid="@\(Mode == "fluid"\)" FullWidth="@\(Mode == "full"\)" CompactSpacing="@CompactSpacing">[\s\S]*?<\/ArkheideSystem\.Flourish\.Blazor\.Components\.Section>\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
+  assert.doesNotMatch(page, /CompactSpacing|Sample_CompactPageSpacing|<StandaloneCheckBox/);
+  assert.match(page, /<SelectBox[^>]*Options="Modes"[^>]*@bind-Value="Mode"/);
+  assert.match(page, /new\("standard", Localization\.Parse\(TextKey\.Sample_StandardCenteredContainer\)\)/);
+  assert.match(page, /new\("expanded", Localization\.Parse\(TextKey\.Sample_ExpandedCenteredContainer\)\)/);
+  assert.match(page, /private string Mode = "standard"/);
+  assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.PageBody Fluid="false" CenteredContainer="CenteredContainer\.Expanded"/);
+  assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.PageBody Fluid="@\(Mode == "fluid"\)" FullWidth="@\(Mode == "full"\)" CenteredContainer="@\(Mode == "expanded" \? CenteredContainer\.Expanded : CenteredContainer\.Standard\)">[\s\S]*?<\/ArkheideSystem\.Flourish\.Blazor\.Components\.Section>\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
   assert.match(page, /<ArkheideSystem\.Flourish\.Blazor\.Components\.Section[^>]*>[\s\S]*?<InlineActions Alignment="HorizontalAlignment.End">/);
   const actions = await read("src/Gallery.Flourish.Blazor/Components/Samples/Content/InlineActionsSample.razor");
-  assert.match(actions, /<PageBody Fluid="false" CompactSpacing="true">\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
+  assert.match(actions, /<PageBody Fluid="false">\s*@foreach \(var alignment in Enum\.GetValues<HorizontalAlignment>\(\)\)\s*\{\s*<InlineActions Alignment="alignment">/);
+  assert.doesNotMatch(actions, /CompactSpacing/);
   assert.doesNotMatch(actions, /style=|Class=/);
 });
 

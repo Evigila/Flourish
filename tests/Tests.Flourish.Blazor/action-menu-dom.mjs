@@ -149,6 +149,7 @@ await check('Current menu CSS excludes disabled links from hover, pressed and fo
     }
 });
 const disclosure = new Node('details'), summary = new Node('summary'), nativePanel = new Node('div'), nativeAction = new Node();
+disclosure.setAttribute('class', 'f-action-menu');
 nativePanel.setAttribute('role', 'menu'); nativeAction.setAttribute('role', 'menuitem'); nativePanel.append(nativeAction); disclosure.append(summary,nativePanel);
 await check('Native ChildContent command policy dismisses the same disclosure after dispatch', async () => {
     api.attachDisclosureMenu(disclosure,summary,nativePanel,true); disclosure.open = true; disclosure.emit('toggle', {});
@@ -164,6 +165,57 @@ await check('Disclosure refresh updates command policy without duplicating liste
     api.attachDisclosureMenu(disclosure,summary,nativePanel,true); dispatchClick(nativeAction); await Promise.resolve();
     assert.equal(disclosure.open, false); api.detachMenu(summary,nativePanel);
     assert.equal(disclosure.events.get('toggle').length, 0); assert.equal(nativePanel.events.get('click').length, 0);
+});
+await check('Native hover opens the same disclosure and top layer without moving focus', () => {
+    const outside = new Node(); outside.focus();
+    api.attachDisclosureMenu(disclosure,summary,nativePanel,true,true);
+    disclosure.emit('pointerenter', { pointerType: 'mouse' });
+    assert.equal(disclosure.open, true); assert.equal(nativePanel.popoverOpen, true);
+    assert.equal(summary.getAttribute('aria-expanded'), 'true'); assert.equal(document.activeElement, outside);
+    assert.equal(nativePanel.style.top, '136px');
+    // The browser subsequently emits a toggle for details.open; it must not close or focus the panel.
+    disclosure.emit('toggle', {}); assert.equal(nativePanel.popoverOpen, true); assert.equal(document.activeElement, outside);
+});
+await check('Native hover stays open across both regions and pointer clicks do not toggle it shut', () => {
+    disclosure.emit('pointerleave', { pointerType: 'mouse', relatedTarget: nativeAction });
+    nativePanel.emit('pointerleave', { pointerType: 'mouse', relatedTarget: summary });
+    const click = event(summary); click.detail = 1; summary.emit('click', click);
+    assert.equal(click.defaultPrevented, true); assert.equal(disclosure.open, true); assert.equal(nativePanel.popoverOpen, true);
+});
+await check('Native hover closes on leave and restores only focus owned by the menu', () => {
+    const outside = document.activeElement;
+    nativePanel.emit('pointerleave', { pointerType: 'mouse', relatedTarget: null });
+    assert.equal(disclosure.open, false); assert.equal(nativePanel.popoverOpen, false); assert.equal(document.activeElement, outside);
+    disclosure.emit('pointerenter', { pointerType: 'mouse' }); nativeAction.focus();
+    disclosure.emit('pointerleave', { pointerType: 'mouse', relatedTarget: new Node() });
+    assert.equal(disclosure.open, false); assert.equal(document.activeElement, summary);
+});
+await check('Native touch ignores hover and keyboard activation focuses the enabled menu action', () => {
+    disclosure.emit('pointerenter', { pointerType: 'touch' }); assert.equal(disclosure.open, false);
+    const click = event(summary); click.detail = 0; summary.emit('click', click);
+    assert.equal(click.defaultPrevented, true); assert.equal(disclosure.open, true); assert.equal(document.activeElement, nativeAction);
+    document.emit('keydown', event(nativeAction, 'Escape')); assert.equal(disclosure.open, false); assert.equal(document.activeElement, summary);
+    click.detail = 1; summary.emit('click', click); assert.equal(disclosure.open, true);
+    api.closeMenu(summary,nativePanel,false);
+});
+await check('Native hover respects aria-disabled and inert availability', () => {
+    summary.setAttribute('aria-disabled','true'); disclosure.emit('pointerenter', { pointerType: 'mouse' });
+    assert.equal(disclosure.open, false); summary.removeAttribute('aria-disabled');
+    disclosure.setAttribute('inert',''); disclosure.emit('pointerenter', { pointerType: 'mouse' });
+    assert.equal(disclosure.open, false); disclosure.removeAttribute('inert');
+});
+await check('Native hover refresh switches back to disclosure clicks and teardown releases all listeners', () => {
+    disclosure.emit('pointerenter', { pointerType: 'mouse' }); assert.equal(disclosure.open, true);
+    api.attachDisclosureMenu(disclosure,summary,nativePanel,true,false);
+    assert.equal(disclosure.open, false); assert.equal(nativePanel.popoverOpen, false);
+    disclosure.emit('pointerenter', { pointerType: 'mouse' }); assert.equal(disclosure.open, false);
+    const click = event(summary); click.detail = 1; summary.emit('click',click); assert.equal(click.defaultPrevented,false);
+    disclosure.open = true; disclosure.emit('toggle',{}); assert.equal(nativePanel.popoverOpen,true);
+    api.attachDisclosureMenu(disclosure,summary,nativePanel,true,false);
+    assert.equal(disclosure.events.get('toggle').length,1); assert.equal(summary.events.get('click').length,1);
+    api.detachMenu(summary,nativePanel); api.detachMenu(summary,nativePanel);
+    for (const [node,type] of [[disclosure,'toggle'],[disclosure,'pointerenter'],[disclosure,'pointerleave'],[summary,'click'],[summary,'keydown'],[nativePanel,'pointerleave']])
+        assert.equal(node.events.get(type).length,0,`${node.tag} ${type}`);
 });
 await check('A real menu action preserves its invoker across an asynchronously opened dialog', async () => {
     api.attachMenu(trigger,menu); api.toggleMenu(trigger,menu); first.focus(); dispatchClick(first); await Promise.resolve();

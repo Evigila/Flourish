@@ -16,6 +16,7 @@ using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
@@ -125,6 +126,7 @@ Test("captured startup and nested builders cannot mutate completed options", () 
     });
     services.AddFlourishDesign(value => appearance = value);
     Throws<InvalidOperationException>(() => framework!.ConfigureTopBar(_ => { }));
+    Throws<InvalidOperationException>(() => framework!.ConfigureServices((_, _) => { }));
     Throws<InvalidOperationException>(() => project!.SetProjectName("Late"));
     Throws<InvalidOperationException>(() => top!.SetSearch(false));
     Throws<InvalidOperationException>(() => appearance!.SetTheme(ApplicationTheme.Dark));
@@ -852,6 +854,7 @@ ChartToolbarChecks.Register(tests);
 DataSearchChecks.Register(tests);
 BrandingChecks.Register(tests);
 TextChecks.Register(tests);
+FrameworkConfigurationChecks.Register(tests);
 InputMigrationChecks.Register(tests);
 SelectValueConversionChecks.Register(tests);
 ControlTextChecks.Register(tests);

@@ -1,0 +1,32 @@
+@inherits LocalizedComponentBase
+
+<SelectBox TValue="string" Options="@Cultures" Value="@CurrentCulture" ValueChanged="ChangeCulture"
+           ValueExpression="@(() => CurrentCulture)" Disabled="@Saving" aria-label="@Text(FormatCulture ? "FormatCulture" : "Language")" style="@WidthStyle" />
+<Dialog Title="@Text("SaveFailedTitle")" @bind-IsOpen="SaveFailed">
+    <Notice Severity="NotificationSeverity.Warning">@Text("SaveFailed")</Notice>
+</Dialog>
+
+@code {
+    /// <summary>Constrains the selector width within the available row width.</summary>
+    [Parameter] public string? MaxWidth { get; set; }
+    /// <summary>Selects formatting culture while retaining the current UI culture.</summary>
+    [Parameter] public bool FormatCulture { get; set; }
+
+    private bool SaveFailed;
+    private bool Saving;
+    private string CurrentCulture => FormatCulture ? Localization.FormatCulture.Name : Localization.Culture;
+    private string? WidthStyle => MaxWidth is null ? null : $"width:{MaxWidth};max-width:100%";
+    private IReadOnlyList<SelectOption<string>> Cultures => Localization.AvailableCultures
+        .Select(name => new SelectOption<string>(name, CultureInfo.GetCultureInfo(name).NativeName)).ToArray();
+    private string Text(string token) => ((ITextProvider)Localization).Get(new("Culture", token));
+
+    private async Task ChangeCulture(string culture)
+    {
+        Saving = true;
+        try
+        {
+            SaveFailed = !await (FormatCulture ? Localization.SelectFormatAsync(culture) : Localization.SelectAsync(culture));
+        }
+        finally { Saving = false; }
+    }
+}

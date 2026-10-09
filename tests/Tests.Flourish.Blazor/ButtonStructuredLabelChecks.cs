@@ -62,7 +62,7 @@ internal static class ButtonStructuredLabelChecks
                 && framework.Contains("flex-direction:column; align-items:flex-start; flex:1 1 0") && framework.Contains("margin-inline-start:auto; text-align:end")
                 && framework.Contains("overflow-wrap:anywhere"), "Structured layout lacks bounded wrapping or logical alignment.");
             var sample = Read("src/Gallery.Flourish.Blazor/Components/Samples/Data/ButtonSample.razor");
-            Require(sample.Contains("Description=\"") && sample.Contains("TrailingText=\"") && sample.Contains("Busy=\"Saving\" OnClick=\"SaveAsync\""), "Gallery lacks an executable structured action.");
+            Require(sample.Contains("Description=\"") && sample.Contains("TrailingText=\"") && sample.Contains("OnClick=\"SelectAccount\""), "Gallery lacks an executable structured account action.");
             return Task.CompletedTask;
         }));
     }

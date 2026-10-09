@@ -1,0 +1,32 @@
+{
+  "Language": {
+    "en-US": "Language",
+    "zh-CN": "语言",
+    "pt-BR": "Idioma"
+  },
+  "FormatCulture": {
+    "en-US": "Formatting culture",
+    "zh-CN": "格式区域",
+    "pt-BR": "Cultura de formatação"
+  },
+  "SaveFailedTitle": {
+    "en-US": "Preference not saved",
+    "zh-CN": "偏好未保存",
+    "pt-BR": "Preferência não salva"
+  },
+  "SaveFailed": {
+    "en-US": "The browser could not save this choice. Allow cookies and try again.",
+    "zh-CN": "浏览器未能保存此选择。请允许 Cookie 后重试。",
+    "pt-BR": "O navegador não conseguiu salvar esta escolha. Permita cookies e tente novamente."
+  },
+  "PickerScenario": {
+    "en-US": "Persistent browser language and formatting selection",
+    "zh-CN": "浏览器语言与格式偏好的持久化选择",
+    "pt-BR": "Seleção persistente de idioma e formatação do navegador"
+  },
+  "PickerGuidance": {
+    "en-US": "ConfigureCulture owns defaults, catalog registration and request restoration. LanguagePicker uses standard SelectBox, Dialog and Notice; FormatCulture keeps the current UI language. Personal choices are saved per browser before the scoped text changes.",
+    "zh-CN": "ConfigureCulture 管理默认值、词典注册与请求恢复。LanguagePicker 组合标准 SelectBox、Dialog 和 Notice；FormatCulture 保留界面语言。个人选择在浏览器保存成功后更新当前文本。",
+    "pt-BR": "ConfigureCulture gerencia padrões, catálogos e restauração por requisição. LanguagePicker usa SelectBox, Dialog e Notice; FormatCulture mantém o idioma da interface. As escolhas pessoais são salvas por navegador antes da atualização do texto."
+  }
+}

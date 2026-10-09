@@ -8,10 +8,15 @@ The review covered the 89 exported Blazor components in ComponentUsageCatalog at
 
 Flourish source and component implementations remain the UI authority. This document records contract ownership and review findings, not a second visual specification. The [API guide](component-api-organization.md) describes the supported contracts.
 
+## 2026-10-09 card consolidation
+
+The user confirmed that Card already covers IdentityCard summary capabilities and authorized removing the duplicate entry. Identity and record summaries now use Card directly with semantic ChildContent, CopyText and Actions. Delete IdentityCard, its Gallery page/navigation/catalog/parameter entries and identity-only styles; retain no alias or forwarding component. The 1.1.4-preview note records this reason. This supersedes the earlier distinct-card conclusion below; dated release and repair evidence remains historical.
+
 ## Removed entries
 
 | Retired entry | Current production composition and reason |
 | --- | --- |
+| Components.IdentityCard | Direct Card for ordinary content, identity and record summaries. Its heading/body/action composition already covers the summary capability; one entry avoids duplicate renderers and API guidance. |
 | Components.ConfirmationHost | Direct Dialog and ordinary Button. A confirmation is caller content and a result, not an independent global renderer. ConfirmationService and shell/DI mounting are also removed. |
 | Components.ReconnectDialog | Direct browser-controlled Dialog with DialogView, Notice, ProgressBar and Button. Connection protocol belongs to the host; keyed visibility, native modality and focus are reusable Dialog capabilities. |
 | Components.StaticDialog | Dialog BrowserControlled supports pre-rendered native content through the same modal core, without a second component. |
@@ -41,7 +46,7 @@ These are implementation findings, not permission to drop existing behavior. A u
 | High | AccessBrand and LogoDisplayer | Reconcile alignment, configured identity/logo, artistic presentation, alternative text and heading semantics in one identity display entry. |
 | High | AccessActions, InlineActions and FormActions | A single action layout needs semantic nav/div ownership, accessible labels, alignment/margins and equal-column form actions. Similar children do not make these current layout contracts interchangeable. |
 | High | AccessPanel and AccessFormSurface | General surface/layout variants need their existing width/alignment and form spacing; avoid introducing nested decorative surfaces. |
-| Medium | ServiceMenu and ActionMenu | ActionMenu needs the service entry's hover, links and SSR/native ChildContent behavior. Its current hover and native-content combination is intentionally constrained. |
+| Medium | ServiceMenu and ActionMenu | ActionMenu supports hover in generated Actions and native ChildContent through one controller after browser enhancement; native SSR retains click/keyboard disclosure. Review service-link semantics before merging entries. The former native-content hover restriction was superseded on 2026-10-09. |
 | Medium | DataPager and DataTable's internal pager | One paging renderer must preserve progressive SSR, page-size choices, synchronized upper/lower regions and loaded-result semantics, with one event contract. |
 | Medium | ProgressBar and ProgressRing | A general shape variant must preserve native progress/text behavior and the ring's stopped state, not merely replace its paint. |
 | Lower | DropdownSurface and ExpansionIndicator | Review actual callers and Gallery obligations before internalizing remaining construction-only helpers. |
@@ -56,7 +61,7 @@ The remaining access-named entries are presentation/layout concepts, not authent
 | SelectBox, ReferenceDropdown, SearchAutocomplete and MultiSelectBox | Scalar values, nullable references, query/candidate selection and complete multiple-selection snapshots differ. The earlier DisplayOptions/MultiSelectDropdown duplicate is already consolidated into MultiSelectBox. |
 | DataTable, ListView and EditingGrid | Interactive records, static comparisons and spreadsheet cell editing have different lifecycle/data contracts. |
 | Disclosure and ToggleSection | Native disclosure opening and controlled business-boolean visibility/retained child state differ. |
-| Card, IdentityCard and OfferCard | Ordinary content, identity slots and selectable staged offers have different semantics, registration and focus/selection obligations. |
+| Card and OfferCard | Card owns ordinary content, identity and record summaries. OfferCard retains selectable staged-offer semantics and its focus/selection obligations. The former IdentityCard separation is superseded by the user-authorized 2026-10-09 consolidation. |
 | CodeBlock, CopyText and DisplayBoard | Formatted code, inline copyable text and executable preview/source presentation serve separate responsibilities. |
 | UniformGridButton and Button | A tiled finite choice/action layout is different from an ordinary action. Confirmation actions use Button directly. |
 

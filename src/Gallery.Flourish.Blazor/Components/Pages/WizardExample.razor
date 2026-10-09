@@ -7,23 +7,23 @@
     @if (Step == 0)
     {
         <UniformGrid Columns="2" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Personal)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChooseUse(false))" />
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Workspace)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChooseUse(true))" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Personal)" Variant="UniformGridVariant.FilledElevated" OnClick="@(() => ChooseUse(false))" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Workspace)" Variant="UniformGridVariant.FilledElevated" OnClick="@(() => ChooseUse(true))" />
         </UniformGrid>
     }
     else if (Step == 1)
     {
         <UniformGrid Columns="3" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Standard)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Standard"))" />
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Professional)" Variant="UniformGridVariant.Filled" OnClick="@(() => ChoosePlan("Professional"))" Disabled="WorkspaceUse" />
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Back)" Variant="UniformGridVariant.Outlined" OnClick="@(() => Step = 0)" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Standard)" Variant="UniformGridVariant.FilledElevated" OnClick="@(() => ChoosePlan("Standard"))" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Professional)" Variant="UniformGridVariant.FilledElevated" OnClick="@(() => ChoosePlan("Professional"))" Disabled="WorkspaceUse" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Back)" Variant="UniformGridVariant.Elevated" OnClick="@(() => Step = 0)" />
         </UniformGrid>
     }
     else
     {
         <UniformGrid Columns="2" NarrowColumns="1" aria-label="@Localization.Parse(TextKey.Nav_DisplayWizard)">
             <UniformGridButton Title="@($"{Localization.Parse(WorkspaceUse ? TextKey.Wizard_Workspace : TextKey.Wizard_Personal)} · {PlanLabel}")" Disabled="true" />
-            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Restart)" Variant="UniformGridVariant.Outlined" OnClick="Restart" />
+            <UniformGridButton Title="@Localization.Parse(TextKey.Wizard_Restart)" Variant="UniformGridVariant.Elevated" OnClick="Restart" />
         </UniformGrid>
     }
 </PageBody>

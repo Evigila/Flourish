@@ -305,9 +305,9 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     state.cleanup.push(()=>observer.disconnect());
     menus.set(panel,state);
 }
-export function attachDisclosureMenu(disclosure, trigger, panel, dismissOnAction=false) {
+export function attachDisclosureMenu(disclosure, trigger, panel, dismissOnAction=false, openOnHover=false) {
     if (!disclosure || !trigger || !panel) return;
-    attachMenu(trigger,panel);
+    attachMenu(trigger,panel,openOnHover);
     const state = menus.get(panel);
     state.dismissOnAction = dismissOnAction;
     state.itemSelector = dismissOnAction ? '[role="menuitem"]:not([disabled])' : focusableSelector;
@@ -316,8 +316,17 @@ export function attachDisclosureMenu(disclosure, trigger, panel, dismissOnAction
         const synchronize = () => disclosure.open ? openMenu(state,false) : closeMenu(trigger,panel,false);
         disclosure.addEventListener('toggle',synchronize);
         state.cleanup.push(()=>disclosure.removeEventListener('toggle',synchronize));
+        const activate = event => {
+            if (!state.openOnHover) return;
+            // Enhanced hover menus use the same pointer/keyboard activation policy as generated actions.
+            // Prevent summary's default toggle from closing an already hovered menu.
+            event.preventDefault();
+            toggleMenu(trigger,panel,event.detail === 0);
+        };
+        trigger.addEventListener('click',activate);
+        state.cleanup.push(()=>trigger.removeEventListener('click',activate));
     }
-    // Native summary activation owns the open state; selection options remain open, commands dismiss after dispatch.
+    // Synchronize native disclosure activation; selection options remain open, commands dismiss after dispatch.
     if (disclosure.open && !state.open) openMenu(state,false);
     else if (!disclosure.open && state.open) closeMenu(trigger,panel,false);
 }

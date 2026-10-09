@@ -1,4 +1,209 @@
 {
+  "ChangeLog_ButtonContentHeight": {
+    "en-US": "Multiline buttons retain vertical padding and grow with content; single-line buttons keep the standard minimum height.",
+    "zh-CN": "多行按钮保留上下内边距并随内容增高；单行按钮保持标准最小高度。",
+    "pt-BR": "Botões com várias linhas mantêm espaçamento vertical interno e crescem com o conteúdo; botões de uma linha mantêm a altura mínima padrão."
+  },
+  "ChangeLog_BoardActionAlignment": {
+    "en-US": "Center default action rows in centered preview boards. Preserve page alignment, explicit alignment and full-row sizing.",
+    "zh-CN": "居中背景板中的默认示例动作行居中；保留页面对齐、显式对齐和整行宽度。",
+    "pt-BR": "Centraliza ações padrão em painéis de prévia centralizados. Preserva alinhamento da página, alinhamento explícito e largura da linha."
+  },
+  "Catalog_LanguagePicker_Purpose": {
+    "en-US": "Select and persist the interface language or number/date format through the Culture extension.",
+    "zh-CN": "通过 Culture 扩展选择并保存界面语言或数字、日期格式。",
+    "pt-BR": "Seleciona e salva o idioma da interface ou o formato de números e datas pela extensão Culture."
+  },
+  "Catalog_LanguagePicker_Variants": {
+    "en-US": "Language selection by default; FormatCulture selects formats independently. Supported choices and save errors come from the extension.",
+    "zh-CN": "默认选择语言；FormatCulture 独立选择格式。可选语言和保存失败提示由扩展提供。",
+    "pt-BR": "Seleciona o idioma por padrão; FormatCulture seleciona formatos separadamente. A extensão fornece as opções e os erros de gravação."
+  },
+  "Parameter_MaxWidth_LanguagePicker": {
+    "en-US": "Optional selector width, bounded by the available space.",
+    "zh-CN": "可选的选择器宽度，不超过可用空间。",
+    "pt-BR": "Largura opcional do seletor, limitada pelo espaço disponível."
+  },
+  "Parameter_FormatCulture_LanguagePicker": {
+    "en-US": "Select number and date formats while keeping the interface language.",
+    "zh-CN": "选择数字和日期格式，保留界面语言。",
+    "pt-BR": "Seleciona formatos de números e datas mantendo o idioma da interface."
+  },
+  "ChangeLog_CultureConfiguration": {
+    "en-US": "Configure Culture inside AddFlourishFramework. Move catalog loading, request negotiation, browser preferences and LanguagePicker into the extension.",
+    "zh-CN": "在 AddFlourishFramework 中配置 Culture；词典加载、请求语言识别、浏览器偏好和 LanguagePicker 收拢至扩展。",
+    "pt-BR": "Configura Culture em AddFlourishFramework. Move catálogos, negociação de idioma, preferências e LanguagePicker para a extensão."
+  },
+  "ChangeLog_CulturePreferences": {
+    "en-US": "Persist browser language and number/date formats across reloads. Separate framework defaults into appsettings.Flourish.json.",
+    "zh-CN": "浏览器保存语言及数字、日期格式，刷新后恢复；框架默认配置独立存入 appsettings.Flourish.json。",
+    "pt-BR": "Preserva idioma e formatos numéricos e de data após recarregar. Separa os padrões do framework em appsettings.Flourish.json."
+  },
+  "ChangeLog_CenteredContainers": {
+    "en-US": "Add Standard and Expanded centered containers to PageBody. Remove CompactSpacing and shell-level gutter scaling; update width examples.",
+    "zh-CN": "PageBody 新增标准与扩大中心容器；移除紧凑表单间距和导航框架留白缩放，更新宽度示例。",
+    "pt-BR": "Adiciona contêineres centrais Standard e Expanded a PageBody. Remove CompactSpacing e a escala do shell; atualiza os exemplos de largura."
+  },
+  "ChangeLog_TutorialDisplayBoard": {
+    "en-US": "Place the Tutorial example inside a standard DisplayBoard.",
+    "zh-CN": "教程页面的控件展示使用标准背景板。",
+    "pt-BR": "Coloca o exemplo de tutorial em um DisplayBoard padrão."
+  },
+  "ChangeLog_RecordListHeading": {
+    "en-US": "Add the Demo records section heading to Record list.",
+    "zh-CN": "为记录列表补充“演示记录”小标题。",
+    "pt-BR": "Adiciona o título Registros de demonstração à lista de registros."
+  },
+  "ChangeLog_ComposedLayoutGutters": {
+    "en-US": "Match composed-layout page gutters to the other examples.",
+    "zh-CN": "组合布局页面采用统一左右间距。",
+    "pt-BR": "Uniformiza as margens laterais dos layouts compostos com os demais exemplos."
+  },
+  "ChangeLog_ActionAlignment": {
+    "en-US": "Align compact action rows to the right; retain full-row sizing. Use a standard Button for framework integration navigation.",
+    "zh-CN": "未占满一行的操作默认靠右，整行组合保持铺满；框架集成入口改用标准 Button。",
+    "pt-BR": "Alinha ações compactas à direita e mantém grupos de largura total. Usa Button padrão no link de integração do framework."
+  },
+  "Sample_FictionalMember": {
+    "en-US": "Fictional member",
+    "zh-CN": "虚构成员",
+    "pt-BR": "Membro fictício"
+  },
+  "ChangeLog_CardConsolidation": {
+    "en-US": "Removed IdentityCard: Card covers its summary capabilities; one card entry avoids duplication.",
+    "zh-CN": "移除 IdentityCard：Card 已覆盖其摘要能力，统一卡片入口减少重复。",
+    "pt-BR": "IdentityCard removido: Card cobre seus recursos de resumo; uma única entrada evita duplicação."
+  },
+  "Sample_DefaultElevated": {
+    "en-US": "Elevated (default)",
+    "zh-CN": "Elevated（默认）",
+    "pt-BR": "Elevated (padrão)"
+  },
+  "ChangeLog_FormActionsVariants": {
+    "en-US": "Aligned FormActions with UGB variants; restored group elevation, transparent gaps and keyboard focus.",
+    "zh-CN": "FormActions 同步 UGB 变体；恢复组阴影、透明间隔与键盘焦点。",
+    "pt-BR": "FormActions alinhado às variantes UGB; restauradas sombra do grupo, separações transparentes e foco do teclado."
+  },
+  "Sample_UniformGridButtonComposition": {
+    "en-US": "FilledElevated combines primary fill with Elevated's shadow. Pair primary FilledElevated actions with Elevated actions. Elevated is the default; all variants have no hover border.",
+    "zh-CN": "FilledElevated 结合主色填充与 Elevated 阴影。组合时主要操作使用 FilledElevated，其他操作使用 Elevated。默认仍为 Elevated；所有变体均无悬停边框。",
+    "pt-BR": "FilledElevated combina preenchimento primário e sombra de Elevated. Combine ações principais FilledElevated com ações Elevated. Elevated continua padrão; nenhuma variante tem borda ao passar o mouse."
+  },
+  "ChangeLog_ActionMenuHover": {
+    "en-US": "Fixed ActionMenu hover opening for native actions; the scenario switch controls both menus.",
+    "zh-CN": "修复 ActionMenu 原生动作的悬停展开；示例开关同步控制两个菜单。",
+    "pt-BR": "Corrigida a abertura de ações nativas do ActionMenu ao passar o ponteiro; o seletor controla ambos os menus."
+  },
+  "ChangeLog_GridVariants": {
+    "en-US": "Replaced uniform-grid Filled and Outlined with FilledElevated and Elevated; removed variant hover borders.",
+    "zh-CN": "UniformGrid 移除 Filled 和 Outlined，改用 FilledElevated 与 Elevated；移除变体悬停边框。",
+    "pt-BR": "Filled e Outlined da grade uniforme substituídos por FilledElevated e Elevated; removidas bordas das variantes ao passar o mouse."
+  },
+  "Sample_AccountSelected": {
+    "en-US": "Selected account: {0}",
+    "zh-CN": "已选择账号：{0}",
+    "pt-BR": "Conta selecionada: {0}"
+  },
+  "ChangeLog_ButtonExamples": {
+    "en-US": "Renamed Gallery button labels to Filled and Outlined; removed Quiet hover borders and separated account selection from draft saving.",
+    "zh-CN": "Gallery 按钮标签改为 Filled 和 Outlined；移除 Quiet 悬停边框，分离账号选择与草稿保存。",
+    "pt-BR": "Rótulos de botão da Gallery alterados para Filled e Outlined; removidas bordas de Quiet ao passar o mouse e separadas seleção de conta e gravação de rascunho."
+  },
+  "Nav_ChangeLog": {
+    "en-US": "ChangeLog",
+    "zh-CN": "更新记录",
+    "pt-BR": "ChangeLog"
+  },
+  "ChangeLog_Version": {
+    "en-US": "Version",
+    "zh-CN": "版本",
+    "pt-BR": "Versão"
+  },
+  "ChangeLog_NoChanges": {
+    "en-US": "No changes yet.",
+    "zh-CN": "暂无变更。",
+    "pt-BR": "Sem alterações."
+  },
+  "Home_ChangeLogDescription": {
+    "en-US": "Changes by release and the next preview.",
+    "zh-CN": "查看各版本与下一期预览的变更。",
+    "pt-BR": "Alterações por versão e na próxima prévia."
+  },
+  "ChangeLog_CssVerification": {
+    "en-US": "Fixed CSS asset verification with isolated NuGet caches.",
+    "zh-CN": "修复独立 NuGet 缓存下的 CSS 资产验证。",
+    "pt-BR": "Corrigida a verificação de recursos CSS com cache NuGet isolado."
+  },
+  "ChangeLog_StructuredButtons": {
+    "en-US": "Added Button descriptions and trailing status text.",
+    "zh-CN": "Button 新增描述与尾部状态文本。",
+    "pt-BR": "Button ganha descrição e texto de estado no final."
+  },
+  "ChangeLog_IdentityLayout": {
+    "en-US": "Fixed IdentityCard wrapping, heading alignment and width overflow.",
+    "zh-CN": "修复 IdentityCard 换行、标题对齐与宽度溢出。",
+    "pt-BR": "Corrigidas quebra de texto, alinhamento do título e largura de IdentityCard."
+  },
+  "ChangeLog_EditorLayout": {
+    "en-US": "Added compact PageBody spacing, full-height EditingGrid layouts and fixed Rectangle cell heights.",
+    "zh-CN": "新增 PageBody 紧凑间距、EditingGrid 全高布局与 Rectangle 固定单元高度。",
+    "pt-BR": "Adicionados espaçamento compacto de PageBody, EditingGrid em altura total e altura fixa para células Rectangle."
+  },
+  "ChangeLog_AccessLayout": {
+    "en-US": "Added per-instance footer identity and NavigationChoices button variants; fixed access-form action spacing.",
+    "zh-CN": "新增页脚独立身份配置与 NavigationChoices 按钮变体；修复访问表单操作间距。",
+    "pt-BR": "Adicionados identidade por rodapé e variantes de botão em NavigationChoices; corrigido o espaçamento das ações de formulários de acesso."
+  },
+  "ChangeLog_TableWidths": {
+    "en-US": "Fixed DataTable bulk-editor widths and selection-column sizing.",
+    "zh-CN": "修复 DataTable 批量编辑宽度与选择列尺寸。",
+    "pt-BR": "Corrigidas as larguras da edição em lote e da coluna de seleção de DataTable."
+  },
+  "ChangeLog_EditorFrame": {
+    "en-US": "Removed EditingGrid's blank trailing column and rounded frame.",
+    "zh-CN": "移除 EditingGrid 尾部空列与圆角边框。",
+    "pt-BR": "Removidas a coluna vazia final e as bordas arredondadas de EditingGrid."
+  },
+  "ChangeLog_GuttersAndDialogs": {
+    "en-US": "Added configurable centered gutters; aligned Dialog actions to the end.",
+    "zh-CN": "新增可配置居中边距；Dialog 操作统一尾端对齐。",
+    "pt-BR": "Adicionadas margens centrais configuráveis; ações de Dialog alinhadas ao final."
+  },
+  "ChangeLog_OrganizationAccess": {
+    "en-US": "Fixed organization-access page flow, background and footer placement.",
+    "zh-CN": "修复组织访问页文档流、背景与页脚位置。",
+    "pt-BR": "Corrigidos fluxo, fundo e posição do rodapé na página de acesso à organização."
+  },
+  "ChangeLog_FieldActions": {
+    "en-US": "Added Field.Actions with separate input, operation and validation layout.",
+    "zh-CN": "新增 Field.Actions，分离输入、操作与验证布局。",
+    "pt-BR": "Adicionado Field.Actions com layout separado para entrada, ações e validação."
+  },
+  "ChangeLog_BooleanSelection": {
+    "en-US": "Fixed Boolean and nullable Boolean selection in SelectBox and StandaloneSelectBox.",
+    "zh-CN": "修复 SelectBox 与 StandaloneSelectBox 的布尔及可空布尔选择。",
+    "pt-BR": "Corrigida a seleção de Boolean e Boolean anulável em SelectBox e StandaloneSelectBox."
+  },
+  "ChangeLog_ActionWidths": {
+    "en-US": "Fixed direct PageBody action-row width overflow.",
+    "zh-CN": "修复 PageBody 直接操作行的宽度溢出。",
+    "pt-BR": "Corrigido o excesso de largura das linhas de ações diretas de PageBody."
+  },
+  "ChangeLog_Tutorials": {
+    "en-US": "Added TutorialBoard and TutorialStep with host-controlled progress, actions and skipping.",
+    "zh-CN": "新增 TutorialBoard 与 TutorialStep，进度、操作与跳过由宿主管理。",
+    "pt-BR": "Adicionados TutorialBoard e TutorialStep com progresso, ações e dispensa controlados pelo aplicativo."
+  },
+  "ChangeLog_ProgressRing": {
+    "en-US": "Added compact ProgressRing display and optional value labels.",
+    "zh-CN": "ProgressRing 新增紧凑显示与可选数值标签。",
+    "pt-BR": "ProgressRing ganha exibição compacta e rótulos de valor opcionais."
+  },
+  "ChangeLog_GalleryChangeLog": {
+    "en-US": "Added versioned ChangeLog navigation; bounded Gallery account and login actions.",
+    "zh-CN": "新增按版本选择的 ChangeLog 导航；限制 Gallery 账户与登录操作宽度。",
+    "pt-BR": "Adicionada navegação de ChangeLog por versão; limitada a largura das ações de conta e login na Gallery."
+  },
   "Catalog_TutorialBoard_Purpose": {
     "en-US": "Host-driven tutorials with a compact progress entry and nonmodal board.",
     "zh-CN": "宿主驱动的教程，配有缩略进度入口和非模态面板。",
@@ -134,25 +339,10 @@
     "zh-CN": "未指定",
     "pt-BR": "Não informado"
   },
-  "Sample_HalfCenteredGutters": {
-    "en-US": "Reduce centered side gutters by 50%",
-    "zh-CN": "中心内容两侧留白各减少 50%",
-    "pt-BR": "Reduzir os recuos laterais centrais em 50%"
-  },
-  "Parameter_CenteredContentGutterScale": {
-    "en-US": "Scale each centered PageBody side gutter in this navigation shell only. Finite 0–1; default 1 preserves standard spacing, 0.5 halves each gutter. Fluid and full-width pages remain unchanged.",
-    "zh-CN": "仅缩放当前导航框架内中心 PageBody 的每侧留白。有限值 0–1，默认 1 保持标准间距，0.5 将每侧减半。流式和全宽页面不变。",
-    "pt-BR": "Escala cada recuo lateral de PageBody central apenas nesta estrutura de navegação. Valor finito de 0–1; padrão 1 mantém o espaçamento, 0.5 reduz cada recuo à metade. Páginas fluidas e de largura total não mudam."
-  },
-  "Sample_CompactPageSpacing": {
-    "en-US": "Compact form spacing",
-    "zh-CN": "紧凑表单间距",
-    "pt-BR": "Espaçamento compacto de formulário"
-  },
-  "Parameter_CompactSpacing": {
-    "en-US": "Use compact page spacing for short forms and identity summaries: 24px above content and 32px below, without nested Section insets.",
-    "zh-CN": "短表单和身份摘要使用紧凑页面间距：内容上方 24px、下方 32px，避免嵌套 Section 留白叠加。",
-    "pt-BR": "Use espaçamento compacto em formulários curtos e resumos de identidade: 24px acima e 32px abaixo, sem recuos de Section aninhada."
+  "Parameter_CenteredContainer": {
+    "en-US": "Standard (default) keeps normal centered gutters; Expanded halves both side gutters and widens content. Applies only to centered pages, with Fluid=false or an inherited centered layout. Fluid and FullWidth retain their sizing. Vertical spacing remains standard; each nested PageBody selects its own mode.",
+    "zh-CN": "Standard（默认）为标准中心容器；Expanded 将两侧留白减半、扩大正文宽度。仅对 Fluid=false 或继承居中布局的页面生效。流式和 FullWidth 使用各自宽度规则，纵向间距采用默认布局，每个嵌套 PageBody 独立选择模式。",
+    "pt-BR": "Standard (padrão) mantém os recuos centrais normais; Expanded reduz ambos à metade e amplia o conteúdo. Aplica-se a páginas centrais, com Fluid=false ou layout central herdado. Fluid e FullWidth mantêm sua largura. O espaçamento vertical é padrão; cada PageBody aninhado escolhe seu próprio modo."
   },
   "Page_RecordCreate": {
     "en-US": "Create record",
@@ -810,9 +1000,9 @@
     "pt-BR": "Formato de números e datas"
   },
   "Localization_Scope": {
-    "en-US": "Changes belong to this circuit.\nReloading restores the browser request language.",
-    "zh-CN": "切换只影响当前会话。\n刷新会恢复浏览器请求选择的语言。",
-    "pt-BR": "As alterações se aplicam apenas a este circuito.\nRecarregar a página restaura o idioma selecionado na requisição do navegador."
+    "en-US": "Language and number/date formats are saved separately for each browser and restored on reload.\nFramework defaults belong in appsettings.Flourish.json; appsettings.json remains available for business configuration.",
+    "zh-CN": "语言与数字、日期格式按浏览器保存，刷新后恢复。\n框架默认配置使用 appsettings.Flourish.json；appsettings.json 留给业务应用。",
+    "pt-BR": "Idioma e formatos numéricos e de data são salvos por navegador e restaurados ao recarregar.\nOs padrões do framework ficam em appsettings.Flourish.json; appsettings.json permanece disponível para a configuração do aplicativo."
   },
   "Localization_Introduction": {
     "en-US": "The application and framework use separate embedded catalogs.\nA scoped bridge resolves shell labels without changing routes or commands.",
@@ -1730,9 +1920,9 @@
     "pt-BR": "Field associa rótulos e validação; FormLayout e FormActions organizam campos e botões."
   },
   "Examples_FormVariants": {
-    "en-US": "Use explicit Filled variants for primary actions and Outlined for other actions.",
-    "zh-CN": "建议主要操作显式使用 Filled，其余操作使用 Outlined。",
-    "pt-BR": "Use variantes Filled explícitas para ações principais e Outlined para outras ações."
+    "en-US": "Use explicit FilledElevated variants for primary actions and Elevated for other actions.",
+    "zh-CN": "建议主要操作显式使用 FilledElevated，其余操作使用 Elevated。",
+    "pt-BR": "Use variantes FilledElevated explícitas para ações principais e Elevated para outras ações."
   },
   "Examples_TaskStatus": {
     "en-US": "Task status",
@@ -2299,35 +2489,10 @@
     "zh-CN": "执行模拟图标操作",
     "pt-BR": "Executar ação de exemplo do ícone"
   },
-  "Sample_EmptyIdentityCardWithTwoColumns": {
-    "en-US": "Empty identity card with two columns",
-    "zh-CN": "双栏空身份卡片",
-    "pt-BR": "Cartão de identidade vazio com duas colunas"
-  },
-  "Sample_WithASidebar": {
-    "en-US": "With a sidebar",
-    "zh-CN": "有侧栏",
-    "pt-BR": "Com painel lateral"
-  },
-  "Sample_ShowDemoIdentitySidebar": {
-    "en-US": "Show demo identity sidebar",
-    "zh-CN": "显示模拟身份侧栏",
-    "pt-BR": "Mostrar painel lateral da identidade fictícia"
-  },
-  "Sample_FictionalMember": {
-    "en-US": "Fictional member",
-    "zh-CN": "虚构成员",
-    "pt-BR": "Membro fictício"
-  },
   "Sample_Identifier": {
     "en-US": "Identifier",
     "zh-CN": "编号",
     "pt-BR": "Identificador"
-  },
-  "Sample_DemoAccessScope": {
-    "en-US": "Demo access scope",
-    "zh-CN": "模拟访问范围",
-    "pt-BR": "Escopo de acesso fictício"
   },
   "Sample_FictionalExampleLogo": {
     "en-US": "Fictional example logo",
@@ -2399,15 +2564,10 @@
     "zh-CN": "空悬浮信息格面",
     "pt-BR": "Bloco informativo elevado vazio"
   },
-  "Sample_EmptyFilledInformationTile": {
-    "en-US": "Empty filled information tile",
-    "zh-CN": "空填充信息格面",
-    "pt-BR": "Bloco informativo preenchido vazio"
-  },
-  "Sample_EmptyOutlinedInformationTile": {
-    "en-US": "Empty outlined information tile",
-    "zh-CN": "空描边信息格面",
-    "pt-BR": "Bloco informativo contornado vazio"
+  "Sample_EmptyFilledElevatedInformationTile": {
+    "en-US": "Empty filled elevated information tile",
+    "zh-CN": "空填充悬浮信息格面",
+    "pt-BR": "Bloco informativo preenchido elevado vazio"
   },
   "Sample_EmptyDangerInformationTile": {
     "en-US": "Empty danger information tile",
@@ -2464,15 +2624,10 @@
     "zh-CN": "空矩形悬浮格面",
     "pt-BR": "Bloco retangular elevado vazio"
   },
-  "Sample_EmptyRectangularFilledTile": {
-    "en-US": "Empty rectangular filled tile",
-    "zh-CN": "空矩形填充格面",
-    "pt-BR": "Bloco retangular preenchido vazio"
-  },
-  "Sample_EmptyRectangularOutlinedTile": {
-    "en-US": "Empty rectangular outlined tile",
-    "zh-CN": "空矩形描边格面",
-    "pt-BR": "Bloco retangular contornado vazio"
+  "Sample_EmptyRectangularFilledElevatedTile": {
+    "en-US": "Empty rectangular filled elevated tile",
+    "zh-CN": "空矩形填充悬浮格面",
+    "pt-BR": "Bloco retangular preenchido elevado vazio"
   },
   "Sample_EmptyRectangularDangerActionTile": {
     "en-US": "Empty rectangular danger action tile",
@@ -2984,10 +3139,15 @@
     "zh-CN": "这是虚构记录。切换页面后目录只保留当前页面的板块，滚动只发生在示例正文区域。",
     "pt-BR": "Este é um registro fictício. A troca de página atualiza o índice das seções, e apenas a área de conteúdo do exemplo rola."
   },
-  "Sample_CenteredContentArea": {
-    "en-US": "Centered content area",
-    "zh-CN": "居中正文区域",
-    "pt-BR": "Área de conteúdo centralizada"
+  "Sample_StandardCenteredContainer": {
+    "en-US": "Standard centered container",
+    "zh-CN": "标准中心容器",
+    "pt-BR": "Contêiner central padrão"
+  },
+  "Sample_ExpandedCenteredContainer": {
+    "en-US": "Expanded centered container",
+    "zh-CN": "扩大中心容器",
+    "pt-BR": "Contêiner central ampliado"
   },
   "Sample_FluidContentArea": {
     "en-US": "Fluid content area",
@@ -3018,11 +3178,6 @@
     "en-US": "This page uses the selected layout. Resize the window to inspect content width and margins.",
     "zh-CN": "这个页面采用所选布局。调整窗口宽度可查看正文轨道与边距。",
     "pt-BR": "Esta página usa a disposição selecionada. Redimensione a janela para verificar a largura do conteúdo e as margens."
-  },
-  "Sample_Centered": {
-    "en-US": "Centered",
-    "zh-CN": "居中",
-    "pt-BR": "Centralizado"
   },
   "Sample_Fluid": {
     "en-US": "Fluid",
@@ -4944,15 +5099,10 @@
     "zh-CN": "空矩形悬浮操作格面",
     "pt-BR": "Bloco retangular elevado de ação vazio"
   },
-  "Sample_EmptyRectangularFilledActionTile": {
-    "en-US": "Empty rectangular filled action tile",
-    "zh-CN": "空矩形填充操作格面",
-    "pt-BR": "Bloco retangular preenchido de ação vazio"
-  },
-  "Sample_EmptyRectangularOutlinedActionTile": {
-    "en-US": "Empty rectangular outlined action tile",
-    "zh-CN": "空矩形描边操作格面",
-    "pt-BR": "Bloco retangular contornado de ação vazio"
+  "Sample_EmptyRectangularFilledElevatedActionTile": {
+    "en-US": "Empty rectangular filled elevated action tile",
+    "zh-CN": "空矩形填充悬浮操作格面",
+    "pt-BR": "Bloco retangular preenchido elevado de ação vazio"
   },
   "Sample_UnavailableRectangularActionTile": {
     "en-US": "Unavailable rectangular action tile",
@@ -4969,15 +5119,10 @@
     "zh-CN": "空悬浮操作格面",
     "pt-BR": "Bloco elevado de ação vazio"
   },
-  "Sample_EmptyFilledActionTile": {
-    "en-US": "Empty filled action tile",
-    "zh-CN": "空填充操作格面",
-    "pt-BR": "Bloco preenchido de ação vazio"
-  },
-  "Sample_EmptyOutlinedActionTile": {
-    "en-US": "Empty outlined action tile",
-    "zh-CN": "空描边操作格面",
-    "pt-BR": "Bloco contornado de ação vazio"
+  "Sample_EmptyFilledElevatedActionTile": {
+    "en-US": "Empty filled elevated action tile",
+    "zh-CN": "空填充悬浮操作格面",
+    "pt-BR": "Bloco preenchido elevado de ação vazio"
   },
   "Sample_EmptyDangerActionTile": {
     "en-US": "Empty danger action tile",
@@ -5275,9 +5420,9 @@
     "pt-BR": "Aciona ações em títulos, barras ou diálogos e permite links de navegação."
   },
   "Catalog_Button_Variants": {
-    "en-US": "Primary, Secondary, Danger, Quiet, Underline and Elevated appearances; Disabled/Busy describe state. Icon-only needs aria-label; Href supplies navigation. Description and TrailingText opt into one full-width button with stacked labels and trailing passive text; this mode requires Text and excludes ChildContent.",
-    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline、Elevated 六种外观；Disabled / Busy 是状态属性。仅图标需 aria-label，Href 提供导航。Description 与 TrailingText 启用整行按钮，左侧标签上下排列，末端显示被动文字；此模式必须提供 Text 且不接受 ChildContent。",
-    "pt-BR": "Aparências Primary, Secondary, Danger, Quiet, Underline e Elevated; Disabled/Busy descrevem estado. Somente ícone exige aria-label; Href fornece navegação. Description e TrailingText ativam um único botão de largura total com textos empilhados e texto passivo no fim; exige Text e não aceita ChildContent."
+    "en-US": "Primary, Secondary, Danger, Quiet, Underline and Elevated appearances; Disabled/Busy describe state. Icon-only needs aria-label; Href supplies navigation. Description and TrailingText opt into one full-width button with stacked labels and trailing passive text; this mode requires Text and excludes ChildContent. Default design uses a 48px minimum height; multiline labels retain vertical padding and grow naturally.",
+    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline、Elevated 六种外观；Disabled / Busy 是状态属性。仅图标需 aria-label，Href 提供导航。Description 与 TrailingText 启用整行按钮，左侧标签上下排列，末端显示被动文字；此模式必须提供 Text 且不接受 ChildContent。默认设计采用 48px 最小高度；多行文案保留上下内边距并随内容增高。",
+    "pt-BR": "Aparências Primary, Secondary, Danger, Quiet, Underline e Elevated; Disabled/Busy descrevem estado. Somente ícone exige aria-label; Href fornece navegação. Description e TrailingText ativam um único botão de largura total com textos empilhados e texto passivo no fim; exige Text e não aceita ChildContent. O design padrão usa altura mínima de 48px; textos em várias linhas mantêm espaçamento vertical interno e aumentam a altura conforme o conteúdo."
   },
   "Parameter_Description_Button": {
     "en-US": "Passive secondary text below Text; activates the full-width structured label. Requires Text and cannot be combined with ChildContent.",
@@ -5330,9 +5475,9 @@
     "pt-BR": "Área compartilhada para prévias, cenários e conteúdo copiável."
   },
   "Catalog_DisplayBoard_Variants": {
-    "en-US": "Dotted/Centered default to true; Centered controls ordinary content. CodeBlock always starts at the top start, and code boards may disable dots. CopyText supplies complete content; the top-right Elevated icon briefly shows a check after copying.",
-    "zh-CN": "Dotted 默认 true；Centered 默认 true，控制普通子内容的位置。CodeBlock 始终从左上开始；代码背景板可禁用点阵。CopyText 提供完整复制内容；右上角 Elevated 图标按钮复制成功后暂时显示勾号。",
-    "pt-BR": "Dotted/Centered são true por padrão; Centered controla conteúdo comum. CodeBlock começa no início superior, e painéis de código podem desativar pontos. CopyText fornece conteúdo completo; o ícone Elevated superior direito mostra uma marca após copiar."
+    "en-US": "Dotted/Centered default to true; Centered controls ordinary content. CodeBlock always starts at the top start, and code boards may disable dots. CopyText supplies complete content; the top-right Elevated icon briefly shows a check after copying. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "Dotted 默认 true；Centered 默认 true，控制普通子内容的位置。CodeBlock 始终从左上开始；代码背景板可禁用点阵。CopyText 提供完整复制内容；右上角 Elevated 图标按钮复制成功后暂时显示勾号。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Dotted/Centered são true por padrão; Centered controla conteúdo comum. CodeBlock começa no início superior, e painéis de código podem desativar pontos. CopyText fornece conteúdo completo; o ícone Elevated superior direito mostra uma marca após copiar. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
   "Catalog_UniformGridButton_Purpose": {
     "en-US": "Clickable equal-width grid cell for form actions and finite wizard choices.",
@@ -5340,9 +5485,9 @@
     "pt-BR": "Célula clicável de grade com largura igual para ações de formulário e escolhas finitas de assistentes."
   },
   "Catalog_UniformGridButton_Variants": {
-    "en-US": "Use with UniformGrid or FormActions. Pure wizard choices contain only the grid and button text, without separate headings, advice or selectors; see /examples/display/wizard. Rectangles fill/divide container width; squares retain a side limit.\nVariant supports Filled/Outlined/Danger/Elevated, inheriting the grid or defaulting to Elevated standalone. Set primary actions explicitly to Filled, others to Outlined. Title uses 34px H1 size; Text/ChildContent use 17px body size.\nIcon is optional and defaults to equal vertical halves; IconSupport=false retains continuous layout. Href/Type/Busy/Disabled/OnClick share Button behavior.",
-    "zh-CN": "配合 UniformGrid 或 FormActions 使用。纯向导选择步骤只有网格和按钮文字，不使用独立标题、说明或下拉框；案例 /examples/display/wizard。长方形铺满容器宽度后按列均分，正方形保留边长上限。\nVariant 支持 Filled、Outlined、Danger、Elevated；省略时继承网格外观，独立使用时为 Elevated。主要操作显式设为 Filled，其余操作设为 Outlined。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px。\nIcon 可选，有图标默认自动启用上下等分布局，IconSupport=false 保留连续布局；Href、Type、Busy、Disabled 与 OnClick 复用 Button 行为。",
-    "pt-BR": "Use com UniformGrid ou FormActions. Escolhas puras de assistente contêm apenas grade e texto dos botões, sem títulos, explicações ou seletores separados; veja /examples/display/wizard. Retângulos preenchem/dividem a largura; quadrados mantêm limite lateral.\nVariant aceita Filled/Outlined/Danger/Elevated, herdando a grade ou Elevated independente. Defina ações principais como Filled e demais como Outlined. Title usa H1 de 34px; Text/ChildContent usam 17px.\nIcon é opcional e ativa metades verticais; IconSupport=false mantém layout contínuo. Href/Type/Busy/Disabled/OnClick compartilham Button."
+    "en-US": "Use with UniformGrid or FormActions. Pure wizard choices contain only the grid and button text, without separate headings, advice or selectors; see /examples/display/wizard. Rectangles fill/divide container width; squares retain a side limit.\nVariant supports FilledElevated/Danger/Elevated, inheriting the grid or defaulting to Elevated standalone. Set primary actions explicitly to FilledElevated, others to Elevated. Title uses 34px H1 size; Text/ChildContent use 17px body size.\nIcon is optional and defaults to equal vertical halves; IconSupport=false retains continuous layout. Href/Type/Busy/Disabled/OnClick share Button behavior.",
+    "zh-CN": "配合 UniformGrid 或 FormActions 使用。纯向导选择步骤只有网格和按钮文字，不使用独立标题、说明或下拉框；案例 /examples/display/wizard。长方形铺满容器宽度后按列均分，正方形保留边长上限。\nVariant 支持 FilledElevated、Danger、Elevated；省略时继承网格外观，独立使用时为 Elevated。主要操作显式设为 FilledElevated，其余操作设为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px。\nIcon 可选，有图标默认自动启用上下等分布局，IconSupport=false 保留连续布局；Href、Type、Busy、Disabled 与 OnClick 复用 Button 行为。",
+    "pt-BR": "Use com UniformGrid ou FormActions. Escolhas puras de assistente contêm apenas grade e texto dos botões, sem títulos, explicações ou seletores separados; veja /examples/display/wizard. Retângulos preenchem/dividem a largura; quadrados mantêm limite lateral.\nVariant aceita FilledElevated/Danger/Elevated, herdando a grade ou Elevated independente. Defina ações principais como FilledElevated e demais como Elevated. Title usa H1 de 34px; Text/ChildContent usam 17px.\nIcon é opcional e ativa metades verticais; IconSupport=false mantém layout contínuo. Href/Type/Busy/Disabled/OnClick compartilham Button."
   },
   "Catalog_ActionMenu_Purpose": {
     "en-US": "Shared command and native record-action menu.",
@@ -5350,9 +5495,9 @@
     "pt-BR": "Menu compartilhado de comandos e ações nativas de registros."
   },
   "Catalog_ActionMenu_Variants": {
-    "en-US": "Actions uses MenuAction; ChildContent uses actual Button or business GET/POST forms, exclusively. Both share availability, keyboard behavior, asynchronous closing and dialog focus restoration. OpenOnHover applies only to Actions.",
-    "zh-CN": "Actions 使用 MenuAction；ChildContent 使用真实 Button 或业务 GET/POST 表单，两者互斥。共享可用性、键盘、异步关闭与弹窗焦点恢复；OpenOnHover 仅适用于 Actions。",
-    "pt-BR": "Actions usa MenuAction; ChildContent usa Button real ou formulários GET/POST, de forma exclusiva. Ambos compartilham disponibilidade, teclado, fechamento assíncrono e restauração de foco. OpenOnHover aplica-se apenas a Actions."
+    "en-US": "Actions uses MenuAction; ChildContent uses actual Button or business GET/POST forms, exclusively. Both share availability, keyboard behavior, asynchronous closing, dialog focus restoration and OpenOnHover after browser enhancement. Native SSR retains click/keyboard disclosure.",
+    "zh-CN": "Actions 使用 MenuAction；ChildContent 使用真实 Button 或业务 GET/POST 表单，两者互斥。共享可用性、键盘、异步关闭与弹窗焦点恢复；浏览器增强后两种内容均支持 OpenOnHover，原生 SSR 保留点击/键盘展开。",
+    "pt-BR": "Actions usa MenuAction; ChildContent usa Button real ou formulários GET/POST, de forma exclusiva. Ambos compartilham disponibilidade, teclado, fechamento assíncrono, restauração de foco e OpenOnHover após aprimoramento no navegador. SSR nativo mantém abertura por clique/teclado."
   },
   "Catalog_TextBox_Purpose": {
     "en-US": "Binds text with form validation.",
@@ -5460,9 +5605,9 @@
     "pt-BR": "Padroniza colunas e dimensões das ações de formulário."
   },
   "Catalog_FormActions_Variants": {
-    "en-US": "Columns sets action columns; children use UniformGridButton, with narrow-window theme adaptation. Explicitly use Variant=Filled for primary actions and Variant=Outlined for others, based on meaning rather than child order.",
-    "zh-CN": "Columns 指定操作列数；子项使用 UniformGridButton；窄窗口通过主题样式适配。建议主要操作显式使用 Variant=Filled，其余操作使用 Variant=Outlined；按操作语义配置，不依赖子项顺序。",
-    "pt-BR": "Columns define colunas; filhos usam UniformGridButton com adaptação do tema para janelas estreitas. Use Variant=Filled nas ações principais e Variant=Outlined nas demais, conforme a semântica, não a ordem."
+    "en-US": "Columns sets action columns, with narrow-window adaptation. UniformGridButton children support Elevated (default), FilledElevated and Danger. Pair primary FilledElevated actions with Elevated actions by meaning, not child order. All variants have no hover border. FormActions preserves the group's outer shadow and keyboard focus; Danger has no individual item shadow.",
+    "zh-CN": "Columns 指定操作列数，窄窗口自动适配。UniformGridButton 子项支持 Elevated（默认）、FilledElevated 和 Danger。主要操作使用 FilledElevated，其他操作使用 Elevated；按语义配置，不依赖子项顺序。所有变体均无悬停边框。FormActions 保持整组外侧阴影与键盘焦点；Danger 无单项阴影。",
+    "pt-BR": "Columns define colunas com adaptação a janelas estreitas. Filhos UniformGridButton aceitam Elevated (padrão), FilledElevated e Danger. Combine ações principais FilledElevated com Elevated pela semântica, não pela ordem. Nenhuma variante tem borda ao passar o mouse. FormActions mantém a sombra externa do grupo e o foco do teclado; Danger não tem sombra individual."
   },
   "Catalog_UniformGrid_Purpose": {
     "en-US": "Equal-width grid for entry directories, wizard choices and information overviews.",
@@ -5470,9 +5615,9 @@
     "pt-BR": "Grade de largura igual para diretórios, escolhas de assistentes e resumos de informações."
   },
   "Catalog_UniformGrid_Variants": {
-    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects Filled/Outlined/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
-    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 Filled、Outlined、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
-    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe Filled/Outlined/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
+    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects FilledElevated/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
+    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 FilledElevated、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
+    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe FilledElevated/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
   },
   "Catalog_UniformGridItem_Purpose": {
     "en-US": "Noninteractive information cell in an equal-width grid.",
@@ -5480,9 +5625,9 @@
     "pt-BR": "Célula informativa não interativa em grade de largura igual."
   },
   "Catalog_UniformGridItem_Variants": {
-    "en-US": "Shares Filled/Outlined/Danger/Elevated with UniformGridButton. Omitted Variant inherits the grid, or Elevated standalone. Title uses 34px H1 size; Text/ChildContent use 17px body size. Icon is optional; there is no Href or OnClick.",
-    "zh-CN": "与 UniformGridButton 共用 Filled、Outlined、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。",
-    "pt-BR": "Compartilha Filled/Outlined/Danger/Elevated com UniformGridButton. Variant omitido herda a grade ou Elevated independente. Title usa H1 de 34px; Text/ChildContent usam 17px. Icon é opcional; não há Href nem OnClick."
+    "en-US": "Shares FilledElevated/Danger/Elevated with UniformGridButton. Omitted Variant inherits the grid, or Elevated standalone. Title uses 34px H1 size; Text/ChildContent use 17px body size. Icon is optional; there is no Href or OnClick.",
+    "zh-CN": "与 UniformGridButton 共用 FilledElevated、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。",
+    "pt-BR": "Compartilha FilledElevated/Danger/Elevated com UniformGridButton. Variant omitido herda a grade ou Elevated independente. Title usa H1 de 34px; Text/ChildContent usam 17px. Icon é opcional; não há Href nem OnClick."
   },
   "Catalog_SectionNavigator_Purpose": {
     "en-US": "Section entries beside the content without consuming its width.",
@@ -5630,9 +5775,9 @@
     "pt-BR": "Largura e margens consistentes para conteúdo da página."
   },
   "Catalog_PageBody_Variants": {
-    "en-US": "Omitted Fluid inherits Program layout. true uses fluid width, false uses centered maximum width; FullWidth uses the complete content region. FillHeight fills a fixed shell stage, removes document bottom spacing and gives content the space below the direct PageHeading. Combine FullWidth, FillHeight and a Compact heading with a direct EditingGrid for a full remaining-space editor.",
-    "zh-CN": "Fluid 省略时继承 Program 的布局配置；true 使用流动宽度，false 使用居中最大宽度；FullWidth 使用完整正文区域。FillHeight 填满固定 shell 内容区，移除文档底部留白，将直接子级 PageHeading 下的剩余空间交给正文。FullWidth、FillHeight、Compact 标题与直接子级 EditingGrid 组合为填满可用空间的表格编辑区。",
-    "pt-BR": "Fluid omitido herda o layout de Program. true usa largura fluida, false usa largura máxima centralizada; FullWidth usa toda a região. FillHeight preenche a área fixa do shell, remove o espaço inferior do documento e entrega ao conteúdo o espaço abaixo de PageHeading direto. Combine FullWidth, FillHeight, título Compact e EditingGrid direto para um editor com todo o espaço restante."
+    "en-US": "Omitted Fluid inherits Program layout. true uses fluid width, false uses centered width. CenteredContainer defaults to Standard; Expanded halves each side gutter for this page and increases content width. Both retain standard vertical spacing. FullWidth uses the complete content region. FillHeight fills a fixed shell stage, removes document bottom spacing and gives content the space below the direct PageHeading. Combine FullWidth, FillHeight and a Compact heading with a direct EditingGrid for a full remaining-space editor.",
+    "zh-CN": "Fluid 省略时继承 Program 的布局配置；true 使用流动宽度，false 使用中心宽度。CenteredContainer 默认 Standard（标准中心容器）；Expanded（扩大中心容器）仅将当前页面每侧留白减半、扩大正文宽度，两者均采用默认纵向间距。FullWidth 使用完整正文区域。FillHeight 填满固定 shell 内容区，移除文档底部留白，将直接子级 PageHeading 下的剩余空间交给正文。FullWidth、FillHeight、Compact 标题与直接子级 EditingGrid 组合为填满可用空间的表格编辑区。",
+    "pt-BR": "Fluid omitido herda o layout de Program. true usa largura fluida, false usa largura central. CenteredContainer é Standard por padrão; Expanded reduz cada recuo lateral à metade nesta página e amplia o conteúdo. Ambos mantêm o espaçamento vertical padrão. FullWidth usa toda a região. FillHeight preenche a área fixa do shell, remove o espaço inferior do documento e entrega ao conteúdo o espaço abaixo de PageHeading direto. Combine FullWidth, FillHeight, título Compact e EditingGrid direto para um editor com todo o espaço restante."
   },
   "Catalog_PageHeading_Purpose": {
     "en-US": "Collapsible page heading with actions.",
@@ -5655,24 +5800,14 @@
     "pt-BR": "Title nomeia conteúdo real; Actions fornece ações da seção; ChildContent fornece o corpo."
   },
   "Catalog_Card_Purpose": {
-    "en-US": "Regular summaries or large presentation cards.",
-    "zh-CN": "承载常规摘要或展示页大卡片。",
-    "pt-BR": "Resumos comuns ou cartões grandes de apresentação."
+    "en-US": "Content, identity and record summaries, or large presentation cards.",
+    "zh-CN": "承载内容、身份和记录摘要，或展示页大卡片。",
+    "pt-BR": "Resumos de conteúdo, identidade e registros, ou cartões grandes de apresentação."
   },
   "Catalog_Card_Variants": {
-    "en-US": "Default Title/ChildContent retains h3/body structure. Prominent places Actions left and Title/Text right; Stacked=true always puts body above actions. Text is an H1-sized p, not another h1.\nNarrow screens stack, absent actions allow full width and long text grows naturally. Reuses card roles and standard Elevated Button without a host skin.",
-    "zh-CN": "默认 Title / ChildContent 保持原 h3 与正文结构。Prominent 默认将 Actions 放左侧、Title 和 Text 放右侧正文；Stacked=true 始终正文在上、操作在下。Text 使用 H1 字号的 p，不新增页面 h1。\n窄屏纵排、无动作占满宽度、长文自然增长；使用现有卡片角色色与标准 Elevated Button，不是新控件或宿主皮肤。",
-    "pt-BR": "Title/ChildContent padrão mantém h3/corpo. Prominent coloca Actions à esquerda e Title/Text à direita; Stacked=true mantém corpo acima das ações. Text é p de tamanho H1, não outro h1.\nTelas estreitas empilham; sem ações ocupa largura total e textos longos crescem naturalmente. Reutiliza cores do cartão e Button Elevated padrão, sem estilo do host."
-  },
-  "Catalog_IdentityCard_Purpose": {
-    "en-US": "Displays a primary identity value and related information.",
-    "zh-CN": "显示身份主值及关联信息。",
-    "pt-BR": "Exibe valor principal de identidade e informações relacionadas."
-  },
-  "Catalog_IdentityCard_Variants": {
-    "en-US": "Title is the card's own heading. HeadingLevel defaults to 2; use 1 for a large account name and CopyText for its bold identifier. Columns chooses multiple columns; SideContent supplies a side area. Use semantic structures such as dl/dt/dd.",
-    "zh-CN": "Title使用卡片自身标题；HeadingLevel默认2，设为1时以大字体呈现账号名，CopyText呈现加粗ID。Columns控制分栏，SideContent提供侧栏；内容使用dl/dt/dd等语义结构。",
-    "pt-BR": "Title é o título próprio do cartão. HeadingLevel usa 2 por padrão; use 1 para um nome de conta grande e CopyText para seu ID em negrito. Columns escolhe colunas; SideContent fornece área lateral. Use estruturas semânticas como dl/dt/dd."
+    "en-US": "Use Title and semantic ChildContent for identity or record summaries; CopyText displays identifiers and Actions supplies controls. Default Title/ChildContent retains h3/body structure. Prominent places Actions left and Title/Text right; Stacked=true always puts body above actions. Text is an H1-sized p, not another h1.\nNarrow screens stack, absent actions allow full width and long text grows naturally. Reuses card roles and standard Elevated Button without a host skin.",
+    "zh-CN": "身份和记录摘要使用 Title 与语义 ChildContent；CopyText 显示标识符，Actions 提供操作。默认 Title / ChildContent 保持原 h3 与正文结构。Prominent 默认将 Actions 放左侧、Title 和 Text 放右侧正文；Stacked=true 始终正文在上、操作在下。Text 使用 H1 字号的 p，不新增页面 h1。\n窄屏纵排、无动作占满宽度、长文自然增长；使用现有卡片角色色与标准 Elevated Button，不是新控件或宿主皮肤。",
+    "pt-BR": "Use Title e ChildContent semântico para resumos de identidade ou registros; CopyText exibe identificadores e Actions fornece controles. Title/ChildContent padrão mantém h3/corpo. Prominent coloca Actions à esquerda e Title/Text à direita; Stacked=true mantém corpo acima das ações. Text é p de tamanho H1, não outro h1.\nTelas estreitas empilham; sem ações ocupa largura total e textos longos crescem naturalmente. Reutiliza cores do cartão e Button Elevated padrão, sem estilo do host."
   },
   "Catalog_Icon_Purpose": {
     "en-US": "Self-hosted Material Symbols Outlined icon.",
@@ -5710,14 +5845,14 @@
     "pt-BR": "Linha padrão com quebra para pequenas ações."
   },
   "Catalog_InlineActions_Variants": {
-    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center (default), or End across the available width. Use this row in Field.Actions for operations beside a labeled input; place the input in Field.ChildContent. Keep mixed operations here; UniformGridButton is for finite single-semantic choices.",
-    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center（默认）或 End。带标签输入旁的操作将此动作行放进 Field.Actions，输入放进 Field.ChildContent。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。",
-    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center (padrão) ou End na largura disponível. Use esta linha em Field.Actions para operações ao lado de uma entrada rotulada; coloque a entrada em Field.ChildContent. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica."
+    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center, or End (default) across the available width. Compact actions align to End; full-row controls and expanding groups retain their width. Use this row in Field.Actions for operations beside a labeled input; place the input in Field.ChildContent. Keep mixed operations here; UniformGridButton is for finite single-semantic choices. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center 或 End（默认）。未占满一行的操作默认靠右，整行控件和可伸展组合保持铺满。带标签输入旁的操作将此动作行放进 Field.Actions，输入放进 Field.ChildContent。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center ou End (padrão) na largura disponível. Ações compactas se alinham ao fim; controles e grupos expansíveis mantêm a largura da linha. Use esta linha em Field.Actions para operações ao lado de uma entrada rotulada; coloque a entrada em Field.ChildContent. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
   "Parameter_Alignment_InlineActions": {
-    "en-US": "Logical horizontal alignment of the wrapping action row across available width: Start, Center (default), or End. It does not change button appearance or native form transport.",
-    "zh-CN": "可换行动作行在可用宽度内的逻辑水平对齐：Start、Center（默认）或 End。不改变按钮样式或原生表单传输。",
-    "pt-BR": "Alinhamento horizontal lógico da linha de ações com quebra na largura disponível: Start, Center (padrão) ou End. Não altera aparência dos botões nem transporte nativo do formulário."
+    "en-US": "Logical horizontal alignment of the wrapping action row across available width: Start, Center, or End (default). Full-row content retains its width. It does not change button appearance or native form transport. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "可换行动作行在可用宽度内的逻辑水平对齐：Start、Center 或 End（默认）。占满整行的内容保持铺满，不改变按钮样式或原生表单传输。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Alinhamento horizontal lógico da linha de ações com quebra na largura disponível: Start, Center ou End (padrão). O conteúdo que ocupa a linha inteira mantém sua largura. Não altera aparência dos botões nem transporte nativo do formulário. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
   "Catalog_ImagePreview_Purpose": {
     "en-US": "Image with optional caption and standard actions.",
@@ -5763,16 +5898,6 @@
     "en-US": "Standard Button variant for the current Compact choice, defaulting to Secondary. Set both variants to Elevated for matching elevation; aria-current still identifies the current route.",
     "zh-CN": "Compact当前项的普通Button样式，默认Secondary；两个样式都设为Elevated时统一浮起，当前路由仍由aria-current标记。",
     "pt-BR": "Variante Button padrão para a opção Compact atual; usa Secondary por padrão. Defina ambas como Elevated para elevação uniforme; aria-current continua marcando a rota atual."
-  },
-  "Parameter_HeadingLevel_IdentityCard": {
-    "en-US": "Native heading level 1–6, defaulting to 2. Level 1 uses the standard large page-title scale for an account name; other levels use the summary heading scale.",
-    "zh-CN": "原生标题级别1–6，默认2；设为1时使用标准页面大标题字号呈现账号名，其他级别使用摘要标题字号。",
-    "pt-BR": "Nível de título nativo de 1–6, com padrão 2. O nível 1 usa o tamanho grande de título de página para o nome da conta; os demais usam o tamanho de resumo."
-  },
-  "Parameter_Title_IdentityCard": {
-    "en-US": "Optional encoded card heading. Supply an account name directly here; the summary owns its heading without nested sticky PageHeading chrome.",
-    "zh-CN": "可选、自动编码的卡片标题；账号名直接传入此处，由摘要控件生成自身标题，无需嵌套粘性PageHeading。",
-    "pt-BR": "Título opcional e codificado do cartão. Forneça o nome da conta diretamente; o resumo controla seu título sem inserir um PageHeading fixo."
   },
   "Parameter_StackTitleWords": {
     "en-US": "false by default. true puts each whitespace-separated title word on its own line, preserving the full aria-label, letters and organization name.",
@@ -6025,9 +6150,9 @@
     "pt-BR": "Callback de ativação do botão; pode retornar uma tarefa assíncrona."
   },
   "Parameter_OpenOnHover": {
-    "en-US": "Actions mode opens on mouse entry without taking focus, then closes after leaving trigger and popup. Keyboard/touch activation remains; top-bar menus enable this. Incompatible with native ChildContent, whose details opens by click/keyboard.",
-    "zh-CN": "Actions 数据驱动模式：鼠标进入触发区域时打开菜单且不抢焦点，离开触发区和弹窗后关闭；键盘和触屏仍可激活。顶部栏菜单自动启用。与原生 ChildContent 不可同时使用；原生模式采用 details 点击/键盘开口。",
-    "pt-BR": "No modo Actions, abre ao entrar com o mouse sem roubar foco e fecha ao sair do acionador e painel. Teclado/toque continuam disponíveis; menus superiores ativam isto. Incompatível com ChildContent nativo, cujo details abre por clique/teclado."
+    "en-US": "Both Actions and ChildContent open on mouse entry without taking focus after browser enhancement, then close after leaving trigger and popup. Keyboard/touch activation remains; top-bar menus enable this. Native SSR retains details click/keyboard disclosure.",
+    "zh-CN": "浏览器增强后，Actions 与 ChildContent 均可在鼠标进入时展开且不抢焦点，离开触发区和菜单后关闭；键盘与触屏仍可激活。顶部栏菜单自动启用。原生 SSR 保留 details 点击/键盘展开。",
+    "pt-BR": "Após aprimoramento no navegador, Actions e ChildContent abrem ao entrar com o mouse sem roubar foco e fecham ao sair do acionador e painel. Teclado/toque continuam disponíveis; menus superiores ativam isto. SSR nativo mantém details por clique/teclado."
   },
   "Parameter_Actions_Field": {
     "en-US": "Optional ordinary buttons or InlineActions beside the input. The library aligns them with the control and moves them below on narrow screens. They do not inherit this Field's required or validation context; submission and callbacks remain with the caller.",
@@ -6050,9 +6175,9 @@
     "pt-BR": "Ações e callbacks, com indicadores opcionais de desativação ou perigo."
   },
   "Parameter_ChildContent_ActionMenu": {
-    "en-US": "Native actions in the shared menu controller, exclusive with nonempty Actions/OpenOnHover. SSR keeps details and no popover; enhancement uses attachDisclosureMenu. The host supplies role=menuitem and real GET/POST attributes. Button owns item styling, without host menu classes. Disabled applies inert; template Busy/submission locks and authorization remain host/server-owned.",
-    "zh-CN": "同一标准菜单控制器中的原生动作内容；与非空 Actions 及 OpenOnHover 互斥。SSR 保留 details 开口且不设 popover，浏览器就绪后复用 attachDisclosureMenu。宿主提供 role=menuitem 和真实 GET/POST 属性；Button 自己生成标准菜单呈现，不追加宿主菜单类。Disabled 统一 inert，模板的 Busy/重复提交锁和业务授权仍由宿主/服务器负责。",
-    "pt-BR": "Ações nativas no controlador compartilhado, exclusivas com Actions não vazio/OpenOnHover. SSR mantém details sem popover; aprimoramento usa attachDisclosureMenu. O host fornece role=menuitem e atributos GET/POST reais. Button controla a aparência, sem classes de menu do host. Disabled aplica inert; Busy/bloqueios de envio e autorização pertencem ao host/servidor."
+    "en-US": "Native actions in the shared menu controller, exclusive with nonempty Actions. SSR keeps click/keyboard details and no popover; enhancement uses attachDisclosureMenu and supports OpenOnHover. The host supplies role=menuitem and real GET/POST attributes. Button owns item styling, without host menu classes. Disabled applies inert; template Busy/submission locks and authorization remain host/server-owned.",
+    "zh-CN": "同一标准菜单控制器中的原生动作内容；与非空 Actions 互斥。SSR 保留 details 点击/键盘展开且不设 popover，浏览器增强后复用 attachDisclosureMenu 并支持 OpenOnHover。宿主提供 role=menuitem 和真实 GET/POST 属性；Button 自己生成标准菜单呈现，不追加宿主菜单类。Disabled 统一 inert，模板的 Busy/重复提交锁和业务授权仍由宿主/服务器负责。",
+    "pt-BR": "Ações nativas no controlador compartilhado, exclusivas com Actions não vazio. SSR mantém details por clique/teclado sem popover; aprimoramento usa attachDisclosureMenu e aceita OpenOnHover. O host fornece role=menuitem e atributos GET/POST reais. Button controla a aparência, sem classes de menu do host. Disabled aplica inert; Busy/bloqueios de envio e autorização pertencem ao host/servidor."
   },
   "Parameter_ChildContent": {
     "en-US": "Internal Razor content; business data is supplied by the host.",
@@ -6250,14 +6375,14 @@
     "pt-BR": "null ativa metades verticais iguais quando há Icon. true centraliza ícone acima e texto abaixo; false mantém layout contínuo. Valores da célula têm prioridade sobre UniformGrid."
   },
   "Parameter_Variant_UniformGrid": {
-    "en-US": "Filled, Outlined, Danger or default Elevated appearance; independent of Shape.",
-    "zh-CN": "Filled、Outlined、Danger 或默认 Elevated 外观；与 Shape 独立。",
-    "pt-BR": "Aparência Filled, Outlined, Danger ou Elevated padrão; independente de Shape."
+    "en-US": "FilledElevated, Danger or default Elevated appearance; independent of Shape.",
+    "zh-CN": "FilledElevated、Danger 或默认 Elevated 外观；与 Shape 独立。",
+    "pt-BR": "Aparência FilledElevated, Danger ou Elevated padrão; independente de Shape."
   },
   "Parameter_Variant_UniformGridOptional": {
-    "en-US": "Filled, Outlined, Danger or Elevated. null inherits the grid appearance; standalone usage defaults to Elevated.",
-    "zh-CN": "Filled、Outlined、Danger 或 Elevated 外观；null 继承网格外观，独立使用时默认 Elevated。",
-    "pt-BR": "Filled, Outlined, Danger ou Elevated. null herda a aparência da grade; uso independente adota Elevated."
+    "en-US": "FilledElevated, Danger or Elevated. null inherits the grid appearance; standalone usage defaults to Elevated.",
+    "zh-CN": "FilledElevated、Danger 或 Elevated 外观；null 继承网格外观，独立使用时默认 Elevated。",
+    "pt-BR": "FilledElevated, Danger ou Elevated. null herda a aparência da grade; uso independente adota Elevated."
   },
   "Parameter_Variant": {
     "en-US": "Primary, Secondary, Danger, Quiet, Underline or Elevated appearance; Disabled/Busy represent state.",
@@ -6378,11 +6503,6 @@
     "en-US": "Uses the whole row or content area.",
     "zh-CN": "占用整行或完整正文区域。",
     "pt-BR": "Ocupa a linha ou a área de conteúdo inteira."
-  },
-  "Parameter_Columns_bool": {
-    "en-US": "Enables multiple columns for factual content.",
-    "zh-CN": "启用事实内容的多栏布局。",
-    "pt-BR": "Ativa várias colunas para conteúdo factual."
   },
   "Parameter_Columns_int": {
     "en-US": "Normal layout column count within this component's allowed range.",
@@ -6923,11 +7043,6 @@
     "en-US": "Content identity; changes reset content scrolling.",
     "zh-CN": "正文身份，变化时重置内容滚动。",
     "pt-BR": "Identidade do conteúdo; alterações redefinem sua rolagem."
-  },
-  "Parameter_SideContent": {
-    "en-US": "Identity-card side slot.",
-    "zh-CN": "身份卡片侧栏插槽。",
-    "pt-BR": "Slot lateral do cartão de identidade."
   },
   "Parameter_Form": {
     "en-US": "ID of the form associated with the button.",

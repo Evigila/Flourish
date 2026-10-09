@@ -675,9 +675,9 @@
     "pt-BR": "Cartões de ofertas de produtos"
   },
   "Usage_OfferCard_Guidance": {
-    "en-US": "Production use: offer names, descriptions and standard actions, composed with OfferStage. Use IdentityCard/Card for business entity summaries.",
-    "zh-CN": "生产使用：报价名称、说明和标准动作；与 OfferStage 组合，业务实体摘要使用 IdentityCard / Card。",
-    "pt-BR": "Uso em produção: nomes, descrições e ações padrão das ofertas, combinados com OfferStage. Use IdentityCard/Card para resumos de entidades de negócio."
+    "en-US": "Production use: offer names, descriptions and standard actions, composed with OfferStage. Use Card for business entity summaries.",
+    "zh-CN": "生产使用：报价名称、说明和标准动作；与 OfferStage 组合，业务实体摘要使用 Card。",
+    "pt-BR": "Uso em produção: nomes, descrições e ações padrão das ofertas, combinados com OfferStage. Use Card para resumos de entidades de negócio."
   },
   "Usage_OfferStage_Scenario": {
     "en-US": "Product offer presentation",
@@ -885,9 +885,9 @@
     "pt-BR": "Estruturas de navegação de negócio personalizadas"
   },
   "Usage_Patterns_NavigationSurface_Guidance": {
-    "en-US": "Production use: two navigation levels and one business scroll area. Standard applications usually use ApplicationLayout; presentation pages use a document-flow content host.",
-    "zh-CN": "生产使用：两级导航与单一业务滚动区；标准应用通常使用 ApplicationLayout，展示页面使用文档流内容宿主。",
-    "pt-BR": "Uso em produção: dois níveis de navegação e uma área de rolagem de negócio. Aplicações padrão normalmente usam ApplicationLayout; páginas de apresentação usam uma estrutura em fluxo de documento."
+    "en-US": "Production use: two navigation levels and one business scroll area. ConfigureLayout.SetContentWidth supplies the centered reference width; each PageBody selects its Standard or Expanded centered container. Standard applications usually use ApplicationLayout; presentation pages use a document-flow content host.",
+    "zh-CN": "生产使用：两级导航与单一业务滚动区。ConfigureLayout.SetContentWidth 提供中心容器的参考宽度；每个 PageBody 选择标准或扩大中心容器。标准应用通常使用 ApplicationLayout，展示页面使用文档流内容宿主。",
+    "pt-BR": "Uso em produção: dois níveis de navegação e uma área de rolagem de negócio. ConfigureLayout.SetContentWidth fornece a largura central de referência; cada PageBody escolhe o contêiner central Standard ou Expanded. Aplicações padrão normalmente usam ApplicationLayout; páginas de apresentação usam uma estrutura em fluxo de documento."
   },
   "Usage_Patterns_ContentSurface_Scenario": {
     "en-US": "Custom content hosts",
@@ -1105,9 +1105,9 @@
     "pt-BR": "Largura do conteúdo de páginas de negócio"
   },
   "Usage_PageBody_Guidance": {
-    "en-US": "Production use: controlled content width and gutters; direct child sections follow the page layout. FillHeight fills a fixed shell stage, retains the direct PageHeading and gives the remaining space to content such as EditingGrid. Use Compact on the heading for immediate collapse. Use PresentationBand/ContentContainer for full-width backgrounds with bounded content.",
-    "zh-CN": "生产使用：受控正文宽度与边距；直接子区块遵循页面布局。FillHeight 填满固定 shell 内容区，保留直接子级 PageHeading，将剩余空间交给 EditingGrid 等正文；标题设置 Compact 可立即进入坍塌状态。全宽背景且内容限宽的展示区使用 PresentationBand / ContentContainer。",
-    "pt-BR": "Uso em produção: largura e margens controladas; seções filhas diretas seguem o layout da página. FillHeight preenche a área fixa do shell, preserva PageHeading direto e entrega o espaço restante ao conteúdo, como EditingGrid. Compact recolhe o título imediatamente. Use PresentationBand/ContentContainer para fundos de largura total com conteúdo limitado."
+    "en-US": "Production use: controlled content width and gutters; direct child sections follow the page layout. CenteredContainer selects Standard or Expanded when Fluid is false; Expanded halves each side gutter for this page only. FullWidth takes precedence. FillHeight fills a fixed shell stage, retains the direct PageHeading and gives the remaining space to content such as EditingGrid. Use Compact on the heading for immediate collapse. Use PresentationBand/ContentContainer for full-width backgrounds with bounded content.",
+    "zh-CN": "生产使用：受控正文宽度与边距；直接子区块遵循页面布局。Fluid 为 false 时，CenteredContainer 选择 Standard（标准）或 Expanded（扩大）；扩大模式仅将当前页面每侧留白减半。FullWidth 优先。FillHeight 填满固定 shell 内容区，保留直接子级 PageHeading，将剩余空间交给 EditingGrid 等正文；标题设置 Compact 可立即进入坍塌状态。全宽背景且内容限宽的展示区使用 PresentationBand / ContentContainer。",
+    "pt-BR": "Uso em produção: largura e margens controladas; seções filhas diretas seguem o layout da página. CenteredContainer escolhe Standard ou Expanded quando Fluid é false; Expanded reduz cada recuo lateral à metade apenas nesta página. FullWidth tem prioridade. FillHeight preenche a área fixa do shell, preserva PageHeading direto e entrega o espaço restante ao conteúdo, como EditingGrid. Compact recolhe o título imediatamente. Use PresentationBand/ContentContainer para fundos de largura total com conteúdo limitado."
   },
   "Usage_NumberBox_Scenario": {
     "en-US": "Model-bound numeric input",
@@ -1149,16 +1149,6 @@
     "zh-CN": "生产使用：按输入顺序完整展示 TableColumn 数据，可有行标题和只读模板；无搜索、排序、分页、选择、行操作或 JavaScript，不适合交互式记录管理。",
     "pt-BR": "Uso em produção: exiba todos os dados de TableColumn na ordem recebida, com títulos de linha e modelos somente para leitura opcionais. Sem busca, ordenação, paginação, seleção, ações de linha ou JavaScript. Use DataTable para gerenciamento interativo."
   },
-  "Usage_IdentityCard_Scenario": {
-    "en-US": "Identity and record summaries",
-    "zh-CN": "身份和记录摘要",
-    "pt-BR": "Resumos de identidade e registros"
-  },
-  "Usage_IdentityCard_Guidance": {
-    "en-US": "Production use: Title is the native summary heading, with HeadingLevel defaulting to 2. Use HeadingLevel=1 for a prominent account name and CopyText for its identifier. SideContent supplies supporting facts. Compose the dedicated hero or form controls for product presentation and editing.",
-    "zh-CN": "生产使用：Title为原生摘要标题，HeadingLevel默认2；设为1时突出账号名，CopyText显示ID。SideContent提供辅助信息；产品展示和编辑使用专门的Hero或表单控件组合。",
-    "pt-BR": "Uso em produção: Title é o título nativo do resumo, com HeadingLevel padrão 2. Use HeadingLevel=1 para destacar o nome da conta e CopyText para seu ID. SideContent fornece informações auxiliares. Apresentação de produtos e edição usam os controles próprios de destaque ou formulário."
-  },
   "Usage_Icon_Scenario": {
     "en-US": "Icon rendering",
     "zh-CN": "图标呈现",
@@ -1185,9 +1175,9 @@
     "pt-BR": "Ações de formulários de negócio"
   },
   "Usage_FormActions_Guidance": {
-    "en-US": "Production use: equal-width save, cancel and bulk action areas. Use AccessActions or standard Button for compact presentation/login action groups.",
-    "zh-CN": "生产使用：等宽操作区，适合保存、取消和批量业务命令；展示页和登录入口的小型按钮组使用 AccessActions 或普通 Button。",
-    "pt-BR": "Uso em produção: áreas de largura igual para salvar, cancelar e ações em lote. Use AccessActions ou Button padrão para grupos compactos de apresentação/login."
+    "en-US": "Production use: equal-width save, cancel and bulk action areas using UniformGridButton. Children support Elevated (default), FilledElevated and Danger; pair primary FilledElevated actions with Elevated actions. FormActions preserves group elevation and keyboard focus without hover borders; Danger has no item shadow. Use AccessActions or standard Button for compact presentation/login action groups.",
+    "zh-CN": "生产使用：通过 UniformGridButton 排列等宽保存、取消和批量业务操作。子项支持 Elevated（默认）、FilledElevated 和 Danger；主要操作使用 FilledElevated，其他操作使用 Elevated。FormActions 保持组阴影与键盘焦点，无悬停边框；Danger 无单项阴影。展示页和登录入口的小型按钮组使用 AccessActions 或普通 Button。",
+    "pt-BR": "Uso em produção: áreas de largura igual para salvar, cancelar e ações em lote com UniformGridButton. Filhos aceitam Elevated (padrão), FilledElevated e Danger; combine ações principais FilledElevated com Elevated. FormActions mantém sombra do grupo e foco do teclado sem bordas ao passar o mouse; Danger não tem sombra individual. Use AccessActions ou Button padrão para grupos compactos de apresentação/login."
   },
   "Usage_FilePicker_Scenario": {
     "en-US": "Interactive file selection",
@@ -1265,9 +1255,9 @@
     "pt-BR": "Prévias de controles e conteúdo copiável"
   },
   "Usage_DisplayBoard_Guidance": {
-    "en-US": "Production use: previews, dotted backgrounds and copy feedback. Use the appropriate presentation/form/page composition for complete scenarios.",
-    "zh-CN": "生产使用：预览、点阵背景和复制反馈；不是营销 Hero、表单或业务页面的通用皮肤。",
-    "pt-BR": "Uso em produção: prévias, fundos pontilhados e retorno da cópia. Use a composição de apresentação/formulário/página apropriada para cenários completos."
+    "en-US": "Production use: previews, dotted backgrounds and copy feedback. Use the appropriate presentation/form/page composition for complete scenarios. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "生产使用：预览、点阵背景和复制反馈；不是营销 Hero、表单或业务页面的通用皮肤。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Uso em produção: prévias, fundos pontilhados e retorno da cópia. Use a composição de apresentação/formulário/página apropriada para cenários completos. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
   "Usage_Disclosure_Scenario": {
     "en-US": "Native expandable content",
@@ -1365,9 +1355,9 @@
     "pt-BR": "Linhas compactas de ações padrão"
   },
   "Usage_InlineActions_Guidance": {
-    "en-US": "Production use: wrapping rows of standard Button or actual controls at a native protocol boundary. Alignment chooses Start, Center (default), or End in the available width. Use Field.Actions for operations beside a labeled input; keep that input in Field.ChildContent. Owns spacing and layout only; use UniformGridButton for finite wizard choices.",
-    "zh-CN": "生产使用：标准 Button 或原生协议内实际控件的换行动作行。Alignment 在可用宽度内选择 Start、Center（默认）或 End。带标签输入旁的操作使用 Field.Actions，输入保留在 Field.ChildContent 中。只管理统一间距和布局；有限选项向导使用 UniformGridButton。",
-    "pt-BR": "Uso em produção: linhas com quebra de Button padrão ou controles reais na fronteira de um protocolo nativo. Alignment escolhe Start, Center (padrão) ou End na largura disponível. Use Field.Actions para operações ao lado de uma entrada rotulada e mantenha a entrada em Field.ChildContent. Controla apenas espaçamento e layout; use UniformGridButton para opções finitas de assistentes."
+    "en-US": "Production use: wrapping rows of standard Button or actual controls at a native protocol boundary. Alignment chooses Start, Center, or End (default) in the available width. Compact actions use remaining space to align to End; full-row controls and expanding groups retain their width. Use Field.Actions for operations beside a labeled input; keep that input in Field.ChildContent. Owns spacing and layout only; use UniformGridButton for finite wizard choices. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "生产使用：标准 Button 或原生协议内实际控件的换行动作行。Alignment 在可用宽度内选择 Start、Center 或 End（默认）。未占满一行的操作默认靠右，整行控件和可伸展组合保持铺满。带标签输入旁的操作使用 Field.Actions，输入保留在 Field.ChildContent 中。只管理统一间距和布局；有限选项向导使用 UniformGridButton。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Uso em produção: linhas com quebra de Button padrão ou controles reais na fronteira de um protocolo nativo. Alignment escolhe Start, Center ou End (padrão) na largura disponível. Ações compactas usam o espaço restante para se alinhar ao fim; controles e grupos expansíveis mantêm a largura da linha. Use Field.Actions para operações ao lado de uma entrada rotulada e mantenha a entrada em Field.ChildContent. Controla apenas espaçamento e layout; use UniformGridButton para opções finitas de assistentes. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
   "Usage_FormGroup_Scenario": {
     "en-US": "Grouped native fields",
@@ -1390,14 +1380,14 @@
     "pt-BR": "Uso em produção: exiba Value codificado com a tipografia padrão de código. Não executa nem copia o conteúdo; use DisplayBoard para a ação completa de cópia."
   },
   "Usage_Card_Scenario": {
-    "en-US": "Content cards",
-    "zh-CN": "内容卡片",
-    "pt-BR": "Cartões de conteúdo"
+    "en-US": "Content, identity and record summaries",
+    "zh-CN": "内容、身份和记录摘要",
+    "pt-BR": "Resumos de conteúdo, identidade e registros"
   },
   "Usage_Card_Guidance": {
-    "en-US": "Production use: organize ordinary content. Use the dedicated width container or presentation band for page geometry.",
-    "zh-CN": "生产使用：组织普通内容；不代替页面限宽容器或展示类横幅。",
-    "pt-BR": "Uso em produção: organize conteúdo comum. Use o contêiner de largura ou a faixa de apresentação próprios para a geometria da página."
+    "en-US": "Production use: organize ordinary content and business identity or record summaries. Use Title, Text and semantic ChildContent with CopyText for identifiers; Actions supplies ordinary controls. Use the dedicated width container or presentation band for page geometry.",
+    "zh-CN": "生产使用：组织普通内容、业务身份和记录摘要。Title、Text 与语义 ChildContent 承载内容，CopyText 显示标识符；Actions 提供普通控件。页面布局使用专门的限宽容器或展示横幅。",
+    "pt-BR": "Uso em produção: organize conteúdo comum e resumos de identidade ou registros de negócio. Use Title, Text e ChildContent semântico com CopyText para identificadores; Actions fornece controles comuns. Use o contêiner de largura ou a faixa de apresentação próprios para a geometria da página."
   },
   "Usage_Button_Scenario": {
     "en-US": "Actions and navigation",
@@ -1405,9 +1395,9 @@
     "pt-BR": "Ações e navegação"
   },
   "Usage_Button_Guidance": {
-    "en-US": "Production use: Variant selects appearance; Disabled and Busy select state. Href navigates and OnClick invokes actions. Icon-only buttons require an accessible name.",
-    "zh-CN": "生产使用：Variant 只决定外观，Disabled / Busy 决定状态；Href 导航，OnClick 执行操作，纯图标按钮必须有可访问名称。",
-    "pt-BR": "Uso em produção: Variant define a aparência; Disabled e Busy definem o estado. Href navega e OnClick executa ações. Botões apenas com ícone precisam de um nome acessível."
+    "en-US": "Production use: Variant selects appearance; Disabled and Busy select state. Href navigates and OnClick invokes actions. Icon-only buttons require an accessible name. Default design uses a 48px minimum height; multiline labels retain vertical padding and grow naturally.",
+    "zh-CN": "生产使用：Variant 只决定外观，Disabled / Busy 决定状态；Href 导航，OnClick 执行操作，纯图标按钮必须有可访问名称。默认设计采用 48px 最小高度；多行文案保留上下内边距并随内容增高。",
+    "pt-BR": "Uso em produção: Variant define a aparência; Disabled e Busy definem o estado. Href navega e OnClick executa ações. Botões apenas com ícone precisam de um nome acessível. O design padrão usa altura mínima de 48px; textos em várias linhas mantêm espaçamento vertical interno e aumentam a altura conforme o conteúdo."
   },
   "Usage_ApplicationShell_Scenario": {
     "en-US": "Business application shell",
@@ -1435,8 +1425,8 @@
     "pt-BR": "Menus de comandos e ações de registros"
   },
   "Usage_ActionMenu_Guidance": {
-    "en-US": "Production use: supply MenuAction through Actions, or standard Button/native form actions through ChildContent; the two are exclusive. One core owns availability, keyboard navigation, closing and async dialog callers. OpenOnHover applies only to Actions. Use ServiceMenu for service links.",
-    "zh-CN": "生产使用：Actions 使用 MenuAction；ChildContent 使用完整的标准 Button 或原生协议表单动作，两者互斥。统一菜单核心管理可用性、键盘、关闭与异步弹窗调用者；OpenOnHover 仅用于 Actions。服务导航仍使用 ServiceMenu。",
-    "pt-BR": "Uso em produção: forneça MenuAction em Actions ou ações com Button/formulários nativos em ChildContent; as opções são exclusivas. Um único núcleo controla disponibilidade, teclado, fechamento e chamadas de diálogos assíncronos. OpenOnHover aplica-se apenas a Actions. Use ServiceMenu para links de serviços."
+    "en-US": "Production use: supply MenuAction through Actions, or standard Button/native form actions through ChildContent; the two are exclusive. One core owns availability, keyboard navigation, closing and async dialog callers. OpenOnHover supports both content modes after browser enhancement; native SSR retains click/keyboard disclosure. Use ServiceMenu for service links.",
+    "zh-CN": "生产使用：Actions 使用 MenuAction；ChildContent 使用完整的标准 Button 或原生协议表单动作，两者互斥。统一菜单核心管理可用性、键盘、关闭与异步弹窗调用者；浏览器增强后两种内容均支持 OpenOnHover，原生 SSR 保留点击/键盘展开。服务导航仍使用 ServiceMenu。",
+    "pt-BR": "Uso em produção: forneça MenuAction em Actions ou ações com Button/formulários nativos em ChildContent; as opções são exclusivas. Um único núcleo controla disponibilidade, teclado, fechamento e chamadas de diálogos assíncronos. OpenOnHover aceita ambos os modos após aprimoramento no navegador; SSR nativo mantém abertura por clique/teclado. Use ServiceMenu para links de serviços."
   }
 }

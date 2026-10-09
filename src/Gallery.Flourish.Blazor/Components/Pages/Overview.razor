@@ -11,6 +11,11 @@
             <UniformGridButton Title="@Localization.Parse(TextKey.Home_Examples)" Icon="explore" Href="/examples" Text="@Localization.Parse(TextKey.Home_ExamplesDescription)" />
         </UniformGrid>
     </Section>
+    <Section Title="@Localization.Parse(TextKey.Nav_ChangeLog)">
+        <UniformGrid>
+            <UniformGridButton Title="@Localization.Parse(TextKey.Nav_ChangeLog)" Icon="history" Href="/changelog" Text="@Localization.Parse(TextKey.Home_ChangeLogDescription)" />
+        </UniformGrid>
+    </Section>
     <Section Title="@Localization.Parse(TextKey.Home_Setup)">
         @foreach (var paragraph in Localization.Parse(TextKey.Home_SetupDescription).Split('\n')) { <p>@paragraph</p> }
         <DisplayBoard Dotted="false" Centered="false" CopyText="@Startup"><CodeBlock Text="@Startup" Language="csharp" /></DisplayBoard>

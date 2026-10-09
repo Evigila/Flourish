@@ -40,7 +40,16 @@ internal static class NoCompatibilityApiChecks
         {
             Require(typeof(AppearancePalette).Assembly.GetType("ArkheideSystem.Flourish.Blazor.ThemePalette") is null, "The old palette facade survives.");
             Require(Enum.GetNames<ButtonVariant>().SequenceEqual(new[] { "Primary", "Secondary", "Danger", "Quiet", "Underline", "Elevated" }), "Button variants contain aliases or an alternate family.");
-            Require(typeof(UniformGrid).GetProperty("Filled") is null && !Enum.GetNames<UniformGridVariant>().Contains("Outline"), "The old grid appearance API survives.");
+            Require(typeof(UniformGrid).GetProperty("Filled") is null
+                && Enum.GetNames<UniformGridVariant>().SequenceEqual(new[] { "Elevated", "FilledElevated", "Danger" }), "The old grid appearance API survives.");
+            return Task.CompletedTask;
+        }));
+        tests.Add(("centered container geometry has one PageBody contract without shell or compact-spacing aliases", () =>
+        {
+            Require(typeof(PageBody).GetProperty("CompactSpacing") is null, "The retired compact form spacing parameter survives.");
+            Require(typeof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface).GetProperty("CenteredContentGutterScale") is null, "The shell still exposes an alternate centered container API.");
+            Require(typeof(PageBody).GetProperty(nameof(PageBody.CenteredContainer))?.PropertyType == typeof(CenteredContainer)
+                && Enum.GetNames<CenteredContainer>().SequenceEqual(new[] { "Standard", "Expanded" }), "Centered containers are missing or contain aliases.");
             return Task.CompletedTask;
         }));
     }

@@ -114,7 +114,7 @@ test("full-width item geometry is structural, never a text, hover, focus or disa
   assert.doesNotMatch(menuRules[0][1], /hover|focus|disabled|nth-|data-|aria-/);
   assert.doesNotMatch(menuRules[0][2], /background|color|border:|font|height|!important/,
     "The layout repair must not introduce a second Button skin or fixed text height.");
-  assert.match(designCss, /\.f-button-quiet:hover:not\(:disabled\):not\(\[aria-disabled=true\]\)\s*\{[^}]*border-color:var\(--f-border\)/);
+  assert.match(designCss, /\.f-button-quiet:hover:not\(:disabled\):not\(\[aria-disabled=true\]\)\s*\{[^}]*background:var\(--f-target-preview\)/);
   assert.match(designCss, /\.f-button:focus-visible[^{}]*\{[^}]*outline:3px solid var\(--f-accent\)/);
 });
 

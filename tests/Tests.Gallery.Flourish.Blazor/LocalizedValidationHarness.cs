@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using ArkheideSystem.Essential.Culture.Blazor;
+using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
 using ArkheideSystem.Gallery.Flourish.Blazor.Models;
 using Microsoft.AspNetCore.Components;

@@ -3,7 +3,7 @@
 @using ArkheideSystem.Flourish.Blazor.Components.Primitives
 @using ArkheideSystem.Flourish.Blazor.Components.Patterns
 <PageTitle>@Localization.Parse(TextKey.Nav_Patterns) · Gallery</PageTitle>
-<PageBody Fluid="false">
+<PageBody>
     <PageHeading Title="@Localization.Parse(TextKey.Page_Products)"><Actions><Button OnClick="() => formOpen = true">@Localization.Parse(TextKey.Patterns_Create)</Button></Actions></PageHeading>
     @if (message is not null) { <Notice Severity="NotificationSeverity.Information" Subtle="true">@message</Notice> }
     <Section Title="@Localization.Parse(TextKey.Patterns_Catalog)">

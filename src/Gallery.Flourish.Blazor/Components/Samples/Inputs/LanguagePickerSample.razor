@@ -1,0 +1,19 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Inputs
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("LanguagePicker")]
+@inherits LocalizedComponentBase
+
+@if (Preview)
+{
+    <LanguagePicker MaxWidth="16rem" />
+}
+else
+{
+    <LanguagePicker MaxWidth="16rem" />
+    <LanguagePicker FormatCulture="true" MaxWidth="20rem" />
+    <p>@Localization.Parse(TextKey.Formatted_Sample, arguments)</p>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly object?[] arguments = [12345.67m, new DateTime(2026, 10, 5)];
+}

@@ -1,6 +1,6 @@
 @using ArkheideSystem.Flourish.Blazor.Hosting
 @inject ApplicationOptions Options
-<div class="f-page-body @(FullWidth ? "f-page-full" : Fluid ?? Options.Layout.Fluid ? "f-page-fluid" : "f-page-centered") @(FillHeight ? "f-page-fill-height" : null) @(CompactSpacing ? "f-page-compact-spacing" : null)">
+<div class="f-page-body @(FullWidth ? "f-page-full" : IsFluid ? "f-page-fluid" : "f-page-centered") @(FillHeight ? "f-page-fill-height" : null) @(!FullWidth && !IsFluid && CenteredContainer == CenteredContainer.Expanded ? "f-page-centered-expanded" : null)">
     @ChildContent
 </div>
 @code {
@@ -8,5 +8,12 @@
     [Parameter] public bool? Fluid { get; set; }
     [Parameter] public bool FullWidth { get; set; }
     [Parameter] public bool FillHeight { get; set; }
-    [Parameter] public bool CompactSpacing { get; set; }
+    /// <summary>Chooses standard or expanded centered width; applies when Fluid and FullWidth are false.</summary>
+    [Parameter] public CenteredContainer CenteredContainer { get; set; } = CenteredContainer.Standard;
+    private bool IsFluid => Fluid ?? Options.Layout.Fluid;
+
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(CenteredContainer)) throw new ArgumentOutOfRangeException(nameof(CenteredContainer));
+    }
 }

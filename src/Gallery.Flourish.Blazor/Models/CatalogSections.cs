@@ -25,7 +25,7 @@ public static class CatalogSections
     public static string CategoryOf(ComponentEntry entry) => entry.Name switch
     {
         "Button" or "UniformGridButton" or "SplitButton" or "ExpansionIndicator" or "ActionMenu" => "actions",
-        "TextBox" or "NumberBox<TValue>" or "SelectBox<TValue>" or "MultiSelectBox" or "CheckBox" or "ToggleSwitch"
+        "LanguagePicker" or "TextBox" or "NumberBox<TValue>" or "SelectBox<TValue>" or "MultiSelectBox" or "CheckBox" or "ToggleSwitch"
             or "DateBox<TValue>" or "FilePicker" or "StandaloneTextBox"
             or "StandaloneSelectBox<TValue>" or "StandaloneCheckBox" or "AccessFormSurface" or "AccessActions"
             or "SearchBox" or "Field" or "ValidationMessages" or "FormLayout" or "FormActions" or "FormGroup"

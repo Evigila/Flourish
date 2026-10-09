@@ -8,6 +8,8 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "MaxWidth" when parameter.DeclaringType == typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker) => "Key.Parameter_MaxWidth_LanguagePicker",
+        "FormatCulture" when parameter.DeclaringType == typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker) => "Key.Parameter_FormatCulture_LanguagePicker",
         "Steps" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_Steps_TutorialBoard",
         "ActiveStepKey" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_ActiveStepKey_TutorialBoard",
         "ActiveStepKeyChanged" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_ActiveStepKeyChanged_TutorialBoard",
@@ -22,8 +24,6 @@ internal static class ParameterMeaning
         "Actions" when parameter.DeclaringType == typeof(Controls.Field) => "Key.Parameter_Actions_Field",
         "ChildContent" when parameter.DeclaringType == typeof(Controls.Field) => "Key.Parameter_ChildContent_Field",
         "Compact" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_Compact_NavigationChoices",
-        "HeadingLevel" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_HeadingLevel_IdentityCard",
-        "Title" when parameter.DeclaringType == typeof(Controls.IdentityCard) => "Key.Parameter_Title_IdentityCard",
         "Variant" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_Variant_NavigationChoices",
         "ActiveVariant" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_ActiveVariant_NavigationChoices",
         "StackTitleWords" => "Key.Parameter_StackTitleWords",
@@ -154,9 +154,7 @@ internal static class ParameterMeaning
         "Error" => "Key.Parameter_Error",
         "FullWidth" => "Key.Parameter_FullWidth",
         "FillHeight" => "Key.Parameter_FillHeight",
-        "CompactSpacing" => "Key.Parameter_CompactSpacing",
-        "CenteredContentGutterScale" => "Key.Parameter_CenteredContentGutterScale",
-        "Columns" when parameter.PropertyType == typeof(bool) => "Key.Parameter_Columns_bool",
+        "CenteredContainer" => "Key.Parameter_CenteredContainer",
         "Columns" when parameter.PropertyType == typeof(int) => "Key.Parameter_Columns_int",
         "Columns" when parameter.PropertyType == typeof(int?) => "Key.Parameter_Columns_intNullable",
         "Columns" when IsListView(parameter) => "Key.Parameter_Columns_ListView",
@@ -266,7 +264,6 @@ internal static class ParameterMeaning
         "PrimaryNavigation" or "SecondaryNavigation" => "Key.Parameter_PrimaryNavigation",
         "ShowSecondary" => "Key.Parameter_ShowSecondary",
         "DocumentKey" => "Key.Parameter_DocumentKey",
-        "SideContent" => "Key.Parameter_SideContent",
         "Form" => "Key.Parameter_Form",
         "HasUnsavedChanges" => "Key.Parameter_HasUnsavedChanges",
         "Locked" => "Key.Parameter_Locked",

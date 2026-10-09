@@ -44,7 +44,7 @@ const native = process.env.NATIVE_URL || 'http://127.0.0.1:5000';
     await b.waitForSelector('.f-root[lang="en-US"]');
     assert.equal(await b.locator('h1').innerText(), 'Home');
     assert.equal(await a.locator('h1').innerText(), '主页');
-    assert.equal((await english.cookies()).some(cookie => cookie.name === '.AspNetCore.Culture'), false);
+    assert.equal((await english.cookies()).some(cookie => cookie.name === '.AspNetCore.Culture'), true);
 
     await a.locator('.f-primary-item[href="/framework"]').click();
     await a.locator('.f-secondary-item[href="/framework/localization"]').click();
@@ -53,6 +53,9 @@ const native = process.env.NATIVE_URL || 'http://127.0.0.1:5000';
     assert.equal(await a.locator('h1').innerText(), '语言与本地化');
     await a.locator('#localization-format').selectOption('pt-BR');
     await a.waitForFunction(() => document.querySelector('.f-content-scroll')?.textContent.includes('12.345,67'));
+    await a.reload();
+    await a.waitForSelector('.f-root[lang="zh-CN"]');
+    assert.equal(await a.locator('#localization-format').inputValue(), 'pt-BR');
     assert.equal(await a.locator('.f-data-display summary').innerText(), '显示');
     assert.match(await a.locator('.f-data-count').first().innerText(), /项 1-1 \/ 共 1/);
     assert.match(await a.locator('.f-data-table').innerText(), /12345,67/);
@@ -98,7 +101,7 @@ const native = process.env.NATIVE_URL || 'http://127.0.0.1:5000';
     assert.equal(await b.locator('.f-root').getAttribute('lang'), 'en-US');
     await a.reload();
     await a.waitForLoadState('networkidle');
-    assert.equal(await a.locator('.f-root').getAttribute('lang'), 'en-US');
+    assert.equal(await a.locator('.f-root').getAttribute('lang'), 'zh-CN');
 
     const nativeResponse = await english.request.get(native);
     assert.equal(nativeResponse.status(), 200);
@@ -112,7 +115,7 @@ const native = process.env.NATIVE_URL || 'http://127.0.0.1:5000';
       'SSR negotiated English and Chinese', 'two independent live circuits', 'home and PageTitle refresh',
       'top bar primary secondary fixed labels', 'framework copy and dialog defaults',
       'separate Brazilian formatting and default table labels', 'third navigation state preservation',
-      'translated menu command routing', 'reload restoration without cookie writes',
+      'translated menu command routing', 'reload restoration of browser language and separate formats',
       'Framework-only Native SSR', 'no browser exceptions or failed framework assets'
     ] }));
   } finally { await browser.close(); }

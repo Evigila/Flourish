@@ -3,32 +3,30 @@
 @using Microsoft.AspNetCore.Components
 @using System.Threading.Tasks
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
-@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGridButton")]
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGridButton", DescriptionKey = "Key.Sample_UniformGridButtonComposition")]
 
 @if (Preview)
 {
-    <UniformGrid Columns="6" NarrowColumns="2">
+    <UniformGrid Columns="5" NarrowColumns="2">
         <UniformGridButton Variant="UniformGridVariant.Elevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularElevatedActionTile)" />
-        <UniformGridButton Variant="UniformGridVariant.Filled" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularFilledActionTile)" />
-        <UniformGridButton Variant="UniformGridVariant.Outlined" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularOutlinedActionTile)" />
+        <UniformGridButton Variant="UniformGridVariant.FilledElevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularFilledElevatedActionTile)" />
         <UniformGridButton Variant="UniformGridVariant.Danger" aria-label="@Localization.Parse(TextKey.Sample_EmptyRectangularDangerActionTile)" />
-        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_UnavailableRectangularActionTile)" Disabled="true" Variant="UniformGridVariant.Outlined" />
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Save)" aria-label="@Localization.Parse(TextKey.Sample_BusyRectangularActionTile)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" Variant="UniformGridVariant.Filled" />
+        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_UnavailableRectangularActionTile)" Disabled="true" Variant="UniformGridVariant.Elevated" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Save)" aria-label="@Localization.Parse(TextKey.Sample_BusyRectangularActionTile)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" Variant="UniformGridVariant.FilledElevated" />
     </UniformGrid>
-    <UniformGrid Shape="UniformGridShape.Square" Columns="6" NarrowColumns="2">
+    <UniformGrid Shape="UniformGridShape.Square" Columns="5" NarrowColumns="2">
         <UniformGridButton Variant="UniformGridVariant.Elevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyElevatedActionTile)" />
-        <UniformGridButton Variant="UniformGridVariant.Filled" aria-label="@Localization.Parse(TextKey.Sample_EmptyFilledActionTile)" />
-        <UniformGridButton Variant="UniformGridVariant.Outlined" aria-label="@Localization.Parse(TextKey.Sample_EmptyOutlinedActionTile)" />
+        <UniformGridButton Variant="UniformGridVariant.FilledElevated" aria-label="@Localization.Parse(TextKey.Sample_EmptyFilledElevatedActionTile)" />
         <UniformGridButton Variant="UniformGridVariant.Danger" aria-label="@Localization.Parse(TextKey.Sample_EmptyDangerActionTile)" />
-        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_UnavailableSquareActionTile)" Disabled="true" Variant="UniformGridVariant.Outlined" />
-        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_BusySquareActionTile)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" Variant="UniformGridVariant.Filled" />
+        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_UnavailableSquareActionTile)" Disabled="true" Variant="UniformGridVariant.Elevated" />
+        <UniformGridButton aria-label="@Localization.Parse(TextKey.Sample_BusySquareActionTile)" Busy="true" BusyLabel="@Localization.Parse(TextKey.Sample_Processing)" Variant="UniformGridVariant.FilledElevated" />
     </UniformGrid>
 }
 else
 {
     <UniformGrid>
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Save)" Icon="save" Text="@Localization.Parse(TextKey.Sample_SaveDemoState)" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_Saving)" OnClick="SaveAsync" Variant="UniformGridVariant.Filled" />
-        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Reset)" Icon="restart_alt" Text="@Localization.Parse(TextKey.Sample_ClearDemoRecords)" Disabled="Saving" OnClick="Reset" Variant="UniformGridVariant.Outlined" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Save)" Icon="save" Text="@Localization.Parse(TextKey.Sample_SaveDemoState)" Busy="Saving" BusyLabel="@Localization.Parse(TextKey.Sample_Saving)" OnClick="SaveAsync" Variant="UniformGridVariant.FilledElevated" />
+        <UniformGridButton Title="@Localization.Parse(TextKey.Sample_Reset)" Icon="restart_alt" Text="@Localization.Parse(TextKey.Sample_ClearDemoRecords)" Disabled="Saving" OnClick="Reset" Variant="UniformGridVariant.Elevated" />
     </UniformGrid>
     <p role="status">@Localization.Parse(TextKey.Sample_SavedCount, SavedCount)</p>
 }

@@ -25,6 +25,7 @@ Assert $script.Success 'The Blazor startup script is missing.'
 $resourceCases=@(
     @{ Path='_content/Arkheide.Flourish.Blazor.Framework/framework.css'; Type='text/css'; Minimum=1000; Text='.f-icon' },
     @{ Path='_content/Arkheide.Flourish.Blazor.Design/design.css'; Type='text/css'; Minimum=1000; Text='--f-primary' },
+    @{ Path='_content/Arkheide.Flourish.Extensions.Culture.Blazor/browser-preferences.js'; Type='text/javascript'; Minimum=500; Text='saveCulture' },
     @{ Path='_content/Arkheide.Flourish.Blazor.Framework/icons/material/MaterialSymbolsOutlined.woff2'; Type='font/woff2'; Minimum=1000000 },
     @{ Path=$style.Groups[1].Value; Type='text/css'; Minimum=50 },
     @{ Path=$script.Groups[1].Value; Type='text/javascript'; Minimum=10000 }
@@ -72,6 +73,7 @@ try {
 
 # Assert the actual collapsible PageHeading, rather than accepting translated navigation text.
 $headingCases=@{
+    '/changelog'='Nav_ChangeLog'
     '/framework'='Nav_GetStarted'; '/framework/topbar'='Nav_TopBar'
     '/framework/navigation'='Nav_Navigation'; '/framework/commands'='Nav_Commands'
     '/framework/layout'='Nav_PageLayout'; '/framework/interactions'='Nav_Interactions'

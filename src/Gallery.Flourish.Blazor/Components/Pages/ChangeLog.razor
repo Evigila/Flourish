@@ -1,0 +1,30 @@
+@page "/changelog"
+@inherits LocalizedComponentBase
+
+<PageTitle>@Localization.Parse(TextKey.Nav_ChangeLog) · @Localization.Parse(TextKey.Project_Name)</PageTitle>
+<PageBody>
+    <PageHeading Title="@Localization.Parse(TextKey.Nav_ChangeLog)" />
+    <Field Id="changelog-version" Label="@Localization.Parse(TextKey.ChangeLog_Version)" style="width:20rem;max-width:100%">
+        <SelectBox TValue="string" Options="@Versions" Value="@Selected.Version" ValueChanged="SelectVersion"
+                   ValueExpression="@(() => Selected.Version)" />
+    </Field>
+    <Section Title="@Selected.Version" Id="changelog-changes">
+        @if (Selected.ChangeKeys.Count == 0)
+        {
+            <p>@Localization.Parse(TextKey.ChangeLog_NoChanges)</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var key in Selected.ChangeKeys) { <li>@Localization.Parse(key)</li> }
+            </ul>
+        }
+    </Section>
+</PageBody>
+
+@code {
+    private static readonly IReadOnlyList<SelectOption<string>> Versions = ChangeLogCatalog.Releases
+        .Select(release => new SelectOption<string>(release.Version, release.Version)).ToArray();
+    private ReleaseNote Selected = ChangeLogCatalog.Releases[0];
+    private void SelectVersion(string version) => Selected = ChangeLogCatalog.Releases.Single(release => release.Version == version);
+}

@@ -30,10 +30,10 @@
                     <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
                 </Field>
             </FormLayout>
-            <div class="f-inline-actions">
+            <InlineActions>
                 <Button Variant="ButtonVariant.Primary" Type="submit" Text="@Localization.Parse(TextKey.Appearance_Apply)" />
                 <Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette" Text="@Localization.Parse(TextKey.Appearance_Reset)" />
-            </div>
+            </InlineActions>
         </EditForm>
         @if (ColorsApplied) { <Notice Severity="NotificationSeverity.Success">@Localization.Parse(TextKey.Appearance_Applied)</Notice> }
         <UniformGrid>
@@ -98,7 +98,9 @@
     {
     <Section Title="@Localization.Parse(TextKey.Appearance_Configure)">
         <p>@Localization.Parse(TextKey.Appearance_Tokens)<br />@Localization.Parse(TextKey.Appearance_ThemeProvider)</p>
-        <p><a href="/framework">@Localization.Parse(TextKey.Appearance_FrameworkLink)</a></p>
+        <InlineActions>
+            <Button Variant="ButtonVariant.Secondary" Href="/framework" Text="@Localization.Parse(TextKey.Appearance_FrameworkLink)" />
+        </InlineActions>
         <DisplayBoard Dotted="false" Centered="false" CopyText="@DesignExample" CopyLabel="@Localization.Parse(TextKey.Common_CopyCode)" CopiedLabel="@Localization.Parse(TextKey.Common_Copied)" CopyingLabel="@Localization.Parse(TextKey.Common_Copying)" CopyFailedLabel="@Localization.Parse(TextKey.Common_CopyFailed)"><CodeBlock Text="@DesignExample" Language="csharp" /></DisplayBoard>
     </Section>
     }

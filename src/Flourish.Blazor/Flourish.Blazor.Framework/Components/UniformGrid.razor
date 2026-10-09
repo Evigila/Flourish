@@ -30,8 +30,7 @@
     private string AppearanceName => Variant switch
     {
         UniformGridVariant.Elevated => "elevated",
-        UniformGridVariant.Filled => "filled",
-        UniformGridVariant.Outlined => "outlined",
+        UniformGridVariant.FilledElevated => "filled-elevated",
         UniformGridVariant.Danger => "danger",
         _ => throw new ArgumentOutOfRangeException(nameof(Variant))
     };
