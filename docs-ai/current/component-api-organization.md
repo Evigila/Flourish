@@ -1,5 +1,9 @@
 # Component API organization
 
+## 2026-10-09 Essential 1.4.0 module bridge
+
+The optional bridges now consume Essential 1.4.0. Blazor CultureBuilder adds AddCatalog(id, LocalizationCatalog) and AddCatalogFiles(id, paths, fallbackCulture = "en-US", options = null); relative module paths resolve at AppContext.BaseDirectory and Essential owns composition, validation and retained-language policy. All configured UI choices must be enabled by every catalog. Native UseEssentialCulture also accepts a loaded catalog, with independent context state, AvailableCultures and SetCulture on the adapter. Existing startup, browser persistence, provider disposal and explicit format defaults remain in force. Gallery now uses seven functional multilingual modules and its generated Key/CultureResources manifest for compilation, deployment and registration. This supersedes the earlier same-day single embedded Gallery source and 1.3.0 dependency statements below; Framework/extension catalogs remain embedded. See [the integration contract](culture-web-integration.md).
+
 ## 2026-10-09 Button content height
 
 Default Blazor Design Button uses a 48px minimum height and 10px block padding rather than equalizing every button's height. Ordinary short text and the default 26px inline icon fit the standard minimum; Description, stacked labels and wrapping content grow naturally with their padding. No new sizing parameter or multiline variant is required. Icon-only actions retain their explicit square geometry; menu items and grid/table/navigation scenarios retain their existing specialized sizing. Gallery's bounded account example exercises the existing Text/Description/TrailingText contract. See [the diagnosis and checks](bugfix-reports/2026-10-09_button-content-height.md).

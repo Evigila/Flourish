@@ -44,6 +44,7 @@ internal static class Program
             ("Request negotiation restores cookie pairs before scoped initialization", RequestNegotiation)
         };
         BrowserPreferenceChecks.Register(tests);
+        CatalogModuleChecks.Register(tests);
         try
         {
             foreach (var test in tests)
@@ -62,7 +63,7 @@ internal static class Program
     }
 
     internal static IServiceCollection Services(Action<CultureBuilder>? configure = null, string baseUri = "https://example.test/",
-        IReadOnlyDictionary<string, string?>? configuration = null)
+        IReadOnlyDictionary<string, string?>? configuration = null, bool addApplication = true)
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -72,8 +73,11 @@ internal static class Program
         var settings = new ConfigurationBuilder().AddInMemoryCollection(configuration ?? new Dictionary<string, string?>()).Build();
         services.AddFlourishFramework(settings, framework => framework.ConfigureCulture(culture =>
         {
-            using var application = new MemoryStream(Encoding.UTF8.GetBytes(AppCatalog));
-            culture.AddCatalog("App", application);
+            if (addApplication)
+            {
+                using var application = new MemoryStream(Encoding.UTF8.GetBytes(AppCatalog));
+                culture.AddCatalog("App", application);
+            }
             configure?.Invoke(culture);
         }));
         return services;

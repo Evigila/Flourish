@@ -9,9 +9,9 @@
     <Platforms>AnyCPU;x86;x64;ARM64</Platforms>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <EssentialCultureGeneratorEnabled>false</EssentialCultureGeneratorEnabled>
+    <EssentialCultureNamespace>ArkheideSystem.Tests.Flourish.Extensions.Culture.WPF.Texts</EssentialCultureNamespace>
+    <EssentialCultureGeneratorEnabled>true</EssentialCultureGeneratorEnabled>
     <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
-    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
@@ -23,6 +23,6 @@
     <ProjectReference Include="../../src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Culture.json" CopyToOutputDirectory="PreserveNewest" />
+    <CultureModule Include="Culture.Records.json" ModuleId="Records" DeploymentPath="Records/Culture.Records.json" />
   </ItemGroup>
 </Project>

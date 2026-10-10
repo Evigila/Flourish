@@ -1,6 +1,12 @@
 # NuGet release and integration
 
-## Current source Culture integration after 2026-10-09
+## Essential 1.4.0 module adoption
+
+The user authorized the shared Essential dependency pin and release-verification expectation to move to 1.4.0. Blazor/WPF bridges consume its public packages; the Blazor extension still depends on Framework and WPF remains outside the six-package public manifest. Flourish VersionPrefix remains 1.1.3 and no tag/publication follows from this update. Earlier 1.3.0 publication/dependency results below remain dated evidence.
+
+Gallery now declares seven multilingual CultureModule files and registers their generated CultureResources manifest through AddCatalogFiles. Its former single embedded Gallery.Texts.json resource is removed; Framework/extension resources remain embedded. Isolated package consumers now verify two functional modules, generated keys/manifest, nested build/publish deployment paths, language/format isolation and SSR. Catalog, ChangeLog and HTTP validation inspect all Gallery modules rather than one file. See [the current integration contract](culture-web-integration.md).
+
+## Earlier 2026-10-09 Culture integration redesign
 
 The user requested a later same-day redesign of browser culture persistence. ConfigureCulture is now an IFrameworkBuilder extension owned by Flourish.Extensions.Culture.Blazor; AddFlourishCulture and AddFlourishPreferences are removed without aliases. The optional Razor extension owns catalog loading, request negotiation, CultureSession, LocalizedComponentBase, LanguagePicker and its packaged browser-preferences.js. Essential.Culture.Blazor remains its internal single lookup/formatting dependency at 1.3.0. Framework retains provider-neutral contracts and has no Essential dependency.
 

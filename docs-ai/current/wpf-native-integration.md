@@ -1,5 +1,9 @@
 # Native WPF integration
 
+## 2026-10-09 Essential 1.4.0 bridge update
+
+The user authorized the optional bridge dependency to advance to Essential.Culture.Wpf 1.4.0. UseEssentialCulture accepts a loaded LocalizationCatalog, including Essential.FromFiles modules and CatalogLoadOptions, and creates isolated context state. EssentialTextProvider exposes policy-aware AvailableCultures and SetCulture; validation/events and disposal retain their existing ownership. Static-facade consumers configure their complete catalog before constructing any provider/view; the original optional format override remains distinct from independent context formatting. Native framework captions now use Essential's loaded catalog and parent fallback rather than a separate JSON dictionary. Module fixtures exercise real generated keys and build/publish paths. This supersedes the reconstruction's dated 1.3.0 dependency below and does not publish or version-bump Flourish packages.
+
 ## Scope and authority
 
 The 2026-10-07 reconstruction replaces the former WPF implementation, Gallery, tests and Culture hosting adapter. Current Flourish.Blazor components, public contracts, CSS and executable Gallery are the sole UI/UX reference. The old WPF service hierarchy, hosted shell, platform materials, branded control family and compatibility aliases are removed. This is a native WPF port: Windows controls, dependency-property binding, native templates, DrawingContext, Popup and modal Window replace browser rendering. The native target remains net10.0-windows. WinUI and Core are outside this task.

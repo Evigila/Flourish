@@ -1,0 +1,987 @@
+{
+  "Catalog_LanguagePicker_Purpose": {
+    "en-US": "Select and persist the interface language or number/date format through the Culture extension.",
+    "zh-CN": "通过 Culture 扩展选择并保存界面语言或数字、日期格式。",
+    "pt-BR": "Seleciona e salva o idioma da interface ou o formato de números e datas pela extensão Culture."
+  },
+  "Catalog_LanguagePicker_Variants": {
+    "en-US": "Language selection by default; FormatCulture selects formats independently. Supported choices and save errors come from the extension.",
+    "zh-CN": "默认选择语言；FormatCulture 独立选择格式。可选语言和保存失败提示由扩展提供。",
+    "pt-BR": "Seleciona o idioma por padrão; FormatCulture seleciona formatos separadamente. A extensão fornece as opções e os erros de gravação."
+  },
+  "Catalog_TutorialBoard_Purpose": {
+    "en-US": "Host-driven tutorials with a compact progress entry and nonmodal board.",
+    "zh-CN": "宿主驱动的教程，配有缩略进度入口和非模态面板。",
+    "pt-BR": "Tutoriais guiados pelo aplicativo com progresso compacto e painel não modal."
+  },
+  "Catalog_TutorialBoard_Variants": {
+    "en-US": "Primary dotted surface by default; native light dismiss, H1 step title, segmented progress and a shortcut action.",
+    "zh-CN": "默认主色点阵；原生轻量关闭、H1 步骤标题、分段进度和快捷操作。",
+    "pt-BR": "Superfície primária pontilhada por padrão; fechamento nativo, título H1, progresso segmentado e atalho."
+  },
+  "Controls_Missing": {
+    "en-US": "Control or category not found",
+    "zh-CN": "没有此控件或分类",
+    "pt-BR": "Controle ou categoria não encontrado"
+  },
+  "Catalog_ApplicationLayout_Purpose": {
+    "en-US": "Default route layout loading framework and optional theme resources.",
+    "zh-CN": "路由默认布局，加载框架与可选主题资源。",
+    "pt-BR": "Layout padrão de rotas que carrega recursos do framework e do tema opcional."
+  },
+  "Catalog_ApplicationLayout_Variants": {
+    "en-US": "Set Router.DefaultLayout once; pages supply only their main content.",
+    "zh-CN": "Router 的 DefaultLayout 指定一次即可；页面只提供正文。",
+    "pt-BR": "Defina Router.DefaultLayout uma vez; páginas fornecem apenas o conteúdo principal."
+  },
+  "Catalog_ApplicationShell_Purpose": {
+    "en-US": "Hosts the top bar, two-level navigation, fixed navigation and page content.",
+    "zh-CN": "承载顶部栏、两级导航、固定导航与页面正文。",
+    "pt-BR": "Abriga barra superior, navegação em dois níveis, navegação fixa e conteúdo da página."
+  },
+  "Catalog_ApplicationShell_Variants": {
+    "en-US": "Uses Program configuration by default. TitleBarStart / Brand / End support explicit custom host composition.",
+    "zh-CN": "默认使用 Program 配置；TitleBarStart / Brand / End 可用于自定义宿主组合。",
+    "pt-BR": "Usa configuração de Program por padrão. TitleBarStart / Brand / End permitem composição explícita de um host personalizado."
+  },
+  "Catalog_ValidationMessages_Purpose": {
+    "en-US": "Displays hidden-field and cross-field validation errors.",
+    "zh-CN": "显示隐藏或跨字段验证错误。",
+    "pt-BR": "Mostra erros de validação de campos ocultos e entre campos."
+  },
+  "Catalog_ValidationMessages_Variants": {
+    "en-US": "Normal fields share this renderer through Field.For without repeated messages. Standalone For binds an EditContext field; Error supplies explicit text. Form changes/disposal clean subscriptions; Id associates accessible error descriptions.",
+    "zh-CN": "普通字段通过 Field.For 共用此呈现，不重复放入消息；独立使用 For 绑定 EditContext 字段，Error 可提供显式错误。订阅随表单切换或释放清理，Id 关联可访问错误说明。",
+    "pt-BR": "Campos comuns compartilham esta apresentação por Field.For, sem mensagens repetidas. For independente vincula um campo EditContext; Error fornece texto explícito. Troca de formulário/descarte limpa assinaturas; Id associa descrições acessíveis de erro."
+  },
+  "Catalog_NavigationChoices_Purpose": {
+    "en-US": "Selects an access method through native GET links.",
+    "zh-CN": "使用原生 GET 链接选择访问方式。",
+    "pt-BR": "Seleciona uma forma de acesso por links GET nativos."
+  },
+  "Catalog_NavigationChoices_Variants": {
+    "en-US": "Id/Label/Items/ActiveKey are required; NavigationChoiceItem contains Key/Label/Href/Disabled. Compact=true uses equal-width Button links with Variant/ActiveVariant; set both to Elevated for consistent elevation. Default is a grid. ChildContent supplies each item's business content.\nLinks fully navigate without JS; aria-current marks the current route and inactive panels remain mounted but hidden. See /examples/display/access-methods.",
+    "zh-CN": "Id/Label/Items/ActiveKey必填；NavigationChoiceItem包含Key/Label/Href/Disabled。Compact=true使用等宽普通Button入口，Variant/ActiveVariant都设置为Elevated时保持统一浮起样式；默认仍为网格。ChildContent按项提供业务内容。\n链接完整导航、无JS，aria-current标记当前路由，非活动面板保持挂载但隐藏。案例 /examples/display/access-methods。",
+    "pt-BR": "Id/Label/Items/ActiveKey são obrigatórios; NavigationChoiceItem contém Key/Label/Href/Disabled. Compact=true usa links Button iguais com Variant/ActiveVariant; defina ambos como Elevated para elevação uniforme. O padrão é grade. ChildContent fornece o conteúdo de cada item.\nLinks navegam sem JS; aria-current marca a rota atual e painéis inativos permanecem montados, mas ocultos. Veja /examples/display/access-methods."
+  },
+  "Catalog_Button_Purpose": {
+    "en-US": "Triggers actions in headings, toolbars or dialogs, and supports navigation links.",
+    "zh-CN": "在页面标题、工具区或弹窗中触发操作，也可提供导航链接。",
+    "pt-BR": "Aciona ações em títulos, barras ou diálogos e permite links de navegação."
+  },
+  "Catalog_Button_Variants": {
+    "en-US": "Primary, Secondary, Danger, Quiet, Underline and Elevated appearances; Disabled/Busy describe state. Icon-only needs aria-label; Href supplies navigation. Description and TrailingText opt into one full-width button with stacked labels and trailing passive text; this mode requires Text and excludes ChildContent. Default design uses a 48px minimum height; multiline labels retain vertical padding and grow naturally.",
+    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline、Elevated 六种外观；Disabled / Busy 是状态属性。仅图标需 aria-label，Href 提供导航。Description 与 TrailingText 启用整行按钮，左侧标签上下排列，末端显示被动文字；此模式必须提供 Text 且不接受 ChildContent。默认设计采用 48px 最小高度；多行文案保留上下内边距并随内容增高。",
+    "pt-BR": "Aparências Primary, Secondary, Danger, Quiet, Underline e Elevated; Disabled/Busy descrevem estado. Somente ícone exige aria-label; Href fornece navegação. Description e TrailingText ativam um único botão de largura total com textos empilhados e texto passivo no fim; exige Text e não aceita ChildContent. O design padrão usa altura mínima de 48px; textos em várias linhas mantêm espaçamento vertical interno e aumentam a altura conforme o conteúdo."
+  },
+  "Catalog_ExpansionIndicator_Purpose": {
+    "en-US": "Decorative expansion triangle inside the button that controls a region.",
+    "zh-CN": "显示展开状态的装饰性三角标记，放在控制区域展开的按钮中。",
+    "pt-BR": "Triângulo decorativo de expansão dentro do botão que controla uma região."
+  },
+  "Catalog_ExpansionIndicator_Variants": {
+    "en-US": "Matches the native SelectBox triangle. Expanded controls state; Design uses 140ms rotation with reduced-motion support. The owning button supplies events, name and aria-expanded/aria-controls; the indicator is not interactive. Reused by SplitButton, navigation and menus.",
+    "zh-CN": "与 SelectBox 的原生三角标记保持一致；Expanded 控制展开状态，Design 使用 140ms 旋转动画并支持减少动态效果。按钮负责点击、名称和 aria-expanded / aria-controls；标记本身不可交互。SplitButton、导航和菜单已复用。",
+    "pt-BR": "Corresponde ao triângulo nativo de SelectBox. Expanded controla estado; Design usa rotação de 140ms com suporte a movimento reduzido. O botão fornece eventos, nome e aria-expanded/aria-controls; o indicador não é interativo. Reutilizado por SplitButton, navegação e menus."
+  },
+  "Catalog_SplitButton_Purpose": {
+    "en-US": "Combines a primary action with a square secondary entry and native dropdown content.",
+    "zh-CN": "将主动作和方形次入口组合，支持原生下拉内容。",
+    "pt-BR": "Combina ação principal com entrada secundária quadrada e conteúdo de menu nativo."
+  },
+  "Catalog_SplitButton_Variants": {
+    "en-US": "MenuContent provides native details navigation/actions in static SSR and is exclusive with controlled Expanded/OnSecondaryClick. Without it, use explicit dual callbacks. Type=submit submits only the primary button.\nFullWidth overrides pixel Width; the secondary part stays 48px square. PrimaryDisabled locks only the primary action; Busy/Disabled expose no available menu.",
+    "zh-CN": "MenuContent 提供静态 SSR 可用的原生 details 导航/动作，与受控 Expanded/OnSecondaryClick 互斥；不设置 MenuContent 时使用明确的双动作回调。Type=submit 只提交主按钮。\nFullWidth 优先于像素 Width，次入口保持 48px 方形；PrimaryDisabled 仅锁主动作，保留次入口；Busy/Disabled 不挂载可用菜单。",
+    "pt-BR": "MenuContent fornece navegação/ações details em SSR estático e é exclusivo com Expanded/OnSecondaryClick controlados. Sem ele, use callbacks duplos explícitos. Type=submit envia apenas pelo botão principal.\nFullWidth prevalece sobre Width; a parte secundária fica quadrada de 48px. PrimaryDisabled bloqueia apenas a ação principal; Busy/Disabled não expõem menu disponível."
+  },
+  "Catalog_DisplayBoard_Purpose": {
+    "en-US": "Shared display area for previews, scenarios and copyable content.",
+    "zh-CN": "为控件预览、演示场景和可复制内容提供统一展示区域。",
+    "pt-BR": "Área compartilhada para prévias, cenários e conteúdo copiável."
+  },
+  "Catalog_DisplayBoard_Variants": {
+    "en-US": "Dotted/Centered default to true; Centered controls ordinary content. CodeBlock always starts at the top start, and code boards may disable dots. CopyText supplies complete content; the top-right Elevated icon briefly shows a check after copying. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "Dotted 默认 true；Centered 默认 true，控制普通子内容的位置。CodeBlock 始终从左上开始；代码背景板可禁用点阵。CopyText 提供完整复制内容；右上角 Elevated 图标按钮复制成功后暂时显示勾号。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Dotted/Centered são true por padrão; Centered controla conteúdo comum. CodeBlock começa no início superior, e painéis de código podem desativar pontos. CopyText fornece conteúdo completo; o ícone Elevated superior direito mostra uma marca após copiar. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
+  },
+  "Catalog_UniformGridButton_Purpose": {
+    "en-US": "Clickable equal-width grid cell for form actions and finite wizard choices.",
+    "zh-CN": "为等宽网格提供可点击的单元格，用于表单操作和多步向导的有限选项。",
+    "pt-BR": "Célula clicável de grade com largura igual para ações de formulário e escolhas finitas de assistentes."
+  },
+  "Catalog_UniformGridButton_Variants": {
+    "en-US": "Use with UniformGrid or FormActions. Pure wizard choices contain only the grid and button text, without separate headings, advice or selectors; see /examples/display/wizard. Rectangles fill/divide container width; squares retain a side limit.\nVariant supports FilledElevated/Danger/Elevated, inheriting the grid or defaulting to Elevated standalone. Set primary actions explicitly to FilledElevated, others to Elevated. Title uses 34px H1 size; Text/ChildContent use 17px body size.\nIcon is optional and defaults to equal vertical halves; IconSupport=false retains continuous layout. Href/Type/Busy/Disabled/OnClick share Button behavior.",
+    "zh-CN": "配合 UniformGrid 或 FormActions 使用。纯向导选择步骤只有网格和按钮文字，不使用独立标题、说明或下拉框；案例 /examples/display/wizard。长方形铺满容器宽度后按列均分，正方形保留边长上限。\nVariant 支持 FilledElevated、Danger、Elevated；省略时继承网格外观，独立使用时为 Elevated。主要操作显式设为 FilledElevated，其余操作设为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px。\nIcon 可选，有图标默认自动启用上下等分布局，IconSupport=false 保留连续布局；Href、Type、Busy、Disabled 与 OnClick 复用 Button 行为。",
+    "pt-BR": "Use com UniformGrid ou FormActions. Escolhas puras de assistente contêm apenas grade e texto dos botões, sem títulos, explicações ou seletores separados; veja /examples/display/wizard. Retângulos preenchem/dividem a largura; quadrados mantêm limite lateral.\nVariant aceita FilledElevated/Danger/Elevated, herdando a grade ou Elevated independente. Defina ações principais como FilledElevated e demais como Elevated. Title usa H1 de 34px; Text/ChildContent usam 17px.\nIcon é opcional e ativa metades verticais; IconSupport=false mantém layout contínuo. Href/Type/Busy/Disabled/OnClick compartilham Button."
+  },
+  "Catalog_ActionMenu_Purpose": {
+    "en-US": "Shared command and native record-action menu.",
+    "zh-CN": "统一命令和记录原生操作菜单。",
+    "pt-BR": "Menu compartilhado de comandos e ações nativas de registros."
+  },
+  "Catalog_ActionMenu_Variants": {
+    "en-US": "Actions uses MenuAction; ChildContent uses actual Button or business GET/POST forms, exclusively. Both share availability, keyboard behavior, asynchronous closing, dialog focus restoration and OpenOnHover after browser enhancement. Native SSR retains click/keyboard disclosure.",
+    "zh-CN": "Actions 使用 MenuAction；ChildContent 使用真实 Button 或业务 GET/POST 表单，两者互斥。共享可用性、键盘、异步关闭与弹窗焦点恢复；浏览器增强后两种内容均支持 OpenOnHover，原生 SSR 保留点击/键盘展开。",
+    "pt-BR": "Actions usa MenuAction; ChildContent usa Button real ou formulários GET/POST, de forma exclusiva. Ambos compartilham disponibilidade, teclado, fechamento assíncrono, restauração de foco e OpenOnHover após aprimoramento no navegador. SSR nativo mantém abertura por clique/teclado."
+  },
+  "Catalog_TextBox_Purpose": {
+    "en-US": "Binds text with form validation.",
+    "zh-CN": "绑定文字并参与表单验证。",
+    "pt-BR": "Vincula texto com validação de formulário."
+  },
+  "Catalog_TextBox_Variants": {
+    "en-US": "Type supports native input types; Multiline/Rows select multiline input; MaxLength limits length.",
+    "zh-CN": "Type 支持原生输入类型；Multiline 与 Rows 切换多行；MaxLength 限制输入长度。",
+    "pt-BR": "Type aceita tipos nativos; Multiline/Rows ativam várias linhas; MaxLength limita o comprimento."
+  },
+  "Catalog_NumberBox_Purpose": {
+    "en-US": "Binds numeric values and handles parsing errors.",
+    "zh-CN": "绑定数值并处理解析错误。",
+    "pt-BR": "Vincula valores numéricos e trata erros de conversão."
+  },
+  "Catalog_NumberBox_Variants": {
+    "en-US": "TValue supports int, long, short, decimal, double, float and their nullable types. Min/Max/Step constrain the native input.",
+    "zh-CN": "TValue 支持 int、long、short、decimal、double、float 及其可空类型；Min / Max / Step 控制原生输入范围。",
+    "pt-BR": "TValue aceita int, long, short, decimal, double, float e versões anuláveis. Min/Max/Step limitam a entrada nativa."
+  },
+  "Catalog_SelectBox_Purpose": {
+    "en-US": "Binds one option, including enum values.",
+    "zh-CN": "绑定一个选项，包括枚举值。",
+    "pt-BR": "Vincula uma opção, incluindo valores de enum."
+  },
+  "Catalog_SelectBox_Variants": {
+    "en-US": "Options uses SelectOption<TValue>; ChildContent can supply option elements. Each option's Disabled controls availability. Browsers supporting customizable native selectors right-align the popup and reuse the shared rotating triangle.",
+    "zh-CN": "Options 使用 SelectOption<TValue>；也可用 ChildContent 提供 option；不可用项由选项的 Disabled 控制。支持可定制原生选择器的浏览器中，下拉面板始终右对齐，并使用共享的三角旋转效果。",
+    "pt-BR": "Options usa SelectOption<TValue>; ChildContent pode fornecer elementos option. Disabled de cada opção controla disponibilidade. Navegadores com seletores nativos personalizáveis alinham o painel à direita e reutilizam o triângulo giratório."
+  },
+  "Catalog_MultiSelectBox_Purpose": {
+    "en-US": "Selects multiple options with optional search, creation and ordering.",
+    "zh-CN": "选择多个选项，可搜索、新增并按需排序。",
+    "pt-BR": "Seleciona várias opções com busca, criação e ordenação opcionais."
+  },
+  "Catalog_MultiSelectBox_Variants": {
+    "en-US": "Items uses MultiSelectOption(Key, Label, Selected=false, CanDeselect=true, CanReorder=true, Disabled=false). Changed emits a complete MultiSelectChange(OrderedKeys, SelectedKeys) snapshot.\nDefaults: no selection, ordering or search. MinimumSelected/MaximumSelections bound counts; Searchable/CreateRequested enable search/host creation. DataTable and LineChart reuse this control with ordering explicitly enabled.",
+    "zh-CN": "Items 使用 MultiSelectOption(Key, Label, Selected=false, CanDeselect=true, CanReorder=true, Disabled=false)，Changed 返回完整 MultiSelectChange(OrderedKeys, SelectedKeys) 快照。\n默认无选择、不排序、不搜索；MinimumSelected / MaximumSelections 约束数量，Searchable / CreateRequested 可启用搜索和宿主新增。DataTable 与 LineChart 复用同一控件并显式开启排序。",
+    "pt-BR": "Items usa MultiSelectOption(Key, Label, Selected=false, CanDeselect=true, CanReorder=true, Disabled=false). Changed emite snapshot completo MultiSelectChange(OrderedKeys, SelectedKeys).\nPadrão: sem seleção, ordenação ou busca. MinimumSelected/MaximumSelections limitam quantidades; Searchable/CreateRequested ativam busca/criação pelo host. DataTable e LineChart reutilizam o controle com ordenação explícita."
+  },
+  "Catalog_CheckBox_Purpose": {
+    "en-US": "Binds a boolean field with form validation.",
+    "zh-CN": "绑定布尔字段并参与表单验证。",
+    "pt-BR": "Vincula campo booleano com validação de formulário."
+  },
+  "Catalog_CheckBox_Variants": {
+    "en-US": "Label or ChildContent describes the field; Disabled blocks interaction. Design uses a checkbox side equal to the single-line input height, default 48px.",
+    "zh-CN": "Label 或 ChildContent 提供说明；Disabled 禁用交互。Design 中选中框边长等于单行输入框高度，默认为 48px。",
+    "pt-BR": "Label ou ChildContent descreve o campo; Disabled bloqueia interação. Design usa lado igual à altura da entrada de uma linha, padrão 48px."
+  },
+  "Catalog_ToggleSwitch_Purpose": {
+    "en-US": "Toggles a boolean state.",
+    "zh-CN": "切换一个布尔状态。",
+    "pt-BR": "Alterna um estado booleano."
+  },
+  "Catalog_ToggleSwitch_Variants": {
+    "en-US": "OnLabel/OffLabel supply state text; Controls points to the associated region. Can be used outside EditForm.",
+    "zh-CN": "OnLabel / OffLabel 提供状态文字；Controls 指向受控区域；可独立于 EditForm 使用。",
+    "pt-BR": "OnLabel/OffLabel fornecem textos de estado; Controls indica a região associada. Pode ser usado fora de EditForm."
+  },
+  "Catalog_ToggleSection_Purpose": {
+    "en-US": "Shows or hides content through a boolean switch.",
+    "zh-CN": "用开关显示或隐藏一段内容。",
+    "pt-BR": "Mostra ou oculta conteúdo por um interruptor booleano."
+  },
+  "Catalog_ToggleSection_Variants": {
+    "en-US": "Value binds expanded state; hidden content retains its state. Disabled prevents toggling.",
+    "zh-CN": "Value 绑定展开状态；隐藏内容仍保留其状态；Disabled 禁用切换。",
+    "pt-BR": "Value vincula estado expandido; conteúdo oculto preserva estado. Disabled impede alternância."
+  },
+  "Catalog_SearchBox_Purpose": {
+    "en-US": "Accepts search text and emits query events.",
+    "zh-CN": "接收搜索文字并发送查询事件。",
+    "pt-BR": "Recebe texto de busca e emite eventos de consulta."
+  },
+  "Catalog_SearchBox_Variants": {
+    "en-US": "ValueChanged reflects input immediately. After debounce, SearchRequested receives text/CancellationToken for cancelable remote queries; SearchChanged fires only when not canceled. DebounceMilliseconds sets the delay.",
+    "zh-CN": "ValueChanged 立即反映输入；防抖后 SearchRequested 接收文字与 CancellationToken，适合可取消的远程查询；SearchChanged 在查询未取消时通知；DebounceMilliseconds 控制延迟。",
+    "pt-BR": "ValueChanged reflete entrada imediatamente. Após debounce, SearchRequested recebe texto/CancellationToken para consultas remotas canceláveis; SearchChanged dispara apenas se não cancelado. DebounceMilliseconds define o atraso."
+  },
+  "Catalog_Field_Purpose": {
+    "en-US": "Associates label, input, required semantics and validation errors.",
+    "zh-CN": "关联标签、输入、必填状态与验证错误。",
+    "pt-BR": "Associa rótulo, entrada, obrigatoriedade e erros de validação."
+  },
+  "Catalog_Field_Variants": {
+    "en-US": "For connects form validation; Error supplies external errors; FullWidth occupies a row. Id should match the input. ChildContent contains the input; Actions places ordinary buttons beside it, wrapping below on narrow screens. The label and required context remain scoped to the input.",
+    "zh-CN": "For 连接表单验证；Error 传入外部错误；FullWidth 占用整行。Id 应与输入相同。ChildContent 放输入，Actions 放旁边的普通按钮，窄屏时操作换到下一行。标签与必填上下文仅属于输入。",
+    "pt-BR": "For conecta validação; Error fornece erros externos; FullWidth ocupa a linha. Id deve corresponder à entrada. ChildContent contém a entrada; Actions posiciona botões comuns ao lado, passando para a linha seguinte em telas estreitas. Rótulo e obrigatoriedade pertencem apenas à entrada."
+  },
+  "Catalog_FormLayout_Purpose": {
+    "en-US": "Arranges fields and focuses invalid inputs.",
+    "zh-CN": "排列字段并将焦点移到无效输入。",
+    "pt-BR": "Organiza campos e foca entradas inválidas."
+  },
+  "Catalog_FormLayout_Variants": {
+    "en-US": "Columns sets the column count; FocusInvalidFields can disable automatic focus. The outer EditForm owns submission and validation.",
+    "zh-CN": "Columns 指定列数；FocusInvalidFields 可关闭自动聚焦。需要外层 EditForm 负责提交与验证。",
+    "pt-BR": "Columns define colunas; FocusInvalidFields pode desativar foco automático. EditForm externo controla envio e validação."
+  },
+  "Catalog_FormActions_Purpose": {
+    "en-US": "Standardizes form-action columns and dimensions.",
+    "zh-CN": "统一表单操作区域的列数与尺寸。",
+    "pt-BR": "Padroniza colunas e dimensões das ações de formulário."
+  },
+  "Catalog_FormActions_Variants": {
+    "en-US": "Columns sets action columns, with narrow-window adaptation. UniformGridButton children support Elevated (default), FilledElevated and Danger. Pair primary FilledElevated actions with Elevated actions by meaning, not child order. All variants have no hover border. FormActions preserves the group's outer shadow and keyboard focus; Danger has no individual item shadow.",
+    "zh-CN": "Columns 指定操作列数，窄窗口自动适配。UniformGridButton 子项支持 Elevated（默认）、FilledElevated 和 Danger。主要操作使用 FilledElevated，其他操作使用 Elevated；按语义配置，不依赖子项顺序。所有变体均无悬停边框。FormActions 保持整组外侧阴影与键盘焦点；Danger 无单项阴影。",
+    "pt-BR": "Columns define colunas com adaptação a janelas estreitas. Filhos UniformGridButton aceitam Elevated (padrão), FilledElevated e Danger. Combine ações principais FilledElevated com Elevated pela semântica, não pela ordem. Nenhuma variante tem borda ao passar o mouse. FormActions mantém a sombra externa do grupo e o foco do teclado; Danger não tem sombra individual."
+  },
+  "Catalog_UniformGrid_Purpose": {
+    "en-US": "Equal-width grid for entry directories, wizard choices and information overviews.",
+    "zh-CN": "将多个单元格排列成等宽网格，适合入口目录、向导选择与信息概览。",
+    "pt-BR": "Grade de largura igual para diretórios, escolhas de assistentes e resumos de informações."
+  },
+  "Catalog_UniformGrid_Variants": {
+    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects FilledElevated/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
+    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 FilledElevated、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
+    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe FilledElevated/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
+  },
+  "Catalog_UniformGridItem_Purpose": {
+    "en-US": "Noninteractive information cell in an equal-width grid.",
+    "zh-CN": "在等宽网格中展示没有点击行为的信息。",
+    "pt-BR": "Célula informativa não interativa em grade de largura igual."
+  },
+  "Catalog_UniformGridItem_Variants": {
+    "en-US": "Shares FilledElevated/Danger/Elevated with UniformGridButton. Omitted Variant inherits the grid, or Elevated standalone. Title uses 34px H1 size; Text/ChildContent use 17px body size. Icon is optional; there is no Href or OnClick.",
+    "zh-CN": "与 UniformGridButton 共用 FilledElevated、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。",
+    "pt-BR": "Compartilha FilledElevated/Danger/Elevated com UniformGridButton. Variant omitido herda a grade ou Elevated independente. Title usa H1 de 34px; Text/ChildContent usam 17px. Icon é opcional; não há Href nem OnClick."
+  },
+  "Catalog_SectionNavigator_Purpose": {
+    "en-US": "Section entries beside the content without consuming its width.",
+    "zh-CN": "在正文右侧显示页面板块入口，不占用正文宽度。",
+    "pt-BR": "Entradas de seção ao lado do conteúdo, sem ocupar sua largura."
+  },
+  "Catalog_SectionNavigator_Variants": {
+    "en-US": "By default follows current-page H2 headings in ApplicationShell. Standalone use supplies ContentId; Items may supply headings/target IDs explicitly. Hover/focus shows names; the current section dot enlarges with a theme-color ring.",
+    "zh-CN": "默认跟随 ApplicationShell 中当前页面的 H2 标题。独立使用时指定 ContentId；Items 可显式提供标题与目标 ID。悬浮或聚焦显示标题，当前板块的圆点放大并显示主题色外圈。",
+    "pt-BR": "Por padrão, acompanha títulos H2 da página em ApplicationShell. Uso independente fornece ContentId; Items pode informar títulos/IDs. Foco ou passagem do ponteiro mostra nomes; o ponto atual aumenta com anel na cor do tema."
+  },
+  "Catalog_BackToTop_Purpose": {
+    "en-US": "Standard centered icon returning to the chosen content's top.",
+    "zh-CN": "使用标准居中图标返回指定正文的顶部。",
+    "pt-BR": "Ícone padrão centralizado para voltar ao topo do conteúdo indicado."
+  },
+  "Catalog_BackToTop_Variants": {
+    "en-US": "ContentId identifies the real scroll region; Threshold sets enhanced visibility. Static SSR keeps a working fragment link. Enhancement respects reduced motion and returns focus to content.",
+    "zh-CN": "ContentId 指定真实滚动区；Threshold 决定增强后的显示阈值。静态 SSR 保留可用的片段链接；增强尊重减少动态效果并将焦点交还正文。",
+    "pt-BR": "ContentId identifica a região real de rolagem; Threshold define visibilidade aprimorada. SSR mantém link de fragmento funcional. O aprimoramento respeita movimento reduzido e devolve foco ao conteúdo."
+  },
+  "Catalog_LineChart_Purpose": {
+    "en-US": "Standard-theme multi-series line chart of real numeric values.",
+    "zh-CN": "以标准主题展示真实数值的多序列折线图。",
+    "pt-BR": "Gráfico de linhas com várias séries de valores reais e tema padrão."
+  },
+  "Catalog_LineChart_Variants": {
+    "en-US": "Labels uses PointLabel; Series uses DataSeries with optional enabled state, formatting and maximum. ControlsContent holds business filters right-aligned beside the icon-only selector.\nHeading/Id enable a standard Section H2 and directory anchor; tools share its row and wrap on narrow screens. Title remains the accessible chart name. Scales are shared by default; IndependentScales explicitly separates them and shows series maxima.\nAn accessible exact-value table remains; no business calculations are performed.",
+    "zh-CN": "Labels 使用 PointLabel，Series 使用 DataSeries；序列可独立启用、格式化并声明最大值。ControlsContent 放业务筛选控件，与内置仅图标显示选择靠右排列。\nHeading 与 Id 可启用标准 Section H2 标题及目录锚点，工具栏共用标题行，窄屏自然换行。Title 保留图表辅助技术名称。默认共享刻度；IndependentScales 显式采用独立刻度且显示各序列最大值。\n包含精确值的辅助技术表格，不实现业务计算。",
+    "pt-BR": "Labels usa PointLabel; Series usa DataSeries com ativação, formato e máximo opcionais. ControlsContent contém filtros à direita junto ao seletor de ícone.\nHeading/Id ativam Section H2 e âncora; ferramentas compartilham a linha e quebram em telas estreitas. Title mantém nome acessível. Escalas são compartilhadas por padrão; IndependentScales separa e mostra máximos.\nA tabela acessível de valores exatos permanece; não há cálculos de negócio."
+  },
+  "Catalog_DataTable_Purpose": {
+    "en-US": "Displays data with search, sorting, paging and row actions.",
+    "zh-CN": "显示带搜索、排序、分页和行操作的数据。",
+    "pt-BR": "Exibe dados com busca, ordenação, paginação e ações por linha."
+  },
+  "Catalog_DataTable_Variants": {
+    "en-US": "View selects Table/Cards; Columns uses TableColumn<TItem>; Actions uses RowAction<TItem>. Default page size is 10, with 20/50/100 choices; PageSizeChanged supports @bind-PageSize. Loading/Error/EmptyMessage express actual state.",
+    "zh-CN": "View 在 Table / Cards 间切换；Columns 使用 TableColumn<TItem>；Actions 使用 RowAction<TItem>。每页默认 10 项，可选择 20 / 50 / 100；PageSizeChanged 支持 @bind-PageSize。Loading、Error、EmptyMessage 显示真实状态。",
+    "pt-BR": "View seleciona Table/Cards; Columns usa TableColumn<TItem>; Actions usa RowAction<TItem>. A página padrão tem 10 itens, com opções 20/50/100; PageSizeChanged aceita @bind-PageSize. Loading/Error/EmptyMessage representam estado real."
+  },
+  "Catalog_DataSearch_Purpose": {
+    "en-US": "Standard fields emitting controlled search requests through the shared column contract.",
+    "zh-CN": "使用标准字段按共享列合同发出受控搜索请求。",
+    "pt-BR": "Campos padrão que emitem consultas controladas pelo contrato compartilhado de colunas."
+  },
+  "Catalog_DataSearch_Variants": {
+    "en-US": "Columns uses TableColumn<TItem>; Changed emits TableSearchRequest. The host controls Value/ColumnKey. Defaults to the first Searchable column; IncludeAllColumns=true allows an empty key for all.\nDisabled blocks callbacks; MaximumLength limits input; ChildContent shares the row. Reuses DataTable search presentation without owning business queries/debounce services.",
+    "zh-CN": "Columns 使用 TableColumn<TItem>，Changed 使用 TableSearchRequest；Value / ColumnKey 由宿主管理。默认第一个 Searchable 列；IncludeAllColumns=true 允许空键代表全部列。\nDisabled 阻止回调，MaximumLength 限制输入，ChildContent 与查询框同行。与 DataTable 共用同一搜索呈现，不拥有业务查询或防抖服务。",
+    "pt-BR": "Columns usa TableColumn<TItem>; Changed emite TableSearchRequest. O host controla Value/ColumnKey. Usa a primeira coluna Searchable; IncludeAllColumns=true permite chave vazia para todas.\nDisabled bloqueia callbacks; MaximumLength limita entrada; ChildContent compartilha a linha. Reutiliza a apresentação de DataTable sem controlar consultas/debounce de negócio."
+  },
+  "Catalog_ListView_Purpose": {
+    "en-US": "Static read-only content with the same table styling as DataTable.",
+    "zh-CN": "以与 DataTable 相同的表格样式展示静态只读内容。",
+    "pt-BR": "Conteúdo estático somente leitura com o mesmo estilo de tabela de DataTable."
+  },
+  "Catalog_ListView_Variants": {
+    "en-US": "Displays all Items in supplied order, without search/sort/paging/loading/selection/row actions/JS. Columns shares TableColumn<TItem> captions/values/Format; Sortable/Searchable/CanHide do not activate behavior.\nRowHeaderKey creates row headings; CellTemplate uses TableCellContext<TItem>. Caption provides accessible table description, falling back to Label.",
+    "zh-CN": "Items 按传入顺序完整展示，无搜索、排序、分页、加载状态、选中、行操作或 JavaScript 控制器。Columns 复用 TableColumn<TItem> 的标题、值和 Format；Sortable / Searchable / CanHide 不启用动态能力。\nRowHeaderKey 提供行标题，CellTemplate 使用 TableCellContext<TItem> 定制只读内容。Caption 提供辅助技术表格说明；省略时使用 Label。",
+    "pt-BR": "Exibe todos os Items na ordem recebida, sem busca/ordenação/paginação/carregamento/seleção/ações/JS. Columns compartilha títulos/valores/Format de TableColumn<TItem>; Sortable/Searchable/CanHide não ativam comportamento.\nRowHeaderKey cria títulos de linha; CellTemplate usa TableCellContext<TItem>. Caption descreve a tabela acessível, usando Label quando omitido."
+  },
+  "Catalog_Dialog_Purpose": {
+    "en-US": "Modal dialog with focus/closing management, also suitable for confirmation.",
+    "zh-CN": "打开模态对话框并管理焦点与关闭，也用于操作确认。",
+    "pt-BR": "Diálogo modal com gestão de foco/fechamento, também adequado para confirmação."
+  },
+  "Catalog_Dialog_Variants": {
+    "en-US": "Presentation supports centered/bottom-sheet modes. Busy prevents closing; CanClose asynchronously guards it. Actions uses ordinary Button for confirmation/cancel. ShowAsync awaits CloseAsync results; BrowserControlled/Views connect browser protocol states without another popup component.",
+    "zh-CN": "Presentation 支持居中或底部面板；Busy 禁用关闭；CanClose 可异步确认；Actions 使用普通 Button 执行确认与取消。ShowAsync 等待 CloseAsync 的结果；BrowserControlled / Views 接入浏览器协议状态，而不用另一个弹窗控件。",
+    "pt-BR": "Presentation permite centro/painel inferior. Busy impede fechar; CanClose protege de forma assíncrona. Actions usa Button comum para confirmar/cancelar. ShowAsync espera resultado de CloseAsync; BrowserControlled/Views conectam estados do protocolo sem outro componente de diálogo."
+  },
+  "Catalog_Disclosure_Purpose": {
+    "en-US": "Native details disclosure region.",
+    "zh-CN": "提供原生 details 展开区域。",
+    "pt-BR": "Região expansível details nativa."
+  },
+  "Catalog_Disclosure_Variants": {
+    "en-US": "InitiallyOpen sets initial expansion; Title is the accessible trigger text.",
+    "zh-CN": "InitiallyOpen 指定初始展开；Title 是可访问触发器文字。",
+    "pt-BR": "InitiallyOpen define expansão inicial; Title é o texto acessível do acionador."
+  },
+  "Catalog_Notice_Purpose": {
+    "en-US": "Displays action results or states requiring attention.",
+    "zh-CN": "显示操作结果或需要注意的状态。",
+    "pt-BR": "Mostra resultados de ações ou estados que exigem atenção."
+  },
+  "Catalog_Notice_Variants": {
+    "en-US": "Severity uses NotificationSeverity; Announce controls announcements; Subtle uses a light appearance; Title adds an optional heading.",
+    "zh-CN": "Severity 使用 NotificationSeverity；Announce 控制播报；Subtle 提供轻量外观；Title 可增加标题。",
+    "pt-BR": "Severity usa NotificationSeverity; Announce controla anúncios; Subtle usa aparência discreta; Title adiciona título opcional."
+  },
+  "Catalog_EmptyState_Purpose": {
+    "en-US": "Actual empty-data feedback or a passive placeholder in an unused page area.",
+    "zh-CN": "显示真实空数据反馈，或在尚未使用的页面区域显示被动占位。",
+    "pt-BR": "Feedback real de dados vazios ou apresentação passiva em uma área de página ainda não utilizada."
+  },
+  "Catalog_EmptyState_Variants": {
+    "en-US": "Standard describes an empty result with optional descriptions and actions. Watermark centers a large muted Title in the available PageBody area and accepts no description or actions.",
+    "zh-CN": "Standard 描述空结果并允许说明和操作。Watermark 在 PageBody 可用区域居中显示大型柔和色 Title，不接受说明或操作。",
+    "pt-BR": "Standard descreve um resultado vazio com descrições e ações opcionais. Watermark centraliza um Title grande e discreto na área disponível de PageBody, sem descrição ou ações."
+  },
+  "Catalog_LoadingState_Purpose": {
+    "en-US": "Content loading feedback.",
+    "zh-CN": "显示内容加载状态。",
+    "pt-BR": "Feedback de carregamento do conteúdo."
+  },
+  "Catalog_LoadingState_Variants": {
+    "en-US": "Message supplies announcement text; ChildContent may replace it.",
+    "zh-CN": "Message 提供播报内容；ChildContent 可替换文字。",
+    "pt-BR": "Message fornece texto do anúncio; ChildContent pode substituí-lo."
+  },
+  "Catalog_ProgressBar_Purpose": {
+    "en-US": "Progress bar for a complete task.",
+    "zh-CN": "显示完整任务的进度条。",
+    "pt-BR": "Barra de progresso de uma tarefa completa."
+  },
+  "Catalog_ProgressBar_Variants": {
+    "en-US": "Value is 0–100; null means unknown progress. StatusText describes the current stage.",
+    "zh-CN": "Value 使用 0–100；null 表示未知进度；StatusText 说明当前阶段。",
+    "pt-BR": "Value é 0–100; null significa progresso desconhecido. StatusText descreve a etapa atual."
+  },
+  "Catalog_ProgressRing_Purpose": {
+    "en-US": "Progress ring for compact spaces.",
+    "zh-CN": "在紧凑位置显示进度环。",
+    "pt-BR": "Anel de progresso para espaços compactos."
+  },
+  "Catalog_ProgressRing_Variants": {
+    "en-US": "Value is 0–100 or null; Stopped pauses rotation; StatusText describes the stage.",
+    "zh-CN": "Value 使用 0–100 或 null；Stopped 暂停旋转；StatusText 为阶段提示。",
+    "pt-BR": "Value é 0–100 ou null; Stopped pausa a rotação; StatusText descreve a etapa."
+  },
+  "Catalog_PageBody_Purpose": {
+    "en-US": "Consistent width and margins for page content.",
+    "zh-CN": "为页面正文提供统一宽度与边距。",
+    "pt-BR": "Largura e margens consistentes para conteúdo da página."
+  },
+  "Catalog_PageBody_Variants": {
+    "en-US": "Omitted Fluid inherits Program layout. true uses fluid width, false uses centered width. CenteredContainer defaults to Standard; Expanded halves each side gutter for this page and increases content width. Both retain standard vertical spacing. FullWidth uses the complete content region. FillHeight fills a fixed shell stage, removes document bottom spacing and gives content the space below the direct PageHeading. Combine FullWidth, FillHeight and a Compact heading with a direct EditingGrid for a full remaining-space editor.",
+    "zh-CN": "Fluid 省略时继承 Program 的布局配置；true 使用流动宽度，false 使用中心宽度。CenteredContainer 默认 Standard（标准中心容器）；Expanded（扩大中心容器）仅将当前页面每侧留白减半、扩大正文宽度，两者均采用默认纵向间距。FullWidth 使用完整正文区域。FillHeight 填满固定 shell 内容区，移除文档底部留白，将直接子级 PageHeading 下的剩余空间交给正文。FullWidth、FillHeight、Compact 标题与直接子级 EditingGrid 组合为填满可用空间的表格编辑区。",
+    "pt-BR": "Fluid omitido herda o layout de Program. true usa largura fluida, false usa largura central. CenteredContainer é Standard por padrão; Expanded reduz cada recuo lateral à metade nesta página e amplia o conteúdo. Ambos mantêm o espaçamento vertical padrão. FullWidth usa toda a região. FillHeight preenche a área fixa do shell, remove o espaço inferior do documento e entrega ao conteúdo o espaço abaixo de PageHeading direto. Combine FullWidth, FillHeight, título Compact e EditingGrid direto para um editor com todo o espaço restante."
+  },
+  "Catalog_PageHeading_Purpose": {
+    "en-US": "Collapsible page heading with actions.",
+    "zh-CN": "显示可收缩页面标题与操作。",
+    "pt-BR": "Título de página recolhível com ações."
+  },
+  "Catalog_PageHeading_Variants": {
+    "en-US": "Design uses 50px expanded and 38px collapsed titles; 38px belongs only to collapsed headings. Compact chooses compact state; ParentHref/ParentLabel supply the real parent link; Actions holds controls.",
+    "zh-CN": "Design 中展开标题为 50px、坍缩标题为 38px；38px 仅用于坍缩大标题。Compact 指定紧凑状态；ParentHref / ParentLabel 显示真正的上级链接；Actions 放置操作。",
+    "pt-BR": "Design usa títulos de 50px expandidos e 38px recolhidos; 38px é exclusivo dos recolhidos. Compact escolhe estado compacto; ParentHref/ParentLabel fornecem link superior real; Actions contém controles."
+  },
+  "Catalog_Section_Purpose": {
+    "en-US": "Organizes titled page sections.",
+    "zh-CN": "组织有标题的页面内容区。",
+    "pt-BR": "Organiza seções da página com título."
+  },
+  "Catalog_Section_Variants": {
+    "en-US": "Title names actual content; Actions provides section actions; ChildContent provides the body.",
+    "zh-CN": "Title 使用真实内容标题；Actions 提供区级操作；正文通过 ChildContent 提供。",
+    "pt-BR": "Title nomeia conteúdo real; Actions fornece ações da seção; ChildContent fornece o corpo."
+  },
+  "Catalog_Card_Purpose": {
+    "en-US": "Content, identity and record summaries, or large presentation cards.",
+    "zh-CN": "承载内容、身份和记录摘要，或展示页大卡片。",
+    "pt-BR": "Resumos de conteúdo, identidade e registros, ou cartões grandes de apresentação."
+  },
+  "Catalog_Card_Variants": {
+    "en-US": "Use Title and semantic ChildContent for identity or record summaries; CopyText displays identifiers and Actions supplies controls. Default Title/ChildContent retains h3/body structure. Prominent places Actions left and Title/Text right; Stacked=true always puts body above actions. Text is an H1-sized p, not another h1.\nNarrow screens stack, absent actions allow full width and long text grows naturally. Reuses card roles and standard Elevated Button without a host skin.",
+    "zh-CN": "身份和记录摘要使用 Title 与语义 ChildContent；CopyText 显示标识符，Actions 提供操作。默认 Title / ChildContent 保持原 h3 与正文结构。Prominent 默认将 Actions 放左侧、Title 和 Text 放右侧正文；Stacked=true 始终正文在上、操作在下。Text 使用 H1 字号的 p，不新增页面 h1。\n窄屏纵排、无动作占满宽度、长文自然增长；使用现有卡片角色色与标准 Elevated Button，不是新控件或宿主皮肤。",
+    "pt-BR": "Use Title e ChildContent semântico para resumos de identidade ou registros; CopyText exibe identificadores e Actions fornece controles. Title/ChildContent padrão mantém h3/corpo. Prominent coloca Actions à esquerda e Title/Text à direita; Stacked=true mantém corpo acima das ações. Text é p de tamanho H1, não outro h1.\nTelas estreitas empilham; sem ações ocupa largura total e textos longos crescem naturalmente. Reutiliza cores do cartão e Button Elevated padrão, sem estilo do host."
+  },
+  "Catalog_Icon_Purpose": {
+    "en-US": "Self-hosted Material Symbols Outlined icon.",
+    "zh-CN": "显示自托管 Material Symbols Outlined 图标。",
+    "pt-BR": "Ícone Material Symbols Outlined hospedado localmente."
+  },
+  "Catalog_Icon_Variants": {
+    "en-US": "Name accepts official icon names only; Class supports composition. Color is inherited from the owning control. Icon-only actions need accessible names.",
+    "zh-CN": "Name 只接受官方图标名称；Class 可调整宿主组合。颜色继承父控件，纯图标操作需要可访问名称。",
+    "pt-BR": "Name aceita apenas nomes oficiais; Class permite composição. A cor vem do controle responsável. Ações apenas com ícone precisam de nomes acessíveis."
+  },
+  "Catalog_CodeBlock_Purpose": {
+    "en-US": "Displays code as text.",
+    "zh-CN": "将代码以文本方式显示。",
+    "pt-BR": "Exibe código como texto."
+  },
+  "Catalog_CodeBlock_Variants": {
+    "en-US": "Text is automatically encoded; Language labels its language. Code is not executed.",
+    "zh-CN": "Text 自动转义；Language 标识语言，不执行代码。",
+    "pt-BR": "Text é codificado automaticamente; Language identifica a linguagem. O código não é executado."
+  },
+  "Catalog_FormGroup_Purpose": {
+    "en-US": "Standard inputs grouped through native field semantics.",
+    "zh-CN": "按原生字段组组织标准输入。",
+    "pt-BR": "Entradas padrão agrupadas com semântica nativa."
+  },
+  "Catalog_FormGroup_Variants": {
+    "en-US": "Title supplies legend; Columns uses FormLayout; Disabled disables the entire field group. AdditionalAttributes preserves native attributes.",
+    "zh-CN": "Title 提供 legend；Columns 使用 FormLayout；Disabled 整体禁用字段。AdditionalAttributes 保留原生属性。",
+    "pt-BR": "Title fornece legend; Columns usa FormLayout; Disabled desativa o grupo inteiro. AdditionalAttributes preserva atributos nativos."
+  },
+  "Catalog_InlineActions_Purpose": {
+    "en-US": "Wrapping standard row for small actions.",
+    "zh-CN": "将小型操作排列为可换行的标准动作行。",
+    "pt-BR": "Linha padrão com quebra para pequenas ações."
+  },
+  "Catalog_InlineActions_Variants": {
+    "en-US": "ChildContent contains standard Button. Alignment selects Start, Center, or End (default) across the available width. Compact actions align to End; full-row controls and expanding groups retain their width. Use this row in Field.Actions for operations beside a labeled input; place the input in Field.ChildContent. Keep mixed operations here; UniformGridButton is for finite single-semantic choices. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "ChildContent 包含标准 Button。Alignment 在可用宽度内选择 Start、Center 或 End（默认）。未占满一行的操作默认靠右，整行控件和可伸展组合保持铺满。带标签输入旁的操作将此动作行放进 Field.Actions，输入放进 Field.ChildContent。混合操作使用此动作行；UniformGridButton 用于有限且单一语义的选项。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "ChildContent contém Button padrão. Alignment seleciona Start, Center ou End (padrão) na largura disponível. Ações compactas se alinham ao fim; controles e grupos expansíveis mantêm a largura da linha. Use esta linha em Field.Actions para operações ao lado de uma entrada rotulada; coloque a entrada em Field.ChildContent. Operações distintas ficam nesta linha; UniformGridButton serve a escolhas finitas de uma única semântica. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
+  },
+  "Catalog_ImagePreview_Purpose": {
+    "en-US": "Image with optional caption and standard actions.",
+    "zh-CN": "显示图片、可选说明和标准操作。",
+    "pt-BR": "Imagem com legenda opcional e ações padrão."
+  },
+  "Catalog_ImagePreview_Variants": {
+    "en-US": "Url/Alt are required; ChildContent supplies description; Actions arranges standard buttons through InlineActions.",
+    "zh-CN": "Url 与 Alt 必填；ChildContent 放说明，Actions 通过 InlineActions 排列标准按钮。",
+    "pt-BR": "Url/Alt são obrigatórios; ChildContent fornece descrição; Actions organiza botões padrão com InlineActions."
+  },
+  "Catalog_AttributionFooter_Purpose": {
+    "en-US": "Compact copyright or attribution text.",
+    "zh-CN": "显示紧凑版权或来源说明。",
+    "pt-BR": "Texto compacto de copyright ou atribuição."
+  },
+  "Catalog_AttributionFooter_Variants": {
+    "en-US": "Text is required and host-owned, including the copyright owner; does not create a project watermark.",
+    "zh-CN": "Text 必填，版权主体和文案由宿主提供；不创建项目水印。",
+    "pt-BR": "Text é obrigatório e pertence ao host, incluindo titular do copyright; não cria marca-d'água do projeto."
+  },
+  "Catalog_CopyText_Purpose": {
+    "en-US": "Selectable standard code text showing the raw value to copy.",
+    "zh-CN": "以统一可选择的代码文本显示需要复制的原值。",
+    "pt-BR": "Texto de código padrão selecionável com o valor bruto a copiar."
+  },
+  "Catalog_CopyText_Variants": {
+    "en-US": "Value is required and displayed as encoded read-only text without rewriting or clipboard side effects. Full copy actions use DisplayBoard.CopyText.",
+    "zh-CN": "Value 必填，只做编码后的只读文本呈现；不改写文本、不自动调用剪贴板。完整复制动作使用 DisplayBoard.CopyText。",
+    "pt-BR": "Value é obrigatório e exibido codificado, somente leitura, sem reescrita nem efeitos de clipboard. Ações completas de cópia usam DisplayBoard.CopyText."
+  },
+  "Guide_Intro": {
+    "en-US": "Introduction",
+    "zh-CN": "简介",
+    "pt-BR": "Introdução"
+  },
+  "Guide_ControlExample": {
+    "en-US": "Control example",
+    "zh-CN": "控件示例",
+    "pt-BR": "Exemplo do controle"
+  },
+  "Guide_Api": {
+    "en-US": "API",
+    "zh-CN": "API",
+    "pt-BR": "API"
+  },
+  "Guide_ScenarioExample": {
+    "en-US": "Scenario example",
+    "zh-CN": "场景示例",
+    "pt-BR": "Exemplo de uso"
+  },
+  "Guide_ScenarioCode": {
+    "en-US": "Scenario source",
+    "zh-CN": "场景代码",
+    "pt-BR": "Código do exemplo"
+  },
+  "Guide_Namespace": {
+    "en-US": "Namespace: {0}",
+    "zh-CN": "命名空间：{0}",
+    "pt-BR": "Namespace: {0}"
+  },
+  "Guide_PreferredEntry": {
+    "en-US": "Recommended entry:",
+    "zh-CN": "推荐入口：",
+    "pt-BR": "Entrada recomendada:"
+  },
+  "Guide_ApiLabel": {
+    "en-US": "{0} API parameters",
+    "zh-CN": "{0} API 参数",
+    "pt-BR": "Parâmetros da API de {0}"
+  },
+  "Guide_ApiEmpty": {
+    "en-US": "This component has no public component parameters.",
+    "zh-CN": "此组件没有公开组件参数。",
+    "pt-BR": "Este componente não tem parâmetros públicos."
+  },
+  "Guide_Parameter": {
+    "en-US": "Parameter",
+    "zh-CN": "参数",
+    "pt-BR": "Parâmetro"
+  },
+  "Guide_Type": {
+    "en-US": "Type",
+    "zh-CN": "类型",
+    "pt-BR": "Tipo"
+  },
+  "Guide_Default": {
+    "en-US": "Default",
+    "zh-CN": "默认值",
+    "pt-BR": "Padrão"
+  },
+  "Guide_Requirement": {
+    "en-US": "Declaration requirement",
+    "zh-CN": "声明要求",
+    "pt-BR": "Requisito da declaração"
+  },
+  "Guide_Description": {
+    "en-US": "Description",
+    "zh-CN": "说明",
+    "pt-BR": "Descrição"
+  },
+  "Guide_Optional": {
+    "en-US": "Optional",
+    "zh-CN": "可选",
+    "pt-BR": "Opcional"
+  },
+  "Guide_UseGeneral": {
+    "en-US": "General production control",
+    "zh-CN": "通用生产控件",
+    "pt-BR": "Controle genérico de produção"
+  },
+  "Guide_UseScenario": {
+    "en-US": "Production scenario control",
+    "zh-CN": "专用场景生产控件",
+    "pt-BR": "Controle de produção para um cenário"
+  },
+  "Guide_UseBuildingBlock": {
+    "en-US": "Building block: compose with an owning control",
+    "zh-CN": "构造基元：不作为独立生产控件",
+    "pt-BR": "Elemento de composição: use com um controle responsável"
+  },
+  "Catalog_ContentContainer_Purpose": {
+    "en-US": "Centered width-limited track for presentation content.",
+    "zh-CN": "为展示内容提供统一的居中限宽轨道。",
+    "pt-BR": "Faixa central com largura limitada para conteúdo de apresentação."
+  },
+  "Catalog_ContentContainer_Variants": {
+    "en-US": "The outer band owns the full-width background. This container constrains only internal controls/content and does not own business data.",
+    "zh-CN": "外部横幅负责全宽背景，本容器只约束内部控件与正文，不接管业务数据。",
+    "pt-BR": "O banner externo controla o fundo de largura total. Este contêiner limita apenas controles/conteúdo internos e não controla dados de negócio."
+  },
+  "Catalog_PresentationBand_Purpose": {
+    "en-US": "Combines full-width background and centered content into a presentation section.",
+    "zh-CN": "将全宽背景和居中内容组合为展示页章节。",
+    "pt-BR": "Combina fundo de largura total e conteúdo centralizado em uma seção de apresentação."
+  },
+  "Catalog_PresentationBand_Variants": {
+    "en-US": "MinHeight defaults to 800px and content may grow naturally; Dotted is off by default. Tone uses Canvas/Surface/Primary, with different adjacent band roles recommended. Content shares the same width-limited track.",
+    "zh-CN": "MinHeight 默认 800px，内容允许自然增高；Dotted 默认关闭。Tone 使用 Canvas、Surface 或 Primary，推荐相邻横幅不同色；内容使用同一限宽轨道。",
+    "pt-BR": "MinHeight usa 800px por padrão e o conteúdo pode crescer; Dotted começa desligado. Tone usa Canvas/Surface/Primary, recomendando cores diferentes em banners adjacentes. O conteúdo compartilha a mesma faixa limitada."
+  },
+  "Catalog_PresentationHero_Purpose": {
+    "en-US": "Artistic title, subtitle and description for product presentation.",
+    "zh-CN": "提供产品介绍页的艺术标题、副标题和正文。",
+    "pt-BR": "Título artístico, subtítulo e descrição para apresentação de produto."
+  },
+  "Catalog_PresentationHero_Variants": {
+    "en-US": "For presentation opening screens and organization access. SideContent supplies a 360–470px right action column, stacked below 860px. StackTitleWords wraps words while preserving the full accessible title. Actions uses standard Button; this is not a business page heading.",
+    "zh-CN": "用于展示首屏与组织入口；SideContent 提供360–470px右侧操作列，860px以下上下排列。StackTitleWords 按词换行并保留完整可访问标题；Actions 使用标准 Button，不用于业务页面标题。",
+    "pt-BR": "Para primeira tela de apresentação e entrada de organizações. SideContent fornece coluna de ações de 360–470px à direita, empilhada abaixo de 860px. StackTitleWords quebra palavras preservando título acessível completo. Actions usa Button padrão; não é título de página de negócio."
+  },
+  "Catalog_LogoDisplayer_Purpose": {
+    "en-US": "Artistic project name below its logo.",
+    "zh-CN": "在 Logo 下展示项目艺术字。",
+    "pt-BR": "Nome artístico do projeto abaixo do logotipo."
+  },
+  "Catalog_LogoDisplayer_Variants": {
+    "en-US": "Defaults to ConfigureProject logo/name; ProjectName/LogoPath may override them. Only for access/presentation, without enlarging business body text. HeadingLevel chooses the semantic heading level.",
+    "zh-CN": "默认读取 ConfigureProject 的 Logo 和项目名称；ProjectName/LogoPath 可显式覆盖。仅用于访问和展示场景，不扩大业务正文；HeadingLevel 选择语义标题级别。",
+    "pt-BR": "Usa nome/logotipo de ConfigureProject; ProjectName/LogoPath podem substituí-los. Apenas para acesso/apresentação, sem ampliar texto de negócio. HeadingLevel escolhe o nível semântico do título."
+  },
+  "Catalog_PresentationFooter_Purpose": {
+    "en-US": "Presentation footer with brand, copyright and large decorative wordmark.",
+    "zh-CN": "提供展示页品牌、版权与大字背景页脚。",
+    "pt-BR": "Rodapé de apresentação com marca, copyright e nome decorativo grande."
+  },
+  "Catalog_PresentationFooter_Variants": {
+    "en-US": "Title/watermark follow ConfigureProject name and language unless ProjectName overrides this instance. The override never changes shared project configuration. Copyright is optional and independently host-owned. Actions contains standard Underline navigation buttons.",
+    "zh-CN": "标题与水印默认跟随ConfigureProject项目名及语言，ProjectName可仅覆盖当前实例，不修改共享项目配置；Copyright由宿主独立提供，可省略。Actions放标准Underline导航按钮。",
+    "pt-BR": "Título/marca-d'água seguem o nome e idioma de ConfigureProject, salvo substituição por ProjectName nesta instância. A substituição não altera a configuração compartilhada. Copyright é opcional e pertence ao host. Actions contém botões Underline padrão."
+  },
+  "Catalog_OfferStage_Purpose": {
+    "en-US": "Arranges and progressively enhances presentation offer cards.",
+    "zh-CN": "排列并渐进增强展示类报价卡片。",
+    "pt-BR": "Organiza e aprimora progressivamente cartões de ofertas de apresentação."
+  },
+  "Catalog_OfferStage_Variants": {
+    "en-US": "Use with OfferCard. AutoRotate may be disabled; reduced motion and focus interaction pause rotation. LinkScopeId isolates offer anchors on the current page. No license or price calculations.",
+    "zh-CN": "搭配 OfferCard；AutoRotate 可关闭，减少动态效果和焦点交互暂停轮播。LinkScopeId 隔离当前页面中的报价锚点。无许可与价格计算。",
+    "pt-BR": "Use com OfferCard. AutoRotate pode ser desligado; movimento reduzido e interação de foco pausam a rotação. LinkScopeId isola âncoras de ofertas na página. Sem cálculo de licenças ou preços."
+  },
+  "Catalog_OfferCard_Purpose": {
+    "en-US": "Offer title, description and standard actions.",
+    "zh-CN": "展示一个方案的标题、说明和标准动作。",
+    "pt-BR": "Título, descrição e ações padrão de uma oferta."
+  },
+  "Catalog_OfferCard_Variants": {
+    "en-US": "Only as an OfferStage child. Id is a real anchor; the host supplies pricing and available actions.",
+    "zh-CN": "仅作为 OfferStage 子项；Id 为真实锚点，价格与可用动作由宿主提供。",
+    "pt-BR": "Apenas como filho de OfferStage. Id é âncora real; o host fornece preços e ações disponíveis."
+  },
+  "Catalog_AccessPanel_Purpose": {
+    "en-US": "Standard panel and slots for access/login pages.",
+    "zh-CN": "为访问或登录页面提供标准面板与插槽。",
+    "pt-BR": "Painel padrão e slots para páginas de acesso/login."
+  },
+  "Catalog_AccessPanel_Variants": {
+    "en-US": "Brand/ChildContent/Actions hold branding, protocol forms and auxiliary navigation. Wide/Emphasized change layout/surface; the panel does not authenticate.",
+    "zh-CN": "Brand、ChildContent、Actions 分别承载品牌、协议表单和辅助导航；Wide、Emphasized 是布局与表面变种。面板本身不进行认证。",
+    "pt-BR": "Brand/ChildContent/Actions contêm marca, formulários de protocolo e navegação auxiliar. Wide/Emphasized alteram layout/superfície; o painel não autentica."
+  },
+  "Catalog_AccessFormSurface_Purpose": {
+    "en-US": "Arranges access-form fields and submission actions.",
+    "zh-CN": "排列访问协议表单中的字段和提交动作。",
+    "pt-BR": "Organiza campos e ações de envio do formulário de acesso."
+  },
+  "Catalog_AccessFormSurface_Variants": {
+    "en-US": "The host supplies outer native GET/POST or EditForm. Use Field and standard inputs. Tone defaults to Surface, with Primary/Canvas alternatives. Keep one surface; it creates neither transport nor submission handlers.",
+    "zh-CN": "外层原生 GET/POST 或 EditForm 由宿主提供；使用 Field 与标准输入，Tone默认Surface，可选Primary或Canvas；只使用一层表面，表面不创建协议或提交处理器。",
+    "pt-BR": "O host fornece GET/POST nativo externo ou EditForm. Use Field e entradas padrão. Tone usa Surface por padrão, com alternativas Primary/Canvas. Mantenha uma superfície; ela não cria protocolo nem manipuladores de envio."
+  },
+  "Catalog_AccessActions_Purpose": {
+    "en-US": "Auxiliary navigation and actions for access pages.",
+    "zh-CN": "排列访问页的辅助导航与动作。",
+    "pt-BR": "Navegação e ações auxiliares para páginas de acesso."
+  },
+  "Catalog_AccessActions_Variants": {
+    "en-US": "Use standard Button children. Does not create accounts, authenticate or infer permissions.",
+    "zh-CN": "使用标准 Button 子项；不创建账号、不认证，也不推断权限。",
+    "pt-BR": "Use filhos Button padrão. Não cria contas, autentica nem infere permissões."
+  },
+  "Catalog_DateBox_Purpose": {
+    "en-US": "Binds dates with EditForm validation.",
+    "zh-CN": "绑定日期并接入 EditForm 验证。",
+    "pt-BR": "Vincula datas com validação de EditForm."
+  },
+  "Catalog_DateBox_Variants": {
+    "en-US": "TValue uses InputDate-supported types; Type selects date/time/date-time input.",
+    "zh-CN": "TValue 采用 InputDate 支持的日期类型；Type 控制日期、时间或日期时间输入。",
+    "pt-BR": "TValue usa tipos aceitos por InputDate; Type seleciona data/hora/data e hora."
+  },
+  "Catalog_FilePicker_Purpose": {
+    "en-US": "Selects files and passes their information to the host.",
+    "zh-CN": "选择文件并将文件信息交给宿主。",
+    "pt-BR": "Seleciona arquivos e entrega informações ao host."
+  },
+  "Catalog_FilePicker_Variants": {
+    "en-US": "Accept/Multiple/OnChange configure selection only. Upload, size restrictions and content validation belong to the host.",
+    "zh-CN": "Accept、Multiple、OnChange 仅配置文件选择；上传、大小限制和内容验证由宿主负责。",
+    "pt-BR": "Accept/Multiple/OnChange configuram apenas seleção. Upload, limites de tamanho e validação de conteúdo pertencem ao host."
+  },
+  "Catalog_StandaloneTextBox_Purpose": {
+    "en-US": "Binds input strings in native protocol forms or without EditContext.",
+    "zh-CN": "在原生协议表单或无 EditContext 场景绑定输入字符串。",
+    "pt-BR": "Vincula texto em formulários nativos de protocolo ou sem EditContext."
+  },
+  "Catalog_StandaloneTextBox_Variants": {
+    "en-US": "Shares TextBox styling. name preserves GET/POST fields; Type accepts native types including email/number, with min/max/step for numeric constraints. ChangeEvent supports input/change without model validation.",
+    "zh-CN": "与 TextBox 共用标准样式；name 属性保留 GET/POST 字段，Type 可使用 email、number 等原生输入类型；数字约束通过 min/max/step 提供。ChangeEvent 支持 input 或 change，不执行模型校验。",
+    "pt-BR": "Compartilha estilo de TextBox. name preserva campos GET/POST; Type aceita tipos nativos como email/number, com min/max/step numéricos. ChangeEvent aceita input/change sem validação de modelo."
+  },
+  "Catalog_StandaloneSelectBox_Purpose": {
+    "en-US": "Selects one value at a protocol boundary or without EditContext.",
+    "zh-CN": "在协议边界或无 EditContext 场景选择一个值。",
+    "pt-BR": "Seleciona um valor no limite do protocolo ou sem EditContext."
+  },
+  "Catalog_StandaloneSelectBox_Variants": {
+    "en-US": "Options shares SelectOption<TValue>; name participates in native submission. Model forms use SelectBox.",
+    "zh-CN": "Options 复用 SelectOption<TValue>；name 属性参与原生提交；业务表单使用 SelectBox。",
+    "pt-BR": "Options compartilha SelectOption<TValue>; name participa do envio nativo. Formulários de modelo usam SelectBox."
+  },
+  "Catalog_StandaloneCheckBox_Purpose": {
+    "en-US": "Boolean choice and native submission value at a protocol boundary.",
+    "zh-CN": "在协议边界提供布尔选择与原生提交值。",
+    "pt-BR": "Escolha booleana e valor de envio nativo no limite do protocolo."
+  },
+  "Catalog_StandaloneCheckBox_Variants": {
+    "en-US": "SubmissionValue sets the checked submission value; WrapLabel supports host protocol markup. Model validation uses CheckBox.",
+    "zh-CN": "SubmissionValue 指定选中提交值；WrapLabel 配合宿主协议标记；业务模型验证使用 CheckBox。",
+    "pt-BR": "SubmissionValue define o valor enviado quando marcado; WrapLabel suporta marcação do protocolo. Validação de modelo usa CheckBox."
+  },
+  "Catalog_DropdownSurface_Purpose": {
+    "en-US": "Native details building surface for protocol hosts.",
+    "zh-CN": "为协议宿主提供原生 details 构造表面。",
+    "pt-BR": "Superfície de composição details nativa para hosts de protocolo."
+  },
+  "Catalog_DropdownSurface_Variants": {
+    "en-US": "Has no selection, menu focus or outside-click dismissal, so it cannot independently replace a complete menu. Ordinary command menus use ActionMenu.",
+    "zh-CN": "不包含选择、菜单焦点或外部点击关闭，不能独立替代完整生产菜单；普通命令菜单使用 ActionMenu。",
+    "pt-BR": "Não possui seleção, foco de menu nem fechamento externo; não substitui um menu completo de forma independente. Menus comuns usam ActionMenu."
+  },
+  "Catalog_Primitives_SecondaryNavigationItem_Purpose": {
+    "en-US": "Secondary navigation link in a custom navigation host.",
+    "zh-CN": "在自定义导航宿主中呈现二级链接。",
+    "pt-BR": "Link de navegação secundária em host personalizado."
+  },
+  "Catalog_Primitives_SecondaryNavigationItem_Variants": {
+    "en-US": "Standard applications define navigation in Program.ConfigureNavigation instead of rebuilding the shell.",
+    "zh-CN": "常规应用由 Program 的 ConfigureNavigation 定义导航，不自行拼装外壳。",
+    "pt-BR": "Aplicações padrão definem navegação em Program.ConfigureNavigation, sem reconstruir a estrutura."
+  },
+  "Catalog_Patterns_ContentSurface_Purpose": {
+    "en-US": "Fixed top bar/content scrolling, with optional document-flow layout.",
+    "zh-CN": "提供固定顶部栏与正文滚动区，也支持文档流布局。",
+    "pt-BR": "Barra superior fixa/rolagem do conteúdo, com fluxo de documento opcional."
+  },
+  "Catalog_Patterns_ContentSurface_Variants": {
+    "en-US": "TitleBar/ChildContent/Footer define regions. DocumentKey identifies content across routes; ContentId/SkipLabel provide the skip link. DocumentFlow=true uses document scrolling and can combine with FullHeight PresentationBand for standalone presentation/access pages.",
+    "zh-CN": "TitleBar / ChildContent / Footer 提供区域；DocumentKey 在页面切换时识别正文；ContentId 与 SkipLabel 提供跳过链接。DocumentFlow=true 使用文档滚动，可与 FullHeight PresentationBand 组合独立展示或访问页面。",
+    "pt-BR": "TitleBar/ChildContent/Footer definem regiões. DocumentKey identifica conteúdo entre rotas; ContentId/SkipLabel fornecem link de salto. DocumentFlow=true usa rolagem do documento e pode combinar FullHeight PresentationBand para páginas independentes de apresentação/acesso."
+  },
+  "Catalog_Patterns_NavigationSurface_Purpose": {
+    "en-US": "Composes top bar, primary/secondary navigation and content.",
+    "zh-CN": "组合顶部栏、一级与二级导航和正文。",
+    "pt-BR": "Combina barra superior, navegação primária/secundária e conteúdo."
+  },
+  "Catalog_Patterns_NavigationSurface_Variants": {
+    "en-US": "ShowSecondary controls the secondary rail; named fragments supply regions; DocumentKey identifies pages. PrimaryNavigationItem supplies primary links; page actions use standard Button, with Underline for light actions/links.",
+    "zh-CN": "ShowSecondary 控制二级栏；区域由命名片段提供；DocumentKey 识别页面。一级导航使用 PrimaryNavigationItem，插槽中的页面操作使用标准 Button；Underline 适合轻量操作或链接。",
+    "pt-BR": "ShowSecondary controla barra secundária; fragmentos nomeados fornecem regiões; DocumentKey identifica páginas. PrimaryNavigationItem fornece links primários; ações usam Button padrão, com Underline para ações/links leves."
+  },
+  "Catalog_Primitives_MaskedInput_Purpose": {
+    "en-US": "Masked input with EditForm integration.",
+    "zh-CN": "将输入掩码接入 EditForm。",
+    "pt-BR": "Entrada com máscara integrada ao EditForm."
+  },
+  "Catalog_Primitives_MaskedInput_Variants": {
+    "en-US": "Inherits InputBase<string?>. Mask specifies format; InputMode specifies the native keyboard hint.",
+    "zh-CN": "继承 InputBase<string?>；Mask 指定格式，InputMode 指定原生键盘类型。",
+    "pt-BR": "Herda InputBase<string?>. Mask define formato; InputMode define dica nativa de teclado."
+  },
+  "Catalog_Primitives_StandaloneMaskedInput_Purpose": {
+    "en-US": "Binds masked input outside a form context.",
+    "zh-CN": "在表单上下文之外绑定掩码输入。",
+    "pt-BR": "Vincula entrada com máscara fora de contexto de formulário."
+  },
+  "Catalog_Primitives_StandaloneMaskedInput_Variants": {
+    "en-US": "Value/ValueChanged provide two-way binding; AdditionalAttributes forwards native attributes.",
+    "zh-CN": "Value / ValueChanged 提供双向绑定；原生属性通过 AdditionalAttributes 传递。",
+    "pt-BR": "Value/ValueChanged permitem vínculo bidirecional; AdditionalAttributes encaminha atributos nativos."
+  },
+  "Catalog_Primitives_SearchAutocomplete_Purpose": {
+    "en-US": "Searches a candidate collection and selects a result.",
+    "zh-CN": "从候选集合搜索并选择结果。",
+    "pt-BR": "Pesquisa candidatos e seleciona um resultado."
+  },
+  "Catalog_Primitives_SearchAutocomplete_Variants": {
+    "en-US": "Value binds query text. ValueSelector/TextSelector supply values/names; ItemSelected receives selection; MaximumResults caps candidates; FilterItems allows host filtering.",
+    "zh-CN": "Value 双向绑定查询文字；ValueSelector / TextSelector 提供值与显示名；ItemSelected 接收选择；MaximumResults 限制候选；FilterItems 可由宿主接管过滤。",
+    "pt-BR": "Value vincula consulta. ValueSelector/TextSelector fornecem valores/nomes; ItemSelected recebe seleção; MaximumResults limita candidatos; FilterItems permite filtragem pelo host."
+  },
+  "Catalog_Primitives_ReferenceDropdown_Purpose": {
+    "en-US": "Searches and selects a value-type reference.",
+    "zh-CN": "搜索并选择一个值类型引用。",
+    "pt-BR": "Pesquisa e seleciona uma referência de tipo de valor."
+  },
+  "Catalog_Primitives_ReferenceDropdown_Variants": {
+    "en-US": "TValue must be struct; Value may be null. ValueChanged works with @bind-Value; AllowNone controls clearing; CreateRequested can create a reference.",
+    "zh-CN": "TValue 必须为 struct；Value 可以为 null；ValueChanged 配合 @bind-Value；AllowNone 控制清除；CreateRequested 可创建引用。",
+    "pt-BR": "TValue deve ser struct; Value pode ser null. ValueChanged usa @bind-Value; AllowNone controla limpeza; CreateRequested pode criar referência."
+  },
+  "Catalog_Primitives_DataPager_Purpose": {
+    "en-US": "Controls paging and shows record ranges.",
+    "zh-CN": "控制分页并显示记录范围。",
+    "pt-BR": "Controla paginação e mostra intervalos de registros."
+  },
+  "Catalog_Primitives_DataPager_Variants": {
+    "en-US": "TotalCount/CurrentPage/PageSize provide state; PageChanged requests pages; IsLimited identifies constrained results.",
+    "zh-CN": "TotalCount / CurrentPage / PageSize 提供状态；PageChanged 接收页码；IsLimited 标识受限结果。",
+    "pt-BR": "TotalCount/CurrentPage/PageSize fornecem estado; PageChanged solicita páginas; IsLimited indica resultados limitados."
+  },
+  "Catalog_Primitives_EditingGrid_Purpose": {
+    "en-US": "Cell editing, column widths and keyboard grid operations.",
+    "zh-CN": "支持单元格编辑、列宽和键盘表格操作。",
+    "pt-BR": "Edição de células, larguras de colunas e operações por teclado."
+  },
+  "Catalog_Primitives_EditingGrid_Variants": {
+    "en-US": "Columns/Rows use GridColumn/GridRow; CellChanged receives edits. Interactions supplies undo/redo/save/paste callbacks. Each row's cell count must match columns.",
+    "zh-CN": "Columns / Rows 使用 GridColumn / GridRow；CellChanged 接收编辑；Interactions 注入撤销、重做、保存、粘贴等行为；每行单元格数需匹配列数。",
+    "pt-BR": "Columns/Rows usam GridColumn/GridRow; CellChanged recebe edições. Interactions fornece desfazer/refazer/salvar/colar. Cada linha deve ter células correspondentes às colunas."
+  },
+  "Catalog_Primitives_NavigationGuard_Purpose": {
+    "en-US": "Requests confirmation before leaving unsaved content.",
+    "zh-CN": "对未保存内容的离开操作请求确认。",
+    "pt-BR": "Solicita confirmação antes de sair de conteúdo não salvo."
+  },
+  "Catalog_Primitives_NavigationGuard_Variants": {
+    "en-US": "HasUnsavedChanges reflects a real draft; Message supplies in-app confirmation. Bind drafts through Field/TextBox and mark changes after each input. Test navigation uses Underline Button links.",
+    "zh-CN": "HasUnsavedChanges 应来自真实草稿状态；Message 提供页面内导航的确认文字。草稿使用 Field / TextBox 绑定，并在每次输入后标记修改；测试导航使用 Underline Button 链接。",
+    "pt-BR": "HasUnsavedChanges representa um rascunho real; Message fornece confirmação interna. Vincule por Field/TextBox e marque alterações após cada entrada. Navegação de teste usa links Button Underline."
+  },
+  "Catalog_Primitives_InteractionBoundary_Purpose": {
+    "en-US": "Temporarily pauses editing interaction in a controlled region.",
+    "zh-CN": "在受控区域暂停编辑交互。",
+    "pt-BR": "Pausa temporariamente interação de edição em uma região controlada."
+  },
+  "Catalog_Primitives_InteractionBoundary_Variants": {
+    "en-US": "Locked controls locking; Title/Message explain it; pages decide when. ChildContent editors use Field/TextBox and commands use standard Button; the boundary owns the common lock.",
+    "zh-CN": "Locked 控制锁定；Title / Message 解释原因；由页面决定何时锁定。ChildContent 中的编辑器使用 Field / TextBox，命令使用标准 Button，锁定仍由边界统一处理。",
+    "pt-BR": "Locked controla bloqueio; Title/Message explicam; a página decide quando. Editores em ChildContent usam Field/TextBox e comandos usam Button padrão; o limite controla o bloqueio comum."
+  },
+  "Catalog_Primitives_AccessBrand_Purpose": {
+    "en-US": "Entry-page logo and name.",
+    "zh-CN": "显示入口页的标识与名称。",
+    "pt-BR": "Logotipo e nome na página de entrada."
+  },
+  "Catalog_Primitives_AccessBrand_Variants": {
+    "en-US": "ContextName/Description optionally describe the entry; TitleId associates its heading.",
+    "zh-CN": "ContextName 与 Description 可提供入口说明；TitleId 关联入口标题。",
+    "pt-BR": "ContextName/Description descrevem opcionalmente a entrada; TitleId associa o título."
+  },
+  "Catalog_Primitives_ShellHeader_Purpose": {
+    "en-US": "Brand, service menu and top actions.",
+    "zh-CN": "组合品牌、服务菜单和顶部操作。",
+    "pt-BR": "Marca, menu de serviços e ações superiores."
+  },
+  "Catalog_Primitives_ShellHeader_Variants": {
+    "en-US": "Services/LeadingActions/EndActions provide slots; IdentityName/Href supply the identity link.",
+    "zh-CN": "Services / LeadingActions / EndActions 提供插槽；IdentityName / Href 提供身份链接。",
+    "pt-BR": "Services/LeadingActions/EndActions fornecem slots; IdentityName/Href fornecem link de identidade."
+  },
+  "Catalog_Primitives_ServiceMenu_Purpose": {
+    "en-US": "Navigation targets in a top dropdown menu.",
+    "zh-CN": "将目标链接放入顶部下拉菜单。",
+    "pt-BR": "Destinos de navegação em menu superior."
+  },
+  "Catalog_Primitives_ServiceMenu_Variants": {
+    "en-US": "Items uses ServiceLink. Unlike ActionMenu commands, entries navigate directly.",
+    "zh-CN": "Items 使用 ServiceLink；与 ActionMenu 的命令操作不同，项目直接导航。",
+    "pt-BR": "Items usa ServiceLink. Diferentemente dos comandos de ActionMenu, entradas navegam diretamente."
+  },
+  "Catalog_Primitives_PrimaryNavigationItem_Purpose": {
+    "en-US": "Primary navigation link with unavailable state.",
+    "zh-CN": "显示一级导航链接及不可用状态。",
+    "pt-BR": "Link de navegação primária com estado indisponível."
+  },
+  "Catalog_Primitives_PrimaryNavigationItem_Variants": {
+    "en-US": "Match uses NavLinkMatch; Disabled/DisabledMessage explain unavailability; Id stays stable. Standard navigation comes from Program configuration.",
+    "zh-CN": "Match 使用 NavLinkMatch；Disabled / DisabledMessage 解释不可用；Id 保持稳定。常规导航从 Program 配置。",
+    "pt-BR": "Match usa NavLinkMatch; Disabled/DisabledMessage explicam indisponibilidade; Id permanece estável. Navegação padrão vem da configuração de Program."
+  },
+  "Catalog_Primitives_NoticeTrigger_Purpose": {
+    "en-US": "Body-sized round status icon showing advice on hover/focus.",
+    "zh-CN": "用正文大小的圆形状态图标，在悬停或聚焦时显示说明。",
+    "pt-BR": "Ícone de estado redondo do tamanho do texto que mostra explicação ao passar o ponteiro/focar."
+  },
+  "Catalog_Primitives_NoticeTrigger_Variants": {
+    "en-US": "Severity chooses red cross, orange exclamation, green check or blue information on white. Subtle uses the information icon. ChildContent supplies supplementary advice, not errors requiring immediate visibility.",
+    "zh-CN": "Severity 控制红色叉、橙色感叹号、绿色勾或白底蓝色感叹号；Subtle 使用信息图标。ChildContent 提供说明，不应代替必须立即显示的错误。",
+    "pt-BR": "Severity escolhe cruz vermelha, exclamação laranja, marca verde ou informação azul em branco. Subtle usa ícone de informação. ChildContent fornece explicação complementar, não erros que exigem visibilidade imediata."
+  },
+  "Catalog_Group_Application_Title": {
+    "en-US": "Application shell and theme",
+    "zh-CN": "应用外壳与主题",
+    "pt-BR": "Estrutura da aplicação e tema"
+  },
+  "Catalog_Group_Application_Description": {
+    "en-US": "ApplicationLayout builds the shell from Program configuration; pages usually do not assemble navigation/top bars themselves. Design owns application-wide color roles.",
+    "zh-CN": "ApplicationLayout 从 Program 的配置生成外壳；页面通常无需自行拼装导航和顶部栏。Design 统一管理整个应用的颜色角色。",
+    "pt-BR": "ApplicationLayout monta a estrutura a partir de Program; páginas normalmente não montam navegação/barras próprias. Design controla as cores de toda a aplicação."
+  },
+  "Catalog_Group_General_Title": {
+    "en-US": "Common controls and page layout",
+    "zh-CN": "常用控件与页面布局",
+    "pt-BR": "Controles comuns e layout de página"
+  },
+  "Catalog_Group_General_Description": {
+    "en-US": "Use the Components namespace. Pages define Draft in input examples. InputBase controls need ValueExpression, supplied automatically by @bind-Value.",
+    "zh-CN": "使用 Components 命名空间。输入示例中的 Draft 由页面定义；InputBase 控件需要 ValueExpression，使用 @bind-Value 会自动提供。",
+    "pt-BR": "Use o namespace Components. Páginas definem Draft nos exemplos de entradas. InputBase exige ValueExpression, fornecido automaticamente por @bind-Value."
+  },
+  "Catalog_Group_Presentation_Title": {
+    "en-US": "Presentation and access pages",
+    "zh-CN": "展示与访问页面",
+    "pt-BR": "Páginas de apresentação e acesso"
+  },
+  "Catalog_Group_Presentation_Description": {
+    "en-US": "Presentation pages use full-width backgrounds and centered content, without business-page sticky headings. Authentication, prices and brand text remain host-owned.",
+    "zh-CN": "展示页面使用全宽背景与居中内容轨道，不套用业务页的粘性标题；认证、价格与品牌文案仍由宿主负责。",
+    "pt-BR": "Páginas de apresentação usam fundos amplos e conteúdo centralizado, sem títulos fixos de páginas de negócio. Autenticação, preços e texto de marca pertencem ao host."
+  },
+  "Catalog_Group_Protocol_Title": {
+    "en-US": "Protocol boundaries and specific hosts",
+    "zh-CN": "协议边界与特定宿主",
+    "pt-BR": "Limites de protocolo e hosts específicos"
+  },
+  "Catalog_Group_Protocol_Description": {
+    "en-US": "Source-owned usage metadata distinguishes production scenarios from construction boundaries; these are not a second business-form control standard.",
+    "zh-CN": "这些入口按源码用途元数据区分生产场景与构造边界，不是业务表单控件的另一套替代规范。",
+    "pt-BR": "Metadados do código distinguem cenários de produção de limites de composição; não formam outro padrão de controles de negócio."
+  },
+  "Catalog_Group_Composition_Title": {
+    "en-US": "Page composition",
+    "zh-CN": "页面组合",
+    "pt-BR": "Composição de página"
+  },
+  "Catalog_Group_Composition_Description": {
+    "en-US": "Patterns provides lower-level page composition. Prefer ApplicationLayout normally; these components serve explicit custom hosts.",
+    "zh-CN": "Patterns 命名空间提供较低层的页面组合。通常优先使用 ApplicationLayout；以下组件适用于自定义宿主。",
+    "pt-BR": "Patterns fornece composição de página de nível inferior. Prefira ApplicationLayout normalmente; estes componentes atendem hosts personalizados explícitos."
+  },
+  "Catalog_Group_SpecializedInputs_Title": {
+    "en-US": "Specialized input and editing scenarios",
+    "zh-CN": "专用输入与编辑场景",
+    "pt-BR": "Cenários de entradas especializadas e edição"
+  },
+  "Catalog_Group_SpecializedInputs_Description": {
+    "en-US": "Masking, reference selection, search candidates and spreadsheet editing have distinct scenarios. Applications own models/callbacks.",
+    "zh-CN": "掩码、引用选择、搜索候选和电子表格编辑各有明确场景。数据模型与回调由应用定义。",
+    "pt-BR": "Máscaras, seleção de referência, candidatos de busca e edição em planilha têm cenários distintos. Aplicações controlam modelos/callbacks."
+  },
+  "Catalog_Group_Navigation_Title": {
+    "en-US": "Navigation and access scenarios",
+    "zh-CN": "导航与访问场景",
+    "pt-BR": "Cenários de navegação e acesso"
+  },
+  "Catalog_Group_Navigation_Description": {
+    "en-US": "These entries serve access branding, shell navigation and status advice. Select by purpose rather than interchanging them with generic controls.",
+    "zh-CN": "这些入口针对访问页品牌、外壳导航和状态说明的专门场景；按用途选择，不与通用控件互换。",
+    "pt-BR": "Estas entradas atendem marca de acesso, navegação e explicações de estado. Escolha pelo propósito, sem trocá-las por controles genéricos."
+  },
+  "Catalog_Parameter_UniformGridOwner": {
+    "en-US": "Configure this on the outer UniformGrid, not on {0}.",
+    "zh-CN": "配置在外层 UniformGrid 上，不能写在 {0} 上。",
+    "pt-BR": "Configure no UniformGrid externo, não em {0}."
+  },
+  "Catalog_Parameter_FormActionsColumns": {
+    "en-US": "When FormActions replaces UniformGrid as the form-action container, configure columns on FormActions; this is not a button parameter.",
+    "zh-CN": "使用 FormActions 替代 UniformGrid 作为表单操作容器时，在 FormActions 上配置列数；不属于按钮参数。",
+    "pt-BR": "Quando FormActions substitui UniformGrid como contêiner de ações, configure as colunas em FormActions; não é parâmetro do botão."
+  }
+}

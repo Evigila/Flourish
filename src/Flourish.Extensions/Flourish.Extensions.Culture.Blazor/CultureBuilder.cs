@@ -39,17 +39,36 @@ public sealed class CultureBuilder
     /// <summary>Reads a JSON catalog from the stream's current position; the caller owns the stream.</summary>
     public CultureBuilder AddCatalog(string catalogId, Stream stream)
     {
-        Check();
-        ArgumentException.ThrowIfNullOrWhiteSpace(catalogId);
+        CheckCatalog(catalogId);
         ArgumentNullException.ThrowIfNull(stream);
-        if (catalogs.ContainsKey(catalogId)) throw new InvalidOperationException($"Catalog '{catalogId}' is already configured.");
-        catalogs.Add(catalogId, LocalizationCatalog.Load(stream));
+        return AddCatalog(catalogId, LocalizationCatalog.Load(stream));
+    }
+
+    /// <summary>Adds an immutable Essential catalog, including its fallback and retained-language policy.</summary>
+    public CultureBuilder AddCatalog(string catalogId, LocalizationCatalog catalog)
+    {
+        CheckCatalog(catalogId);
+        ArgumentNullException.ThrowIfNull(catalog);
+        catalogs.Add(catalogId, catalog);
         if (!selectedDefaultCatalog && catalogId is not ("Flourish" or "Culture"))
         {
             defaultCatalog = catalogId;
             selectedDefaultCatalog = true;
         }
         return this;
+    }
+
+    /// <summary>
+    /// Eagerly loads explicitly supplied module files as one catalog. Relative deployment paths resolve
+    /// against AppContext.BaseDirectory; callers may also supply absolute paths. Essential validates
+    /// the files, globally unique keys, fallback translations and optional retained-language policy.
+    /// </summary>
+    public CultureBuilder AddCatalogFiles(string catalogId, IEnumerable<string> paths,
+        string fallbackCulture = "en-US", CatalogLoadOptions? options = null)
+    {
+        CheckCatalog(catalogId);
+        ArgumentNullException.ThrowIfNull(paths);
+        return AddCatalog(catalogId, LocalizationCatalog.FromFiles(paths.Select(ResolveCatalogPath), fallbackCulture, options));
     }
 
     /// <summary>Overrides the Parse/TryParse catalog. The first application catalog is used by default, or Flourish if none is added.</summary>
@@ -101,6 +120,14 @@ public sealed class CultureBuilder
         var cultures = supportedCultures.Count == 0 ? catalog.AvailableCultures.Select(Normalize).ToArray() : supportedCultures.ToArray();
         if (!cultures.Contains(defaultCulture, StringComparer.OrdinalIgnoreCase) || !cultures.Contains(defaultFormatCulture, StringComparer.OrdinalIgnoreCase))
             throw new InvalidOperationException("Default UI and formatting cultures must be included in the supported cultures.");
+        foreach (var (catalogId, registered) in catalogs)
+        {
+            foreach (var culture in cultures)
+            {
+                if (!registered.IsCultureEnabled(culture))
+                    throw new InvalidOperationException($"UI culture '{culture}' is disabled by catalog '{catalogId}'. Align supported cultures with every catalog's language policy.");
+            }
+        }
         ValidateRetention(retentionDays);
         completed = true;
         return new(new System.Collections.ObjectModel.ReadOnlyDictionary<string, LocalizationCatalog>(catalogs), defaultCatalog,
@@ -118,6 +145,19 @@ public sealed class CultureBuilder
     private static void ValidateRetention(int days)
     {
         if (days is < 1 or > 3650) throw new ArgumentOutOfRangeException(nameof(days), "Preference retention must be between 1 and 3650 days.");
+    }
+
+    private void CheckCatalog(string catalogId)
+    {
+        Check();
+        ArgumentException.ThrowIfNullOrWhiteSpace(catalogId);
+        if (catalogs.ContainsKey(catalogId)) throw new InvalidOperationException($"Catalog '{catalogId}' is already configured.");
+    }
+
+    private static string ResolveCatalogPath(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        return Path.GetFullPath(path, AppContext.BaseDirectory);
     }
 
     private void Check()

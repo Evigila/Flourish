@@ -32,4 +32,14 @@ public static class EssentialCultureBuilderExtensions
         provider = new EssentialTextProvider(context, catalogId);
         return builder.UseEssentialCulture(provider);
     }
+
+    /// <summary>Creates isolated selection state over an eagerly loaded single or composed catalog.</summary>
+    public static FrameworkBuilder UseEssentialCulture(this FrameworkBuilder builder,
+        LocalizationCatalog catalog, out EssentialTextProvider provider, string culture = "en-US",
+        string? formatCulture = null, string catalogId = "Application")
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        provider = new EssentialTextProvider(catalog, culture, formatCulture, catalogId);
+        return builder.UseEssentialCulture(provider);
+    }
 }

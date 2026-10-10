@@ -1,5 +1,17 @@
 # Culture Web integration
 
+## Essential 1.4.0 and functional modules
+
+The user authorized upgrading the optional Blazor and WPF bridges to public Essential.Culture 1.4.0 on 2026-10-09. Directory.Build.props pins that version and the release dependency checks use it. Flourish's own VersionPrefix remains 1.1.3; these source changes are not a new Flourish publication. Earlier 1.3.0 dependency statements below describe their dated implementation only.
+
+CultureBuilder.AddCatalog(id, LocalizationCatalog) accepts Essential's immutable loaded catalog, including fallback and CatalogLoadOptions. AddCatalogFiles(id, paths, fallbackCulture = "en-US", options = null) eagerly delegates to Essential.FromFiles. Relative deployment paths resolve at AppContext.BaseDirectory; absolute caller-supplied paths are supported. Duplicate paths/keys, missing/malformed documents, missing fallback and language-policy conflicts fail startup. All catalogs must permit the configured UI choices. Existing bridge UI/format defaults and browser persistence remain in force; Essential's retained-language policy governs translation selection.
+
+Gallery owns seven multilingual Localization/Culture.*.json modules: Shell, Pages, Components, Parameters, Samples, Access and ChangeLog. Each file groups a function's keys and retains its languages. Explicit CultureModule items generate the same Key/CultureResources inventory used for build/publish deployment and runtime registration. Program calls AddCatalogFiles("Gallery", CultureResources.Files, CultureResources.FallbackCulture) inside ConfigureCulture and retains its three service entries. Framework and extension captions remain separate embedded catalogs. No runtime directory scan, second merger or temporary resource extraction is added.
+
+For a consumer project, enable EssentialCultureAutoInclude, set EssentialCultureNamespace and declare CultureModule items with stable relative DeploymentPath values. The generated CultureResources class is internal to that consumer. Keep global key names unique across its modules; optional language sets may differ by module and each module must supply the fallback. Alternatively, existing embedded/stream catalog registration remains valid. Gallery's Localization page demonstrates the module project configuration and registration.
+
+The native adapter accepts a LocalizationCatalog or independent LocalizationContext through UseEssentialCulture, exposes AvailableCultures/SetCulture and owns its subscription until disposed. A static-facade consumer must call Localizer.Configure with its merged catalog before constructing providers or views. The static facade does not expose a format getter; the established adapter uses its explicit formatCulture override or follows the UI selection. Independent contexts retain the complete Essential UI/format state. Native library captions now share Essential's lookup and parent fallback rather than a second JSON dictionary parser.
+
 ## Framework registration supersession on 2026-10-09
 
 The user requested that Gallery startup expose only AddFlourishFramework, optional AddFlourishDesign and its business RecordStore registration. The later redesign supersedes the earlier same-day persistence design: AddFlourishCulture, AddFlourishPreferences, Framework BrowserPreferences, the Gallery-owned LanguagePicker and direct Essential runtime calls are retired without aliases. Their original implementation and verification remain in the dated persistence report and append-only change records. The current optional Culture extension owns localization setup, request negotiation, browser persistence and the language/format selector.
@@ -22,7 +34,7 @@ This integration targets static SSR and Interactive Server on .NET 10. Pure WASM
 
 ## Ownership and dependency direction
 
-- Gallery owns its translated application names, navigation labels, pages, executable examples and business data. It supplies its embedded catalog identity/resource name and consumes the extension's current APIs.
+- Gallery owns its translated application names, navigation labels, pages, executable examples and business data. It supplies its application catalog identity and generated module manifest and consumes the extension's current APIs.
 - Framework owns behavior, provider-neutral text references and its embedded standard-caption catalog. It has no reference to Essential.Culture or the extension bridge.
 - Abstract exposes TextReference, ITextProvider and the provider-neutral IFrameworkBuilder.ConfigureServices(Action<IServiceCollection, IConfiguration>) hook. Design remains optional and owns visual presentation only.
 - src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor owns ConfigureCulture, CultureBuilder, CultureSession, LocalizedComponentBase, LanguagePicker, request negotiation and the browser module. Its package is Arkheide.Flourish.Extensions.Culture.Blazor; the Razor project references Framework and the existing Essential.Culture.Blazor package. It does not reference Design or WPF. Framework does not reference this optional extension, so the dependency graph remains acyclic.
@@ -33,15 +45,15 @@ ApplicationData.cs now belongs to Abstract after the approved Shared consolidati
 
 ## Why the WPF bridge stays separate
 
-The desktop bridge is now src/Flourish.Extensions/Flourish.Extensions.Culture.WPF, with package ID Arkheide.Flourish.Extensions.Culture.WPF and namespace ArkheideSystem.Flourish.Extensions.Culture.WPF. It targets net10.0-windows, uses WPF Dispatcher, Singleton applicator/hosted service and static Localizer.Current. That process-wide desktop synchronization cannot represent separate Web users.
+The desktop bridge is src/Flourish.Extensions/Flourish.Extensions.Culture.WPF, with package ID Arkheide.Flourish.Extensions.Culture.WPF and namespace ArkheideSystem.Flourish.Extensions.Culture.WPF. It targets net10.0-windows and connects caller-owned native windows/applications to an Essential context or its optional static facade. The reconstructed adapter has no Dispatcher/Singleton applicator/hosted-service hierarchy. Process-wide facade selection cannot represent separate Web users; independent native contexts and scoped Web sessions keep their respective ownership.
 
-The WPF implementation and UseEssentialCulture entry retain their established behavior after migration into Flourish. Its external Culture version now comes from the shared root 1.3.0 setting, replacing the former extension-local 1.1.0 default. Gallery.Flourish.WPF consumes Culture.Wpf directly rather than this bridge. Neither WPF package is included in the current Core/Blazor release.
+The WPF implementation and UseEssentialCulture entry retain their established identities. External Culture now comes from the shared root 1.4.0 setting. Gallery.Flourish.WPF consumes the optional bridge. Neither WPF package is included in the Core/Blazor release manifest.
 
 The Blazor CultureSession is scoped. Its ITextProvider implementation maps Get to the same Essential TryParseFrom core, forwards Changed subscriptions and exposes the current UI/format pair. An internal IStartupFilter inserts standard request-localization middleware. No desktop Dispatcher, static Localizer setter, process-wide personal selection or permanent event subscription is used.
 
 ## Local source references and packaging
 
-Gallery and both extensions reference their same-repository Flourish projects. All external Culture and generator references use NuGet packages at 1.3.0. Prepare Essential first; when sibling Essential/artifacts/packages exists, Flourish adds that directory as a local NuGet source. It does not select external source projects.
+Gallery and both extensions reference their same-repository Flourish projects. All external Culture and generator references use NuGet packages at 1.4.0. This upgrade is restored and verified from NuGet.org; source-project substitution is not used. Release verification also accepts an explicitly supplied Essential package directory for a local candidate.
 
 EssentialCultureRoot, UseLocalEssentialCulture, UseLocalFlourish and UseLocalCultureIntegration are retired. External Essential dependencies and independent consumer verification retain PackageReference boundaries. Gallery now references the same-repository Culture extension project so development cannot silently use an older cached bridge package; isolated consumer fixtures still exercise the packaged extension. Local and public NuGet feeds provide the same package identity/version boundary. See [NuGet release and integration](nuget-release-integration.md).
 

@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text.Json;
 using ArkheideSystem.Essential.Culture;
 using ArkheideSystem.Flourish.WPF.Abstract;
 
@@ -12,15 +11,18 @@ public sealed class EssentialTextProvider : ITextProvider, IDisposable
     private readonly string catalogId;
     private readonly LocalizationContext? context;
     private readonly CultureInfo? formattingCulture;
+    private readonly Lazy<LocalizationContext> libraryContext;
     private bool disposed;
-    private static readonly Lazy<IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>> libraryTexts = new(ReadLibraryTexts);
+    private static readonly Lazy<LocalizationCatalog> libraryCatalog = new(ReadLibraryCatalog);
 
-    /// <summary>Uses the desktop Culture.json facade without mutating its culture selection.</summary>
+    /// <summary>Uses the desktop facade without mutating its initial culture selection.</summary>
+    /// <remarks>Configure Localizer before constructing this provider when using modules or a startup language policy.</remarks>
     public EssentialTextProvider(string catalogId = "Application", string? formatCulture = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(catalogId);
         this.catalogId = catalogId;
         formattingCulture = formatCulture is null ? null : CultureInfo.GetCultureInfo(formatCulture);
+        libraryContext = new(() => new LocalizationContext(libraryCatalog.Value, Culture, FormatCulture.Name));
         Localizer.Current.Changed += SourceChanged;
     }
 
@@ -31,15 +33,32 @@ public sealed class EssentialTextProvider : ITextProvider, IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(catalogId);
         this.context = context;
         this.catalogId = catalogId;
+        libraryContext = new(() => new LocalizationContext(libraryCatalog.Value, Culture, FormatCulture.Name));
         context.Changed += SourceChanged;
     }
+
+    /// <summary>Creates isolated selection state over a single or composed Essential catalog.</summary>
+    public EssentialTextProvider(LocalizationCatalog catalog, string culture = "en-US",
+        string? formatCulture = null, string catalogId = "Application")
+        : this(new LocalizationContext(catalog, culture, formatCulture), catalogId) { }
 
     /// <inheritdoc />
     public string Culture => context?.Culture ?? Localizer.Current.Culture;
     /// <inheritdoc />
     public CultureInfo FormatCulture => context?.FormatCulture ?? formattingCulture ?? CultureInfo.GetCultureInfo(Culture);
+    /// <summary>Gets the consumer catalog's selectable cultures, honoring its startup policy.</summary>
+    public IReadOnlyList<string> AvailableCultures => context?.AvailableCultures ?? Localizer.Current.AvailableCultures;
     /// <inheritdoc />
     public event EventHandler? Changed;
+
+    /// <summary>Changes the consumer selection using Essential's policy and change-event semantics.</summary>
+    /// <remarks>Instance formatting follows this selection. The desktop facade retains this provider's optional format override.</remarks>
+    public void SetCulture(string culture)
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        if (context is null) Localizer.Current.SetCulture(culture);
+        else context.SetCulture(culture);
+    }
 
     /// <inheritdoc />
     public string Get(TextReference text, params object?[] arguments)
@@ -51,33 +70,28 @@ public sealed class EssentialTextProvider : ITextProvider, IDisposable
         // Library text has its own identity and never resolves through the consumer desktop file.
         if (string.Equals(text.CatalogId, "Flourish", StringComparison.Ordinal))
         {
-            if (libraryTexts.Value.TryGetValue(text.Token, out var translations)
-                && (translations.TryGetValue(Culture, out var translated) || translations.TryGetValue("en-US", out translated))) template = translated;
+            var source = libraryContext.Value;
+            source.SetCulture(Culture, FormatCulture.Name);
+            if (source.TryParse(text.Token, arguments, out var translated)) return translated;
         }
-        // Desktop Culture.json contains one consumer catalog. Other IDs must not resolve a
+        // All consumer modules form one logical catalog. Other IDs must not resolve a
         // coincidentally identical token from that consumer catalog.
         else if (string.Equals(text.CatalogId, catalogId, StringComparison.Ordinal))
         {
-            var found = context is null
-                ? Localizer.TryParse(text.Token, out var translated)
-                : context.TryParse(text.Token, out translated);
-            if (found) template = translated;
+            if (context is not null)
+            {
+                if (context.TryParse(text.Token, arguments, out var translated)) return translated;
+            }
+            else if (Localizer.TryParse(text.Token, out var translated)) template = translated;
         }
         return arguments.Length == 0 ? template : string.Format(FormatCulture, template, arguments);
     }
 
-    private static IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> ReadLibraryTexts()
+    private static LocalizationCatalog ReadLibraryCatalog()
     {
         using var stream = typeof(ArkheideSystem.Flourish.WPF.FrameworkBuilder).Assembly.GetManifestResourceStream("Flourish.WPF.Texts.json")
             ?? throw new InvalidOperationException("The bundled Flourish text catalog is missing.");
-        using var document = JsonDocument.Parse(stream);
-        return document.RootElement.EnumerateObject().ToDictionary(
-            token => token.Name,
-            token => (IReadOnlyDictionary<string, string>)token.Value.EnumerateObject().ToDictionary(
-                translation => translation.Name,
-                translation => translation.Value.GetString() ?? string.Empty,
-                StringComparer.OrdinalIgnoreCase),
-            StringComparer.Ordinal);
+        return LocalizationCatalog.Load(stream, "en-US");
     }
 
     private void SourceChanged(object? sender, EventArgs args)

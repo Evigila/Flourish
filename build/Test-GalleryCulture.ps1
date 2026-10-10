@@ -2,7 +2,18 @@ param([Uri] $BaseUri='http://localhost:5188')
 $ErrorActionPreference='Stop'
 if (-not $BaseUri.IsLoopback -or $BaseUri.Scheme -notin @('http','https')) { throw 'Use a local Gallery test instance.' }
 $root=Split-Path -Parent $PSScriptRoot
-$catalog=Get-Content -Raw (Join-Path $root 'src/Gallery.Flourish.Blazor/Localization/Culture.json') | ConvertFrom-Json -AsHashtable
+$catalog=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+$modules=@(Get-ChildItem -LiteralPath (Join-Path $root 'src/Gallery.Flourish.Blazor/Localization') -Filter 'Culture.*.json' -File | Sort-Object Name)
+if (!$modules.Count) { throw 'Gallery Culture modules are missing.' }
+foreach ($module in $modules) {
+    $document=[System.Text.Json.JsonDocument]::Parse([IO.File]::ReadAllText($module.FullName))
+    try {
+        foreach ($key in $document.RootElement.EnumerateObject()) {
+            if ($catalog.ContainsKey($key.Name)) { throw ($module.Name+': duplicate Gallery key '+$key.Name) }
+            $catalog.Add($key.Name,($key.Value.GetRawText() | ConvertFrom-Json -AsHashtable))
+        }
+    } finally { $document.Dispose() }
+}
 $framework=Get-Content -Raw (Join-Path $root 'src/Flourish.Blazor/Flourish.Blazor.Framework/Localization/Culture.json') | ConvertFrom-Json -AsHashtable
 $checks=0
 function Assert([bool] $Condition,[string] $Message) {

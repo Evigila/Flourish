@@ -1,0 +1,3322 @@
+{
+  "Sample_FictionalMember": {
+    "en-US": "Fictional member",
+    "zh-CN": "虚构成员",
+    "pt-BR": "Membro fictício"
+  },
+  "Sample_DefaultElevated": {
+    "en-US": "Elevated (default)",
+    "zh-CN": "Elevated（默认）",
+    "pt-BR": "Elevated (padrão)"
+  },
+  "Sample_UniformGridButtonComposition": {
+    "en-US": "FilledElevated combines primary fill with Elevated's shadow. Pair primary FilledElevated actions with Elevated actions. Elevated is the default; all variants have no hover border.",
+    "zh-CN": "FilledElevated 结合主色填充与 Elevated 阴影。组合时主要操作使用 FilledElevated，其他操作使用 Elevated。默认仍为 Elevated；所有变体均无悬停边框。",
+    "pt-BR": "FilledElevated combina preenchimento primário e sombra de Elevated. Combine ações principais FilledElevated com ações Elevated. Elevated continua padrão; nenhuma variante tem borda ao passar o mouse."
+  },
+  "Sample_AccountSelected": {
+    "en-US": "Selected account: {0}",
+    "zh-CN": "已选择账号：{0}",
+    "pt-BR": "Conta selecionada: {0}"
+  },
+  "Sample_TutorialDescription": {
+    "en-US": "Hover or focus the progress entry to preview milestones; activate it to open the nonmodal board. Completion below is verified by this demonstration host.",
+    "zh-CN": "悬浮或聚焦进度入口以预览步骤；点击打开非模态面板。下方演示由宿主核实完成状态。",
+    "pt-BR": "Passe o ponteiro ou dê foco à entrada para ver etapas; ative-a para abrir o painel não modal. A conclusão abaixo é verificada pelo aplicativo de demonstração."
+  },
+  "Sample_TutorialCompany": {
+    "en-US": "Register a company",
+    "zh-CN": "注册公司",
+    "pt-BR": "Cadastrar uma empresa"
+  },
+  "Sample_TutorialCompanyDescription": {
+    "en-US": "Add the company's identity and legal address.",
+    "zh-CN": "添加公司的身份与法定地址。",
+    "pt-BR": "Adicione a identidade e o endereço legal da empresa."
+  },
+  "Sample_TutorialProducts": {
+    "en-US": "Define products",
+    "zh-CN": "定义商品",
+    "pt-BR": "Definir produtos"
+  },
+  "Sample_TutorialProductsDescription": {
+    "en-US": "Create the definitions shared by all establishments.",
+    "zh-CN": "创建所有场所共用的商品定义。",
+    "pt-BR": "Crie as definições compartilhadas por todos os estabelecimentos."
+  },
+  "Sample_TutorialStock": {
+    "en-US": "Record opening stock",
+    "zh-CN": "记录初始库存",
+    "pt-BR": "Registrar estoque inicial"
+  },
+  "Sample_TutorialStockDescription": {
+    "en-US": "Choose an establishment and record its opening quantities.",
+    "zh-CN": "选择场所并记录其初始数量。",
+    "pt-BR": "Escolha um estabelecimento e registre as quantidades iniciais."
+  },
+  "Sample_TutorialShortcut": {
+    "en-US": "Open this step",
+    "zh-CN": "打开此步骤",
+    "pt-BR": "Abrir esta etapa"
+  },
+  "Sample_TutorialVerify": {
+    "en-US": "Verify selected milestone",
+    "zh-CN": "核实所选步骤",
+    "pt-BR": "Verificar etapa selecionada"
+  },
+  "Sample_TutorialReset": {
+    "en-US": "Reset demonstration",
+    "zh-CN": "重置演示",
+    "pt-BR": "Reiniciar demonstração"
+  },
+  "Sample_TutorialSkipped": {
+    "en-US": "The demonstration host recorded the skip request.",
+    "zh-CN": "演示宿主已记录跳过请求。",
+    "pt-BR": "O aplicativo de demonstração registrou a solicitação de pular."
+  },
+  "Sample_TutorialAction": {
+    "en-US": "Requested shortcut: {0}",
+    "zh-CN": "请求快捷操作：{0}",
+    "pt-BR": "Atalho solicitado: {0}"
+  },
+  "Sample_TutorialHost": {
+    "en-US": "Host-owned completion",
+    "zh-CN": "宿主核实的完成状态",
+    "pt-BR": "Conclusão controlada pelo aplicativo"
+  },
+  "Sample_OptionalBoolean": {
+    "en-US": "Optional Boolean selection",
+    "zh-CN": "可选布尔选择",
+    "pt-BR": "Seleção booleana opcional"
+  },
+  "Sample_BooleanTrue": {
+    "en-US": "Yes",
+    "zh-CN": "是",
+    "pt-BR": "Sim"
+  },
+  "Sample_BooleanFalse": {
+    "en-US": "No",
+    "zh-CN": "否",
+    "pt-BR": "Não"
+  },
+  "Sample_BooleanUnspecified": {
+    "en-US": "Not specified",
+    "zh-CN": "未指定",
+    "pt-BR": "Não informado"
+  },
+  "Sample_EmptyCardWithATitle": {
+    "en-US": "Empty card with a title",
+    "zh-CN": "带标题的空卡片",
+    "pt-BR": "Cartão vazio com título"
+  },
+  "Sample_TurnIdeasIntoSharedResources": {
+    "en-US": "Turn ideas into shared resources.",
+    "zh-CN": "把想法整理为共享资料。",
+    "pt-BR": "Transforme ideias em materiais compartilhados."
+  },
+  "Sample_ExploreDemoPlans": {
+    "en-US": "Explore demo plans",
+    "zh-CN": "了解虚构方案",
+    "pt-BR": "Conhecer planos fictícios"
+  },
+  "Sample_SwitchDemoProject": {
+    "en-US": "Switch demo project",
+    "zh-CN": "切换虚构项目",
+    "pt-BR": "Alternar projeto fictício"
+  },
+  "Sample_DemoProjectB": {
+    "en-US": "Demo project B",
+    "zh-CN": "模拟项目 B",
+    "pt-BR": "Projeto fictício B"
+  },
+  "Sample_DemoProjectA": {
+    "en-US": "Demo project A",
+    "zh-CN": "模拟项目 A",
+    "pt-BR": "Projeto fictício A"
+  },
+  "Sample_OrganizeProjectResourcesAndShareProgressWithMembers": {
+    "en-US": "Organize project resources and share progress with members.",
+    "zh-CN": "整理项目资料，与成员分享进展。",
+    "pt-BR": "Organize materiais do projeto e compartilhe o progresso com os membros."
+  },
+  "Sample_Processing": {
+    "en-US": "Processing",
+    "zh-CN": "处理中",
+    "pt-BR": "Em processamento"
+  },
+  "Sample_Draft": {
+    "en-US": "Draft",
+    "zh-CN": "草稿",
+    "pt-BR": "Rascunho"
+  },
+  "Sample_PresentationVariants": {
+    "en-US": "Presentation variants",
+    "zh-CN": "展示场景变种",
+    "pt-BR": "Variações de apresentação"
+  },
+  "Sample_CardDemoSettings": {
+    "en-US": "Card demo settings",
+    "zh-CN": "卡片演示设置",
+    "pt-BR": "Configurações do cartão de exemplo"
+  },
+  "Sample_UseProminentCard": {
+    "en-US": "Use prominent card",
+    "zh-CN": "使用大卡片变种",
+    "pt-BR": "Usar cartão em destaque"
+  },
+  "Sample_AlwaysStackVertically": {
+    "en-US": "Always stack vertically",
+    "zh-CN": "始终上下排列",
+    "pt-BR": "Sempre organizar na vertical"
+  },
+  "Sample_ShowActions": {
+    "en-US": "Show actions",
+    "zh-CN": "显示动作",
+    "pt-BR": "Mostrar ações"
+  },
+  "Sample_LongTextAndActionLabels": {
+    "en-US": "Long text and action labels",
+    "zh-CN": "长文与长动作名称",
+    "pt-BR": "Texto e rótulos de ação longos"
+  },
+  "Sample_KeepTheIntroductionAndNextActionInOneStandardCardThisLongerFictionalDescriptionChecksNaturalWrappingAndGrowthP": {
+    "en-US": "Keep the introduction and next action in one standard card. This longer fictional description checks natural wrapping and growth. pricing-example-with-a-long-unbroken-resource-name-must-wrap-without-clipping. Longer translations, narrower viewports and removed actions should never hide essential content or fix the card height.",
+    "zh-CN": "将介绍与下一步动作放在同一张标准卡片中。此处使用较长的虚构说明验证自然换行与高度增长。pricing-example-with-a-long-unbroken-resource-name-must-wrap-without-clipping。即使翻译后的正文变长、视口变窄或移除左侧动作，卡片也不应固定高度或隐藏必要内容。",
+    "pt-BR": "Mantenha a introdução e a próxima ação no mesmo cartão padrão. Esta descrição fictícia mais longa verifica a quebra natural de linha e o aumento da altura. pricing-example-with-a-long-unbroken-resource-name-must-wrap-without-clipping. Traduções maiores, telas menores e ações removidas nunca devem ocultar conteúdo necessário nem fixar a altura do cartão."
+  },
+  "Sample_TurnProjectIdeasIntoResourcesToShare": {
+    "en-US": "Turn project ideas into resources to share.",
+    "zh-CN": "把项目想法整理为可共享的资料。",
+    "pt-BR": "Transforme ideias do projeto em materiais para compartilhar."
+  },
+  "Sample_ReadAllDetailsOfTheLocalFictionalOfferForDemonstration": {
+    "en-US": "Read all details of the local fictional offer for demonstration",
+    "zh-CN": "浏览本地虚构报价方案的全部说明（仅为展示）",
+    "pt-BR": "Ler todos os detalhes da oferta fictícia local para demonstração"
+  },
+  "Sample_LocalDemoAction": {
+    "en-US": "Local demo action",
+    "zh-CN": "本地演示动作",
+    "pt-BR": "Ação local de exemplo"
+  },
+  "Sample_DemoCodeLanguage": {
+    "en-US": "Demo code language",
+    "zh-CN": "模拟代码语言",
+    "pt-BR": "Linguagem do código de exemplo"
+  },
+  "Sample_SwitchDemoRawValue": {
+    "en-US": "Switch demo raw value",
+    "zh-CN": "切换虚构原值",
+    "pt-BR": "Alternar valor original fictício"
+  },
+  "Sample_InitiallyClosed": {
+    "en-US": "Initially closed",
+    "zh-CN": "初始关闭",
+    "pt-BR": "Inicialmente fechado"
+  },
+  "Sample_InitiallyOpen": {
+    "en-US": "Initially open",
+    "zh-CN": "初始打开",
+    "pt-BR": "Inicialmente aberto"
+  },
+  "Sample_DemoOrderShippingDetails": {
+    "en-US": "Demo order shipping details",
+    "zh-CN": "模拟订单的运输说明",
+    "pt-BR": "Detalhes de envio do pedido fictício"
+  },
+  "Sample_TheDemoOrderIsScheduledForTheNextBusinessDayNoShipmentIsMade": {
+    "en-US": "The demo order is scheduled for the next business day; no shipment is made.",
+    "zh-CN": "演示订单预计于下一个工作日处理；没有发起任何真实配送。",
+    "pt-BR": "O pedido fictício está previsto para o próximo dia útil; nenhum envio real será realizado."
+  },
+  "Sample_DemoOrderReturnConditions": {
+    "en-US": "Demo order return conditions",
+    "zh-CN": "模拟订单的退回条件",
+    "pt-BR": "Condições de devolução do pedido fictício"
+  },
+  "Sample_TheDemoAllowsCancellationWhileTheOrderIsADraft": {
+    "en-US": "The demo allows cancellation while the order is a draft.",
+    "zh-CN": "示例允许在状态为草稿时取消。",
+    "pt-BR": "O exemplo permite cancelar enquanto o pedido estiver em rascunho."
+  },
+  "Sample_CopyCode": {
+    "en-US": "Copy code",
+    "zh-CN": "复制代码",
+    "pt-BR": "Copiar código"
+  },
+  "Sample_Copied": {
+    "en-US": "Copied",
+    "zh-CN": "已复制",
+    "pt-BR": "Copiado"
+  },
+  "Sample_ShowDotPattern": {
+    "en-US": "Show dot pattern",
+    "zh-CN": "显示点阵",
+    "pt-BR": "Mostrar padrão de pontos"
+  },
+  "Sample_CenterContent": {
+    "en-US": "Center content",
+    "zh-CN": "内容居中",
+    "pt-BR": "Centralizar conteúdo"
+  },
+  "Sample_CreateDemoItem": {
+    "en-US": "Create demo item",
+    "zh-CN": "创建演示项",
+    "pt-BR": "Criar item de exemplo"
+  },
+  "Sample_Copying": {
+    "en-US": "Copying…",
+    "zh-CN": "正在复制…",
+    "pt-BR": "Copiando…"
+  },
+  "Sample_CouldNotCopySelectTheCodeAndCopyItManually": {
+    "en-US": "Could not copy. Select the code and copy it manually.",
+    "zh-CN": "未能复制，请选中代码手动复制。",
+    "pt-BR": "Não foi possível copiar. Selecione o código e copie manualmente."
+  },
+  "Sample_DefaultIcon": {
+    "en-US": "Default icon",
+    "zh-CN": "默认图标",
+    "pt-BR": "Ícone padrão"
+  },
+  "Sample_DemoIcon": {
+    "en-US": "Demo icon",
+    "zh-CN": "演示图标",
+    "pt-BR": "Ícone de exemplo"
+  },
+  "Sample_RunDemoIconAction": {
+    "en-US": "Run demo icon action",
+    "zh-CN": "执行模拟图标操作",
+    "pt-BR": "Executar ação de exemplo do ícone"
+  },
+  "Sample_Identifier": {
+    "en-US": "Identifier",
+    "zh-CN": "编号",
+    "pt-BR": "Identificador"
+  },
+  "Sample_FictionalExampleLogo": {
+    "en-US": "Fictional example logo",
+    "zh-CN": "虚构示例标志",
+    "pt-BR": "Logotipo fictício de exemplo"
+  },
+  "Sample_ThisImageIsUsedOnlyForTheStandardPreviewExample": {
+    "en-US": "This image is used only for the standard preview example.",
+    "zh-CN": "此图片仅用于标准预览案例。",
+    "pt-BR": "Esta imagem é usada apenas no exemplo padrão de prévia."
+  },
+  "Sample_PresentationPageExamples": {
+    "en-US": "Presentation page examples",
+    "zh-CN": "展示页面案例",
+    "pt-BR": "Exemplos de páginas de apresentação"
+  },
+  "Sample_IncrementDemo": {
+    "en-US": "Increment demo",
+    "zh-CN": "增加示例",
+    "pt-BR": "Incrementar exemplo"
+  },
+  "Sample_Reset": {
+    "en-US": "Reset",
+    "zh-CN": "重置",
+    "pt-BR": "Redefinir"
+  },
+  "Sample_ExampleName": {
+    "en-US": "Example name",
+    "zh-CN": "示例名称",
+    "pt-BR": "Nome do exemplo"
+  },
+  "Sample_Create": {
+    "en-US": "Create",
+    "zh-CN": "创建",
+    "pt-BR": "Criar"
+  },
+  "Sample_EmptySectionWithATitle": {
+    "en-US": "Empty section with a title",
+    "zh-CN": "有标题的空区域",
+    "pt-BR": "Seção vazia com título"
+  },
+  "Sample_EmptySectionWithActions": {
+    "en-US": "Empty section with actions",
+    "zh-CN": "带操作的空区域",
+    "pt-BR": "Seção vazia com ações"
+  },
+  "Sample_Action": {
+    "en-US": "Action",
+    "zh-CN": "操作",
+    "pt-BR": "Ação"
+  },
+  "Sample_DemoContactDetails": {
+    "en-US": "Demo contact details",
+    "zh-CN": "模拟联系方式",
+    "pt-BR": "Dados de contato fictícios"
+  },
+  "Sample_FictionalContactDemoMemberEmailSampleExampleCom": {
+    "en-US": "Fictional contact: Demo member; email: sample@example.com.",
+    "zh-CN": "虚构联系人：演示成员；邮箱：sample@example.com。",
+    "pt-BR": "Contato fictício: Membro de exemplo; e-mail: sample@example.com."
+  },
+  "Sample_CheckDemoDetails": {
+    "en-US": "Check demo details",
+    "zh-CN": "检查模拟信息",
+    "pt-BR": "Verificar dados fictícios"
+  },
+  "Sample_EmptyElevatedInformationTile": {
+    "en-US": "Empty elevated information tile",
+    "zh-CN": "空悬浮信息格面",
+    "pt-BR": "Bloco informativo elevado vazio"
+  },
+  "Sample_EmptyFilledElevatedInformationTile": {
+    "en-US": "Empty filled elevated information tile",
+    "zh-CN": "空填充悬浮信息格面",
+    "pt-BR": "Bloco informativo preenchido elevado vazio"
+  },
+  "Sample_EmptyDangerInformationTile": {
+    "en-US": "Empty danger information tile",
+    "zh-CN": "空危险信息格面",
+    "pt-BR": "Bloco informativo de perigo vazio"
+  },
+  "Sample_ViewActiveProjects": {
+    "en-US": "View active projects",
+    "zh-CN": "查看活动项目",
+    "pt-BR": "Ver projetos ativos"
+  },
+  "Sample_ViewArchivedProjects": {
+    "en-US": "View archived projects",
+    "zh-CN": "查看归档项目",
+    "pt-BR": "Ver projetos arquivados"
+  },
+  "Sample_Design": {
+    "en-US": "Design",
+    "zh-CN": "设计",
+    "pt-BR": "Design"
+  },
+  "Sample_Documents": {
+    "en-US": "Documents",
+    "zh-CN": "文档",
+    "pt-BR": "Documentos"
+  },
+  "Sample_Components": {
+    "en-US": "Components",
+    "zh-CN": "组件",
+    "pt-BR": "Componentes"
+  },
+  "Sample_Archived": {
+    "en-US": "Archived",
+    "zh-CN": "已归档",
+    "pt-BR": "Arquivado"
+  },
+  "Sample_InProgress": {
+    "en-US": "In progress",
+    "zh-CN": "进行中",
+    "pt-BR": "Em andamento"
+  },
+  "Sample_PendingReview": {
+    "en-US": "Pending review",
+    "zh-CN": "待检查",
+    "pt-BR": "Aguardando revisão"
+  },
+  "Sample_PendingPublication": {
+    "en-US": "Pending publication",
+    "zh-CN": "待发布",
+    "pt-BR": "Aguardando publicação"
+  },
+  "Sample_EmptyRectangularElevatedTile": {
+    "en-US": "Empty rectangular elevated tile",
+    "zh-CN": "空矩形悬浮格面",
+    "pt-BR": "Bloco retangular elevado vazio"
+  },
+  "Sample_EmptyRectangularFilledElevatedTile": {
+    "en-US": "Empty rectangular filled elevated tile",
+    "zh-CN": "空矩形填充悬浮格面",
+    "pt-BR": "Bloco retangular preenchido elevado vazio"
+  },
+  "Sample_EmptyRectangularDangerActionTile": {
+    "en-US": "Empty rectangular danger action tile",
+    "zh-CN": "空矩形危险操作格面",
+    "pt-BR": "Bloco retangular de ação de perigo vazio"
+  },
+  "Sample_EmptySquareTile": {
+    "en-US": "Empty square tile",
+    "zh-CN": "空方形格面",
+    "pt-BR": "Bloco quadrado vazio"
+  },
+  "Sample_SwitchToRectangle": {
+    "en-US": "Switch to rectangle",
+    "zh-CN": "切换为矩形",
+    "pt-BR": "Alternar para retângulo"
+  },
+  "Sample_SwitchToSquare": {
+    "en-US": "Switch to square",
+    "zh-CN": "切换为方形",
+    "pt-BR": "Alternar para quadrado"
+  },
+  "Sample_AutomaticColumns": {
+    "en-US": "Automatic columns",
+    "zh-CN": "自动分列",
+    "pt-BR": "Colunas automáticas"
+  },
+  "Sample_ThreeFixedColumns": {
+    "en-US": "Three fixed columns",
+    "zh-CN": "固定三列",
+    "pt-BR": "Três colunas fixas"
+  },
+  "Sample_AutomaticRows": {
+    "en-US": "Automatic rows",
+    "zh-CN": "自动行数",
+    "pt-BR": "Linhas automáticas"
+  },
+  "Sample_TwoFixedRows": {
+    "en-US": "Two fixed rows",
+    "zh-CN": "固定两行",
+    "pt-BR": "Duas linhas fixas"
+  },
+  "Sample_EnableIconSection": {
+    "en-US": "Enable icon section",
+    "zh-CN": "启用图标分区",
+    "pt-BR": "Ativar seção de ícone"
+  },
+  "Sample_UseContinuousLayout": {
+    "en-US": "Use continuous layout",
+    "zh-CN": "使用连续布局",
+    "pt-BR": "Usar disposição contínua"
+  },
+  "Sample_Open": {
+    "en-US": "Open",
+    "zh-CN": "打开",
+    "pt-BR": "Abrir"
+  },
+  "Sample_ViewFictionalProduct": {
+    "en-US": "View fictional product",
+    "zh-CN": "查看虚构产品",
+    "pt-BR": "Ver produto fictício"
+  },
+  "Sample_SimulateLocalSubmission": {
+    "en-US": "Simulate local submission",
+    "zh-CN": "模拟本地提交",
+    "pt-BR": "Simular envio local"
+  },
+  "Sample_LumenDemoAccess": {
+    "en-US": "Lumen demo access",
+    "zh-CN": "Lumen 演示入口",
+    "pt-BR": "Acesso de exemplo do Lumen"
+  },
+  "Sample_SimulateEntry": {
+    "en-US": "Simulate entry",
+    "zh-CN": "模拟进入",
+    "pt-BR": "Simular entrada"
+  },
+  "Sample_LocalDemoCompleted": {
+    "en-US": "Local demo completed.",
+    "zh-CN": "本地演示完成。",
+    "pt-BR": "Demonstração local concluída."
+  },
+  "Sample_PresentationExamples": {
+    "en-US": "Presentation examples",
+    "zh-CN": "展示目录",
+    "pt-BR": "Exemplos de apresentação"
+  },
+  "Sample_StaticFictionalOffers": {
+    "en-US": "Static fictional offers",
+    "zh-CN": "静态虚构报价",
+    "pt-BR": "Ofertas fictícias estáticas"
+  },
+  "Sample_UseOnlyAsAnOfferStageChild": {
+    "en-US": "Use only as an OfferStage child.",
+    "zh-CN": "只作为 OfferStage 子项使用。",
+    "pt-BR": "Use apenas como elemento filho de OfferStage."
+  },
+  "Sample_0NoncommercialOffer": {
+    "en-US": "0 · Noncommercial offer",
+    "zh-CN": "0 · 非商业报价",
+    "pt-BR": "0 · Oferta não comercial"
+  },
+  "Sample_10NoncommercialOffer": {
+    "en-US": "10 · Noncommercial offer",
+    "zh-CN": "10 · 非商业报价",
+    "pt-BR": "10 · Oferta não comercial"
+  },
+  "Sample_FictionalOffers": {
+    "en-US": "Fictional offers",
+    "zh-CN": "虚构报价",
+    "pt-BR": "Ofertas fictícias"
+  },
+  "Sample_FictionalExtendedPlanNoBillingTakesPlace": {
+    "en-US": "Fictional extended plan; no billing takes place.",
+    "zh-CN": "虚构扩展方案，不执行计费。",
+    "pt-BR": "Plano ampliado fictício; nenhuma cobrança é realizada."
+  },
+  "Sample_IconCarouselControlExample": {
+    "en-US": "Icon carousel control example",
+    "zh-CN": "图标轮播控制示例",
+    "pt-BR": "Exemplo de controle de carrossel por ícone"
+  },
+  "Sample_AccessExamples": {
+    "en-US": "Access examples",
+    "zh-CN": "访问案例",
+    "pt-BR": "Exemplos de acesso"
+  },
+  "Sample_ShowAnExplicitIdentityOverride": {
+    "en-US": "Show an explicit identity override",
+    "zh-CN": "显示显式身份覆盖",
+    "pt-BR": "Mostrar substituição explícita da identidade"
+  },
+  "Sample_CardState": {
+    "en-US": "Demo status: {0}",
+    "zh-CN": "演示状态：{0}",
+    "pt-BR": "Estado do exemplo: {0}"
+  },
+  "Sample_LocalActionCount": {
+    "en-US": "Local action invoked {0} times.",
+    "zh-CN": "本地动作触发 {0} 次。",
+    "pt-BR": "Ação local executada {0} vezes."
+  },
+  "Sample_CreatedItemsCount": {
+    "en-US": "Created {0} demo items",
+    "zh-CN": "已创建 {0} 个演示项",
+    "pt-BR": "{0} itens de exemplo criados"
+  },
+  "Sample_DemoActionCount": {
+    "en-US": "Demo action count: {0}",
+    "zh-CN": "模拟操作次数：{0}",
+    "pt-BR": "Número de ações de exemplo: {0}"
+  },
+  "Sample_AvailableIconCount": {
+    "en-US": "Available icons: {0}.",
+    "zh-CN": "可用图标：{0}。",
+    "pt-BR": "Ícones disponíveis: {0}."
+  },
+  "Sample_LocalOnlyActionCount": {
+    "en-US": "Invoked {0} times; no real data is saved.",
+    "zh-CN": "已操作 {0} 次；不保存真实数据。",
+    "pt-BR": "Executado {0} vezes; nenhum dado real é salvo."
+  },
+  "Sample_CheckCount": {
+    "en-US": "Checks performed: {0}",
+    "zh-CN": "检查次数：{0}",
+    "pt-BR": "Verificações realizadas: {0}"
+  },
+  "Sample_SwitchAppearance": {
+    "en-US": "Switch appearance · {0}",
+    "zh-CN": "切换外观 · {0}",
+    "pt-BR": "Alternar aparência · {0}"
+  },
+  "Sample_OpenedDraftCount": {
+    "en-US": "Opened the demo draft {0} times.",
+    "zh-CN": "已打开演示草稿 {0} 次。",
+    "pt-BR": "Rascunho de exemplo aberto {0} vezes."
+  },
+  "Sample_LocalSubmissionCount": {
+    "en-US": "Local submissions: {0}.",
+    "zh-CN": "本地提交次数：{0}。",
+    "pt-BR": "Envios locais: {0}."
+  },
+  "Sample_PresentationBandTitle": {
+    "en-US": "Presentation band · {0}",
+    "zh-CN": "展示横幅 · {0}",
+    "pt-BR": "Faixa de apresentação · {0}"
+  },
+  "Sample_WidePanelVariant": {
+    "en-US": "Wide panel variant",
+    "zh-CN": "宽面板变种",
+    "pt-BR": "Variação de painel amplo"
+  },
+  "Sample_CenteredContent": {
+    "en-US": "Centered content",
+    "zh-CN": "居中内容",
+    "pt-BR": "Conteúdo centralizado"
+  },
+  "Sample_OrganizeYourProjectResources": {
+    "en-US": "Organize your project resources.",
+    "zh-CN": "整理你的项目资料。",
+    "pt-BR": "Organize os materiais do seu projeto."
+  },
+  "Sample_FullBannerExample": {
+    "en-US": "Full banner example",
+    "zh-CN": "完整横幅案例",
+    "pt-BR": "Exemplo completo de faixa"
+  },
+  "Sample_NoLicensingOrPricingRulesAreIncluded": {
+    "en-US": "No licensing or pricing rules are included.",
+    "zh-CN": "不收录许可或价格规则。",
+    "pt-BR": "Não inclui regras de licença ou preço."
+  },
+  "Sample_FictionalBasicPlanNoLicenseChecksArePerformed": {
+    "en-US": "Fictional basic plan; no license checks are performed.",
+    "zh-CN": "虚构基础方案，不执行许可判断。",
+    "pt-BR": "Plano básico fictício; nenhuma verificação de licença é realizada."
+  },
+  "Sample_IconButtonExampleNoLicenseChecksArePerformed": {
+    "en-US": "Icon button example; no license checks are performed.",
+    "zh-CN": "图标按钮示例；不执行许可判断。",
+    "pt-BR": "Exemplo de botão com ícone; nenhuma verificação de licença é realizada."
+  },
+  "Sample_OneOfferStageWithoutASeparateCarouselController": {
+    "en-US": "One offer stage without a separate carousel controller.",
+    "zh-CN": "同一个报价舞台，不创建独立轮播控制器。",
+    "pt-BR": "Um único palco de ofertas sem controlador de carrossel separado."
+  },
+  "Sample_FullExample": {
+    "en-US": "Full example",
+    "zh-CN": "完整案例",
+    "pt-BR": "Exemplo completo"
+  },
+  "Sample_OrganizeInspirationAndStartYourNextProject": {
+    "en-US": "Organize inspiration and start your next project.",
+    "zh-CN": "整理灵感，开始下一个项目。",
+    "pt-BR": "Organize suas ideias e comece o próximo projeto."
+  },
+  "Sample_FictionalPresentationNoticeTheHostSetsCopyrightTheHeadingAndWatermarkFollowTheProjectName": {
+    "en-US": "Fictional presentation notice · The host sets copyright; the heading and watermark follow the project name",
+    "zh-CN": "虚构展示声明 · 版权由宿主设置，标题与水印自动跟随项目名",
+    "pt-BR": "Aviso fictício de apresentação · O aplicativo define os direitos autorais; o título e a marca-d'água usam o nome do projeto"
+  },
+  "Sample_FictionalProductBannerTheArtisticTitleIsForPresentationScenesWhileBodyTextAndButtonsUseStandardStyles": {
+    "en-US": "Fictional product banner; the artistic title is for presentation scenes, while body text and buttons use standard styles.",
+    "zh-CN": "虚构产品横幅；艺术标题仅用于展示场景，正文与按钮保持标准样式。",
+    "pt-BR": "Faixa de produto fictício; o título artístico é usado nas cenas de apresentação, enquanto o texto e os botões usam estilos padrão."
+  },
+  "Sample_Resources": {
+    "en-US": "Resources",
+    "zh-CN": "资料",
+    "pt-BR": "Materiais"
+  },
+  "Sample_UpdateCount": {
+    "en-US": "Update count",
+    "zh-CN": "更新次数",
+    "pt-BR": "Número de atualizações"
+  },
+  "Sample_ApplicationName": {
+    "en-US": "Application name",
+    "zh-CN": "应用名称",
+    "pt-BR": "Nome do aplicativo"
+  },
+  "Sample_ShowAccessContext": {
+    "en-US": "Show access context",
+    "zh-CN": "显示入口上下文",
+    "pt-BR": "Mostrar contexto de acesso"
+  },
+  "Sample_ResourceCenterFictional": {
+    "en-US": "Resource center (fictional)",
+    "zh-CN": "资料中心（虚构）",
+    "pt-BR": "Central de materiais (fictícia)"
+  },
+  "Sample_VisitorAccess": {
+    "en-US": "Visitor access",
+    "zh-CN": "访客入口",
+    "pt-BR": "Acesso de visitante"
+  },
+  "Sample_UseAFictionalDemoAccountToViewSharedResources": {
+    "en-US": "Use a fictional demo account to view shared resources.",
+    "zh-CN": "使用虚构演示账户查看共享资料。",
+    "pt-BR": "Use uma conta fictícia de exemplo para ver materiais compartilhados."
+  },
+  "Sample_DocumentWorkspaceFictional": {
+    "en-US": "Document workspace (fictional)",
+    "zh-CN": "文档工作台（虚构）",
+    "pt-BR": "Área de documentos (fictícia)"
+  },
+  "Sample_SharedResources": {
+    "en-US": "Shared resources",
+    "zh-CN": "共享资料",
+    "pt-BR": "Materiais compartilhados"
+  },
+  "Sample_UsesTheTopBarNavigationThemeAndContentScrollingConfiguredByTheHost": {
+    "en-US": "Uses the top bar, navigation, theme and content scrolling configured by the host.",
+    "zh-CN": "使用宿主配置的顶部栏、导航、主题和正文滚动区域。",
+    "pt-BR": "Usa a barra superior, a navegação, o tema e a rolagem do conteúdo configurados pelo aplicativo."
+  },
+  "Sample_AddExampleDocument": {
+    "en-US": "Add example document",
+    "zh-CN": "添加示例文档",
+    "pt-BR": "Adicionar documento de exemplo"
+  },
+  "Sample_GalleryUsesASingleApplicationShellTheFullShellExampleRunsOnASeparatePageWithoutNestingMainLandmarksOverridingN": {
+    "en-US": "Gallery uses a single ApplicationShell. The full shell example runs on a separate page without nesting main landmarks, overriding navigation settings or adding preview skins.",
+    "zh-CN": "Gallery 本身使用唯一的 ApplicationShell。完整外壳案例在独立页面运行，不嵌套主地标、不覆盖导航配置、不注入预览皮肤。",
+    "pt-BR": "A Gallery usa um único ApplicationShell. O exemplo completo é executado em uma página separada, sem aninhar regiões principais, substituir a configuração de navegação nem adicionar estilos de prévia."
+  },
+  "Sample_OpenFullShellExample": {
+    "en-US": "Open full shell example",
+    "zh-CN": "打开完整外壳案例",
+    "pt-BR": "Abrir exemplo completo da estrutura"
+  },
+  "Sample_FictionalExampleARKHEIDESYSTEM": {
+    "en-US": "Fictional example · ARKHEIDE SYSTEM",
+    "zh-CN": "虚构案例 · ARKHEIDE SYSTEM",
+    "pt-BR": "Exemplo fictício · ARKHEIDE SYSTEM"
+  },
+  "Sample_LocalLongReport": {
+    "en-US": "Local long report",
+    "zh-CN": "本地长报告",
+    "pt-BR": "Relatório local longo"
+  },
+  "Sample_ScrollDownToSeeTheBackButton": {
+    "en-US": "Scroll down to see the back button.",
+    "zh-CN": "向下滚动查看返回按钮。",
+    "pt-BR": "Role para baixo para ver o botão de retorno."
+  },
+  "Sample_ReportContent": {
+    "en-US": "Report content.",
+    "zh-CN": "报告正文。",
+    "pt-BR": "Conteúdo do relatório."
+  },
+  "Sample_BackToReportTop": {
+    "en-US": "Back to report top",
+    "zh-CN": "返回报告顶部",
+    "pt-BR": "Voltar ao início do relatório"
+  },
+  "Sample_SkipToExampleContent": {
+    "en-US": "Skip to example content",
+    "zh-CN": "跳到示例正文",
+    "pt-BR": "Ir para o conteúdo do exemplo"
+  },
+  "Sample_HelpCenterFictional": {
+    "en-US": "Help center (fictional)",
+    "zh-CN": "帮助中心（虚构）",
+    "pt-BR": "Central de ajuda (fictícia)"
+  },
+  "Sample_SwitchArticle": {
+    "en-US": "Switch article",
+    "zh-CN": "切换文章",
+    "pt-BR": "Alternar artigo"
+  },
+  "Sample_QuickStartFictional": {
+    "en-US": "Quick start (fictional)",
+    "zh-CN": "快速开始（虚构）",
+    "pt-BR": "Introdução rápida (fictícia)"
+  },
+  "Sample_FrequentlyAskedQuestionsFictional": {
+    "en-US": "Frequently asked questions (fictional)",
+    "zh-CN": "常见问题（虚构）",
+    "pt-BR": "Perguntas frequentes (fictícias)"
+  },
+  "Sample_HelpCenterContent": {
+    "en-US": "Help center content.",
+    "zh-CN": "帮助中心正文。",
+    "pt-BR": "Conteúdo da central de ajuda."
+  },
+  "Sample_ThisFictionalHelpTextDemonstratesAFixedTopBarAndScrollingContent": {
+    "en-US": "This fictional help text demonstrates a fixed top bar and scrolling content.",
+    "zh-CN": "这是一段虚构的帮助说明，用来体验固定顶部栏与正文滚动。",
+    "pt-BR": "Este texto fictício de ajuda demonstra uma barra superior fixa e a rolagem do conteúdo."
+  },
+  "Sample_AccountSelectionPage": {
+    "en-US": "Account selection page",
+    "zh-CN": "账号选择页",
+    "pt-BR": "Página de seleção de conta"
+  },
+  "Sample_PauseInteractionInThisExampleArea": {
+    "en-US": "Pause interaction in this example area",
+    "zh-CN": "暂停此示例区域的交互",
+    "pt-BR": "Pausar interação nesta área do exemplo"
+  },
+  "Sample_LockedState": {
+    "en-US": "Locked state",
+    "zh-CN": "锁定状态",
+    "pt-BR": "Estado bloqueado"
+  },
+  "Sample_InteractionIsPausedInThisArea": {
+    "en-US": "Interaction is paused in this area.",
+    "zh-CN": "此区域暂停交互。",
+    "pt-BR": "A interação está pausada nesta área."
+  },
+  "Sample_Input": {
+    "en-US": "Input",
+    "zh-CN": "输入",
+    "pt-BR": "Entrada"
+  },
+  "Sample_ExampleTemporarilyNotEditable": {
+    "en-US": "Example temporarily not editable",
+    "zh-CN": "示例暂时不可编辑",
+    "pt-BR": "Exemplo temporariamente não editável"
+  },
+  "Sample_AFictionalSynchronizationIsInProgressOnlyThisExampleAreaIsPaused": {
+    "en-US": "A fictional synchronization is in progress. Only this example area is paused.",
+    "zh-CN": "虚构的同步操作正在进行。只暂停这个示例区域。",
+    "pt-BR": "Uma sincronização fictícia está em andamento. Apenas esta área do exemplo está pausada."
+  },
+  "Sample_CompleteDemoSynchronization": {
+    "en-US": "Complete demo synchronization",
+    "zh-CN": "完成示例同步",
+    "pt-BR": "Concluir sincronização de exemplo"
+  },
+  "Sample_Notes": {
+    "en-US": "Notes",
+    "zh-CN": "备注",
+    "pt-BR": "Observações"
+  },
+  "Sample_SaveNotes": {
+    "en-US": "Save notes",
+    "zh-CN": "保存备注",
+    "pt-BR": "Salvar observações"
+  },
+  "Sample_FictionalNotesSaved": {
+    "en-US": "Fictional notes saved.",
+    "zh-CN": "已保存虚构备注。",
+    "pt-BR": "Observações fictícias salvas."
+  },
+  "Sample_ThisIsAFictionalLocalEditor": {
+    "en-US": "This is a fictional local editor.",
+    "zh-CN": "这是虚构的本地编辑器。",
+    "pt-BR": "Este é um editor local fictício."
+  },
+  "Sample_EnableLeaveConfirmationForThisPage": {
+    "en-US": "Enable leave confirmation for this page",
+    "zh-CN": "启用当前页面的离开确认",
+    "pt-BR": "Ativar confirmação ao sair desta página"
+  },
+  "Sample_TheDemoDraftIsUnsavedLeaveAndDiscardIt": {
+    "en-US": "The demo draft is unsaved. Leave and discard it?",
+    "zh-CN": "示例草稿未保存，是否离开并丢弃？",
+    "pt-BR": "O rascunho de exemplo não foi salvo. Sair e descartá-lo?"
+  },
+  "Sample_DraftTitle": {
+    "en-US": "Draft title",
+    "zh-CN": "草稿标题",
+    "pt-BR": "Título do rascunho"
+  },
+  "Sample_SaveDemoDraft": {
+    "en-US": "Save demo draft",
+    "zh-CN": "保存示例草稿",
+    "pt-BR": "Salvar rascunho de exemplo"
+  },
+  "Sample_TestLeaveConfirmationOnTheSameControlPage": {
+    "en-US": "Test leave confirmation on the same control page",
+    "zh-CN": "测试离开确认（保留同一控件页面）",
+    "pt-BR": "Testar confirmação de saída na mesma página do controle"
+  },
+  "Sample_AnUnsavedFictionalDraftExists": {
+    "en-US": "An unsaved fictional draft exists.",
+    "zh-CN": "存在未保存的虚构草稿。",
+    "pt-BR": "Há um rascunho fictício não salvo."
+  },
+  "Sample_NoUnsavedChanges": {
+    "en-US": "No unsaved changes.",
+    "zh-CN": "没有未保存的修改。",
+    "pt-BR": "Nenhuma alteração não salva."
+  },
+  "Sample_ShowSecondaryNavigation": {
+    "en-US": "Show secondary navigation",
+    "zh-CN": "显示二级导航",
+    "pt-BR": "Mostrar navegação secundária"
+  },
+  "Sample_ExampleModules": {
+    "en-US": "Example modules",
+    "zh-CN": "示例模块",
+    "pt-BR": "Módulos de exemplo"
+  },
+  "Sample_ExamplePages": {
+    "en-US": "Example pages",
+    "zh-CN": "示例页面",
+    "pt-BR": "Páginas de exemplo"
+  },
+  "Sample_BackToExampleTop": {
+    "en-US": "Back to example top",
+    "zh-CN": "回到示例顶部",
+    "pt-BR": "Voltar ao início do exemplo"
+  },
+  "Sample_AllResources": {
+    "en-US": "All resources",
+    "zh-CN": "全部资料",
+    "pt-BR": "Todos os materiais"
+  },
+  "Sample_AllResourcesFictional": {
+    "en-US": "All resources (fictional)",
+    "zh-CN": "全部资料（虚构）",
+    "pt-BR": "Todos os materiais (fictícios)"
+  },
+  "Sample_ArchivedFictional": {
+    "en-US": "Archived (fictional)",
+    "zh-CN": "已归档（虚构）",
+    "pt-BR": "Arquivados (fictícios)"
+  },
+  "Sample_ArchivedResources": {
+    "en-US": "Archived resources",
+    "zh-CN": "归档资料",
+    "pt-BR": "Materiais arquivados"
+  },
+  "Sample_ThisIsAFictionalRecordChangingPagesUpdatesTheSectionIndexAndOnlyTheExampleContentAreaScrolls": {
+    "en-US": "This is a fictional record. Changing pages updates the section index, and only the example content area scrolls.",
+    "zh-CN": "这是虚构记录。切换页面后目录只保留当前页面的板块，滚动只发生在示例正文区域。",
+    "pt-BR": "Este é um registro fictício. A troca de página atualiza o índice das seções, e apenas a área de conteúdo do exemplo rola."
+  },
+  "Sample_StandardCenteredContainer": {
+    "en-US": "Standard centered container",
+    "zh-CN": "标准中心容器",
+    "pt-BR": "Contêiner central padrão"
+  },
+  "Sample_ExpandedCenteredContainer": {
+    "en-US": "Expanded centered container",
+    "zh-CN": "扩大中心容器",
+    "pt-BR": "Contêiner central ampliado"
+  },
+  "Sample_FluidContentArea": {
+    "en-US": "Fluid content area",
+    "zh-CN": "流动正文区域",
+    "pt-BR": "Área de conteúdo fluida"
+  },
+  "Sample_FullWidthContentArea": {
+    "en-US": "Full width content area",
+    "zh-CN": "完整宽度正文区域",
+    "pt-BR": "Área de conteúdo com largura completa"
+  },
+  "Sample_ContentLayout": {
+    "en-US": "Content layout",
+    "zh-CN": "正文布局",
+    "pt-BR": "Disposição do conteúdo"
+  },
+  "Sample_ResourceSettingsFictional": {
+    "en-US": "Resource settings (fictional)",
+    "zh-CN": "资料设置（虚构）",
+    "pt-BR": "Configurações de materiais (fictícias)"
+  },
+  "Sample_Description": {
+    "en-US": "Description",
+    "zh-CN": "说明",
+    "pt-BR": "Descrição"
+  },
+  "Sample_ThisPageUsesTheSelectedLayoutResizeTheWindowToInspectContentWidthAndMargins": {
+    "en-US": "This page uses the selected layout. Resize the window to inspect content width and margins.",
+    "zh-CN": "这个页面采用所选布局。调整窗口宽度可查看正文轨道与边距。",
+    "pt-BR": "Esta página usa a disposição selecionada. Redimensione a janela para verificar a largura do conteúdo e as margens."
+  },
+  "Sample_Fluid": {
+    "en-US": "Fluid",
+    "zh-CN": "流动",
+    "pt-BR": "Fluido"
+  },
+  "Sample_FullWidth": {
+    "en-US": "Full width",
+    "zh-CN": "完整宽度",
+    "pt-BR": "Largura completa"
+  },
+  "Sample_PageTitle": {
+    "en-US": "Page title",
+    "zh-CN": "页面标题",
+    "pt-BR": "Título da página"
+  },
+  "Sample_CompactTitle": {
+    "en-US": "Compact title",
+    "zh-CN": "紧凑标题",
+    "pt-BR": "Título compacto"
+  },
+  "Sample_TitleWithActions": {
+    "en-US": "Title with actions",
+    "zh-CN": "带操作标题",
+    "pt-BR": "Título com ações"
+  },
+  "Sample_NewResourceFictional": {
+    "en-US": "New resource (fictional)",
+    "zh-CN": "新建资料（虚构）",
+    "pt-BR": "Novo material (fictício)"
+  },
+  "Sample_ResourceDirectoryFictional": {
+    "en-US": "Resource directory (fictional)",
+    "zh-CN": "资料目录（虚构）",
+    "pt-BR": "Diretório de materiais (fictício)"
+  },
+  "Sample_NewResource": {
+    "en-US": "New resource",
+    "zh-CN": "新建资料",
+    "pt-BR": "Novo material"
+  },
+  "Sample_TheFictionalNewResourceSceneIsOpen": {
+    "en-US": "The fictional new resource scene is open.",
+    "zh-CN": "已打开虚构的新建资料场景。",
+    "pt-BR": "A cena fictícia de novo material está aberta."
+  },
+  "Sample_SelectNewResourceToTryTheHeadingAction": {
+    "en-US": "Select New resource to try the heading action.",
+    "zh-CN": "选择新建资料，查看标题区操作。",
+    "pt-BR": "Selecione Novo material para experimentar a ação do título."
+  },
+  "Sample_Archive": {
+    "en-US": "Archive",
+    "zh-CN": "归档",
+    "pt-BR": "Arquivo"
+  },
+  "Sample_Manage": {
+    "en-US": "Manage",
+    "zh-CN": "管理",
+    "pt-BR": "Gerenciar"
+  },
+  "Sample_TheDemoVisitorDoesNotHaveManagementPermission": {
+    "en-US": "The demo visitor does not have management permission.",
+    "zh-CN": "演示访客没有管理权限。",
+    "pt-BR": "O visitante de exemplo não tem permissão de gerenciamento."
+  },
+  "Sample_NavigationHostExample": {
+    "en-US": "Navigation host example",
+    "zh-CN": "导航宿主演示",
+    "pt-BR": "Exemplo de aplicativo com navegação"
+  },
+  "Sample_CurrentPresentationDirectory": {
+    "en-US": "Current presentation directory",
+    "zh-CN": "当前展示目录",
+    "pt-BR": "Diretório atual de apresentação"
+  },
+  "Sample_LongSecondaryNavigationTitleForTestingTruncationInTheFixedSidebar": {
+    "en-US": "Long secondary navigation title for testing truncation in the fixed sidebar",
+    "zh-CN": "用于验证固定侧栏内截断行为的较长二级导航标题",
+    "pt-BR": "Título longo de navegação secundária para verificar truncamento no painel lateral fixo"
+  },
+  "Sample_TheLocalReportIncludesThreeSectionsOfFictionalData": {
+    "en-US": "The local report includes three sections of fictional data.",
+    "zh-CN": "本地报告包含三段虚构数据。",
+    "pt-BR": "O relatório local inclui três seções de dados fictícios."
+  },
+  "Sample_Data": {
+    "en-US": "Data",
+    "zh-CN": "数据",
+    "pt-BR": "Dados"
+  },
+  "Sample_RecordCount": {
+    "en-US": "Record count",
+    "zh-CN": "记录数",
+    "pt-BR": "Número de registros"
+  },
+  "Sample_Period": {
+    "en-US": "Period",
+    "zh-CN": "期间",
+    "pt-BR": "Período"
+  },
+  "Sample_ExampleMonth": {
+    "en-US": "Example month",
+    "zh-CN": "示例月份",
+    "pt-BR": "Mês de exemplo"
+  },
+  "Sample_Summary": {
+    "en-US": "Summary",
+    "zh-CN": "总结",
+    "pt-BR": "Resumo"
+  },
+  "Sample_AllRecordsHaveBeenOrganized": {
+    "en-US": "All records have been organized.",
+    "zh-CN": "全部记录已整理。",
+    "pt-BR": "Todos os registros foram organizados."
+  },
+  "Sample_ReportSections": {
+    "en-US": "Report sections",
+    "zh-CN": "报告板块",
+    "pt-BR": "Seções do relatório"
+  },
+  "Sample_HelpChapters": {
+    "en-US": "Help chapters",
+    "zh-CN": "帮助章节",
+    "pt-BR": "Capítulos de ajuda"
+  },
+  "Sample_CreateAWorkspaceThenAddResourcesToTheDirectory": {
+    "en-US": "Create a workspace, then add resources to the directory.",
+    "zh-CN": "创建工作区后，将资料加入目录。",
+    "pt-BR": "Crie uma área de trabalho e adicione materiais ao diretório."
+  },
+  "Sample_SharedResourcesFictional": {
+    "en-US": "Shared resources (fictional)",
+    "zh-CN": "共享资料（虚构）",
+    "pt-BR": "Materiais compartilhados (fictícios)"
+  },
+  "Sample_TheApplicationManagesSharingLinksAndAccessPermissions": {
+    "en-US": "The application manages sharing links and access permissions.",
+    "zh-CN": "共享链接与访问权限由应用负责处理。",
+    "pt-BR": "O aplicativo gerencia os links de compartilhamento e as permissões de acesso."
+  },
+  "Sample_QuickStart": {
+    "en-US": "Quick start",
+    "zh-CN": "快速开始",
+    "pt-BR": "Introdução rápida"
+  },
+  "Sample_ShowExampleIdentity": {
+    "en-US": "Show example identity",
+    "zh-CN": "显示示例身份",
+    "pt-BR": "Mostrar identidade de exemplo"
+  },
+  "Sample_BackToExampleHome": {
+    "en-US": "Back to example home",
+    "zh-CN": "返回示例首页",
+    "pt-BR": "Voltar ao início do exemplo"
+  },
+  "Sample_ExampleVisitor": {
+    "en-US": "Example visitor",
+    "zh-CN": "示例访客",
+    "pt-BR": "Visitante de exemplo"
+  },
+  "Sample_FictionalDemoIdentity": {
+    "en-US": "Fictional demo identity",
+    "zh-CN": "虚构的演示身份",
+    "pt-BR": "Identidade fictícia de exemplo"
+  },
+  "Sample_SimulateSignOut": {
+    "en-US": "Simulate sign out",
+    "zh-CN": "模拟退出",
+    "pt-BR": "Simular saída"
+  },
+  "Sample_Enter": {
+    "en-US": "Enter",
+    "zh-CN": "进入",
+    "pt-BR": "Entrar"
+  },
+  "Sample_CreateAccount": {
+    "en-US": "Create account",
+    "zh-CN": "创建账号",
+    "pt-BR": "Criar conta"
+  },
+  "Sample_Documentation": {
+    "en-US": "Documentation",
+    "zh-CN": "说明文档",
+    "pt-BR": "Documentação"
+  },
+  "Sample_ReferenceResources": {
+    "en-US": "Reference resources",
+    "zh-CN": "参考资料",
+    "pt-BR": "Materiais de referência"
+  },
+  "Sample_AddedDocumentCount": {
+    "en-US": "Added {0} fictional documents.",
+    "zh-CN": "已添加 {0} 份虚构文档。",
+    "pt-BR": "{0} documentos fictícios adicionados."
+  },
+  "Sample_DescriptionNumber": {
+    "en-US": "Description {0}",
+    "zh-CN": "说明 {0}",
+    "pt-BR": "Descrição {0}"
+  },
+  "Sample_CurrentModule": {
+    "en-US": "Current module: {0} (fictional).",
+    "zh-CN": "当前模块：{0}（虚构）。",
+    "pt-BR": "Módulo atual: {0} (fictício)."
+  },
+  "Sample_SimulatedActionCount": {
+    "en-US": "Simulated {0} actions.",
+    "zh-CN": "已模拟操作 {0} 次。",
+    "pt-BR": "{0} ações simuladas."
+  },
+  "Sample_Unchecked": {
+    "en-US": "Unchecked",
+    "zh-CN": "未选中",
+    "pt-BR": "Não selecionado"
+  },
+  "Sample_Checked": {
+    "en-US": "Checked",
+    "zh-CN": "已选中",
+    "pt-BR": "Selecionado"
+  },
+  "Sample_Disabled": {
+    "en-US": "Disabled",
+    "zh-CN": "禁用",
+    "pt-BR": "Desativado"
+  },
+  "Sample_Projector": {
+    "en-US": "Projector",
+    "zh-CN": "投影仪",
+    "pt-BR": "Projetor"
+  },
+  "Sample_Speaker": {
+    "en-US": "Speaker",
+    "zh-CN": "音箱",
+    "pt-BR": "Caixa de som"
+  },
+  "Sample_Whiteboard": {
+    "en-US": "Whiteboard",
+    "zh-CN": "白板",
+    "pt-BR": "Quadro branco"
+  },
+  "Sample_DemoDate": {
+    "en-US": "Demo date",
+    "zh-CN": "演示日期",
+    "pt-BR": "Data de exemplo"
+  },
+  "Sample_UseDemoDate": {
+    "en-US": "Use demo date",
+    "zh-CN": "使用演示日期",
+    "pt-BR": "Usar data de exemplo"
+  },
+  "Sample_StandardField": {
+    "en-US": "Standard field",
+    "zh-CN": "普通字段",
+    "pt-BR": "Campo padrão"
+  },
+  "Sample_RequiredField": {
+    "en-US": "Required field",
+    "zh-CN": "必填字段",
+    "pt-BR": "Campo obrigatório"
+  },
+  "Sample_FullWidthField": {
+    "en-US": "Full width field",
+    "zh-CN": "跨列字段",
+    "pt-BR": "Campo com largura completa"
+  },
+  "Sample_Email": {
+    "en-US": "Email",
+    "zh-CN": "邮箱",
+    "pt-BR": "E-mail"
+  },
+  "Sample_ValidateEmail": {
+    "en-US": "Validate email",
+    "zh-CN": "验证邮箱",
+    "pt-BR": "Validar e-mail"
+  },
+  "Sample_TheEmailPassedLocalValidation": {
+    "en-US": "The email passed local validation.",
+    "zh-CN": "邮箱已通过本地验证。",
+    "pt-BR": "O e-mail passou na validação local."
+  },
+  "Sample_EnterAnEmail": {
+    "en-US": "Enter an email.",
+    "zh-CN": "请输入邮箱。",
+    "pt-BR": "Informe um e-mail."
+  },
+  "Sample_EnterAValidEmailAddress": {
+    "en-US": "Enter a valid email address.",
+    "zh-CN": "请输入有效的邮箱地址。",
+    "pt-BR": "Informe um endereço de e-mail válido."
+  },
+  "Sample_ChooseDemoTextFiles": {
+    "en-US": "Choose demo text files",
+    "zh-CN": "选择演示文本文件",
+    "pt-BR": "Escolher arquivos de texto de exemplo"
+  },
+  "Sample_NoFilesSelectedYet": {
+    "en-US": "No files selected yet.",
+    "zh-CN": "尚未选择文件。",
+    "pt-BR": "Nenhum arquivo selecionado."
+  },
+  "Sample_PrimaryAction": {
+    "en-US": "Primary action",
+    "zh-CN": "主操作",
+    "pt-BR": "Ação principal"
+  },
+  "Sample_SecondaryAction": {
+    "en-US": "Secondary action",
+    "zh-CN": "次操作",
+    "pt-BR": "Ação secundária"
+  },
+  "Sample_DisabledAction": {
+    "en-US": "Disabled action",
+    "zh-CN": "禁用操作",
+    "pt-BR": "Ação desativada"
+  },
+  "Sample_SubmitRegistration": {
+    "en-US": "Submit registration",
+    "zh-CN": "提交报名",
+    "pt-BR": "Enviar inscrição"
+  },
+  "Sample_SimulatedSubmissionInProgress": {
+    "en-US": "Simulated submission in progress",
+    "zh-CN": "模拟提交中",
+    "pt-BR": "Envio simulado em andamento"
+  },
+  "Sample_SaveDraft": {
+    "en-US": "Save draft",
+    "zh-CN": "保存草稿",
+    "pt-BR": "Salvar rascunho"
+  },
+  "Sample_NoDemoActionHasBeenPerformed": {
+    "en-US": "No demo action has been performed.",
+    "zh-CN": "没有执行示例操作。",
+    "pt-BR": "Nenhuma ação de exemplo foi executada."
+  },
+  "Sample_FictionalRegistrationSubmittedNoNetworkRequestWasSent": {
+    "en-US": "Fictional registration submitted; no network request was sent.",
+    "zh-CN": "虚构报名已提交，未发送任何网络请求。",
+    "pt-BR": "Inscrição fictícia enviada; nenhuma solicitação de rede foi feita."
+  },
+  "Sample_TheFictionalDraftIsRetainedInThisExample": {
+    "en-US": "The fictional draft is retained in this example.",
+    "zh-CN": "虚构草稿已保留在当前示例中。",
+    "pt-BR": "O rascunho fictício foi mantido neste exemplo."
+  },
+  "Sample_DemoStateReset": {
+    "en-US": "Demo state reset.",
+    "zh-CN": "示例状态已重置。",
+    "pt-BR": "Estado do exemplo redefinido."
+  },
+  "Sample_DisableTheEntireFieldGroup": {
+    "en-US": "Disable the entire field group",
+    "zh-CN": "禁用整个字段组",
+    "pt-BR": "Desativar todo o grupo de campos"
+  },
+  "Sample_FictionalContact": {
+    "en-US": "Fictional contact",
+    "zh-CN": "虚构联系人",
+    "pt-BR": "Contato fictício"
+  },
+  "Sample_SingleColumn": {
+    "en-US": "Single column",
+    "zh-CN": "单列",
+    "pt-BR": "Uma coluna"
+  },
+  "Sample_FirstItemInTwoColumns": {
+    "en-US": "First item in two columns",
+    "zh-CN": "双列第一项",
+    "pt-BR": "Primeiro item em duas colunas"
+  },
+  "Sample_SecondItemInTwoColumns": {
+    "en-US": "Second item in two columns",
+    "zh-CN": "双列第二项",
+    "pt-BR": "Segundo item em duas colunas"
+  },
+  "Sample_UseASingleColumn": {
+    "en-US": "Use a single column",
+    "zh-CN": "改用单列",
+    "pt-BR": "Usar uma coluna"
+  },
+  "Sample_TwoColumns": {
+    "en-US": "Two columns",
+    "zh-CN": "双列",
+    "pt-BR": "Duas colunas"
+  },
+  "Sample_Registrant": {
+    "en-US": "Registrant",
+    "zh-CN": "报名人",
+    "pt-BR": "Participante"
+  },
+  "Sample_SubmitDemo": {
+    "en-US": "Submit demo",
+    "zh-CN": "提交示例",
+    "pt-BR": "Enviar exemplo"
+  },
+  "Sample_ClearName": {
+    "en-US": "Clear name",
+    "zh-CN": "清空姓名",
+    "pt-BR": "Limpar nome"
+  },
+  "Sample_DemoSubmissionsAreKeptOnlyOnThisPage": {
+    "en-US": "Demo submissions are kept only on this page.",
+    "zh-CN": "示例提交只保存在此页面。",
+    "pt-BR": "Os envios de exemplo são mantidos apenas nesta página."
+  },
+  "Sample_NameClearedSubmitToCheckErrorFocus": {
+    "en-US": "Name cleared; submit to check error focus.",
+    "zh-CN": "姓名已清空；提交后可以检查错误聚焦。",
+    "pt-BR": "Nome limpo; envie para verificar o foco no erro."
+  },
+  "Sample_DemoRegistrationPassedLocalValidation": {
+    "en-US": "Demo registration passed local validation.",
+    "zh-CN": "示例报名已通过本地校验。",
+    "pt-BR": "A inscrição de exemplo passou na validação local."
+  },
+  "Sample_CorrectTheErrorsInTheForm": {
+    "en-US": "Correct the errors in the form.",
+    "zh-CN": "请修正表单中的错误。",
+    "pt-BR": "Corrija os erros do formulário."
+  },
+  "Sample_EnterAName": {
+    "en-US": "Enter a name.",
+    "zh-CN": "请输入姓名。",
+    "pt-BR": "Informe um nome."
+  },
+  "Sample_EnterAValidEmail": {
+    "en-US": "Enter a valid email.",
+    "zh-CN": "请输入有效邮箱。",
+    "pt-BR": "Informe um e-mail válido."
+  },
+  "Sample_DigitMask": {
+    "en-US": "Digit mask",
+    "zh-CN": "数字掩码",
+    "pt-BR": "Máscara numérica"
+  },
+  "Sample_AlphanumericMask": {
+    "en-US": "Alphanumeric mask",
+    "zh-CN": "字母数字掩码",
+    "pt-BR": "Máscara alfanumérica"
+  },
+  "Sample_DemoTicketNumber": {
+    "en-US": "Demo ticket number",
+    "zh-CN": "示例票号",
+    "pt-BR": "Número do bilhete de exemplo"
+  },
+  "Sample_ClearTicketNumber": {
+    "en-US": "Clear ticket number",
+    "zh-CN": "清空票号",
+    "pt-BR": "Limpar número do bilhete"
+  },
+  "Sample_ActivityTags": {
+    "en-US": "Activity tags",
+    "zh-CN": "活动标签",
+    "pt-BR": "Marcadores de atividades"
+  },
+  "Sample_NotSelected": {
+    "en-US": "Not selected",
+    "zh-CN": "未选择",
+    "pt-BR": "Não selecionado"
+  },
+  "Sample_TagsSelected": {
+    "en-US": "tags selected",
+    "zh-CN": "个标签已选择",
+    "pt-BR": "marcadores selecionados"
+  },
+  "Sample_Display": {
+    "en-US": "Display",
+    "zh-CN": "显示",
+    "pt-BR": "Exibir"
+  },
+  "Sample_EmptyOptions": {
+    "en-US": "Empty options",
+    "zh-CN": "空选项",
+    "pt-BR": "Opções vazias"
+  },
+  "Sample_NoOptions": {
+    "en-US": "No options",
+    "zh-CN": "没有选项",
+    "pt-BR": "Nenhuma opção"
+  },
+  "Sample_SearchAndCreate": {
+    "en-US": "Search and create",
+    "zh-CN": "搜索与新增",
+    "pt-BR": "Pesquisar e criar"
+  },
+  "Sample_AllowReordering": {
+    "en-US": "Allow reordering",
+    "zh-CN": "允许排序",
+    "pt-BR": "Permitir reordenação"
+  },
+  "Sample_DisableControl": {
+    "en-US": "Disable control",
+    "zh-CN": "禁用控件",
+    "pt-BR": "Desativar controle"
+  },
+  "Sample_NoMatchingTags": {
+    "en-US": "No matching tags",
+    "zh-CN": "没有匹配标签",
+    "pt-BR": "Nenhum marcador correspondente"
+  },
+  "Sample_ResetTags": {
+    "en-US": "Reset tags",
+    "zh-CN": "恢复标签",
+    "pt-BR": "Redefinir marcadores"
+  },
+  "Sample_TableExample": {
+    "en-US": "Table example",
+    "zh-CN": "表格示例",
+    "pt-BR": "Exemplo de tabela"
+  },
+  "Sample_ChartExample": {
+    "en-US": "Chart example",
+    "zh-CN": "图表示例",
+    "pt-BR": "Exemplo de gráfico"
+  },
+  "Sample_Reading": {
+    "en-US": "Reading",
+    "zh-CN": "阅读",
+    "pt-BR": "Leitura"
+  },
+  "Sample_PhotographyAndFilmmakingDiscussionGroupFictional": {
+    "en-US": "Photography and filmmaking discussion group (fictional)",
+    "zh-CN": "摄影与影像制作交流小组（虚构）",
+    "pt-BR": "Grupo de fotografia e produção audiovisual (fictício)"
+  },
+  "Sample_Discussion": {
+    "en-US": "Discussion",
+    "zh-CN": "交流",
+    "pt-BR": "Discussão"
+  },
+  "Sample_OutdoorExplorationFictional": {
+    "en-US": "Outdoor exploration (fictional)",
+    "zh-CN": "户外探索（虚构）",
+    "pt-BR": "Exploração ao ar livre (fictícia)"
+  },
+  "Sample_NotAvailableYet": {
+    "en-US": "Not available yet",
+    "zh-CN": "暂未开放",
+    "pt-BR": "Ainda indisponível"
+  },
+  "Sample_Integer": {
+    "en-US": "Integer",
+    "zh-CN": "整数",
+    "pt-BR": "Inteiro"
+  },
+  "Sample_Decimal": {
+    "en-US": "Decimal",
+    "zh-CN": "小数",
+    "pt-BR": "Decimal"
+  },
+  "Sample_Participants140": {
+    "en-US": "Participants (1–40)",
+    "zh-CN": "人数（1–40）",
+    "pt-BR": "Participantes (1–40)"
+  },
+  "Sample_MaterialsCostPerPerson": {
+    "en-US": "Materials cost per person",
+    "zh-CN": "每人材料费",
+    "pt-BR": "Custo dos materiais por pessoa"
+  },
+  "Sample_EnterAnInteger": {
+    "en-US": "Enter an integer.",
+    "zh-CN": "请输入整数。",
+    "pt-BR": "Informe um número inteiro."
+  },
+  "Sample_EnterANumber": {
+    "en-US": "Enter a number.",
+    "zh-CN": "请输入数字。",
+    "pt-BR": "Informe um número."
+  },
+  "Sample_ResetExample": {
+    "en-US": "Reset example",
+    "zh-CN": "恢复示例",
+    "pt-BR": "Redefinir exemplo"
+  },
+  "Sample_SearchOptions": {
+    "en-US": "Search options",
+    "zh-CN": "搜索选项",
+    "pt-BR": "Pesquisar opções"
+  },
+  "Sample_PreventVenueChanges": {
+    "en-US": "Prevent venue changes",
+    "zh-CN": "禁止修改场地",
+    "pt-BR": "Impedir alteração de local"
+  },
+  "Sample_Blocked": {
+    "en-US": "Blocked",
+    "zh-CN": "禁止",
+    "pt-BR": "Bloqueado"
+  },
+  "Sample_Allowed": {
+    "en-US": "Allowed",
+    "zh-CN": "允许",
+    "pt-BR": "Permitido"
+  },
+  "Sample_Venue": {
+    "en-US": "Venue",
+    "zh-CN": "场地",
+    "pt-BR": "Local"
+  },
+  "Sample_NoVenueSelected": {
+    "en-US": "No venue selected",
+    "zh-CN": "未选择场地",
+    "pt-BR": "Nenhum local selecionado"
+  },
+  "Sample_SearchOrCreateAVenue": {
+    "en-US": "Search or create a venue",
+    "zh-CN": "搜索或新增场地",
+    "pt-BR": "Pesquisar ou criar um local"
+  },
+  "Sample_EmptySuggestionList": {
+    "en-US": "Empty suggestion list",
+    "zh-CN": "空候选集",
+    "pt-BR": "Lista de sugestões vazia"
+  },
+  "Sample_NoSuggestions": {
+    "en-US": "No suggestions",
+    "zh-CN": "没有候选项",
+    "pt-BR": "Nenhuma sugestão"
+  },
+  "Sample_SearchSuggestions": {
+    "en-US": "Search suggestions",
+    "zh-CN": "搜索建议",
+    "pt-BR": "Sugestões de pesquisa"
+  },
+  "Sample_SimulateNoSuggestions": {
+    "en-US": "Simulate no suggestions",
+    "zh-CN": "模拟无候选项",
+    "pt-BR": "Simular ausência de sugestões"
+  },
+  "Sample_NoData": {
+    "en-US": "No data",
+    "zh-CN": "无数据",
+    "pt-BR": "Sem dados"
+  },
+  "Sample_DemoData": {
+    "en-US": "Demo data",
+    "zh-CN": "示例数据",
+    "pt-BR": "Dados de exemplo"
+  },
+  "Sample_VenueName": {
+    "en-US": "Venue name",
+    "zh-CN": "场地名称",
+    "pt-BR": "Nome do local"
+  },
+  "Sample_EnterOrToChooseADemoVenue": {
+    "en-US": "Enter 活动, 阅读 or 会议 to choose a demo venue",
+    "zh-CN": "输入活动、阅读或会议，选择候选场地",
+    "pt-BR": "Digite 活动, 阅读 ou 会议 para escolher um local de exemplo"
+  },
+  "Sample_NoMatchingDemoVenues": {
+    "en-US": "No matching demo venues",
+    "zh-CN": "没有匹配的示例场地",
+    "pt-BR": "Nenhum local de exemplo correspondente"
+  },
+  "Sample_VenueSuggestions": {
+    "en-US": "Venue suggestions",
+    "zh-CN": "场地建议",
+    "pt-BR": "Sugestões de locais"
+  },
+  "Sample_NoDemoVenueSelectedYet": {
+    "en-US": "No demo venue selected yet.",
+    "zh-CN": "尚未选择示例场地。",
+    "pt-BR": "Nenhum local de exemplo selecionado."
+  },
+  "Sample_SearchCleared": {
+    "en-US": "Search cleared.",
+    "zh-CN": "搜索已清空。",
+    "pt-BR": "Pesquisa limpa."
+  },
+  "Sample_Search": {
+    "en-US": "Search",
+    "zh-CN": "搜索",
+    "pt-BR": "Pesquisar"
+  },
+  "Sample_DisabledSearch": {
+    "en-US": "Disabled search",
+    "zh-CN": "禁用搜索",
+    "pt-BR": "Pesquisa desativada"
+  },
+  "Sample_SearchDemoActivities": {
+    "en-US": "Search demo activities",
+    "zh-CN": "搜索示例活动",
+    "pt-BR": "Pesquisar atividades de exemplo"
+  },
+  "Sample_All": {
+    "en-US": "All",
+    "zh-CN": "全部",
+    "pt-BR": "Todos"
+  },
+  "Sample_AttendanceMode": {
+    "en-US": "Attendance mode",
+    "zh-CN": "参与方式",
+    "pt-BR": "Forma de participação"
+  },
+  "Sample_Online": {
+    "en-US": "Online",
+    "zh-CN": "线上",
+    "pt-BR": "Online"
+  },
+  "Sample_InPerson": {
+    "en-US": "In person",
+    "zh-CN": "到场",
+    "pt-BR": "Presencial"
+  },
+  "Sample_WatchRecording": {
+    "en-US": "Watch recording",
+    "zh-CN": "观看录像",
+    "pt-BR": "Assistir à gravação"
+  },
+  "Sample_AFictionalMeetingLinkWillBeProvidedBeforeTheActivity": {
+    "en-US": "A fictional meeting link will be provided before the activity.",
+    "zh-CN": "虚构会议链接将在活动开始前提供。",
+    "pt-BR": "Um link fictício da reunião será fornecido antes da atividade."
+  },
+  "Sample_ExampleVenue": {
+    "en-US": "Example venue: 河畔活动室.",
+    "zh-CN": "示例地点：河畔活动室。",
+    "pt-BR": "Local de exemplo: 河畔活动室."
+  },
+  "Sample_TheDemoRecordingWillBeAvailableAfterTheActivity": {
+    "en-US": "The demo recording will be available after the activity.",
+    "zh-CN": "示例录像将在活动结束后开放。",
+    "pt-BR": "A gravação de exemplo estará disponível após a atividade."
+  },
+  "Sample_KeepDemoSelection": {
+    "en-US": "Keep demo selection",
+    "zh-CN": "保留演示选择",
+    "pt-BR": "Manter seleção de exemplo"
+  },
+  "Sample_StandaloneMaskedInput": {
+    "en-US": "Standalone masked input",
+    "zh-CN": "独立掩码输入",
+    "pt-BR": "Entrada independente com máscara"
+  },
+  "Sample_ReadOnly": {
+    "en-US": "Read only",
+    "zh-CN": "只读",
+    "pt-BR": "Somente leitura"
+  },
+  "Sample_DemoPickupCode": {
+    "en-US": "Demo pickup code",
+    "zh-CN": "示例取件码",
+    "pt-BR": "Código de retirada de exemplo"
+  },
+  "Sample_CheckFormat": {
+    "en-US": "Check format",
+    "zh-CN": "检查格式",
+    "pt-BR": "Verificar formato"
+  },
+  "Sample_TheDemoCodeDoesNotTriggerARealPickup": {
+    "en-US": "The demo code does not trigger a real pickup.",
+    "zh-CN": "示例代码不会触发真实取件。",
+    "pt-BR": "O código de exemplo não realiza uma retirada real."
+  },
+  "Sample_TheDemoFormatIsValidTheModelKeepsSixDigits": {
+    "en-US": "The demo format is valid; the model keeps six digits.",
+    "zh-CN": "示例格式正确，模型保留六位数字。",
+    "pt-BR": "O formato do exemplo é válido; o modelo mantém seis dígitos."
+  },
+  "Sample_EnterTheFullSixDigitDemoPickupCode": {
+    "en-US": "Enter the full six digit demo pickup code.",
+    "zh-CN": "请输入完整的六位示例取件码。",
+    "pt-BR": "Informe o código de retirada de exemplo completo de seis dígitos."
+  },
+  "Sample_ProtocolBoundaryDemoLanguage": {
+    "en-US": "Protocol boundary demo language",
+    "zh-CN": "协议边界演示语言",
+    "pt-BR": "Idioma de exemplo no limite do protocolo"
+  },
+  "Sample_ProtocolBoundaryDemoEmail": {
+    "en-US": "Protocol boundary demo email",
+    "zh-CN": "协议边界演示邮箱",
+    "pt-BR": "E-mail de exemplo no limite do protocolo"
+  },
+  "Sample_ProtocolBoundaryDemoQuantity": {
+    "en-US": "Protocol boundary demo quantity",
+    "zh-CN": "协议边界演示数量",
+    "pt-BR": "Quantidade de exemplo no limite do protocolo"
+  },
+  "Sample_SingleLineText": {
+    "en-US": "Single line text",
+    "zh-CN": "单行文本",
+    "pt-BR": "Texto de uma linha"
+  },
+  "Sample_MultilineText": {
+    "en-US": "Multiline text",
+    "zh-CN": "多行文本",
+    "pt-BR": "Texto de várias linhas"
+  },
+  "Sample_ActivityName": {
+    "en-US": "Activity name",
+    "zh-CN": "活动名称",
+    "pt-BR": "Nome da atividade"
+  },
+  "Sample_ActivityDescription": {
+    "en-US": "Activity description",
+    "zh-CN": "活动介绍",
+    "pt-BR": "Descrição da atividade"
+  },
+  "Sample_SimulateEditingBlocked": {
+    "en-US": "Simulate editing blocked",
+    "zh-CN": "模拟禁止编辑",
+    "pt-BR": "Simular bloqueio da edição"
+  },
+  "Sample_Editable": {
+    "en-US": "Editable",
+    "zh-CN": "可编辑",
+    "pt-BR": "Editável"
+  },
+  "Sample_ClosedOptionalSection": {
+    "en-US": "Closed optional section",
+    "zh-CN": "关闭的可选区域",
+    "pt-BR": "Seção opcional fechada"
+  },
+  "Sample_OpenOptionalSection": {
+    "en-US": "Open optional section",
+    "zh-CN": "开启的可选区域",
+    "pt-BR": "Seção opcional aberta"
+  },
+  "Sample_DisabledSection": {
+    "en-US": "Disabled section",
+    "zh-CN": "禁用区域",
+    "pt-BR": "Seção desativada"
+  },
+  "Sample_ProvideAdditionalInformation": {
+    "en-US": "Provide additional information",
+    "zh-CN": "提供补充说明",
+    "pt-BR": "Fornecer informações adicionais"
+  },
+  "Sample_AdditionalInformationWillBeProvided": {
+    "en-US": "Additional information will be provided.",
+    "zh-CN": "当前将提供补充说明。",
+    "pt-BR": "Informações adicionais serão fornecidas."
+  },
+  "Sample_NoAdditionalInformationWillBeProvided": {
+    "en-US": "No additional information will be provided.",
+    "zh-CN": "当前不提供补充说明。",
+    "pt-BR": "Nenhuma informação adicional será fornecida."
+  },
+  "Sample_OffState": {
+    "en-US": "Off state",
+    "zh-CN": "关闭状态",
+    "pt-BR": "Estado desligado"
+  },
+  "Sample_OnState": {
+    "en-US": "On state",
+    "zh-CN": "开启状态",
+    "pt-BR": "Estado ligado"
+  },
+  "Sample_DisabledState": {
+    "en-US": "Disabled state",
+    "zh-CN": "禁用状态",
+    "pt-BR": "Estado desativado"
+  },
+  "Sample_On": {
+    "en-US": "On",
+    "zh-CN": "开启",
+    "pt-BR": "Ligado"
+  },
+  "Sample_Off": {
+    "en-US": "Off",
+    "zh-CN": "关闭",
+    "pt-BR": "Desligado"
+  },
+  "Sample_ActivityReminder": {
+    "en-US": "Activity reminder",
+    "zh-CN": "活动提醒",
+    "pt-BR": "Lembrete de atividade"
+  },
+  "Sample_Enabled": {
+    "en-US": "Enabled",
+    "zh-CN": "已启用",
+    "pt-BR": "Ativado"
+  },
+  "Sample_TurnedOff": {
+    "en-US": "Turned off",
+    "zh-CN": "已关闭",
+    "pt-BR": "Desligado"
+  },
+  "Sample_DemoSettingRemind15MinutesBeforeTheActivity": {
+    "en-US": "Demo setting: remind 15 minutes before the activity.",
+    "zh-CN": "示例设置：活动前 15 分钟提醒。",
+    "pt-BR": "Configuração de exemplo: lembrar 15 minutos antes da atividade."
+  },
+  "Sample_DemoSettingNoActivityReminderWillBeSent": {
+    "en-US": "Demo setting: no activity reminder will be sent.",
+    "zh-CN": "示例设置：不会发送活动提醒。",
+    "pt-BR": "Configuração de exemplo: nenhum lembrete de atividade será enviado."
+  },
+  "Sample_ValidateHiddenProtocolField": {
+    "en-US": "Validate hidden protocol field",
+    "zh-CN": "验证隐藏协议字段",
+    "pt-BR": "Validar campo oculto do protocolo"
+  },
+  "Sample_AValidTokenIsMissing": {
+    "en-US": "A valid token is missing.",
+    "zh-CN": "缺少有效令牌。",
+    "pt-BR": "Falta um token válido."
+  },
+  "Sample_SelectedEquipmentCount": {
+    "en-US": "Selected {0} equipment items.",
+    "zh-CN": "当前选择了 {0} 项设备。",
+    "pt-BR": "{0} equipamentos selecionados."
+  },
+  "Sample_LocalDemoDate": {
+    "en-US": "Local demo date: {0}",
+    "zh-CN": "本地演示日期：{0}",
+    "pt-BR": "Data local do exemplo: {0}"
+  },
+  "Sample_FileMetadataLimit": {
+    "en-US": "The demo displays metadata for at most {0} files.",
+    "zh-CN": "演示最多显示 {0} 个文件的元数据。",
+    "pt-BR": "O exemplo exibe metadados de no máximo {0} arquivos."
+  },
+  "Sample_FileMetadata": {
+    "en-US": "{0} ({1} bytes)",
+    "zh-CN": "{0} ({1} 字节)",
+    "pt-BR": "{0} ({1} bytes)"
+  },
+  "Sample_MaskedValue": {
+    "en-US": "Raw model value: {0}; formatted value: {1}.",
+    "zh-CN": "模型原值：{0}；格式化值：{1}。",
+    "pt-BR": "Valor original do modelo: {0}; valor formatado: {1}."
+  },
+  "Sample_SelectedTags": {
+    "en-US": "Selected tags: {0}",
+    "zh-CN": "已选标签：{0}",
+    "pt-BR": "Marcadores selecionados: {0}"
+  },
+  "Sample_EstimatedTotal": {
+    "en-US": "Estimated total: {0}.",
+    "zh-CN": "预估合计：{0}。",
+    "pt-BR": "Total estimado: {0}."
+  },
+  "Sample_CurrentVenueId": {
+    "en-US": "Current venue ID: {0}.",
+    "zh-CN": "当前场地 ID：{0}。",
+    "pt-BR": "ID do local atual: {0}."
+  },
+  "Sample_SelectedVenue": {
+    "en-US": "Selected: {0}; venue ID: {1}.",
+    "zh-CN": "已选择：{0}；场地 ID：{1}。",
+    "pt-BR": "Selecionado: {0}; ID do local: {1}."
+  },
+  "Sample_ActivityMatches": {
+    "en-US": "Found {0} demo activities. Applied query: {1}.",
+    "zh-CN": "找到 {0} 条示例活动。已应用查询：{1}。",
+    "pt-BR": "{0} atividades de exemplo encontradas. Pesquisa aplicada: {1}."
+  },
+  "Sample_LocalChecked": {
+    "en-US": "Local checked state: {0}",
+    "zh-CN": "本地选中：{0}",
+    "pt-BR": "Seleção local: {0}"
+  },
+  "Sample_LocalSelection": {
+    "en-US": "Local selection: {0}",
+    "zh-CN": "本地选择：{0}",
+    "pt-BR": "Seleção local: {0}"
+  },
+  "Sample_CurrentLocalValue": {
+    "en-US": "Current local value: {0}",
+    "zh-CN": "当前本地值：{0}",
+    "pt-BR": "Valor local atual: {0}"
+  },
+  "Sample_QuantitySubmission": {
+    "en-US": "Quantity submission string: {0}",
+    "zh-CN": "数量提交字符串：{0}",
+    "pt-BR": "Texto de envio da quantidade: {0}"
+  },
+  "Sample_ActivityTextStatus": {
+    "en-US": "Current name: {0}; description length: {1} / 300.",
+    "zh-CN": "当前名称：{0}；介绍长度：{1} / 300。",
+    "pt-BR": "Nome atual: {0}; comprimento da descrição: {1} / 300."
+  },
+  "Sample_Unavailable": {
+    "en-US": "Unavailable",
+    "zh-CN": "不可用",
+    "pt-BR": "Indisponível"
+  },
+  "Sample_Save": {
+    "en-US": "Save",
+    "zh-CN": "保存",
+    "pt-BR": "Salvar"
+  },
+  "Sample_Saving": {
+    "en-US": "Saving",
+    "zh-CN": "正在保存",
+    "pt-BR": "Salvando"
+  },
+  "Sample_Instructions": {
+    "en-US": "Instructions",
+    "zh-CN": "使用说明",
+    "pt-BR": "Instruções"
+  },
+  "Sample_SaveUsesFilledResetUsesOutlinedAndLowerPriorityActionsUseQuiet": {
+    "en-US": "Save uses Filled, reset uses Outlined, and lower priority actions use Quiet.",
+    "zh-CN": "保存使用 Filled，重置使用 Outlined，低优先级操作使用 Quiet。",
+    "pt-BR": "Salvar usa Filled, redefinir usa Outlined e ações de menor prioridade usam Quiet."
+  },
+  "Sample_EmptyMenu": {
+    "en-US": "Empty menu",
+    "zh-CN": "空菜单",
+    "pt-BR": "Menu vazio"
+  },
+  "Sample_AdvancedEditing": {
+    "en-US": "Advanced editing",
+    "zh-CN": "高级编辑",
+    "pt-BR": "Edição avançada"
+  },
+  "Sample_TextTrigger": {
+    "en-US": "Text trigger",
+    "zh-CN": "文字触发器",
+    "pt-BR": "Acionador de texto"
+  },
+  "Sample_More": {
+    "en-US": "More",
+    "zh-CN": "更多",
+    "pt-BR": "Mais"
+  },
+  "Sample_UnavailableMenu": {
+    "en-US": "Unavailable menu",
+    "zh-CN": "不可用菜单",
+    "pt-BR": "Menu indisponível"
+  },
+  "Sample_HoverMenu": {
+    "en-US": "Hover menu",
+    "zh-CN": "悬浮菜单",
+    "pt-BR": "Menu ao passar o mouse"
+  },
+  "Sample_OpenOnHoverAndCloseOnPointerLeave": {
+    "en-US": "Open on hover and close on pointer leave",
+    "zh-CN": "悬浮打开、移出关闭",
+    "pt-BR": "Abrir ao passar o mouse e fechar ao retirar"
+  },
+  "Sample_ActionsForDemoDraftA": {
+    "en-US": "Actions for demo draft A",
+    "zh-CN": "示例草稿 A 的操作",
+    "pt-BR": "Ações para o rascunho de exemplo A"
+  },
+  "Sample_DraftActions": {
+    "en-US": "Draft actions",
+    "zh-CN": "草稿操作",
+    "pt-BR": "Ações do rascunho"
+  },
+  "Sample_NativeRecordActions": {
+    "en-US": "Native record actions",
+    "zh-CN": "原生内容记录操作",
+    "pt-BR": "Ações nativas do registro"
+  },
+  "Sample_EditDraft": {
+    "en-US": "Edit draft",
+    "zh-CN": "编辑草稿",
+    "pt-BR": "Editar rascunho"
+  },
+  "Sample_PublishUnavailable": {
+    "en-US": "Publish (unavailable)",
+    "zh-CN": "发布（不可用）",
+    "pt-BR": "Publicar (indisponível)"
+  },
+  "Sample_DeleteDraft": {
+    "en-US": "Delete draft",
+    "zh-CN": "删除草稿",
+    "pt-BR": "Excluir rascunho"
+  },
+  "Sample_NoActionSelectedYet": {
+    "en-US": "No action selected yet.",
+    "zh-CN": "尚未选择操作。",
+    "pt-BR": "Nenhuma ação selecionada."
+  },
+  "Sample_CopyLocalDraft": {
+    "en-US": "Copy local draft",
+    "zh-CN": "复制本地草稿",
+    "pt-BR": "Copiar rascunho local"
+  },
+  "Sample_FictionalDraftCopiedNoExternalDataWasWritten": {
+    "en-US": "Fictional draft copied; no external data was written.",
+    "zh-CN": "已复制虚构草稿，没有写入外部数据。",
+    "pt-BR": "Rascunho fictício copiado; nenhum dado externo foi gravado."
+  },
+  "Sample_PublishUnavailableInDemo": {
+    "en-US": "Publish (unavailable in demo)",
+    "zh-CN": "发布（示例中不可用）",
+    "pt-BR": "Publicar (indisponível no exemplo)"
+  },
+  "Sample_DeleteDemoDraft": {
+    "en-US": "Delete demo draft",
+    "zh-CN": "删除演示草稿",
+    "pt-BR": "Excluir rascunho de exemplo"
+  },
+  "Sample_LocalDemoDraftDeleted": {
+    "en-US": "Local demo draft deleted.",
+    "zh-CN": "已删除本地演示草稿。",
+    "pt-BR": "Rascunho local de exemplo excluído."
+  },
+  "Sample_LocalDemoDraftEdited": {
+    "en-US": "Local demo draft edited.",
+    "zh-CN": "已编辑本地演示草稿。",
+    "pt-BR": "Rascunho local de exemplo editado."
+  },
+  "Sample_WithRange": {
+    "en-US": "With range",
+    "zh-CN": "带范围",
+    "pt-BR": "Com intervalo"
+  },
+  "Sample_EmptyListPagination": {
+    "en-US": "Empty list pagination",
+    "zh-CN": "空列表分页",
+    "pt-BR": "Paginação de lista vazia"
+  },
+  "Sample_CompactMode": {
+    "en-US": "Compact mode",
+    "zh-CN": "紧凑模式",
+    "pt-BR": "Modo compacto"
+  },
+  "Sample_CompactPagination": {
+    "en-US": "Compact pagination",
+    "zh-CN": "紧凑分页",
+    "pt-BR": "Paginação compacta"
+  },
+  "Sample_UnavailableState": {
+    "en-US": "Unavailable state",
+    "zh-CN": "不可用状态",
+    "pt-BR": "Estado indisponível"
+  },
+  "Sample_UnavailablePagination": {
+    "en-US": "Unavailable pagination",
+    "zh-CN": "不可用分页",
+    "pt-BR": "Paginação indisponível"
+  },
+  "Sample_5PerPage": {
+    "en-US": "5 per page",
+    "zh-CN": "每页 5 条",
+    "pt-BR": "5 por página"
+  },
+  "Sample_10PerPage": {
+    "en-US": "10 per page",
+    "zh-CN": "每页 10 条",
+    "pt-BR": "10 por página"
+  },
+  "Sample_FullCollection": {
+    "en-US": "Full collection",
+    "zh-CN": "完整集合",
+    "pt-BR": "Coleção completa"
+  },
+  "Sample_SimulateLimitedCollection": {
+    "en-US": "Simulate limited collection",
+    "zh-CN": "模拟受限集合",
+    "pt-BR": "Simular coleção limitada"
+  },
+  "Sample_FictionalRecordPagination": {
+    "en-US": "Fictional record pagination",
+    "zh-CN": "虚构记录分页",
+    "pt-BR": "Paginação de registros fictícios"
+  },
+  "Sample_IncludeArchived": {
+    "en-US": "Include archived",
+    "zh-CN": "包括归档",
+    "pt-BR": "Incluir arquivados"
+  },
+  "Sample_LocalQueryResults": {
+    "en-US": "Local query results",
+    "zh-CN": "本地查询结果",
+    "pt-BR": "Resultados da consulta local"
+  },
+  "Sample_FirstColumnDefaultAndDisabledState": {
+    "en-US": "First column default and disabled state",
+    "zh-CN": "首列默认与禁用",
+    "pt-BR": "Padrão da primeira coluna e estado desativado"
+  },
+  "Sample_Category": {
+    "en-US": "Category",
+    "zh-CN": "分类",
+    "pt-BR": "Categoria"
+  },
+  "Sample_UnitPrice": {
+    "en-US": "Unit price",
+    "zh-CN": "单价",
+    "pt-BR": "Preço unitário"
+  },
+  "Sample_ListMode": {
+    "en-US": "List mode",
+    "zh-CN": "列表模式",
+    "pt-BR": "Modo lista"
+  },
+  "Sample_EmptyList": {
+    "en-US": "Empty list",
+    "zh-CN": "空白列表",
+    "pt-BR": "Lista vazia"
+  },
+  "Sample_NoDataYet": {
+    "en-US": "No data yet",
+    "zh-CN": "暂无数据",
+    "pt-BR": "Nenhum dado disponível"
+  },
+  "Sample_CardMode": {
+    "en-US": "Card mode",
+    "zh-CN": "卡片模式",
+    "pt-BR": "Modo cartões"
+  },
+  "Sample_EmptyCards": {
+    "en-US": "Empty cards",
+    "zh-CN": "空白卡片",
+    "pt-BR": "Cartões vazios"
+  },
+  "Sample_WithData": {
+    "en-US": "With data",
+    "zh-CN": "有数据",
+    "pt-BR": "Com dados"
+  },
+  "Sample_EmptyData": {
+    "en-US": "Empty data",
+    "zh-CN": "空数据",
+    "pt-BR": "Dados vazios"
+  },
+  "Sample_Loading": {
+    "en-US": "Loading",
+    "zh-CN": "加载中",
+    "pt-BR": "Carregando"
+  },
+  "Sample_LoadFailed": {
+    "en-US": "Load failed",
+    "zh-CN": "加载失败",
+    "pt-BR": "Falha no carregamento"
+  },
+  "Sample_SimulatedLoadFailureSelectWithDataToRetry": {
+    "en-US": "Simulated load failure; select With data to retry.",
+    "zh-CN": "模拟加载失败，请选择有数据重试。",
+    "pt-BR": "Falha simulada no carregamento; selecione Com dados para tentar novamente."
+  },
+  "Sample_FictionalSuppliesDirectory": {
+    "en-US": "Fictional supplies directory",
+    "zh-CN": "虚构用品目录",
+    "pt-BR": "Diretório de materiais fictícios"
+  },
+  "Sample_LoadingFictionalRecords": {
+    "en-US": "Loading fictional records…",
+    "zh-CN": "正在加载虚构记录…",
+    "pt-BR": "Carregando registros fictícios…"
+  },
+  "Sample_NoFictionalRecords": {
+    "en-US": "No fictional records",
+    "zh-CN": "没有虚构记录",
+    "pt-BR": "Nenhum registro fictício"
+  },
+  "Sample_NativeGETPOSTRowActions": {
+    "en-US": "Native GET / POST row actions",
+    "zh-CN": "原生 GET / POST 行操作",
+    "pt-BR": "Ações nativas de linha GET / POST"
+  },
+  "Sample_NativeTransportExample": {
+    "en-US": "Native transport example",
+    "zh-CN": "原生传输示例",
+    "pt-BR": "Exemplo de transporte nativo"
+  },
+  "Sample_OpenExampleGET": {
+    "en-US": "Open example (GET)",
+    "zh-CN": "打开示例（GET）",
+    "pt-BR": "Abrir exemplo (GET)"
+  },
+  "Sample_DemoSubmissionPOST": {
+    "en-US": "Demo submission (POST)",
+    "zh-CN": "演示提交（POST）",
+    "pt-BR": "Envio de exemplo (POST)"
+  },
+  "Sample_RecordCannotBeOpened": {
+    "en-US": "Record cannot be opened",
+    "zh-CN": "记录不可打开",
+    "pt-BR": "O registro não pode ser aberto"
+  },
+  "Sample_BusinessEditingInTheSameTable": {
+    "en-US": "Business editing in the same table",
+    "zh-CN": "同一表格的业务编辑能力",
+    "pt-BR": "Edição de negócio na mesma tabela"
+  },
+  "Sample_WorklistWithRetainedDrafts": {
+    "en-US": "Worklist with retained drafts",
+    "zh-CN": "保留草稿的工作清单",
+    "pt-BR": "Lista de trabalho com rascunhos preservados"
+  },
+  "Sample_OptionalBulkEditing": {
+    "en-US": "Optional bulk editing",
+    "zh-CN": "可选批量编辑",
+    "pt-BR": "Edição em lote opcional"
+  },
+  "Sample_RecordEditingIntent": {
+    "en-US": "Record editing intent",
+    "zh-CN": "记录编辑意图",
+    "pt-BR": "Registrar intenção de edição"
+  },
+  "Sample_EndDemoEditing": {
+    "en-US": "Complete",
+    "zh-CN": "完成",
+    "pt-BR": "Concluir"
+  },
+  "Sample_RemoteResultsWithTheSameSearchContract": {
+    "en-US": "Remote results with the same search contract",
+    "zh-CN": "同一搜索合同的远端结果模式",
+    "pt-BR": "Resultados remotos com o mesmo contrato de pesquisa"
+  },
+  "Sample_SimulatedRemoteDirectory": {
+    "en-US": "Simulated remote directory",
+    "zh-CN": "模拟远端目录",
+    "pt-BR": "Diretório remoto simulado"
+  },
+  "Sample_ProgressiveDirectoryWithoutACircuit": {
+    "en-US": "Progressive directory without a circuit",
+    "zh-CN": "无电路的渐进目录",
+    "pt-BR": "Diretório progressivo sem circuito"
+  },
+  "Sample_ProgressiveFictionalDirectory": {
+    "en-US": "Progressive fictional directory",
+    "zh-CN": "渐进虚构目录",
+    "pt-BR": "Diretório fictício progressivo"
+  },
+  "Sample_NoRowActionPerformedYet": {
+    "en-US": "No row action performed yet.",
+    "zh-CN": "尚未执行行操作。",
+    "pt-BR": "Nenhuma ação de linha executada."
+  },
+  "Sample_AddToLocalFavorites": {
+    "en-US": "Add to local favorites",
+    "zh-CN": "加入本地收藏",
+    "pt-BR": "Adicionar aos favoritos locais"
+  },
+  "Sample_OpenCenteredDialog": {
+    "en-US": "Open centered dialog",
+    "zh-CN": "打开居中对话框",
+    "pt-BR": "Abrir diálogo centralizado"
+  },
+  "Sample_OpenBottomSheet": {
+    "en-US": "Open bottom sheet",
+    "zh-CN": "打开底部样式",
+    "pt-BR": "Abrir painel inferior"
+  },
+  "Sample_SimulateIncompleteInputAndPreventClosing": {
+    "en-US": "Simulate incomplete input and prevent closing",
+    "zh-CN": "模拟未完成输入，阻止关闭",
+    "pt-BR": "Simular entrada incompleta e impedir fechamento"
+  },
+  "Sample_ReconnectionStateCompositionExample": {
+    "en-US": "Reconnection state composition example",
+    "zh-CN": "重连状态组合示例",
+    "pt-BR": "Exemplo de composição dos estados de reconexão"
+  },
+  "Sample_EmptyDialog": {
+    "en-US": "Empty dialog",
+    "zh-CN": "空白对话框",
+    "pt-BR": "Diálogo vazio"
+  },
+  "Sample_ArchiveDemoDraft": {
+    "en-US": "Archive demo draft",
+    "zh-CN": "归档演示草稿",
+    "pt-BR": "Arquivar rascunho de exemplo"
+  },
+  "Sample_ArchiveDemoDraftA": {
+    "en-US": "Archive demo draft A?",
+    "zh-CN": "确认归档演示草稿 A？",
+    "pt-BR": "Arquivar o rascunho de exemplo A?"
+  },
+  "Sample_Archiving": {
+    "en-US": "Archiving",
+    "zh-CN": "正在归档",
+    "pt-BR": "Arquivando"
+  },
+  "Sample_ConfirmArchive": {
+    "en-US": "Confirm archive",
+    "zh-CN": "确认归档",
+    "pt-BR": "Confirmar arquivamento"
+  },
+  "Sample_Cancel": {
+    "en-US": "Cancel",
+    "zh-CN": "取消",
+    "pt-BR": "Cancelar"
+  },
+  "Sample_StaticPresentationEntry": {
+    "en-US": "Static presentation entry",
+    "zh-CN": "静态展示入口",
+    "pt-BR": "Entrada estática de apresentação"
+  },
+  "Sample_FictionalProduct": {
+    "en-US": "Fictional product",
+    "zh-CN": "虚构产品",
+    "pt-BR": "Produto fictício"
+  },
+  "Sample_UseActionMenuForCommandMenus": {
+    "en-US": "Use ActionMenu for command menus",
+    "zh-CN": "普通命令菜单使用 ActionMenu",
+    "pt-BR": "Use ActionMenu para menus de comandos"
+  },
+  "Sample_EmptyEditingGrid": {
+    "en-US": "Empty editing grid",
+    "zh-CN": "空白编辑网格",
+    "pt-BR": "Grade de edição vazia"
+  },
+  "Sample_EnableEditing": {
+    "en-US": "Enable editing",
+    "zh-CN": "启用编辑",
+    "pt-BR": "Ativar edição"
+  },
+  "Sample_DisableEditing": {
+    "en-US": "Disable editing",
+    "zh-CN": "禁用编辑",
+    "pt-BR": "Desativar edição"
+  },
+  "Sample_Undo": {
+    "en-US": "Undo",
+    "zh-CN": "撤销",
+    "pt-BR": "Desfazer"
+  },
+  "Sample_Redo": {
+    "en-US": "Redo",
+    "zh-CN": "重做",
+    "pt-BR": "Refazer"
+  },
+  "Sample_SaveLocalDraft": {
+    "en-US": "Save local draft",
+    "zh-CN": "保存本地草稿",
+    "pt-BR": "Salvar rascunho local"
+  },
+  "Sample_SimulateValidationError": {
+    "en-US": "Simulate validation error",
+    "zh-CN": "模拟校验错误",
+    "pt-BR": "Simular erro de validação"
+  },
+  "Sample_ResetFictionalData": {
+    "en-US": "Reset fictional data",
+    "zh-CN": "恢复虚构数据",
+    "pt-BR": "Restaurar dados fictícios"
+  },
+  "Sample_FictionalSuppliesEditingGrid": {
+    "en-US": "Fictional supplies editing grid",
+    "zh-CN": "虚构用品编辑网格",
+    "pt-BR": "Grade de edição de materiais fictícios"
+  },
+  "Sample_FictionalSupplies": {
+    "en-US": "Fictional supplies",
+    "zh-CN": "虚构用品",
+    "pt-BR": "Materiais fictícios"
+  },
+  "Sample_StandardMultiSelectionCell": {
+    "en-US": "Standard multi selection cell",
+    "zh-CN": "标准多选单元格",
+    "pt-BR": "Célula padrão de seleção múltipla"
+  },
+  "Sample_CompositeCell": {
+    "en-US": "Composite cell",
+    "zh-CN": "复合单元格",
+    "pt-BR": "Célula composta"
+  },
+  "Sample_Tags": {
+    "en-US": "Tags",
+    "zh-CN": "标签",
+    "pt-BR": "Marcadores"
+  },
+  "Sample_SelectedItems": {
+    "en-US": "selected items",
+    "zh-CN": "已选项目",
+    "pt-BR": "itens selecionados"
+  },
+  "Sample_LinkTargetLocalDraftDetails": {
+    "en-US": "Link target: local draft details.",
+    "zh-CN": "链接目标：本地草稿说明。",
+    "pt-BR": "Destino do link: detalhes do rascunho local."
+  },
+  "Sample_Date": {
+    "en-US": "Date",
+    "zh-CN": "日期",
+    "pt-BR": "Data"
+  },
+  "Sample_ContactPhone": {
+    "en-US": "Contact phone",
+    "zh-CN": "联系电话",
+    "pt-BR": "Telefone de contato"
+  },
+  "Sample_Link": {
+    "en-US": "Link",
+    "zh-CN": "链接",
+    "pt-BR": "Link"
+  },
+  "Sample_Stationery": {
+    "en-US": "Stationery",
+    "zh-CN": "文具",
+    "pt-BR": "Papelaria"
+  },
+  "Sample_EverydaySupplies": {
+    "en-US": "Everyday supplies",
+    "zh-CN": "日用品",
+    "pt-BR": "Materiais de uso diário"
+  },
+  "Sample_SpareSupplies": {
+    "en-US": "Spare supplies",
+    "zh-CN": "备品",
+    "pt-BR": "Materiais de reserva"
+  },
+  "Sample_DragOrUseArrowKeysToResizeHomeRestoresAutomaticWidth": {
+    "en-US": "Drag or use arrow keys to resize; Home restores automatic width",
+    "zh-CN": "拖动或使用方向键调整宽度；Home 恢复自动宽度",
+    "pt-BR": "Arraste ou use as setas para ajustar a largura; Home restaura a largura automática"
+  },
+  "Sample_FictionalDataIsRetainedOnlyInThisComponent": {
+    "en-US": "Fictional data is retained only in this component.",
+    "zh-CN": "虚构数据仅在当前组件中保留。",
+    "pt-BR": "Os dados fictícios são mantidos apenas neste componente."
+  },
+  "Sample_EnterAName_Record": {
+    "en-US": "Enter a name.",
+    "zh-CN": "请输入名称。",
+    "pt-BR": "Informe um nome."
+  },
+  "Sample_EnterAnAmountGreaterThanOrEqualTo0": {
+    "en-US": "Enter an amount greater than or equal to 0.",
+    "zh-CN": "请输入大于等于 0 的金额。",
+    "pt-BR": "Informe um valor maior ou igual a 0."
+  },
+  "Sample_FictionalCellUpdatedButNotSaved": {
+    "en-US": "Fictional cell updated but not saved.",
+    "zh-CN": "虚构单元格已更新，尚未保存。",
+    "pt-BR": "Célula fictícia atualizada, mas não salva."
+  },
+  "Sample_CorrectDemoValidationErrorsBeforeSaving": {
+    "en-US": "Correct demo validation errors before saving.",
+    "zh-CN": "请修正演示校验错误后保存。",
+    "pt-BR": "Corrija os erros de validação do exemplo antes de salvar."
+  },
+  "Sample_FictionalDraftSavedToLocalState": {
+    "en-US": "Fictional draft saved to local state.",
+    "zh-CN": "虚构草稿已保存到本地状态。",
+    "pt-BR": "Rascunho fictício salvo no estado local."
+  },
+  "Sample_DemoChangeUndone": {
+    "en-US": "Demo change undone.",
+    "zh-CN": "已撤销演示修改。",
+    "pt-BR": "Alteração de exemplo desfeita."
+  },
+  "Sample_DemoChangeRedone": {
+    "en-US": "Demo change redone.",
+    "zh-CN": "已重做演示修改。",
+    "pt-BR": "Alteração de exemplo refeita."
+  },
+  "Sample_FictionalDataReset": {
+    "en-US": "Fictional data reset.",
+    "zh-CN": "已恢复虚构数据。",
+    "pt-BR": "Dados fictícios restaurados."
+  },
+  "Sample_ExampleDetails": {
+    "en-US": "Example details",
+    "zh-CN": "示例说明",
+    "pt-BR": "Detalhes do exemplo"
+  },
+  "Sample_SkipToExampleDetails": {
+    "en-US": "Skip to example details",
+    "zh-CN": "跳到示例说明",
+    "pt-BR": "Ir para os detalhes do exemplo"
+  },
+  "Sample_AShortDescriptionCanBeProvided": {
+    "en-US": "A short description can be provided.",
+    "zh-CN": "可以提供简短说明。",
+    "pt-BR": "Uma descrição breve pode ser fornecida."
+  },
+  "Sample_Add": {
+    "en-US": "Add",
+    "zh-CN": "添加",
+    "pt-BR": "Adicionar"
+  },
+  "Sample_NoDemoAttachmentsAddedYet": {
+    "en-US": "No demo attachments added yet",
+    "zh-CN": "尚未添加演示附件",
+    "pt-BR": "Nenhum anexo de exemplo adicionado"
+  },
+  "Sample_AddingTheFirstItemReplacesTheEmptyStateWithTheLocalList": {
+    "en-US": "Adding the first item replaces the empty state with the local list.",
+    "zh-CN": "添加第一项后，空状态会被真实的本地列表替换。",
+    "pt-BR": "Ao adicionar o primeiro item, o estado vazio é substituído pela lista local."
+  },
+  "Sample_AddDemoAttachment": {
+    "en-US": "Add demo attachment",
+    "zh-CN": "添加演示附件",
+    "pt-BR": "Adicionar anexo de exemplo"
+  },
+  "Sample_ClearList": {
+    "en-US": "Clear list",
+    "zh-CN": "清空列表",
+    "pt-BR": "Limpar lista"
+  },
+  "Sample_ExampleDetails_Demo": {
+    "en-US": "Example details",
+    "zh-CN": "示例详情",
+    "pt-BR": "Detalhes do exemplo"
+  },
+  "Sample_ExampleNameDemoItemAStatusPending": {
+    "en-US": "Example name: Demo item A; status: pending.",
+    "zh-CN": "示例名称：演示条目 A；状态：待处理。",
+    "pt-BR": "Nome do exemplo: Item de exemplo A; estado: pendente."
+  },
+  "Sample_WeeklyOrders": {
+    "en-US": "Weekly orders",
+    "zh-CN": "每周订单",
+    "pt-BR": "Pedidos semanais"
+  },
+  "Sample_FictionalWeeklyOrderTrend": {
+    "en-US": "Fictional weekly order trend",
+    "zh-CN": "虚构订单周趋势",
+    "pt-BR": "Tendência semanal de pedidos fictícios"
+  },
+  "Sample_TheTwoDemoSeriesAreNormalizedIndependentlyTheLegendShowsEachMaximumAndTheDataTableRetainsAllRawValues": {
+    "en-US": "The two demo series are normalized independently; the legend shows each maximum and the data table retains all raw values.",
+    "zh-CN": "两条示例序列分别归一化；图例提供每条序列的最大值，数据表保留所有原始值。",
+    "pt-BR": "As duas séries de exemplo são normalizadas separadamente; a legenda mostra o máximo de cada uma e a tabela mantém todos os valores originais."
+  },
+  "Sample_Maximum": {
+    "en-US": "Maximum",
+    "zh-CN": "最大值",
+    "pt-BR": "Máximo"
+  },
+  "Sample_Period_Demo": {
+    "en-US": "Period",
+    "zh-CN": "周期",
+    "pt-BR": "Período"
+  },
+  "Sample_CurrentWeekExample": {
+    "en-US": "Current week example",
+    "zh-CN": "本周示例",
+    "pt-BR": "Exemplo da semana atual"
+  },
+  "Sample_PreviousWeekExample": {
+    "en-US": "Previous week example",
+    "zh-CN": "上周示例",
+    "pt-BR": "Exemplo da semana anterior"
+  },
+  "Sample_OrderCount": {
+    "en-US": "Order count",
+    "zh-CN": "订单数量",
+    "pt-BR": "Número de pedidos"
+  },
+  "Sample_DemoAmount": {
+    "en-US": "Demo amount",
+    "zh-CN": "示例金额",
+    "pt-BR": "Valor de exemplo"
+  },
+  "Sample_StaticFictionalSuppliesDirectory": {
+    "en-US": "Static fictional supplies directory",
+    "zh-CN": "静态虚构用品目录",
+    "pt-BR": "Diretório estático de materiais fictícios"
+  },
+  "Sample_ReadOnlySuppliesDirectoryWithNamesDescriptionsUnitPricesAndAvailabilityTheCompleteSceneIncludesAll25Records": {
+    "en-US": "Read only supplies directory with names, descriptions, unit prices and availability; the complete scene includes all 25 records.",
+    "zh-CN": "只读用品目录，包括名称、说明、单价和可用状态；完整场景包含全部 25 条记录。",
+    "pt-BR": "Diretório de materiais somente leitura com nomes, descrições, preços unitários e disponibilidade; a cena completa inclui todos os 25 registros."
+  },
+  "Sample_Available": {
+    "en-US": "Available",
+    "zh-CN": "可用",
+    "pt-BR": "Disponível"
+  },
+  "Sample_EmptyReadOnlyDirectory": {
+    "en-US": "Empty read only directory",
+    "zh-CN": "空白只读目录",
+    "pt-BR": "Diretório vazio somente leitura"
+  },
+  "Sample_ThereAreNoSupplies": {
+    "en-US": "There are no supplies.",
+    "zh-CN": "当前没有用品。",
+    "pt-BR": "Nenhum material disponível."
+  },
+  "Sample_Loading_Demo": {
+    "en-US": "Loading…",
+    "zh-CN": "正在加载…",
+    "pt-BR": "Carregando…"
+  },
+  "Sample_CustomLoadingContent": {
+    "en-US": "Custom loading content",
+    "zh-CN": "自定义加载内容",
+    "pt-BR": "Conteúdo de carregamento personalizado"
+  },
+  "Sample_LoadingInProgress": {
+    "en-US": "Loading in progress",
+    "zh-CN": "正在加载",
+    "pt-BR": "Carregamento em andamento"
+  },
+  "Sample_ReloadDemoRecords": {
+    "en-US": "Reload demo records",
+    "zh-CN": "重新加载演示记录",
+    "pt-BR": "Recarregar registros de exemplo"
+  },
+  "Sample_ReadingDemoRecords": {
+    "en-US": "Reading demo records…",
+    "zh-CN": "正在读取演示记录…",
+    "pt-BR": "Lendo registros de exemplo…"
+  },
+  "Sample_DemoRecordsLoadedDemoProjectA": {
+    "en-US": "Demo records loaded: Demo project A.",
+    "zh-CN": "已加载演示记录：示例项目 A。",
+    "pt-BR": "Registros de exemplo carregados: Projeto de exemplo A."
+  },
+  "Sample_NotLoadedYet": {
+    "en-US": "Not loaded yet",
+    "zh-CN": "尚未加载",
+    "pt-BR": "Ainda não carregado"
+  },
+  "Sample_NotificationContent": {
+    "en-US": "Notification content",
+    "zh-CN": "通知内容",
+    "pt-BR": "Conteúdo da notificação"
+  },
+  "Sample_SubtleNotice": {
+    "en-US": "Subtle notice",
+    "zh-CN": "低强调通知",
+    "pt-BR": "Aviso discreto"
+  },
+  "Sample_LocalDraftStatus": {
+    "en-US": "Local draft status",
+    "zh-CN": "本地草稿状态",
+    "pt-BR": "Estado do rascunho local"
+  },
+  "Sample_DemoDraftSavedSuccessfully": {
+    "en-US": "Demo draft saved successfully.",
+    "zh-CN": "演示草稿保存成功。",
+    "pt-BR": "Rascunho de exemplo salvo com sucesso."
+  },
+  "Sample_TheDemoDraftIsMissingOptionalContactDetails": {
+    "en-US": "The demo draft is missing optional contact details.",
+    "zh-CN": "演示草稿缺少可选联系方式。",
+    "pt-BR": "Faltam dados de contato opcionais no rascunho de exemplo."
+  },
+  "Sample_SimulatedSaveFailureTheDraftIsRetained": {
+    "en-US": "Simulated save failure; the draft is retained.",
+    "zh-CN": "模拟保存失败，草稿仍然保留。",
+    "pt-BR": "Falha simulada ao salvar; o rascunho foi mantido."
+  },
+  "Sample_TheDemoDraftHasNotBeenSaved": {
+    "en-US": "The demo draft has not been saved.",
+    "zh-CN": "演示草稿尚未保存。",
+    "pt-BR": "O rascunho de exemplo ainda não foi salvo."
+  },
+  "Sample_DescriptionContent": {
+    "en-US": "Description content",
+    "zh-CN": "说明内容",
+    "pt-BR": "Conteúdo da descrição"
+  },
+  "Sample_ValidationFailed": {
+    "en-US": "Validation failed",
+    "zh-CN": "校验失败",
+    "pt-BR": "Validação falhou"
+  },
+  "Sample_ValidationPassed": {
+    "en-US": "Validation passed",
+    "zh-CN": "校验通过",
+    "pt-BR": "Validação aprovada"
+  },
+  "Sample_AdditionalInformation": {
+    "en-US": "Additional information",
+    "zh-CN": "补充信息",
+    "pt-BR": "Informações adicionais"
+  },
+  "Sample_TheFictionalRecordNeedsAName": {
+    "en-US": "The fictional record needs a name.",
+    "zh-CN": "虚构记录缺少名称，需要补充。",
+    "pt-BR": "O registro fictício precisa de um nome."
+  },
+  "Sample_TheFictionalRecordPassedLocalChecks": {
+    "en-US": "The fictional record passed local checks.",
+    "zh-CN": "虚构记录已通过本地检查。",
+    "pt-BR": "O registro fictício passou nas verificações locais."
+  },
+  "Sample_CheckResultsAreKeptOnlyOnThisPageAndAreNotSavedAfterLeaving": {
+    "en-US": "Check results are kept only on this page and are not saved after leaving.",
+    "zh-CN": "检查结果仅保留在当前页面；离开页面后不会保存。",
+    "pt-BR": "Os resultados são mantidos apenas nesta página e não são salvos após sair."
+  },
+  "Sample_TheFictionalRecordNeedsContactDetailsReviewed": {
+    "en-US": "The fictional record needs contact details reviewed.",
+    "zh-CN": "虚构记录尚待检查联系方式。",
+    "pt-BR": "Os dados de contato do registro fictício ainda precisam de revisão."
+  },
+  "Sample_DeterminateProgress": {
+    "en-US": "Determinate progress",
+    "zh-CN": "确定进度",
+    "pt-BR": "Progresso determinado"
+  },
+  "Sample_NotStarted": {
+    "en-US": "Not started",
+    "zh-CN": "尚未开始",
+    "pt-BR": "Não iniciado"
+  },
+  "Sample_IndeterminateProgress": {
+    "en-US": "Indeterminate progress",
+    "zh-CN": "未知进度",
+    "pt-BR": "Progresso indeterminado"
+  },
+  "Sample_Processing_Demo": {
+    "en-US": "Processing…",
+    "zh-CN": "正在处理…",
+    "pt-BR": "Processando…"
+  },
+  "Sample_DecreaseBy10": {
+    "en-US": "Decrease by 10%",
+    "zh-CN": "减少 10%",
+    "pt-BR": "Diminuir 10%"
+  },
+  "Sample_IncreaseBy10": {
+    "en-US": "Increase by 10%",
+    "zh-CN": "增加 10%",
+    "pt-BR": "Aumentar 10%"
+  },
+  "Sample_ShowDeterminateProgress": {
+    "en-US": "Show determinate progress",
+    "zh-CN": "显示确定进度",
+    "pt-BR": "Mostrar progresso determinado"
+  },
+  "Sample_SimulateIndeterminateProgress": {
+    "en-US": "Simulate indeterminate progress",
+    "zh-CN": "模拟未知进度",
+    "pt-BR": "Simular progresso indeterminado"
+  },
+  "Sample_DemoFileExport": {
+    "en-US": "Demo file export",
+    "zh-CN": "演示文件导出",
+    "pt-BR": "Exportação de arquivo de exemplo"
+  },
+  "Sample_EstimatingExportTask": {
+    "en-US": "Estimating export task…",
+    "zh-CN": "正在估算导出任务…",
+    "pt-BR": "Estimando tarefa de exportação…"
+  },
+  "Sample_FictionalFileExportCompleted": {
+    "en-US": "Fictional file export completed.",
+    "zh-CN": "虚构文件导出完成。",
+    "pt-BR": "Exportação de arquivo fictício concluída."
+  },
+  "Sample_PausedProgress": {
+    "en-US": "Paused progress",
+    "zh-CN": "暂停进度",
+    "pt-BR": "Progresso pausado"
+  },
+  "Sample_Paused": {
+    "en-US": "Paused",
+    "zh-CN": "已暂停",
+    "pt-BR": "Pausado"
+  },
+  "Sample_AdvanceBy10": {
+    "en-US": "Advance by 10%",
+    "zh-CN": "推进 10%",
+    "pt-BR": "Avançar 10%"
+  },
+  "Sample_Resume": {
+    "en-US": "Resume",
+    "zh-CN": "继续",
+    "pt-BR": "Continuar"
+  },
+  "Sample_Pause": {
+    "en-US": "Pause",
+    "zh-CN": "暂停",
+    "pt-BR": "Pausar"
+  },
+  "Sample_FictionalBackgroundTask": {
+    "en-US": "Fictional background task",
+    "zh-CN": "虚构后台任务",
+    "pt-BR": "Tarefa fictícia em segundo plano"
+  },
+  "Sample_TheDemoTaskIsPaused": {
+    "en-US": "The demo task is paused.",
+    "zh-CN": "演示任务已暂停。",
+    "pt-BR": "A tarefa de exemplo está pausada."
+  },
+  "Sample_CalculatingRemainingTime": {
+    "en-US": "Calculating remaining time…",
+    "zh-CN": "正在计算剩余时间…",
+    "pt-BR": "Calculando tempo restante…"
+  },
+  "Sample_FillAvailableWidth": {
+    "en-US": "Fill available width",
+    "zh-CN": "填满可用宽度",
+    "pt-BR": "Preencher largura disponível"
+  },
+  "Sample_DisablePrimaryActionAndMenu": {
+    "en-US": "Disable primary action and menu",
+    "zh-CN": "禁用主动作与菜单",
+    "pt-BR": "Desativar ação principal e menu"
+  },
+  "Sample_DisableOnlyThePrimaryActionAndKeepTheMenu": {
+    "en-US": "Disable only the primary action and keep the menu",
+    "zh-CN": "仅禁用主动作，保留菜单",
+    "pt-BR": "Desativar apenas a ação principal e manter o menu"
+  },
+  "Sample_OpenOptions": {
+    "en-US": "Open options",
+    "zh-CN": "打开选项",
+    "pt-BR": "Abrir opções"
+  },
+  "Sample_CollapseExportOptions": {
+    "en-US": "Collapse export options",
+    "zh-CN": "收起导出选项",
+    "pt-BR": "Recolher opções de exportação"
+  },
+  "Sample_ExpandExportOptions": {
+    "en-US": "Expand export options",
+    "zh-CN": "展开导出选项",
+    "pt-BR": "Expandir opções de exportação"
+  },
+  "Sample_Selected": {
+    "en-US": "Selected",
+    "zh-CN": "选中",
+    "pt-BR": "Selecionado"
+  },
+  "Sample_ExportFormat": {
+    "en-US": "Export format",
+    "zh-CN": "导出格式",
+    "pt-BR": "Formato de exportação"
+  },
+  "Sample_NoneYet": {
+    "en-US": "None yet",
+    "zh-CN": "暂无",
+    "pt-BR": "Nenhum"
+  },
+  "Sample_EmptyRectangularElevatedActionTile": {
+    "en-US": "Empty rectangular elevated action tile",
+    "zh-CN": "空矩形悬浮操作格面",
+    "pt-BR": "Bloco retangular elevado de ação vazio"
+  },
+  "Sample_EmptyRectangularFilledElevatedActionTile": {
+    "en-US": "Empty rectangular filled elevated action tile",
+    "zh-CN": "空矩形填充悬浮操作格面",
+    "pt-BR": "Bloco retangular preenchido elevado de ação vazio"
+  },
+  "Sample_UnavailableRectangularActionTile": {
+    "en-US": "Unavailable rectangular action tile",
+    "zh-CN": "不可用长方形操作格面",
+    "pt-BR": "Bloco retangular de ação indisponível"
+  },
+  "Sample_BusyRectangularActionTile": {
+    "en-US": "Busy rectangular action tile",
+    "zh-CN": "处理中长方形操作格面",
+    "pt-BR": "Bloco retangular de ação ocupado"
+  },
+  "Sample_EmptyElevatedActionTile": {
+    "en-US": "Empty elevated action tile",
+    "zh-CN": "空悬浮操作格面",
+    "pt-BR": "Bloco elevado de ação vazio"
+  },
+  "Sample_EmptyFilledElevatedActionTile": {
+    "en-US": "Empty filled elevated action tile",
+    "zh-CN": "空填充悬浮操作格面",
+    "pt-BR": "Bloco preenchido elevado de ação vazio"
+  },
+  "Sample_EmptyDangerActionTile": {
+    "en-US": "Empty danger action tile",
+    "zh-CN": "空危险操作格面",
+    "pt-BR": "Bloco de ação de perigo vazio"
+  },
+  "Sample_UnavailableSquareActionTile": {
+    "en-US": "Unavailable square action tile",
+    "zh-CN": "不可用正方形操作格面",
+    "pt-BR": "Bloco quadrado de ação indisponível"
+  },
+  "Sample_BusySquareActionTile": {
+    "en-US": "Busy square action tile",
+    "zh-CN": "处理中正方形操作格面",
+    "pt-BR": "Bloco quadrado de ação ocupado"
+  },
+  "Sample_SaveDemoState": {
+    "en-US": "Save demo state",
+    "zh-CN": "保存演示状态",
+    "pt-BR": "Salvar estado de exemplo"
+  },
+  "Sample_ClearDemoRecords": {
+    "en-US": "Clear demo records",
+    "zh-CN": "清除演示记录",
+    "pt-BR": "Limpar registros de exemplo"
+  },
+  "Sample_VariantAdd": {
+    "en-US": "{0}: Add",
+    "zh-CN": "{0}：新增",
+    "pt-BR": "{0}: Adicionar"
+  },
+  "Sample_SavedCount": {
+    "en-US": "Saved {0} times.",
+    "zh-CN": "已保存 {0} 次。",
+    "pt-BR": "Salvo {0} vezes."
+  },
+  "Sample_ControlledSearchMatches": {
+    "en-US": "Controlled search using shared columns: {0} fictional records match; the host manages querying and archive filtering.",
+    "zh-CN": "共享列合同的受控搜索：匹配 {0} 条虚构记录，宿主负责查询及归档过滤。",
+    "pt-BR": "Pesquisa controlada com colunas compartilhadas: {0} registros fictícios encontrados; o aplicativo gerencia a consulta e o filtro de arquivados."
+  },
+  "Sample_NameNumber": {
+    "en-US": "Name {0}",
+    "zh-CN": "名称 {0}",
+    "pt-BR": "Nome {0}"
+  },
+  "Sample_BulkColumn": {
+    "en-US": "Bulk {0}",
+    "zh-CN": "批量 {0}",
+    "pt-BR": "Em lote: {0}"
+  },
+  "Sample_LocalSelectionCount": {
+    "en-US": "{0} local selections; no real service request.",
+    "zh-CN": "{0} 项本地选择；未请求真实服务。",
+    "pt-BR": "{0} seleções locais; nenhuma solicitação a um serviço real."
+  },
+  "Sample_FavoriteRecord": {
+    "en-US": "Fictional record added to favorites: {0}",
+    "zh-CN": "已收藏虚构记录：{0}",
+    "pt-BR": "Registro fictício adicionado aos favoritos: {0}"
+  },
+  "Sample_OpenRecord": {
+    "en-US": "Opened fictional record: {0}, category {1}, unit price {2:0.00}.",
+    "zh-CN": "打开虚构记录：{0}，分类 {1}，单价 {2:0.00}。",
+    "pt-BR": "Registro fictício aberto: {0}, categoria {1}, preço unitário {2:0.00}."
+  },
+  "Sample_PostIntent": {
+    "en-US": "Fictional POST intent recorded: {0}; no real service request.",
+    "zh-CN": "已记录虚构 POST 意图：{0}；未请求任何真实服务。",
+    "pt-BR": "Intenção fictícia de POST registrada: {0}; nenhuma solicitação a um serviço real."
+  },
+  "Sample_EditIntent": {
+    "en-US": "Local editing intent recorded for {0} items.",
+    "zh-CN": "已记录 {0} 项的本地编辑意图。",
+    "pt-BR": "Intenção de edição local registrada para {0} itens."
+  },
+  "Sample_ArchivedCount": {
+    "en-US": "Archived {0} times.",
+    "zh-CN": "已归档 {0} 次。",
+    "pt-BR": "Arquivado {0} vezes."
+  },
+  "Sample_ColumnWidth": {
+    "en-US": "Width of {0}",
+    "zh-CN": "{0} 的宽度",
+    "pt-BR": "Largura de {0}"
+  },
+  "Sample_PixelCount": {
+    "en-US": "{0} pixels",
+    "zh-CN": "{0} 像素",
+    "pt-BR": "{0} pixels"
+  },
+  "Sample_ItemCount": {
+    "en-US": "{0} items",
+    "zh-CN": "{0} 项",
+    "pt-BR": "{0} itens"
+  },
+  "Sample_ExportProgress": {
+    "en-US": "Exporting demo file: {0}%",
+    "zh-CN": "正在导出演示文件：{0}%",
+    "pt-BR": "Exportando arquivo de exemplo: {0}%"
+  },
+  "Sample_TaskProgress": {
+    "en-US": "Fictional task {0}% complete.",
+    "zh-CN": "虚构任务已完成 {0}%。",
+    "pt-BR": "Tarefa fictícia {0}% concluída."
+  },
+  "Sample_ExportCount": {
+    "en-US": "Exported {0} times; last format: {1}",
+    "zh-CN": "导出 {0} 次；上次格式：{1}",
+    "pt-BR": "Exportado {0} vezes; último formato: {1}"
+  },
+  "Sample_FictionalRecord": {
+    "en-US": "Fictional record {0}",
+    "zh-CN": "虚构记录 {0}",
+    "pt-BR": "Registro fictício {0}"
+  },
+  "Sample_NoticeRecord": {
+    "en-US": "Fictional record DEMO-001",
+    "zh-CN": "虚构记录 DEMO-001",
+    "pt-BR": "Registro fictício DEMO-001"
+  },
+  "Sample_FictionalSupplyRecord": {
+    "en-US": "Fictional supplies: {0}",
+    "zh-CN": "虚构用品：{0}",
+    "pt-BR": "Materiais fictícios: {0}"
+  },
+  "Sample_ListViewLongNotes": {
+    "en-US": "This fictional description checks long text wrapping in a static list. The full text is shown without dynamic column measurement, truncation hints, controllers or row actions.",
+    "zh-CN": "这是用于验证静态列表长文本换行的虚构说明。它完整呈现，不需要动态表格的列宽测量、裁剪提示、控制器或行操作。",
+    "pt-BR": "Esta descrição fictícia verifica a quebra de textos longos em uma lista estática. O texto completo é exibido sem medição dinâmica de colunas, dicas de truncamento, controladores nem ações de linha."
+  },
+  "Sample_ListViewNotes": {
+    "en-US": "Read only demo description",
+    "zh-CN": "只读示例说明",
+    "pt-BR": "Descrição de exemplo somente leitura"
+  },
+  "Sample_MondayShort": {
+    "en-US": "Mon",
+    "zh-CN": "一",
+    "pt-BR": "Seg"
+  },
+  "Sample_Monday": {
+    "en-US": "Monday",
+    "zh-CN": "星期一",
+    "pt-BR": "Segunda-feira"
+  },
+  "Sample_TuesdayShort": {
+    "en-US": "Tue",
+    "zh-CN": "二",
+    "pt-BR": "Ter"
+  },
+  "Sample_Tuesday": {
+    "en-US": "Tuesday",
+    "zh-CN": "星期二",
+    "pt-BR": "Terça-feira"
+  },
+  "Sample_WednesdayShort": {
+    "en-US": "Wed",
+    "zh-CN": "三",
+    "pt-BR": "Qua"
+  },
+  "Sample_Wednesday": {
+    "en-US": "Wednesday",
+    "zh-CN": "星期三",
+    "pt-BR": "Quarta-feira"
+  },
+  "Sample_ThursdayShort": {
+    "en-US": "Thu",
+    "zh-CN": "四",
+    "pt-BR": "Qui"
+  },
+  "Sample_Thursday": {
+    "en-US": "Thursday",
+    "zh-CN": "星期四",
+    "pt-BR": "Quinta-feira"
+  },
+  "Sample_FridayShort": {
+    "en-US": "Fri",
+    "zh-CN": "五",
+    "pt-BR": "Sex"
+  },
+  "Sample_Friday": {
+    "en-US": "Friday",
+    "zh-CN": "星期五",
+    "pt-BR": "Sexta-feira"
+  },
+  "Sample_SaturdayShort": {
+    "en-US": "Sat",
+    "zh-CN": "六",
+    "pt-BR": "Sáb"
+  },
+  "Sample_Saturday": {
+    "en-US": "Saturday",
+    "zh-CN": "星期六",
+    "pt-BR": "Sábado"
+  },
+  "Sample_SundayShort": {
+    "en-US": "Sun",
+    "zh-CN": "日",
+    "pt-BR": "Dom"
+  },
+  "Sample_Sunday": {
+    "en-US": "Sunday",
+    "zh-CN": "星期日",
+    "pt-BR": "Domingo"
+  },
+  "Sample_StructuredButtonName": {
+    "en-US": "Example account",
+    "zh-CN": "示例账号",
+    "pt-BR": "Conta de exemplo"
+  },
+  "Sample_StructuredButtonDescription": {
+    "en-US": "example@example.test",
+    "zh-CN": "example@example.test",
+    "pt-BR": "example@example.test"
+  },
+  "Sample_StructuredButtonStatus": {
+    "en-US": "Connected",
+    "zh-CN": "已连接",
+    "pt-BR": "Conectado"
+  },
+  "Sample_WelcomeToYourWorkspace": {
+    "en-US": "Welcome to your workspace",
+    "zh-CN": "欢迎使用工作空间",
+    "pt-BR": "Boas-vindas ao seu Workspace"
+  },
+  "Sample_ExportAction": {
+    "en-US": "Export {0}",
+    "zh-CN": "导出 {0}",
+    "pt-BR": "Exportar {0}"
+  },
+  "Sample_CardSample_Description": {
+    "en-US": "Prominent uses large body paragraphs; Stacked controls vertical layout. Removing actions lets the body fill the width. Long text demonstrates natural wrapping and height growth.",
+    "zh-CN": "Prominent 使用大字号段落，Stacked 控制纵排。移除动作后正文占满宽度；长文场景用于检查自然换行和高度增长。",
+    "pt-BR": "Prominent usa parágrafos grandes; Stacked controla layout vertical. Sem ações, o corpo ocupa a largura. Texto longo demonstra quebra natural e crescimento de altura."
+  },
+  "Sample_CodeBlockSample_Description": {
+    "en-US": "Example text is encoded for display and never executed.",
+    "zh-CN": "示例文本编码显示，不会执行。",
+    "pt-BR": "O texto do exemplo é codificado para exibição e nunca executado."
+  },
+  "Sample_CopyTextSample_Description": {
+    "en-US": "The raw value is selectable and special characters appear as text. This control does not automatically read or write the clipboard.",
+    "zh-CN": "原值可选择，特殊字符按文本显示；此控件不自动读取或写入剪贴板。",
+    "pt-BR": "O valor bruto é selecionável e caracteres especiais aparecem como texto. Este controle não lê nem escreve automaticamente na área de transferência."
+  },
+  "Sample_DisclosureSample_Description": {
+    "en-US": "For supplementary advice read on demand. The example rules are fictional.",
+    "zh-CN": "适用于按需查看的辅助说明。示例内容为虚构规则。",
+    "pt-BR": "Para explicações complementares consultadas quando necessário. As regras do exemplo são fictícias."
+  },
+  "Sample_IconSample_Description": {
+    "en-US": "Icons are decorative; the button supplies the accessible name.",
+    "zh-CN": "图标为装饰性内容，可访问名称由按钮提供。",
+    "pt-BR": "Ícones são decorativos; o botão fornece o nome acessível."
+  },
+  "Sample_DataPagerSample_Description": {
+    "en-US": "23 fictional records are paged. Page-number input is automatically constrained to the valid range.",
+    "zh-CN": "23 条虚构记录按页展示。页码输入会自动限制到有效范围。",
+    "pt-BR": "23 registros fictícios são paginados. A entrada de página é limitada automaticamente ao intervalo válido."
+  },
+  "Sample_DataTableSample_Description": {
+    "en-US": "All records are fictional. Use search, header sorting, paging and table/card switching; double-click records or use their menu.\nTable and cards share standard ActionMenu. GET opens Gallery example links. POST demonstrates native form transport only; once interactive, it records local submission intent without contacting a real service. Templates replace automatic Open; the second row cannot be opened.\nThe lower example is still standard DataTable. Worklist retains inputs across all pages; Registry selection, column editors and save intent belong to the host, without a second table or real service.\nHost queries are simulated without network requests. The table does not refilter host results; query callbacks, cancellation and authorization remain host-owned.\nProgressive reads rendered visible text only, without embedding business objects, hidden fields or separate search/sort values. All records/native GET links remain readable before enhancement; afterward the same DOM supports search, paging, sorting and cards.",
+    "zh-CN": "全部记录为虚构数据。使用搜索、表头排序、分页和列表／卡片切换；双击记录或通过菜单执行操作。\n列表和卡片复用标准 ActionMenu。GET 打开本 Gallery 的示例链接；POST 只演示原生表单合同，交互就绪后记录本地提交意图，不请求真实服务。模板取代自动 Open，第二行演示不可打开的记录。\n下面仍是标准 DataTable。Worklist 保留所有页的输入实例；Registry 的选择、列编辑器和保存意图由宿主提供，没有第二个表格或真实服务。\n此例模拟宿主查询，不发送网络请求。表格不再二次过滤宿主结果，搜索回调、取消和授权仍属于宿主。\nProgressive 只读取已呈现的可见文字，不嵌入业务对象、隐藏字段或独立搜索／排序值。启用浏览器行为前所有记录和原生 GET 都可读可用；启用后在同一 DOM 上搜索、分页、排序与切换卡片。",
+    "pt-BR": "Todos os registros são fictícios. Use busca, ordenação pelos cabeçalhos, paginação e tabela/cartões; clique duas vezes ou use o menu.\nTabela e cartões compartilham ActionMenu padrão. GET abre exemplos da Gallery. POST demonstra apenas protocolo nativo; quando interativo, registra intenção local sem serviço real. Templates substituem Open automático; a segunda linha não pode ser aberta.\nO exemplo inferior continua sendo DataTable padrão. Worklist mantém entradas em todas as páginas; seleção de Registry, editores de colunas e intenção de salvar pertencem ao host, sem outra tabela nem serviço real.\nConsultas são simuladas sem rede. A tabela não refiltra resultados do host; callbacks, cancelamento e autorização pertencem ao host.\nProgressive lê apenas texto visível renderizado, sem objetos de negócio, campos ocultos nem valores separados de busca/ordenação. Registros/GET nativos ficam legíveis antes do aprimoramento; depois, o mesmo DOM permite busca, paginação, ordenação e cartões."
+  },
+  "Sample_DialogSample_Description": {
+    "en-US": "Confirmation uses Dialog directly with Button in Actions. ShowAsync returns the close result; CloseAsync(true) confirms. The same generic control manages busy state and close permission; bottom sheets use Presentation.BottomSheet. The reconnection example demonstrates browser protocol usage.",
+    "zh-CN": "确认操作直接使用 Dialog；Actions 中使用 Button。ShowAsync 返回关闭结果，CloseAsync(true) 表示确认。关闭许可和忙碌状态由同一通用控件管理；底部面板使用 Presentation.BottomSheet。浏览器协议场景另见重连示例。",
+    "pt-BR": "Confirmação usa Dialog diretamente com Button em Actions. ShowAsync retorna resultado do fechamento; CloseAsync(true) confirma. O mesmo controle genérico gerencia estado ocupado e permissão de fechar; painéis inferiores usam Presentation.BottomSheet. O exemplo de reconexão demonstra o protocolo do navegador."
+  },
+  "Sample_DropdownSurfaceSample_Description": {
+    "en-US": "Only the native details building surface is shown. It has no selection, menu focus or outside-click closing and is not a complete production menu.",
+    "zh-CN": "这里只展示原生 details 构造表面；没有选择、菜单焦点或外部点击关闭，不作为独立生产菜单。",
+    "pt-BR": "Mostra apenas a superfície details nativa de composição. Não possui seleção, foco de menu nem fechamento externo e não é um menu completo de produção."
+  },
+  "Sample_EditingGridSample_Description": {
+    "en-US": "All cell data is fictional. Double-click or use the keyboard to edit. Editors include text, amount, date, multiline text, selection, mask and link.\nCompound cells reuse this editing grid and the standard multi-select; hosts supply only values, authorization and save callbacks, without another table.\nThe host validates and saves fields. Link cells point to local advice inside the board; multi-cell paste and remote transactions enter through GridInteractions.",
+    "zh-CN": "全部单元格数据为虚构。双击或使用键盘进入编辑。展示文本、金额、日期、多行文本、选择、掩码与链接编辑器。\n复合单元格复用本编辑网格和标准多选控件；宿主只提供值、授权及保存回调，不创建另一个表格。\n字段校验与保存由宿主回调完成。链接单元格跳到板内的本地说明；多单元格粘贴与远程事务通过 GridInteractions 接入。",
+    "pt-BR": "Todos os dados são fictícios. Clique duas vezes ou use o teclado para editar. Editores incluem texto, valor, data, multilinha, seleção, máscara e link.\nCélulas compostas reutilizam esta grade e o multisseletor padrão; o host fornece valores, autorização e callbacks de salvar, sem outra tabela.\nO host valida e salva campos. Links apontam para explicações locais no painel; colagem de várias células e transações remotas usam GridInteractions."
+  },
+  "Sample_LineChartSample_Description": {
+    "en-US": "Shared units use the default common scale. Different units explicitly require IndependentScales; equal plot heights must not imply equal business values. The display selector shares generic MultiSelectBox with DataTable. The library owns visibility/order; pages supply only series data.",
+    "zh-CN": "共用单位使用默认公共比例；不同单位必须明确启用 IndependentScales，不能把两条相同比例高度误认为相同业务数值。内置显示选择与 DataTable 共用通用 MultiSelectBox；显隐和排序由库持有，业务页只提供序列数据。",
+    "pt-BR": "Unidades compartilhadas usam a escala comum padrão. Unidades diferentes exigem IndependentScales explícito; alturas iguais não significam valores de negócio iguais. O seletor de exibição compartilha MultiSelectBox com DataTable. A biblioteca controla visibilidade/ordem; páginas fornecem dados das séries."
+  },
+  "Sample_ListViewSample_Description": {
+    "en-US": "Static read-only ListView shares DataTable styles and column formatting and shows all 25 fictional host records. It has no search, sort, paging, selection or row actions; use DataTable when those behaviors are needed.\nThe name column provides row headings. Long descriptions wrap, null displays as empty, and the availability column uses a read-only symbol template with accessible descriptions.\nThe same column contract retains headings for empty data; the host fetches data and chooses the real empty state.",
+    "zh-CN": "静态只读 ListView 复用 DataTable 的表格样式和列格式，完整显示宿主传入的 25 条虚构记录。没有搜索、排序、分页、选中或行操作；需要这些动态能力时使用 DataTable。\n名称列提供行标题。说明中的长文本可以换行，null 显示为空；可用列通过只读模板展示带可访问说明的符号。\n同一列契约在空数据时仍保留标题；宿主负责获取数据和选择真实的空状态。",
+    "pt-BR": "ListView estático somente leitura compartilha estilo/formatação de DataTable e mostra os 25 registros fictícios. Sem busca, ordenação, paginação, seleção ou ações; use DataTable quando precisar dessas capacidades.\nA coluna de nome fornece títulos de linha. Descrições longas quebram, null aparece vazio e a coluna de disponibilidade usa símbolo somente leitura com descrição acessível.\nO mesmo contrato mantém títulos com dados vazios; o host busca dados e escolhe o estado vazio real."
+  },
+  "Sample_SplitButtonSample_Description": {
+    "en-US": "The upper example uses MenuContent for native navigation; the complete login page demonstrates form submission. Recovery/registration link only to the demo overview.\nThe lower example uses a controlled secondary action to reveal export formats. Every action updates local state only.",
+    "zh-CN": "上方通过 MenuContent 展示原生导航；完整登录页演示表单提交。恢复与注册仅链接到演示总览。\n下方使用受控次按钮展开导出格式，所有动作只更新本地状态。",
+    "pt-BR": "O exemplo superior usa MenuContent para navegação nativa; a página completa de login demonstra envio. Recuperação/cadastro apontam apenas para o resumo dos exemplos.\nO exemplo inferior usa ação secundária controlada para mostrar formatos de exportação. Todas as ações atualizam apenas estado local."
+  },
+  "Sample_AccessActionsSample_Description": {
+    "en-US": "Arranges auxiliary access-page actions using standard Button children. Links do not authenticate or create accounts.",
+    "zh-CN": "只排列访问页辅助动作；子项使用标准 Button，链接不代表认证或创建账号。",
+    "pt-BR": "Organiza ações auxiliares da página de acesso com Button padrão. Links não autenticam nem criam contas."
+  },
+  "Sample_ContentContainerSample_Description": {
+    "en-US": "The outer band owns the background; ContentContainer supplies the internal centered width-limited track.",
+    "zh-CN": "背景由外层横幅负责，ContentContainer 为内部内容提供居中限宽轨道。",
+    "pt-BR": "O banner externo controla o fundo; ContentContainer fornece faixa interna central com largura limitada."
+  },
+  "Sample_LogoDisplayerSample_Description": {
+    "en-US": "Uses the configured project identity by default. Overrides apply only to this example.",
+    "zh-CN": "默认使用已配置的项目身份；覆盖仅作用于当前示例。",
+    "pt-BR": "Usa identidade configurada do projeto por padrão. Substituições afetam apenas este exemplo."
+  },
+  "Sample_NavigationChoicesSample_Description": {
+    "en-US": "A fictional organization appears on the left, with the shared login action area on the right. Three methods switch through native GET links; field values never enter the URL.",
+    "zh-CN": "左侧展示虚构组织名称，右侧是共用的登录操作区。三种方式通过原生 GET 链接切换；字段值不会进入地址。",
+    "pt-BR": "Uma organização fictícia aparece à esquerda e a área compartilhada de login à direita. Três formas alternam por links GET nativos; valores dos campos não entram na URL."
+  },
+  "Sample_OfferStageSample_Description": {
+    "en-US": "With AutoRotate, built-in Quiet text pause/resume buttons become available after enhancement. Labels follow framework localization or explicit PauseRotationLabel/ResumeRotationLabel overrides. The stage handles focus, pointer and reduced motion. Without JavaScript all offers remain visible and rotation controls stay disabled.\nRotationControlIconOnly=true uses standard 48px icon buttons: pause while running, play_arrow after user pause. aria-label/data-tooltip share the localized or explicit labels. Only presentation changes; pause/resume, reduced motion and lifecycle stay the same.",
+    "zh-CN": "AutoRotate 启用时默认提供库内 Quiet 文字暂停/恢复按钮，增强完成后可使用；文字跟随框架本地化，也可用 PauseRotationLabel / ResumeRotationLabel 明确覆盖。焦点、指针与减少动态效果由舞台处理。没有 JavaScript 时仍显示全部报价内容，轮播按钮保持禁用。\nRotationControlIconOnly=true 使用标准 48px 图标按钮：运行时为 pause，用户暂停后为 play_arrow；aria-label 与 data-tooltip 共用同一组本地化或显式标签。仅改变显示，不改变暂停/恢复、减少动态效果与生命周期。",
+    "pt-BR": "Com AutoRotate, botões Quiet de pausa/retomada ficam disponíveis após aprimoramento. Textos seguem localização do framework ou substituições PauseRotationLabel/ResumeRotationLabel. O palco trata foco, ponteiro e movimento reduzido. Sem JavaScript, todas as ofertas permanecem visíveis e controles desativados.\nRotationControlIconOnly=true usa ícones padrão de 48px: pause durante execução, play_arrow após pausa. aria-label/data-tooltip compartilham os textos localizados ou explícitos. Apenas apresentação muda; pausa/retomada, movimento reduzido e ciclo de vida permanecem."
+  },
+  "Sample_PresentationBandSample_Description": {
+    "en-US": "Default minimum height is 800px; content can grow naturally. Dots are off by default and enabled only on Primary here. Bands combine full-width backgrounds with a centered content track.",
+    "zh-CN": "默认最小高度 800px，内容可自然增高；点阵默认关闭，本例仅为 Primary 开启。横幅使用全宽背景与居中内容轨道。",
+    "pt-BR": "Altura mínima padrão de 800px; conteúdo pode crescer. Pontos começam desligados e aqui são ativados apenas em Primary. Banners combinam fundo amplo com faixa central de conteúdo."
+  },
+  "Sample_FilePickerSample_Description": {
+    "en-US": "Reads only filename and length metadata, without reading content or uploading. Production hosts validate content and size separately.",
+    "zh-CN": "只读取文件名与长度元数据，不读取内容、不上传；生产宿主另行验证内容和大小。",
+    "pt-BR": "Lê apenas nome e tamanho, sem ler conteúdo nem enviar arquivos. Hosts de produção validam conteúdo e tamanho separadamente."
+  },
+  "Sample_MultiSelectBoxSample_Description": {
+    "en-US": "Select up to three tags. The reading tag stays selected at its fixed position; the unavailable tag cannot be selected. With ordering enabled, drag a whole row or focus it and use Up/Down.\nTables and charts also reuse MultiSelectBox, mapping display members to options with explicit display labels and ordering. The library retains column/series state; business pages supply raw data.",
+    "zh-CN": "最多选择三个标签。“阅读”保持选中并固定位置；“暂未开放”不可选择。开启排序后，可拖拽完整行或聚焦行后用上下键调整顺序。\n表格与图表同样复用 MultiSelectBox。它们将显示成员映射为选项，并明确设置“显示”标签和排序；库负责保留列与序列状态，业务页提供原始数据。",
+    "pt-BR": "Selecione até três etiquetas. A etiqueta de leitura permanece selecionada e fixa; a indisponível não pode ser selecionada. Com ordenação ativa, arraste a linha ou foque e use Cima/Baixo.\nTabelas e gráficos reutilizam MultiSelectBox, mapeando membros de exibição para opções com rótulos e ordenação explícitos. A biblioteca mantém estado de colunas/séries; páginas fornecem dados brutos."
+  },
+  "Sample_StandaloneCheckBoxSample_Description": {
+    "en-US": "Native checked submission value is yes; no session is stored and no credentials are submitted. Model validation uses CheckBox.",
+    "zh-CN": "原生提交值为 yes；不保存会话或提交凭据。业务模型验证使用 CheckBox。",
+    "pt-BR": "O valor nativo enviado quando marcado é yes; não guarda sessão nem envia credenciais. Validação de modelo usa CheckBox."
+  },
+  "Sample_StandaloneSelectBoxSample_Description": {
+    "en-US": "For use without EditContext. Shares the SelectOption contract instead of creating a second option model.",
+    "zh-CN": "适用于无 EditContext 场景；复用 SelectOption 契约，不创建另一套选项模型。",
+    "pt-BR": "Para uso sem EditContext. Compartilha SelectOption sem criar outro modelo de opções."
+  },
+  "Sample_StandaloneTextBoxSample_Description": {
+    "en-US": "For native GET/POST boundaries without EditContext; no network request is submitted. Prefer TextBox for model forms. Numeric input uses this same control with Type=number and native min/max/step; the host parses submitted strings.",
+    "zh-CN": "适用于无 EditContext 的原生 GET/POST 协议边界；不提交网络请求。模型表单优先 TextBox。数字输入使用同一控件的 Type=number，min/max/step 保留原生约束；提交字符串由宿主解析。",
+    "pt-BR": "Para limites GET/POST nativos sem EditContext; não envia solicitação de rede. Prefira TextBox em formulários de modelo. Entrada numérica usa o mesmo controle com Type=number e min/max/step nativos; o host converte as strings enviadas."
+  },
+  "Sample_ApplicationLayoutSample_Description": {
+    "en-US": "ApplicationLayout reads Program configuration; actual applications select it through Router.DefaultLayout. This embedded preview prevents links from leaving the page.",
+    "zh-CN": "ApplicationLayout 读取 Program 的应用配置；真实应用通过 Router 的 DefaultLayout 使用它。此局部预览阻止链接离开当前页面。",
+    "pt-BR": "ApplicationLayout lê configuração de Program; aplicações reais o escolhem em Router.DefaultLayout. Esta prévia impede que links saiam da página."
+  },
+  "Sample_AttributionFooterSample_Description": {
+    "en-US": "Use this control for short attribution on business pages; artistic presentation footers use PresentationFooter.",
+    "zh-CN": "业务页简短归属说明使用此控件；展示页艺术页脚使用 PresentationFooter。",
+    "pt-BR": "Use este controle para atribuição breve em páginas de negócio; rodapés artísticos usam PresentationFooter."
+  },
+  "Sample_BackToTopSample_Description": {
+    "en-US": "Appears after scrolling beyond 120px; clicking returns only this region to its top. Reduced-motion preferences use immediate scrolling; without JavaScript a native fragment link remains.",
+    "zh-CN": "滚动超过 120px 后显示按钮，点击只返回这个区域的顶部。减少动态效果偏好使用直接滚动；无 JavaScript 时保留原生片段链接。",
+    "pt-BR": "Aparece após rolar mais de 120px; o clique volta apenas esta região ao topo. Movimento reduzido usa rolagem imediata; sem JavaScript permanece link nativo de fragmento."
+  },
+  "Sample_ContentSurfaceSample_Description": {
+    "en-US": "Changing DocumentKey replaces the content scroll region. DocumentFlow=true switches to document scrolling. Standalone access pages combine ContentSurface with FullHeight PresentationBand.",
+    "zh-CN": "DocumentKey 变化替换正文滚动区域；DocumentFlow=true 切换为文档滚动，独立访问页由 ContentSurface 与 FullHeight PresentationBand 组合。",
+    "pt-BR": "Alterar DocumentKey substitui a região de rolagem. DocumentFlow=true ativa rolagem do documento. Páginas independentes de acesso combinam ContentSurface e FullHeight PresentationBand."
+  },
+  "Sample_NavigationGuardSample_Description": {
+    "en-US": "No visible content appears until confirmation is needed. An empty draft does not prevent leaving.\nThis fictional local draft protects the current Gallery page, including refresh/leaving, only after explicitly enabled. Saving or disabling releases protection.",
+    "zh-CN": "需要确认时才显示内容。空白草稿不会阻止离开。\n虚构的本地草稿。明确启用后，此组件会保护当前 Gallery 页面，包括刷新和离开；保存或停用后解除。",
+    "pt-BR": "Nenhum conteúdo visível aparece até precisar de confirmação. Rascunho vazio não impede sair.\nEste rascunho local fictício protege a página atual, incluindo recarregar/sair, apenas após ativação explícita. Salvar ou desativar libera a proteção."
+  },
+  "Sample_PrimaryNavigationItemSample_Description": {
+    "en-US": "Fictional visitor module navigation. Hover or keyboard focus reveals names/disabled reasons; clicking changes the sample current item.",
+    "zh-CN": "虚构访客的模块导航。悬停或键盘聚焦可查看名称和禁用原因；点击可切换示例选中状态。",
+    "pt-BR": "Navegação de módulos de um visitante fictício. Ponteiro ou foco mostra nomes/motivos de desativação; clique muda o item atual do exemplo."
+  },
+  "Sample_SecondaryNavigationItemSample_Description": {
+    "en-US": "Only for custom navigation hosts. Standard applications use Program.ConfigureNavigation and ApplicationShell-generated navigation.",
+    "zh-CN": "只适用于自定义导航宿主；常规应用使用 Program ConfigureNavigation，由 ApplicationShell 统一生成导航。",
+    "pt-BR": "Apenas para hosts personalizados. Aplicações padrão usam Program.ConfigureNavigation e navegação gerada por ApplicationShell."
+  },
+  "Sample_ServiceMenuSample_Description": {
+    "en-US": "Fictional help center; the menu links to actual example sections.",
+    "zh-CN": "虚构帮助中心。菜单提供指向实际示例段落的导航链接。",
+    "pt-BR": "Central de ajuda fictícia; o menu aponta para seções reais do exemplo."
+  },
+  "Sample_ShellHeaderSample_Description": {
+    "en-US": "Switch identities to compare action-group and sign-out icon layout. Actions are recorded locally without authentication or sign-out.",
+    "zh-CN": "切换身份可比较动作组与退出图标的布局；这里只记录本地操作，不执行认证或退出。",
+    "pt-BR": "Alterne identidades para comparar grupo de ações e ícone de saída. Ações são registradas localmente sem autenticação nem encerramento de sessão."
+  }
+}

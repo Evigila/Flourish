@@ -10,17 +10,17 @@
     <EssentialCultureNamespace>ArkheideSystem.Gallery.Flourish.Blazor.Texts</EssentialCultureNamespace>
     <EssentialCultureGeneratorEnabled>true</EssentialCultureGeneratorEnabled>
     <EssentialCultureXamlFramework>none</EssentialCultureXamlFramework>
-    <EssentialCultureAutoInclude>false</EssentialCultureAutoInclude>
+    <EssentialCultureAutoInclude>true</EssentialCultureAutoInclude>
     <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+    <EssentialCultureFallbackCulture>en-US</EssentialCultureFallbackCulture>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Models/ChangeLog.json" />
     <None Remove="Models/ChangeLog.json" />
     <EmbeddedResource Include="Models/ChangeLog.json" LogicalName="Gallery.ChangeLog.json" />
-    <None Remove="Localization/Culture.json" />
-    <Content Remove="Localization/Culture.json" />
-    <AdditionalFiles Include="Localization/Culture.json" />
-    <EmbeddedResource Include="Localization/Culture.json" LogicalName="Gallery.Texts.json" />
+    <None Remove="Localization/Culture.*.json" />
+    <Content Remove="Localization/Culture.*.json" />
+    <CultureModule Include="Localization/Culture.*.json" DeploymentPath="Localization/%(Filename)%(Extension)" />
     <CompilerVisibleProperty Include="EssentialCultureNamespace" />
     <CompilerVisibleProperty Include="EssentialCultureGeneratorEnabled" />
     <CompilerVisibleProperty Include="EssentialCultureXamlFramework" />

@@ -1,0 +1,342 @@
+{
+  "Nav_ChangeLog": {
+    "en-US": "ChangeLog",
+    "zh-CN": "更新记录",
+    "pt-BR": "ChangeLog"
+  },
+  "Nav_Tutorial": {
+    "en-US": "Tutorial",
+    "zh-CN": "教程",
+    "pt-BR": "Tutorial"
+  },
+  "Nav_DisplayPages": {
+    "en-US": "Presentation pages",
+    "zh-CN": "展示页面",
+    "pt-BR": "Páginas de apresentação"
+  },
+  "Nav_DisplayProduct": {
+    "en-US": "Product banners",
+    "zh-CN": "产品横幅",
+    "pt-BR": "Banners de produto"
+  },
+  "Nav_DisplayPricing": {
+    "en-US": "Offers and comparison",
+    "zh-CN": "报价与比较",
+    "pt-BR": "Ofertas e comparação"
+  },
+  "Nav_DisplayAccess": {
+    "en-US": "Access overview",
+    "zh-CN": "访问案例总览",
+    "pt-BR": "Visão geral de acesso"
+  },
+  "Nav_DisplayLogin": {
+    "en-US": "Complete login page",
+    "zh-CN": "完整登录页",
+    "pt-BR": "Página completa de login"
+  },
+  "Nav_DisplayAccounts": {
+    "en-US": "Saved account selection",
+    "zh-CN": "已保存账号选择",
+    "pt-BR": "Seleção de contas salvas"
+  },
+  "Nav_DisplayMethods": {
+    "en-US": "Access method selection",
+    "zh-CN": "访问方式选择",
+    "pt-BR": "Seleção da forma de acesso"
+  },
+  "Nav_DisplayWizard": {
+    "en-US": "Wizard choices",
+    "zh-CN": "向导选项",
+    "pt-BR": "Opções do assistente"
+  },
+  "Nav_Home": {
+    "en-US": "Home",
+    "zh-CN": "主页",
+    "pt-BR": "Início"
+  },
+  "Nav_Framework": {
+    "en-US": "Framework",
+    "zh-CN": "框架",
+    "pt-BR": "Framework"
+  },
+  "Nav_Controls": {
+    "en-US": "Controls",
+    "zh-CN": "控件",
+    "pt-BR": "Controles"
+  },
+  "Nav_Foundations": {
+    "en-US": "Foundations",
+    "zh-CN": "基础",
+    "pt-BR": "Fundamentos"
+  },
+  "Nav_Examples": {
+    "en-US": "Examples",
+    "zh-CN": "案例",
+    "pt-BR": "Exemplos"
+  },
+  "Menu_Pages": {
+    "en-US": "Pages",
+    "zh-CN": "页面",
+    "pt-BR": "Páginas"
+  },
+  "Nav_GetStarted": {
+    "en-US": "Get started",
+    "zh-CN": "接入应用",
+    "pt-BR": "Integrar à aplicação"
+  },
+  "Nav_TopBar": {
+    "en-US": "Top bar",
+    "zh-CN": "顶部栏",
+    "pt-BR": "Barra superior"
+  },
+  "Nav_Navigation": {
+    "en-US": "Navigation",
+    "zh-CN": "导航",
+    "pt-BR": "Navegação"
+  },
+  "Nav_Commands": {
+    "en-US": "Commands",
+    "zh-CN": "命令处理",
+    "pt-BR": "Tratamento de comandos"
+  },
+  "Nav_PageLayout": {
+    "en-US": "Page layout",
+    "zh-CN": "页面布局",
+    "pt-BR": "Layout de página"
+  },
+  "Nav_Interactions": {
+    "en-US": "Built-in interactions",
+    "zh-CN": "内置交互",
+    "pt-BR": "Interações integradas"
+  },
+  "Nav_Actions": {
+    "en-US": "Buttons and menus",
+    "zh-CN": "按钮与菜单",
+    "pt-BR": "Botões e menus"
+  },
+  "Nav_Inputs": {
+    "en-US": "Input and selection",
+    "zh-CN": "输入与选择",
+    "pt-BR": "Entrada e seleção"
+  },
+  "Nav_Data": {
+    "en-US": "Data and lists",
+    "zh-CN": "数据与列表",
+    "pt-BR": "Dados e listas"
+  },
+  "Nav_Overlays": {
+    "en-US": "Dialogs and overlays",
+    "zh-CN": "对话框与弹层",
+    "pt-BR": "Diálogos e sobreposições"
+  },
+  "Nav_Feedback": {
+    "en-US": "Feedback",
+    "zh-CN": "状态反馈",
+    "pt-BR": "Feedback de estado"
+  },
+  "Nav_Progress": {
+    "en-US": "Progress",
+    "zh-CN": "进度",
+    "pt-BR": "Progresso"
+  },
+  "Nav_Content": {
+    "en-US": "Content and composition",
+    "zh-CN": "内容与组合",
+    "pt-BR": "Conteúdo e composição"
+  },
+  "Nav_Layout": {
+    "en-US": "Shell and layout",
+    "zh-CN": "外壳与布局",
+    "pt-BR": "Estrutura e layout"
+  },
+  "Nav_Colors": {
+    "en-US": "Colors and themes",
+    "zh-CN": "颜色与主题",
+    "pt-BR": "Cores e temas"
+  },
+  "Nav_Typography": {
+    "en-US": "Typography",
+    "zh-CN": "字体",
+    "pt-BR": "Tipografia"
+  },
+  "Nav_Spacing": {
+    "en-US": "Spacing",
+    "zh-CN": "间距",
+    "pt-BR": "Espaçamento"
+  },
+  "Nav_Shape": {
+    "en-US": "Radius and shadows",
+    "zh-CN": "圆角与阴影",
+    "pt-BR": "Cantos arredondados e sombras"
+  },
+  "Nav_Dimensions": {
+    "en-US": "Dimensions",
+    "zh-CN": "布局尺寸",
+    "pt-BR": "Dimensões do layout"
+  },
+  "Nav_Icons": {
+    "en-US": "Icons",
+    "zh-CN": "图标",
+    "pt-BR": "Ícones"
+  },
+  "Nav_ExampleIndex": {
+    "en-US": "Example index",
+    "zh-CN": "案例目录",
+    "pt-BR": "Índice de exemplos"
+  },
+  "Nav_FormPage": {
+    "en-US": "Create a form page",
+    "zh-CN": "创建表单页面",
+    "pt-BR": "Criar uma página de formulário"
+  },
+  "Nav_Forms": {
+    "en-US": "Form demo",
+    "zh-CN": "表单演示",
+    "pt-BR": "Demonstração de formulário"
+  },
+  "Nav_Records": {
+    "en-US": "Record list",
+    "zh-CN": "记录列表",
+    "pt-BR": "Lista de registros"
+  },
+  "Nav_RecordDetails": {
+    "en-US": "Record details",
+    "zh-CN": "记录详情",
+    "pt-BR": "Detalhes do registro"
+  },
+  "Nav_Patterns": {
+    "en-US": "Composed layouts",
+    "zh-CN": "组合布局",
+    "pt-BR": "Layouts compostos"
+  },
+  "Nav_Enums": {
+    "en-US": "Enum selection",
+    "zh-CN": "枚举下拉框",
+    "pt-BR": "Seleção de enumerações"
+  },
+  "Nav_Search": {
+    "en-US": "Search and lists",
+    "zh-CN": "搜索与列表",
+    "pt-BR": "Pesquisa e listas"
+  },
+  "Nav_Theme": {
+    "en-US": "Toggle theme",
+    "zh-CN": "切换主题",
+    "pt-BR": "Alternar tema"
+  },
+  "Nav_Localization": {
+    "en-US": "Language and localization",
+    "zh-CN": "语言与本地化",
+    "pt-BR": "Idioma e localização"
+  },
+  "Project_Name": {
+    "en-US": "Gallery",
+    "zh-CN": "Gallery",
+    "pt-BR": "Gallery"
+  },
+  "Common_CopyCode": {
+    "en-US": "Copy code",
+    "zh-CN": "复制代码",
+    "pt-BR": "Copiar código"
+  },
+  "Common_Copied": {
+    "en-US": "Copied",
+    "zh-CN": "已复制",
+    "pt-BR": "Copiado"
+  },
+  "Common_Copying": {
+    "en-US": "Copying…",
+    "zh-CN": "正在复制…",
+    "pt-BR": "Copiando…"
+  },
+  "Common_CopyFailed": {
+    "en-US": "Could not copy. Select the code and copy it manually.",
+    "zh-CN": "未能复制，请选中代码手动复制。",
+    "pt-BR": "Não foi possível copiar. Selecione o código e copie-o manualmente."
+  },
+  "Common_NoTopic": {
+    "en-US": "Topic not found",
+    "zh-CN": "没有此主题",
+    "pt-BR": "Tópico não encontrado"
+  },
+  "Common_BackIndex": {
+    "en-US": "Back to index",
+    "zh-CN": "返回目录",
+    "pt-BR": "Voltar ao índice"
+  },
+  "Common_BackControls": {
+    "en-US": "Back to controls",
+    "zh-CN": "返回控件",
+    "pt-BR": "Voltar aos controles"
+  },
+  "Common_BackHome": {
+    "en-US": "Back to home",
+    "zh-CN": "返回主页",
+    "pt-BR": "Voltar ao início"
+  },
+  "Common_Save": {
+    "en-US": "Save",
+    "zh-CN": "保存",
+    "pt-BR": "Salvar"
+  },
+  "Common_Cancel": {
+    "en-US": "Cancel",
+    "zh-CN": "取消",
+    "pt-BR": "Cancelar"
+  },
+  "Common_Clear": {
+    "en-US": "Clear",
+    "zh-CN": "清除",
+    "pt-BR": "Limpar"
+  },
+  "Common_Edit": {
+    "en-US": "Edit",
+    "zh-CN": "编辑",
+    "pt-BR": "Editar"
+  },
+  "Common_Delete": {
+    "en-US": "Delete",
+    "zh-CN": "删除",
+    "pt-BR": "Excluir"
+  },
+  "Common_Code": {
+    "en-US": "Code",
+    "zh-CN": "编号",
+    "pt-BR": "Código"
+  },
+  "Common_Category": {
+    "en-US": "Category",
+    "zh-CN": "分类",
+    "pt-BR": "Categoria"
+  },
+  "Common_Contact": {
+    "en-US": "Contact",
+    "zh-CN": "联系人",
+    "pt-BR": "Contato"
+  },
+  "Common_Email": {
+    "en-US": "Email",
+    "zh-CN": "邮箱",
+    "pt-BR": "E-mail"
+  },
+  "Common_Status": {
+    "en-US": "Status",
+    "zh-CN": "状态",
+    "pt-BR": "Status"
+  },
+  "Common_Updated": {
+    "en-US": "Updated date",
+    "zh-CN": "更新日期",
+    "pt-BR": "Data de atualização"
+  },
+  "Common_BackList": {
+    "en-US": "Back to list",
+    "zh-CN": "返回列表",
+    "pt-BR": "Voltar à lista"
+  },
+  "Common_Choose": {
+    "en-US": "Choose an option",
+    "zh-CN": "请选择",
+    "pt-BR": "Selecione uma opção"
+  }
+}

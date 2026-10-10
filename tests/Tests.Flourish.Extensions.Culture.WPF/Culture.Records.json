@@ -1,0 +1,12 @@
+{
+  "RecordTitle": {
+    "en-US": "Records",
+    "pt-BR": "Registros",
+    "fr": "Enregistrements"
+  },
+  "RecordTotal": {
+    "en-US": "Total: {0:N2}",
+    "pt-BR": "Total: {0:N2}",
+    "fr": "Total : {0:N2}"
+  }
+}

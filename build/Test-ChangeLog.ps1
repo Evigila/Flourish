@@ -1,14 +1,15 @@
 param(
     [string] $CatalogPath,
     [string] $VersionPropsPath,
-    [string] $CulturePath
+    [string[]] $CulturePath
 )
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 if (!$CatalogPath) { $CatalogPath = Join-Path $root 'src/Gallery.Flourish.Blazor/Models/ChangeLog.json' }
 if (!$VersionPropsPath) { $VersionPropsPath = Join-Path $root 'Directory.Build.props' }
-if (!$CulturePath) { $CulturePath = Join-Path $root 'src/Gallery.Flourish.Blazor/Localization/Culture.json' }
+if (!$CulturePath) { $CulturePath = @(Get-ChildItem -LiteralPath (Join-Path $root 'src/Gallery.Flourish.Blazor/Localization') -Filter 'Culture.*.json' -File | Sort-Object Name | ForEach-Object FullName) }
+if (!$CulturePath.Count) { throw 'ChangeLog validation needs Gallery Culture modules.' }
 
 function Read-Version([string] $Value) {
     if ($Value -cnotmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$') {
@@ -25,7 +26,16 @@ if (!$json.TrimStart().StartsWith('[')) { throw 'ChangeLog must be a JSON array.
 $parsed = $json | ConvertFrom-Json
 $entries = @($parsed)
 if (!$entries.Count) { throw 'ChangeLog must contain release records and one preview.' }
-$culture = Get-Content -LiteralPath $CulturePath -Raw -Encoding UTF8 | ConvertFrom-Json
+$culture = [Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+foreach ($file in $CulturePath) {
+    $document = [System.Text.Json.JsonDocument]::Parse([IO.File]::ReadAllText($file))
+    try {
+        foreach ($key in $document.RootElement.EnumerateObject()) {
+            if ($culture.ContainsKey($key.Name)) { throw "Duplicate Culture key '$($key.Name)' in '$file'." }
+            $culture.Add($key.Name,($key.Value.GetRawText() | ConvertFrom-Json))
+        }
+    } finally { $document.Dispose() }
+}
 $versions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 $stableVersions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 $highestStable = $releaseVersion
@@ -56,10 +66,10 @@ foreach ($entry in $entries) {
         if ($key -isnot [string] -or $key -cnotmatch '^Key\.ChangeLog_[A-Za-z0-9_]+$' -or !$keys.Add($key)) {
             throw "$name contains an invalid or duplicate ChangeLog translation key."
         }
-        $translation = $culture.PSObject.Properties[$key.Substring(4)]
+        $translation = $culture[$key.Substring(4)]
         if ($null -eq $translation) { throw "$name references missing translation '$key'." }
         foreach ($language in @('en-US', 'zh-CN', 'pt-BR')) {
-            $text = $translation.Value.PSObject.Properties[$language]
+            $text = $translation.PSObject.Properties[$language]
             if ($null -eq $text -or $text.Value -isnot [string] -or [string]::IsNullOrWhiteSpace($text.Value)) {
                 throw "$key must contain a nonempty $language translation."
             }

@@ -124,13 +124,17 @@ __CULTURE_CONTENT__
     [new("name", "Name", row => row.Name), new("amount", "Amount", row => row.Amount)];
 }
 '@
-$cultureDocument = @'
+$greetingsDocument = @'
 {
   "Greeting": {
     "en-US": "Hello, package consumer",
     "zh-CN": "你好，包使用者",
     "pt-BR": "Olá, consumidor do pacote"
-  },
+  }
+}
+'@
+$formattingDocument = @'
+{
   "Amount": {
     "en-US": "Amount: {0:N2}",
     "zh-CN": "金额：{0:N2}",
@@ -140,7 +144,7 @@ $cultureDocument = @'
 '@
 $cultureRegistration = @'
 builder.Services.AddFlourishFramework(builder.Configuration, framework => framework.ConfigureCulture(culture => culture
-    .AddCatalog<App>("App", "PackageConsumer.Culture.json")
+    .AddCatalogFiles("App", CultureResources.Files, CultureResources.FallbackCulture)
     .SetDefaultCatalog("App")
     .SetDefaultCulture("en-US")
     .AddSupportedCultures("en-US", "zh-CN", "pt-BR")));
@@ -151,7 +155,11 @@ await using (var right = app.Services.CreateAsyncScope())
 {
     if (!string.Equals(TextKey.Greeting, "Key.Greeting", StringComparison.Ordinal)
         || !string.Equals(TextKey.Amount, "Key.Amount", StringComparison.Ordinal))
-        throw new InvalidOperationException("Transitive key generation did not use the consumer Culture.json.");
+        throw new InvalidOperationException("Transitive key generation did not compose both consumer Culture modules.");
+    if (!CultureResources.Files.SequenceEqual(new[] { "Texts/Culture.Formatting.json", "Texts/Culture.Greetings.json" })
+        || CultureResources.FallbackCulture != "en-US"
+        || CultureResources.Files.Any(path => !File.Exists(Path.Combine(AppContext.BaseDirectory, path))))
+        throw new InvalidOperationException("Generated module manifest does not match the deployed Culture files.");
     var leftLocalization = left.ServiceProvider.GetRequiredService<CultureSession>();
     var rightLocalization = right.ServiceProvider.GetRequiredService<CultureSession>();
     var leftText = left.ServiceProvider.GetRequiredService<ITextProvider>();
@@ -200,12 +208,15 @@ foreach ($mode in $modes) {
     $references = '<PackageReference Include="{0}" Version="{1}" />' -f $id,$Version
     $generatorEnabled = $mode.Culture.ToString().ToLowerInvariant()
     $cultureItems = if ($mode.Culture) {
-        '<None Remove="Culture.json" /><Content Remove="Culture.json" /><AdditionalFiles Include="Culture.json" /><EmbeddedResource Include="Culture.json" LogicalName="PackageConsumer.Culture.json" />'
+        '<None Remove="Culture.*.json" /><Content Remove="Culture.*.json" /><CultureModule Include="Culture.Greetings.json" ModuleId="Greetings" DeploymentPath="Texts/Culture.Greetings.json" /><CultureModule Include="Culture.Formatting.json" ModuleId="Formatting" DeploymentPath="Texts/Culture.Formatting.json" />'
     } else { '' }
-    $xml = '<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>PackageConsumer</RootNamespace><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors><EssentialCultureNamespace>PackageConsumer.Texts</EssentialCultureNamespace><EssentialCultureGeneratorEnabled>{1}</EssentialCultureGeneratorEnabled><EssentialCultureXamlFramework>none</EssentialCultureXamlFramework><EssentialCultureAutoCreate>false</EssentialCultureAutoCreate><EssentialCultureAutoInclude>false</EssentialCultureAutoInclude></PropertyGroup><ItemGroup>{0}</ItemGroup><ItemGroup>{2}</ItemGroup></Project>' -f $references,$generatorEnabled,$cultureItems
+    $xml = '<Project Sdk="Microsoft.NET.Sdk.Web"><PropertyGroup><TargetFramework>net10.0</TargetFramework><RootNamespace>PackageConsumer</RootNamespace><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings><TreatWarningsAsErrors>true</TreatWarningsAsErrors><EssentialCultureNamespace>PackageConsumer.Texts</EssentialCultureNamespace><EssentialCultureGeneratorEnabled>{1}</EssentialCultureGeneratorEnabled><EssentialCultureXamlFramework>none</EssentialCultureXamlFramework><EssentialCultureAutoCreate>false</EssentialCultureAutoCreate><EssentialCultureAutoInclude>{1}</EssentialCultureAutoInclude><EssentialCultureFallbackCulture>en-US</EssentialCultureFallbackCulture></PropertyGroup><ItemGroup>{0}</ItemGroup><ItemGroup>{2}</ItemGroup></Project>' -f $references,$generatorEnabled,$cultureItems
     Write-Fixture $project $xml
-    if ($mode.Culture) { Write-Fixture (Join-Path $directory 'Culture.json') $cultureDocument }
-    $usings = if ($mode.Culture) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' + [Environment]::NewLine + 'using TextKey = PackageConsumer.Texts.Key;' } elseif ($mode.Meta) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' } else { '' }
+    if ($mode.Culture) {
+        Write-Fixture (Join-Path $directory 'Culture.Greetings.json') $greetingsDocument
+        Write-Fixture (Join-Path $directory 'Culture.Formatting.json') $formattingDocument
+    }
+    $usings = if ($mode.Culture) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' + [Environment]::NewLine + 'using TextKey = PackageConsumer.Texts.Key;' + [Environment]::NewLine + 'using CultureResources = PackageConsumer.Texts.CultureResources;' } elseif ($mode.Meta) { 'using ArkheideSystem.Flourish.Extensions.Culture.Blazor;' } else { '' }
     $design = if ($mode.Theme) { 'builder.Services.AddFlourishDesign();' } else { '' }
     $frameworkRegistration = if ($mode.Culture) { $cultureRegistration } else { 'builder.Services.AddFlourishFramework(builder.Configuration);' }
     $test = if ($mode.Culture) { $cultureCheck } else { '' }
@@ -232,10 +243,19 @@ foreach ($mode in $modes) {
     if ($mode.Culture) {
         $generatedProps = Get-Content -LiteralPath (Join-Path $directory 'obj/Consumer.csproj.nuget.g.props') -Raw
         Require ($generatedProps -match 'buildTransitive.*Arkheide\.Essential\.Culture\.Generator\.props') 'MetaCulture did not import the transitive generator props.'
-        Require (@(Get-ChildItem -LiteralPath $directory -Filter Culture.json -File -Recurse).Count -eq 1) 'MetaCulture did not keep a single Culture.json source.'
+        Require (@(Get-ChildItem -LiteralPath $directory -Filter 'Culture.*.json' -File).Count -eq 2) 'MetaCulture did not keep both multilingual module sources.'
+        Require (!(Test-Path -LiteralPath (Join-Path $directory 'Culture.json'))) 'Module declarations unexpectedly created the root Culture template.'
     }
     $publish = Join-Path $directory 'publish'
     Invoke-ReleaseCommand dotnet @('publish', $project, '-c', 'Release', '--no-restore', '-o', $publish)
+    if ($mode.Culture) {
+        Require (@(Get-ChildItem -LiteralPath $publish -Filter 'Culture*.json' -File -Recurse).Count -eq 2) 'Module consumer must publish only its two declared Culture modules; embedded library catalogs must not copy into host paths.'
+        foreach ($module in @('Culture.Formatting.json','Culture.Greetings.json')) {
+            Require (Test-Path -LiteralPath (Join-Path $directory ('bin/Release/net10.0/Texts/'+$module)) -PathType Leaf) "MetaCulture did not copy $module to its declared build path."
+            Require (Test-Path -LiteralPath (Join-Path $publish ('Texts/'+$module)) -PathType Leaf) "MetaCulture did not publish $module to its declared deployment path."
+        }
+        Require (!(Test-Path -LiteralPath (Join-Path $publish 'Culture.json'))) 'Module consumer published an unused single-file Culture template.'
+    }
     $stdout = Join-Path $directory 'server.log'
     $stderr = Join-Path $directory 'server-error.log'
     $launch = @{

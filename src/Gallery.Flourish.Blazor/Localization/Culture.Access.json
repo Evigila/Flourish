@@ -1,0 +1,432 @@
+{
+  "Wizard_Personal": {
+    "en-US": "Personal use",
+    "zh-CN": "个人使用",
+    "pt-BR": "Uso pessoal"
+  },
+  "Wizard_Workspace": {
+    "en-US": "Workspace use",
+    "zh-CN": "工作空间",
+    "pt-BR": "Uso em um espaço de trabalho"
+  },
+  "Wizard_Back": {
+    "en-US": "Back",
+    "zh-CN": "上一步",
+    "pt-BR": "Voltar"
+  },
+  "Wizard_Restart": {
+    "en-US": "Choose again",
+    "zh-CN": "重新选择",
+    "pt-BR": "Escolher novamente"
+  },
+  "Access_LoginSubmit": {
+    "en-US": "Simulate sign in",
+    "zh-CN": "模拟登录",
+    "pt-BR": "Simular login"
+  },
+  "Access_LoginTitle": {
+    "en-US": "Sign in",
+    "zh-CN": "登录",
+    "pt-BR": "Entrar"
+  },
+  "Access_Overview": {
+    "en-US": "Explore the login and account selection examples.",
+    "zh-CN": "查看登录与账号选择示例。",
+    "pt-BR": "Explore os exemplos de login e seleção de contas."
+  },
+  "Access_DemoOnly": {
+    "en-US": "Local demo only. Do not enter real credentials.",
+    "zh-CN": "仅为本地演示，请勿输入真实凭据。",
+    "pt-BR": "Apenas uma demonstração local. Não insira credenciais reais."
+  },
+  "Access_LoginDescription": {
+    "en-US": "Enter a fictitious email and password.",
+    "zh-CN": "请输入虚构邮箱与密码。",
+    "pt-BR": "Insira um e-mail e uma senha fictícios."
+  },
+  "Access_AccountsDescription": {
+    "en-US": "Choose an example account or use another email.",
+    "zh-CN": "选择示例账号，或使用其他邮箱。",
+    "pt-BR": "Escolha uma conta de exemplo ou use outro e-mail."
+  },
+  "Access_Remember": {
+    "en-US": "Remember email for this demo",
+    "zh-CN": "在本次演示中记住邮箱",
+    "pt-BR": "Lembrar o e-mail nesta demonstração"
+  },
+  "Access_Outcome": {
+    "en-US": "Demo result",
+    "zh-CN": "演示结果",
+    "pt-BR": "Resultado da demonstração"
+  },
+  "Access_OutcomeAccepted": {
+    "en-US": "Success view",
+    "zh-CN": "成功界面",
+    "pt-BR": "Tela de sucesso"
+  },
+  "Access_OutcomeRejected": {
+    "en-US": "Rejected view",
+    "zh-CN": "拒绝界面",
+    "pt-BR": "Tela de acesso negado"
+  },
+  "Access_OutcomeUnavailable": {
+    "en-US": "Service unavailable view",
+    "zh-CN": "服务不可用界面",
+    "pt-BR": "Tela de serviço indisponível"
+  },
+  "Access_RequiredEmail": {
+    "en-US": "Enter a fictitious email address.",
+    "zh-CN": "请输入虚构邮箱。",
+    "pt-BR": "Insira um endereço de e-mail fictício."
+  },
+  "Access_InvalidEmail": {
+    "en-US": "Use a valid email format, such as visitor@example.invalid.",
+    "zh-CN": "请输入有效邮箱格式，例如 visitor@example.invalid。",
+    "pt-BR": "Use um formato de e-mail válido, como visitor@example.invalid."
+  },
+  "Access_RequiredPassword": {
+    "en-US": "Enter any fictitious password to exercise the required field.",
+    "zh-CN": "请输入任意虚构密码以验证必填字段。",
+    "pt-BR": "Insira qualquer senha fictícia para testar o campo obrigatório."
+  },
+  "Access_Accepted": {
+    "en-US": "Success demo. No sign-in occurred; the password was cleared.",
+    "zh-CN": "成功演示，未实际登录；密码已清空。",
+    "pt-BR": "Demonstração de sucesso. Nenhum login foi realizado; a senha foi apagada."
+  },
+  "Access_Rejected": {
+    "en-US": "Rejected demo. Enter a fictitious password to retry.",
+    "zh-CN": "拒绝演示，请重新输入虚构密码后重试。",
+    "pt-BR": "Demonstração de acesso negado. Insira uma senha fictícia para tentar novamente."
+  },
+  "Access_Unavailable": {
+    "en-US": "Service error demo. Try again.",
+    "zh-CN": "服务异常演示，请重试。",
+    "pt-BR": "Demonstração de erro no serviço. Tente novamente."
+  },
+  "Access_Busy": {
+    "en-US": "Demonstrating busy state…",
+    "zh-CN": "正在演示忙碌状态…",
+    "pt-BR": "Demonstrando o estado de processamento…"
+  },
+  "Access_InteractiveRequired": {
+    "en-US": "Connecting…",
+    "zh-CN": "正在连接…",
+    "pt-BR": "Conectando…"
+  },
+  "Access_Reset": {
+    "en-US": "Clear local fields",
+    "zh-CN": "清空本地字段",
+    "pt-BR": "Limpar os campos locais"
+  },
+  "Access_Empty": {
+    "en-US": "No saved example accounts",
+    "zh-CN": "没有已保存的示例账号",
+    "pt-BR": "Nenhuma conta de exemplo salva"
+  },
+  "Access_EmptyDescription": {
+    "en-US": "Continue with another fictitious email or restore the original fixtures.",
+    "zh-CN": "可使用另一个虚构邮箱，或恢复初始示例数据。",
+    "pt-BR": "Continue com outro e-mail fictício ou restaure os dados de exemplo originais."
+  },
+  "Access_Restore": {
+    "en-US": "Restore fixtures",
+    "zh-CN": "恢复示例数据",
+    "pt-BR": "Restaurar os dados de exemplo"
+  },
+  "Access_OtherAccount": {
+    "en-US": "Use another account",
+    "zh-CN": "使用其他账号",
+    "pt-BR": "Usar outra conta"
+  },
+  "Access_DisabledAccount": {
+    "en-US": "Unavailable fixture. Selection is disabled; removal is still allowed.",
+    "zh-CN": "不可用示例账号。选择已禁用，但仍可移除。",
+    "pt-BR": "Conta de exemplo indisponível. A seleção está desativada, mas a remoção continua disponível."
+  },
+  "Access_AccountActions": {
+    "en-US": "Example account actions",
+    "zh-CN": "示例账号动作",
+    "pt-BR": "Ações da conta de exemplo"
+  },
+  "Access_ListActions": {
+    "en-US": "Saved fixture list actions",
+    "zh-CN": "已保存示例列表动作",
+    "pt-BR": "Ações da lista de exemplos salvos"
+  },
+  "Access_Choose": {
+    "en-US": "Choose account",
+    "zh-CN": "选择账号",
+    "pt-BR": "Escolher conta"
+  },
+  "Access_Remove": {
+    "en-US": "Remove locally",
+    "zh-CN": "本地移除",
+    "pt-BR": "Remover localmente"
+  },
+  "Access_Clear": {
+    "en-US": "Clear saved fixtures",
+    "zh-CN": "清空已保存示例",
+    "pt-BR": "Limpar os exemplos salvos"
+  },
+  "Access_SelectionRejected": {
+    "en-US": "This example account is unavailable or no longer exists. Choose another account.",
+    "zh-CN": "此示例账号不可用或已不存在，请选择其他账号。",
+    "pt-BR": "Esta conta de exemplo está indisponível ou não existe mais. Escolha outra conta."
+  },
+  "Access_StaleSelection": {
+    "en-US": "Demonstrate an expired selection",
+    "zh-CN": "演示过期选择错误",
+    "pt-BR": "Demonstrar uma seleção expirada"
+  },
+  "Access_AccountsChanged": {
+    "en-US": "The example list was changed locally. No real account was modified.",
+    "zh-CN": "示例列表已在本地更新；没有修改任何真实账号。",
+    "pt-BR": "A lista de exemplos foi alterada localmente. Nenhuma conta real foi modificada."
+  },
+  "Access_Selected": {
+    "en-US": "Email filled. Enter a fictitious password.",
+    "zh-CN": "已填入邮箱，请输入虚构密码。",
+    "pt-BR": "E-mail preenchido. Insira uma senha fictícia."
+  },
+  "Access_Appearance": {
+    "en-US": "Language and appearance",
+    "zh-CN": "语言与外观",
+    "pt-BR": "Idioma e aparência"
+  },
+  "Display_Intro": {
+    "en-US": "Presentation pages use full-width backgrounds with centered controls. These fictitious examples contain no authentication, licensing or billing behavior.",
+    "zh-CN": "展示页面使用全宽背景与居中控件。这些虚构案例不执行认证、许可或计费行为。",
+    "pt-BR": "As páginas de apresentação usam fundos de largura total com controles centralizados. Estes exemplos fictícios não realizam autenticação, licenciamento ou cobrança."
+  },
+  "Display_ProductSubtitle": {
+    "en-US": "Ideas in one place",
+    "zh-CN": "让想法汇聚一处",
+    "pt-BR": "Ideias em um só lugar"
+  },
+  "Display_ProductDescription": {
+    "en-US": "Lumen is a fictitious product used to demonstrate library-owned banners, artistic titles, standard actions and a wordmark footer.",
+    "zh-CN": "Lumen 是虚构产品，用于演示库内横幅、艺术标题、标准动作和品牌大字页脚。",
+    "pt-BR": "Lumen é um produto fictício usado para demonstrar banners da biblioteca, títulos artísticos, ações padrão e um rodapé com o nome da marca em destaque."
+  },
+  "Display_ViewPlans": {
+    "en-US": "Explore plans",
+    "zh-CN": "了解方案",
+    "pt-BR": "Conhecer os planos"
+  },
+  "Display_Enter": {
+    "en-US": "Open access example",
+    "zh-CN": "打开访问案例",
+    "pt-BR": "Abrir o exemplo de acesso"
+  },
+  "Display_Details": {
+    "en-US": "A centered content track",
+    "zh-CN": "居中的内容轨道",
+    "pt-BR": "Uma área de conteúdo centralizada"
+  },
+  "Display_ContainerExplanation": {
+    "en-US": "The surface fills the available page width. Headings, body text and controls remain in the shared centered container, including narrow screens.",
+    "zh-CN": "表面背景铺满可用页面宽度；标题、正文与控件保持在共享的居中限宽容器中，并适配窄屏。",
+    "pt-BR": "O fundo ocupa toda a largura disponível da página. Títulos, textos e controles permanecem no contêiner centralizado compartilhado, inclusive em telas estreitas."
+  },
+  "Display_PricingTitle": {
+    "en-US": "Fictitious plans",
+    "zh-CN": "虚构报价方案",
+    "pt-BR": "Planos fictícios"
+  },
+  "Display_Comparison": {
+    "en-US": "Feature comparison",
+    "zh-CN": "功能比较",
+    "pt-BR": "Comparação de recursos"
+  },
+  "Display_Feature": {
+    "en-US": "Feature",
+    "zh-CN": "功能",
+    "pt-BR": "Recurso"
+  },
+  "Display_SharedNotes": {
+    "en-US": "Shared notes",
+    "zh-CN": "共享笔记",
+    "pt-BR": "Notas compartilhadas"
+  },
+  "Display_Organization": {
+    "en-US": "Organization space",
+    "zh-CN": "组织空间",
+    "pt-BR": "Espaço da organização"
+  },
+  "Display_Reports": {
+    "en-US": "Reports",
+    "zh-CN": "报告",
+    "pt-BR": "Relatórios"
+  },
+  "Display_Yes": {
+    "en-US": "Included",
+    "zh-CN": "包含",
+    "pt-BR": "Incluído"
+  },
+  "Display_No": {
+    "en-US": "Not included",
+    "zh-CN": "不包含",
+    "pt-BR": "Não incluído"
+  },
+  "Display_Offers": {
+    "en-US": "Explore each offer",
+    "zh-CN": "了解各个方案",
+    "pt-BR": "Conhecer cada oferta"
+  },
+  "Display_OfferDescription": {
+    "en-US": "Fictitious display data only; no purchase is available.",
+    "zh-CN": "仅为虚构展示数据，不提供购买。",
+    "pt-BR": "Apenas dados fictícios para apresentação; não há compras disponíveis."
+  },
+  "Display_DemoOnly": {
+    "en-US": "Demonstration only",
+    "zh-CN": "仅作展示",
+    "pt-BR": "Apenas uma demonstração"
+  },
+  "Display_AccessTitle": {
+    "en-US": "Lumen access example",
+    "zh-CN": "Lumen 访问案例",
+    "pt-BR": "Exemplo de acesso ao Lumen"
+  },
+  "Display_Email": {
+    "en-US": "Example email",
+    "zh-CN": "演示邮箱",
+    "pt-BR": "E-mail de exemplo"
+  },
+  "Display_Password": {
+    "en-US": "Example password",
+    "zh-CN": "演示密码",
+    "pt-BR": "Senha de exemplo"
+  },
+  "Display_Submit": {
+    "en-US": "Simulate entry locally",
+    "zh-CN": "模拟本地进入",
+    "pt-BR": "Simular entrada localmente"
+  },
+  "Display_Submitted": {
+    "en-US": "Local demonstration completed. No credentials were sent or validated.",
+    "zh-CN": "本地演示完成，没有发送或验证任何凭据。",
+    "pt-BR": "Demonstração local concluída. Nenhuma credencial foi enviada ou validada."
+  },
+  "Display_Back": {
+    "en-US": "Presentation examples",
+    "zh-CN": "返回展示目录",
+    "pt-BR": "Exemplos de apresentação"
+  },
+  "Display_Disclaimer": {
+    "en-US": "Lumen is fictitious · no commercial offer",
+    "zh-CN": "Lumen 为虚构品牌 · 非商业报价",
+    "pt-BR": "Lumen é uma marca fictícia · sem oferta comercial"
+  },
+  "Access_RecoveryDemo": {
+    "en-US": "Password recovery (demonstration)",
+    "zh-CN": "密码恢复（演示）",
+    "pt-BR": "Recuperação de senha (demonstração)"
+  },
+  "Access_RegistrationDemo": {
+    "en-US": "Registration (demonstration)",
+    "zh-CN": "注册（演示）",
+    "pt-BR": "Cadastro (demonstração)"
+  },
+  "Access_SubmitMenu": {
+    "en-US": "Other access actions",
+    "zh-CN": "其他访问操作",
+    "pt-BR": "Outras ações de acesso"
+  },
+  "Display_FreeStart": {
+    "en-US": "Start free without a license",
+    "zh-CN": "无需许可证，免费开始",
+    "pt-BR": "Comece gratuitamente, sem licença"
+  },
+  "Display_CreateFreeAccount": {
+    "en-US": "Create a free account (demonstration)",
+    "zh-CN": "创建免费账号（演示）",
+    "pt-BR": "Criar uma conta gratuita (demonstração)"
+  },
+  "Display_CustomLicense": {
+    "en-US": "Custom license",
+    "zh-CN": "定制许可证",
+    "pt-BR": "Licença personalizada"
+  },
+  "Display_CustomSupport": {
+    "en-US": "Need more features? Contact us for support.",
+    "zh-CN": "需要更多功能？请联系我们以获得支持。",
+    "pt-BR": "Precisa de mais recursos? Entre em contato para obter suporte."
+  },
+  "Display_RequestCustomLicense": {
+    "en-US": "Request a custom license (demonstration)",
+    "zh-CN": "申请定制许可证（演示）",
+    "pt-BR": "Solicitar uma licença personalizada (demonstração)"
+  },
+  "Access_OrganizationName": {
+    "en-US": "Demo Organization",
+    "zh-CN": "演示 组织",
+    "pt-BR": "Organização de Demonstração"
+  },
+  "Access_MethodLabel": {
+    "en-US": "Choose an access method",
+    "zh-CN": "选择访问方式",
+    "pt-BR": "Escolha uma forma de acesso"
+  },
+  "Access_MethodOrganization": {
+    "en-US": "Workspace",
+    "zh-CN": "Workspace",
+    "pt-BR": "Workspace"
+  },
+  "Access_MethodAccount": {
+    "en-US": "Colligere",
+    "zh-CN": "Colligere",
+    "pt-BR": "Colligere"
+  },
+  "Access_MethodPass": {
+    "en-US": "Pass",
+    "zh-CN": "通行证",
+    "pt-BR": "Passe"
+  },
+  "Access_OrganizationEmail": {
+    "en-US": "Workspace login address",
+    "zh-CN": "Workspace 登录地址",
+    "pt-BR": "Endereço de login do Workspace"
+  },
+  "Access_OrganizationPassword": {
+    "en-US": "Password",
+    "zh-CN": "密码",
+    "pt-BR": "Senha"
+  },
+  "Access_MethodOrganizationAction": {
+    "en-US": "Sign in to Workspace",
+    "zh-CN": "登录 Workspace",
+    "pt-BR": "Entrar no Workspace"
+  },
+  "Access_MethodAccountAction": {
+    "en-US": "Sign in with Colligere",
+    "zh-CN": "使用 Colligere 登录",
+    "pt-BR": "Entrar com Colligere"
+  },
+  "Access_MethodPassAction": {
+    "en-US": "Sign in with a pass",
+    "zh-CN": "使用通行证登录",
+    "pt-BR": "Entrar com passe"
+  },
+  "Access_MethodAccountHint": {
+    "en-US": "Use a fictitious account for this example.",
+    "zh-CN": "使用虚构账号进行演示。",
+    "pt-BR": "Use uma conta fictícia neste exemplo."
+  },
+  "Access_MethodCredential": {
+    "en-US": "Pass",
+    "zh-CN": "通行证",
+    "pt-BR": "Passe"
+  },
+  "Wizard_Standard": {
+    "en-US": "Standard",
+    "zh-CN": "标准版",
+    "pt-BR": "Padrão"
+  },
+  "Wizard_Professional": {
+    "en-US": "Professional",
+    "zh-CN": "专业版",
+    "pt-BR": "Profissional"
+  }
+}

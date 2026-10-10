@@ -6,7 +6,7 @@
     JavaScriptTests = @('tests/Tests.Flourish.Blazor/tests.js', 'tests/Tests.Flourish.Blazor/measurement-lifecycle.test.mjs', 'tests/Tests.Flourish.Blazor/palette-checks.mjs', 'tests/Tests.Flourish.Blazor/controls-dom.mjs', 'tests/Tests.Flourish.Blazor/split-menu-checks.mjs', 'tests/Tests.Flourish.Blazor/clipboard-dom.mjs', 'tests/Tests.Flourish.Blazor/heading-dom.mjs', 'tests/Tests.Flourish.Blazor/interaction-origin-dom.mjs', 'tests/Tests.Flourish.Blazor/action-menu-dom.mjs', 'tests/Tests.Flourish.Blazor/section-navigator-dom.mjs', 'tests/Tests.Flourish.Blazor/presentation-offers-dom.mjs', 'tests/Tests.Flourish.Blazor/surface-form-layout.test.mjs', 'tests/Tests.Flourish.Blazor/page-body-actions.test.mjs', 'tests/Tests.Flourish.Blazor/organization-access-presentation.test.mjs', 'tests/Tests.Flourish.Blazor/inline-toolbar-layout.test.mjs', 'tests/Tests.Flourish.Blazor/access-form-spacing-dom.mjs', 'tests/Tests.Flourish.Blazor/tutorial-board-dom.mjs', 'tests/Tests.Flourish.Extensions.Culture.Blazor/browser-preferences.test.mjs')
     CheckScripts = @('build/Test-CssBundle.ps1', 'build/Test-CssAssets.ps1', 'scripts/Test-StartProject.ps1', 'build/Test-CultureCatalogs.ps1', 'build/Test-ChangeLog.ps1')
     PackagePrefix = 'Arkheide.Flourish.'
-    EssentialVersion = '1.3.0'
+    EssentialVersion = '1.4.0'
     Packages = @(
         @{ Id = 'Arkheide.Flourish.Core'; Project = 'src/Flourish.Core/Flourish.Core.csproj'; Dependencies = @(); Assets = @(); Managed = $true }
         @{ Id = 'Arkheide.Flourish.Blazor.Abstract'; Project = 'src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj'; Dependencies = @('Arkheide.Flourish.Core'); Assets = @(); Managed = $true }

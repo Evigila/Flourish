@@ -18,6 +18,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="../../Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj" />
     <PackageReference Include="Arkheide.Essential.Culture.Blazor" Version="$(EssentialCultureVersion)" />
+    <None Remove="Localization/Culture.json" />
+    <Content Remove="Localization/Culture.json" />
     <EmbeddedResource Include="Localization/Culture.json" LogicalName="Culture.Texts.json" />
   </ItemGroup>
 </Project>

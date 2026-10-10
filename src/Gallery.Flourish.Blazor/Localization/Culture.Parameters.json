@@ -1,0 +1,1292 @@
+{
+  "Parameter_MaxWidth_LanguagePicker": {
+    "en-US": "Optional selector width, bounded by the available space.",
+    "zh-CN": "可选的选择器宽度，不超过可用空间。",
+    "pt-BR": "Largura opcional do seletor, limitada pelo espaço disponível."
+  },
+  "Parameter_FormatCulture_LanguagePicker": {
+    "en-US": "Select number and date formats while keeping the interface language.",
+    "zh-CN": "选择数字和日期格式，保留界面语言。",
+    "pt-BR": "Seleciona formatos de números e datas mantendo o idioma da interface."
+  },
+  "Parameter_Steps_TutorialBoard": {
+    "en-US": "Stable TutorialStep keys and concise content. Completed/Disabled are supplied by the host; clicking is never completion.",
+    "zh-CN": "稳定的 TutorialStep 标识与精简内容；Completed/Disabled 由宿主提供，点击不等于完成。",
+    "pt-BR": "Chaves estáveis de TutorialStep e conteúdo conciso. Completed/Disabled vêm do aplicativo; clicar não significa concluir."
+  },
+  "Parameter_ActiveStepKey_TutorialBoard": {
+    "en-US": "Selected step identity, or null to display the first incomplete step. Must exist in Steps.",
+    "zh-CN": "当前步骤标识；null 显示第一个未完成步骤。非 null 标识必须存在于 Steps。",
+    "pt-BR": "Identidade da etapa selecionada, ou null para a primeira pendente. Deve existir em Steps."
+  },
+  "Parameter_ActiveStepKeyChanged_TutorialBoard": {
+    "en-US": "Publishes step selection only, without changing completion.",
+    "zh-CN": "仅发布步骤选择，不修改完成状态。",
+    "pt-BR": "Publica apenas seleção de etapa, sem alterar a conclusão."
+  },
+  "Parameter_OnAction_TutorialBoard": {
+    "en-US": "Receives the selected step for a host operation, only when ActionHref is empty. Navigation and side effects are mutually exclusive.",
+    "zh-CN": "ActionHref 为空时接收选中的步骤，由宿主执行操作。导航与副作用互斥。",
+    "pt-BR": "Recebe a etapa selecionada para operação do aplicativo somente se ActionHref estiver vazio. Navegação e efeitos são exclusivos."
+  },
+  "Parameter_OnSkip_TutorialBoard": {
+    "en-US": "Requests skipping; the host persists the decision and decides whether to hide the entry. No automatic completion.",
+    "zh-CN": "请求跳过；宿主持久化决定并控制是否隐藏入口。不会自动完成步骤。",
+    "pt-BR": "Solicita pular; o aplicativo persiste a decisão e decide ocultar a entrada. Sem conclusão automática."
+  },
+  "Parameter_Compact_ProgressRing": {
+    "en-US": "Uses the standard compact 36px progress ring for chrome; retains the same SVG and accessibility contract.",
+    "zh-CN": "使用顶部栏用的标准 36px 缩略环；保持相同 SVG 与无障碍合同。",
+    "pt-BR": "Usa o anel compacto padrão de 36px; mantém o mesmo SVG e contrato de acessibilidade."
+  },
+  "Parameter_ShowValue_ProgressRing": {
+    "en-US": "Shows or hides the visible percentage; aria-valuenow remains available.",
+    "zh-CN": "显示或隐藏可见百分比；aria-valuenow 始终存在。",
+    "pt-BR": "Mostra ou oculta a porcentagem visível; aria-valuenow permanece disponível."
+  },
+  "Parameter_CenteredContainer": {
+    "en-US": "Standard (default) keeps normal centered gutters; Expanded halves both side gutters and widens content. Applies only to centered pages, with Fluid=false or an inherited centered layout. Fluid and FullWidth retain their sizing. Vertical spacing remains standard; each nested PageBody selects its own mode.",
+    "zh-CN": "Standard（默认）为标准中心容器；Expanded 将两侧留白减半、扩大正文宽度。仅对 Fluid=false 或继承居中布局的页面生效。流式和 FullWidth 使用各自宽度规则，纵向间距采用默认布局，每个嵌套 PageBody 独立选择模式。",
+    "pt-BR": "Standard (padrão) mantém os recuos centrais normais; Expanded reduz ambos à metade e amplia o conteúdo. Aplica-se a páginas centrais, com Fluid=false ou layout central herdado. Fluid e FullWidth mantêm sua largura. O espaçamento vertical é padrão; cada PageBody aninhado escolhe seu próprio modo."
+  },
+  "Parameter_Description_Button": {
+    "en-US": "Passive secondary text below Text; activates the full-width structured label. Requires Text and cannot be combined with ChildContent.",
+    "zh-CN": "Text 下方的被动次要文字；启用整行结构化标签。必须提供 Text，不能与 ChildContent 混用。",
+    "pt-BR": "Texto secundário passivo abaixo de Text; ativa o rótulo estruturado de largura total. Exige Text e não pode ser combinado com ChildContent."
+  },
+  "Parameter_TrailingText_Button": {
+    "en-US": "Passive text aligned at the logical end of the same full-width button; activates the structured label. Does not add another action or control.",
+    "zh-CN": "同一整行按钮末端对齐的被动文字；启用结构化标签，不增加另一项操作或控件。",
+    "pt-BR": "Texto passivo alinhado ao fim lógico do mesmo botão de largura total; ativa o rótulo estruturado. Não adiciona outra ação ou controle."
+  },
+  "Parameter_Variant_EmptyState": {
+    "en-US": "Standard retains empty-result feedback; Watermark is passive title-only presentation for an unused page area, not loading, failure or permission feedback.",
+    "zh-CN": "Standard 保留空结果反馈；Watermark 是未使用页面区域的被动纯标题展示，不用于加载、错误或权限反馈。",
+    "pt-BR": "Standard mantém o feedback de resultado vazio; Watermark é uma apresentação passiva somente com título para uma área não utilizada, não para carregamento, falha ou permissões."
+  },
+  "Parameter_Alignment_InlineActions": {
+    "en-US": "Logical horizontal alignment of the wrapping action row across available width: Start, Center, or End (default). Full-row content retains its width. It does not change button appearance or native form transport. Centered DisplayBoard centers direct preview action rows when Alignment is omitted; explicit alignment and nested page, form or dialog layouts retain their own rules.",
+    "zh-CN": "可换行动作行在可用宽度内的逻辑水平对齐：Start、Center 或 End（默认）。占满整行的内容保持铺满，不改变按钮样式或原生表单传输。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
+    "pt-BR": "Alinhamento horizontal lógico da linha de ações com quebra na largura disponível: Start, Center ou End (padrão). O conteúdo que ocupa a linha inteira mantém sua largura. Não altera aparência dos botões nem transporte nativo do formulário. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
+  },
+  "Parameter_Compact_NavigationChoices": {
+    "en-US": "false uses grid entries; true uses three equal standard Button links with the same GET, current-item and retained-panel contract.",
+    "zh-CN": "默认 false 为网格入口；true 使用三等分普通 Button 导航，保持同一 GET、当前项与保留面板合同。",
+    "pt-BR": "false usa entradas em grade; true usa três links Button iguais, preservando GET, item atual e painéis montados."
+  },
+  "Parameter_Variant_NavigationChoices": {
+    "en-US": "Standard Button variant for inactive Compact choices. Defaults to Quiet; Elevated preserves the shared control elevation. Does not change native GET or retained panels.",
+    "zh-CN": "Compact非当前项使用的普通Button样式，默认Quiet；Elevated使用统一控件浮起样式，不改变原生GET或保留面板。",
+    "pt-BR": "Variante Button padrão para opções Compact inativas. Usa Quiet por padrão; Elevated mantém a elevação do controle. Não altera GET nativo nem painéis preservados."
+  },
+  "Parameter_ActiveVariant_NavigationChoices": {
+    "en-US": "Standard Button variant for the current Compact choice, defaulting to Secondary. Set both variants to Elevated for matching elevation; aria-current still identifies the current route.",
+    "zh-CN": "Compact当前项的普通Button样式，默认Secondary；两个样式都设为Elevated时统一浮起，当前路由仍由aria-current标记。",
+    "pt-BR": "Variante Button padrão para a opção Compact atual; usa Secondary por padrão. Defina ambas como Elevated para elevação uniforme; aria-current continua marcando a rota atual."
+  },
+  "Parameter_StackTitleWords": {
+    "en-US": "false by default. true puts each whitespace-separated title word on its own line, preserving the full aria-label, letters and organization name.",
+    "zh-CN": "默认 false；true 按空白将标题各词独占一行，保留完整 aria-label，不切分字母或更改组织名称。",
+    "pt-BR": "false por padrão. true coloca cada palavra do título em uma linha, preservando aria-label completo, letras e nome da organização."
+  },
+  "Parameter_SideContent_PresentationHero": {
+    "en-US": "Optional action area on the right. Content enables a 360–470px column beside the main content; below 860px the columns stack.",
+    "zh-CN": "可选右侧操作区；非空启用左主内容、右360–470px限宽列，860px以下改为上下布局。",
+    "pt-BR": "Área de ações opcional à direita. O conteúdo ativa uma coluna de 360–470px; abaixo de 860px, as colunas ficam empilhadas."
+  },
+  "Parameter_Tone_AccessFormSurface": {
+    "en-US": "Surface by default. Canvas, Surface and Primary reuse standard color roles for this surface without nested decorative boards.",
+    "zh-CN": "默认 Surface；Canvas、Surface、Primary 复用标准颜色角色，只改变这一层表面，不创建嵌套背景板。",
+    "pt-BR": "Surface por padrão. Canvas, Surface e Primary reutilizam as cores padrão desta superfície, sem painéis decorativos aninhados."
+  },
+  "Parameter_TriggerVariant": {
+    "en-US": "Optional ButtonVariant. null retains the standard selector/menu appearance; an explicit value uses the normal Button variant. Table display and advanced editing use Secondary.",
+    "zh-CN": "可选 ButtonVariant，默认 null 保留标准下拉/菜单外观；显式设置时触发器复用普通 Button 变种。表格显示与高级编辑统一使用 Secondary。",
+    "pt-BR": "ButtonVariant opcional. null mantém a aparência padrão do seletor/menu; um valor explícito usa a variante normal de Button. Exibição de tabela e edição avançada usam Secondary."
+  },
+  "Parameter_Icon_MultiSelectBox": {
+    "en-US": "Optional Material Symbols icon. When supplied, the trigger shows only the icon; Label retains the accessible name, tooltip and panel title.",
+    "zh-CN": "可选 Material Symbols 图标；设置后触发器仅显示图标，Label 保留可访问名称、提示与面板标题。",
+    "pt-BR": "Ícone Material Symbols opcional. Quando informado, o acionador mostra apenas o ícone; Label mantém nome acessível, dica e título do painel."
+  },
+  "Parameter_Icon_ActionMenu": {
+    "en-US": "Optional trigger icon; TriggerContent takes precedence. With neither content nor icon, the ellipsis remains. Label supplies the accessible name and tooltip.",
+    "zh-CN": "可选触发图标；TriggerContent 优先。未指定内容和图标时仍显示省略号；Label 保留可访问名称和提示。",
+    "pt-BR": "Ícone opcional; TriggerContent tem prioridade. Sem conteúdo nem ícone, permanece a reticência. Label fornece nome acessível e dica."
+  },
+  "Parameter_PrimaryDisabled_SplitButton": {
+    "en-US": "Disables only the primary button/link and callback; the secondary button and native menu remain available. Disabled/Busy still lock both parts. Native buttons emit only disabled for safe host protocol unlocking. Default false.",
+    "zh-CN": "仅禁用主按钮/主链接及其回调，次按钮与原生菜单保持可用；Disabled/Busy 仍锁定两部分。原生按钮只输出 disabled，供宿主静态协议安全解锁。默认 false。",
+    "pt-BR": "Desativa apenas botão/link e callback principais; botão secundário e menu nativo continuam disponíveis. Disabled/Busy bloqueiam ambas as partes. Botões nativos emitem apenas disabled para desbloqueio seguro pelo protocolo do host. Padrão false."
+  },
+  "Parameter_Items_NavigationChoices": {
+    "en-US": "NavigationChoiceItem supplies a unique stable Key, readable Label, same-site root-relative Href and Disabled. Empty collections, duplicate keys and external destinations are rejected.",
+    "zh-CN": "NavigationChoiceItem 的唯一稳定 Key、可读 Label、同站点根相对 Href 和 Disabled；空集合、重复键和外部目的地会拒绝。",
+    "pt-BR": "NavigationChoiceItem fornece Key único e estável, Label legível, Href relativo à raiz do mesmo site e Disabled. Coleções vazias, chaves duplicadas e destinos externos são rejeitados."
+  },
+  "Parameter_ActiveKey_NavigationChoices": {
+    "en-US": "Available Key explicitly selected by the current route. Its link uses aria-current=page and only its panel is visible. This is not controlled ARIA tabs.",
+    "zh-CN": "当前路由明确选择的可用 Key；当前链接使用 aria-current=page，只有该项的面板可见。不是受控 ARIA tabs。",
+    "pt-BR": "Key disponível selecionado pela rota atual. O link usa aria-current=page e apenas seu painel fica visível. Não são abas ARIA controladas."
+  },
+  "Parameter_ChildContent_NavigationChoices": {
+    "en-US": "Actual business form or content for each item. The library owns the links and retained hidden panels; the host owns authentication, GET/POST and business values.",
+    "zh-CN": "每项的实际业务表单或内容，库拥有选项链接和保留挂载的隐藏面板；宿主只管理认证、GET/POST协议与业务值。",
+    "pt-BR": "Formulário ou conteúdo real de cada item. A biblioteca controla links e painéis ocultos mantidos; o host controla autenticação, GET/POST e valores de negócio."
+  },
+  "Parameter_For_ValidationMessages": {
+    "en-US": "Model expression for a hidden protocol field or cross-field error; reads current EditContext messages. Normal inputs share this renderer through Field.For without duplicating it.",
+    "zh-CN": "隐藏协议字段或跨字段错误的模型表达式；读取当前 EditContext 的消息。普通输入使用 Field.For 共用此呈现，不重复放置。",
+    "pt-BR": "Expressão de modelo para campo oculto do protocolo ou erro entre campos; lê mensagens do EditContext atual. Entradas comuns compartilham esta apresentação por Field.For, sem duplicação."
+  },
+  "Parameter_Error_ValidationMessages": {
+    "en-US": "Explicit error text takes precedence over EditContext field messages and is encoded. null/blank reads For; no messages produce no alert container.",
+    "zh-CN": "明确错误文字优先于 EditContext 字段消息，编码输出；null/空白时读取 For，空结果不生成警报容器。",
+    "pt-BR": "Texto de erro explícito tem prioridade sobre mensagens do EditContext e é codificado. null/vazio lê For; sem mensagens, não há contêiner de alerta."
+  },
+  "Parameter_Items_MultiSelectBox": {
+    "en-US": "MultiSelectOption supplies unique stable Key, Label, Selected and deselection/reordering/disabled flags. Collection order is the full current order; items are unselected by default.",
+    "zh-CN": "MultiSelectOption 的稳定唯一 Key、Label、Selected 及取消选择/排序/禁用标记；顺序就是当前完整选项顺序，默认未选择。",
+    "pt-BR": "MultiSelectOption fornece Key único e estável, Label, Selected e indicadores de desmarcação, ordenação e desativação. A coleção representa a ordem completa atual; itens começam desmarcados."
+  },
+  "Parameter_Changed_MultiSelectBox": {
+    "en-US": "Validated complete MultiSelectChange(OrderedKeys, SelectedKeys) snapshot. The host updates order and selection by key; this is not a single-item toggle or @bind-Items.",
+    "zh-CN": "经过约束验证的完整 MultiSelectChange(OrderedKeys, SelectedKeys) 快照；宿主按键更新顺序与选择，不是单项切换或 @bind-Items。",
+    "pt-BR": "Snapshot completo e validado MultiSelectChange(OrderedKeys, SelectedKeys). O host atualiza ordem e seleção por chave; não é alternância de um item nem @bind-Items."
+  },
+  "Parameter_MinimumSelected_MultiSelectBox": {
+    "en-US": "Minimum selected count, default 0. Fixed selected items cannot be deselected; current selection must meet both bounds.",
+    "zh-CN": "最少已选数量，默认 0；固定选中项不能取消，当前选择必须满足最小与最大约束。",
+    "pt-BR": "Quantidade mínima selecionada, padrão 0. Itens selecionados fixos não podem ser desmarcados; a seleção deve respeitar ambos os limites."
+  },
+  "Parameter_MaximumSelections_MultiSelectBox": {
+    "en-US": "Maximum selected count, default int.MaxValue. At the limit, allowed deselection remains possible, but selecting or creating more items is blocked.",
+    "zh-CN": "最多已选数量，默认 int.MaxValue；达到上限后仍可取消允许取消的选项，不允许选择或新增更多项目。",
+    "pt-BR": "Quantidade máxima selecionada, padrão int.MaxValue. No limite, ainda é possível desmarcar itens permitidos, mas não selecionar nem criar mais itens."
+  },
+  "Parameter_CanReorder_MultiSelectBox": {
+    "en-US": "false by default. Enables whole-row dragging and keyboard reordering; fixed/disabled items retain position. Reordering is blocked during search filtering.",
+    "zh-CN": "默认 false；开启完整行拖拽与键盘排序，固定/禁用项保持位置。搜索过滤期间不接受排序。",
+    "pt-BR": "false por padrão. Ativa arraste da linha inteira e ordenação por teclado; itens fixos/desativados mantêm posição. A ordenação é bloqueada durante a filtragem."
+  },
+  "Parameter_Searchable_MultiSelectBox": {
+    "en-US": "false by default. Filters options by Label without changing the complete order or selected set.",
+    "zh-CN": "默认 false；开启后按选项 Label 过滤，搜索不改变完整顺序与已选集合。",
+    "pt-BR": "false por padrão. Filtra opções por Label sem alterar a ordem completa nem o conjunto selecionado."
+  },
+  "Parameter_CreateRequested_MultiSelectBox": {
+    "en-US": "Optional Func<string, Task<bool>>. The host creates and updates Items, then reports success. Creation locks selection/reordering; disabled, duplicate-name and count restrictions still apply.",
+    "zh-CN": "可选 Func<string, Task<bool>>；宿主创建并更新 Items 后返回是否成功。创建期间锁定选择与排序，禁用、重名和数量限制仍有效。",
+    "pt-BR": "Func<string, Task<bool>> opcional. O host cria e atualiza Items, depois informa o sucesso. A criação bloqueia seleção/ordenação; restrições de desativação, nome duplicado e quantidade continuam válidas."
+  },
+  "Parameter_NewItemMaximumLength_MultiSelectBox": {
+    "en-US": "Maximum new-name length, default 100. Must be positive and constrains both input and creation callbacks.",
+    "zh-CN": "新增名称最大长度，默认 100；须为正数，同时约束输入与创建回调。",
+    "pt-BR": "Comprimento máximo do novo nome, padrão 100. Deve ser positivo e limita entrada e callbacks de criação."
+  },
+  "Parameter_Label_MultiSelectBox": {
+    "en-US": "Optional explicit name, default null. Otherwise shows empty-selection text, the single selected label or selected count. Tables/charts explicitly supply localized display text.",
+    "zh-CN": "可选显式名称，默认 null；否则显示空选、单选标签或已选数量。表格与图表显式传入本地化“显示”。",
+    "pt-BR": "Nome explícito opcional, padrão null. Caso omitido, mostra texto de seleção vazia, rótulo do único selecionado ou quantidade. Tabelas/gráficos informam explicitamente o rótulo de exibição localizado."
+  },
+  "Parameter_LabelledBy_MultiSelectBox": {
+    "en-US": "Optional external accessible-label ID, linking a business field to its existing label.",
+    "zh-CN": "可选外部可访问标签 ID，供业务字段关联现有标签。",
+    "pt-BR": "ID opcional de rótulo acessível externo, associando o campo ao rótulo existente."
+  },
+  "Parameter_Static_MultiSelectBox": {
+    "en-US": "Native directories use the same controller to emit complete flourish-selection-change snapshots without an interactive circuit or a second renderer.",
+    "zh-CN": "原生目录复用同一控制器发出 flourish-selection-change 完整快照；不用交互式 circuit，不另设呈现入口。",
+    "pt-BR": "Diretórios nativos usam o mesmo controlador para emitir snapshots completos flourish-selection-change, sem circuito interativo nem outro renderizador."
+  },
+  "Parameter_ShowDisplayOptions": {
+    "en-US": "Charts reuse MultiSelectBox internally; default true. The library retains stable series selection/order, and changing weekly data does not reset selection.",
+    "zh-CN": "图表内置复用 MultiSelectBox，默认 true；库保留稳定序列键的选择与排序，更新周数据不重置选择。",
+    "pt-BR": "Gráficos reutilizam MultiSelectBox internamente; padrão true. A biblioteca preserva seleção/ordem das séries estáveis; atualizar dados semanais não redefine a seleção."
+  },
+  "Parameter_IncludeAllColumns": {
+    "en-US": "Adds an all-columns choice; an empty column key means all searchable columns. false selects the first Searchable column. DataTable local search explicitly enables it.",
+    "zh-CN": "搜索增加全部列选项；空列键代表全部可搜索列。默认 false 选择第一个 Searchable 列，DataTable 本地搜索显式开启。",
+    "pt-BR": "Adiciona a opção de todas as colunas; chave vazia representa todas as pesquisáveis. false seleciona a primeira coluna Searchable. A busca local de DataTable a ativa explicitamente."
+  },
+  "Parameter_Value_DataSearch": {
+    "en-US": "Controlled query text supplied by the host. Changed emits a request; the component does not filter or persist results.",
+    "zh-CN": "宿主提供的受控查询文字；Changed 返回新请求，不自行过滤或持久化结果。",
+    "pt-BR": "Texto de consulta controlado pelo host. Changed emite uma solicitação; o componente não filtra nem persiste resultados."
+  },
+  "Parameter_ColumnKey_DataSearch": {
+    "en-US": "Stable key of a searchable TableColumn. Invalid keys fall back to the first column or explicitly enabled all-columns choice; Searchable=false columns cannot be selected.",
+    "zh-CN": "当前可搜索 TableColumn 的稳定键；无效键退回首列或显式开启的全部列，不能选取 Searchable=false 列。",
+    "pt-BR": "Chave estável de TableColumn pesquisável. Chaves inválidas usam a primeira coluna ou a opção explícita de todas; colunas Searchable=false não podem ser selecionadas."
+  },
+  "Parameter_Changed_DataSearch": {
+    "en-US": "Emits TableSearchRequest(ColumnKey, Value); all columns use null. The host accepts and updates controlled values. Disabled/no searchable columns suppress callbacks.",
+    "zh-CN": "通知一个 TableSearchRequest(ColumnKey, Value)；全部列用 null。宿主决定是否接受并更新受控参数，禁用或无搜索列时不发回调。",
+    "pt-BR": "Emite TableSearchRequest(ColumnKey, Value); todas as colunas usam null. O host aceita e atualiza valores controlados. Desativação ou ausência de colunas pesquisáveis impede callbacks."
+  },
+  "Parameter_Columns_DataSearch": {
+    "en-US": "Shared TableColumn<TItem>; only Searchable=true columns appear. Keys must be nonempty and unique.",
+    "zh-CN": "共享 TableColumn<TItem>，仅列出 Searchable=true 的列；所有键必须非空且不重复。",
+    "pt-BR": "TableColumn<TItem> compartilhado; apenas colunas Searchable=true aparecem. Chaves devem ser preenchidas e únicas."
+  },
+  "Parameter_MaximumLength_DataSearch": {
+    "en-US": "Positive length, default 200. Sets native maxlength and limits input callbacks without changing an existing host query.",
+    "zh-CN": "必须为正数，默认 200；设置原生 maxlength 并限制输入回调长度，不修改宿主已提供的查询值。",
+    "pt-BR": "Comprimento positivo, padrão 200. Define maxlength nativo e limita callbacks, sem alterar a consulta já fornecida pelo host."
+  },
+  "Parameter_Text_DataSearch": {
+    "en-US": "Explicit SearchBy / AllColumns / SearchContent text in shared TableText. Omitted values use scoped localization.",
+    "zh-CN": "共享 TableText 的 SearchBy / AllColumns / SearchContent 显式文字；省略时使用作用域本地化。",
+    "pt-BR": "Textos explícitos SearchBy / AllColumns / SearchContent em TableText compartilhado. Valores omitidos usam localização do escopo."
+  },
+  "Parameter_ChildContent_DataSearch": {
+    "en-US": "Additional filters on the search row. The library does not reskin slotted checkboxes or inputs; business filtering remains host-owned.",
+    "zh-CN": "与搜索字段同行的附加筛选控件；库不重绘插槽内复选框或其他输入的皮肤，业务筛选仍由宿主负责。",
+    "pt-BR": "Filtros adicionais na linha de busca. A biblioteca não reaplica estilos aos controles do slot; a filtragem de negócio pertence ao host."
+  },
+  "Parameter_Threshold_BackToTop": {
+    "en-US": "Shows the enhanced button after the chosen content scrolls beyond this pixel threshold. Static SSR retains a real fragment link and does not move other scroll areas.",
+    "zh-CN": "指定正文滚动超过此像素值时显示增强按钮；静态 SSR 保留真实片段链接，不移走其他滚动区。",
+    "pt-BR": "Mostra o botão aprimorado após o conteúdo indicado ultrapassar este limite em pixels. SSR estático mantém um link de fragmento real, sem mover outras áreas."
+  },
+  "Parameter_IndependentScales": {
+    "en-US": "Explicit independent scales for line series. Each series maximum appears in the legend, avoiding equal interpretation of different units.",
+    "zh-CN": "折线序列显式采用独立刻度；每条序列的最大值展示在图例中，不将不同量纲误当相同数值。",
+    "pt-BR": "Escalas independentes explícitas para séries. O máximo de cada série aparece na legenda, evitando interpretar unidades diferentes como equivalentes."
+  },
+  "Parameter_ShowLegend": {
+    "en-US": "Shows series names and scale descriptions. Exact values remain in the accessible table.",
+    "zh-CN": "显示序列名称及刻度说明；精确数据仍保留于可访问表格中。",
+    "pt-BR": "Mostra nomes das séries e explicações das escalas. Valores exatos permanecem na tabela acessível."
+  },
+  "Parameter_MaximumLabel": {
+    "en-US": "Localized text describing the line-chart maximum.",
+    "zh-CN": "折线图最大值说明的本地化文字。",
+    "pt-BR": "Texto localizado que descreve o máximo do gráfico de linhas."
+  },
+  "Parameter_PointCaption": {
+    "en-US": "Name of the label column in the exact-values table.",
+    "zh-CN": "精确值表格中标签列的名称。",
+    "pt-BR": "Nome da coluna de rótulos na tabela de valores exatos."
+  },
+  "Parameter_Labels_LineChart": {
+    "en-US": "Stable unique labels and optional hints; their count must match every series value count.",
+    "zh-CN": "稳定且不重复的标签与可选提示；数量必须与每条序列的值一致。",
+    "pt-BR": "Rótulos estáveis e únicos com dicas opcionais; a quantidade deve corresponder aos valores de cada série."
+  },
+  "Parameter_ControlsContent_LineChart": {
+    "en-US": "Host business filters such as period Field/SelectBox, aligned right with the built-in icon selector. With Heading, they share the standard Section title row and wrap on narrow screens. Hosts must not duplicate series visibility/reordering.",
+    "zh-CN": "图表工具栏的宿主业务筛选插槽，例如周期 Field/SelectBox；与内置仅图标显示选择靠右排列。提供 Heading 时共用标准 Section 标题行，窄屏可自然换行。宿主不得重复实现序列显隐或排序。",
+    "pt-BR": "Filtros de negócio, como período em Field/SelectBox, alinhados à direita com o seletor de ícone integrado. Com Heading, compartilham a linha de título de Section e quebram em telas estreitas. O host não deve duplicar visibilidade/ordenação das séries."
+  },
+  "Parameter_Heading_LineChart": {
+    "en-US": "Optional visible Section H2 title. Period filters and the library-owned display selector sit to its right; Title remains the chart's assistive-technology name.",
+    "zh-CN": "可选的可见 Section H2 标题；周期筛选与库持有的显示选择同在其右侧，Title 仍是图表的辅助技术名称。",
+    "pt-BR": "Título Section H2 visível opcional. Filtros de período e seletor da biblioteca ficam à direita; Title continua sendo o nome acessível do gráfico."
+  },
+  "Parameter_Series_LineChart": {
+    "en-US": "Stable key, name, decimal values, formatter, optional maximum and initial visibility. Visible initializes new keys only; the library owns visibility/order and retains selection when same-key data changes. The host supplies raw business values.",
+    "zh-CN": "具有稳定键、名称、十进制值、格式函数、可选最大值与初始可见性的序列；Visible 仅初始化新键，库持有显隐和排序，更新相同键的数据保留选择。宿主仅提供原始业务值。",
+    "pt-BR": "Chave estável, nome, valores decimais, formatador, máximo opcional e visibilidade inicial. Visible inicializa apenas novas chaves; a biblioteca controla visibilidade/ordem e mantém seleção ao atualizar a mesma chave. O host fornece valores brutos."
+  },
+  "Parameter_Value_CopyText": {
+    "en-US": "Required raw read-only text, automatically encoded. Does not execute text or call the clipboard automatically.",
+    "zh-CN": "必填只读原值文本，自动编码；不执行文本、不自动调用剪贴板。",
+    "pt-BR": "Texto bruto somente leitura obrigatório, codificado automaticamente. Não executa texto nem acessa automaticamente a área de transferência."
+  },
+  "Parameter_Value_Primitives_ReferenceDropdown": {
+    "en-US": "Current nullable TValue reference ID; null means no selection. @bind-Value accepts selection and clearing.",
+    "zh-CN": "当前 nullable TValue 引用 ID；null 表示没有选择。使用 @bind-Value 接受选择与清除。",
+    "pt-BR": "ID atual de referência TValue anulável; null significa nenhuma seleção. @bind-Value aceita seleção e limpeza."
+  },
+  "Parameter_Value": {
+    "en-US": "Current value. Inputs and toggles use ValueChanged with @bind-Value; progress accepts 0–100 or null.",
+    "zh-CN": "当前值；输入与切换控件配合 ValueChanged 使用 @bind-Value，进度使用 0–100 或 null。",
+    "pt-BR": "Valor atual. Entradas e alternadores usam ValueChanged com @bind-Value; progresso aceita 0–100 ou null."
+  },
+  "Parameter_ValueChanged_Primitives_ReferenceDropdown": {
+    "en-US": "Notifies the new nullable TValue reference ID; null clears it. @bind-Value updates the host; selection changes are blocked during creation.",
+    "zh-CN": "通知宿主新的 nullable TValue 引用 ID；null 表示清除。@bind-Value 自动更新宿主值；创建期间不接受选择变更。",
+    "pt-BR": "Informa novo ID de referência TValue anulável; null limpa. @bind-Value atualiza o host; alterações de seleção são bloqueadas durante a criação."
+  },
+  "Parameter_ValueChanged": {
+    "en-US": "Value-change notification; @bind-Value updates the host value automatically.",
+    "zh-CN": "值变化通知；@bind-Value 自动更新宿主值。",
+    "pt-BR": "Notificação de alteração; @bind-Value atualiza automaticamente o valor do host."
+  },
+  "Parameter_ValueExpression": {
+    "en-US": "Bound model-field expression for EditContext validation and field identity.",
+    "zh-CN": "绑定的模型字段表达式，供 EditContext 验证与字段标识使用。",
+    "pt-BR": "Expressão do campo vinculado para validação do EditContext e identificação do campo."
+  },
+  "Parameter_DisplayName": {
+    "en-US": "Field name used in parsing or validation messages.",
+    "zh-CN": "解析或验证消息使用的字段名称。",
+    "pt-BR": "Nome do campo usado nas mensagens de conversão ou validação."
+  },
+  "Parameter_ParsingErrorMessage": {
+    "en-US": "Error message when input cannot be parsed into the target type.",
+    "zh-CN": "输入无法解析为目标类型时的错误消息。",
+    "pt-BR": "Mensagem quando a entrada não pode ser convertida para o tipo de destino."
+  },
+  "Parameter_OnClick": {
+    "en-US": "Button activation callback; may return an asynchronous task.",
+    "zh-CN": "按钮激活回调；可返回异步任务。",
+    "pt-BR": "Callback de ativação do botão; pode retornar uma tarefa assíncrona."
+  },
+  "Parameter_OpenOnHover": {
+    "en-US": "Both Actions and ChildContent open on mouse entry without taking focus after browser enhancement, then close after leaving trigger and popup. Keyboard/touch activation remains; top-bar menus enable this. Native SSR retains details click/keyboard disclosure.",
+    "zh-CN": "浏览器增强后，Actions 与 ChildContent 均可在鼠标进入时展开且不抢焦点，离开触发区和菜单后关闭；键盘与触屏仍可激活。顶部栏菜单自动启用。原生 SSR 保留 details 点击/键盘展开。",
+    "pt-BR": "Após aprimoramento no navegador, Actions e ChildContent abrem ao entrar com o mouse sem roubar foco e fecham ao sair do acionador e painel. Teclado/toque continuam disponíveis; menus superiores ativam isto. SSR nativo mantém details por clique/teclado."
+  },
+  "Parameter_Actions_Field": {
+    "en-US": "Optional ordinary buttons or InlineActions beside the input. The library aligns them with the control and moves them below on narrow screens. They do not inherit this Field's required or validation context; submission and callbacks remain with the caller.",
+    "zh-CN": "可选的输入旁普通按钮或 InlineActions。库将操作与输入对齐，窄屏时移到下一行。操作不继承此 Field 的必填或验证上下文；提交与回调仍由调用方负责。",
+    "pt-BR": "Botões comuns ou InlineActions opcionais ao lado da entrada. A biblioteca alinha as ações ao controle e as move para baixo em telas estreitas. Elas não herdam a obrigatoriedade ou o contexto de validação deste Field; envio e callbacks permanecem com o chamador."
+  },
+  "Parameter_ChildContent_Field": {
+    "en-US": "The labeled input that receives this Field's ID, required state and error description. Put adjacent operation buttons in Actions to keep the label and validation scoped to the input.",
+    "zh-CN": "带标签的输入，接收此 Field 的 ID、必填状态与错误描述。旁边的操作按钮放进 Actions，让标签与验证只属于输入。",
+    "pt-BR": "A entrada rotulada que recebe ID, obrigatoriedade e descrição de erro deste Field. Coloque botões de operações adjacentes em Actions para manter rótulo e validação vinculados à entrada."
+  },
+  "Parameter_Actions_Content": {
+    "en-US": "Razor content slot in the heading or action area.",
+    "zh-CN": "标题或操作区的 Razor 内容插槽。",
+    "pt-BR": "Slot de conteúdo Razor no título ou na área de ações."
+  },
+  "Parameter_Actions_Collection": {
+    "en-US": "Actions and callbacks, optionally marked disabled or dangerous.",
+    "zh-CN": "操作集合与回调，可包含禁用或危险标记。",
+    "pt-BR": "Ações e callbacks, com indicadores opcionais de desativação ou perigo."
+  },
+  "Parameter_ChildContent_ActionMenu": {
+    "en-US": "Native actions in the shared menu controller, exclusive with nonempty Actions. SSR keeps click/keyboard details and no popover; enhancement uses attachDisclosureMenu and supports OpenOnHover. The host supplies role=menuitem and real GET/POST attributes. Button owns item styling, without host menu classes. Disabled applies inert; template Busy/submission locks and authorization remain host/server-owned.",
+    "zh-CN": "同一标准菜单控制器中的原生动作内容；与非空 Actions 互斥。SSR 保留 details 点击/键盘展开且不设 popover，浏览器增强后复用 attachDisclosureMenu 并支持 OpenOnHover。宿主提供 role=menuitem 和真实 GET/POST 属性；Button 自己生成标准菜单呈现，不追加宿主菜单类。Disabled 统一 inert，模板的 Busy/重复提交锁和业务授权仍由宿主/服务器负责。",
+    "pt-BR": "Ações nativas no controlador compartilhado, exclusivas com Actions não vazio. SSR mantém details por clique/teclado sem popover; aprimoramento usa attachDisclosureMenu e aceita OpenOnHover. O host fornece role=menuitem e atributos GET/POST reais. Button controla a aparência, sem classes de menu do host. Disabled aplica inert; Busy/bloqueios de envio e autorização pertencem ao host/servidor."
+  },
+  "Parameter_ChildContent": {
+    "en-US": "Internal Razor content; business data is supplied by the host.",
+    "zh-CN": "控件内部的 Razor 内容；业务数据由宿主提供。",
+    "pt-BR": "Conteúdo Razor interno; dados de negócio são fornecidos pelo host."
+  },
+  "Parameter_Brand": {
+    "en-US": "Access-panel branding and entry-description slot; does not perform authentication.",
+    "zh-CN": "访问面板的品牌与入口说明插槽，不生成认证行为。",
+    "pt-BR": "Slot de marca e descrição de acesso; não realiza autenticação."
+  },
+  "Parameter_Footer": {
+    "en-US": "Standard footer after the main content, for document-flow presentation pages.",
+    "zh-CN": "正文后面的标准页脚插槽，适用于展示页面的文档流组合。",
+    "pt-BR": "Rodapé padrão após o conteúdo principal, para páginas de apresentação em fluxo de documento."
+  },
+  "Parameter_DocumentFlow": {
+    "en-US": "Document scrolling with natural height for presentation hosts. false retains the business shell's single content scroll region.",
+    "zh-CN": "使用文档滚动与自然高度，适用于展示类宿主；false 保留业务壳单一正文滚动轨道。",
+    "pt-BR": "Rolagem do documento com altura natural para apresentação. false mantém a única região de rolagem da estrutura de negócio."
+  },
+  "Parameter_Tone": {
+    "en-US": "Banner background color role: Canvas, Surface or Primary; content retains the centered width track. Explicitly alternate adjacent roles rather than coloring by DOM order.",
+    "zh-CN": "展示横幅背景颜色角色：Canvas、Surface 或 Primary；内部内容仍使用居中限宽轨道。推荐相邻横幅交替不同角色，而非自动按 DOM 次序换色。",
+    "pt-BR": "Cor de fundo do banner: Canvas, Surface ou Primary; o conteúdo mantém a faixa central limitada. Alterne papéis explicitamente, em vez de usar a ordem do DOM."
+  },
+  "Parameter_MinHeight": {
+    "en-US": "Minimum banner height in px, default 800. Must be nonnegative; 0 uses natural height. Long text, narrow screens and zoom can grow without clipping controls.",
+    "zh-CN": "横幅最小高度，单位 px，默认 800；必须非负，0 为自然内容高度。长文、窄屏或缩放时允许增高，不裁切控件。",
+    "pt-BR": "Altura mínima do banner em px, padrão 800. Deve ser não negativa; 0 usa altura natural. Textos longos, telas estreitas e zoom podem ampliar sem cortar controles."
+  },
+  "Parameter_FullHeight": {
+    "en-US": "Full-page banner uses the greater of 100dvh and MinHeight. Content may grow naturally; disabled by default.",
+    "zh-CN": "整页横幅模式，最小高度取动态视口 100dvh 和 MinHeight 的较大值；内容可自然增长，默认关闭。",
+    "pt-BR": "Banner de página inteira usa o maior entre 100dvh e MinHeight. Conteúdo pode crescer naturalmente; desativado por padrão."
+  },
+  "Parameter_ProjectName": {
+    "en-US": "Instance artistic project-name override; otherwise reads the literal or scoped localized name from ConfigureProject.",
+    "zh-CN": "实例项目艺术字覆盖；省略时读取 ConfigureProject 的 literal 或作用域本地化名称。",
+    "pt-BR": "Substitui o nome artístico do projeto nesta instância; caso omitido, lê o nome literal ou localizado de ConfigureProject."
+  },
+  "Parameter_LogoAlternativeText": {
+    "en-US": "Image alternative text; defaults to the configured logo description. Empty text avoids repeating the readable project name.",
+    "zh-CN": "图片替代文字；省略时读取已配置项目标志描述，空文字避免与可读项目名重复。",
+    "pt-BR": "Texto alternativo da imagem; usa a descrição configurada do logotipo. Texto vazio evita repetir o nome legível do projeto."
+  },
+  "Parameter_MenuContent": {
+    "en-US": "Native dropdown slot available in static SSR and by keyboard. Use standard navigation/actions with shared full-width hover/focus geometry. Does not authenticate. Exclusive with controlled Expanded/OnSecondaryClick.",
+    "zh-CN": "原生下拉内容插槽，静态 SSR 和键盘可用；放标准导航/动作，菜单各项使用统一全宽悬浮/聚焦矩形；不拥有认证。与宿主 Expanded 或 OnSecondaryClick 互斥。",
+    "pt-BR": "Slot de menu nativo disponível em SSR estático e por teclado. Use navegação/ações padrão com foco realçado em toda a largura. Não autentica. Exclusivo com Expanded/OnSecondaryClick controlados."
+  },
+  "Parameter_Width_SplitButton": {
+    "en-US": "Positive total SplitButton width in px. The main part flexes, the secondary button remains 48px square. FullWidth takes precedence.",
+    "zh-CN": "SplitButton 总宽度，单位 px，必须为正数；主体弹性填充，次按钮保持 48px 方形。FullWidth 优先。",
+    "pt-BR": "Largura total positiva de SplitButton em px. A parte principal é flexível; o botão secundário permanece quadrado de 48px. FullWidth tem prioridade."
+  },
+  "Parameter_TriggerClass": {
+    "en-US": "Additional CSS classes on the native dropdown summary trigger.",
+    "zh-CN": "追加到原生下拉 summary 触发器的 CSS 类。",
+    "pt-BR": "Classes CSS adicionais no summary nativo do menu."
+  },
+  "Parameter_TriggerAttributes": {
+    "en-US": "Native summary attributes; do not contradict the actual details expanded state.",
+    "zh-CN": "原生 summary 触发器属性；不得伪造与 details 实际状态矛盾的展开状态。",
+    "pt-BR": "Atributos nativos de summary; não devem contradizer o estado real de expansão de details."
+  },
+  "Parameter_TitleId": {
+    "en-US": "Stable heading HTML ID for accessible section/panel relationships.",
+    "zh-CN": "标题稳定 HTML 标识，用于章节或面板的可访问关联。",
+    "pt-BR": "ID HTML estável do título para relações acessíveis de seção/painel."
+  },
+  "Parameter_HeadingLevel": {
+    "en-US": "Semantic heading level 1–6. Band defaults to 2 and LogoDisplayer to 1; does not change geometry or artistic/body usage.",
+    "zh-CN": "语义标题级别 1–6；Band 默认 2、LogoDisplayer 默认 1；不改变布局和艺术/正文场景。",
+    "pt-BR": "Nível semântico do título de 1–6. Band usa 2 e LogoDisplayer usa 1 por padrão; não altera geometria nem uso artístico/textual."
+  },
+  "Parameter_Copyright": {
+    "en-US": "Host-provided copyright or presentation statement.",
+    "zh-CN": "宿主提供的版权或展示声明。",
+    "pt-BR": "Copyright ou declaração de apresentação fornecida pelo host."
+  },
+  "Parameter_Wide": {
+    "en-US": "Wide access-panel layout; does not change form transport or validation.",
+    "zh-CN": "使用访问面板的宽布局变种，不改变表单协议与验证。",
+    "pt-BR": "Layout largo do painel de acesso; não altera protocolo nem validação do formulário."
+  },
+  "Parameter_LinkScopeId": {
+    "en-US": "Stable current offer-link scope ID, isolating anchor interaction to this stage.",
+    "zh-CN": "当前报价链接区域的稳定 ID，限制锚点交互只影响本报价舞台。",
+    "pt-BR": "ID estável da área de links das ofertas, limitando a interação com âncoras a este palco."
+  },
+  "Parameter_AutoRotate": {
+    "en-US": "Enables progressive offer rotation and built-in pause/resume controls. Reduced motion or pointer/focus interaction pauses rotation. false hides controls.",
+    "zh-CN": "启用展示报价渐进轮播及库内暂停/恢复按钮；减少动态效果或焦点/指针交互时暂停。false 不显示轮播控制。",
+    "pt-BR": "Ativa rotação progressiva das ofertas e controles de pausa/retomada. Movimento reduzido ou interação de foco/ponteiro pausam. false oculta os controles."
+  },
+  "Parameter_RotationControlIconOnly": {
+    "en-US": "Uses a standard 48px icon button only for rotation controls; default false keeps text. aria-label/data-tooltip retain pause/resume localization. SSR remains disabled before enhancement; rotation behavior is unchanged.",
+    "zh-CN": "仅将轮播控制改为标准 48px 图标按钮；默认 false 保留文字模式。aria-label 与 data-tooltip 沿用暂停/恢复标签及其本地化，SSR 未增强时仍禁用，不改变轮播逻辑。",
+    "pt-BR": "Usa botão padrão de ícone de 48px apenas no controle de rotação; false mantém texto. aria-label/data-tooltip preservam a localização de pausa/retomada. SSR fica desativado antes do aprimoramento; a rotação não muda."
+  },
+  "Parameter_RotationIntervalMilliseconds": {
+    "en-US": "Automatic offer rotation interval in milliseconds; does not calculate prices or licenses.",
+    "zh-CN": "报价自动轮播间隔，单位毫秒；不执行价格或许可计算。",
+    "pt-BR": "Intervalo da rotação automática em milissegundos; não calcula preços nem licenças."
+  },
+  "Parameter_PauseRotationLabel": {
+    "en-US": "Pause button text; scoped framework localization by default, explicit values take precedence. Does not change offers or actions.",
+    "zh-CN": "暂停自动轮播按钮的文字；默认跟随框架作用域本地化，显式值优先，不改变报价内容或动作。",
+    "pt-BR": "Texto do botão de pausa; usa localização do escopo por padrão, com prioridade para valores explícitos. Não altera ofertas nem ações."
+  },
+  "Parameter_ResumeRotationLabel": {
+    "en-US": "Resume button text after user pause; scoped framework localization by default, explicit values take precedence.",
+    "zh-CN": "用户暂停后恢复自动轮播按钮的文字；默认跟随框架作用域本地化，显式值优先。",
+    "pt-BR": "Texto de retomada após pausa do usuário; usa localização do escopo por padrão, com prioridade para valores explícitos."
+  },
+  "Parameter_AdditionalAttributes": {
+    "en-US": "Unmatched native HTML attributes such as id, aria-label and data-*.",
+    "zh-CN": "未匹配的原生 HTML 属性，例如 id、aria-label 和 data-*。",
+    "pt-BR": "Atributos HTML nativos não correspondidos, como id, aria-label e data-*."
+  },
+  "Parameter_Class": {
+    "en-US": "Additional CSS classes on the target region.",
+    "zh-CN": "追加到目标区域的 CSS 类。",
+    "pt-BR": "Classes CSS adicionais na região de destino."
+  },
+  "Parameter_Style": {
+    "en-US": "Inline CSS or custom properties on the target region.",
+    "zh-CN": "目标区域的内联 CSS 或自定义属性。",
+    "pt-BR": "CSS inline ou propriedades personalizadas na região de destino."
+  },
+  "Parameter_Name": {
+    "en-US": "Official Google Material Symbols icon name; retired aliases are not accepted.",
+    "zh-CN": "Google 官方 Material Symbols 图标名称，不接受旧名称别名。",
+    "pt-BR": "Nome oficial de ícone Google Material Symbols; aliases antigos não são aceitos."
+  },
+  "Parameter_Dotted_PresentationBanner": {
+    "en-US": "Optional banner dot decoration, default false. Reuses standard dots and current color roles independently of height, content and actions.",
+    "zh-CN": "横幅点阵装饰，默认 false；显式开启时使用相同标准点阵和当前颜色角色，与高度、正文和动作独立。",
+    "pt-BR": "Decoração de pontos opcional do banner, padrão false. Reutiliza pontos padrão e cores atuais, independentemente de altura, conteúdo e ações."
+  },
+  "Parameter_Dotted": {
+    "en-US": "Shows a dotted background, default true; independent of content and copying.",
+    "zh-CN": "显示点阵背景；默认 true。与内容和复制功能独立。",
+    "pt-BR": "Mostra fundo pontilhado, padrão true; independente do conteúdo e da cópia."
+  },
+  "Parameter_Centered_UniformGrid": {
+    "en-US": "Centers the actual grid width horizontally. Default false keeps start alignment without changing cell size, content alignment or columns. Configure only on the outer UniformGrid.",
+    "zh-CN": "将实际网格宽度在可用区域内水平居中；默认 false 保持起始对齐，不改变单元格尺寸、内容对齐或列数。仅在外层 UniformGrid 上配置。",
+    "pt-BR": "Centraliza horizontalmente a largura real da grade. false mantém alinhamento inicial sem mudar tamanho, conteúdo ou colunas. Configure apenas no UniformGrid externo."
+  },
+  "Parameter_Centered": {
+    "en-US": "Centers ordinary board content; false aligns at the top start. CodeBlock always starts at the top start.",
+    "zh-CN": "将背景板普通子内容居中；false 时靠左上。CodeBlock 始终从左上开始。",
+    "pt-BR": "Centraliza conteúdo comum do painel; false alinha no início superior. CodeBlock sempre começa no início superior."
+  },
+  "Parameter_CopyText": {
+    "en-US": "Complete text to copy; null hides the copy action. Display it through child content such as CodeBlock.",
+    "zh-CN": "完整复制内容；null 隐藏复制动作。使用 CodeBlock 等子内容显示文本。",
+    "pt-BR": "Texto completo para copiar; null oculta a ação de cópia. Exiba-o em conteúdo filho, como CodeBlock."
+  },
+  "Parameter_OwnsDocument": {
+    "en-US": "ApplicationLayout owns the viewport and disables document scrolling by default. Set false for embedded examples.",
+    "zh-CN": "默认 ApplicationLayout 独占视口并禁用文档滚动；嵌入式示例设为 false。",
+    "pt-BR": "ApplicationLayout controla o viewport e desativa rolagem do documento por padrão. Use false para exemplos incorporados."
+  },
+  "Parameter_Shape": {
+    "en-US": "UniformGrid cell shape: default Rectangle or Square. Applies to UniformGridItem and UniformGridButton, without changing the overall container shape.",
+    "zh-CN": "在 UniformGrid 容器上设置单元格形状：默认 Rectangle，Square 为正方形；同时作用于 UniformGridItem 和 UniformGridButton，不改变整个容器的形状。",
+    "pt-BR": "Formato das células de UniformGrid: Rectangle por padrão ou Square. Aplica-se a UniformGridItem e UniformGridButton, sem alterar o formato do contêiner inteiro."
+  },
+  "Parameter_MaxCellSize": {
+    "en-US": "Maximum square cell side, default 280px. Does not constrain rectangular cells; must be positive.",
+    "zh-CN": "正方形单元格的最大边长，默认 280px；长方形不受该限制。必须为正数。",
+    "pt-BR": "Lado máximo da célula quadrada, padrão 280px. Não limita células retangulares; deve ser positivo."
+  },
+  "Parameter_MaxCellHeight": {
+    "en-US": "Maximum rectangular cell height, default 260px; no width limit. Rectangles fill and divide each row; automatic columns use twice this height as their threshold. CellHeight overrides this maximum when supplied. Does not affect squares. Must be positive; configure on UniformGrid.",
+    "zh-CN": "长方形单元格的最大高度，默认 260px；不限制宽度。矩形先铺满行再均分，自动列数使用两倍此高度作为换列阈值。设置 CellHeight 时覆盖该上限。正方形不受此值影响；必须为正数，在外层 UniformGrid 上配置。",
+    "pt-BR": "Altura máxima da célula retangular, padrão 260px; sem limite de largura. Retângulos preenchem e dividem a linha; colunas automáticas usam duas vezes essa altura como limite. CellHeight substitui o máximo quando informado. Não afeta quadrados. Deve ser positiva; configure em UniformGrid."
+  },
+  "Parameter_CellHeight": {
+    "en-US": "Optional fixed rectangular cell height in pixels. Must be positive and finite; overrides MaxCellHeight and the 2:1 aspect ratio at all widths. Omit to retain automatic bounded height. Square rejects this parameter; configure on UniformGrid.",
+    "zh-CN": "可选长方形单元格固定高度，单位像素；必须为有限正数，在所有宽度下覆盖 MaxCellHeight 与 2:1 宽高比。省略时保留有上限的自动高度。Square 拒绝此参数，在外层 UniformGrid 上配置。",
+    "pt-BR": "Altura fixa opcional da célula retangular em pixels. Deve ser positiva e finita; substitui MaxCellHeight e a proporção 2:1 em todas as larguras. Omita para manter altura automática limitada. Square rejeita esse parâmetro; configure em UniformGrid."
+  },
+  "Parameter_FillHeight": {
+    "en-US": "Fill the fixed shell content stage, keep a direct PageHeading and give the remaining height to direct content. Removes document bottom spacing. Use a direct EditingGrid for one internally scrolling editor; default false keeps document flow.",
+    "zh-CN": "填满固定 shell 正文区，保留直接子级 PageHeading，将剩余高度交给直接正文，移除文档底部间距。直接组合 EditingGrid 形成内部滚动的编辑区；默认 false 保留文档流。",
+    "pt-BR": "Preenche a área fixa de conteúdo do shell, preserva PageHeading direto e entrega a altura restante ao conteúdo direto. Remove o espaço inferior do documento. Use EditingGrid direto para rolagem interna; false padrão preserva o fluxo do documento."
+  },
+  "Parameter_IconSupport": {
+    "en-US": "null automatically enables equal vertical halves when Icon exists. true centers the icon above and text below; false keeps continuous layout. Cell values override UniformGrid.",
+    "zh-CN": "null 时有 Icon 自动启用上下等分布局；true 将图标置于上半区中央，文案置于下半区中央；false 保留连续布局。单格配置优先于 UniformGrid 配置。",
+    "pt-BR": "null ativa metades verticais iguais quando há Icon. true centraliza ícone acima e texto abaixo; false mantém layout contínuo. Valores da célula têm prioridade sobre UniformGrid."
+  },
+  "Parameter_Variant_UniformGrid": {
+    "en-US": "FilledElevated, Danger or default Elevated appearance; independent of Shape.",
+    "zh-CN": "FilledElevated、Danger 或默认 Elevated 外观；与 Shape 独立。",
+    "pt-BR": "Aparência FilledElevated, Danger ou Elevated padrão; independente de Shape."
+  },
+  "Parameter_Variant_UniformGridOptional": {
+    "en-US": "FilledElevated, Danger or Elevated. null inherits the grid appearance; standalone usage defaults to Elevated.",
+    "zh-CN": "FilledElevated、Danger 或 Elevated 外观；null 继承网格外观，独立使用时默认 Elevated。",
+    "pt-BR": "FilledElevated, Danger ou Elevated. null herda a aparência da grade; uso independente adota Elevated."
+  },
+  "Parameter_Variant": {
+    "en-US": "Primary, Secondary, Danger, Quiet, Underline or Elevated appearance; Disabled/Busy represent state.",
+    "zh-CN": "Primary、Secondary、Danger、Quiet、Underline 或 Elevated 外观；Disabled / Busy 是状态属性。",
+    "pt-BR": "Aparência Primary, Secondary, Danger, Quiet, Underline ou Elevated; Disabled/Busy representam estado."
+  },
+  "Parameter_OnSecondaryClick": {
+    "en-US": "Notifies secondary-button activation independently of the primary action.",
+    "zh-CN": "激活次按钮时通知宿主，与主按钮动作独立。",
+    "pt-BR": "Informa ativação do botão secundário, independentemente da ação principal."
+  },
+  "Parameter_Selected": {
+    "en-US": "Displays selected state on both primary and secondary buttons.",
+    "zh-CN": "同时为主按钮和次按钮显示选中状态。",
+    "pt-BR": "Mostra estado selecionado nos botões principal e secundário."
+  },
+  "Parameter_Expanded": {
+    "en-US": "Whether the associated region is expanded. The host updates it and the indicator follows by rotating.",
+    "zh-CN": "关联区域是否展开；由宿主更新，展开标记跟随此状态旋转。",
+    "pt-BR": "Indica se a região associada está expandida. O host atualiza e o indicador acompanha com rotação."
+  },
+  "Parameter_SecondaryControls": {
+    "en-US": "HTML ID of the region controlled by the secondary button.",
+    "zh-CN": "次按钮所控制区域的 HTML ID。",
+    "pt-BR": "ID HTML da região controlada pelo botão secundário."
+  },
+  "Parameter_SecondaryIcon": {
+    "en-US": "The default arrow uses shared ExpansionIndicator; other names select the corresponding Google icon.",
+    "zh-CN": "默认箭头使用共享 ExpansionIndicator；其他名称显示对应 Google 图标。",
+    "pt-BR": "A seta padrão usa ExpansionIndicator compartilhado; outros nomes escolhem o ícone Google correspondente."
+  },
+  "Parameter_PrimaryAttributes": {
+    "en-US": "Native HTML attributes on the primary or secondary button.",
+    "zh-CN": "主按钮或次按钮的原生 HTML 属性。",
+    "pt-BR": "Atributos HTML nativos do botão principal ou secundário."
+  },
+  "Parameter_PrimaryClass": {
+    "en-US": "Additional CSS classes on the primary or secondary button.",
+    "zh-CN": "主按钮或次按钮追加的 CSS 类。",
+    "pt-BR": "Classes CSS adicionais do botão principal ou secundário."
+  },
+  "Parameter_Type_DateBox": {
+    "en-US": "InputDate date/time presentation type. The bound TValue must support the chosen type.",
+    "zh-CN": "InputDate 的日期或时间呈现类型；宿主绑定的 TValue 必须与所选类型相适应。",
+    "pt-BR": "Tipo de apresentação de data/hora de InputDate. TValue vinculado deve ser compatível com o tipo escolhido."
+  },
+  "Parameter_Type": {
+    "en-US": "Native button/input type, such as submit, button, text or email.",
+    "zh-CN": "原生 button/input 类型，例如 submit、button、text、email。",
+    "pt-BR": "Tipo nativo de button/input, como submit, button, text ou email."
+  },
+  "Parameter_Busy": {
+    "en-US": "Host-provided processing state that limits repeated actions or closing.",
+    "zh-CN": "宿主提供的处理中状态，限制重复操作或关闭。",
+    "pt-BR": "Estado de processamento fornecido pelo host, limitando ações repetidas ou fechamento."
+  },
+  "Parameter_Disabled": {
+    "en-US": "Makes the control unavailable; real permissions are still checked by the host.",
+    "zh-CN": "使控件不可交互；真实权限仍由宿主检查。",
+    "pt-BR": "Torna o controle indisponível; permissões reais continuam verificadas pelo host."
+  },
+  "Parameter_DisabledMessage": {
+    "en-US": "Explains why the action is unavailable.",
+    "zh-CN": "解释操作不可用的原因。",
+    "pt-BR": "Explica por que a ação está indisponível."
+  },
+  "Parameter_Hidden": {
+    "en-US": "Hides the control and releases active interaction according to its lifecycle.",
+    "zh-CN": "隐藏控件并按其生命周期释放活动交互。",
+    "pt-BR": "Oculta o controle e libera interação ativa conforme seu ciclo de vida."
+  },
+  "Parameter_Title_UniformGridCell": {
+    "en-US": "Cell title using the H1 34px size. Omission renders no title.",
+    "zh-CN": "格面标题，使用 H1 的 34px 字号；省略时不生成标题。",
+    "pt-BR": "Título da célula com tamanho H1 de 34px. Quando omitido, não há título."
+  },
+  "Parameter_Text_UniformGridCell": {
+    "en-US": "Cell description using 17px body text. Omission renders no description.",
+    "zh-CN": "格面说明，使用正文 17px 字号；省略时不生成说明。",
+    "pt-BR": "Descrição da célula com texto de 17px. Quando omitida, não há descrição."
+  },
+  "Parameter_Label": {
+    "en-US": "Host-provided display or announcement text.",
+    "zh-CN": "宿主提供的显示或播报文字。",
+    "pt-BR": "Texto de exibição ou anúncio fornecido pelo host."
+  },
+  "Parameter_Placeholder": {
+    "en-US": "Hint for empty input; cannot replace an accessible label.",
+    "zh-CN": "空输入提示，不能代替可访问标签。",
+    "pt-BR": "Dica para entrada vazia; não substitui um rótulo acessível."
+  },
+  "Parameter_Id": {
+    "en-US": "Stable unique HTML identifier of the target element.",
+    "zh-CN": "目标元素稳定且唯一的 HTML 标识。",
+    "pt-BR": "Identificador HTML único e estável do elemento de destino."
+  },
+  "Parameter_LabelledBy": {
+    "en-US": "Existing label element ID used by aria-labelledby.",
+    "zh-CN": "已有标签元素 ID，用于 aria-labelledby。",
+    "pt-BR": "ID de rótulo existente usado por aria-labelledby."
+  },
+  "Parameter_For": {
+    "en-US": "Lambda identifying a model field for validation messages.",
+    "zh-CN": "与模型字段关联的 lambda，用于获取验证消息。",
+    "pt-BR": "Lambda que identifica o campo de modelo para mensagens de validação."
+  },
+  "Parameter_Required": {
+    "en-US": "Required-field presentation and semantics; model validation rules belong to the host.",
+    "zh-CN": "必填显示与语义；模型校验规则由宿主配置。",
+    "pt-BR": "Apresentação e semântica de campo obrigatório; regras de validação pertencem ao host."
+  },
+  "Parameter_Error": {
+    "en-US": "Actual error text or state; do not turn failures into successful empty data.",
+    "zh-CN": "真实错误文本或状态，不替换成空数据成功状态。",
+    "pt-BR": "Texto ou estado real de erro; não transforme falhas em dados vazios bem-sucedidos."
+  },
+  "Parameter_FullWidth": {
+    "en-US": "Uses the whole row or content area.",
+    "zh-CN": "占用整行或完整正文区域。",
+    "pt-BR": "Ocupa a linha ou a área de conteúdo inteira."
+  },
+  "Parameter_Columns_int": {
+    "en-US": "Normal layout column count within this component's allowed range.",
+    "zh-CN": "常规布局列数，按该组件允许的范围配置。",
+    "pt-BR": "Quantidade de colunas do layout dentro do intervalo permitido pelo componente."
+  },
+  "Parameter_Columns_intNullable": {
+    "en-US": "Explicit grid column count; omission distributes columns automatically by available width.",
+    "zh-CN": "显式指定网格列数；省略时自动按可用宽度分配。",
+    "pt-BR": "Quantidade explícita de colunas da grade; quando omitida, distribui automaticamente conforme a largura."
+  },
+  "Parameter_Columns_ListView": {
+    "en-US": "Shared TableColumn<TItem> order, captions, value selection and Format. Sortable/Searchable/CanHide metadata do not enable interactive operations.",
+    "zh-CN": "复用 TableColumn<TItem> 的列顺序、标题、值选择和 Format；Sortable / Searchable / CanHide 元数据不启用动态操作。",
+    "pt-BR": "Ordem, títulos, seleção de valores e Format compartilhados de TableColumn<TItem>. Sortable/Searchable/CanHide não ativam operações interativas."
+  },
+  "Parameter_Columns": {
+    "en-US": "Column metadata describing captions, value selection, formatting and available operations.",
+    "zh-CN": "列元数据，定义标题、值选择、格式和可用操作。",
+    "pt-BR": "Metadados de colunas com títulos, seleção de valores, formatação e operações disponíveis."
+  },
+  "Parameter_NarrowColumns_UniformGrid": {
+    "en-US": "Explicit narrow-window column override. Omission keeps automatic columns or Columns/Rows configuration.",
+    "zh-CN": "在窄窗口显式覆盖列数；省略时继续使用自动分列或 Columns / Rows 配置。",
+    "pt-BR": "Substitui explicitamente as colunas em janela estreita. Quando omitido, mantém colunas automáticas ou configuração Columns/Rows."
+  },
+  "Parameter_NarrowColumns": {
+    "en-US": "Narrow-window column count; omission inherits Columns.",
+    "zh-CN": "窄窗口列数；省略时继承 Columns。",
+    "pt-BR": "Quantidade de colunas em janela estreita; quando omitida, herda Columns."
+  },
+  "Parameter_Fluid": {
+    "en-US": "Uses the fluid content track; null inherits application layout configuration.",
+    "zh-CN": "使用流动正文轨道；可空值继承应用布局配置。",
+    "pt-BR": "Usa faixa de conteúdo fluida; null herda a configuração de layout da aplicação."
+  },
+  "Parameter_Compact": {
+    "en-US": "Uses compact heading state.",
+    "zh-CN": "使用紧凑标题状态。",
+    "pt-BR": "Usa estado compacto do título."
+  },
+  "Parameter_FocusInvalidFields": {
+    "en-US": "Focuses the first invalid field after validation failure.",
+    "zh-CN": "验证失败后聚焦首个无效字段。",
+    "pt-BR": "Foca o primeiro campo inválido após falha de validação."
+  },
+  "Parameter_Min": {
+    "en-US": "Native numeric input range or step.",
+    "zh-CN": "原生数值输入的范围或步长。",
+    "pt-BR": "Intervalo ou passo nativo da entrada numérica."
+  },
+  "Parameter_MaxLength": {
+    "en-US": "Maximum input or new-name length.",
+    "zh-CN": "输入或新建名称的最大长度。",
+    "pt-BR": "Comprimento máximo da entrada ou do novo nome."
+  },
+  "Parameter_Multiline": {
+    "en-US": "Uses a multiline textarea.",
+    "zh-CN": "使用 textarea 多行输入。",
+    "pt-BR": "Usa textarea de várias linhas."
+  },
+  "Parameter_Rows_int": {
+    "en-US": "Visible rows of a multiline input.",
+    "zh-CN": "多行输入的可见行数。",
+    "pt-BR": "Linhas visíveis da entrada multilinha."
+  },
+  "Parameter_Rows_intNullable": {
+    "en-US": "Explicit grid row count; when only rows are specified, fills by columns.",
+    "zh-CN": "显式指定网格行数；只指定行数时按列填充。",
+    "pt-BR": "Quantidade explícita de linhas da grade; quando apenas linhas são definidas, preenche por colunas."
+  },
+  "Parameter_Rows": {
+    "en-US": "Editing-grid rows whose cell counts must match the columns.",
+    "zh-CN": "编辑网格行，单元格数量须与列数一致。",
+    "pt-BR": "Linhas da grade de edição; a quantidade de células deve corresponder às colunas."
+  },
+  "Parameter_Mask": {
+    "en-US": "Input-mask format; host business validation is still required.",
+    "zh-CN": "输入掩码格式；仍需宿主业务校验。",
+    "pt-BR": "Formato da máscara; validação de negócio pelo host ainda é necessária."
+  },
+  "Parameter_InputMode": {
+    "en-US": "Native keyboard hint, such as numeric.",
+    "zh-CN": "原生输入键盘提示，例如 numeric。",
+    "pt-BR": "Dica nativa de teclado, como numeric."
+  },
+  "Parameter_Options": {
+    "en-US": "Selectable values, display text and disabled state.",
+    "zh-CN": "可选择值、显示文字和禁用状态。",
+    "pt-BR": "Valores selecionáveis, texto e estado desativado."
+  },
+  "Parameter_Items_ListView": {
+    "en-US": "Displays every read-only record in supplied order; no built-in requests, filtering, sorting or paging.",
+    "zh-CN": "按传入顺序完整展示所有只读记录；无内置请求、过滤、排序或分页。",
+    "pt-BR": "Exibe todos os registros somente leitura na ordem recebida; sem solicitações, filtragem, ordenação ou paginação integradas."
+  },
+  "Parameter_Items": {
+    "en-US": "Supplied data collection; the component does not fetch remote data automatically.",
+    "zh-CN": "传入的数据集合；组件不会自动请求远程数据。",
+    "pt-BR": "Coleção fornecida; o componente não busca automaticamente dados remotos."
+  },
+  "Parameter_ItemKey_ListView": {
+    "en-US": "Stable host row key for Blazor render identity only; does not add selection or row actions.",
+    "zh-CN": "宿主提供的稳定行键，仅供 Blazor 渲染识别记录，不增加选择或行操作。",
+    "pt-BR": "Chave estável de linha fornecida pelo host apenas para identificação de renderização Blazor; não adiciona seleção nem ações."
+  },
+  "Parameter_ValueSelector": {
+    "en-US": "Host function that selects a value or stable key.",
+    "zh-CN": "获取值或稳定键的宿主函数。",
+    "pt-BR": "Função do host que seleciona um valor ou uma chave estável."
+  },
+  "Parameter_TextSelector": {
+    "en-US": "Function that selects display or searchable text.",
+    "zh-CN": "获取显示或搜索文字的函数。",
+    "pt-BR": "Função que seleciona texto de exibição ou pesquisa."
+  },
+  "Parameter_SelectedValues": {
+    "en-US": "Host-maintained selected values.",
+    "zh-CN": "宿主维护的已选择值集合。",
+    "pt-BR": "Valores selecionados mantidos pelo host."
+  },
+  "Parameter_SelectionChanged": {
+    "en-US": "Selection-change notification; update host state according to this component's contract.",
+    "zh-CN": "选择变化通知；按对应组件契约更新宿主状态。",
+    "pt-BR": "Notificação de alteração de seleção; atualize o host conforme o contrato do componente."
+  },
+  "Parameter_ItemSelected": {
+    "en-US": "Notifies the host when a candidate is selected.",
+    "zh-CN": "候选项被选择时通知宿主。",
+    "pt-BR": "Informa ao host quando um candidato é selecionado."
+  },
+  "Parameter_AllowNone": {
+    "en-US": "Allows clearing a single reference selection.",
+    "zh-CN": "允许清除单选引用。",
+    "pt-BR": "Permite limpar a seleção de referência única."
+  },
+  "Parameter_CreateRequested": {
+    "en-US": "Asks the host to create an option; the component does not persist remote objects.",
+    "zh-CN": "请求宿主创建选项，组件不保存远程对象。",
+    "pt-BR": "Solicita criação de opção ao host; o componente não persiste objetos remotos."
+  },
+  "Parameter_MaximumResultsLimit": {
+    "en-US": "Limits selection or candidate-result count.",
+    "zh-CN": "限制选择数量或候选结果数量。",
+    "pt-BR": "Limita a quantidade de seleções ou candidatos."
+  },
+  "Parameter_FilterItems_bool": {
+    "en-US": "Enables built-in candidate text filtering. false requires the host to supply already filtered candidates.",
+    "zh-CN": "启用控件内置的候选文字过滤；false 时由宿主提供已过滤的候选集合。",
+    "pt-BR": "Ativa filtragem textual integrada. false exige candidatos já filtrados pelo host."
+  },
+  "Parameter_FilterItems": {
+    "en-US": "Candidate filtering function supporting host matching rules.",
+    "zh-CN": "候选过滤函数，支持宿主匹配逻辑。",
+    "pt-BR": "Função de filtragem de candidatos com regras de correspondência do host."
+  },
+  "Parameter_DebounceMilliseconds": {
+    "en-US": "Search debounce delay in milliseconds.",
+    "zh-CN": "搜索防抖延迟，单位毫秒。",
+    "pt-BR": "Atraso de debounce da busca em milissegundos."
+  },
+  "Parameter_SearchRequested": {
+    "en-US": "Cancelable asynchronous search receiving query text and CancellationToken.",
+    "zh-CN": "可取消的异步搜索，接收查询文字和 CancellationToken。",
+    "pt-BR": "Busca assíncrona cancelável que recebe texto e CancellationToken."
+  },
+  "Parameter_SearchChanged_DataTable": {
+    "en-US": "Emits shared TableSearchRequest, retaining page/draft protection without making network calls.",
+    "zh-CN": "通知统一 TableSearchRequest，保留离页/草稿保护，不执行网络调用。",
+    "pt-BR": "Emite TableSearchRequest compartilhado, preservando proteção da página/rascunho sem chamadas de rede."
+  },
+  "Parameter_SearchChanged": {
+    "en-US": "Notifies changed input or query conditions.",
+    "zh-CN": "当前输入或查询条件变化通知。",
+    "pt-BR": "Informa alteração de entrada ou condições de consulta."
+  },
+  "Parameter_SearchCleared": {
+    "en-US": "Notifies clearing the search.",
+    "zh-CN": "搜索清空通知。",
+    "pt-BR": "Informa limpeza da busca."
+  },
+  "Parameter_OnSearch": {
+    "en-US": "Application search-submit callback.",
+    "zh-CN": "应用搜索提交回调。",
+    "pt-BR": "Callback de envio da busca da aplicação."
+  },
+  "Parameter_ColumnKey": {
+    "en-US": "Stable key of the current search column.",
+    "zh-CN": "当前搜索列的稳定键。",
+    "pt-BR": "Chave estável da coluna de busca atual."
+  },
+  "Parameter_Searchable": {
+    "en-US": "Enables or displays the search entry.",
+    "zh-CN": "启用或显示搜索入口。",
+    "pt-BR": "Ativa ou exibe a entrada de busca."
+  },
+  "Parameter_View_Dialog": {
+    "en-US": "Stable Key of the current DialogView; must exist in Views.",
+    "zh-CN": "当前 DialogView 的稳定 Key；必须来自 Views。",
+    "pt-BR": "Key estável do DialogView atual; deve existir em Views."
+  },
+  "Parameter_View": {
+    "en-US": "Current table or card view.",
+    "zh-CN": "当前表格或卡片视图。",
+    "pt-BR": "Visualização atual em tabela ou cartões."
+  },
+  "Parameter_ViewChanged": {
+    "en-US": "Notifies view switching.",
+    "zh-CN": "视图切换通知。",
+    "pt-BR": "Informa troca de visualização."
+  },
+  "Parameter_Loading": {
+    "en-US": "Shows loading state; data that has not arrived is not an empty result.",
+    "zh-CN": "显示加载状态，不把未返回的数据当作空结果。",
+    "pt-BR": "Mostra carregamento; dados ainda não recebidos não representam resultado vazio."
+  },
+  "Parameter_LoadingMessage": {
+    "en-US": "Description of loading, empty results or selection state.",
+    "zh-CN": "对应加载、空结果或选择状态的说明。",
+    "pt-BR": "Descrição de carregamento, resultados vazios ou estado de seleção."
+  },
+  "Parameter_PageSize": {
+    "en-US": "Records per page; DataTable defaults to 10 and supports changing the value.",
+    "zh-CN": "每页显示的记录数；DataTable 默认 10，可由控制器切换。",
+    "pt-BR": "Registros por página; DataTable usa 10 por padrão e permite alteração."
+  },
+  "Parameter_PageSizeChanged": {
+    "en-US": "Records-per-page notification; supports @bind-PageSize.",
+    "zh-CN": "每页数量变化通知；支持 @bind-PageSize。",
+    "pt-BR": "Notificação da quantidade por página; aceita @bind-PageSize."
+  },
+  "Parameter_CurrentPage": {
+    "en-US": "Current page number, starting at 1.",
+    "zh-CN": "当前页码，从 1 开始。",
+    "pt-BR": "Número da página atual, começando em 1."
+  },
+  "Parameter_TotalCount": {
+    "en-US": "Actual total in the current data scope.",
+    "zh-CN": "当前数据范围内的真实总数。",
+    "pt-BR": "Total real no escopo atual dos dados."
+  },
+  "Parameter_PageChanged": {
+    "en-US": "New page requested by the user.",
+    "zh-CN": "用户请求的新页码。",
+    "pt-BR": "Nova página solicitada pelo usuário."
+  },
+  "Parameter_IsLimited": {
+    "en-US": "Indicates limited results or additional data.",
+    "zh-CN": "说明当前结果受限或有后续数据。",
+    "pt-BR": "Indica resultados limitados ou dados adicionais."
+  },
+  "Parameter_ShowRange": {
+    "en-US": "Shows the current page's record range.",
+    "zh-CN": "显示当前页记录范围。",
+    "pt-BR": "Mostra o intervalo de registros da página atual."
+  },
+  "Parameter_PaginationResetKey": {
+    "en-US": "Host identity whose changes reset pagination.",
+    "zh-CN": "变化时重置分页的宿主标识。",
+    "pt-BR": "Identificador do host cuja alteração redefine a paginação."
+  },
+  "Parameter_Culture_ListView": {
+    "en-US": "CultureInfo for read-only cell formatting. Omission follows scoped ITextProvider.FormatCulture; explicit values take precedence.",
+    "zh-CN": "只读单元格格式化使用的 CultureInfo；省略时跟随当前作用域 ITextProvider.FormatCulture，显式值优先。",
+    "pt-BR": "CultureInfo para formatação de células somente leitura. Quando omitido, segue ITextProvider.FormatCulture do escopo; valores explícitos têm prioridade."
+  },
+  "Parameter_Culture": {
+    "en-US": "CultureInfo for comparisons and formatting.",
+    "zh-CN": "比较和格式化使用的 CultureInfo。",
+    "pt-BR": "CultureInfo para comparações e formatação."
+  },
+  "Parameter_OnRowOpen": {
+    "en-US": "Record-opening action explicitly supplied by the host.",
+    "zh-CN": "宿主明确提供的记录打开动作。",
+    "pt-BR": "Ação de abertura de registro fornecida explicitamente pelo host."
+  },
+  "Parameter_RowOpenAvailable": {
+    "en-US": "Per-row availability of explicit OnRowOpen. Menu entry, interaction markers and callbacks all check it; it does not replace server authorization.",
+    "zh-CN": "显式 OnRowOpen 的逐行可用条件；菜单打开项、行交互标记和回调均检查此条件，不代替服务端授权。",
+    "pt-BR": "Disponibilidade por linha de OnRowOpen explícito. Menu, indicadores e callbacks verificam esta condição; não substitui autorização do servidor."
+  },
+  "Parameter_RowActionsContent": {
+    "en-US": "Complete native row actions in standard ActionMenu, shared by table/cards; exclusive with nonempty Actions and no automatic Open insertion. Hosts retain GET/POST and target. Double-click requires NativeRowOpen/RowOpenAvailable and a unique data-record-open A/Form; POST requires a unique enabled submitter. Missing, ambiguous or disabled entries are rejected.",
+    "zh-CN": "标准 ActionMenu 中的完整原生行操作内容，列表与卡片共用；与非空 Actions 互斥，不再自动插入 Open。原生 GET/POST、target 等由宿主保留。双击须同时声明 NativeRowOpen/RowOpenAvailable 和唯一 data-record-open A/Form；POST 要求唯一可用 submitter，缺失/歧义/禁用时拒绝激活。",
+    "pt-BR": "Ações nativas completas em ActionMenu, compartilhadas entre tabela/cartões; exclusivas com Actions não vazio e sem Open automático. O host preserva GET/POST e target. Clique duplo exige NativeRowOpen/RowOpenAvailable e A/Form único com data-record-open; POST exige remetente único habilitado. Ausência, ambiguidade ou desativação são rejeitadas."
+  },
+  "Parameter_RowHeaderKey": {
+    "en-US": "Existing column key rendered as a th scope=row row heading. null uses normal data cells.",
+    "zh-CN": "指定已有列键，将该列单元格呈现为 th scope=row 的行标题；null 使用普通数据单元格。",
+    "pt-BR": "Chave de coluna existente renderizada como título de linha th scope=row. null usa células comuns."
+  },
+  "Parameter_Caption_ListView": {
+    "en-US": "Accessible table description, visually hidden. null uses Label.",
+    "zh-CN": "辅助技术可读的表格说明；默认 null 使用 Label，说明在视觉上隐藏。",
+    "pt-BR": "Descrição acessível da tabela, visualmente oculta. null usa Label."
+  },
+  "Parameter_CellTemplate_ListView": {
+    "en-US": "Read-only cell template. TableCellContext<TItem> provides the raw Item, shared Column and formatted Text. Default text is encoded; custom templates own their content and accessibility semantics.",
+    "zh-CN": "只读单元格模板；TableCellContext<TItem> 提供原始 Item、共享 Column 和已格式化 Text。默认文本自动转义；自定义模板负责其内容与可访问语义。",
+    "pt-BR": "Template somente leitura. TableCellContext<TItem> fornece Item bruto, Column compartilhado e Text formatado. Texto padrão é codificado; templates próprios controlam conteúdo e semântica acessível."
+  },
+  "Parameter_CellTemplate_EditingGrid": {
+    "en-US": "Editor content only for GridEditorKind.Template. GridCellContext provides row, column, cell and composed disabled state. It remains in the same keyboard/clipboard cell; the host owns transactions/values and cannot bypass ReadOnly/Disabled.",
+    "zh-CN": "只用于 GridEditorKind.Template 的编辑器内容；GridCellContext 提供行/列/单元格和合成后的禁用状态。仍处于同一键盘/剪贴板单元格，宿主保留编辑事务与值，不能绕过 ReadOnly/Disabled。",
+    "pt-BR": "Conteúdo de editor apenas para GridEditorKind.Template. GridCellContext fornece linha, coluna, célula e estado desativado combinado. Continua na mesma célula de teclado/clipboard; o host controla transações/valores e não pode ignorar ReadOnly/Disabled."
+  },
+  "Parameter_CellTemplate": {
+    "en-US": "Cell-display or bulk-edit template.",
+    "zh-CN": "单元格显示或批量编辑模板。",
+    "pt-BR": "Template de exibição da célula ou edição em lote."
+  },
+  "Parameter_Progressive": {
+    "en-US": "Standard table enhancement without an interactive connection: all authorized visible text is SSR with native actions, and the library handles search, sorting, paging, columns and view. Rejects default-hidden columns, separate search/sort values and editing; no extra record fields are serialized.",
+    "zh-CN": "无交互连接的标准表格渐进增强：全量授权可见文本 SSR 和原生动作，库内控制器搜索/排序/分页/列显隐/视图。拒绝隐藏默认列、独立搜索/排序值和编辑；不序列化额外记录字段。",
+    "pt-BR": "Aprimoramento de tabela sem conexão interativa: todo texto visível autorizado é SSR com ações nativas; a biblioteca controla busca, ordenação, paginação, colunas e visualização. Rejeita colunas inicialmente ocultas, valores de busca/ordenação separados e edição; não serializa campos extras."
+  },
+  "Parameter_NativeRowOpen": {
+    "en-US": "Explicit opening through the unique data-record-open native action in RowActionsContent. Requires that slot and forbids a fake callback or RowOpenHref at the same time.",
+    "zh-CN": "明确通过 RowActionsContent 中唯一的 data-record-open 原生动作打开记录；必须有该插槽，不得同时提供虚假回调或 RowOpenHref。",
+    "pt-BR": "Abertura explícita pela ação nativa única data-record-open em RowActionsContent. Exige o slot e impede callback fictício ou RowOpenHref simultâneo."
+  },
+  "Parameter_RowOpenHref": {
+    "en-US": "Actual per-record GET link; exclusive with OnRowOpen. Complete custom RowActionsContent supplies its own unique standard opening action; the library adds no duplicate.",
+    "zh-CN": "按记录提供真实 GET 链接；与 OnRowOpen 互斥。自定义完整 RowActionsContent 时由宿主放入唯一标准打开动作，库不追加重复操作。",
+    "pt-BR": "Link GET real por registro; exclusivo com OnRowOpen. RowActionsContent completo fornece sua própria ação padrão única; a biblioteca não a duplica."
+  },
+  "Parameter_SearchMode": {
+    "en-US": "Local uses shared TableData algorithms; Remote only notifies the host and does not refilter server results. Remote search selects only searchable columns.",
+    "zh-CN": "Local 使用共享 TableData 算法；Remote 只通知宿主请求，不对服务端结果再次过滤。远端搜索仅选择实际可搜索列。",
+    "pt-BR": "Local usa algoritmos TableData compartilhados; Remote apenas informa o host e não refiltra resultados do servidor. Busca remota seleciona apenas colunas pesquisáveis."
+  },
+  "Parameter_SearchQuery": {
+    "en-US": "Controlled remote-query text and stable column key; cancellation, debounce and authorization belong to the host.",
+    "zh-CN": "远端搜索的受控查询值与稳定列键；业务取消、去抖和授权属于宿主。",
+    "pt-BR": "Texto controlado de busca remota e chave estável da coluna; cancelamento, debounce e autorização pertencem ao host."
+  },
+  "Parameter_SearchContent": {
+    "en-US": "Filters on the standard search row, sharing DataSearch.ChildContent layout. Use actual Flourish controls.",
+    "zh-CN": "标准搜索行内的筛选内容插槽，与 DataSearch.ChildContent 复用布局；放入实际 Flourish 控件。",
+    "pt-BR": "Filtros na linha de busca padrão, com layout compartilhado de DataSearch.ChildContent. Use controles reais de Flourish."
+  },
+  "Parameter_SearchDisabled": {
+    "en-US": "Disables query input without hiding results; editing busy state also blocks queries.",
+    "zh-CN": "禁用查询输入而不隐藏结果；编辑忙碌状态同样阻止查询。",
+    "pt-BR": "Desativa entrada de consulta sem ocultar resultados; edição ocupada também bloqueia consultas."
+  },
+  "Parameter_SearchId": {
+    "en-US": "Stable shared search-input ID linked to the Field label.",
+    "zh-CN": "统一搜索输入的稳定标识，与 Field 标签关联。",
+    "pt-BR": "ID estável da entrada de busca compartilhada, associado ao rótulo Field."
+  },
+  "Parameter_SearchMaximumLength": {
+    "en-US": "Maximum query text length; the standard search control enforces native and callback bounds.",
+    "zh-CN": "查询文字最大长度；标准搜索控件同时处理原生限制和回调限制。",
+    "pt-BR": "Comprimento máximo da consulta; o controle padrão aplica limites nativos e de callback."
+  },
+  "Parameter_ShowRowActions": {
+    "en-US": "Shows record action capability; bulk editing or unavailable business state keeps record opening disabled.",
+    "zh-CN": "显示记录操作能力；批量编辑或业务不可用时保持打开行为关闭。",
+    "pt-BR": "Mostra ações de registro; edição em lote ou indisponibilidade de negócio mantém abertura desativada."
+  },
+  "Parameter_PreferenceKey_DataTable": {
+    "en-US": "Optional stable, untranslated preference-isolation key. Uses scoped ITablePreferences; omission retains component-local state without promising persistence or cross-window sharing.",
+    "zh-CN": "可选稳定、非翻译排序偏好隔离键；复用当前 scoped ITablePreferences，省略保留组件内状态，不承诺跨窗口或持久化。",
+    "pt-BR": "Chave opcional estável e não traduzida para isolar preferências. Usa ITablePreferences do escopo; quando omitida, mantém estado local sem garantir persistência nem compartilhamento entre janelas."
+  },
+  "Parameter_PreferenceKey": {
+    "en-US": "Table preference-isolation key.",
+    "zh-CN": "表格偏好的隔离键。",
+    "pt-BR": "Chave de isolamento das preferências da tabela."
+  },
+  "Parameter_Purpose": {
+    "en-US": "Table usage as a registry, pool or worklist.",
+    "zh-CN": "表格的登记、数据池或任务列表用途。",
+    "pt-BR": "Uso da tabela como registro, conjunto de dados ou lista de tarefas."
+  },
+  "Parameter_CellChanged": {
+    "en-US": "Notifies a proposed cell change; validation and saving remain host-owned.",
+    "zh-CN": "单元格提出变更时通知宿主；校验和保存仍由宿主处理。",
+    "pt-BR": "Informa alteração proposta na célula; validação e salvamento pertencem ao host."
+  },
+  "Parameter_Interactions": {
+    "en-US": "Undo, redo, save, paste and error-report callbacks.",
+    "zh-CN": "撤销、重做、保存、粘贴及错误报告回调集合。",
+    "pt-BR": "Callbacks de desfazer, refazer, salvar, colar e informar erros."
+  },
+  "Parameter_MeasurementRevision": {
+    "en-US": "Measurement revision after displayed data changes.",
+    "zh-CN": "显示数据变化后的测量版本。",
+    "pt-BR": "Revisão de medição após alteração dos dados exibidos."
+  },
+  "Parameter_EditDisabled": {
+    "en-US": "Prevents editing while retaining readable content.",
+    "zh-CN": "阻止编辑但保留可读内容。",
+    "pt-BR": "Impede edição mantendo conteúdo legível."
+  },
+  "Parameter_BulkEditing": {
+    "en-US": "Current bulk-editing state.",
+    "zh-CN": "正在进行批量编辑的状态。",
+    "pt-BR": "Estado atual de edição em lote."
+  },
+  "Parameter_BulkEditRequested": {
+    "en-US": "Requests entry into bulk editing.",
+    "zh-CN": "进入批量编辑的请求。",
+    "pt-BR": "Solicita entrada em edição em lote."
+  },
+  "Parameter_IsSelectedForEditing": {
+    "en-US": "Row or all-row editing selection state.",
+    "zh-CN": "行或全体编辑选择状态。",
+    "pt-BR": "Estado de seleção para editar uma linha ou todas."
+  },
+  "Parameter_ToggleEditSelection": {
+    "en-US": "Callback toggling row or all-row editing selection.",
+    "zh-CN": "切换行或全体编辑选择的回调。",
+    "pt-BR": "Callback que alterna seleção de edição da linha ou de todas."
+  },
+  "Parameter_SpreadsheetEditHref": {
+    "en-US": "Spreadsheet-editing navigation destination.",
+    "zh-CN": "表格式编辑导航地址。",
+    "pt-BR": "Destino de navegação para edição em planilha."
+  },
+  "Parameter_BrowserControlled": {
+    "en-US": "Browser protocol owns opening and views on the same native dialog and modal behavior. Cannot be combined with controlled IsOpen.",
+    "zh-CN": "由浏览器协议驱动开关与视图，保留同一原生 dialog 和模态行为；此模式不混用受控 IsOpen。",
+    "pt-BR": "O protocolo do navegador controla abertura e visualizações do mesmo dialog nativo e comportamento modal. Não pode ser combinado com IsOpen controlado."
+  },
+  "Parameter_Dismissible": {
+    "en-US": "Whether the close button and Escape dismissal are allowed; default true. Protocol status dialogs can use false.",
+    "zh-CN": "是否提供关闭按钮以及允许 Escape 关闭；默认 true。协议状态提示可设为 false。",
+    "pt-BR": "Define se botão de fechar e Escape são permitidos; padrão true. Diálogos de estado do protocolo podem usar false."
+  },
+  "Parameter_Views": {
+    "en-US": "Stable DialogView Keys and content fragments; all declared views stay mounted and are selected by View or browser protocol.",
+    "zh-CN": "DialogView 的稳定 Key 与内容片段；保留所有已声明视图并按 View 或浏览器协议选择。",
+    "pt-BR": "Keys estáveis de DialogView e fragmentos; todas as visualizações declaradas permanecem montadas e são escolhidas por View ou protocolo do navegador."
+  },
+  "Parameter_IsOpen": {
+    "en-US": "Popup open state; synchronize host state through the close callback.",
+    "zh-CN": "弹层打开状态，按关闭回调同步宿主状态。",
+    "pt-BR": "Estado de abertura; sincronize o host pelo callback de fechamento."
+  },
+  "Parameter_IsOpenChanged": {
+    "en-US": "Open-state notification for @bind-IsOpen.",
+    "zh-CN": "打开状态通知，用于 @bind-IsOpen。",
+    "pt-BR": "Notificação do estado de abertura para @bind-IsOpen."
+  },
+  "Parameter_CanClose": {
+    "en-US": "Asynchronous permission before closing, suitable for protecting unsaved content.",
+    "zh-CN": "关闭前异步许可，可保护未保存内容。",
+    "pt-BR": "Permissão assíncrona antes de fechar, adequada para proteger conteúdo não salvo."
+  },
+  "Parameter_Presentation": {
+    "en-US": "Centered dialog or bottom-sheet presentation.",
+    "zh-CN": "居中或底部面板呈现。",
+    "pt-BR": "Apresentação centralizada ou painel inferior."
+  },
+  "Parameter_TriggerContent": {
+    "en-US": "Razor content for the menu trigger.",
+    "zh-CN": "菜单触发器的 Razor 内容。",
+    "pt-BR": "Conteúdo Razor do acionador do menu."
+  },
+  "Parameter_Severity": {
+    "en-US": "Severity determining appearance and default announcement semantics.",
+    "zh-CN": "严重程度，决定外观与默认播报语义。",
+    "pt-BR": "Gravidade que determina aparência e semântica padrão dos anúncios."
+  },
+  "Parameter_Subtle": {
+    "en-US": "Subtle notice appearance.",
+    "zh-CN": "轻量通知外观。",
+    "pt-BR": "Aparência discreta da notificação."
+  },
+  "Parameter_Announce": {
+    "en-US": "Enables assistive-technology announcements.",
+    "zh-CN": "启用辅助技术播报。",
+    "pt-BR": "Ativa anúncios para tecnologias assistivas."
+  },
+  "Parameter_Role": {
+    "en-US": "Native accessibility role matching actual semantics.",
+    "zh-CN": "原生辅助技术角色，须符合实际语义。",
+    "pt-BR": "Papel nativo de acessibilidade correspondente à semântica real."
+  },
+  "Parameter_StatusText": {
+    "en-US": "Actual current task stage, without invented progress.",
+    "zh-CN": "任务当前阶段，不虚构进度。",
+    "pt-BR": "Etapa real atual da tarefa, sem inventar progresso."
+  },
+  "Parameter_Stopped": {
+    "en-US": "Pauses progress-ring rotation.",
+    "zh-CN": "暂停进度环旋转。",
+    "pt-BR": "Pausa a rotação do anel de progresso."
+  },
+  "Parameter_InitiallyOpen": {
+    "en-US": "Initial native disclosure state.",
+    "zh-CN": "原生展开区域初始状态。",
+    "pt-BR": "Estado inicial da expansão nativa."
+  },
+  "Parameter_Href": {
+    "en-US": "Host-defined navigation destination.",
+    "zh-CN": "宿主定义的导航地址。",
+    "pt-BR": "Destino de navegação definido pelo host."
+  },
+  "Parameter_ParentLabel": {
+    "en-US": "Link text of the actual parent page.",
+    "zh-CN": "真实上级页面链接文字。",
+    "pt-BR": "Texto do link da página superior real."
+  },
+  "Parameter_IdentityName": {
+    "en-US": "Identity, brand or application display name.",
+    "zh-CN": "身份、品牌或应用显示名。",
+    "pt-BR": "Nome de exibição da identidade, marca ou aplicação."
+  },
+  "Parameter_LogoPath": {
+    "en-US": "Host-provided logo image path.",
+    "zh-CN": "宿主提供的标志图片路径。",
+    "pt-BR": "Caminho da imagem de logotipo fornecido pelo host."
+  },
+  "Parameter_Match": {
+    "en-US": "Exact or prefix NavLink matching.",
+    "zh-CN": "NavLink 精确或前缀匹配方式。",
+    "pt-BR": "Correspondência exata ou por prefixo de NavLink."
+  },
+  "Parameter_IsCurrent": {
+    "en-US": "Current navigation-item state.",
+    "zh-CN": "当前导航项状态。",
+    "pt-BR": "Estado do item de navegação atual."
+  },
+  "Parameter_PrimaryNavigation": {
+    "en-US": "Host navigation content or metadata.",
+    "zh-CN": "宿主导航内容或元数据。",
+    "pt-BR": "Conteúdo ou metadados de navegação do host."
+  },
+  "Parameter_ShowSecondary": {
+    "en-US": "Shows secondary navigation.",
+    "zh-CN": "显示二级导航。",
+    "pt-BR": "Mostra navegação secundária."
+  },
+  "Parameter_DocumentKey": {
+    "en-US": "Content identity; changes reset content scrolling.",
+    "zh-CN": "正文身份，变化时重置内容滚动。",
+    "pt-BR": "Identidade do conteúdo; alterações redefinem sua rolagem."
+  },
+  "Parameter_Form": {
+    "en-US": "ID of the form associated with the button.",
+    "zh-CN": "按钮关联的 form 元素 ID。",
+    "pt-BR": "ID do form associado ao botão."
+  },
+  "Parameter_HasUnsavedChanges": {
+    "en-US": "Unsaved state used by navigation protection.",
+    "zh-CN": "导航保护使用的未保存状态。",
+    "pt-BR": "Estado não salvo usado pela proteção de navegação."
+  },
+  "Parameter_Locked": {
+    "en-US": "Temporarily limits interaction with wrapped content.",
+    "zh-CN": "暂时限制被包裹内容的交互。",
+    "pt-BR": "Limita temporariamente interação com o conteúdo envolvido."
+  },
+  "Parameter_Emphasized": {
+    "en-US": "Emphasized presentation.",
+    "zh-CN": "强调显示方式。",
+    "pt-BR": "Apresentação com destaque."
+  },
+  "Parameter_Prominent": {
+    "en-US": "Large presentation card with standard actions left and H1-sized body text right. Not the default business Card; false retains the original Title/ChildContent structure.",
+    "zh-CN": "大展示卡片模式，左侧标准操作、右侧 H1 字号正文；不是业务普通 Card 的默认呈现，false 保留原 Title / ChildContent 结构。",
+    "pt-BR": "Cartão grande de apresentação com ações à esquerda e texto de tamanho H1 à direita. Não é o Card comum padrão; false mantém a estrutura original Title/ChildContent."
+  },
+  "Parameter_Stacked": {
+    "en-US": "Always stacks Prominent card body above actions, aligning visual and keyboard order. Default false uses responsive side-by-side layout; ordinary Card is unaffected.",
+    "zh-CN": "在 Prominent 大卡片中始终纵向排列，正文在上、操作在下，视觉与键盘顺序一致；默认 false 使用响应式左右布局，普通 Card 不受影响。",
+    "pt-BR": "Empilha sempre texto acima das ações em Prominent, alinhando ordem visual e de teclado. false usa layout responsivo lado a lado; Card comum não é afetado."
+  },
+  "Parameter_Language": {
+    "en-US": "Code-language label; displayed text is not executed.",
+    "zh-CN": "代码语言标签；不执行显示文本。",
+    "pt-BR": "Rótulo da linguagem do código; o texto exibido não é executado."
+  },
+  "Parameter_Status": {
+    "en-US": "Razor slot for the named region.",
+    "zh-CN": "该命名区域的 Razor 插槽。",
+    "pt-BR": "Slot Razor da região nomeada."
+  },
+  "Parameter_AccessibleLabel": {
+    "en-US": "Display/accessibility description of the corresponding action or region.",
+    "zh-CN": "对应操作或区域的显示/可访问说明。",
+    "pt-BR": "Descrição visual/acessível da ação ou região correspondente."
+  },
+  "Parameter_Content": {
+    "en-US": "Host-provided Razor content slot.",
+    "zh-CN": "宿主提供的 Razor 内容插槽。",
+    "pt-BR": "Slot de conteúdo Razor fornecido pelo host."
+  },
+  "Parameter_HostConfiguration": {
+    "en-US": "Host configuration; see the complete scenario source and variants for composition.",
+    "zh-CN": "宿主配置；具体组合见完整场景源码与变体说明。",
+    "pt-BR": "Configuração do host; veja o código completo do cenário e as variantes para a composição."
+  },
+  "Parameter_MessageFormatter": {
+    "en-US": "Optional display formatter for validation messages, including explicit Error and EditContext messages. Does not change original messages, field identity or validation state.",
+    "zh-CN": "可选验证消息显示格式函数，同时适用于显式 Error 和 EditContext 消息；不改变原始消息、字段关联或验证状态。",
+    "pt-BR": "Formatador opcional de exibição para mensagens de validação, incluindo Error explícito e mensagens do EditContext. Não altera mensagens originais, identidade do campo nem estado de validação."
+  }
+}

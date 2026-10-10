@@ -1,0 +1,1252 @@
+{
+  "Home_ChangeLogDescription": {
+    "en-US": "Changes by release and the next preview.",
+    "zh-CN": "查看各版本与下一期预览的变更。",
+    "pt-BR": "Alterações por versão e na próxima prévia."
+  },
+  "Page_RecordCreate": {
+    "en-US": "Create record",
+    "zh-CN": "创建记录",
+    "pt-BR": "Criar registro"
+  },
+  "Page_RecordEdit": {
+    "en-US": "Edit record",
+    "zh-CN": "编辑记录",
+    "pt-BR": "Editar registro"
+  },
+  "Page_RecordMissing": {
+    "en-US": "Record not found",
+    "zh-CN": "记录不存在",
+    "pt-BR": "Registro não encontrado"
+  },
+  "Page_NotFound": {
+    "en-US": "Page not found",
+    "zh-CN": "页面不存在",
+    "pt-BR": "Página não encontrada"
+  },
+  "Page_Error": {
+    "en-US": "Request not completed",
+    "zh-CN": "请求未完成",
+    "pt-BR": "Solicitação não concluída"
+  },
+  "Page_Reconnect": {
+    "en-US": "Reconnection states",
+    "zh-CN": "重连状态组合",
+    "pt-BR": "Estados de reconexão"
+  },
+  "Page_Products": {
+    "en-US": "Products",
+    "zh-CN": "产品",
+    "pt-BR": "Produtos"
+  },
+  "Page_Shell": {
+    "en-US": "Application shell",
+    "zh-CN": "应用外壳",
+    "pt-BR": "Estrutura da aplicação"
+  },
+  "Page_BackToCategory": {
+    "en-US": "Back to {0}",
+    "zh-CN": "返回 {0}",
+    "pt-BR": "Voltar para {0}"
+  },
+  "Home_Start": {
+    "en-US": "Start here",
+    "zh-CN": "从这里开始",
+    "pt-BR": "Comece por aqui"
+  },
+  "Home_Setup": {
+    "en-US": "Minimal configuration",
+    "zh-CN": "最小配置",
+    "pt-BR": "Configuração mínima"
+  },
+  "Home_Framework": {
+    "en-US": "Framework",
+    "zh-CN": "框架 Framework",
+    "pt-BR": "Framework"
+  },
+  "Home_Controls": {
+    "en-US": "Controls",
+    "zh-CN": "控件 Controls",
+    "pt-BR": "Controles"
+  },
+  "Home_Foundations": {
+    "en-US": "Foundations",
+    "zh-CN": "基础 Foundations",
+    "pt-BR": "Fundamentos"
+  },
+  "Home_Examples": {
+    "en-US": "Examples",
+    "zh-CN": "案例 Examples",
+    "pt-BR": "Exemplos"
+  },
+  "Home_FrameworkDescription": {
+    "en-US": "Configure the top bar, navigation, commands and application shell.",
+    "zh-CN": "配置顶部栏、导航、命令和页面外壳。",
+    "pt-BR": "Configure a barra superior, a navegação, os comandos e a estrutura da aplicação."
+  },
+  "Home_ControlsDescription": {
+    "en-US": "Browse components, variants, APIs and interactive examples.",
+    "zh-CN": "查看控件目录、变体、用法和交互演示。",
+    "pt-BR": "Explore os controles, as variantes, as APIs e os exemplos interativos."
+  },
+  "Home_FoundationsDescription": {
+    "en-US": "Explore typography, colors, spacing, radius and themes.",
+    "zh-CN": "查看字体、颜色、间距、圆角和主题。",
+    "pt-BR": "Explore a tipografia, as cores, o espaçamento, os cantos arredondados e os temas."
+  },
+  "Home_ExamplesDescription": {
+    "en-US": "Compose forms, lists, enum selection and search.",
+    "zh-CN": "组合表单、列表、枚举选择和搜索。",
+    "pt-BR": "Combine formulários, listas, seleção de enumerações e pesquisa."
+  },
+  "Home_SetupDescription": {
+    "en-US": "Use ApplicationLayout as the default route layout and create your pages.\nDesign is optional; Framework provides layout and behavior.",
+    "zh-CN": "将路由的默认布局设置为 ApplicationLayout，再创建自己的页面。\nDesign 是可选主题；Framework 提供布局和交互行为。",
+    "pt-BR": "Use ApplicationLayout como layout padrão das rotas e crie suas páginas.\nDesign é um tema opcional; Framework fornece o layout e o comportamento."
+  },
+  "Language": {
+    "en-US": "Language",
+    "zh-CN": "语言",
+    "pt-BR": "Idioma"
+  },
+  "Format": {
+    "en-US": "Number and date format",
+    "zh-CN": "数字与日期格式",
+    "pt-BR": "Formato de números e datas"
+  },
+  "Localization_Scope": {
+    "en-US": "Language and number/date formats are saved separately for each browser and restored on reload.\nFramework defaults belong in appsettings.Flourish.json; appsettings.json remains available for business configuration.",
+    "zh-CN": "语言与数字、日期格式按浏览器保存，刷新后恢复。\n框架默认配置使用 appsettings.Flourish.json；appsettings.json 留给业务应用。",
+    "pt-BR": "Idioma e formatos numéricos e de data são salvos por navegador e restaurados ao recarregar.\nOs padrões do framework ficam em appsettings.Flourish.json; appsettings.json permanece disponível para a configuração do aplicativo."
+  },
+  "Localization_Introduction": {
+    "en-US": "Application modules compose one catalog; Framework and the Culture extension retain separate library catalogs.\nA scoped bridge resolves shell labels without changing routes or commands.",
+    "zh-CN": "应用分块组成同一词典；Framework 与 Culture 扩展保留独立的库词典。\nScoped 桥接解析外壳文案，不改变路由或命令。",
+    "pt-BR": "Módulos da aplicação compõem um catálogo; Framework e a extensão Culture mantêm catálogos de biblioteca separados.\nUma ponte com escopo de sessão resolve os textos da estrutura sem alterar rotas ou comandos."
+  },
+  "Localization_Modules": {
+    "en-US": "Group Culture.*.json files by feature; each file retains its translations in multiple languages. Keys stay unique across the catalog.\nCultureModule declarations generate typed keys and CultureResources.Files from the same inputs, then copy them to the declared build and publish paths.",
+    "zh-CN": "Culture.*.json 按功能模块拆分，每个文件仍保留多语言翻译；键在整个词典中唯一。\nCultureModule 声明使用同一组文件生成强类型键与 CultureResources.Files，并复制到声明的构建及发布路径。",
+    "pt-BR": "Agrupe arquivos Culture.*.json por funcionalidade; cada arquivo mantém traduções em vários idiomas. As chaves são únicas no catálogo.\nDeclarações CultureModule geram chaves tipadas e CultureResources.Files a partir dos mesmos arquivos e os copiam para os caminhos de compilação e publicação declarados."
+  },
+  "Localization_Sample": {
+    "en-US": "Component example",
+    "zh-CN": "控件示例",
+    "pt-BR": "Exemplo de controle"
+  },
+  "Localization_API": {
+    "en-US": "Registration and text references",
+    "zh-CN": "注册与文本引用",
+    "pt-BR": "Registro e referências de texto"
+  },
+  "Localization_Scenario": {
+    "en-US": "Scenario example",
+    "zh-CN": "场景示例",
+    "pt-BR": "Exemplo de cenário"
+  },
+  "Localization_Code": {
+    "en-US": "Scenario code",
+    "zh-CN": "场景代码",
+    "pt-BR": "Código do cenário"
+  },
+  "Amount": {
+    "en-US": "Amount",
+    "zh-CN": "金额",
+    "pt-BR": "Valor"
+  },
+  "Record_Name": {
+    "en-US": "Name",
+    "zh-CN": "名称",
+    "pt-BR": "Nome"
+  },
+  "Record_One": {
+    "en-US": "Demonstration item",
+    "zh-CN": "演示项",
+    "pt-BR": "Item de demonstração"
+  },
+  "Show_Dialog": {
+    "en-US": "Open dialog",
+    "zh-CN": "打开对话框",
+    "pt-BR": "Abrir diálogo"
+  },
+  "Dialog_Title": {
+    "en-US": "Localized dialog",
+    "zh-CN": "本地化对话框",
+    "pt-BR": "Diálogo localizado"
+  },
+  "Dialog_Body": {
+    "en-US": "The close button is provided by the framework text catalog.",
+    "zh-CN": "关闭按钮的文案来自框架词典。",
+    "pt-BR": "O texto do botão de fechar vem do catálogo de textos do framework."
+  },
+  "Formatted_Sample": {
+    "en-US": "Amount: {0:N2} · Date: {1:D}",
+    "zh-CN": "金额：{0:N2} · 日期：{1:D}",
+    "pt-BR": "Valor: {0:N2} · Data: {1:D}"
+  },
+  "Localization_IntroTitle": {
+    "en-US": "Introduction",
+    "zh-CN": "简介",
+    "pt-BR": "Introdução"
+  },
+  "Framework_Title": {
+    "en-US": "Headings",
+    "zh-CN": "标题",
+    "pt-BR": "Títulos"
+  },
+  "Framework_Overlays": {
+    "en-US": "Overlays",
+    "zh-CN": "弹层",
+    "pt-BR": "Sobreposições"
+  },
+  "Framework_Inputs": {
+    "en-US": "Inputs",
+    "zh-CN": "输入",
+    "pt-BR": "Entradas"
+  },
+  "Framework_Tables": {
+    "en-US": "Tables",
+    "zh-CN": "表格",
+    "pt-BR": "Tabelas"
+  },
+  "Framework_ControlGuide": {
+    "en-US": "Explore control parameters and variants",
+    "zh-CN": "查看控件参数与变体",
+    "pt-BR": "Ver parâmetros e variantes dos controles"
+  },
+  "Framework_RunExamples": {
+    "en-US": "Run composition examples",
+    "zh-CN": "运行组合案例",
+    "pt-BR": "Executar exemplos de composição"
+  },
+  "Framework_ConfigureTheme": {
+    "en-US": "Configure the theme",
+    "zh-CN": "配置主题",
+    "pt-BR": "Configurar o tema"
+  },
+  "Framework_StartFramework": {
+    "en-US": "Reference Framework for controls, layouts and interactions.",
+    "zh-CN": "引用 Framework 获得控件、布局和交互。",
+    "pt-BR": "Referencie Framework para obter controles, layouts e interações."
+  },
+  "Framework_StartDesign": {
+    "en-US": "Design supplies an optional theme; Abstract is included through the project reference.",
+    "zh-CN": "Design 提供可选主题，Abstract 由项目引用自动带入。",
+    "pt-BR": "Design fornece um tema opcional; Abstract é incluído pela referência do projeto."
+  },
+  "Framework_HostRouter": {
+    "en-US": "Keep the standard Blazor App and Router, and set RouteView's default layout to ApplicationLayout.",
+    "zh-CN": "保留标准 Blazor App 和 Router，将 RouteView 的默认布局设为 ApplicationLayout。",
+    "pt-BR": "Mantenha App e Router padrão do Blazor e defina ApplicationLayout como layout padrão de RouteView."
+  },
+  "Framework_HostConfiguration": {
+    "en-US": "The application supplies route pages; the framework builds the top bar and navigation from Program configuration.",
+    "zh-CN": "应用提供路由页面；框架根据 Program 的配置创建顶部栏和导航。",
+    "pt-BR": "A aplicação fornece as páginas de rota; o framework cria a barra superior e a navegação a partir da configuração de Program."
+  },
+  "Framework_ProjectBrand": {
+    "en-US": "ConfigureProject sets the project name, Logo and Favicon.",
+    "zh-CN": "ConfigureProject 配置项目名称、Logo 和 Favicon。",
+    "pt-BR": "ConfigureProject define o nome do projeto, Logo e Favicon."
+  },
+  "Framework_Favicon": {
+    "en-US": "Favicon is used for browser tabs; Logo is the fallback.",
+    "zh-CN": "Favicon 仅用于标签页；未设置时使用 Logo。",
+    "pt-BR": "Favicon é usado nas abas do navegador; Logo é usado quando Favicon não está definido."
+  },
+  "Framework_TopVisibility": {
+    "en-US": "DisplayLogo and DisplayProjectName control top bar visibility; both are enabled by default.",
+    "zh-CN": "DisplayLogo 和 DisplayProjectName 控制顶部栏显示，默认均开启。",
+    "pt-BR": "DisplayLogo e DisplayProjectName controlam a exibição na barra superior; ambos são habilitados por padrão."
+  },
+  "Framework_Menu": {
+    "en-US": "AddMenu creates a dropdown that opens on hover and closes when the pointer leaves the button and menu; items execute command keys.",
+    "zh-CN": "AddMenu 创建下拉菜单；鼠标悬浮时展开，离开按钮与菜单区域时关闭，菜单项通过命令键执行。",
+    "pt-BR": "AddMenu cria um menu que abre ao passar o cursor e fecha ao sair do botão e do menu; os itens executam chaves de comando."
+  },
+  "Framework_Injection": {
+    "en-US": "InjectToLeft, InjectToCenter and InjectToRight accept component types; Blazor creates them with dependency injection.",
+    "zh-CN": "InjectToLeft、InjectToCenter、InjectToRight 接收组件类型，由 Blazor 创建组件并完成依赖注入。",
+    "pt-BR": "InjectToLeft, InjectToCenter e InjectToRight recebem tipos de componentes; Blazor os cria com injeção de dependências."
+  },
+  "Framework_IconPaths": {
+    "en-US": "Icon paths are relative to the application root.",
+    "zh-CN": "图标路径相对于应用根目录。",
+    "pt-BR": "Os caminhos dos ícones são relativos à raiz da aplicação."
+  },
+  "Framework_StatusComponent": {
+    "en-US": "StatusButton is an application-owned Razor component that can inject services and manage state.",
+    "zh-CN": "StatusButton 是应用自己的 Razor 组件，可以注入服务并管理状态。",
+    "pt-BR": "StatusButton é um componente Razor da aplicação que pode injetar serviços e gerenciar estado."
+  },
+  "Framework_NavigationToggle": {
+    "en-US": "SetNavigationToggle controls the secondary navigation entry on narrow screens.",
+    "zh-CN": "SetNavigationToggle 控制窄窗口的二级导航入口。",
+    "pt-BR": "SetNavigationToggle controla o acesso à navegação secundária em telas estreitas."
+  },
+  "Framework_AddNav": {
+    "en-US": "AddNav creates a page entry and can configure secondary navigation.",
+    "zh-CN": "AddNav 创建页面入口，并可配置二级目录。",
+    "pt-BR": "AddNav cria uma entrada de página e pode configurar a navegação secundária."
+  },
+  "Framework_AddSubNav": {
+    "en-US": "The AddSubNav configure callback uses ISubNavigationBuilder to create third-level page entries.",
+    "zh-CN": "AddSubNav 的 configure 回调继续使用 ISubNavigationBuilder，创建三级页面入口。",
+    "pt-BR": "O callback configure de AddSubNav usa ISubNavigationBuilder para criar entradas de página de terceiro nível."
+  },
+  "Framework_NavButton": {
+    "en-US": "AddNavButton executes a command directly.",
+    "zh-CN": "AddNavButton 直接执行命令。",
+    "pt-BR": "AddNavButton executa um comando diretamente."
+  },
+  "Framework_FixedNav": {
+    "en-US": "Fixed variants stay at the bottom of primary navigation.",
+    "zh-CN": "Fixed 版本固定在一级导航底部。",
+    "pt-BR": "As variantes Fixed permanecem na parte inferior da navegação principal."
+  },
+  "Framework_ButtonChildren": {
+    "en-US": "Buttons cannot contain secondary navigation.",
+    "zh-CN": "按钮不能配置二级目录。",
+    "pt-BR": "Botões não podem conter navegação secundária."
+  },
+  "Framework_NavPaths": {
+    "en-US": "Navigation targets use application paths; use exact: true for the root route.",
+    "zh-CN": "导航目标使用应用内路径；根目录设置 exact: true。",
+    "pt-BR": "Os destinos de navegação usam caminhos da aplicação; use exact: true para a rota raiz."
+  },
+  "Framework_RouteSelection": {
+    "en-US": "The framework selects entries using the most specific route and expands their categories.",
+    "zh-CN": "框架根据最具体路由选择各层入口，并自动展开所属分类。",
+    "pt-BR": "O framework seleciona as entradas pela rota mais específica e expande suas categorias."
+  },
+  "Framework_CategoryActions": {
+    "en-US": "A category name opens its page; the adjacent triangle toggles children without navigating.",
+    "zh-CN": "分类名称打开自己的页面；相邻三角按钮展开或收起子项，不触发导航。",
+    "pt-BR": "O nome da categoria abre sua página; o triângulo ao lado expande ou recolhe os itens sem navegar."
+  },
+  "Framework_CategoryState": {
+    "en-US": "The name and triangle share route selection; expansion state is tracked separately.",
+    "zh-CN": "名称和三角共用当前路由的选中状态，展开状态另行记录。",
+    "pt-BR": "O nome e o triângulo compartilham a seleção da rota; o estado de expansão é registrado separadamente."
+  },
+  "Framework_NavLabels": {
+    "en-US": "Labels stay on one line and truncate when necessary.",
+    "zh-CN": "标签保持单行，超出时省略。",
+    "pt-BR": "Os rótulos ficam em uma linha e são abreviados quando necessário."
+  },
+  "Framework_NavSurface": {
+    "en-US": "Children share a rounded surface in the same column without extra indentation; navigation scrolls with a hidden scrollbar.",
+    "zh-CN": "子项在同一栏内共用表面色的圆角背景，没有额外缩进或导航列；导航保留滚动能力并隐藏滚动条。",
+    "pt-BR": "Os itens compartilham um fundo arredondado na mesma coluna sem recuo extra; a navegação permite rolagem com a barra oculta."
+  },
+  "Framework_SubNavContract": {
+    "en-US": "AddSubNav declares leaf entries or nested navigation through a callback.",
+    "zh-CN": "AddSubNav 可声明叶子导航或通过回调定义下层导航。",
+    "pt-BR": "AddSubNav declara entradas finais ou navegação aninhada por meio de um callback."
+  },
+  "Framework_NavDisabled": {
+    "en-US": "exact and disabled apply at every level; disabling a category also disables its children.",
+    "zh-CN": "exact 和 disabled 参数适用于各层；禁用分类也会禁用其子项。",
+    "pt-BR": "exact e disabled se aplicam a todos os níveis; desabilitar uma categoria também desabilita seus itens."
+  },
+  "Framework_ExpansionLifetime": {
+    "en-US": "Expansion belongs to the current shell instance; refreshing expands the current page's categories.",
+    "zh-CN": "展开状态跟随当前外壳实例；刷新后会展开当前页面所属分类。",
+    "pt-BR": "O estado de expansão pertence à instância atual da estrutura; atualizar expande as categorias da página atual."
+  },
+  "Framework_RegisterCommands": {
+    "en-US": "Register command keys used by menus and navigation buttons in CommandParser.",
+    "zh-CN": "在 CommandParser 注册菜单和导航按钮使用的命令键。",
+    "pt-BR": "Registre em CommandParser as chaves usadas por menus e botões de navegação."
+  },
+  "Framework_CommandLifetime": {
+    "en-US": "The parser is created through DI and scoped to the current user connection.",
+    "zh-CN": "解析器通过 DI 创建，生命周期跟随当前用户连接。",
+    "pt-BR": "O analisador é criado por DI e tem o escopo da conexão atual do usuário."
+  },
+  "Framework_CommandUnavailable": {
+    "en-US": "Unregistered or non-executable commands appear unavailable.",
+    "zh-CN": "未注册或不可执行的命令显示为不可用。",
+    "pt-BR": "Comandos não registrados ou que não podem ser executados aparecem indisponíveis."
+  },
+  "Framework_ContentLayout": {
+    "en-US": "ConfigureLayout sets content width and the fluid content track.",
+    "zh-CN": "ConfigureLayout 设置内容宽度与流式轨道。",
+    "pt-BR": "ConfigureLayout define a largura e a área fluida do conteúdo."
+  },
+  "Framework_PageComposition": {
+    "en-US": "Pages use PageBody, PageHeading and Section; headings shrink as content scrolls while the framework retains the top bar and navigation.",
+    "zh-CN": "页面使用 PageBody、PageHeading 和 Section；标题随内容滚动收缩，框架保留顶部栏和导航。",
+    "pt-BR": "As páginas usam PageBody, PageHeading e Section; os títulos encolhem na rolagem enquanto o framework mantém a barra superior e a navegação."
+  },
+  "Framework_NavigationDescription": {
+    "en-US": "Route selection, narrow-screen expansion, hints, focus and skip-to-content.",
+    "zh-CN": "路由选择、窄窗口展开与关闭、提示、焦点和跳转到内容。",
+    "pt-BR": "Seleção de rota, expansão em telas estreitas, dicas, foco e salto para o conteúdo."
+  },
+  "Framework_HeadingDescription": {
+    "en-US": "Headings shrink on scroll and expand near the top; long headings wrap.",
+    "zh-CN": "滚动时收缩，接近顶部时恢复；长标题换行。",
+    "pt-BR": "Os títulos encolhem na rolagem e expandem perto do topo; títulos longos quebram a linha."
+  },
+  "Framework_OverlayDescription": {
+    "en-US": "Menus support keyboard navigation and outside-click dismissal; dialogs contain focus and restore it to the trigger on close.",
+    "zh-CN": "菜单键盘操作、外部点击关闭；对话框限制焦点并在关闭后返回触发控件。",
+    "pt-BR": "Menus permitem navegação pelo teclado e fecham ao clicar fora; diálogos mantêm o foco e o devolvem ao acionador ao fechar."
+  },
+  "Framework_InputDescription": {
+    "en-US": "Value binding, EditForm validation and label/error associations; search supports debouncing and cancellation.",
+    "zh-CN": "绑定值、EditForm 验证、标签与错误关联；搜索支持延迟和取消。",
+    "pt-BR": "Vinculação de valores, validação de EditForm e associação de rótulos e erros; a busca permite atraso e cancelamento."
+  },
+  "Framework_TableDescription": {
+    "en-US": "Local search, sorting, pagination, column visibility, list/card views and column resizing.",
+    "zh-CN": "本地搜索、排序、分页、显示列、列表与卡片视图、列宽调整。",
+    "pt-BR": "Busca local, ordenação, paginação, visibilidade de colunas, visualizações de lista/cartões e ajuste de largura."
+  },
+  "Icons_IntroductionTitle": {
+    "en-US": "Using Google Material Symbols",
+    "zh-CN": "使用Google Material Design Symbols",
+    "pt-BR": "Usar Google Material Symbols"
+  },
+  "Icons_FontDescription": {
+    "en-US": "Flourish uses Google Material Symbols Outlined under the Apache 2.0 license.",
+    "zh-CN": "Flourish 使用 Google Material Symbols Outlined 图标字体，按 Apache 2.0 许可证发布。",
+    "pt-BR": "Flourish usa Google Material Symbols Outlined sob a licença Apache 2.0."
+  },
+  "Icons_LocalFont": {
+    "en-US": "Framework loads the font locally without requesting Google fonts.",
+    "zh-CN": "字体随 Framework 从当前应用加载，无需向 Google 请求字体。",
+    "pt-BR": "Framework carrega a fonte localmente sem solicitar fontes ao Google."
+  },
+  "Icons_Repository": {
+    "en-US": "Official repository",
+    "zh-CN": "官方仓库",
+    "pt-BR": "Repositório oficial"
+  },
+  "Icons_License": {
+    "en-US": "Apache 2.0 license",
+    "zh-CN": "Apache 2.0 许可证",
+    "pt-BR": "Licença Apache 2.0"
+  },
+  "Icons_Browser": {
+    "en-US": "Website and icon browser",
+    "zh-CN": "官网与图标浏览器",
+    "pt-BR": "Site e catálogo de ícones"
+  },
+  "Icons_Documentation": {
+    "en-US": "Official documentation",
+    "zh-CN": "官方使用文档",
+    "pt-BR": "Documentação oficial"
+  },
+  "Icons_Search": {
+    "en-US": "Search icon names",
+    "zh-CN": "搜索图标名称",
+    "pt-BR": "Buscar nomes de ícones"
+  },
+  "Icons_Empty": {
+    "en-US": "No matching icons",
+    "zh-CN": "没有匹配的图标",
+    "pt-BR": "Nenhum ícone encontrado"
+  },
+  "Icons_ShowMore": {
+    "en-US": "Show more",
+    "zh-CN": "显示更多",
+    "pt-BR": "Mostrar mais"
+  },
+  "Icons_Usage": {
+    "en-US": "Usage",
+    "zh-CN": "调用",
+    "pt-BR": "Uso"
+  },
+  "Icons_Default": {
+    "en-US": "Default icon",
+    "zh-CN": "普通图标",
+    "pt-BR": "Ícone padrão"
+  },
+  "Icons_Navigation": {
+    "en-US": "Primary navigation icon",
+    "zh-CN": "一级导航图标",
+    "pt-BR": "Ícone de navegação principal"
+  },
+  "Icons_Tool": {
+    "en-US": "Tool icon",
+    "zh-CN": "工具图标",
+    "pt-BR": "Ícone de ferramenta"
+  },
+  "Icons_Information": {
+    "en-US": "Search and information icon",
+    "zh-CN": "搜索与提示图标",
+    "pt-BR": "Ícone de busca e informação"
+  },
+  "Icons_FontAxes": {
+    "en-US": "The complete official WOFF2 font (4,003,088 bytes) supports the FILL, wght, GRAD and opsz axes.",
+    "zh-CN": "使用官方完整 WOFF2 字体（4,003,088 字节），支持 FILL、wght、GRAD 和 opsz 四个轴。",
+    "pt-BR": "A fonte WOFF2 oficial completa (4.003.088 bytes) suporta os eixos FILL, wght, GRAD e opsz."
+  },
+  "Icons_DefaultAxes": {
+    "en-US": "Defaults are unfilled, weight 400, grade 0 and optical size 24.",
+    "zh-CN": "默认使用未填充、400 字重、0 级别和 24 光学尺寸。",
+    "pt-BR": "Os padrões são sem preenchimento, peso 400, grau 0 e tamanho óptico 24."
+  },
+  "Icons_VersionedNames": {
+    "en-US": "The name catalog is fixed to the version and includes added Symbols icons.",
+    "zh-CN": "完整名称表随版本固定，可直接使用 Symbols 新增图标。",
+    "pt-BR": "O catálogo é fixado à versão e inclui os ícones adicionados do Symbols."
+  },
+  "Icons_InheritColor": {
+    "en-US": "Icons inherit the parent control's color.",
+    "zh-CN": "图标继承父控件颜色。",
+    "pt-BR": "Os ícones herdam a cor do controle pai."
+  },
+  "Icons_Accessibility": {
+    "en-US": "Icons are decorative; icon-only buttons need an accessible name.",
+    "zh-CN": "图标本身是装饰性内容，纯图标按钮需要可访问名称。",
+    "pt-BR": "Os ícones são decorativos; botões apenas com ícones precisam de um nome acessível."
+  },
+  "Icons_CatalogContract": {
+    "en-US": "IconCatalog.Names exposes all names; Contains checks official names only.",
+    "zh-CN": "IconCatalog.Names 提供全部名称，Contains 仅检查官方名称。",
+    "pt-BR": "IconCatalog.Names fornece todos os nomes; Contains verifica apenas nomes oficiais."
+  },
+  "Icons_Unknown": {
+    "en-US": "Unknown names display a question mark icon.",
+    "zh-CN": "未知名称显示问号图标。",
+    "pt-BR": "Nomes desconhecidos exibem um ícone de interrogação."
+  },
+  "Icons_CurrentNames": {
+    "en-US": "Use official Material Symbols names; Icon is the shared rendering entry.",
+    "zh-CN": "请使用官方 Material Symbols 名称；Icon 是共享的图标渲染入口。",
+    "pt-BR": "Use nomes oficiais de Material Symbols; Icon é a entrada compartilhada de renderização."
+  },
+  "Appearance_System": {
+    "en-US": "Follow system",
+    "zh-CN": "跟随系统",
+    "pt-BR": "Seguir o sistema"
+  },
+  "Appearance_Light": {
+    "en-US": "Light",
+    "zh-CN": "浅色",
+    "pt-BR": "Claro"
+  },
+  "Appearance_Dark": {
+    "en-US": "Dark",
+    "zh-CN": "深色",
+    "pt-BR": "Escuro"
+  },
+  "Appearance_ColorDescription": {
+    "en-US": "Swatches show standard colors for the current application mode.",
+    "zh-CN": "色块显示整个应用当前模式的标准颜色。",
+    "pt-BR": "As amostras mostram as cores padrão do modo atual da aplicação."
+  },
+  "Appearance_ColorInteractions": {
+    "en-US": "Focus uses accent and outlines use border colors; active colors are darker than previews, and destructive actions use danger colors.",
+    "zh-CN": "焦点使用强调色；边界与描边使用边框色；点击色比对应预览色深，危险操作使用危险色。",
+    "pt-BR": "O foco usa destaque e contornos usam a cor de borda; as cores de clique são mais escuras que as prévias, e ações destrutivas usam cores de perigo."
+  },
+  "Appearance_Primary": {
+    "en-US": "Primary",
+    "zh-CN": "主色",
+    "pt-BR": "Primária"
+  },
+  "Appearance_Accent": {
+    "en-US": "Accent",
+    "zh-CN": "强调色",
+    "pt-BR": "Destaque"
+  },
+  "Appearance_Apply": {
+    "en-US": "Apply colors",
+    "zh-CN": "应用颜色",
+    "pt-BR": "Aplicar cores"
+  },
+  "Appearance_Reset": {
+    "en-US": "Restore defaults",
+    "zh-CN": "恢复默认",
+    "pt-BR": "Restaurar padrões"
+  },
+  "Appearance_FontDescription": {
+    "en-US": "Gallery uses installed Noto Sans and Noto Sans CJK SC, falling back through the font stack when unavailable.",
+    "zh-CN": "Gallery 配置 Noto Sans 与 Noto Sans CJK SC，使用设备已安装的字体；未安装时按字体栈回退。",
+    "pt-BR": "Gallery usa Noto Sans e Noto Sans CJK SC instaladas, com alternativas quando indisponíveis."
+  },
+  "Appearance_FontLanguages": {
+    "en-US": "SetFont can add language-specific fonts such as Noto Sans CJK TC, JP or KR.",
+    "zh-CN": "应用可在 SetFont 中加入 Noto Sans CJK TC、JP、KR 等对应语言的字体。",
+    "pt-BR": "SetFont pode adicionar fontes como Noto Sans CJK TC, JP ou KR para outros idiomas."
+  },
+  "Appearance_FontStack": {
+    "en-US": "Current font stack",
+    "zh-CN": "当前字体栈",
+    "pt-BR": "Fontes atuais"
+  },
+  "Appearance_BodyType": {
+    "en-US": "Body, labels and controls",
+    "zh-CN": "正文、标签和控件",
+    "pt-BR": "Texto, rótulos e controles"
+  },
+  "Appearance_LabelWeight": {
+    "en-US": "Label weight",
+    "zh-CN": "标签字重",
+    "pt-BR": "Peso dos rótulos"
+  },
+  "Appearance_PageType": {
+    "en-US": "Page heading",
+    "zh-CN": "页面大标题",
+    "pt-BR": "Título da página"
+  },
+  "Appearance_SemanticType": {
+    "en-US": "Semantic headings",
+    "zh-CN": "语义标题",
+    "pt-BR": "Títulos semânticos"
+  },
+  "Appearance_Breakpoints": {
+    "en-US": "Common breakpoints",
+    "zh-CN": "常用断点",
+    "pt-BR": "Pontos de quebra comuns"
+  },
+  "Appearance_Configure": {
+    "en-US": "Configure Design",
+    "zh-CN": "配置 Design",
+    "pt-BR": "Configurar Design"
+  },
+  "Appearance_Tokens": {
+    "en-US": "Foundation tokens are defined in Design's foundation.css.",
+    "zh-CN": "基础令牌由 Design 的 foundation.css 集中定义。",
+    "pt-BR": "Os tokens básicos são definidos em foundation.css de Design."
+  },
+  "Appearance_ThemeProvider": {
+    "en-US": "The shell gets application-wide theme state through IThemeProvider.",
+    "zh-CN": "应用外壳通过 IThemeProvider 获取整个应用的主题状态。",
+    "pt-BR": "A estrutura obtém o estado do tema por IThemeProvider."
+  },
+  "Appearance_FrameworkLink": {
+    "en-US": "See framework integration",
+    "zh-CN": "查看框架接入",
+    "pt-BR": "Ver integração do framework"
+  },
+  "Appearance_Canvas": {
+    "en-US": "Canvas",
+    "zh-CN": "画布",
+    "pt-BR": "Tela"
+  },
+  "Appearance_Surface": {
+    "en-US": "Surface",
+    "zh-CN": "表面",
+    "pt-BR": "Superfície"
+  },
+  "Appearance_Text": {
+    "en-US": "Body text",
+    "zh-CN": "正文",
+    "pt-BR": "Texto principal"
+  },
+  "Appearance_Muted": {
+    "en-US": "Secondary text",
+    "zh-CN": "辅助文字",
+    "pt-BR": "Texto secundário"
+  },
+  "Appearance_Board": {
+    "en-US": "Display board",
+    "zh-CN": "背景板",
+    "pt-BR": "Painel de demonstração"
+  },
+  "Appearance_PreviewLight": {
+    "en-US": "Light target preview",
+    "zh-CN": "浅目标预览",
+    "pt-BR": "Prévia do alvo claro"
+  },
+  "Appearance_PreviewDark": {
+    "en-US": "Dark target preview",
+    "zh-CN": "深目标预览",
+    "pt-BR": "Prévia do alvo escuro"
+  },
+  "Appearance_ClickLight": {
+    "en-US": "Light target active",
+    "zh-CN": "浅目标点击",
+    "pt-BR": "Clique do alvo claro"
+  },
+  "Appearance_ClickDark": {
+    "en-US": "Dark target active",
+    "zh-CN": "深目标点击",
+    "pt-BR": "Clique do alvo escuro"
+  },
+  "Appearance_Danger": {
+    "en-US": "Danger",
+    "zh-CN": "危险",
+    "pt-BR": "Perigo"
+  },
+  "Appearance_DangerPreview": {
+    "en-US": "Danger preview",
+    "zh-CN": "危险预览",
+    "pt-BR": "Prévia de perigo"
+  },
+  "Appearance_DangerClick": {
+    "en-US": "Danger active",
+    "zh-CN": "危险点击",
+    "pt-BR": "Clique de perigo"
+  },
+  "Appearance_InfoText": {
+    "en-US": "Info text color",
+    "zh-CN": "Info正文色",
+    "pt-BR": "Cor do texto informativo"
+  },
+  "Appearance_WarningBackground": {
+    "en-US": "Warning background color",
+    "zh-CN": "Warning背景色",
+    "pt-BR": "Cor do fundo de aviso"
+  },
+  "Appearance_Border": {
+    "en-US": "Border",
+    "zh-CN": "边框",
+    "pt-BR": "Borda"
+  },
+  "Forms_Missing": {
+    "en-US": "The record no longer exists",
+    "zh-CN": "记录已不存在",
+    "pt-BR": "O registro não existe mais"
+  },
+  "Forms_Basic": {
+    "en-US": "Basic information",
+    "zh-CN": "基本信息",
+    "pt-BR": "Informações básicas"
+  },
+  "Forms_Active": {
+    "en-US": "Enable this record",
+    "zh-CN": "启用这条记录",
+    "pt-BR": "Habilitar este registro"
+  },
+  "Forms_DiscardTitle": {
+    "en-US": "Discard unsaved changes",
+    "zh-CN": "放弃未保存的修改",
+    "pt-BR": "Descartar alterações não salvas"
+  },
+  "Forms_KeepEditing": {
+    "en-US": "Keep editing",
+    "zh-CN": "继续编辑",
+    "pt-BR": "Continuar editando"
+  },
+  "Forms_DiscardBody": {
+    "en-US": "The form changes have not been saved. Leaving will discard them.",
+    "zh-CN": "当前表单的修改尚未保存。继续离开将放弃这些修改。",
+    "pt-BR": "As alterações do formulário não foram salvas. Sair descartará essas alterações."
+  },
+  "Forms_DiscardAction": {
+    "en-US": "Discard changes and leave",
+    "zh-CN": "放弃修改并离开",
+    "pt-BR": "Descartar alterações e sair"
+  },
+  "Records_Empty": {
+    "en-US": "No demo records match the criteria.",
+    "zh-CN": "没有符合条件的演示记录。",
+    "pt-BR": "Nenhum registro de demonstração corresponde aos critérios."
+  },
+  "Records_Label": {
+    "en-US": "Demo records",
+    "zh-CN": "演示记录",
+    "pt-BR": "Registros de demonstração"
+  },
+  "Records_DeleteTitle": {
+    "en-US": "Delete demo record",
+    "zh-CN": "删除演示记录",
+    "pt-BR": "Excluir registro de demonstração"
+  },
+  "Records_CancelDelete": {
+    "en-US": "Cancel deletion",
+    "zh-CN": "取消删除",
+    "pt-BR": "Cancelar exclusão"
+  },
+  "Records_ConfirmDelete": {
+    "en-US": "Confirm deletion",
+    "zh-CN": "确认删除",
+    "pt-BR": "Confirmar exclusão"
+  },
+  "Records_ContactInformation": {
+    "en-US": "Contact information",
+    "zh-CN": "联系信息",
+    "pt-BR": "Informações de contato"
+  },
+  "Records_Missing": {
+    "en-US": "Demo record not found",
+    "zh-CN": "没有这条演示记录",
+    "pt-BR": "Registro de demonstração não encontrado"
+  },
+  "Examples_CompletePages": {
+    "en-US": "Complete pages",
+    "zh-CN": "完整页面",
+    "pt-BR": "Páginas completas"
+  },
+  "Examples_SessionData": {
+    "en-US": "Example data lives only in the current connection and resets on reconnect.",
+    "zh-CN": "案例数据只存于当前连接，重新连接后重置。",
+    "pt-BR": "Os dados dos exemplos existem apenas na conexão atual e são redefinidos ao reconectar."
+  },
+  "Examples_FormDescription": {
+    "en-US": "EditForm validation, field layout, saving and unsaved-change confirmation.",
+    "zh-CN": "EditForm 验证、字段布局、保存与未保存修改确认。",
+    "pt-BR": "Validação de EditForm, layout de campos, salvamento e confirmação de alterações não salvas."
+  },
+  "Examples_RecordsDescription": {
+    "en-US": "Search, sorting, pagination, column visibility, list/card switching and row actions.",
+    "zh-CN": "搜索、排序、分页、列显示、列表和卡片切换、行操作。",
+    "pt-BR": "Busca, ordenação, paginação, visibilidade de colunas, alternância entre lista e cartões e ações de linha."
+  },
+  "Examples_DetailsDescription": {
+    "en-US": "Identity and contact information, editing entry and deletion confirmation.",
+    "zh-CN": "身份与联系信息、编辑入口和删除确认。",
+    "pt-BR": "Identificação e contato, acesso à edição e confirmação de exclusão."
+  },
+  "Examples_PatternsDescription": {
+    "en-US": "Composed lists, bottom sheets, forms and actions.",
+    "zh-CN": "列表页面、底部面板、表单区域和动作区组合。",
+    "pt-BR": "Composição de listas, painéis inferiores, formulários e ações."
+  },
+  "Examples_DisplayDescription": {
+    "en-US": "Full-width banners, centered content, offer comparison and access entries.",
+    "zh-CN": "全宽横幅、居中内容、报价比较与访问入口。",
+    "pt-BR": "Banners de largura total, conteúdo centralizado, comparação de ofertas e entradas de acesso."
+  },
+  "Examples_CreateDescription": {
+    "en-US": "Build a validated page from EditForm, fields and actions.",
+    "zh-CN": "从 EditForm、字段和操作区建立可验证的页面。",
+    "pt-BR": "Crie uma página com validação a partir de EditForm, campos e ações."
+  },
+  "Examples_EnumDescription": {
+    "en-US": "Convert enum values to options and bind the current selection.",
+    "zh-CN": "将枚举值转换为选项并绑定当前选择。",
+    "pt-BR": "Converta valores de enum em opções e vincule a seleção atual."
+  },
+  "Examples_SearchDescription": {
+    "en-US": "Filter by the entered query and handle empty results.",
+    "zh-CN": "按输入查询筛选集合，并处理空结果。",
+    "pt-BR": "Filtre pela busca informada e trate resultados vazios."
+  },
+  "Examples_FormValidation": {
+    "en-US": "The form model owns validation rules; the application handles saving.",
+    "zh-CN": "表单模型负责验证规则，应用负责保存。",
+    "pt-BR": "O modelo define a validação; a aplicação cuida do salvamento."
+  },
+  "Examples_FormLayout": {
+    "en-US": "Field associates labels and validation; FormLayout and FormActions arrange fields and buttons.",
+    "zh-CN": "Field 关联标签与验证消息，FormLayout 和 FormActions 管理字段与按钮排列。",
+    "pt-BR": "Field associa rótulos e validação; FormLayout e FormActions organizam campos e botões."
+  },
+  "Examples_FormVariants": {
+    "en-US": "Use explicit FilledElevated variants for primary actions and Elevated for other actions.",
+    "zh-CN": "建议主要操作显式使用 FilledElevated，其余操作使用 Elevated。",
+    "pt-BR": "Use variantes FilledElevated explícitas para ações principais e Elevated para outras ações."
+  },
+  "Examples_TaskStatus": {
+    "en-US": "Task status",
+    "zh-CN": "任务状态",
+    "pt-BR": "Status da tarefa"
+  },
+  "Examples_SearchNames": {
+    "en-US": "Search example names",
+    "zh-CN": "搜索示例名称",
+    "pt-BR": "Buscar nomes de exemplos"
+  },
+  "Examples_NoMatches": {
+    "en-US": "No matching examples",
+    "zh-CN": "没有匹配的示例",
+    "pt-BR": "Nenhum exemplo encontrado"
+  },
+  "Examples_ClearSearch": {
+    "en-US": "Clear search",
+    "zh-CN": "清除搜索",
+    "pt-BR": "Limpar busca"
+  },
+  "Examples_MatchesLabel": {
+    "en-US": "Matching examples",
+    "zh-CN": "匹配的示例",
+    "pt-BR": "Exemplos encontrados"
+  },
+  "Examples_SearchEvents": {
+    "en-US": "ValueChanged updates input; SearchChanged filters after a delay.",
+    "zh-CN": "ValueChanged 更新输入值，SearchChanged 在延迟后筛选列表。",
+    "pt-BR": "ValueChanged atualiza a entrada; SearchChanged filtra após um atraso."
+  },
+  "Examples_RemoteSearch": {
+    "en-US": "Remote queries can use SearchRequested with CancellationToken; the page applies results.",
+    "zh-CN": "远程查询可使用带 CancellationToken 的 SearchRequested，页面负责应用查询结果。",
+    "pt-BR": "Consultas remotas podem usar SearchRequested com CancellationToken; a página aplica os resultados."
+  },
+  "Examples_Planned": {
+    "en-US": "Planned",
+    "zh-CN": "待开始",
+    "pt-BR": "Planejada"
+  },
+  "Examples_Active": {
+    "en-US": "In progress",
+    "zh-CN": "进行中",
+    "pt-BR": "Em andamento"
+  },
+  "Examples_Completed": {
+    "en-US": "Completed",
+    "zh-CN": "已完成",
+    "pt-BR": "Concluída"
+  },
+  "Reconnect_DescriptionTitle": {
+    "en-US": "Scenario description",
+    "zh-CN": "场景说明",
+    "pt-BR": "Descrição do cenário"
+  },
+  "Reconnect_StatesTitle": {
+    "en-US": "State examples",
+    "zh-CN": "状态示例",
+    "pt-BR": "Exemplos de estados"
+  },
+  "Reconnect_Description": {
+    "en-US": "Connection notices compose Notice, ProgressBar and Button in a general Dialog using BrowserControlled. This example switches local states without disconnecting or calling a server.",
+    "zh-CN": "连接中断提示由通用 Dialog 的 BrowserControlled 模式组合 Notice、ProgressBar 和 Button。这里仅切换本地状态，不模拟实际断线或调用服务器。",
+    "pt-BR": "Avisos de conexão combinam Notice, ProgressBar e Button em um Dialog geral com BrowserControlled. O exemplo altera estados locais sem desconectar nem chamar o servidor."
+  },
+  "Reconnect_Protocol": {
+    "en-US": "Real hosts retain Blazor reconnect / resume protocols, fixed identifiers and countdowns, and call synchronizeDialog and setDialogView. Dismissible=false prevents Escape or background dismissal; modality and focus remain library-owned.",
+    "zh-CN": "真实宿主保留 Blazor 的 reconnect / resume 协议、固定协议标识和倒计时，并调用库的 synchronizeDialog 与 setDialogView。Dismissible=false 防止提示被 Escape 或背景点击关闭；不另外实现模态或焦点逻辑。",
+    "pt-BR": "Aplicações reais preservam protocolos reconnect / resume do Blazor, identificadores fixos e contagens regressivas, e chamam synchronizeDialog e setDialogView. Dismissible=false impede fechar por Escape ou pelo fundo; modalidade e foco continuam na biblioteca."
+  },
+  "Reconnect_Reconnecting": {
+    "en-US": "Reconnecting",
+    "zh-CN": "正在重连",
+    "pt-BR": "Reconectando"
+  },
+  "Reconnect_Retrying": {
+    "en-US": "Waiting to retry",
+    "zh-CN": "等待重试",
+    "pt-BR": "Aguardando nova tentativa"
+  },
+  "Reconnect_Failed": {
+    "en-US": "Reconnection failed",
+    "zh-CN": "重连失败",
+    "pt-BR": "Reconexão falhou"
+  },
+  "Reconnect_Paused": {
+    "en-US": "Session paused",
+    "zh-CN": "会话暂停",
+    "pt-BR": "Sessão pausada"
+  },
+  "Reconnect_ResumeFailed": {
+    "en-US": "Resume failed",
+    "zh-CN": "恢复失败",
+    "pt-BR": "Retomada falhou"
+  },
+  "Reconnect_Title": {
+    "en-US": "Server connection",
+    "zh-CN": "服务器连接",
+    "pt-BR": "Conexão com o servidor"
+  },
+  "Reconnect_Retry": {
+    "en-US": "Simulate retry",
+    "zh-CN": "模拟重试",
+    "pt-BR": "Simular nova tentativa"
+  },
+  "Reconnect_Resume": {
+    "en-US": "Simulate resume",
+    "zh-CN": "模拟恢复",
+    "pt-BR": "Simular retomada"
+  },
+  "Reconnect_End": {
+    "en-US": "End demo",
+    "zh-CN": "结束演示",
+    "pt-BR": "Encerrar demonstração"
+  },
+  "Reconnect_ConnectingMessage": {
+    "en-US": "Reconnecting to the server…",
+    "zh-CN": "正在重新连接服务器…",
+    "pt-BR": "Reconectando ao servidor…"
+  },
+  "Reconnect_Progress": {
+    "en-US": "Reconnection progress",
+    "zh-CN": "重连进度",
+    "pt-BR": "Progresso da reconexão"
+  },
+  "Reconnect_RetryMessage": {
+    "en-US": "Connection failed. Retrying in 5 seconds.",
+    "zh-CN": "连接失败，将于 5 秒后重试。",
+    "pt-BR": "A conexão falhou. Nova tentativa em 5 segundos."
+  },
+  "Reconnect_FailedMessage": {
+    "en-US": "Could not reconnect. Retry or reload the page.",
+    "zh-CN": "无法重新连接，请重试或重新加载页面。",
+    "pt-BR": "Não foi possível reconectar. Tente novamente ou recarregue a página."
+  },
+  "Reconnect_PausedMessage": {
+    "en-US": "The server paused this session.",
+    "zh-CN": "服务器已暂停此会话。",
+    "pt-BR": "O servidor pausou esta sessão."
+  },
+  "Reconnect_ResumeFailedMessage": {
+    "en-US": "Could not resume this session. Retry or reload the page.",
+    "zh-CN": "无法恢复此会话，请重试或重新加载页面。",
+    "pt-BR": "Não foi possível retomar esta sessão. Tente novamente ou recarregue a página."
+  },
+  "Error_Request": {
+    "en-US": "The demo could not complete this request. Reopen the page.",
+    "zh-CN": "演示应用无法完成这次请求，请重新打开页面。",
+    "pt-BR": "A demonstração não pôde concluir esta solicitação. Abra a página novamente."
+  },
+  "NotFound_Path": {
+    "en-US": "This path has no page",
+    "zh-CN": "这条路径没有对应页面",
+    "pt-BR": "Este caminho não tem uma página"
+  },
+  "NotFound_Description": {
+    "en-US": "Continue through navigation or return home to explore component and interaction examples.",
+    "zh-CN": "从导航继续，或返回主页浏览组件与交互示例。",
+    "pt-BR": "Continue pela navegação ou volte ao início para explorar exemplos de componentes e interações."
+  },
+  "NotFound_Route": {
+    "en-US": "This demo path has no page.",
+    "zh-CN": "这条演示路径没有对应页面。",
+    "pt-BR": "Este caminho de demonstração não tem uma página."
+  },
+  "NotFound_Overview": {
+    "en-US": "Back to overview",
+    "zh-CN": "返回概览",
+    "pt-BR": "Voltar à visão geral"
+  },
+  "Appearance_Selection": {
+    "en-US": "Current selection: {0}",
+    "zh-CN": "当前选择：{0}",
+    "pt-BR": "Seleção atual: {0}"
+  },
+  "Appearance_Applied": {
+    "en-US": "Theme colors were applied to this demo connection.",
+    "zh-CN": "主题颜色已应用于当前演示连接。",
+    "pt-BR": "As cores do tema foram aplicadas a esta conexão de demonstração."
+  },
+  "Appearance_BodyMetrics": {
+    "en-US": "--f-body-size: 17px; line height 1.55",
+    "zh-CN": "--f-body-size: 17px；行高 1.55",
+    "pt-BR": "--f-body-size: 17px; altura da linha 1,55"
+  },
+  "Appearance_PageMetrics": {
+    "en-US": "--f-type-page: 50px; weight 780",
+    "zh-CN": "--f-type-page: 50px；字重 780",
+    "pt-BR": "--f-type-page: 50px; peso 780"
+  },
+  "Appearance_ControlShadow": {
+    "en-US": "0 2px 6px; primary color at 16% opacity",
+    "zh-CN": "0 2px 6px；使用主色的 16% 透明度",
+    "pt-BR": "0 2px 6px; cor primária com 16% de opacidade"
+  },
+  "Appearance_PopupShadow": {
+    "en-US": "0 16px 48px; primary color at 16% opacity",
+    "zh-CN": "0 16px 48px；使用主色的 16% 透明度",
+    "pt-BR": "0 16px 48px; cor primária com 16% de opacidade"
+  },
+  "Appearance_CardShadow": {
+    "en-US": "0 18px 52px; primary color at 16% opacity",
+    "zh-CN": "0 18px 52px；使用主色的 16% 透明度",
+    "pt-BR": "0 18px 52px; cor primária com 16% de opacidade"
+  },
+  "Appearance_ContentWidth": {
+    "en-US": "1180px baseline; configurable through ConfigureLayout",
+    "zh-CN": "1180px 基线；ConfigureLayout 可配置",
+    "pt-BR": "Base de 1180px; configurável por ConfigureLayout"
+  },
+  "Appearance_Gutter": {
+    "en-US": "24px baseline; adapts to viewport and fluid layout",
+    "zh-CN": "24px 基础值；随窗口和流式布局调整",
+    "pt-BR": "Base de 24px; ajusta-se à janela e ao layout fluido"
+  },
+  "Forms_Customer": {
+    "en-US": "Customer",
+    "zh-CN": "客户",
+    "pt-BR": "Cliente"
+  },
+  "Forms_Supplier": {
+    "en-US": "Supplier",
+    "zh-CN": "供应商",
+    "pt-BR": "Fornecedor"
+  },
+  "Forms_Department": {
+    "en-US": "Internal department",
+    "zh-CN": "内部部门",
+    "pt-BR": "Departamento interno"
+  },
+  "Records_Search": {
+    "en-US": "Global search: {0}",
+    "zh-CN": "全局搜索：{0}",
+    "pt-BR": "Busca global: {0}"
+  },
+  "Records_DeleteBody": {
+    "en-US": "Deleting “{0}” removes it from the current demo connection.",
+    "zh-CN": "删除“{0}”后，该记录将从当前演示连接中移除。",
+    "pt-BR": "Excluir “{0}” remove o registro da conexão atual de demonstração."
+  },
+  "Records_Deleted": {
+    "en-US": "Demo record “{0}” was deleted.",
+    "zh-CN": "已删除演示记录“{0}”。",
+    "pt-BR": "O registro de demonstração “{0}” foi excluído."
+  },
+  "Records_AlreadyMissing": {
+    "en-US": "This demo record no longer exists.",
+    "zh-CN": "该演示记录已经不存在。",
+    "pt-BR": "Este registro de demonstração não existe mais."
+  },
+  "Icons_Count": {
+    "en-US": "The icon name catalog contains {0} names.",
+    "zh-CN": "当前图标名称目录包含 {0} 个名称。",
+    "pt-BR": "O catálogo contém {0} nomes de ícones."
+  },
+  "Icons_Matches": {
+    "en-US": "Showing {0} / {1} matching icons.",
+    "zh-CN": "显示 {0} / {1} 个匹配图标。",
+    "pt-BR": "Exibindo {0} / {1} ícones encontrados."
+  },
+  "Examples_CurrentValue": {
+    "en-US": "Current value: {0} ({1})",
+    "zh-CN": "当前值：{0}（{1}）",
+    "pt-BR": "Valor atual: {0} ({1})"
+  },
+  "Examples_Found": {
+    "en-US": "Found {0} items",
+    "zh-CN": "找到 {0} 项",
+    "pt-BR": "{0} itens encontrados"
+  },
+  "Examples_SearchForm": {
+    "en-US": "Form",
+    "zh-CN": "表单 Form",
+    "pt-BR": "Formulário"
+  },
+  "Examples_SearchRecords": {
+    "en-US": "Records",
+    "zh-CN": "记录列表 Records",
+    "pt-BR": "Registros"
+  },
+  "Examples_SearchEnums": {
+    "en-US": "Enum selector",
+    "zh-CN": "下拉框 Enum",
+    "pt-BR": "Seletor de enum"
+  },
+  "Examples_SearchSearch": {
+    "en-US": "Search",
+    "zh-CN": "搜索 Search",
+    "pt-BR": "Busca"
+  },
+  "Examples_SearchLayout": {
+    "en-US": "Layout",
+    "zh-CN": "布局 Layout",
+    "pt-BR": "Layout"
+  },
+  "Patterns_Create": {
+    "en-US": "Create product",
+    "zh-CN": "创建产品",
+    "pt-BR": "Criar produto"
+  },
+  "Patterns_Catalog": {
+    "en-US": "Catalog",
+    "zh-CN": "目录",
+    "pt-BR": "Catálogo"
+  },
+  "Patterns_Description": {
+    "en-US": "Registry uses the shared DataTable contract for records, preferences and actions.",
+    "zh-CN": "Registry 使用共享的 DataTable 契约管理记录、偏好和操作。",
+    "pt-BR": "Registry usa o contrato compartilhado de DataTable para registros, preferências e ações."
+  },
+  "Patterns_UseSample": {
+    "en-US": "Use sample",
+    "zh-CN": "使用示例",
+    "pt-BR": "Usar exemplo"
+  },
+  "Patterns_Product": {
+    "en-US": "Product",
+    "zh-CN": "产品",
+    "pt-BR": "Produto"
+  },
+  "Patterns_Price": {
+    "en-US": "Price",
+    "zh-CN": "价格",
+    "pt-BR": "Preço"
+  },
+  "Patterns_Inspect": {
+    "en-US": "Inspect",
+    "zh-CN": "查看",
+    "pt-BR": "Inspecionar"
+  },
+  "Patterns_Opened": {
+    "en-US": "Opened {0}",
+    "zh-CN": "已打开 {0}",
+    "pt-BR": "Aberto: {0}"
+  },
+  "Patterns_Sample": {
+    "en-US": "Sample: {0} / {1}",
+    "zh-CN": "示例：{0} / {1}",
+    "pt-BR": "Exemplo: {0} / {1}"
+  },
+  "Shell_ApplicationTitle": {
+    "en-US": "Flourish shell example",
+    "zh-CN": "Flourish 外壳示例",
+    "pt-BR": "Exemplo de estrutura Flourish"
+  },
+  "Shell_Refresh": {
+    "en-US": "Refresh sample",
+    "zh-CN": "刷新示例",
+    "pt-BR": "Atualizar exemplo"
+  },
+  "Shell_Heading": {
+    "en-US": "One configured shell",
+    "zh-CN": "单个配置外壳",
+    "pt-BR": "Uma estrutura configurada"
+  },
+  "Shell_Description": {
+    "en-US": "Navigation comes exclusively from the current ConfigureNavigation builder. This standalone page mounts one application shell.",
+    "zh-CN": "导航仅来自当前 ConfigureNavigation 配置；此独立页面挂载一个应用外壳。",
+    "pt-BR": "A navegação vem exclusivamente da configuração atual de ConfigureNavigation. Esta página independente monta uma estrutura de aplicação."
+  },
+  "Shell_Count": {
+    "en-US": "Refresh count: {0}",
+    "zh-CN": "刷新次数：{0}",
+    "pt-BR": "Contagem de atualizações: {0}"
+  },
+  "Shell_ReturnGuide": {
+    "en-US": "Return to component guide",
+    "zh-CN": "返回控件说明",
+    "pt-BR": "Voltar ao guia do componente"
+  },
+  "Validation_NameRequired": {
+    "en-US": "Enter a name.",
+    "zh-CN": "请输入名称。",
+    "pt-BR": "Informe um nome."
+  },
+  "Validation_NameLength": {
+    "en-US": "The name must contain no more than 120 characters.",
+    "zh-CN": "名称不得超过 120 个字符。",
+    "pt-BR": "O nome deve ter no máximo 120 caracteres."
+  },
+  "Validation_CategoryRequired": {
+    "en-US": "Select a category.",
+    "zh-CN": "请选择分类。",
+    "pt-BR": "Selecione uma categoria."
+  },
+  "Validation_ContactRequired": {
+    "en-US": "Enter a contact name.",
+    "zh-CN": "请输入联系人。",
+    "pt-BR": "Informe o nome do contato."
+  },
+  "Validation_ContactLength": {
+    "en-US": "The contact name must contain no more than 80 characters.",
+    "zh-CN": "联系人不得超过 80 个字符。",
+    "pt-BR": "O nome do contato deve ter no máximo 80 caracteres."
+  },
+  "Validation_EmailRequired": {
+    "en-US": "Enter an email address.",
+    "zh-CN": "请输入邮箱。",
+    "pt-BR": "Informe um endereço de e-mail."
+  },
+  "Validation_EmailInvalid": {
+    "en-US": "Enter a valid email address.",
+    "zh-CN": "请输入有效的邮箱地址。",
+    "pt-BR": "Informe um endereço de e-mail válido."
+  },
+  "Validation_ColorRequired": {
+    "en-US": "Enter a color.",
+    "zh-CN": "请输入颜色。",
+    "pt-BR": "Informe uma cor."
+  },
+  "Validation_ColorFormat": {
+    "en-US": "Use the #RRGGBB format.",
+    "zh-CN": "使用 #RRGGBB 格式。",
+    "pt-BR": "Use o formato #RRGGBB."
+  }
+}

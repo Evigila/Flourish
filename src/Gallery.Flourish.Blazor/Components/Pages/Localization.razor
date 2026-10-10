@@ -18,6 +18,8 @@
         </Dialog>
     </Section>
     <Section Title="@Localization.Parse(TextKey.Localization_API)">
+        <p>@Localization.Parse(TextKey.Localization_Modules)</p>
+        <DisplayBoard Dotted="false" Centered="false" CopyText="@ModuleConfiguration"><CodeBlock Text="@ModuleConfiguration" Language="xml" /></DisplayBoard>
         <DisplayBoard Dotted="false" Centered="false" CopyText="@Registration"><CodeBlock Text="@Registration" Language="csharp" /></DisplayBoard>
     </Section>
     <Section Title="@Localization.Parse(TextKey.Localization_Scenario)">
@@ -42,11 +44,23 @@
         [new("name", Localization.Parse(TextKey.Record_Name), _ => Localization.Parse(TextKey.Record_One)),
          new("amount", Localization.Parse(TextKey.Amount), row => row.Amount)];
     private sealed record SampleRecord(decimal Amount);
+    private const string ModuleConfiguration = """
+        <PropertyGroup>
+          <EssentialCultureNamespace>ArkheideSystem.MyApp.Texts</EssentialCultureNamespace>
+          <EssentialCultureAutoInclude>true</EssentialCultureAutoInclude>
+          <EssentialCultureAutoCreate>false</EssentialCultureAutoCreate>
+        </PropertyGroup>
+        <ItemGroup>
+          <CultureModule Include="Localization/Culture.*.json"
+                         DeploymentPath="Localization/%(Filename)%(Extension)" />
+        </ItemGroup>
+        """;
     private const string Registration = """
         using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
+        using ArkheideSystem.MyApp.Texts;
         builder.Services.AddFlourishFramework(builder.Configuration, framework => framework
             .ConfigureCulture(culture => culture
-                .AddCatalog<Program>("App", "App.Texts.json")
+                .AddCatalogFiles("App", CultureResources.Files, CultureResources.FallbackCulture)
                 .SetDefaultCatalog("App"))
             .ConfigureNavigation(nav => nav.AddNav(
                 new TextReference("App", TextKey.Nav_Home, "主页"), "home", "/", exact: true)));

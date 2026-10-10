@@ -25,13 +25,19 @@ internal static class Program
 
     private static async Task Main()
     {
+        var resources = typeof(Framework).Assembly.GetType("ArkheideSystem.Gallery.Flourish.Blazor.Texts.CultureResources", throwOnError: true)!;
+        var moduleFiles = (IReadOnlyList<string>)resources.GetProperty("Files", BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null)!;
+        var fallbackCulture = (string)resources.GetField("FallbackCulture", BindingFlags.Static | BindingFlags.NonPublic)!.GetRawConstantValue()!;
+        if (moduleFiles.Count != 7 || moduleFiles.Distinct(StringComparer.Ordinal).Count() != moduleFiles.Count
+            || moduleFiles.Any(path => !File.Exists(Path.Combine(AppContext.BaseDirectory, path))))
+            throw new InvalidOperationException("Gallery's generated module manifest must deploy seven distinct functional catalogs to the test output.");
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<NavigationManager>(new TestNavigation());
         services.AddSingleton<IJSRuntime>(new NoJs());
         services.AddScoped<RecordStore>();
         services.AddFlourishFramework(builder => builder
-            .ConfigureCulture(culture => culture.AddCatalog<Framework>("Gallery", "Gallery.Texts.json")
+            .ConfigureCulture(culture => culture.AddCatalogFiles("Gallery", moduleFiles, fallbackCulture)
                 .SetDefaultCatalog("Gallery").SetDefaultCulture("en-US")
                 .AddSupportedCultures("en-US", "zh-CN", "pt-BR"))
             .ConfigureTopBar(_ => { }));

@@ -1,5 +1,11 @@
 # currentproject-architecture
 
+## 2026-10-09 Essential module ownership
+
+The user authorized both optional Culture bridges to consume public Essential 1.4.0, pinned through Directory.Build.props. Essential owns eager FromFiles composition, strict module validation, retained-language policy and generator deployment manifests. The Blazor bridge supplies AddCatalogFiles and loaded-catalog registration without a duplicate parser; native providers can own isolated state over the same composed catalog. WPF bundled captions also reuse Essential's core. Framework remains provider-neutral and free of Essential dependencies.
+
+Gallery translation ownership is split among seven functional multilingual Localization/Culture.*.json files. Explicit CultureModule items generate the Key and CultureResources inventory; build/publish deploy its paths and ConfigureCulture consumes that same manifest. The old single Gallery resource is removed. Validators, ChangeLog and HTTP/package consumers inspect the module union and global uniqueness. Framework and Culture extension embedded caption resources remain independent. No dependency source project is substituted and no Flourish package version/publication is implied; see [Culture Web integration](culture-web-integration.md).
+
 ## 2026-10-09 DisplayBoard preview alignment
 
 Framework DisplayBoard owns centering for direct preview action rows when the enclosing board is centered and no InlineActions alignment was supplied. InlineActions marks explicit parameter presence internally so the shared rule respects explicit Start/Center/End while retaining ordinary page End defaults. The direct-child rule excludes nested pages, forms and dialogs and preserves full-row sizing. No Gallery-specific skin or second layout API is introduced. This supersedes only the earlier same-day decision to remove DisplayBoard action-row centering. See [the correction report](bugfix-reports/2026-10-09_display-board-action-alignment.md).

@@ -5,6 +5,7 @@ using ArkheideSystem.Gallery.Flourish.Blazor.Commands;
 using ArkheideSystem.Gallery.Flourish.Blazor.Components;
 using ArkheideSystem.Gallery.Flourish.Blazor.Services;
 using TextKey = ArkheideSystem.Gallery.Flourish.Blazor.Texts.Key;
+using CultureResources = ArkheideSystem.Gallery.Flourish.Blazor.Texts.CultureResources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,7 @@ builder.Services.AddFlourishFramework(
         framework
             .ConfigureCulture(culture =>
                 culture
-                    .AddCatalog<Program>("Gallery", "Gallery.Texts.json")
+                    .AddCatalogFiles("Gallery", CultureResources.Files, CultureResources.FallbackCulture)
                     .SetDefaultCatalog("Gallery")
             )
             .ConfigureProject(project =>

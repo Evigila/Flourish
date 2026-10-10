@@ -1,0 +1,162 @@
+{
+  "ChangeLog_ButtonContentHeight": {
+    "en-US": "Multiline buttons retain vertical padding and grow with content; single-line buttons keep the standard minimum height.",
+    "zh-CN": "多行按钮保留上下内边距并随内容增高；单行按钮保持标准最小高度。",
+    "pt-BR": "Botões com várias linhas mantêm espaçamento vertical interno e crescem com o conteúdo; botões de uma linha mantêm a altura mínima padrão."
+  },
+  "ChangeLog_BoardActionAlignment": {
+    "en-US": "Center default action rows in centered preview boards. Preserve page alignment, explicit alignment and full-row sizing.",
+    "zh-CN": "居中背景板中的默认示例动作行居中；保留页面对齐、显式对齐和整行宽度。",
+    "pt-BR": "Centraliza ações padrão em painéis de prévia centralizados. Preserva alinhamento da página, alinhamento explícito e largura da linha."
+  },
+  "ChangeLog_CultureConfiguration": {
+    "en-US": "Configure Culture inside AddFlourishFramework. Move catalog loading, request negotiation, browser preferences and LanguagePicker into the extension.",
+    "zh-CN": "在 AddFlourishFramework 中配置 Culture；词典加载、请求语言识别、浏览器偏好和 LanguagePicker 收拢至扩展。",
+    "pt-BR": "Configura Culture em AddFlourishFramework. Move catálogos, negociação de idioma, preferências e LanguagePicker para a extensão."
+  },
+  "ChangeLog_CulturePreferences": {
+    "en-US": "Persist browser language and number/date formats across reloads. Separate framework defaults into appsettings.Flourish.json.",
+    "zh-CN": "浏览器保存语言及数字、日期格式，刷新后恢复；框架默认配置独立存入 appsettings.Flourish.json。",
+    "pt-BR": "Preserva idioma e formatos numéricos e de data após recarregar. Separa os padrões do framework em appsettings.Flourish.json."
+  },
+  "ChangeLog_CenteredContainers": {
+    "en-US": "Add Standard and Expanded centered containers to PageBody. Remove CompactSpacing and shell-level gutter scaling; update width examples.",
+    "zh-CN": "PageBody 新增标准与扩大中心容器；移除紧凑表单间距和导航框架留白缩放，更新宽度示例。",
+    "pt-BR": "Adiciona contêineres centrais Standard e Expanded a PageBody. Remove CompactSpacing e a escala do shell; atualiza os exemplos de largura."
+  },
+  "ChangeLog_TutorialDisplayBoard": {
+    "en-US": "Place the Tutorial example inside a standard DisplayBoard.",
+    "zh-CN": "教程页面的控件展示使用标准背景板。",
+    "pt-BR": "Coloca o exemplo de tutorial em um DisplayBoard padrão."
+  },
+  "ChangeLog_RecordListHeading": {
+    "en-US": "Add the Demo records section heading to Record list.",
+    "zh-CN": "为记录列表补充“演示记录”小标题。",
+    "pt-BR": "Adiciona o título Registros de demonstração à lista de registros."
+  },
+  "ChangeLog_ComposedLayoutGutters": {
+    "en-US": "Match composed-layout page gutters to the other examples.",
+    "zh-CN": "组合布局页面采用统一左右间距。",
+    "pt-BR": "Uniformiza as margens laterais dos layouts compostos com os demais exemplos."
+  },
+  "ChangeLog_ActionAlignment": {
+    "en-US": "Align compact action rows to the right; retain full-row sizing. Use a standard Button for framework integration navigation.",
+    "zh-CN": "未占满一行的操作默认靠右，整行组合保持铺满；框架集成入口改用标准 Button。",
+    "pt-BR": "Alinha ações compactas à direita e mantém grupos de largura total. Usa Button padrão no link de integração do framework."
+  },
+  "ChangeLog_CardConsolidation": {
+    "en-US": "Removed IdentityCard: Card covers its summary capabilities; one card entry avoids duplication.",
+    "zh-CN": "移除 IdentityCard：Card 已覆盖其摘要能力，统一卡片入口减少重复。",
+    "pt-BR": "IdentityCard removido: Card cobre seus recursos de resumo; uma única entrada evita duplicação."
+  },
+  "ChangeLog_FormActionsVariants": {
+    "en-US": "Aligned FormActions with UGB variants; restored group elevation, transparent gaps and keyboard focus.",
+    "zh-CN": "FormActions 同步 UGB 变体；恢复组阴影、透明间隔与键盘焦点。",
+    "pt-BR": "FormActions alinhado às variantes UGB; restauradas sombra do grupo, separações transparentes e foco do teclado."
+  },
+  "ChangeLog_ActionMenuHover": {
+    "en-US": "Fixed ActionMenu hover opening for native actions; the scenario switch controls both menus.",
+    "zh-CN": "修复 ActionMenu 原生动作的悬停展开；示例开关同步控制两个菜单。",
+    "pt-BR": "Corrigida a abertura de ações nativas do ActionMenu ao passar o ponteiro; o seletor controla ambos os menus."
+  },
+  "ChangeLog_GridVariants": {
+    "en-US": "Replaced uniform-grid Filled and Outlined with FilledElevated and Elevated; removed variant hover borders.",
+    "zh-CN": "UniformGrid 移除 Filled 和 Outlined，改用 FilledElevated 与 Elevated；移除变体悬停边框。",
+    "pt-BR": "Filled e Outlined da grade uniforme substituídos por FilledElevated e Elevated; removidas bordas das variantes ao passar o mouse."
+  },
+  "ChangeLog_ButtonExamples": {
+    "en-US": "Renamed Gallery button labels to Filled and Outlined; removed Quiet hover borders and separated account selection from draft saving.",
+    "zh-CN": "Gallery 按钮标签改为 Filled 和 Outlined；移除 Quiet 悬停边框，分离账号选择与草稿保存。",
+    "pt-BR": "Rótulos de botão da Gallery alterados para Filled e Outlined; removidas bordas de Quiet ao passar o mouse e separadas seleção de conta e gravação de rascunho."
+  },
+  "ChangeLog_Version": {
+    "en-US": "Version",
+    "zh-CN": "版本",
+    "pt-BR": "Versão"
+  },
+  "ChangeLog_NoChanges": {
+    "en-US": "No changes yet.",
+    "zh-CN": "暂无变更。",
+    "pt-BR": "Sem alterações."
+  },
+  "ChangeLog_CssVerification": {
+    "en-US": "Fixed CSS asset verification with isolated NuGet caches.",
+    "zh-CN": "修复独立 NuGet 缓存下的 CSS 资产验证。",
+    "pt-BR": "Corrigida a verificação de recursos CSS com cache NuGet isolado."
+  },
+  "ChangeLog_StructuredButtons": {
+    "en-US": "Added Button descriptions and trailing status text.",
+    "zh-CN": "Button 新增描述与尾部状态文本。",
+    "pt-BR": "Button ganha descrição e texto de estado no final."
+  },
+  "ChangeLog_IdentityLayout": {
+    "en-US": "Fixed IdentityCard wrapping, heading alignment and width overflow.",
+    "zh-CN": "修复 IdentityCard 换行、标题对齐与宽度溢出。",
+    "pt-BR": "Corrigidas quebra de texto, alinhamento do título e largura de IdentityCard."
+  },
+  "ChangeLog_EditorLayout": {
+    "en-US": "Added compact PageBody spacing, full-height EditingGrid layouts and fixed Rectangle cell heights.",
+    "zh-CN": "新增 PageBody 紧凑间距、EditingGrid 全高布局与 Rectangle 固定单元高度。",
+    "pt-BR": "Adicionados espaçamento compacto de PageBody, EditingGrid em altura total e altura fixa para células Rectangle."
+  },
+  "ChangeLog_AccessLayout": {
+    "en-US": "Added per-instance footer identity and NavigationChoices button variants; fixed access-form action spacing.",
+    "zh-CN": "新增页脚独立身份配置与 NavigationChoices 按钮变体；修复访问表单操作间距。",
+    "pt-BR": "Adicionados identidade por rodapé e variantes de botão em NavigationChoices; corrigido o espaçamento das ações de formulários de acesso."
+  },
+  "ChangeLog_TableWidths": {
+    "en-US": "Fixed DataTable bulk-editor widths and selection-column sizing.",
+    "zh-CN": "修复 DataTable 批量编辑宽度与选择列尺寸。",
+    "pt-BR": "Corrigidas as larguras da edição em lote e da coluna de seleção de DataTable."
+  },
+  "ChangeLog_EditorFrame": {
+    "en-US": "Removed EditingGrid's blank trailing column and rounded frame.",
+    "zh-CN": "移除 EditingGrid 尾部空列与圆角边框。",
+    "pt-BR": "Removidas a coluna vazia final e as bordas arredondadas de EditingGrid."
+  },
+  "ChangeLog_GuttersAndDialogs": {
+    "en-US": "Added configurable centered gutters; aligned Dialog actions to the end.",
+    "zh-CN": "新增可配置居中边距；Dialog 操作统一尾端对齐。",
+    "pt-BR": "Adicionadas margens centrais configuráveis; ações de Dialog alinhadas ao final."
+  },
+  "ChangeLog_OrganizationAccess": {
+    "en-US": "Fixed organization-access page flow, background and footer placement.",
+    "zh-CN": "修复组织访问页文档流、背景与页脚位置。",
+    "pt-BR": "Corrigidos fluxo, fundo e posição do rodapé na página de acesso à organização."
+  },
+  "ChangeLog_FieldActions": {
+    "en-US": "Added Field.Actions with separate input, operation and validation layout.",
+    "zh-CN": "新增 Field.Actions，分离输入、操作与验证布局。",
+    "pt-BR": "Adicionado Field.Actions com layout separado para entrada, ações e validação."
+  },
+  "ChangeLog_BooleanSelection": {
+    "en-US": "Fixed Boolean and nullable Boolean selection in SelectBox and StandaloneSelectBox.",
+    "zh-CN": "修复 SelectBox 与 StandaloneSelectBox 的布尔及可空布尔选择。",
+    "pt-BR": "Corrigida a seleção de Boolean e Boolean anulável em SelectBox e StandaloneSelectBox."
+  },
+  "ChangeLog_ActionWidths": {
+    "en-US": "Fixed direct PageBody action-row width overflow.",
+    "zh-CN": "修复 PageBody 直接操作行的宽度溢出。",
+    "pt-BR": "Corrigido o excesso de largura das linhas de ações diretas de PageBody."
+  },
+  "ChangeLog_Tutorials": {
+    "en-US": "Added TutorialBoard and TutorialStep with host-controlled progress, actions and skipping.",
+    "zh-CN": "新增 TutorialBoard 与 TutorialStep，进度、操作与跳过由宿主管理。",
+    "pt-BR": "Adicionados TutorialBoard e TutorialStep com progresso, ações e dispensa controlados pelo aplicativo."
+  },
+  "ChangeLog_ProgressRing": {
+    "en-US": "Added compact ProgressRing display and optional value labels.",
+    "zh-CN": "ProgressRing 新增紧凑显示与可选数值标签。",
+    "pt-BR": "ProgressRing ganha exibição compacta e rótulos de valor opcionais."
+  },
+  "ChangeLog_GalleryChangeLog": {
+    "en-US": "Added versioned ChangeLog navigation; bounded Gallery account and login actions.",
+    "zh-CN": "新增按版本选择的 ChangeLog 导航；限制 Gallery 账户与登录操作宽度。",
+    "pt-BR": "Adicionada navegação de ChangeLog por versão; limitada a largura das ações de conta e login na Gallery."
+  },
+  "ChangeLog_EssentialModules": {
+    "en-US": "Update Culture bridges to Essential.Culture 1.4.0. Split Gallery translations by module with shared key generation and runtime loading.",
+    "zh-CN": "Culture 桥接层升级至 Essential.Culture 1.4.0；Gallery 翻译按模块分块，统一生成键并加载词典。",
+    "pt-BR": "Atualiza as pontes Culture para Essential.Culture 1.4.0. Divide traduções da Gallery por módulo com geração de chaves e carregamento unificados."
+  }
+}
