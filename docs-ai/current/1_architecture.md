@@ -2,6 +2,8 @@
 
 **Status:** Verified source and structure inventory, 2026-10-10 (America/Sao_Paulo, UTC-03:00). Inspected working tree based on commit `3e861b346a145240b8cdabbfe9b39cdd785fc819`, including the pending Essential.Culture 1.4.0 bridge changes and the installed AGENTS framework 1.0.0. This source audit does not certify application startup or visual behavior.
 
+**Release preparation update, 2026-10-10:** The user authorized Flourish `VersionPrefix=1.4.0`; Essential.Culture remains 1.4.0. The public release manifest still contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Full local [release preparation](release-verification.md#flourish-140-preparation-on-2026-10-10) passed; publication is pending at this snapshot. The audit baseline and structure counts above remain dated evidence.
+
 ## Inventory scope
 
 The complete tree below includes every maintained file observed in the repository outside the two documentation subtrees. The inventory contains **678 files and 121 directories below the root**, including **22 project files and 5 solution files**. It includes hidden maintained files and project-owned untracked files. Files were enumerated with `rg --files --hidden --no-ignore`; explicit generated/temporary exclusions were applied after identifying their roles. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
@@ -833,7 +835,7 @@ Flourish/
 | --- | --- | --- |
 | `Flourish.slnx` | Aggregate development solution containing all 22 projects; it is not a deployment orchestrator | Actual solution project entries and platform mappings |
 | `global.json` | Requires .NET SDK 10.0.400 with latest-patch roll-forward and no prerelease SDK | SDK declaration |
-| `Directory.Build.props` | Shared package metadata, deterministic output, Flourish 1.1.3 version prefix, Essential.Culture 1.4.0 version property, generated package output directory | Shared MSBuild properties |
+| `Directory.Build.props` | Shared package metadata, deterministic output, Flourish 1.4.0 version prefix, Essential.Culture 1.4.0 version property, generated package output directory | Current shared MSBuild properties; user-authorized release preparation |
 | `Directory.Build.targets` | Refuses architecture-specific pack output for managed libraries whose package assemblies are TFM-wide | `RequireArchitectureNeutralLibraryPackage` target |
 | `AGENTS.md`, `AGENTS.ensure.json`, `AGENTS.framework.json`, `AGENTS.lock.json` | Instruction routing, separate audit state, installed managed-payload manifest and installation provenance | Current framework files; audit-state validity is evaluated by the coordinator |
 | `.agents/` | Two project-owned workflow skills: documentation audit and shared framework synchronization | Each skill manifest and UI metadata |

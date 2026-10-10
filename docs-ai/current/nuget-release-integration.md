@@ -1,8 +1,14 @@
 # NuGet release and integration
 
+## Authorized 1.4.0 release preparation
+
+The user authorized two pending commits and publication of Flourish 1.4. Source VersionPrefix is now 1.4.0; EssentialCultureVersion and the release gate remain pinned to public Essential 1.4.0. The release manifest still contains exactly the six Core/Blazor packages listed below. WPF is outside that publication manifest. Preparation, tag publication, public indexing and public-only consumption are separate acceptance steps; see [release verification](release-verification.md) for their observed status.
+
+Gallery promotes all 21 entries from 1.1.4-preview to 1.4.0 and adds an empty 1.4.1-preview. Historical 1.1.1/1.1.2/1.1.3 notes and existing tags are preserved. The earlier candidate and release snapshots below describe their dated versions and do not restrict this newly authorized release.
+
 ## Essential 1.4.0 module adoption
 
-The user authorized the shared Essential dependency pin and release-verification expectation to move to 1.4.0. Blazor/WPF bridges consume its public packages; the Blazor extension still depends on Framework and WPF remains outside the six-package public manifest. Flourish VersionPrefix remains 1.1.3 and no tag/publication follows from this update. Earlier 1.3.0 publication/dependency results below remain dated evidence.
+The user authorized the shared Essential dependency pin and release-verification expectation to move to 1.4.0. Blazor/WPF bridges consume its public packages; the Blazor extension still depends on Framework and WPF remains outside the six-package public manifest. The dependency update initially retained Flourish 1.1.3 without publishing; the subsequent 1.4.0 release authorization above supersedes that earlier boundary. Earlier 1.3.0 publication/dependency results below remain dated evidence.
 
 Gallery now declares seven multilingual CultureModule files and registers their generated CultureResources manifest through AddCatalogFiles. Its former single embedded Gallery.Texts.json resource is removed; Framework/extension resources remain embedded. Isolated package consumers now verify two functional modules, generated keys/manifest, nested build/publish deployment paths, language/format isolation and SSR. Catalog, ChangeLog and HTTP validation inspect all Gallery modules rather than one file. See [the current integration contract](culture-web-integration.md).
 
@@ -16,7 +22,7 @@ Gallery now uses same-repository ProjectReference entries, including the Culture
 
 The host-facing service setup is AddFlourishFramework(builder.Configuration, framework => framework.ConfigureCulture(...)), optional AddFlourishDesign(builder.Configuration), and host business registrations. Framework loads optional appsettings.Flourish.json below host/business/environment/command-line overrides; the extension configures request middleware internally. Hosts supply only their application catalog identity/resource, explicit keys and relevant defaults. Per-browser cookie preferences never rewrite server JSON. See [Culture Web integration](culture-web-integration.md) for the current API and manual acceptance.
 
-## Current stable release: 1.1.3
+## Previous stable release: 1.1.3
 
 The user authorized publication of the earlier layout candidate and the table-width fixes on 2026-10-07. Source 6b5dc255fb97d4313da7e11bce9bab820cc06256 is tagged v1.1.3; [run 37653211373](https://github.com/Evigila/Flourish/actions/runs/37653211373) successfully uploaded the same six Core/Blazor packages. All six public indexes contain 1.1.3, and fresh package/HTTP caches with NuGet.org as the only source passed 129 consumer checks. Essential remains 1.3.0; WPF is excluded. Colligere may upgrade both central entries to 1.1.3 and remove its local candidate feed. Earlier candidate restrictions and version-specific sections below are dated history, superseded for this Blazor release. See [the width and portal report](bugfix-reports/2026-10-07_table-widths-and-portal-composition.md).
 
@@ -26,11 +32,11 @@ The former WPF single-project host/service implementation and its Culture hostin
 
 The existing public six-package Core/Blazor 1.1.2 release and scripts/ReleaseSettings.psd1 remain unchanged. Native WPF build/pack verification creates local candidates only; this task does not publish, version-bump or add Windows targets to the already released Blazor packages.
 
-## Current release: Blazor 1.1.2
+## Historical release: Blazor 1.1.2
 
 The user approved release of the previously deferred source corrections and new generic identity/access/page/grid capabilities. Directory.Build.props owns VersionPrefix 1.1.2; Essential remains 1.3.0. The existing six-package manifest, IDs and dependency order remain unchanged. Full local preparation passed with zero build warnings/errors. Source commit 108fbff8950925b909a70b0b9830226ae8226521 and tag v1.1.2 are pushed; [run 37560362408](https://github.com/Evigila/Flourish/actions/runs/37560362408) successfully uploaded all six packages. Public indexing and independent public-only consumer verification are complete: 129 checks passed with fresh package and HTTP caches in artifacts/package-consumers/b06a15d2f8fc4661be3792ff26ebf464. [Release verification](release-verification.md) records the complete gate and propagation/cache evidence. Colligere may upgrade its two central entries together; no source/local-feed substitution is required. The completed 1.1.1 release below is historical evidence.
 
-## Local validation candidate
+## Historical local validation candidate
 
 The active user-authorized candidate is `1.1.4-preview.fields.3`, retaining Field.Actions and Boolean conversion from `.1`/`.2` and correcting direct PageBody InlineActions width. Its six packages are generated into `../Colligere/artifacts/local-nuget/1.1.4-preview.fields.3`; both Colligere central entries and its Flourish-only source mapping consume that feed. Directory.Build.props retains stable VersionPrefix 1.1.3. Candidate generation overrides Version=1.1.4-preview.fields.3, VersionPrefix=1.1.4 and VersionSuffix=preview.fields.3, with isolated SDK output/intermediates. Restore the umbrella graph before packing its Culture bridge. Verify-PackageSet confirms all six IDs, matching internal versions and required assets; restored Colligere metadata identifies the same local feed. Essential remains 1.3.0; WPF is excluded. Public 1.1.3 and both prior local candidates are preserved. No public upload, tag, push or commit is authorized by candidate generation. See the [page-action report](bugfix-reports/2026-10-08_pagebody-inline-actions-width.md) and historical [selection report](bugfix-reports/2026-10-07_boolean-select-native-conversion.md). Local verification does not replace public release preparation or indexing checks.
 
@@ -66,12 +72,12 @@ The earlier 1.1.1 release published the Abstract-only Culture adapter before Fra
 | 2 | Arkheide.Flourish.Blazor.Abstract | Core |
 | 3 | Arkheide.Flourish.Blazor.Framework | Abstract; no Essential dependency |
 | 4 | Arkheide.Flourish.Blazor.Design | Framework/Abstract; no Essential dependency |
-| 5 | Arkheide.Flourish.Extensions.Culture.Blazor | Framework and Essential.Culture.Blazor 1.3.0; owns its Razor control/catalog and browser persistence asset |
+| 5 | Arkheide.Flourish.Extensions.Culture.Blazor | Framework and Essential.Culture.Blazor 1.4.0; owns its Razor control/catalog and browser persistence asset |
 | 6 | Arkheide.Flourish.Blazor | Dependency-only umbrella: Abstract, Framework, Design and Culture bridge |
 
 Exactly these six Core/Blazor packages are in scope. Flourish WPF and its WPF Culture bridge are excluded. Shared is retired. The umbrella installs the Culture extension automatically; the extension brings Essential.Blazor, Core and Generator transitively. Install Framework alone to omit both Design and Culture. Installation does not activate optional services: hosts call AddFlourishFramework, ConfigureCulture inside its callback when desired, and AddFlourishDesign separately when desired. A Web host receives standard interactive Razor registrations through Framework; service-only registration does not construct a host.
 
-Flourish Directory.Build.props owns the current stable source VersionPrefix=1.1.3 and EssentialCultureVersion=1.3.0; it used VersionPrefix=1.1.1 for that historical release. Essential's module props own VersionPrefix=1.3.0. Each scripts/ReleaseSettings.psd1 fixes the IDs and publication order. Arkheide.* NuGet IDs remain unchanged by product-first project names or the renamed Essential.Culture GitHub repository.
+Flourish Directory.Build.props owns current stable source VersionPrefix=1.4.0 and EssentialCultureVersion=1.4.0. Earlier released versions used their corresponding pins described in the dated snapshots. scripts/ReleaseSettings.psd1 fixes the IDs, publication order and Essential 1.4.0 verification expectation. Arkheide.* NuGet IDs remain unchanged by product-first project names or the renamed Essential.Culture GitHub repository.
 
 ## Package consumption and local preparation
 
@@ -92,10 +98,10 @@ The complete 1.1.1 preparation passed with exit code 0 and zero build warnings/e
 
 ```powershell
 Set-Location C:\Users\RC_Auditoria\source\Repos\Flourish
-& .\build\Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.1.1
+& .\build\Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.0
 ```
 
-PublicSource uses one NuGet.org source and wildcard package mapping, with a new fixture/cache for each run. It rejects combination with PackageDirectory or EssentialPackageDirectory. The default local/CI candidate modes remain unchanged. The final command passed all 129 checks; the resulting metadata verifies that all Flourish and transitive Essential packages were restored from public NuGet.org.
+PublicSource uses one NuGet.org source and wildcard package mapping, with a new fixture/cache for each run. It rejects combination with PackageDirectory or EssentialPackageDirectory. The default local/CI candidate modes remain unchanged. Run this after public indexing; current 1.4.0 results belong in release verification. The earlier 1.1.1 invocation passed all 129 checks and its metadata verified public NuGet.org provenance.
 
 The first public-consumer attempt registered the same NuGet.org URI as both Flourish and nuget.org. NuGet merged the duplicate source and retained a restrictive Flourish.* mapping, preventing restore of Microsoft.AspNetCore.App.Internal.Assets 10.0.11 with NU1100. The explicit PublicSource mode corrects the verification configuration; it does not change published packages. Failed fixture artifacts/package-consumers/d1afce7bb6784b64be6730553c6e64a3 retains its original NuGet.Config, FrameworkOnly/obj/project.assets.json and NU1100 diagnostics. The final successful fixture is artifacts/package-consumers/027abe99e60f46dbaa1d15a75b670ff6.
 
@@ -113,9 +119,9 @@ Both repositories use .github/workflows/build.yml and the GitHub environment nug
 
 The workflow field is build.yml without .github/workflows/. Successful login and Created uploads establish authorization for these exact released package sets, including first creation of the new IDs. They do not authorize unrelated future packages. An Arkheide.Flourish.* policy scope can support initial ID creation while the release manifest/verifier restrict publication to exactly the six Core/Blazor packages. See [official Trusted Publishing guidance](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing).
 
-## Single-file translations
+## Translation catalogs and modules
 
-Maintain one Culture.json per owning project, with en-US, zh-CN and pt-BR translations under each semantic key. Gallery's Localization/Culture.json is both the Generator AdditionalFile and an embedded resource, Gallery.Texts.json. The extension's transitive Essential packages supply Generator; no direct Generator reference is required. Register the application resource with ConfigureCulture(culture => culture.AddCatalog<Program>("Gallery", "Gallery.Texts.json").SetDefaultCatalog("Gallery")), then resolve generated string tokens through the scoped CultureSession.Parse service. Generator emits a static Key class; TextKey is Gallery's using alias for that generated class, not a runtime key type. For example, TextKey.Page_RecordCreate returns Key.Page_RecordCreate. CultureSession exposes Culture as a UI-culture string and FormatCulture as CultureInfo; Essential runtime registration/services remain internal implementation details.
+Culture files retain en-US, zh-CN and pt-BR translations under each semantic key and can be split by module. Gallery declares seven CultureModule files; Essential 1.4.0 generates their keys and CultureResources manifest, and the host registers that manifest through ConfigureCulture and AddCatalogFiles. The generated resource paths are deployed to build/publish output. The former single embedded Gallery.Texts.json is removed. The extension's transitive Essential packages supply Generator; no direct Generator reference is required. CultureSession.Parse resolves generated string tokens. TextKey is Gallery's using alias for the generated Key class, not a runtime key type. CultureSession exposes Culture as a UI-culture string and FormatCulture as CultureInfo; Essential runtime registration/services remain internal implementation details. See [the complete host and module contract](culture-web-integration.md).
 
 Framework owns its separate single Culture.json for standard captions and usage descriptions, embedded as Flourish.Blazor.Texts.json. The extension owns its Culture.json for LanguagePicker/feedback/usage, embedded as Culture.Texts.json. ConfigureCulture automatically registers both under Flourish and Culture identities and adapts the provider-neutral ITextProvider through CultureSession. Framework still has no dependency on Essential. Application and library catalog IDs prevent key collisions; no combined cross-project dictionary is required. The extension packages its cookie module under _content/Arkheide.Flourish.Extensions.Culture.Blazor/browser-preferences.js; the former Framework path is retired.
 

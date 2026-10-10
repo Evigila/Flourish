@@ -51,6 +51,8 @@ internal static class ChangeLogChecks
                 Check(!html.Contains("value=\"1.1.0\"", StringComparison.Ordinal), "The initial tag must not have a ChangeLog option.");
                 Check(Regex.Matches(html, "<option\\b").Count == ChangeLogCatalog.Releases.Count, "Version options are missing or duplicated.");
                 Check(Regex.Matches(html, "<li>").Count == release.ChangeKeys.Count, "ChangeLog did not replace the previous release's notes.");
+                if (release.ChangeKeys.Count == 0)
+                    Check(html.Contains(language.Parse("Key.ChangeLog_NoChanges"), StringComparison.Ordinal), "The empty preview did not display its translated no-changes message.");
                 foreach (var key in release.ChangeKeys)
                     Check(html.Contains(language.Parse(key), StringComparison.Ordinal), release.Version + ": missing translated release note " + key);
                 Check(!Regex.IsMatch(html, @">[^<]*\bKey\.[A-Za-z0-9_]+"), "ChangeLog leaked a localization key.");

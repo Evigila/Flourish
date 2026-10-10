@@ -16,9 +16,9 @@ Project and solution names follow [codedesign.md](../common/codedesign.md#soluti
 
 ## Dependency and release ownership
 
-Root Directory.Build.props currently pins VersionPrefix 1.1.3 and EssentialCultureVersion 1.4.0. Extensions consume Essential packages, and generator-enabled applications/tests use Essential.Culture.Generator. All project/package/SDK dependencies and actual resolved versions belong to [1_dependency.md](1_dependency.md).
+Root Directory.Build.props currently pins the user-authorized VersionPrefix 1.4.0 and EssentialCultureVersion 1.4.0. Extensions consume Essential packages, and generator-enabled applications/tests use Essential.Culture.Generator. All project/package/SDK dependencies and actual resolved versions belong to [1_dependency.md](1_dependency.md), which separates the earlier 1.1.3 audit snapshots from the new release restore evidence.
 
-The release manifest currently packages six Core/Blazor entries. Native WPF verification uses local candidates outside that public release set. Follow [NuGet release and integration](nuget-release-integration.md) and [release verification](release-verification.md) for publication boundaries and dated evidence. Local candidate packing does not establish a new publication.
+The release manifest currently packages six Core/Blazor entries; their identities and dependency order are unchanged. Native WPF verification uses local candidates outside that public release set, and its Culture bridge remains excluded. Flourish 1.4.0 full local preparation passed; publication is pending at this snapshot. Follow [NuGet release and integration](nuget-release-integration.md) and [release verification](release-verification.md) for publication boundaries and dated evidence. Local candidate packing does not establish a new publication.
 
 Human DocFX configs still name the deleted single-project WPF csproj/favicon paths. They are reported as stale integration inputs and remain unchanged under the documentation ownership rule.
 

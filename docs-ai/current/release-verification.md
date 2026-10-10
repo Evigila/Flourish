@@ -1,5 +1,15 @@
 # Release verification
 
+## Flourish 1.4.0 preparation on 2026-10-10
+
+The user authorized the two pending commits and a 1.4 release. Commits 8e855c4 (Essential 1.4.0 bridges/modules) and 4848106 (documentation audit and Culture examples) are complete. VersionPrefix is 1.4.0; all 21 former 1.1.4-preview notes are now stable 1.4.0 notes, followed by an empty 1.4.1-preview. The six Core/Blazor package IDs and release order are unchanged; WPF is outside the public manifest. Earlier source-only restrictions below describe their dated snapshots.
+
+Full `scripts/Test-Release.ps1 -ArtifactsPath artifacts/release-1.4.0` completed successfully using isolated build/restore outputs and public Essential 1.4.0. Release builds had zero warnings/errors. Passed: Core 367, Blazor 436/436, Culture bridge 26, Gallery 8,239 with 474 actual post-event checks and 267 ChangeLog checks, Node 119/119, CSS bundle 21, CSS SDK 194, launcher 95, catalog 24,202, ChangeLog validator 98, and four independent candidate package consumers 143. All six 1.4.0 packages passed dependency/asset validation. NuGet emitted its existing missing-package-README advisories; those are separate from successful compilation and packaging.
+
+Evidence: `artifacts/release-1.4.0-gate.log`, isolated `artifacts/release-1.4.0/`, and candidate consumer fixture `artifacts/package-consumers/66fcdfac27aa402d8ce3bdaccedb6447`. Tag upload, CI publication, public indexing and fresh public-only consumption are pending at this preparation snapshot and must be verified independently.
+
+Manual acceptance remains user-operated: select 1.4.0 and 1.4.1-preview on ChangeLog in all three languages; confirm stable notes and the empty-preview caption; check Button's multiline account spacing and centered controls; exercise ActionMenu hover opening/closing; switch languages and refresh to confirm browser preferences. No Computer Use or visual acceptance is claimed.
+
 ## Local page action candidate on 2026-10-08
 
 The authorized local-only 1.1.4-preview.fields.3 retains Field.Actions and Boolean conversion and corrects direct PageBody InlineActions width. Blazor-only Release solution build passes with zero warnings/errors; library checks 416, Gallery 7,266 including 124 actual post-event checks, bridge 12, page-action Node checks five, and catalog integrity checks 21,543 all pass. The six-package verifier passes IDs, matching dependency versions and assets. Colligere restores those six versions from its scoped local feed, verifies the packaged CSS rule, builds its complete Release solution without warnings/errors and passes 352 selected Web cases with five database opt-in skips, plus 48/83 selected Core/Application cases. Six company transport Node checks pass.
