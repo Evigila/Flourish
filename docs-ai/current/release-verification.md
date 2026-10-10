@@ -1,5 +1,15 @@
 # Release verification
 
+## Completed Flourish 1.4.0 release on 2026-10-10
+
+Source commit `8e97e0022086f436ff53b52538adf6377f1cc760` is tagged `v1.4.0` and pushed with the two preceding user-authorized commits. [Run 38023309578](https://github.com/Evigila/Flourish/actions/runs/38023309578) passed both [build verification](https://github.com/Evigila/Flourish/actions/runs/38023309578/job/114128763367) and [Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/38023309578/job/114129401177). All six Core/Blazor packages returned Created between 04:17:30 and 04:17:34 UTC. WPF remains outside this public manifest; Essential stays 1.4.0.
+
+CI reproduced the local preparation results below with zero build warnings/errors; its ChangeLog validator passed 99 checks because the new reachable v1.4.0 tag adds one coverage assertion. Fresh public index responses contain 1.4.0 for all six packages. Initial unqualified index responses retained older cached values for some IDs; fresh query responses and successful public package consumption independently establish availability.
+
+`build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.0` passed all 143 checks using fresh package/HTTP caches and NuGet.org as the only source. FrameworkOnly, MetaNative, MetaDesign and MetaCulture restored, published and ran successfully, covering registration, SSR, static assets and Culture module generation/deployment. All six Flourish and three Essential 1.4.0 `.nupkg.metadata` entries identify `https://api.nuget.org/v3/index.json`; no source project or local feed was used. Publication, public indexing and public-only consumption are complete.
+
+Evidence: `artifacts/release-1.4.0-ci-build.log`, `artifacts/release-1.4.0-publish.log`, `artifacts/release-1.4.0/public-index-fresh.json`, `artifacts/public-release-1.4.0.log`, `artifacts/release-1.4.0/public-consumer-provenance.json` and public fixture `artifacts/package-consumers/9f393f06c97c43efb834ffe4b84510d1`. The [publication record](1_changelogs/2026-10-10_012340_publish-flourish-1.4.0.md) supersedes the pending publication state in the dated preparation snapshot below. Visual acceptance remains user-operated using its checklist.
+
 ## Flourish 1.4.0 preparation on 2026-10-10
 
 The user authorized the two pending commits and a 1.4 release. Commits 8e855c4 (Essential 1.4.0 bridges/modules) and 4848106 (documentation audit and Culture examples) are complete. VersionPrefix is 1.4.0; all 21 former 1.1.4-preview notes are now stable 1.4.0 notes, followed by an empty 1.4.1-preview. The six Core/Blazor package IDs and release order are unchanged; WPF is outside the public manifest. Earlier source-only restrictions below describe their dated snapshots.

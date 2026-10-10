@@ -1,8 +1,8 @@
 # NuGet release and integration
 
-## Authorized 1.4.0 release preparation
+## Published Flourish 1.4.0
 
-The user authorized two pending commits and publication of Flourish 1.4. Source VersionPrefix is now 1.4.0; EssentialCultureVersion and the release gate remain pinned to public Essential 1.4.0. The release manifest still contains exactly the six Core/Blazor packages listed below. WPF is outside that publication manifest. Preparation, tag publication, public indexing and public-only consumption are separate acceptance steps; see [release verification](release-verification.md) for their observed status.
+The user authorized two pending commits and publication of Flourish 1.4. Source VersionPrefix is 1.4.0; EssentialCultureVersion and the release gate remain pinned to public Essential 1.4.0. Source commit `8e97e0022086f436ff53b52538adf6377f1cc760` is tagged `v1.4.0`; [run 38023309578](https://github.com/Evigila/Flourish/actions/runs/38023309578) passed and uploaded all six Core/Blazor packages. All six public indexes contain 1.4.0 and fresh public-only consumers passed 143 checks. WPF remains outside the publication manifest. See [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10) for upload, indexing and package-provenance evidence.
 
 Gallery promotes all 21 entries from 1.1.4-preview to 1.4.0 and adds an empty 1.4.1-preview. Historical 1.1.1/1.1.2/1.1.3 notes and existing tags are preserved. The earlier candidate and release snapshots below describe their dated versions and do not restrict this newly authorized release.
 
@@ -101,7 +101,7 @@ Set-Location C:\Users\RC_Auditoria\source\Repos\Flourish
 & .\build\Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.0
 ```
 
-PublicSource uses one NuGet.org source and wildcard package mapping, with a new fixture/cache for each run. It rejects combination with PackageDirectory or EssentialPackageDirectory. The default local/CI candidate modes remain unchanged. Run this after public indexing; current 1.4.0 results belong in release verification. The earlier 1.1.1 invocation passed all 129 checks and its metadata verified public NuGet.org provenance.
+PublicSource uses one NuGet.org source and wildcard package mapping, with a new fixture/cache for each run. It rejects combination with PackageDirectory or EssentialPackageDirectory. The default local/CI candidate modes remain unchanged. The 1.4.0 invocation passed 143 checks and verified NuGet.org provenance for all six Flourish and three Essential packages. The earlier 1.1.1 invocation passed 129 checks in its dated fixture.
 
 The first public-consumer attempt registered the same NuGet.org URI as both Flourish and nuget.org. NuGet merged the duplicate source and retained a restrictive Flourish.* mapping, preventing restore of Microsoft.AspNetCore.App.Internal.Assets 10.0.11 with NU1100. The explicit PublicSource mode corrects the verification configuration; it does not change published packages. Failed fixture artifacts/package-consumers/d1afce7bb6784b64be6730553c6e64a3 retains its original NuGet.Config, FrameworkOnly/obj/project.assets.json and NU1100 diagnostics. The final successful fixture is artifacts/package-consumers/027abe99e60f46dbaa1d15a75b670ff6.
 

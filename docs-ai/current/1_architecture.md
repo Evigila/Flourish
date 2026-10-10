@@ -2,7 +2,7 @@
 
 **Status:** Verified source and structure inventory, 2026-10-10 (America/Sao_Paulo, UTC-03:00). Inspected working tree based on commit `3e861b346a145240b8cdabbfe9b39cdd785fc819`, including the pending Essential.Culture 1.4.0 bridge changes and the installed AGENTS framework 1.0.0. This source audit does not certify application startup or visual behavior.
 
-**Release preparation update, 2026-10-10:** The user authorized Flourish `VersionPrefix=1.4.0`; Essential.Culture remains 1.4.0. The public release manifest still contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Full local [release preparation](release-verification.md#flourish-140-preparation-on-2026-10-10) passed; publication is pending at this snapshot. The audit baseline and structure counts above remain dated evidence.
+**Release update, 2026-10-10:** Flourish `VersionPrefix=1.4.0` is published from tag `v1.4.0`; Essential.Culture remains 1.4.0. The public manifest contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The audit baseline and structure counts above remain dated evidence.
 
 ## Inventory scope
 
