@@ -56,8 +56,11 @@
         </ItemGroup>
         """;
     private const string Registration = """
+        using ArkheideSystem.Flourish.Blazor;
+        using ArkheideSystem.Flourish.Blazor.Abstract;
         using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
         using ArkheideSystem.MyApp.Texts;
+        using TextKey = ArkheideSystem.MyApp.Texts.Key;
         builder.Services.AddFlourishFramework(builder.Configuration, framework => framework
             .ConfigureCulture(culture => culture
                 .AddCatalogFiles("App", CultureResources.Files, CultureResources.FallbackCulture)
@@ -67,6 +70,8 @@
         builder.Services.AddFlourishDesign(builder.Configuration);
         """;
     private const string Scenario = """
+        @using ArkheideSystem.Flourish.Extensions.Culture.Blazor
+        @using TextKey = ArkheideSystem.MyApp.Texts.Key
         @inherits LocalizedComponentBase
         <LanguagePicker />
         <LanguagePicker FormatCulture="true" />

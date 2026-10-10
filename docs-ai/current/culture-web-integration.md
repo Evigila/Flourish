@@ -210,7 +210,7 @@ Verified on 2026-10-05:
 - Framework-only Native SSR returned 200, retained fallback captions and loaded neither Design nor Culture markup. This is narrower evidence than a complete Native browser acceptance run.
 - Framework and bridge NuGet packages are prepared locally. Framework depends on Abstract; the bridge depends on Abstract/Culture.Blazor. Dictionaries are embedded without loose Culture.json/Texts.json. Earlier Abstract/Shared dependency evidence is superseded by the approved Shared consolidation.
 
-Remaining integration work: validate any client/WASM graph and publish/version packages in dependency order. UI/format browser persistence is completed in source by the 2026-10-09 change; theme/control preference persistence remains separate follow-up scope. Gallery guide/sample UI translation is complete for the current inventory. Use the actual component tests and user-run acceptance for the affected runtime boundary, and the [directory map](currentproject-architecture.md) to locate source. Retired UI guides are not runtime authority.
+Remaining integration work: validate any client/WASM graph and publish/version packages in dependency order. UI/format browser persistence is completed in source by the 2026-10-09 change; theme/control preference persistence remains separate follow-up scope. Gallery guide/sample UI translation is complete for the current inventory. Use the actual component tests and user-run acceptance for the affected runtime boundary, and the [directory map](1_architecture.md) to locate source. Retired UI guides are not runtime authority.
 
 ## Gallery prose, metadata and validation completion
 

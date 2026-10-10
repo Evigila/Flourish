@@ -1,27 +1,30 @@
 # Current project documentation
 
-Use this reading map for active decisions. Current guides describe the implemented source; change records and bug reports preserve the evidence/history behind it. Root AGENTS.md and common standards govern ownership and process.
+Use [AGENTS.md](../../AGENTS.md) for the task router and [rules.md](../common/rules.md) for execution, ownership, audit and delivery requirements. Current guides describe implemented source; dated records preserve evidence and superseded decisions.
 
 | Need | Canonical document |
-|---|---|
-| Repository directory/file responsibilities | [Directory map](currentproject-architecture.md) |
-| Controls, styles, public APIs and executable usage | Actual maintained source under `src/Flourish.Blazor/`, Gallery examples and focused tests |
-| Component use classification, final API review, access scenarios and convergence boundaries | [Component API organization](component-api-organization.md) |
-| Implemented local per-user Culture bridge, usage and rollout limits | [Culture Web integration](culture-web-integration.md) |
-| Native WPF four-package reconstruction, usage and manual acceptance | [WPF integration](wpf-native-integration.md) |
-| Two-repository ownership, solution entries and migration | [Solution organization](solution-organization.md) |
-| Optional Culture bridge registration and lifetimes | [Extension bridge](culture-extension-bridge.md) |
-| Package sets, local feed verification and user-confirmed Trusted Publishing | [NuGet release and integration](nuget-release-integration.md) |
-| Final local package/test/HTTP results and remaining release configuration | [Local release verification](release-verification.md) |
-| Dated implementation/verification evidence | [Append-only change records](currentproject-changelogs/) |
-| Defect symptoms, causes, evidence and regression boundaries | [Historical bug reports](bugfix-reports/) |
+| --- | --- |
+| Complete repository tree, modules and runtime boundaries | [Architecture](1_architecture.md) |
+| Declared/resolved packages, SDKs, tools, services and assets | [Dependencies](1_dependency.md) |
+| Controls, styles, public APIs and executable usage | Actual source under src/Flourish.Blazor, native WPF source, Gallery examples and focused tests |
+| Component classification, production scenarios and convergence boundaries | [Component API organization](component-api-organization.md) |
+| Web Culture registration, modules and browser preferences | [Culture Web integration](culture-web-integration.md) |
+| Optional bridge ownership and lifetimes | [Culture bridges](culture-extension-bridge.md) |
+| Native WPF package layers and manual acceptance | [WPF integration](wpf-native-integration.md) |
+| Repository/solution ownership | [Solution organization](solution-organization.md) |
+| Package verification and Trusted Publishing | [NuGet release and integration](nuget-release-integration.md) |
+| Dated package/test/HTTP results | [Release verification](release-verification.md) |
+| Command-line application startup | [Local startup](local-startup.md) |
+| New implementation/decision records | [Append-only changes](1_changelogs/) |
+| New diagnoses and regression evidence | [Bug reports](1_bugreports/) |
+| Superseded or abandoned design material | [Archived designs](1_archived/) |
 
 ## Reading and maintenance
 
-For UI work, inspect actual Flourish component/style implementations and executable Gallery examples; they are the authority, not a parallel Markdown token/skin standard. For architecture work, read [common architecture](../common/architecturedesign.md), the directory map and affected project files. Read code/dependency/process standards in common/ when their subject is affected.
+For UI work, read [UIUX.md](../common/UIUX.md) and actual Flourish components/styles/contracts. Runtime/localization/package guides are technical references, not a competing visual specification. Hosts retain business/protocol responsibilities and supported brand/color configuration; library controls own their presentation and interaction.
 
-Contracts reside in Abstract, processing/rendering in Framework and visual implementation in Design. The convenience package installs all three layers without enabling Design. Package sets, opt-in service registration and release limits belong to the retained runtime/release guides. This does not establish WASM or public package support. Consumers use Flourish controls/styles, retain their business/protocol responsibilities and configure only approved brand/color-role values; missing controls are recorded and reported before custom work.
+Keep current project facts synchronized in 1_architecture.md and 1_dependency.md. Place other active guides directly in current/. Use the named 1_ history directories for new records and mark archived designs with status, reason, affected scope and replacement.
 
-The user retired the parallel UI standard, implementation/palette guide and visual checklist on 2026-10-05. Their committed versions and deletion-time dirty differences remain recoverable through append-only history, not an archive or active visual authority. Culture Web integration retains runtime/localization scope; package consumption belongs in the release/integration guides. Historical links/counts and README removals remain unchanged.
+The existing [legacy change records](currentproject-changelogs/) and [legacy bug reports](bugfix-reports/) remain at their original paths to preserve append-only content and links. New records use the router's current paths. Earlier statements prohibiting the former archive directory are historical; the current contract requires 1_archived/.
 
-Keep active material directly in current/. Record new changes in a new timestamped change record and preserve historical bug reports. Do not recreate archive/. Human-maintained DocFX content in docs/ remains under its ownership rules; no README or placeholder document is created outside docs-ai/.
+Human-maintained material in docs/ remains under its ownership boundary. Preserve it and report stale content rather than editing it as part of this audit.

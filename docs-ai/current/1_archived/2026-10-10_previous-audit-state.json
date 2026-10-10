@@ -1,0 +1,15 @@
+{
+  "status": "Historical; superseded audit-state schema",
+  "archivedDate": "2026-10-10",
+  "timezone": "America/Sao_Paulo (UTC-03:00)",
+  "reason": "The installed framework supports schema 2 and requires the audited framework version.",
+  "scope": "Prior documentation audit state only",
+  "replacement": "AGENTS.ensure.json",
+  "originalState": {
+    "schemaVersion": 3,
+    "lastAskedAtUtc": "2026-10-04T01:05:06Z",
+    "lastCompletedAtUtc": "2026-10-05T00:43:18Z",
+    "lastAskedAtNote": "Nearest recorded UTC timestamp after the user confirmed there was no missing documentation to supply and authorized bootstrapping the Flourish records in this task.",
+    "confirmation": "Rechecked all 16 required paths, meaningful common standards, JSON/Markdown ownership, blank directory marker, active guide links and the explanatory tree covering 894 maintained files and 132 directories. Consolidated superseded active Blazor/Culture guides under the user-authorized cleanup, preserved common standards, append-only history and human DocFX content, and kept README and archive absent. No missing-content question or bootstrap repair was needed."
+  }
+}
