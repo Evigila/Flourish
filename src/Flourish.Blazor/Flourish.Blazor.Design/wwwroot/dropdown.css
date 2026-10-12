@@ -26,9 +26,15 @@
     /* A grid keeps its dense borderless editor and separate decorative marker. */
     .editing-grid-table .f-select,.editing-grid-table .f-select::picker(select) { appearance:base-select; }
     .editing-grid-table .f-select::picker-icon { display:none; }
-    .f-select::picker(select) { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); }
+    .f-select::picker(select) { box-sizing:border-box; width:max-content; min-width:anchor-size(width); max-width:calc(100vw - 24px); --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); }
     .f-select option { box-sizing:border-box; display:flex; align-items:center; gap:12px; min-height:40px; padding:8px 10px; border:0; border-radius:10px; color:var(--f-text); background:transparent; cursor:pointer; }
     .f-select option:is(:hover,:focus-visible):not(:disabled) { background:var(--f-surface-preview); }
     .f-select option:active:not(:disabled) { color:var(--f-text); background:var(--f-surface-click); }
     .f-select option:disabled { opacity:.5; cursor:not-allowed; }
 }
+
+/* Enhanced menus remain top-layer surfaces even when their trigger no longer has hover/focus. */
+[data-f-popup][data-f-enhanced="true"] > [data-f-popup-panel][data-f-open] {
+    visibility:visible; pointer-events:auto; clip-path:none; opacity:1; transform:none;
+}
+[data-f-popup][data-f-enhanced="true"] > [data-f-popup-panel]:not([data-f-open]) { display:none; }

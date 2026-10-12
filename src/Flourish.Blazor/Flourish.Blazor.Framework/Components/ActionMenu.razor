@@ -5,7 +5,7 @@
 
 @if (ChildContent is not null)
 {
-    <details @ref="Disclosure" class="f-action-menu @(!NativeEnhanced ? "f-dropdown-surface" : null)" data-f-native-menu data-f-enhanced="@(NativeEnhanced ? "true" : null)"
+    <details @ref="Disclosure" class="f-action-menu @(!NativeEnhanced ? "f-dropdown-surface" : null)" data-f-native-menu data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-hover="@OpenOnHover.ToString().ToLowerInvariant()" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" data-f-enhanced="@(NativeEnhanced ? "true" : null)"
              inert="@(Disabled || Executing ? true : (bool?)null)">
         <summary @ref="Trigger" class="@TriggerClass" aria-label="@EffectiveLabel" title="@EffectiveLabel"
                  aria-haspopup="menu" aria-controls="@MenuId" aria-expanded="@(NativeEnhanced ? "false" : null)" aria-disabled="@(Disabled || Executing ? "true" : "false")">
@@ -15,8 +15,12 @@
         </summary>
         <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel"
              inert="@(Disabled || Executing ? true : (bool?)null)"
-             popover="@(NativeEnhanced ? "manual" : null)" aria-busy="@(Executing ? "true" : "false")">
+             data-f-popup-panel data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" popover="@(NativeEnhanced ? "manual" : null)" aria-busy="@(Executing ? "true" : "false")">
             @ChildContent
+            @if (Strength == PopupStrength.Strong)
+            {
+                <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" role="menuitem" data-f-popup-close Disabled="@(Disabled || Executing)" />
+            }
         </div>
     </details>
 }
@@ -29,7 +33,7 @@ else
         else if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
             else { <span aria-hidden="true">•••</span> }
     </button>
-    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel" popover="manual"
+    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
         @for (var index = 0; index < Actions.Count; index++)
         {
@@ -37,6 +41,10 @@ else
             var action = Actions[index];
             <button type="button" class="f-menu-item f-dropdown-item @(action.Destructive ? "f-menu-danger" : null)" role="menuitem"
                     disabled="@(Disabled || Executing || action.Disabled)" @onclick="() => ExecuteAsync(actionIndex)">@action.Text</button>
+        }
+        @if (Strength == PopupStrength.Strong)
+        {
+            <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" role="menuitem" data-f-popup-close Disabled="@(Disabled || Executing)" />
         }
     </div>
 </span>
@@ -70,8 +78,10 @@ else
         : $"f-menu-trigger {(TriggerContent is not null ? "f-menu-trigger-label" : null)}";
     /// <summary>Opens either action content on mouse hover without moving focus and closes when the pointer leaves both regions.</summary>
     [Parameter] public bool OpenOnHover { get; set; }
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         if (ChildContent is not null && Actions.Count > 0)
             throw new InvalidOperationException("Provide either Actions or ChildContent, not both.");
@@ -92,8 +102,7 @@ else
             }
             if (native && !NativeEnhanced)
             {
-                // Static SSR retains an ordinary details opening with one native content DOM.
-                // Only an available browser controller opts the same panel into the top layer.
+                // The automatic SSR controller and the circuit share the same native menu DOM.
                 NativeEnhanced = true;
                 StateHasChanged();
                 return;

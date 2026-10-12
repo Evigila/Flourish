@@ -13,6 +13,7 @@ internal static class PresentationChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        PresentationProgressChecks.Register(tests);
         tests.Add(("all chrome slots center injected roots without button-specific paint or document margins", () =>
         {
             var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css");
@@ -223,14 +224,14 @@ internal static class PresentationChecks
             await Reject<PresentationBand>(new() { ["Tone"] = (PresentationTone)int.MaxValue }, "Tone");
         }));
 
-        tests.Add(("presentation banners share an 800px minimum and opt-in dots without losing native attributes", async () =>
+        tests.Add(("presentation banners default to viewport height and preserve configured minimums and decorative dots", async () =>
         {
             var bandDefault = await Render<PresentationBand>(new());
             var heroDefault = await Render<PresentationHero>(new() { ["Title"] = "Product" });
             var accessDefault = await RenderDocumentBand(new());
             foreach (var html in new[] { bandDefault, heroDefault, accessDefault })
             {
-                Check(html.Contains("--f-band-min-height:800px;", StringComparison.Ordinal), "The standard banner minimum is not 800px.");
+                Check(html.Contains("--f-band-min-height:0px;", StringComparison.Ordinal) && html.Contains("f-presentation-fullheight", StringComparison.Ordinal), "The default banner does not use its viewport without an arbitrary pixel floor.");
                 Check(!html.Contains("f-presentation-dotted", StringComparison.Ordinal), "A production banner enables decorative dots by default.");
             }
             foreach (var minimum in new[] { 0, 240, 450, 960 })
@@ -280,12 +281,12 @@ internal static class PresentationChecks
             Check(!html.Contains("f-uniform-grid", StringComparison.Ordinal) && !html.Contains("f-form-actions", StringComparison.Ordinal), "Marketing actions became business grid tiles.");
         }));
 
-        tests.Add(("full-height banners opt in without changing ordinary band or hero defaults", async () =>
+        tests.Add(("bands and heroes explicitly opt out of viewport height while preserving configured minimums", async () =>
         {
-            var ordinaryBand = await Render<PresentationBand>(new() { ["Title"] = "Ordinary band" });
-            var ordinaryHero = await Render<PresentationHero>(new() { ["Title"] = "Ordinary hero" });
+            var ordinaryBand = await Render<PresentationBand>(new() { ["Title"] = "Ordinary band", ["FullHeight"] = false, ["MinHeight"] = 240 });
+            var ordinaryHero = await Render<PresentationHero>(new() { ["Title"] = "Ordinary hero", ["FullHeight"] = false, ["MinHeight"] = 240 });
             Check(!ordinaryBand.Contains("f-presentation-fullheight", StringComparison.Ordinal)
-                && !ordinaryHero.Contains("f-presentation-fullheight", StringComparison.Ordinal), "Ordinary presentation content became a full-height access scene by default.");
+                && !ordinaryHero.Contains("f-presentation-fullheight", StringComparison.Ordinal), "An explicit natural-height scene still forces a viewport minimum.");
             foreach (var dotted in new[] { false, true })
             {
                 var band = await Render<PresentationBand>(new() { ["Title"] = "Full band", ["FullHeight"] = true, ["Dotted"] = dotted, ["MinHeight"] = 620 });
@@ -380,10 +381,16 @@ internal static class PresentationChecks
             var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
             var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css");
             var full = Rule(layout, ".f-presentation-band.f-presentation-fullheight");
-            Check(Regex.IsMatch(full, @"min-height\s*:\s*max\(\s*100dvh\s*,\s*var\(--f-band-min-height,\s*800px\)\s*\)"),
+            Check(Regex.IsMatch(full, @"min-height\s*:\s*max\(\s*100dvh\s*,\s*var\(--f-band-min-height,\s*0px\)\s*\)"),
                 "Full-height mode does not combine the viewport and configured minimum without a fixed height.");
             foreach (var declarations in new[] { full, Rule(layout, ".content-surface.f-document-surface"), Rule(layout, ".f-logo-displayer"), Rule(layout, ".f-logo-displayer-title") })
                 Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|max-height)\s*:\s*(?!auto\b)|(?:^|;)\s*overflow(?:-[xy])?\s*:\s*(?:hidden|clip)\b"), "Access banner or brand copy is fixed-height or clipped.");
+            var accessSpacing = Rule(design, ":where(.content-surface:not(.f-document-surface) > .content-stage) > .f-presentation-band.f-presentation-fullheight:where(:only-child):has(> .f-content-container > .f-access-panel):not(:where(footer,[data-presentation-footer]) *)");
+            Check(Regex.IsMatch(accessSpacing, @"(?:^|;)\s*padding-block\s*:\s*var\(--f-space-4,\s*16px\)\s*(?:;|$)")
+                && accessSpacing.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Length == 1,
+                "The fixed single access scene must change only its outer spacing token, never branding, form geometry or overflow.");
+            Check(Regex.IsMatch(Rule(design, ".f-presentation-band"), @"(?:^|;)\s*padding-block\s*:\s*48px\s*(?:;|$)"),
+                "Compact access spacing changed standalone, document-flow or multiple-band presentation defaults.");
             var title = Rule(design, ".f-logo-displayer > .f-logo-displayer-title");
             Check(Regex.IsMatch(title, @"font-size\s*:\s*clamp\(\s*56px\s*,\s*8vw\s*,\s*80px\s*\)"), "Brand title stopped using its artistic 56–80px scale.");
             Check(Regex.IsMatch(Rule(layout, ".f-logo-displayer"), @"(?:^|;)\s*display\s*:\s*grid\s*(?:;|$)")
@@ -445,7 +452,7 @@ internal static class PresentationChecks
             var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css");
             var band = Rule(layout, ".f-presentation-band");
             var content = Rule(layout, ".f-presentation-hero-content");
-            Check(Regex.IsMatch(band, @"(?:^|;)\s*min-height\s*:\s*var\(--f-band-min-height,\s*800px\)"), "Banner CSS does not consume the shared minimum-height contract.");
+            Check(Regex.IsMatch(band, @"(?:^|;)\s*min-height\s*:\s*var\(--f-band-min-height,\s*0px\)"), "Banner CSS does not consume the shared minimum-height contract.");
             Check(Regex.IsMatch(content, @"(?:^|;)\s*display\s*:\s*grid\s*(?:;|$)")
                 && Regex.IsMatch(content, @"(?:^|;)\s*gap\s*:\s*40px\s*(?:;|$)"), "Artistic copy spacing relies on paragraph margins that the foundation reset can override.");
             foreach (var declarations in new[]
@@ -723,6 +730,9 @@ internal static class PresentationChecks
             Check(footerRules.Contains("position:relative", StringComparison.Ordinal)
                 && !footerRules.Contains("position:fixed", StringComparison.Ordinal) && !footerRules.Contains("position:sticky", StringComparison.Ordinal),
                 "The footer occupies a fixed or sticky portion of the viewport.");
+            foreach (var declarations in new[] { footerRules, Rule(layout, ".f-presentation-footer-content"),
+                Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css"), ".f-presentation-footer") })
+                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|min-height|max-height)\s*:"), "The footer has a fixed or minimum-height floor instead of its natural content height.");
         }));
 
         tests.Add(("access panel is reusable inside existing main and keeps compact wide and emphasis explicit", async () =>
@@ -785,6 +795,134 @@ internal static class PresentationChecks
             Check(!html.Contains("f-uniform-grid", StringComparison.Ordinal) && !html.Contains("f-form-actions", StringComparison.Ordinal), "Access actions became oversized business action tiles.");
         }));
 
+        tests.Add(("content surfaces keep native preference chrome outside their sole access band in both scroll modes", async () =>
+        {
+            RenderFragment actions = builder =>
+            {
+                builder.OpenElement(0, "form");
+                builder.AddAttribute(1, "method", "post");
+                builder.AddAttribute(2, "action", "/preferences/theme");
+                builder.AddAttribute(3, "data-enhance", "false");
+                builder.AddMarkupContent(4, "<input type=\"hidden\" name=\"__RequestVerificationToken\" value=\"theme-token\"><input type=\"hidden\" name=\"theme\" value=\"dark\">");
+                builder.OpenComponent<Button>(5);
+                builder.AddAttribute(6, nameof(Button.Type), "submit");
+                builder.AddAttribute(7, nameof(Button.Variant), ButtonVariant.Quiet);
+                builder.AddAttribute(8, nameof(Button.Icon), "dark_mode");
+                builder.AddAttribute(9, nameof(Button.AdditionalAttributes), new Dictionary<string, object> { ["aria-label"] = "Use dark theme" });
+                builder.CloseComponent();
+                builder.CloseElement();
+            };
+            RenderFragment header = builder =>
+            {
+                builder.OpenComponent<PageBody>(0);
+                builder.AddAttribute(1, nameof(PageBody.FullWidth), true);
+                builder.AddAttribute(2, nameof(PageBody.ChildContent), (RenderFragment)(body =>
+                {
+                    body.OpenComponent<InlineActions>(0);
+                    body.AddAttribute(1, nameof(InlineActions.ChildContent), actions);
+                    body.CloseComponent();
+                }));
+                builder.CloseComponent();
+            };
+            foreach (var documentFlow in new[] { false, true })
+            {
+                var html = await Render<ContentSurface>(new()
+                {
+                    ["DocumentFlow"] = documentFlow, ["ContentId"] = "access-content", ["SkipLabel"] = "Skip access content",
+                    ["TitleBar"] = header, ["ChildContent"] = NativeAccessBand()
+                });
+                var main = Regex.Match(html, @"<main\b[^>]*>[\s\S]*?</main>");
+                Check(main.Success && Regex.Matches(html, @"<main\b").Count == 1, "Access composition lost its sole main landmark.");
+                var chrome = html[..main.Index];
+                var headerClass = documentFlow ? "f-document-surface-header" : "f-content-surface-header";
+                Check(Regex.Matches(chrome, $"class=\"{headerClass}\"").Count == 1
+                    && chrome.Contains("f-page-body f-page-full", StringComparison.Ordinal)
+                    && chrome.Contains("f-inline-actions", StringComparison.Ordinal), "The preference PageBody escaped its source-owned header slot.");
+                Check(chrome.Contains("action=\"/preferences/theme\"", StringComparison.Ordinal)
+                    && chrome.Contains("value=\"theme-token\"", StringComparison.Ordinal)
+                    && chrome.Contains("f-button-quiet", StringComparison.Ordinal)
+                    && chrome.Contains("type=\"submit\"", StringComparison.Ordinal), "Header composition lost its native preference token or Quiet submit control.");
+                Check(!main.Value.Contains("/preferences/theme", StringComparison.Ordinal)
+                    && main.Value.Contains("action=\"/auth/login\"", StringComparison.Ordinal)
+                    && main.Value.Contains("value=\"fixture-token\"", StringComparison.Ordinal)
+                    && main.Value.Contains("f-presentation-fullheight", StringComparison.Ordinal), "The header entered the access band or changed native login transport.");
+                Check(chrome.Contains("href=\"#access-content\"", StringComparison.Ordinal)
+                    && main.Value.Contains("id=\"access-content\" tabindex=\"-1\"", StringComparison.Ordinal), "Keyboard skip navigation no longer targets the actual scrolling main.");
+            }
+        }));
+
+        tests.Add(("content surfaces keep floating preference actions outside header and content flow", async () =>
+        {
+            RenderFragment actions = builder =>
+            {
+                builder.OpenComponent<InlineActions>(0);
+                builder.AddAttribute(1, nameof(InlineActions.ChildContent), (RenderFragment)(content =>
+                {
+                    content.OpenElement(0, "form");
+                    content.AddAttribute(1, "method", "post");
+                    content.AddAttribute(2, "action", "/preferences/theme");
+                    content.AddAttribute(3, "data-enhance", "false");
+                    content.AddMarkupContent(4, "<input type=\"hidden\" name=\"__RequestVerificationToken\" value=\"floating-token\"><input type=\"hidden\" name=\"theme\" value=\"dark\">");
+                    content.OpenComponent<Button>(5);
+                    content.AddAttribute(6, nameof(Button.Type), "submit");
+                    content.AddAttribute(7, nameof(Button.Variant), ButtonVariant.Quiet);
+                    content.AddAttribute(8, nameof(Button.Icon), "dark_mode");
+                    content.CloseComponent();
+                    content.CloseElement();
+                }));
+                builder.CloseComponent();
+            };
+            Check(new ContentSurface().FloatingActions is null, "A default surface fabricated floating chrome.");
+            foreach (var documentFlow in new[] { false, true })
+            {
+                var html = await Render<ContentSurface>(new()
+                {
+                    [nameof(ContentSurface.DocumentFlow)] = documentFlow,
+                    [nameof(ContentSurface.ContentId)] = "floating-access-content",
+                    [nameof(ContentSurface.TitleBar)] = Text("Ordinary header"),
+                    [nameof(ContentSurface.FloatingActions)] = actions,
+                    [nameof(ContentSurface.ChildContent)] = NativeAccessBand()
+                });
+                var main = Regex.Match(html, @"<main\b[^>]*>[\s\S]*?</main>");
+                Check(main.Success && Regex.Matches(html, @"<main\b").Count == 1, "Floating actions changed the sole main landmark.");
+                var chrome = html[..main.Index];
+                Check(Regex.Matches(chrome, "class=\"f-content-surface-floating-actions\"").Count == 1
+                    && html.Contains("f-content-surface-has-floating-actions", StringComparison.Ordinal), "Floating actions lost their surface-owned layer.");
+                Check(chrome.Contains(documentFlow ? "f-document-surface-header" : "f-content-surface-header", StringComparison.Ordinal)
+                    && chrome.Contains("Ordinary header", StringComparison.Ordinal), "Floating actions replaced the ordinary TitleBar contract.");
+                Check(chrome.Contains("action=\"/preferences/theme\"", StringComparison.Ordinal)
+                    && chrome.Contains("value=\"floating-token\"", StringComparison.Ordinal)
+                    && chrome.Contains("f-button-quiet", StringComparison.Ordinal)
+                    && chrome.Contains("type=\"submit\"", StringComparison.Ordinal), "Floating composition changed native theme submission.");
+                Check(!main.Value.Contains("/preferences/theme", StringComparison.Ordinal)
+                    && !main.Value.Contains("f-content-surface-floating-actions", StringComparison.Ordinal)
+                    && main.Value.Contains("action=\"/auth/login\"", StringComparison.Ordinal), "Floating controls entered the scrolling access scene.");
+            }
+            var ordinary = await Render<ContentSurface>(new() { [nameof(ContentSurface.ChildContent)] = NativeAccessBand() });
+            Check(!ordinary.Contains("f-content-surface-has-floating-actions", StringComparison.Ordinal)
+                && !ordinary.Contains("class=\"f-content-surface-floating-actions\"", StringComparison.Ordinal), "A surface without FloatingActions acquired an overlay layer.");
+        }));
+
+        tests.Add(("fixed content surfaces preserve headerless and empty-header access content without inventing chrome", async () =>
+        {
+            foreach (var header in new RenderFragment?[] { null, _ => { } })
+            {
+                var html = await Render<ContentSurface>(new()
+                {
+                    ["ContentId"] = "headerless-access", ["TitleBar"] = header, ["ChildContent"] = NativeAccessBand()
+                });
+                Check(!html.Contains("f-document-surface", StringComparison.Ordinal), "A headerless fixed surface changed scroll ownership.");
+                var main = Regex.Match(html, @"<main\b[^>]*>[\s\S]*?</main>");
+                Check(main.Success && Regex.Matches(html, @"<main\b").Count == 1
+                    && Regex.Matches(main.Value, @"<section\b").Count == 1
+                    && main.Value.Contains("action=\"/auth/login\"", StringComparison.Ordinal)
+                    && main.Value.Contains("type=\"submit\"", StringComparison.Ordinal), "Headerless composition duplicated or omitted its full access form.");
+                var chrome = html[..main.Index];
+                Check(header is null ? !chrome.Contains("f-content-surface-header", StringComparison.Ordinal)
+                    : chrome.Contains("<div class=\"f-content-surface-header\"></div>", StringComparison.Ordinal), "An absent preference fragment fabricated header content.");
+            }
+        }));
+
         tests.Add(("document-flow content surface keeps skip target and footer outside the single main", async () =>
         {
             var html = await Render<ContentSurface>(new()
@@ -804,6 +942,19 @@ internal static class PresentationChecks
 
     private static RenderFragment Text(string value) => builder => builder.AddContent(0, value);
     private static RenderFragment Markup(string value) => builder => builder.AddMarkupContent(0, value);
+    private static RenderFragment NativeAccessBand() => builder =>
+    {
+        builder.OpenComponent<PresentationBand>(0);
+        builder.AddAttribute(1, nameof(PresentationBand.FullHeight), true);
+        builder.AddAttribute(2, nameof(PresentationBand.Tone), PresentationTone.Surface);
+        builder.AddAttribute(3, nameof(PresentationBand.ChildContent), (RenderFragment)(content =>
+        {
+            content.OpenComponent<AccessPanel>(0);
+            content.AddAttribute(1, nameof(AccessPanel.ChildContent), NativeAccessForm());
+            content.CloseComponent();
+        }));
+        builder.CloseComponent();
+    };
     private static RenderFragment NativeAccessForm() => builder =>
     {
         builder.OpenElement(0, "form");

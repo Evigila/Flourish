@@ -4,6 +4,181 @@
 
 **Release update, 2026-10-10:** Current root properties declare Flourish `VersionPrefix=1.4.0`, with Essential.Culture still 1.4.0. The same six Core/Blazor packages are published from tag v1.4.0; WPF and its Culture bridge remain outside that public manifest. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The earlier 22-project audit snapshots below remain dated 1.1.3 source-version evidence; only separately identified release artifacts establish a new restore.
 
+## Current local popup candidate (.4), 2026-10-12
+
+The final local candidate is 1.4.1-local.popup.20261012.4. It retains .3's standard native selection, FloatingActions and tutorial-segment APIs, adding one Design paint correction: enabled customized Quiet selects in ShellHeader inherit chrome foreground instead of the language-option foreground. Native pickers keep their independent option colors. The actual strict browser regression reproduces .3's black icon on blue chrome and verifies the correction while preserving black-on-white picker/options.
+
+All six packages were built into fresh artifacts/local-popup-4/build, cache and nuget with the five version overrides below. Release compiled with zero warnings/errors; package verification and 143 independent consumers passed (fixture artifacts/package-consumers/28122b76194c45efa95982304ec491a6). The expanded actual menu/native/browser file passed 38/38 with zero browser skips. Colligere restored this exact closure and its final Release/full Web regression passed 2379 with 132 existing database/shared-fixture skips and zero failures. Earlier source-behavior checks remain documented under historical .3; this change only adds the verified chrome paint rule. Stable 1.4.0, Essential 1.4.0 and all earlier candidate bytes are preserved. No public push/tag was performed. See [the follow-up record](1_changelogs/2026-10-12_192640_preserve-native-quiet-select-chrome-colors.md).
+
+| Produced package | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.1-local.popup.20261012.4.nupkg | 94C503955B298F9085489CA7AE9DCDCC2FD180C153A47327E7B38EBBED5395F6 |
+| Arkheide.Flourish.Blazor.Abstract.1.4.1-local.popup.20261012.4.nupkg | DA502CB167E5B96A56449A6FCB8C2D52F276892EFF1799F8A90DF9E971EF4F2E |
+| Arkheide.Flourish.Blazor.Design.1.4.1-local.popup.20261012.4.nupkg | C0B9F4A1AA57D7A91049B5AEC4AC0CD72743DC062497BD1C8F1801645F229B77 |
+| Arkheide.Flourish.Blazor.Framework.1.4.1-local.popup.20261012.4.nupkg | 53842EDBBA71090E83431887B6646F72940F06C273411C9642A37FDB1153537C |
+| Arkheide.Flourish.Core.1.4.1-local.popup.20261012.4.nupkg | 60A47BBFD231E82F9909A076193D39B4C09123ABE30194339A9B96A7C1982035 |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.1-local.popup.20261012.4.nupkg | 11C7BDCCACD18F6BDB60050D6C22789B7A7F6169D66DFA4D0228B39422FAA028 |
+
+## Historical local popup candidate (.3), 2026-10-12
+
+The current candidate is 1.4.1-local.popup.20261012.3, built from the modified master checkout based on 0597f0a00640d686b0bf2bb4158fe59c60382bfb. It adds optional Icon/TriggerVariant to SelectBox, StandaloneSelectBox and LanguagePicker, plus ContentSurface.FloatingActions. It fixes percentage popup minimum width and reuses TutorialBoard segments for floating presentation navigation, with no footer tail row. Native selection remains browser-owned; unsupported rendering engines retain a readable text selector. No external dependency family or stable version declaration changed.
+
+The same six-package Core/Blazor closure was restored and built with the five isolated candidate overrides below in artifacts/local-popup-3/build, cache and nuget. SDK 10.0.401 Release compilation had zero warnings/errors. Package verification passed for all six identities/dependencies/assets. Four package-only consumers passed 143 checks (fixture artifacts/package-consumers/acb146adc8dc4fbf8dc46e86eed7eccb). The preserved .1/.2 and public 1.4.0 bytes were not overwritten, and no package/tag was published. Candidate provenance and logs are in artifacts/local-popup-3; all 322 captured package/build inputs still match the packed source. A subsequent Gallery sample qualification fix is outside all six package inputs and does not alter their bytes.
+
+Verified source checks: 451 Framework console checks, 27 Culture bridge checks, 8346 Gallery checks, 25 progress-controller checks and 37 menu/native/browser checks with zero browser skips. The other 18 maintained JavaScript suites passed. Tests use installed Edge with isolated profiles and DevTools trusted input for actual native picker selection/cancellation; nothing was installed. Colligere consumes this candidate and passed 2379 Web tests with 132 existing database/shared-fixture skips and zero failures. The focused host selection passed 103/103. See [the correction record](1_changelogs/2026-10-12_191504_correct-standard-select-and-floating-layout.md).
+
+| Produced package | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.1-local.popup.20261012.3.nupkg | 3EB00696E304F016BEC27DACABE0D0C00CDD975012C3EBAB26245F3FB315D08D |
+| Arkheide.Flourish.Blazor.Abstract.1.4.1-local.popup.20261012.3.nupkg | 6A5C1C1051A5712FD69FF04E14EDF9E6627C6A9E955D883CB851625754181F92 |
+| Arkheide.Flourish.Blazor.Design.1.4.1-local.popup.20261012.3.nupkg | B05C19494C9C9EB250B2954DE5422F44FA8FDF582AF630D552BDF5C2CC0EDA81 |
+| Arkheide.Flourish.Blazor.Framework.1.4.1-local.popup.20261012.3.nupkg | 046194C823C54C34B084888920DEB852DFC97A4DB962C9AC3BDE8299A2D918DE |
+| Arkheide.Flourish.Core.1.4.1-local.popup.20261012.3.nupkg | 60A4D41CA1C4144ECE9EB0FF6F2E2192EA29A6E05F33BBB60472704024AC5AE2 |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.1-local.popup.20261012.3.nupkg | B73E2390CB263D7DB3AAE7DF7818E6FB72ABC01E154EFA2D253E361702C10449 |
+
+## Historical local popup candidate (.2), 2026-10-12
+
+The currently verified local candidate is `1.4.1-local.popup.20261012.2`. It includes the subsequent fixed-surface sizing, popup top-layer/fallback markup, catalog and locale-description corrections from the frozen modified working tree based on `0597f0a00640d686b0bf2bb4158fe59c60382bfb`. The base commit alone does not identify that working-tree content. No further public API was added in this second candidate. Published 1.4.0 and the first `.1` candidate remain separate historical artifacts; do not rebuild `.1` from the current implementation.
+
+Stable `Directory.Build.props` still declares `VersionPrefix=1.4.0` and Essential `1.4.0`. These candidate commands alone override `Version` and `PackageVersion` to `.2`, `VersionPrefix` to `1.4.1`, and `VersionSuffix` to `local.popup.20261012.2`. SDK `10.0.401` restored the six-project Core/Blazor closure into new isolated `artifacts/local-popup-2/build` and `artifacts/local-popup-2/cache` directories using the generated NuGet.org-only `artifacts/local-popup-2/NuGet.Config`. Release build passed with zero warnings and zero errors. Six packages were packed into `artifacts/local-popup-2/nuget`; `scripts/Verify-PackageSet.ps1` passed for their identities, candidate dependency versions, managed/metapackage boundaries and required assets. WPF/WinUI are outside this package manifest. No public push, tag or stable-version edit was performed.
+
+| Package | Version | Direct candidate Flourish dependencies | Produced `.nupkg` SHA-256 |
+| --- | --- | --- | --- |
+| `Arkheide.Flourish.Core` | `1.4.1-local.popup.20261012.2` | None | `0F903CE73FF81ED002756071F6FFE189F030DEB90213599A6A4E765FF1979519` |
+| `Arkheide.Flourish.Blazor.Abstract` | `1.4.1-local.popup.20261012.2` | Core | `7ADD47965486F7584C292DEC839E22A4729AADD4F36A196F7CF2A02AB175CACB` |
+| `Arkheide.Flourish.Blazor.Framework` | `1.4.1-local.popup.20261012.2` | Abstract | `17FB2E6E3FD809F0515C66E19B4165F526CA9867B44BD83F37942B11C5CC3D18` |
+| `Arkheide.Flourish.Blazor.Design` | `1.4.1-local.popup.20261012.2` | Framework, Abstract | `598836638210A08CC9F2F61199BBB85160C2FAB9A8D354326A17F2C3A8F6ABE6` |
+| `Arkheide.Flourish.Extensions.Culture.Blazor` | `1.4.1-local.popup.20261012.2` | Framework | `08FE2B29A914F586C9DCE540C790275C5B0ADA900A700A86BCB6DD169DC53C16` |
+| `Arkheide.Flourish.Blazor` | `1.4.1-local.popup.20261012.2` | Abstract, Framework, Design, Culture.Blazor | `FD06275017574BB019F41BAC743B270B0F4837760489C6462CA9CB7837902C35` |
+
+The six new `build/obj/<project>/project.assets.json` files resolve the same **16 external package ID/version pairs** as `.1`: three Essential Culture packages at `1.4.0` and 13 Microsoft.Extensions packages at `10.0.8`, enumerated in the first-candidate section and the package tables below. Only the five referenced Flourish source libraries now identify `.2` in that production graph. This supplements the dated 22-project audit and does not establish a fresh restore of its remaining 16 projects.
+
+Four fresh package-only modes (FrameworkOnly, MetaNative, MetaDesign and MetaCulture) passed **143 checks** via `build/Test-BlazorPackageConsumers.ps1`. The fixture is `artifacts/package-consumers/5531a25ec1aa4c958524bb2b4342f378`; all six candidate cache metadata entries identify `artifacts/local-popup-2/nuget`, with no source project references. Registration, SSR, publication assets and optional Culture contracts passed. Logs are `artifacts/local-popup-2/logs/{restore,build,pack,verify-package-set,package-consumers}.log`; local machine-readable provenance, source CSS input hashes and historical before-hashes are in `artifacts/local-popup-2/candidate-provenance.json`.
+
+| Delivered asset | Actual producer input | SHA-256, identical in input/bundle, package and published consumers |
+| --- | --- | --- |
+| Framework `framework.css` | `build/obj/Flourish.Blazor.Framework/release/bundled-css/framework.css`, generated from maintained modular `wwwroot` CSS by `build/CssBundle.targets` | `056EC3E54A3930AB49EEA553EC22A9A5FCFCC677180EED150E367C6ADADA3D84` |
+| Design `design.css` | `build/obj/Flourish.Blazor.Design/release/bundled-css/design.css`, generated by the same bundler | `36A63548077D1BF6B1BBB56733CBB03C605BBCBF32CA806754591D26CF85BA11` |
+| Framework `controls.js` | Framework `wwwroot/controls.js` | `ED7C01FC25C0E32FA8E70F9EBF5495FDD162208B167C098F95BB6925325D8BF8` |
+| Framework `presentation/progress.js` | Framework `wwwroot/presentation/progress.js` | `BC4FCC2FD287314E2AE3C7807B0A7B77897E79FC2F28E98251039A5C571F315E` |
+
+The Framework assets match all four consumers; Design CSS matches the three meta consumers that carry its package. CSS hashes identify the generated bundle, not the entry file containing modular imports; provenance separately inventories the source files. All six `.1` feed archives, the five installed `.1` and five installed stable 1.4.0 global-cache archives, both absent metapackage cache entries, and `Directory.Build.props` retain their pre-build state. The `.2` cache and outputs are independent. A fresh host requires these six locally built packages and an explicit candidate source mapping/version; NuGet.org and the stable 1.4.0 declaration alone cannot restore this unpublished candidate.
+
+The action-menu regression now optionally measures real SSR geometry using an already installed Chromium-compatible browser, without Playwright or a downloaded browser. `tests/Tests.Flourish.Blazor/action-menu-dom.mjs` accepts `FLOURISH_HEADLESS_BROWSER`, then probes existing Edge/Chrome/Chromium locations. The observed Windows tool is Microsoft Edge `155.0.4283.45`; the task's controller/installed-browser regression passed 33 checks (24 controller plus 9 geometry), with zero skips. If no supported executable is installed, the script explicitly reports `SKIP real-browser SSR geometry` for nine checks and still executes the controller checks. This is an optional test-tool dependency, not a production/browser-version requirement or a new npm/NuGet package.
+
+### Reproduce the local candidate
+
+Run these PowerShell commands from the Flourish repository root containing the `.4` implementation. They use the existing [six-package manifest](../../scripts/ReleaseSettings.psd1), [package verifier](../../scripts/Verify-PackageSet.ps1) and [four-mode consumer checks](../../build/Test-BlazorPackageConsumers.ps1), without a production cleanup/release script. Version overrides must remain five separate arguments. Treat consumed candidate versions as immutable: subsequent source changes require another version rather than replacement of cached bytes.
+
+```powershell
+$ErrorActionPreference = 'Stop'
+$repo = (Get-Location).Path
+$version = '1.4.1-local.popup.20261012.4'
+$local = Join-Path $repo 'artifacts/local-popup-4'
+$build = Join-Path $local 'build'
+$cache = Join-Path $local 'cache'
+$feed = Join-Path $local 'nuget'
+$logs = Join-Path $local 'logs'
+$config = Join-Path $local 'NuGet.Config'
+$entry = Join-Path $repo 'src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj'
+$settings = Import-PowerShellDataFile (Join-Path $repo 'scripts/ReleaseSettings.psd1')
+New-Item -ItemType Directory -Path @($build, $cache, $feed, $logs) -Force | Out-Null
+$nugetConfig = '<configuration><packageSources><clear /><add key="nuget.org" value="https://api.nuget.org/v3/index.json" /></packageSources><packageSourceMapping><clear /><packageSource key="nuget.org"><package pattern="*" /></packageSource></packageSourceMapping></configuration>'
+[IO.File]::WriteAllText($config, $nugetConfig)
+$properties = @(
+    "-p:Version=$version"
+    '-p:VersionPrefix=1.4.1'
+    '-p:VersionSuffix=local.popup.20261012.4'
+    "-p:PackageVersion=$version"
+    '-p:ContinuousIntegrationBuild=true'
+)
+& dotnet restore $entry --artifacts-path $build --packages $cache --configfile $config @properties 2>&1 | Tee-Object -FilePath (Join-Path $logs 'restore.log')
+if ($LASTEXITCODE -ne 0) { throw 'Candidate restore failed.' }
+& dotnet build $entry --configuration Release --no-restore --artifacts-path $build @properties -p:TreatWarningsAsErrors=true 2>&1 | Tee-Object -FilePath (Join-Path $logs 'build.log')
+if ($LASTEXITCODE -ne 0) { throw 'Candidate build failed.' }
+foreach ($package in $settings.Packages) {
+    $project = Join-Path $repo $package.Project
+    & dotnet pack $project --configuration Release --no-build --no-restore --artifacts-path $build --output $feed @properties 2>&1 | Tee-Object -FilePath (Join-Path $logs 'pack.log') -Append
+    if ($LASTEXITCODE -ne 0) { throw "Candidate pack failed: $($package.Id)" }
+}
+& pwsh -NoLogo -NoProfile -File (Join-Path $repo 'scripts/Verify-PackageSet.ps1') -Version $version -PackageDirectory $feed 2>&1 | Tee-Object -FilePath (Join-Path $logs 'verify-package-set.log')
+if ($LASTEXITCODE -ne 0) { throw 'Candidate package verification failed.' }
+& pwsh -NoLogo -NoProfile -File (Join-Path $repo 'build/Test-BlazorPackageConsumers.ps1') -Version $version -PackageDirectory $feed 2>&1 | Tee-Object -FilePath (Join-Path $logs 'package-consumers.log')
+if ($LASTEXITCODE -ne 0) { throw 'Candidate package consumers failed.' }
+```
+
+After verification, map only `Arkheide.Flourish.*` at `.4` to this local feed in the consuming host; keep other dependencies on their existing source. The feed and proof files are ignored local artifacts, so independent machines/remote CI must receive or build the candidate feed explicitly, or await a subsequent authorized public release.
+
+## Local popup candidate, 2026-10-12
+
+**Historical candidate .1:** The following results and bytes precede `.2` and remain retained for provenance.
+
+The authorized popup/presentation implementation was built from the frozen modified working tree based on `0597f0a00640d686b0bf2bb4158fe59c60382bfb`. The base commit alone does not identify the modified candidate content. The stable declaration remains `VersionPrefix=1.4.0`; only these local commands override `Version` and `PackageVersion` to `1.4.1-local.popup.20261012.1`, `VersionPrefix` to `1.4.1`, and `VersionSuffix` to `local.popup.20261012.1`, with `ContinuousIntegrationBuild=true`. No public package push or tag was performed. This candidate does not replace the published 1.4.0 evidence above.
+
+The six-package Core/Blazor closure below was restored and built in Release with SDK `10.0.401`, using isolated `artifacts/local-popup/build`, `artifacts/local-popup/cache`, and a generated restore configuration containing only NuGet.org. The build passed with zero warnings and zero errors. Six packages were packed into `artifacts/local-popup/nuget`, then `scripts/Verify-PackageSet.ps1 -Version 1.4.1-local.popup.20261012.1 -PackageDirectory <local-feed>` passed for all six identities, internal dependency versions, managed/metapackage boundaries and required static assets. WPF and WinUI remain outside this local package manifest; their source changes are not delivered by these six packages.
+
+| Locally built package | Candidate version | Direct Flourish package dependencies at the same candidate version | SHA-256 of the produced `.nupkg` |
+| --- | --- | --- | --- |
+| `Arkheide.Flourish.Core` | `1.4.1-local.popup.20261012.1` | None | `B8E30D1271D473AD3B0A1503007D0C456A3D2E8A52F0A7B84F01EE24EDABE988` |
+| `Arkheide.Flourish.Blazor.Abstract` | `1.4.1-local.popup.20261012.1` | Core | `0C934E99B9E7CD2F207DC0011E17BC9B2814027B269490DD4A2B5740E47A9DF7` |
+| `Arkheide.Flourish.Blazor.Framework` | `1.4.1-local.popup.20261012.1` | Abstract | `C1BD233BC86ACA616CE4C4DF1BA762F7FA8E2FE3B767C2CEE5E4BE00D4B6AEFA` |
+| `Arkheide.Flourish.Blazor.Design` | `1.4.1-local.popup.20261012.1` | Framework, Abstract | `9925DBFF1A44334D15804ACA7A80F303E22260482F1CFBB8A3C6863B551D0BE4` |
+| `Arkheide.Flourish.Extensions.Culture.Blazor` | `1.4.1-local.popup.20261012.1` | Framework | `0F3B2BAC6E19BDA69DF1E08C43E953D2FBE38D9BEEF8CA3F243DAB538E4473C3` |
+| `Arkheide.Flourish.Blazor` | `1.4.1-local.popup.20261012.1` | Abstract, Framework, Design, Culture.Blazor | `268300BD657F09A49C763293CD459E6FE594104261A611FE3681A3B55FB72517` |
+
+The six fresh `artifacts/local-popup/build/obj/<project>/project.assets.json` files resolve **16 external package ID/version pairs**: the Essential Culture, Culture.Blazor and Culture.Generator packages at `1.4.0`, plus the 13 Microsoft.Extensions packages already listed below at `10.0.8` (Configuration, Configuration.Abstractions, Configuration.FileExtensions, Configuration.Json, DependencyInjection.Abstractions, Diagnostics.Abstractions, FileProviders.Abstractions, FileProviders.Physical, FileSystemGlobbing, Hosting.Abstractions, Logging.Abstractions, Options and Primitives). The five referenced Flourish source libraries resolve at the candidate version in that build graph. Production declarations, external package versions, source-reference edges and license defaults are unchanged. These six fresh snapshots supplement the dated 22-project audit; they do not establish a new restore of the other 16 maintained projects.
+
+`build/Test-BlazorPackageConsumers.ps1` passed **143 checks** in four independently restored/published package-only modes: FrameworkOnly, MetaNative, MetaDesign and MetaCulture. Their fresh fixture is `artifacts/package-consumers/a6d1c533d44148a4981bb04bba1a1b3c`; its isolated cache metadata records the local candidate feed for all six Flourish packages. It verifies package graphs without source project references, registration, SSR, published assets and optional Culture behavior. The Culture dependency remains Essential `1.4.0`. A supplementary generated package-only probe in `artifacts/local-popup/api-probe` passed **45 exported API checks**, verifying the two `PopupStrength` values, all 14 maintained components' public `Strength` parameters and Weak defaults/Strong assignments, and the packaged `PresentationProgress` type. This probe checks the delivered API; popup interaction and viewport behavior are covered by the separate source/DOM suites recorded in the task verification report.
+
+The new Framework `staticwebassets/presentation/progress.js` is present in the candidate archive and all four consumers' published assets. Its bytes match the frozen source and every published copy, SHA-256 `BC4FCC2FD287314E2AE3C7807B0A7B77897E79FC2F28E98251039A5C571F315E`. Evidence is saved locally in `artifacts/local-popup/candidate-provenance.json` and `artifacts/local-popup/logs/{restore-2,build,pack,verify-package-set,package-consumers,api-probe-2}.log`. All five previously installed Flourish 1.4.0 package archives retain their pre-build SHA-256 values; the 1.4.0 metapackage remains absent from that cache, and `Directory.Build.props` retains its pre-build hash. The candidate restore and probe caches are isolated; an authorized consuming host may separately install this new version in its own cache.
+
+Reproduction requires building this candidate package closure before restoring a host configured to use this local feed. The feed and generated evidence are ignored local artifacts, not a published remote distribution. An independent machine or default remote CI cannot restore this candidate from NuGet.org; it needs the explicitly supplied candidate feed or a subsequent authorized public release. Use the dedicated local build/pack commands with all version overrides; the stable release/cleanup scripts target the declared 1.4.0 production output and were not used for this candidate.
+
+### First candidate reproduction (historical)
+
+The following `.1` commands are preserved as historical execution evidence. They require the first candidate implementation and must not be run against the current `.2` source tree.
+
+Run the following PowerShell commands from the Flourish repository root containing the candidate implementation. They use the existing [package manifest](../../scripts/ReleaseSettings.psd1), [package verifier](../../scripts/Verify-PackageSet.ps1) and [package consumer checks](../../build/Test-BlazorPackageConsumers.ps1). The version parameters are separate quoted array entries; joining them into one argument does not perform a valid candidate restore. These commands do not call a production cleanup script, change `Directory.Build.props`, or publish packages. Keep a candidate version immutable after it has been consumed; a later implementation requires a different version rather than replacing cached candidate bytes.
+
+```powershell
+$ErrorActionPreference = 'Stop'
+$repo = (Get-Location).Path
+$version = '1.4.1-local.popup.20261012.1'
+$local = Join-Path $repo 'artifacts/local-popup'
+$build = Join-Path $local 'build'
+$cache = Join-Path $local 'cache'
+$feed = Join-Path $local 'nuget'
+$restore = Join-Path $local 'restore'
+$config = Join-Path $restore 'NuGet.Config'
+$entry = Join-Path $repo 'src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj'
+$settings = Import-PowerShellDataFile (Join-Path $repo 'scripts/ReleaseSettings.psd1')
+New-Item -ItemType Directory -Path @($build, $cache, $feed, $restore) -Force | Out-Null
+$nugetConfig = '<configuration><packageSources><clear /><add key="nuget.org" value="https://api.nuget.org/v3/index.json" /></packageSources><packageSourceMapping><clear /><packageSource key="nuget.org"><package pattern="*" /></packageSource></packageSourceMapping></configuration>'
+[IO.File]::WriteAllText($config, $nugetConfig)
+$properties = @(
+    "-p:Version=$version"
+    '-p:VersionPrefix=1.4.1'
+    '-p:VersionSuffix=local.popup.20261012.1'
+    "-p:PackageVersion=$version"
+    '-p:ContinuousIntegrationBuild=true'
+)
+& dotnet restore $entry --artifacts-path $build --packages $cache --configfile $config @properties
+if ($LASTEXITCODE -ne 0) { throw 'Candidate restore failed.' }
+& dotnet build $entry --configuration Release --no-restore --artifacts-path $build @properties -p:TreatWarningsAsErrors=true
+if ($LASTEXITCODE -ne 0) { throw 'Candidate build failed.' }
+foreach ($package in $settings.Packages) {
+    $project = Join-Path $repo $package.Project
+    & dotnet pack $project --configuration Release --no-build --no-restore --artifacts-path $build --output $feed @properties
+    if ($LASTEXITCODE -ne 0) { throw "Candidate pack failed: $($package.Id)" }
+}
+& pwsh -NoLogo -NoProfile -File (Join-Path $repo 'scripts/Verify-PackageSet.ps1') -Version $version -PackageDirectory $feed
+if ($LASTEXITCODE -ne 0) { throw 'Candidate package verification failed.' }
+& pwsh -NoLogo -NoProfile -File (Join-Path $repo 'build/Test-BlazorPackageConsumers.ps1') -Version $version -PackageDirectory $feed
+if ($LASTEXITCODE -ne 0) { throw 'Candidate package consumers failed.' }
+```
+
+After successful verification, a consuming host can map only `Arkheide.Flourish.*` at this candidate version to the generated local feed while continuing to obtain other dependencies from NuGet.org. The host must explicitly configure that source and version; the stable Flourish version declaration and NuGet.org alone do not select this candidate.
+
 ## Evidence and interpretation
 
 All 22 maintained `.csproj` files under `src/` and `tests/` were inspected during the audit. Each had a matching `obj/project.assets.json` whose `project.restore.projectPath` identified that project (the WinUI Gallery path differed only in case). The 20 non-WinUI audit snapshots were written at approximately `2026-10-10T03:06:36Z`; the two WinUI snapshots were written at approximately `2026-10-09T20:30:53Z`. They are not evidence that the normal source `obj/` trees were restored at 1.4.0. Obsolete generated projects, renamed-project caches and temporary `artifacts/` consumers are excluded from the active source inventory.
@@ -244,7 +419,7 @@ Internal tool assemblies marked `type=project` in those payloads are also accoun
 | Git / source/release tool | No version pin | Local `2.56.0.windows.1` | Framework sync, release ancestry/tag checks, changelog tag discovery; development/release | git CLI, fetch-agents.ps1, Release-Common.ps1, Publish-Helper.ps1; distribution license/source not independently inspected. |
 | Visual Studio / optional IDE | No version pin or required IDE startup path | Installed version unknown | Optional editing/debugging and WinUI XAML tool provisioning; no Blazor/WPF launcher requirement | scripts/StartSettings.json and launcher diagnostics. Development BrowserLink/Hot Reload assets are IDE/framework supplied, not project package additions. License unknown. |
 | Playwright JS module / optional diagnostic | `require(PLAYWRIGHT_MODULE \|\| 'playwright')`; not declared in a repository package manifest | Unknown/unpinned | Only optional `build/Test-CultureIntegration.cjs` browser integration harness; not ReleaseSettings JavaScriptTests | Harness source. It is distinct from DocFX's bundled `Microsoft.Playwright` NuGet package. Source/license unknown for the caller-supplied JS installation. |
-| Edge/Chromium browser executable / optional diagnostic | BROWSER_EXECUTABLE override; harness defaults to installed Microsoft Edge | Unknown/unpinned | Optional integration harness, headless mode; no project browser automation was run for this audit | Test-CultureIntegration.cjs; browser vendor license/distribution unknown. |
+| Installed Edge/Chromium executable / optional headless test tool | No package/version pin; action-menu checks accept `FLOURISH_HEADLESS_BROWSER`, then probe installed Edge/Chrome/Chromium; Culture harness uses `BROWSER_EXECUTABLE` | Microsoft Edge `155.0.4283.45` observed from its installed Windows executable on 2026-10-12; other browsers unknown | `action-menu-dom.mjs`: optional nine SSR geometry regressions alongside controller checks; optional Culture integration harness | Executable file version and test source. No browser/package download; missing executable explicitly skips nine geometry checks. Browser vendor license/distribution identity beyond the installed Microsoft Edge executable remains unverified. |
 | Installed AGENTS instruction framework / development workflow | Framework `1.0.0`; source ref `main` | Imported commit `03ec2f6ebacb443585056b83c581f89a99c8ee36` | Router, common standards, audit/sync skills; optional Git-based framework check/sync | AGENTS.framework.json/lock.json; `https://github.com/Evigila/AGENTS.md.git`; source license identity unknown locally. No remote update check performed here. |
 | GitHub-hosted Windows/Linux runners / CI platform | `windows-latest` for build/publish/docs build; `ubuntu-latest` for Pages deploy | Image versions and preinstalled tool versions unknown | GitHub Actions workflows; build/test/publish/deployment | Workflow YAML. Floating runner labels are constraints, not exact environment locks; service terms/license identity not inspected. |
 

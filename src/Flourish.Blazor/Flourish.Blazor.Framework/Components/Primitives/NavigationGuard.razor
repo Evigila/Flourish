@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 
 
-<Dialog @ref="Decision" Title="@Ui("Confirmation_Title", "Confirm action")">
+<Dialog Strength="@Strength" @ref="Decision" Title="@Ui("Confirmation_Title", "Confirm action")">
     <ChildContent><p>@EffectiveMessage</p></ChildContent>
     <Actions>
         <InlineActions>
@@ -15,6 +15,11 @@
     </Actions>
 </Dialog>
 @code {
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+    }
     private Dialog? Decision;
     private string EffectiveMessage => DefaultText(nameof(Message), Message, "Navigation_Unsaved", "There are unsaved changes. Leave and discard them?");
     [Parameter]

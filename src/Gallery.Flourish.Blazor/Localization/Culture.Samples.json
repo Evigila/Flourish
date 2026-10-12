@@ -3245,9 +3245,9 @@
     "pt-BR": "Com AutoRotate, botões Quiet de pausa/retomada ficam disponíveis após aprimoramento. Textos seguem localização do framework ou substituições PauseRotationLabel/ResumeRotationLabel. O palco trata foco, ponteiro e movimento reduzido. Sem JavaScript, todas as ofertas permanecem visíveis e controles desativados.\nRotationControlIconOnly=true usa ícones padrão de 48px: pause durante execução, play_arrow após pausa. aria-label/data-tooltip compartilham os textos localizados ou explícitos. Apenas apresentação muda; pausa/retomada, movimento reduzido e ciclo de vida permanecem."
   },
   "Sample_PresentationBandSample_Description": {
-    "en-US": "Default minimum height is 800px; content can grow naturally. Dots are off by default and enabled only on Primary here. Bands combine full-width backgrounds with a centered content track.",
-    "zh-CN": "默认最小高度 800px，内容可自然增高；点阵默认关闭，本例仅为 Primary 开启。横幅使用全宽背景与居中内容轨道。",
-    "pt-BR": "Altura mínima padrão de 800px; conteúdo pode crescer. Pontos começam desligados e aqui são ativados apenas em Primary. Banners combinam fundo amplo com faixa central de conteúdo."
+    "en-US": "FullHeight=true and MinHeight=0 default to a browser viewport minimum with natural content growth. The dotted background is off by default and enabled only on Primary here. Bands combine full-width backgrounds with a centered content track.",
+    "zh-CN": "默认 FullHeight=true、MinHeight=0，以浏览器视口为最小高度并允许内容自然增高。点阵背景默认关闭，本例仅为 Primary 开启。板块使用全宽背景与居中内容轨道。",
+    "pt-BR": "FullHeight=true e MinHeight=0 usam por padrão o mínimo da janela, com crescimento natural do conteúdo. O fundo pontilhado começa desligado e aqui só é ativado em Primary. As faixas combinam fundo amplo com conteúdo centralizado."
   },
   "Sample_FilePickerSample_Description": {
     "en-US": "Reads only filename and length metadata, without reading content or uploading. Production hosts validate content and size separately.",
@@ -3318,5 +3318,35 @@
     "en-US": "Switch identities to compare action-group and sign-out icon layout. Actions are recorded locally without authentication or sign-out.",
     "zh-CN": "切换身份可比较动作组与退出图标的布局；这里只记录本地操作，不执行认证或退出。",
     "pt-BR": "Alterne identidades para comparar grupo de ações e ícone de saída. Ações são registradas localmente sem autenticação nem encerramento de sessão."
+  },
+  "Sample_PresentationProgressSample_Description": {
+    "en-US": "Two actual presentation bands share opt-in circular navigation in a bounded scrolling ContentSurface. Select a circle or scroll manually to change the active band. The footer keeps natural height and does not add a third circle.",
+    "zh-CN": "两个真实展示板块在有限滚动区域 ContentSurface 中共享显式开启的圆形导航。点击圆点或手动滚动可切换当前板块。页脚保持自然高度，不产生第三个圆点。",
+    "pt-BR": "Duas faixas reais compartilham navegação circular opcional em um ContentSurface com rolagem delimitada. Selecione um círculo ou role manualmente para mudar a faixa ativa. O rodapé mantém altura natural e não adiciona um terceiro círculo."
+  },
+  "Sample_PresentationProgressOverview": {
+    "en-US": "Explore the presentation",
+    "zh-CN": "探索展示内容",
+    "pt-BR": "Explore a apresentação"
+  },
+  "Sample_PresentationProgressOverviewBody": {
+    "en-US": "Each band has a browser viewport minimum and can grow with its content. The circles navigate only this example’s bands.",
+    "zh-CN": "每个板块以浏览器视口为最小高度，并可随内容增高。圆点仅导航至当前示例中的板块。",
+    "pt-BR": "Cada faixa tem o mínimo da janela do navegador e pode crescer com o conteúdo. Os círculos navegam apenas entre as faixas deste exemplo."
+  },
+  "Sample_PresentationProgressNext": {
+    "en-US": "Choose the next step",
+    "zh-CN": "选择下一步",
+    "pt-BR": "Escolha o próximo passo"
+  },
+  "Sample_PresentationProgressNextBody": {
+    "en-US": "Manual scrolling updates the active circle. At the footer, the navigation keeps the last band active and leaves the footer actions accessible.",
+    "zh-CN": "手动滚动会更新当前圆点。到达页脚时，导航保留最后一个板块为当前项，并让页脚操作保持可用。",
+    "pt-BR": "A rolagem manual atualiza o círculo ativo. No rodapé, a navegação mantém a última faixa ativa e deixa as ações do rodapé acessíveis."
+  },
+  "Sample_PresentationProgressFooter": {
+    "en-US": "This natural-height footer is outside band progress.",
+    "zh-CN": "此自然高度页脚不参与板块进度。",
+    "pt-BR": "Este rodapé de altura natural fica fora do progresso das faixas."
   }
 }

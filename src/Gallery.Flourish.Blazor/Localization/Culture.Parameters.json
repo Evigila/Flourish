@@ -390,14 +390,14 @@
     "pt-BR": "Cor de fundo do banner: Canvas, Surface ou Primary; o conteúdo mantém a faixa central limitada. Alterne papéis explicitamente, em vez de usar a ordem do DOM."
   },
   "Parameter_MinHeight": {
-    "en-US": "Minimum banner height in px, default 800. Must be nonnegative; 0 uses natural height. Long text, narrow screens and zoom can grow without clipping controls.",
-    "zh-CN": "横幅最小高度，单位 px，默认 800；必须非负，0 为自然内容高度。长文、窄屏或缩放时允许增高，不裁切控件。",
-    "pt-BR": "Altura mínima do banner em px, padrão 800. Deve ser não negativa; 0 usa altura natural. Textos longos, telas estreitas e zoom podem ampliar sem cortar controles."
+    "en-US": "Nonnegative minimum banner height in px, default 0. FullHeight=true also applies a minimum of 100dvh (100vh fallback), except the sole directly nested band in a fixed ContentSurface uses the remaining stage height. FullHeight=false with 0 uses natural content height; footer content stays naturally sized. Long text, narrow screens and zoom may grow the band without clipping controls.",
+    "zh-CN": "横幅最小高度，单位 px，默认 0，必须非负。FullHeight=true 同时应用 100dvh 最小高度（回退为 100vh）；固定 ContentSurface 中唯一直属板块改用内容区的剩余高度。FullHeight=false 且为 0 时使用自然内容高度；页脚保持自然高度。长文、窄屏或缩放时允许增高，不裁切控件。",
+    "pt-BR": "Altura mínima não negativa do banner em px, padrão 0. FullHeight=true também aplica o mínimo de 100dvh (alternativa de 100vh), exceto na única faixa diretamente contida em um ContentSurface fixo, que usa a altura restante da área de conteúdo. FullHeight=false com 0 usa a altura natural; o rodapé mantém o tamanho natural. Textos longos, telas estreitas e zoom podem ampliar a faixa sem cortar controles."
   },
   "Parameter_FullHeight": {
-    "en-US": "Full-page banner uses the greater of 100dvh and MinHeight. Content may grow naturally; disabled by default.",
-    "zh-CN": "整页横幅模式，最小高度取动态视口 100dvh 和 MinHeight 的较大值；内容可自然增长，默认关闭。",
-    "pt-BR": "Banner de página inteira usa o maior entre 100dvh e MinHeight. Conteúdo pode crescer naturalmente; desativado por padrão."
+    "en-US": "Enabled by default on PresentationBand and PresentationHero: minimum height is the greater of 100dvh and MinHeight, with 100vh fallback. The sole directly nested band in a fixed ContentSurface instead fills the remaining stage height below its header. Other bands keep the browser viewport minimum; content can grow naturally. false keeps only MinHeight; footer content keeps natural height.",
+    "zh-CN": "PresentationBand 与 PresentationHero 默认开启：最小高度取 100dvh 与 MinHeight 的较大值，回退为 100vh。固定 ContentSurface 中唯一直属板块改为填满标题栏下方内容区的剩余高度。其他板块仍使用浏览器视口最小高度；内容可自然增高。false 仅保留 MinHeight；页脚内容保持自然高度。",
+    "pt-BR": "Ativado por padrão em PresentationBand e PresentationHero: o mínimo é o maior entre 100dvh e MinHeight, com alternativa de 100vh. A única faixa diretamente contida em um ContentSurface fixo ocupa a altura restante da área de conteúdo abaixo do cabeçalho. As demais faixas mantêm o mínimo da janela do navegador; o conteúdo pode crescer naturalmente. false mantém apenas MinHeight; o rodapé mantém altura natural."
   },
   "Parameter_ProjectName": {
     "en-US": "Instance artistic project-name override; otherwise reads the literal or scoped localized name from ConfigureProject.",
@@ -1288,5 +1288,20 @@
     "en-US": "Optional display formatter for validation messages, including explicit Error and EditContext messages. Does not change original messages, field identity or validation state.",
     "zh-CN": "可选验证消息显示格式函数，同时适用于显式 Error 和 EditContext 消息；不改变原始消息、字段关联或验证状态。",
     "pt-BR": "Formatador opcional de exibição para mensagens de validação, incluindo Error explícito e mensagens do EditContext. Não altera mensagens originais, identidade do campo nem estado de validação."
+  },
+  "Parameter_Strength": {
+    "en-US": "Popup dismissal policy, default Weak. Weak allows implicit dismissal through outside interaction, Escape or repeated trigger activation. Strong requires selection or an explicit completion/cancellation action. Existing Busy, CanClose and host authorization still apply.",
+    "zh-CN": "弹出层关闭策略，默认 Weak。Weak 允许通过外部操作、Escape 或再次触发来关闭；Strong 需要选择或显式完成／取消操作。既有 Busy、CanClose 与宿主授权规则仍然适用。",
+    "pt-BR": "Política de fechamento do popup, padrão Weak. Weak permite fechar por interação externa, Escape ou nova ativação do acionador. Strong exige seleção ou ação explícita de conclusão/cancelamento. Busy, CanClose e a autorização do host continuam valendo."
+  },
+  "Parameter_ShowPresentationProgress": {
+    "en-US": "Opt-in presentation navigation, default false. Shows bottom-center circular links for this ContentSurface main content’s eligible bands, updates the active link on scrolling and aligns clicked bands below sticky headers. Footer content is excluded; a single band still has one link and no bands hide navigation.",
+    "zh-CN": "展示页进度导航开关，默认 false。为当前 ContentSurface 正文中的合格板块显示底部居中圆形链接，滚动时更新当前项，点击后使板块对齐粘性页眉下方。页脚不参与计数；单板块仍有一个链接，没有板块时隐藏导航。",
+    "pt-BR": "Navegação de apresentação opcional, padrão false. Exibe links circulares centralizados na parte inferior para as faixas elegíveis do conteúdo principal deste ContentSurface, atualiza o link ativo na rolagem e alinha a faixa abaixo de cabeçalhos fixos. O rodapé é excluído; uma faixa mantém um link e nenhuma faixa oculta a navegação."
+  },
+  "Parameter_IncludeInProgress": {
+    "en-US": "Includes this PresentationBand or PresentationHero as one semantic progress destination, default true. false excludes it without changing height or content. Nested bands and footer content do not create extra destinations.",
+    "zh-CN": "将当前 PresentationBand 或 PresentationHero 作为一个语义进度目标，默认 true。false 仅排除导航项，不改变高度或内容。嵌套板块与页脚内容不会增加额外目标。",
+    "pt-BR": "Inclui este PresentationBand ou PresentationHero como um destino semântico de progresso, padrão true. false o exclui sem alterar altura ou conteúdo. Faixas aninhadas e conteúdo de rodapé não criam destinos adicionais."
   }
 }

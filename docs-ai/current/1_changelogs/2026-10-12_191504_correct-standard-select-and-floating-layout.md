@@ -1,0 +1,7 @@
+# Correct standard selection and floating presentation layout
+
+Time zone: America/Sao_Paulo (UTC-03:00).
+
+SelectBox, StandaloneSelectBox and LanguagePicker now offer optional native Icon/TriggerVariant enhancement with text fallback. The shared menu controller fixes percentage popup minimum width. ContentSurface.FloatingActions provides independent upper-corner controls, and PresentationProgress reuses TutorialBoard segments without a footer tail row. [Diagnosis](../1_bugreports/2026-10-12_standard-select-and-floating-layout.md) records the previous composition errors and verified boundaries.
+
+The six Core/Blazor packages were built into the fresh immutable 1.4.1-local.popup.20261012.3 candidate. Package verification and 143 independent consumer checks passed; public 1.4.0 and earlier candidates were preserved, with no package/tag publication. Source checks passed 451 Framework, 27 Culture, 8346 Gallery, 25 progress-controller and 37 menu/native/browser cases; the other 18 maintained JavaScript suites passed. The actual trusted-input browser cases have zero skips. Colligere consumes .3 and passed 2379 Web tests with 132 existing database/shared-fixture skips and zero failures. The manual guide, component/gallery descriptions, current API boundaries and candidate reproduction instructions are synchronized. No audit timestamp or Git commit was changed.

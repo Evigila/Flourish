@@ -170,6 +170,41 @@ internal static class SelectValueConversionChecks
             }
         }));
 
+        tests.Add(("native icon select triggers preserve options binding validation and availability", async () =>
+        {
+            foreach (var bound in new[] { true, false })
+            {
+                var model = new Selection<bool> { Value = true };
+                var context = new EditContext(model);
+                await using var fixture = new Fixture();
+                var output = bound ? await fixture.RenderBound(model, context, BooleanOptions) : await fixture.RenderStandalone(model, BooleanOptions);
+                IComponent control = bound ? fixture.Component<SelectBox<bool>>() : fixture.Component<StandaloneSelectBox<bool>>();
+                Require(!(await fixture.Html(output)).Contains("<button", StringComparison.Ordinal), "Default selectors acquired a custom trigger.");
+                await fixture.Parameters(control, new()
+                {
+                    ["Icon"] = "language", ["TriggerVariant"] = ButtonVariant.Quiet,
+                    ["AdditionalAttributes"] = new Dictionary<string, object> { ["aria-label"] = "Language", ["name"] = "language" }
+                });
+                var html = await fixture.Html(output);
+                Require(Regex.IsMatch(html, "<select\\b[^>]*aria-label=\"Language\"[^>]*>\\s*<button\\b[^>]*type=\"button\""), "The native select did not retain its accessible label and first inert trigger button.");
+                Require(html.Contains("f-select-customized", StringComparison.Ordinal) && html.Contains("f-button-quiet", StringComparison.Ordinal)
+                    && html.Contains("f-button-icon", StringComparison.Ordinal) && html.Contains("data-icon=\"language\"", StringComparison.Ordinal), "The standard icon and Quiet appearance were not forwarded.");
+                Require(!html.Contains("popover=", StringComparison.Ordinal) && !html.Contains("role=\"menu", StringComparison.Ordinal), "The native selector was replaced by a separate menu.");
+                RequireSelected(html, "true", "Enabled");
+                await fixture.Change(control, "false");
+                Require(!model.Value && model.Changes == 1, "Icon selection bypassed native onchange binding.");
+                RequireSelected(await fixture.Html(output), "false", "Disabled");
+                await fixture.Parameters(control, new() { ["Disabled"] = true, ["Value"] = model.Value });
+                await fixture.Change(control, "true");
+                Require(!model.Value && model.Changes == 1, "The decorative trigger bypassed disabled selection.");
+                Require(Regex.IsMatch(await fixture.Html(output), @"<select\b[^>]*\sdisabled(?:=|\s|>)"), "The real select lost its disabled state.");
+                await fixture.Parameters(control, new() { ["Disabled"] = false, ["Value"] = model.Value, ["Icon"] = null, ["TriggerVariant"] = null });
+                Require(!(await fixture.Html(output)).Contains("<button", StringComparison.Ordinal), "Removing custom parameters did not restore the native text trigger.");
+                await fixture.Change(control, "true");
+                Require(model.Value && model.Changes == 2 && !context.GetValidationMessages().Any(), "Returning to the default selector lost its value binding.");
+            }
+        }));
+
         tests.Add(("select Boolean repair retains nullable numeric enum Guid and string conversion", async () =>
         {
             await ScalarRoundTrip<int?>(1, 2, "2", clearsEmpty: true);

@@ -2,6 +2,8 @@ namespace ArkheideSystem.Flourish.WPF.Abstract;
 
 public enum ButtonVariant { Primary, Secondary, Danger, Quiet, Underline, Elevated }
 public enum DialogPresentation { Centered, BottomSheet }
+/// <summary>Weak permits incidental dismissal; Strong requires a selection or explicit close action.</summary>
+public enum PopupStrength { Weak, Strong }
 public enum EmptyStateVariant { Standard, Watermark }
 public enum PresentationTone { Canvas, Surface, Primary }
 public enum NoticeKind { Information, Success, Warning, Error, Subtle }

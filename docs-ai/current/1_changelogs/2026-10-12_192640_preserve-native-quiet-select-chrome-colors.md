@@ -1,0 +1,7 @@
+# Preserve native Quiet select chrome colors
+
+Time zone: America/Sao_Paulo (UTC-03:00).
+
+Following the [standard selection and floating layout correction](2026-10-12_191504_correct-standard-select-and-floating-layout.md), final browser inspection reproduced black icon foreground from an input-scoped palette on blue ShellHeader chrome. Design/static-surfaces.css now makes only enabled customized Quiet native selects inherit the chrome foreground. Their browser-managed picker/options retain explicit independent colors. A strict actual-browser test compares the select/icon with ordinary Quiet chrome actions and verifies the popup remains black-on-white.
+
+The expanded menu/native/browser suite passed 38/38 with zero browser skips. Fresh immutable .4 packages built with zero warnings/errors and passed six-package verification and 143 independent consumer checks. Colligere's exact .4 restore/Release compilation and complete Web suite passed 2379 with 132 existing database/shared-fixture skips and zero failures. The public version and external dependencies are unchanged, consumed .3 bytes are preserved, and current reproduction/startup facts identify .4. No public package/tag or Git commit was created.

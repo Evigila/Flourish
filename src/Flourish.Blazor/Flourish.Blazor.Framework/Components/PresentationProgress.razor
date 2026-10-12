@@ -1,0 +1,61 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<nav @attributes="AdditionalAttributes" @ref="root" id="@navigationId" class="f-presentation-progress @Class" data-content-id="@ContentId" aria-label="@EffectiveLabel" hidden>
+    <ol class="f-tutorial-segments"></ol>
+</nav>
+
+@code {
+    private string EffectiveLabel => DefaultText(nameof(Label), Label, "Shell_PageContents", "On this page");
+    [Parameter, EditorRequired] public string ContentId { get; set; } = string.Empty;
+    [Parameter] public string Label { get; set; } = "On this page";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    private readonly string navigationId = "presentation-progress-" + Guid.NewGuid().ToString("N");
+    private ElementReference root;
+    private IJSObjectReference? module;
+    private Task<IJSObjectReference?>? loading;
+    private bool disposed;
+
+    protected override void OnParametersSet() {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ContentId);
+        if (ContentId.Any(char.IsWhiteSpace)) throw new ArgumentException("The content must have a valid HTML identifier.", nameof(ContentId));
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (disposed) return;
+        try {
+            var activeModule = await GetModuleAsync();
+            if (disposed || activeModule is null) return;
+            await activeModule.InvokeVoidAsync("synchronize", root, ContentId);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    private async Task<IJSObjectReference?> GetModuleAsync() {
+        if (module is not null) return module;
+        var pending = loading ??= ImportAsync();
+        try { return await pending; }
+        finally { if (ReferenceEquals(loading, pending)) loading = null; }
+    }
+    private async Task<IJSObjectReference?> ImportAsync() {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/presentation/progress.js");
+        if (disposed) { await ReleaseAsync(imported); return null; }
+        return module = imported;
+    }
+    private static async ValueTask ReleaseAsync(IJSObjectReference activeModule) {
+        try { await activeModule.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+    public async ValueTask DisposeAsync() {
+        if (disposed) return;
+        disposed = true;
+        base.Dispose();
+        var activeModule = module;
+        module = null;
+        if (activeModule is null) return;
+        try { await activeModule.InvokeVoidAsync("detach", root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { await ReleaseAsync(activeModule); }
+    }
+}

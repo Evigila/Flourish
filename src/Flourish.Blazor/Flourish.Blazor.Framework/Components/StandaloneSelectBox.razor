@@ -3,10 +3,17 @@
 @using System.Globalization
 @typeparam TValue
 
-<select @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-select @Class"
+<select @attributes="AdditionalAttributes" id="@(Id ?? Field?.Id)" class="f-input f-select@(CustomizedTrigger ? " f-select-customized" : null) @Class"
     value="@Internal.SelectValueConversion.Format(ShownValue, Texts.FormatCulture)" disabled="@Disabled"
     required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(null, default, Field, AdditionalAttributes)"
     aria-describedby="@InputSemantics.Description(Field, AdditionalAttributes)" @onchange="ChangeAsync">
+    @if (CustomizedTrigger)
+    {
+        <button type="button" class="@TriggerClass" disabled="@Disabled">
+            @if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
+            else { <selectedcontent></selectedcontent> }
+        </button>
+    }
     @if (ChildContent is not null) { @ChildContent }
     else
     {
@@ -25,12 +32,20 @@
     [Parameter] public IReadOnlyList<SelectOption<TValue>> Options { get; set; } = Array.Empty<SelectOption<TValue>>();
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Disabled { get; set; }
+    /// <summary>Displays a decorative icon in the native select trigger where customizable selects are supported.</summary>
+    [Parameter] public string? Icon { get; set; }
+    /// <summary>Uses a standard button appearance for the native select trigger; unsupported browsers retain the text selector.</summary>
+    [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    private bool CustomizedTrigger => !string.IsNullOrWhiteSpace(Icon) || TriggerVariant is not null;
+    private string TriggerClass => $"f-select-trigger {(TriggerVariant is { } variant ? $"f-button f-button-{variant.ToString().ToLowerInvariant()}" : null)} {(!string.IsNullOrWhiteSpace(Icon) ? "f-button-icon" : null)}";
+
     [Parameter] public string? Class { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     private TValue? ShownValue, LastValue;
     private bool Initialized;
     protected override void OnParametersSet()
     {
+        if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         if (!Initialized || ValueChanged.HasDelegate || !EqualityComparer<TValue>.Default.Equals(Value!, LastValue!)) ShownValue = Value;
         Initialized = true;
         LastValue = Value;

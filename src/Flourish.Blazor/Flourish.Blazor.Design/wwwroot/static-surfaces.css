@@ -6,6 +6,9 @@
 .f-dropdown-surface > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; margin:4px 0 0; display:none; width:max-content; min-width:100%; max-width:min(90vw,36rem); z-index:40; }
 .f-dropdown-surface[open] > .f-menu-panel { display:grid; gap:4px; }
 /* Only chrome Quiet actions inherit chrome colors; other variants keep their own contract. */
+@supports(appearance:base-select) {
+    .f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true]) { color:inherit; }
+}
 .f-root .shell-header .f-button-quiet:not(:disabled):not([aria-disabled=true]) { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }
 .f-root .shell-header .f-button-quiet:hover:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-preview); }
 .f-root .shell-header .f-button-quiet:active:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-click); }

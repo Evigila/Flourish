@@ -78,6 +78,7 @@ internal static class ParameterMeaning
         "ParsingErrorMessage" => "Key.Parameter_ParsingErrorMessage",
         "OnClick" => "Key.Parameter_OnClick",
         "OpenOnHover" => "Key.Parameter_OpenOnHover",
+        "Strength" => "Key.Parameter_Strength",
         "Actions" => typeof(RenderFragment).IsAssignableFrom(parameter.PropertyType)
             || parameter.PropertyType.IsGenericType && parameter.PropertyType.GetGenericTypeDefinition() == typeof(RenderFragment<>)
             ? "Key.Parameter_Actions_Content" : "Key.Parameter_Actions_Collection",
@@ -86,6 +87,8 @@ internal static class ParameterMeaning
         "Brand" => "Key.Parameter_Brand",
         "Footer" => "Key.Parameter_Footer",
         "DocumentFlow" => "Key.Parameter_DocumentFlow",
+        "ShowPresentationProgress" => "Key.Parameter_ShowPresentationProgress",
+        "IncludeInProgress" => "Key.Parameter_IncludeInProgress",
         "Tone" => "Key.Parameter_Tone",
         "MinHeight" => "Key.Parameter_MinHeight",
         "FullHeight" => "Key.Parameter_FullHeight",

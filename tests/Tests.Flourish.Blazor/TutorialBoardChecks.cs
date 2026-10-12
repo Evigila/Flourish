@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using ArkheideSystem.Flourish.Blazor;
 using ArkheideSystem.Flourish.Blazor.Components;
 using Microsoft.AspNetCore.Components;
@@ -24,8 +25,12 @@ internal static class TutorialBoardChecks
             await WithBoard(new(), async (_, html, _) =>
             {
                 var value = html();
+                var board = Regex.Match(value, @"<section\b[^>]*class=""[^""]*\bf-tutorial-board\b[^""]*""[^>]*>").Value;
                 Require(value.Contains("f-tutorial-primary f-tutorial-dotted", StringComparison.Ordinal)
-                    && value.Contains("popover=\"auto\" role=\"dialog\" aria-modal=\"false\"", StringComparison.Ordinal), "The board is modal or lost default roles.");
+                    && Regex.IsMatch(board, @"\bpopover=""auto""")
+                    && Regex.IsMatch(board, @"\bdata-f-popup-strength=""weak""")
+                    && Regex.IsMatch(board, @"\brole=""dialog""")
+                    && Regex.IsMatch(board, @"\baria-modal=""false"""), "The board is modal or lost default roles.");
                 Require(value.Contains("<h1", StringComparison.Ordinal) && value.Contains(">Define products</h1>", StringComparison.Ordinal), "The initial step is not the first incomplete H1.");
                 Require(value.Contains("Company &lt;one&gt;", StringComparison.Ordinal) && !value.Contains("Company <one>", StringComparison.Ordinal), "Tutorial data bypassed HTML encoding.");
                 Require(value.Contains("1 of 3 completed", StringComparison.Ordinal) && value.Contains("role=\"tooltip\"", StringComparison.Ordinal), "Passive progress overview is missing.");

@@ -1,5 +1,7 @@
 /* Production display and access scenes use the active Flourish role palette and control variants. */
 .f-presentation-band { padding-block:48px; }
+/* A fixed single access scene uses compact outer spacing without shrinking its branding or form. */
+:where(.content-surface:not(.f-document-surface) > .content-stage) > .f-presentation-band.f-presentation-fullheight:where(:only-child):has(> .f-content-container > .f-access-panel):not(:where(footer,[data-presentation-footer]) *) { padding-block:var(--f-space-4,16px); }
 .f-logo-displayer { margin-bottom:40px; }
 .f-logo-displayer > .f-logo-displayer-title { margin:0; font-size:clamp(56px,8vw,80px); font-weight:780; letter-spacing:-.055em; line-height:1.12; overflow-wrap:anywhere; }
 .f-logo-displayer-context { margin-top:12px; color:var(--f-accent-text); font-size:var(--f-type-h2,28px); letter-spacing:normal; }
@@ -18,7 +20,7 @@
 .f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description) { color:inherit; }
 .f-presentation-hero.f-presentation-primary > .f-content-container > .f-presentation-hero-layout > .f-presentation-hero-content > :is(.f-presentation-hero-subtitle,.f-presentation-hero-description) { color:inherit; }
 .f-presentation-hero-actions { gap:12px; margin-top:8px; }
-.f-presentation-footer { min-height:320px; color:var(--f-primary-ink); background:var(--f-primary); }
+.f-presentation-footer { color:var(--f-primary-ink); background:var(--f-primary); }
 .f-presentation-watermark { top:-.38em; left:-.075em; color:var(--f-primary-preview); font-size:clamp(170px,27vw,420px); font-weight:800; letter-spacing:-.08em; line-height:1; }
 .f-presentation-footer-content { gap:32px; padding:90px clamp(24px,5vw,72px) 48px; }
 .f-presentation-footer-identity { gap:14px; }

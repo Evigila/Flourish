@@ -1,4 +1,9 @@
 using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
+using ArkheideSystem.Flourish.Blazor.Components;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using static ArkheideSystem.Tests.Flourish.Extensions.Culture.Blazor.Program;
@@ -9,6 +14,31 @@ internal static class BrowserPreferenceChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("LanguagePicker forwards optional standard native icon trigger and preserves default text selection", async () =>
+        {
+            await using var root = Build(Services());
+            await using var scope = root.CreateAsyncScope();
+            await using var renderer = new HtmlRenderer(scope.ServiceProvider, root.GetRequiredService<ILoggerFactory>());
+            await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                var plain = await renderer.RenderComponentAsync<LanguagePicker>();
+                var plainHtml = plain.ToHtmlString();
+                Require(plainHtml.Contains("<select", StringComparison.Ordinal) && !plainHtml.Contains("f-select-customized", StringComparison.Ordinal), "Default LanguagePicker changed its native text selection.");
+                var icon = await renderer.RenderComponentAsync<LanguagePicker>(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    [nameof(LanguagePicker.Icon)] = "language", [nameof(LanguagePicker.TriggerVariant)] = ButtonVariant.Quiet
+                }));
+                var html = icon.ToHtmlString();
+                Require(Regex.IsMatch(html, @"<select\b[^>]*>\s*<button\b[^>]*type=""button"""), "LanguagePicker no longer uses the standard native select trigger.");
+                Require(html.Contains("f-select-customized", StringComparison.Ordinal) && html.Contains("f-button-quiet", StringComparison.Ordinal)
+                    && html.Contains("f-button-icon", StringComparison.Ordinal) && html.Contains("data-icon=\"language\"", StringComparison.Ordinal), "LanguagePicker did not forward standard trigger parameters.");
+                Require(Regex.Matches(html, @"<option\b").Count == scope.ServiceProvider.GetRequiredService<CultureSession>().AvailableCultures.Count,
+                    "Icon mode changed the available cultures.");
+                Require(html.Contains("aria-label=\"Language\"", StringComparison.Ordinal), "The native icon selector lost its accessible label.");
+            });
+            Equal(0, scope.ServiceProvider.GetRequiredService<JsProbe>().Imports);
+        }));
+
         tests.Add(("Sessions defer imports until interaction and release unused sessions without JavaScript", async () =>
         {
             await using var root = Build(Services());

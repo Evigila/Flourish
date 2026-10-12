@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 
 <div class="selection-dropdown-surface">
-<div class="reference-dropdown" @ref="Root" @onkeydown="HandleKeyDownAsync" @onfocusout="CloseIfFocusLeftAsync">
+<div class="reference-dropdown" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" aria-busy="@Creating.ToString().ToLowerInvariant()" @ref="Root" @onkeydown="HandleKeyDownAsync" @onfocusout="CloseIfFocusLeftAsync">
     <button @ref="Trigger" id="@(Id + "-trigger")" class="reference-trigger selection-trigger" type="button"
             aria-haspopup="listbox" aria-expanded="@(IsOpen ? "true" : "false")" aria-controls="@(Id + "-options")"
             aria-labelledby="@LabelledBy" disabled="@(Disabled || Creating)" @onclick="Toggle">
@@ -47,6 +47,10 @@
                     @(Creating ? Ui("Selection_Adding", "Adding…") : Ui("Selection_Add", "Add \"{0}\"", Search.Trim()))
                 </button>
             }
+            @if (Strength == PopupStrength.Strong)
+            {
+                <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" Disabled="@Creating" OnClick="CloseExplicitAsync" />
+            }
         </div>
     }
 </div>
@@ -67,6 +71,7 @@
     [Parameter] public string SearchLabel { get; set; } = "Search or add";
     [Parameter] public int MaximumLength { get; set; } = 120;
     [Parameter] public bool AllowNone { get; set; } = true;
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public bool Disabled { get; set; }
 
     private ElementReference Root;
@@ -74,6 +79,7 @@
     private ElementReference SearchInput;
     private IJSObjectReference? Module;
     private Task<IJSObjectReference?>? ModuleLoading;
+    private DotNetObjectReference<ReferenceDropdown<TValue>>? Reference;
     private bool Disposed;
     private bool IsOpen;
     private bool FocusSearch;
@@ -91,16 +97,50 @@
         && (string.IsNullOrWhiteSpace(Search) || UnlistedName.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
         && !Items.Any(item => string.Equals(item.Name, UnlistedName, StringComparison.OrdinalIgnoreCase));
 
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+        if (Disabled) IsOpen = false;
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!FocusSearch) return;
-        FocusSearch = false;
-        await SearchInput.FocusAsync();
+        if (Disposed) return;
+        try
+        {
+            var module = await GetModuleAsync();
+            if (Disposed || module is null) return;
+            Reference ??= DotNetObjectReference.Create(this);
+            await module.InvokeVoidAsync("attachPopupDismissal", Root, Reference);
+            if (FocusSearch && IsOpen)
+            {
+                FocusSearch = false;
+                await SearchInput.FocusAsync();
+            }
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
+
+    private async Task CloseExplicitAsync()
+    {
+        if (Disposed || Disabled || Creating) return;
+        IsOpen = false;
+        Search = string.Empty;
+        await Trigger.FocusAsync();
+    }
+
+    [JSInvokable]
+    public Task RequestDismissAsync() => InvokeAsync(() =>
+    {
+        if (Disposed || Creating || Strength != PopupStrength.Weak || !IsOpen) return;
+        IsOpen = false;
+        Search = string.Empty;
+        StateHasChanged();
+    });
 
     private void Toggle()
     {
-        if (Disabled || Creating) return;
+        if (Disabled || Creating || (IsOpen && Strength == PopupStrength.Strong)) return;
         IsOpen = !IsOpen;
         Search = string.Empty;
         FocusSearch = IsOpen;
@@ -144,7 +184,7 @@
 
     private async Task HandleKeyDownAsync(KeyboardEventArgs args)
     {
-        if (args.Key != "Escape" || !IsOpen) return;
+        if (args.Key != "Escape" || !IsOpen || Strength == PopupStrength.Strong) return;
         IsOpen = false;
         Search = string.Empty;
         await Trigger.FocusAsync();
@@ -152,19 +192,19 @@
 
     private async Task CloseIfFocusLeftAsync()
     {
-        if (Disposed || !IsOpen) return;
+        if (Disposed || Creating || !IsOpen || Strength == PopupStrength.Strong) return;
         await Task.Yield();
-        if (Disposed) return;
+        if (Disposed || Creating || Strength == PopupStrength.Strong) return;
         try
         {
             var activeModule = await GetModuleAsync();
-            if (Disposed || activeModule is null) return;
+            if (Disposed || Creating || Strength == PopupStrength.Strong || activeModule is null) return;
             var containsFocus = await activeModule.InvokeAsync<bool>("containsFocus", Root);
             if (!Disposed && !containsFocus)
             {
                 await InvokeAsync(() =>
                 {
-                    if (Disposed) return;
+                    if (Disposed || Creating || Strength == PopupStrength.Strong) return;
                     IsOpen = false;
                     Search = string.Empty;
                     StateHasChanged();
@@ -173,7 +213,7 @@
         }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException)
         {
-            if (!Disposed) IsOpen = false;
+            if (!Disposed && !Creating && Strength == PopupStrength.Weak) IsOpen = false;
         }
     }
 
@@ -206,6 +246,12 @@
         base.Dispose();
         var activeModule = Module;
         Module = null;
-        if (activeModule is not null) await ReleaseModuleAsync(activeModule);
+        try { if (activeModule is not null) await activeModule.InvokeVoidAsync("detachPopupDismissal", Root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally
+        {
+            Reference?.Dispose(); Reference = null;
+            if (activeModule is not null) await ReleaseModuleAsync(activeModule);
+        }
     }
 }

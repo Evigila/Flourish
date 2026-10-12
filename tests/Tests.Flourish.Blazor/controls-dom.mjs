@@ -40,6 +40,12 @@ class Node {
 }
 globalThis.document=new Node();
 document.body=new Node();document.documentElement={clientWidth:800};document.activeElement=null;
+// Document has no Element.matches; selectors added by SSR enhancement only return matching fixture nodes.
+document.matches=undefined;
+const documentQuery=Node.prototype.querySelectorAll;
+document.querySelectorAll=selector=>selector==='.f-presentation-progress'
+  ? document.children.filter(node=>node.getAttribute('class')?.split(' ').includes('f-presentation-progress'))
+  : selector==='[data-f-popup="menu"]' ? document.children.filter(node=>node.getAttribute('data-f-popup')==='menu') : documentQuery.call(document,selector);
 document.body.append=function(...nodes){this.children.push(...nodes);};
 document.createComment=()=>({isConnected:true,replaceWith(){}});
 document.createElement=tag=>{const node=new Node();if(tag==='canvas')node.getContext=()=>null;return node;};
@@ -310,7 +316,7 @@ check('Standard native activation listeners detach completely and reattach witho
 
 const opener=new Node(),dialog=new Node(),close=new Node(),last=new Node();dialog.id='dialog-test';dialog.children=[close,last];
 let closeRequests=0;
-const reference={async invokeMethodAsync(name){assert.equal(name,'RequestCloseAsync');closeRequests++;}};
+const reference={async invokeMethodAsync(name){assert.equal(name,'RequestDismissAsync');closeRequests++;}};
 document.activeElement=opener;api.synchronizeDialog(dialog,true,reference);
 check('Modal opens and contains keyboard focus',()=>{assert.equal(dialog.open,true);assert.equal(document.activeElement,close);document.activeElement=last;dialog.emit('keydown',event('Tab'));assert.equal(document.activeElement,close);const shift=event('Tab');shift.shiftKey=true;dialog.emit('keydown',shift);assert.equal(document.activeElement,last);});
 check('Busy modal prevents native Escape without server close',()=>{dialog.setAttribute('aria-busy','true');const cancel=event();dialog.emit('cancel',cancel);assert.equal(cancel.defaultPrevented,true);assert.equal(closeRequests,0);assert.equal(dialog.open,true);});
@@ -421,7 +427,9 @@ check('Text selection keeps ordinary replacement but preserves masked carets',()
   api.detachTextSelection(input);assert.equal(input.events.get('focus').length,0);
 });
 const inputBehaviorCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/input-behaviors.js',import.meta.url),'utf8');
-await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode.replace(/(["'])\.\.\/controls\.js\1/,JSON.stringify(controlsUrl))).toString('base64'));
+const progressCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/progress.js',import.meta.url),'utf8');
+const progressUrl='data:text/javascript;base64,'+Buffer.from(progressCode).toString('base64');
+await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode.replace(/(["'])\.\.\/controls\.js\1/,JSON.stringify(controlsUrl)).replace(/(["'])\.\.\/presentation\/progress\.js\1/,JSON.stringify(progressUrl))).toString('base64'));
 check('Primitive focus selection cannot reselect a masked input through its document listener',()=>{
   const input=new Node();input.type='text';input.value='AB-1234';input.dataset={inputMask:'AA-0000'};let selections=0;input.select=()=>selections++;
   document.activeElement=input;document.emit('focusin',{target:input});assert.equal(selections,0);
@@ -658,5 +666,20 @@ check('Cards can set and reset declared widths before returning to the table wit
   f.cols.push(unknown);choices.push({dataset:{fSelectionKey:'unknown'}});dataApi.synchronize(f.root,'cards-width');
   assert.equal(f.cols[0].style.width,'320px');assert.equal(f.cols[1].style.width,'511px');
   assert.equal(f.handles[1].getAttribute('aria-valuenow'),'511');assert.equal(unknown.style.width,'72px');dataApi.detach('cards-width');
+});
+
+check('Strong controlled modal refuses Escape and outside dismissal before its explicit close',()=>{
+  const opener=new Node(),root=new Node();let requests=0;document.activeElement=opener;
+  root.setAttribute('data-f-popup-strength','strong');
+  api.synchronizeDialog(root,true,{invokeMethodAsync:async()=>requests++});
+  root.emit('cancel',event()); const outside=event();outside.target=root;outside.clientX=-10;outside.clientY=-10;root.emit('click',outside);
+  assert.equal(root.open,true);assert.equal(requests,0);
+  api.synchronizeDialog(root,false);assert.equal(root.open,false);api.detachDialog(root);
+});
+check('Strong browser modal still accepts an enabled explicit close control',()=>{
+  const root=new Node(),button=new Node();root.dataset={fDialogBrowserControlled:'true',fDialogDismissible:'true'};
+  root.setAttribute('data-f-popup-strength','strong');button.closest=selector=>selector==='dialog'?root:button;
+  api.synchronizeDialog(root,true);root.emit('cancel',event());assert.equal(root.open,true);
+  root.emit('click',{target:button,preventDefault(){}});assert.equal(root.open,false);api.detachDialog(root);
 });
 process.stdout.write(`${count}/${count} mocked DOM checks passed.\n`);

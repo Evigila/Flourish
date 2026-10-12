@@ -1,9 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 @inherits TextComponentBase
 @typeparam TItem
+@implements IAsyncDisposable
+@inject IJSRuntime JS
 
-<span class="search-autocomplete" @onfocusout="CloseAsync">
-    <input id="@Id" class="f-input"
+<span class="search-autocomplete" @ref="Root" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" @onfocusout="CloseAsync">
+    <input @ref="Input" id="@Id" class="f-input"
            type="search"
            form="@Form"
            value="@Value"
@@ -44,6 +46,10 @@
                         @TextSelector(item)
                     </span>
                 }
+            }
+            @if (Strength == PopupStrength.Strong)
+            {
+                <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" OnClick="CloseExplicitAsync" />
             }
         </span>
     }
@@ -109,6 +115,12 @@
     [Parameter]
     public bool Disabled { get; set; }
 
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    private ElementReference Root, Input;
+    private IJSObjectReference? Module;
+    private DotNetObjectReference<SearchAutocomplete<TItem>>? Reference;
+    private bool Disposed;
+    private bool IgnoreNextFocus;
     private bool HasFocus;
     private int ActiveIndex = -1;
     private IReadOnlyList<TItem> Matches = [];
@@ -119,6 +131,7 @@
     private bool IsOpen => HasFocus && !Disabled && !string.IsNullOrWhiteSpace(Value);
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         RebuildMatches();
         if (Disabled || ActiveIndex >= Matches.Count) ActiveIndex = -1;
     }
@@ -148,6 +161,7 @@
 
     private void Open()
     {
+        if (IgnoreNextFocus) { IgnoreNextFocus = false; return; }
         if (Disabled) return;
         HasFocus = true;
         RebuildMatches();
@@ -155,7 +169,9 @@
 
     private async Task CloseAsync()
     {
+        if (Disposed || Strength == PopupStrength.Strong) return;
         await Task.Yield();
+        if (Disposed || Strength == PopupStrength.Strong) return;
         HasFocus = false;
         ActiveIndex = -1;
         Matches = [];
@@ -164,7 +180,7 @@
     private async Task HandleKeyDownAsync(KeyboardEventArgs args)
     {
         if (!IsOpen) return;
-        if (args.Key == "Escape")
+        if (args.Key == "Escape" && Strength == PopupStrength.Weak)
         {
             HasFocus = false;
             ActiveIndex = -1;
@@ -194,6 +210,57 @@
         ActiveIndex = -1;
         await ValueChanged.InvokeAsync(selectedValue);
         await ItemSelected.InvokeAsync(item);
+    }
+
+    private async Task CloseExplicitAsync()
+    {
+        HasFocus = false;
+        ActiveIndex = -1;
+        Matches = [];
+        IgnoreNextFocus = true;
+        await Input.FocusAsync();
+    }
+
+    [JSInvokable]
+    public Task RequestDismissAsync() => InvokeAsync(() =>
+    {
+        if (Disposed || Strength != PopupStrength.Weak) return;
+        HasFocus = false; ActiveIndex = -1; Matches = [];
+        StateHasChanged();
+    });
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Disposed) return;
+        try
+        {
+            if (Module is null)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/reference-dropdown.js");
+                if (Disposed) { await module.DisposeAsync(); return; }
+                Module = module;
+            }
+            Reference ??= DotNetObjectReference.Create(this);
+            await Module.InvokeVoidAsync("attachPopupDismissal", Root, Reference);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        base.Dispose();
+        var module = Module; Module = null;
+        try { if (module is not null) await module.InvokeVoidAsync("detachPopupDismissal", Root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally
+        {
+            Reference?.Dispose(); Reference = null;
+            if (module is not null)
+                try { await module.DisposeAsync(); }
+                catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        }
     }
 
     private string OptionId(int index) => $"{ListboxId}-{index}";

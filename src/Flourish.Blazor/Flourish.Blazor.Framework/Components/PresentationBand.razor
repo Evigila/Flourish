@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<section @attributes="AdditionalAttributes" class="@($"f-presentation-band f-presentation-{Tone.ToString().ToLowerInvariant()} {(Dotted ? "f-presentation-dotted" : null)} {(FullHeight ? "f-presentation-fullheight" : null)} {Class}".Trim())" style="@BandStyle" aria-labelledby="@LabelledBy">
+<section @attributes="AdditionalAttributes" data-presentation-band="@(IncludeInProgress ? "true" : null)" class="@($"f-presentation-band f-presentation-{Tone.ToString().ToLowerInvariant()} {(Dotted ? "f-presentation-dotted" : null)} {(FullHeight ? "f-presentation-fullheight" : null)} {Class}".Trim())" style="@BandStyle" aria-labelledby="@LabelledBy">
     <ContentContainer>
         @if (!string.IsNullOrWhiteSpace(Title))
         {
@@ -10,13 +10,14 @@
     </ContentContainer>
 </section>
 @code {
-    internal const int DefaultMinHeight = 800;
+    internal const int DefaultMinHeight = 0;
     [Parameter] public string? Title { get; set; }
     [Parameter] public string TitleId { get; set; } = $"presentation-band-{Guid.NewGuid():N}";
     [Parameter] public PresentationTone Tone { get; set; }
     [Parameter] public int MinHeight { get; set; } = DefaultMinHeight;
     [Parameter] public bool Dotted { get; set; }
-    [Parameter] public bool FullHeight { get; set; }
+    [Parameter] public bool FullHeight { get; set; } = true;
+    [Parameter] public bool IncludeInProgress { get; set; } = true;
     [Parameter] public int HeadingLevel { get; set; } = 2;
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }

@@ -1,8 +1,11 @@
-import { attachAccessFormSpacing, detachAccessFormSpacing } from '../controls.js';
+import { attachAccessFormSpacing, detachAccessFormSpacing, initializePopups } from '../controls.js';
+import { initializePresentationProgress } from '../presentation/progress.js';
 
 const selectableInputTypes = new Set(["text", "email", "tel", "url", "number"]);
 const accessFormRoots = new Set();
 function synchronizeAccessForms() {
+    initializePopups(document);
+    initializePresentationProgress(document);
     for (const root of accessFormRoots) {
         if (root.isConnected) continue;
         detachAccessFormSpacing(root); accessFormRoots.delete(root);
@@ -14,6 +17,7 @@ function synchronizeAccessForms() {
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', synchronizeAccessForms, { once:true });
 else synchronizeAccessForms();
+document.addEventListener('enhancedload', synchronizeAccessForms);
 const accessFormObserver = new MutationObserver(synchronizeAccessForms);
 accessFormObserver.observe(document.documentElement, { childList:true, subtree:true });
 

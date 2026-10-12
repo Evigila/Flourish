@@ -6,13 +6,52 @@
 .content-surface {
 --f-content-gutter: max(var(--f-page-gutter), calc((100% - var(--f-content-width)) / 2));
     display: grid;
-    grid-template-rows: var(--f-topbar-height) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
     height: 100vh;
     height: 100dvh;
     min-height: 0;
     overflow: hidden;
 }
 
+/* Chrome sizes its own row; body spacing must not reserve a document-sized gap. */
+.content-surface > .f-content-surface-header {
+    grid-row: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.content-surface > .f-content-surface-header > .f-page-body {
+    min-height: 0;
+    padding-block: 0;
+}
+
+.content-surface > .f-content-surface-header > .f-page-body > .f-inline-actions {
+    margin-block: 0;
+}
+
+.content-surface > .content-stage {
+    grid-row: 2;
+}
+
+/* Floating actions own their bounds without reserving a header or scroll-viewport row. */
+.content-surface.f-content-surface-has-floating-actions {
+    position: relative;
+}
+
+.content-surface > .f-content-surface-floating-actions {
+    position: absolute;
+    inset-block-start: var(--f-space-4, 16px);
+    inset-inline-end: var(--f-space-4, 16px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    max-width: calc(100% - 2 * var(--f-space-4, 16px));
+    min-width: 0;
+}
+
+.content-surface > .f-content-surface-floating-actions > .f-inline-actions {
+    margin-block: 0;
+}
 .content-surface .skip-link {
 position: fixed;
     top: 12px;

@@ -16,7 +16,7 @@
     }
     @if (MenuContent is not null && !Unavailable)
     {
-        <DropdownSurface Class="f-split-button-menu" TriggerClass="@SecondaryCss" TriggerAttributes="@MenuTriggerAttributes">
+        <DropdownSurface Strength="@Strength" Class="f-split-button-menu" TriggerClass="@SecondaryCss" TriggerAttributes="@MenuTriggerAttributes">
             <Trigger>@SecondaryContents</Trigger>
             <ChildContent><div id="@MenuRegionId" class="f-split-button-menu-content">@MenuContent</div></ChildContent>
         </DropdownSurface>
@@ -106,8 +106,10 @@
         else if (SecondaryIcon is "arrow_drop_down" or "expand_more" or "arrow_right") { <ExpansionIndicator Expanded="@(MenuContent is null && Expanded == true)" /> }
         else if (!string.IsNullOrWhiteSpace(SecondaryIcon)) { <ArkheideSystem.Flourish.Blazor.Components.Icon Name="@SecondaryIcon" /> }
     </text>;
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         if (Width is <= 0) throw new ArgumentOutOfRangeException(nameof(Width), "Split button width must be positive pixels.");
         if (MenuContent is null) return;
         if (Expanded.HasValue) throw new ArgumentException("Native MenuContent owns its expansion; omit Expanded.", nameof(Expanded));

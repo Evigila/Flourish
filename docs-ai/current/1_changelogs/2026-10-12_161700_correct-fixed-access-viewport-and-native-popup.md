@@ -1,0 +1,11 @@
+# Correct fixed access viewport and native popup
+
+Time zone: America/Sao_Paulo (UTC-03:00). The existing master working tree is preserved; this is a follow-up to the popup/presentation implementation.
+
+ContentSurface now has a naturally sized fixed header slot and a remaining-height main. Its sole direct FullHeight band fills that stage and still grows for long content. Header PageBody does not import document spacing; omitted/empty headers reserve no row height. A fixed single band containing a direct AccessPanel uses compact outer spacing without changing branding, typography or controls. No public parameter was added. Usage guidance and the three-language FullHeight/MinHeight descriptions document the composition.
+
+Native button-variant ActionMenu is absolutely positioned below its trigger before enhancement, leaving header dimensions stable. Generic native row menus keep their deliberate in-flow fallback; enhanced menus keep their existing top-layer controller. Document-flow bands, natural footers and progress exclusion remain intact.
+
+Verification passed 449 Blazor component checks, 8330 Gallery checks, all 19 maintained JavaScript suites and 24348 culture-catalog checks. The ActionMenu suite passed 33/33, with nine real browser geometry checks and zero skips. It exercises exact 761px/768px inner viewports, omitted/empty headers, native/enhanced menus, short windows, long native forms and document/footer/progress ownership. The first component run identified a new redundant display declaration conflicting with the strict complete-cascade guard; removing that declaration preserved the existing native display rule and the guard passed unchanged.
+
+Candidate 1.4.1-local.popup.20261012.2 was restored, built and packed in fresh artifacts/local-popup-2 directories, with zero warnings/errors and six-package verification. Four package-only consumers passed 143 checks. Built/package/published CSS and controller/progress resources agree. The prior .1 feed/cache and public 1.4.0 cache/configuration retain their recorded hashes. No public release or Git commit was performed. Current dependency and API guidance and manual acceptance were updated without refreshing the full documentation audit timestamp.

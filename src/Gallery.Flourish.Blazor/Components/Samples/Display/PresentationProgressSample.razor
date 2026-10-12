@@ -1,0 +1,25 @@
+@inherits LocalizedComponentBase
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("PresentationProgress", DescriptionKey = "Key.Sample_PresentationProgressSample_Description")]
+
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface DocumentFlow="true" ShowPresentationProgress="true" ContentId="@ContentId" DocumentKey="@ContentId"
+                         Style="height:420px; min-height:0; overflow:auto; position:relative;" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)">
+    <ChildContent>
+        <PresentationBand Title="@Localization.Parse(TextKey.Sample_PresentationProgressOverview)">
+            <ChildContent><p>@Localization.Parse(TextKey.Sample_PresentationProgressOverviewBody)</p></ChildContent>
+        </PresentationBand>
+        <PresentationBand Title="@Localization.Parse(TextKey.Sample_PresentationProgressNext)" Tone="PresentationTone.Surface">
+            <ChildContent><p>@Localization.Parse(TextKey.Sample_PresentationProgressNextBody)</p></ChildContent>
+        </PresentationBand>
+    </ChildContent>
+    <Footer>
+        <PresentationFooter ProjectName="Lumen" Copyright="@Localization.Parse(TextKey.Sample_PresentationProgressFooter)">
+            <Actions><Button Variant="ButtonVariant.Underline" Href="/examples/display/product">@Localization.Parse(TextKey.Sample_FullExample)</Button></Actions>
+        </PresentationFooter>
+    </Footer>
+</ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string ContentId = $"presentation-progress-sample-{Guid.NewGuid():N}";
+}

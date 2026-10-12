@@ -22,7 +22,7 @@
         </ol>
     </aside>
     <section @ref="Board" id="@BoardId" class="f-tutorial-board f-tutorial-@Tone.ToString().ToLowerInvariant() @(Dotted ? "f-tutorial-dotted" : null)"
-             popover="auto" role="dialog" aria-modal="false" aria-labelledby="@TitleId" aria-describedby="@DescriptionId" tabindex="-1">
+             popover="@(Strength == PopupStrength.Strong ? "manual" : "auto")" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" role="dialog" aria-modal="false" aria-labelledby="@TitleId" aria-describedby="@DescriptionId" tabindex="-1">
         <header class="f-tutorial-header">
             <span>@EffectiveLabel</span>
             <Button Variant="ButtonVariant.Quiet" Icon="close" OnClick="CloseAsync" aria-label="@EffectiveCloseLabel" />
@@ -82,6 +82,7 @@
     [Parameter] public EventCallback OnSkip { get; set; }
     [Parameter] public bool Busy { get; set; }
     [Parameter] public PresentationTone Tone { get; set; } = PresentationTone.Primary;
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public bool Dotted { get; set; } = true;
 
     private bool Unavailable => Busy || Executing;
@@ -98,6 +99,7 @@
 
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         ArgumentNullException.ThrowIfNull(Steps);
         if (!Enum.IsDefined(Tone)) throw new ArgumentOutOfRangeException(nameof(Tone));
         if (Steps.Any(step => step is null || string.IsNullOrWhiteSpace(step.Key) || string.IsNullOrWhiteSpace(step.Title))

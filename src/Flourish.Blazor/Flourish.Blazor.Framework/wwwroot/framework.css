@@ -19,6 +19,7 @@
 @import url('./tutorial-board.css');
 
 @import url('./presentation/layout.css');
+@import url('./presentation/progress.css');
 
 
 /* Functional layout and state only. Controls retain browser colors, typography and native focus. */

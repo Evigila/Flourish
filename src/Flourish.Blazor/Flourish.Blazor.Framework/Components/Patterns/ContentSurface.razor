@@ -3,19 +3,24 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @Class" style="@Style">
+<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @(FloatingActions is null ? Class : $"f-content-surface-has-floating-actions {Class}")" style="@Style">
     <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
-    @if (DocumentFlow && TitleBar is not null) { <div class="f-document-surface-header">@TitleBar</div> }
-    else { @TitleBar }
+    @if (TitleBar is not null) { <div class="@(DocumentFlow ? "f-document-surface-header" : "f-content-surface-header")">@TitleBar</div> }
+    @if (FloatingActions is not null) { <div class="f-content-surface-floating-actions">@FloatingActions</div> }
     <main @ref="stage" @key="DocumentKey" class="content-stage @ContentClass" id="@ContentId" tabindex="-1">@ChildContent</main>
-    @Footer
+    @if (ShowPresentationProgress && Footer is not null) { <div class="f-content-surface-footer" data-presentation-footer>@Footer</div> }
+    else { @Footer }
+    @if (ShowPresentationProgress) { <PresentationProgress ContentId="@ContentId" /> }
 </div>
 @code {
     private string EffectiveSkipLabel => DefaultText(nameof(SkipLabel), SkipLabel, "Shell_Skip", "Skip to content");
     [Parameter] public RenderFragment? TitleBar { get; set; }
+    /// <summary>Actions at the surface's upper inline end, outside the header and scrolling content flow.</summary>
+    [Parameter] public RenderFragment? FloatingActions { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Footer { get; set; }
     [Parameter] public bool DocumentFlow { get; set; }
+    [Parameter] public bool ShowPresentationProgress { get; set; }
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? ContentClass { get; set; }
     [Parameter] public string? Style { get; set; }

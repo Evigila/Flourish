@@ -1,18 +1,22 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 @inherits TextComponentBase
 
-<div class="service-menu">
+<div class="service-menu" data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-hover="true" data-f-popup-focus="true" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()">
     <button class="service-menu-trigger" type="button" aria-haspopup="true" aria-controls="@MenuId">
         <span>@EffectiveLabel</span>
         <ExpansionIndicator Class="service-menu-chevron" />
     </button>
-    <div class="service-menu-view" id="@MenuId">
+    <div class="service-menu-view f-menu-panel" id="@MenuId" data-f-popup-panel popover="manual" role="menu">
         <nav aria-label="@EffectiveLabel">
             @foreach (var item in Items)
             {
-                <a href="@item.Href"><strong>@item.Label</strong></a>
+                <a href="@item.Href" role="menuitem"><strong>@item.Label</strong></a>
             }
         </nav>
+        @if (Strength == PopupStrength.Strong)
+        {
+            <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" data-f-popup-close />
+        }
     </div>
 </div>
 
@@ -20,6 +24,11 @@
     private string EffectiveLabel => DefaultText(nameof(Label), Label, "Menu_Services", "Services");
     private readonly string GeneratedId = $"services-{Guid.NewGuid():N}";
     private string MenuId => Id ?? GeneratedId;
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+    }
     [Parameter] public string? Id { get; set; }
     [Parameter] public string Label { get; set; } = "Services";
     [Parameter] public IReadOnlyList<ServiceLink> Items { get; set; } = [];

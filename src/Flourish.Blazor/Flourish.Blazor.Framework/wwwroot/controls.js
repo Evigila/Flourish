@@ -6,6 +6,7 @@ const inputs = new WeakMap();
 const accessForms = new WeakMap();
 const tutorialBoards = new WeakMap();
 let activeMenu = null;
+const weakPopup = panel => panel.getAttribute('data-f-popup-strength') !== 'strong';
 const focusableSelector = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 const visible = element => element.getClientRects().length > 0 && !element.closest('[hidden],[inert]');
 
@@ -120,6 +121,8 @@ function positionMenu(state) {
     // Hover regions can fill an entire top-bar slot; both modes anchor to the actual control.
     const trigger = state.trigger.getBoundingClientRect();
     const panel = state.panel;
+    // A percentage native-dropdown minimum follows its control, not the fixed top-layer viewport.
+    if (typeof state.minimumWidthRatio === 'number') panel.style.setProperty('min-width',`${trigger.width * state.minimumWidthRatio}px`);
     if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
     else panel.style.removeProperty('max-height');
     const maximumHeight = getComputedStyle(panel).maxHeight;
@@ -177,6 +180,9 @@ export function synchronizeTutorialBoard(trigger, preview, board, open, referenc
             if (event.key === 'Escape' && state.open) { hidePreview(); event.preventDefault(); }
         };
         const toggle = event => {
+            if (event.newState === 'closed' && state.requestedOpen && !weakPopup(board)) {
+                board.showPopover(); return;
+            }
             if (event.newState === 'open') { state.wasOpen = true; hidePreview(); return; }
             if (!state.wasOpen) return;
             state.wasOpen = false; trigger.setAttribute('aria-expanded','false');
@@ -246,7 +252,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         }
         return;
     }
-    const state = { trigger, panel, hoverRoot:trigger.closest('.f-action-menu') ?? trigger, openOnHover,
+    const state = { trigger, panel, hoverRoot:trigger.closest('[data-f-popup]') ?? trigger.closest('.f-action-menu') ?? trigger, openOnHover,
         itemSelector:'[role="menuitem"]:not([disabled])', disclosure:null, dismissOnAction:true,
         open:false, restoreTheme:null, maximumHeight:'', maximumHeightPriority:'', cleanup:[] };
     const listen = (target, type, callback, options) => {
@@ -264,7 +270,7 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         if (state.openOnHover && event.pointerType !== 'touch' && !menuUnavailable(trigger)) openMenu(state,false);
     });
     const leave = event => {
-        if (!state.openOnHover || !state.open || event.pointerType === 'touch') return;
+        if (!weakPopup(panel) || !state.openOnHover || !state.open || event.pointerType === 'touch') return;
         if (state.hoverRoot.contains(event.relatedTarget) || panel.contains(event.relatedTarget)) return;
         closeMenu(trigger,panel,panel.contains(document.activeElement));
     };
@@ -276,20 +282,24 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         if (menuUnavailable(action)) {
             event.preventDefault(); event.stopImmediatePropagation(); return;
         }
-        if (!state.open || !state.dismissOnAction) return;
+        if (!state.open || (!state.dismissOnAction && action.getAttribute('data-f-popup-close') === null)) return;
         // Native transport and callback dispatch complete before the shared menu dismisses.
         rememberInvoker(trigger);
-        queueMicrotask(() => { if (state.open) closeMenu(trigger,panel,false); });
+        queueMicrotask(() => { if (state.open) closeMenu(trigger,panel,action.getAttribute('data-f-popup-close') !== null); });
     }, true);
     listen(document, 'pointerdown', event => {
-        if (state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
+        if (weakPopup(panel) && state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
     }, true);
     listen(document, 'focusin', event => {
-        if (state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
+        if (weakPopup(panel) && state.open && !panel.contains(event.target) && !trigger.contains(event.target)) closeMenu(trigger,panel,false);
     });
     listen(document, 'keydown', event => {
         if (!state.open || event.defaultPrevented) return;
-        if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeMenu(trigger,panel,true); return; }
+        if (event.key === 'Escape') {
+            if (weakPopup(panel)) { event.preventDefault(); event.stopPropagation(); closeMenu(trigger,panel,true); }
+            return;
+        }
+        if (!panel.contains(document.activeElement) && document.activeElement !== trigger) return;
         if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
         const items = menuItems(state); if (!items.length) return;
         event.preventDefault();
@@ -307,16 +317,21 @@ export function attachMenu(trigger, panel, openOnHover=false) {
 }
 export function attachDisclosureMenu(disclosure, trigger, panel, dismissOnAction=false, openOnHover=false) {
     if (!disclosure || !trigger || !panel) return;
+    panel.setAttribute('data-f-popup-strength',disclosure.getAttribute('data-f-popup-strength') ?? 'weak');
     attachMenu(trigger,panel,openOnHover);
     const state = menus.get(panel);
     state.dismissOnAction = dismissOnAction;
-    state.itemSelector = dismissOnAction ? '[role="menuitem"]:not([disabled])' : focusableSelector;
+    state.itemSelector = dismissOnAction ? 'a[href],button:not([disabled]),[role="menuitem"]:not([disabled])' : focusableSelector;
     if (!state.disclosure) {
         state.disclosure = disclosure;
-        const synchronize = () => disclosure.open ? openMenu(state,false) : closeMenu(trigger,panel,false);
+        const synchronize = () => {
+            if (!disclosure.open && state.open && !weakPopup(panel)) { disclosure.open = true; return; }
+            disclosure.open ? openMenu(state,false) : closeMenu(trigger,panel,false);
+        };
         disclosure.addEventListener('toggle',synchronize);
         state.cleanup.push(()=>disclosure.removeEventListener('toggle',synchronize));
         const activate = event => {
+            if (state.open && !weakPopup(panel)) { event.preventDefault(); return; }
             if (!state.openOnHover) return;
             // Enhanced hover menus use the same pointer/keyboard activation policy as generated actions.
             // Prevent summary's default toggle from closing an already hovered menu.
@@ -334,8 +349,15 @@ function openMenu(state, focusMenu) {
     if (state.open || menuUnavailable(state.trigger)) return;
     const {trigger,panel} = state;
     if (typeof panel.showPopover !== 'function') throw new TypeError('Native Popover API is required.');
-    if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
+    if (activeMenu && weakPopup(activeMenu.panel)) closeMenu(activeMenu.trigger,activeMenu.panel,false);
     state.restoreTheme = copyTheme(trigger,panel);
+    const geometry = ['position','inset','margin','right','bottom','min-width'];
+    const savedGeometry = geometry.map(name => [name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);
+    state.restoreGeometry = () => savedGeometry.forEach(([name,value,priority]) => value ? panel.style.setProperty(name,value,priority) : panel.style.removeProperty(name));
+    const minimumWidth = getComputedStyle(panel).getPropertyValue('min-width');
+    state.minimumWidthRatio = minimumWidth.endsWith('%') ? Number.parseFloat(minimumWidth) / 100 : null;
+    panel.style.setProperty('position','fixed'); panel.style.setProperty('inset','auto'); panel.style.setProperty('margin','0');
+    panel.style.setProperty('right','auto'); panel.style.setProperty('bottom','auto');
     state.maximumHeight = panel.style.getPropertyValue('max-height');
     state.maximumHeightPriority = panel.style.getPropertyPriority('max-height');
     state.open = true;
@@ -351,6 +373,7 @@ export function toggleMenu(trigger, panel, focusMenu=true) {
     if (!menus.has(panel)) attachMenu(trigger,panel);
     const state = menus.get(panel); if (!state || menuUnavailable(trigger)) return;
     if (state.open) {
+        if (!weakPopup(panel)) return;
         // Pointer clicks on an already hovered top-bar trigger should not flash the menu closed.
         if (state.openOnHover && !focusMenu) return;
         closeMenu(trigger,panel,true); return;
@@ -366,16 +389,52 @@ export function closeMenu(trigger,panel,restoreFocus=false) {
     if (state.disclosure) state.disclosure.open = false;
     trigger.setAttribute('aria-expanded','false');
     state.restoreTheme?.(); state.restoreTheme = null;
+    state.restoreGeometry?.(); state.restoreGeometry = null;
     if (wasOpen) {
         if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
         else panel.style.removeProperty('max-height');
     }
     if (activeMenu === state) activeMenu = null;
-    if (restoreFocus && trigger.isConnected) trigger.focus({preventScroll:true});
+    if (restoreFocus && trigger.isConnected) {
+        state.suppressFocus = true;
+        trigger.focus({preventScroll:true});
+        queueMicrotask(() => { state.suppressFocus = false; });
+    }
 }
 export function detachMenu(trigger,panel) {
     const state = menus.get(panel); if (!state) return;
     closeMenu(trigger,panel,false); state.cleanup.forEach(remove=>remove()); menus.delete(panel);
+}
+
+
+/** Enhances static/native popup content using the same controller as interactive components. */
+export function initializePopups(root = document) {
+    for (const owner of root.querySelectorAll('[data-f-popup="menu"]')) {
+        if (!owner.isConnected) continue;
+        const trigger = owner.querySelector(':scope > summary, :scope > button');
+        const panel = owner.querySelector(':scope > [data-f-popup-panel]');
+        if (!trigger || !panel) continue;
+        panel.setAttribute('popover','manual');
+        panel.setAttribute('data-f-popup-strength',owner.getAttribute('data-f-popup-strength') ?? 'weak');
+        owner.setAttribute('data-f-enhanced','true');
+        const hover = owner.getAttribute('data-f-popup-hover') === 'true';
+        const dismiss = owner.getAttribute('data-f-popup-dismiss-action') === 'true';
+        if (owner.tagName === 'DETAILS') attachDisclosureMenu(owner,trigger,panel,dismiss,hover);
+        else {
+            const installed = menus.has(panel);
+            attachMenu(trigger,panel,hover);
+            const state = menus.get(panel);
+            state.dismissOnAction = dismiss;
+            state.openOnFocus = owner.getAttribute('data-f-popup-focus') === 'true';
+            state.itemSelector = dismiss ? 'a[href],button:not([disabled]),[role="menuitem"]:not([disabled])' : focusableSelector;
+            if (!installed) {
+                const activate = event => toggleMenu(trigger,panel,event.detail === 0);
+                const focus = () => { if (state.openOnFocus && !state.suppressFocus) openMenu(state,false); };
+                trigger.addEventListener('click',activate); trigger.addEventListener('focus',focus);
+                state.cleanup.push(()=>trigger.removeEventListener('click',activate),()=>trigger.removeEventListener('focus',focus));
+            }
+        }
+    }
 }
 
 function restoreDialogFocus(state) {
@@ -399,9 +458,9 @@ export function synchronizeDialog(dialog,isOpen,reference = null) {
         state = { dialog,reference,pending:false,opener:null,cleanup:[] };
         const cancel = async event => {
             event.preventDefault();
-            if (dialog.dataset.fDialogDismissible === 'false' || dialog.getAttribute('aria-busy') === 'true' || state.pending) return;
+            if (!weakPopup(dialog) || dialog.dataset.fDialogDismissible === 'false' || dialog.getAttribute('aria-busy') === 'true' || state.pending) return;
             state.pending = true;
-            try { if (state.reference) await state.reference.invokeMethodAsync('RequestCloseAsync'); else closeDialog(state); }
+            try { if (state.reference) await state.reference.invokeMethodAsync('RequestDismissAsync'); else closeDialog(state); }
             catch { /* A reconnect must retain the open form. */ }
             finally { state.pending = false; }
         };
@@ -420,6 +479,14 @@ export function synchronizeDialog(dialog,isOpen,reference = null) {
             if (dialog.dataset.fDialogDismissible === 'false' || dialog.getAttribute('aria-busy') === 'true') return;
             event.preventDefault(); closeDialog(state);
         };
+        const backdrop = event => {
+            if (event.target !== dialog || !dialog.open) return;
+            const bounds = dialog.getBoundingClientRect();
+            if (event.clientX >= bounds.left && event.clientX <= bounds.right && event.clientY >= bounds.top && event.clientY <= bounds.bottom) return;
+            void cancel(event);
+        };
+        dialog.addEventListener('click',backdrop);
+        state.cleanup.push(()=>dialog.removeEventListener('click',backdrop));
         dialog.addEventListener('click',close);
         state.cleanup.push(()=>dialog.removeEventListener('click',close));
         dialog.addEventListener('cancel',cancel); dialog.addEventListener('keydown',keys);
@@ -430,7 +497,7 @@ export function synchronizeDialog(dialog,isOpen,reference = null) {
     }
     state.reference = reference;
     if (isOpen && !dialog.open) {
-        if (activeMenu) closeMenu(activeMenu.trigger,activeMenu.panel,false);
+        if (activeMenu && weakPopup(activeMenu.panel)) closeMenu(activeMenu.trigger,activeMenu.panel,false);
         state.opener = resolveInvoker(document.activeElement);
         dialog.showModal();
         dialog.querySelector('[data-f-dialog-body]')?.scrollTo(0,0);

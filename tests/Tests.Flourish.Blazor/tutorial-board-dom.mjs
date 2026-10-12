@@ -122,4 +122,14 @@ await check('Tutorial geometry and skin are bundled separately and remain nonmod
     assert.match(geometry,/grid-template-columns:minmax\(0,1fr\) minmax\(0,auto\) minmax\(0,1fr\)/);
     assert.match(skin,/font-size:var\(--f-type-h1,34px\)/); assert.match(skin,/\.f-tutorial-primary\s*\{[^}]*var\(--f-primary-ink\)[^}]*var\(--f-primary\)/);
 });
+
+await check('Strong tutorial uses manual dismissal and never publishes an implicit native close', async () => {
+    const control=new Node(),overview=new Node('aside'),popup=new Node('section');const requests=[];
+    popup.setAttribute('data-f-popup-strength','strong');
+    api.synchronizeTutorialBoard(control,overview,popup,true,{invokeMethodAsync:async name=>requests.push(name)});await settle();
+    popup.hidePopover();await settle();await settle();
+    assert.equal(popup.popoverOpen,true);assert.deepEqual(requests,[]);
+    api.synchronizeTutorialBoard(control,overview,popup,false);await settle();
+    assert.equal(popup.popoverOpen,false);api.detachTutorialBoard(control,overview,popup);
+});
 process.stdout.write(`${checks}/${checks} TutorialBoard current-controller DOM checks passed.\n`);

@@ -1,9 +1,21 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<details @attributes="AdditionalAttributes" class="f-dropdown-surface @Class">
+@inherits TextComponentBase
+<details @attributes="AdditionalAttributes" class="f-dropdown-surface @Class" data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()">
     <summary @attributes="TriggerAttributes" class="@(string.IsNullOrWhiteSpace(TriggerClass) ? "f-menu-trigger" : $"f-menu-trigger {TriggerClass}")">@Trigger</summary>
-    <div class="f-menu-panel">@ChildContent</div>
+    <div class="f-menu-panel f-dropdown-panel" data-f-popup-panel>
+        @ChildContent
+        @if (Strength == PopupStrength.Strong)
+        {
+            <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" data-f-popup-close />
+        }
+    </div>
 </details>
 @code {
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+    }
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? TriggerClass { get; set; }
     [Parameter] public IReadOnlyDictionary<string, object>? TriggerAttributes { get; set; }

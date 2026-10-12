@@ -2,11 +2,13 @@
 
 **Status:** Verified source and structure inventory, 2026-10-10 (America/Sao_Paulo, UTC-03:00). Inspected working tree based on commit `3e861b346a145240b8cdabbfe9b39cdd785fc819`, including the pending Essential.Culture 1.4.0 bridge changes and the installed AGENTS framework 1.0.0. This source audit does not certify application startup or visual behavior.
 
-**Release update, 2026-10-10:** Flourish `VersionPrefix=1.4.0` is published from tag `v1.4.0`; Essential.Culture remains 1.4.0. The public manifest contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The audit baseline and structure counts above remain dated evidence.
+**Release update, 2026-10-10:** Flourish `VersionPrefix=1.4.0` is published from tag `v1.4.0`; Essential.Culture remains 1.4.0. The public manifest contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The original audit baseline remains dated evidence; the separately dated inventory maintenance below does not renew the audit.
+
+**Inventory maintenance, 2026-10-12:** The current working tree has been re-enumerated for the popup-strength and presentation-navigation changes. This maintenance updates the complete file tree and the source-owned API boundaries below; it leaves `AGENTS.ensure.json` and the 2026-10-10 full audit completion unchanged. Source inspection and inventory checks do not establish that new tests or browser/native interactions have passed.
 
 ## Inventory scope
 
-The complete tree below includes every maintained file observed in the repository outside the two documentation subtrees. The inventory contains **678 files and 121 directories below the root**, including **22 project files and 5 solution files**. It includes hidden maintained files and project-owned untracked files. Files were enumerated with `rg --files --hidden --no-ignore`; explicit generated/temporary exclusions were applied after identifying their roles. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
+The complete tree below includes every maintained file observed on 2026-10-12 in the repository outside the two documentation subtrees. The inventory contains **688 files and 121 directories below the root**, including **22 project files and 5 solution files**. It includes hidden maintained files and project-owned untracked files. Files were enumerated with `rg --files --hidden --no-ignore`; explicit generated/temporary exclusions were applied after identifying their roles. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -78,6 +80,7 @@ Flourish/
 |   |   |   |   |-- CenteredContainer.cs
 |   |   |   |   |-- ControlContracts.cs
 |   |   |   |   |-- NavigationChoiceItem.cs
+|   |   |   |   |-- PopupStrength.cs
 |   |   |   |   |-- PresentationTone.cs
 |   |   |   |   |-- TableContracts.cs
 |   |   |   |   |-- TutorialStep.cs
@@ -129,6 +132,7 @@ Flourish/
 |   |   |   |   |-- multi-select-box.css
 |   |   |   |   |-- native-overrides.css
 |   |   |   |   |-- navigation-choices.css
+|   |   |   |   |-- presentation-progress.css
 |   |   |   |   |-- presentation.css
 |   |   |   |   |-- scrollbars.css
 |   |   |   |   |-- section-navigator.css
@@ -217,6 +221,7 @@ Flourish/
 |   |   |   |   |-- PresentationBand.razor
 |   |   |   |   |-- PresentationFooter.razor
 |   |   |   |   |-- PresentationHero.razor
+|   |   |   |   |-- PresentationProgress.razor
 |   |   |   |   |-- ProgressBar.razor
 |   |   |   |   |-- ProgressRing.razor
 |   |   |   |   |-- SearchBox.razor
@@ -263,7 +268,9 @@ Flourish/
 |   |   |   |   |   \-- surfaces.js
 |   |   |   |   |-- presentation/
 |   |   |   |   |   |-- layout.css
-|   |   |   |   |   \-- offers.js
+|   |   |   |   |   |-- offers.js
+|   |   |   |   |   |-- progress.css
+|   |   |   |   |   \-- progress.js
 |   |   |   |   |-- primitives/
 |   |   |   |   |   |-- behavior.css
 |   |   |   |   |   |-- editing-grid-columns.js
@@ -458,6 +465,7 @@ Flourish/
 |   |   |   |   |-- Inputs.cs
 |   |   |   |   |-- Menus.cs
 |   |   |   |   |-- OfferStage.cs
+|   |   |   |   |-- PopupTrigger.cs
 |   |   |   |   |-- Progress.cs
 |   |   |   |   \-- UniformGrid.cs
 |   |   |   |-- Icons/
@@ -558,7 +566,8 @@ Flourish/
 |   |   |   |   |   |-- OfferStageSample.razor
 |   |   |   |   |   |-- PresentationBandSample.razor
 |   |   |   |   |   |-- PresentationFooterSample.razor
-|   |   |   |   |   \-- PresentationHeroSample.razor
+|   |   |   |   |   |-- PresentationHeroSample.razor
+|   |   |   |   |   \-- PresentationProgressSample.razor
 |   |   |   |   |-- Inputs/
 |   |   |   |   |   |-- CheckBoxSample.razor
 |   |   |   |   |   |-- DateBoxSample.razor
@@ -697,8 +706,10 @@ Flourish/
 |   |   |-- page-body-actions.test.mjs
 |   |   |-- palette-checks.mjs
 |   |   |-- presentation-offers-dom.mjs
+|   |   |-- presentation-progress-dom.mjs
 |   |   |-- PresentationChecks.cs
 |   |   |-- PresentationIdentityChecks.cs
+|   |   |-- PresentationProgressChecks.cs
 |   |   |-- Program.cs
 |   |   |-- section-navigator-dom.mjs
 |   |   |-- SectionNavigatorChecks.cs
@@ -803,6 +814,7 @@ Flourish/
 |   |   |-- ControlTests.cs
 |   |   |-- DataTests.cs
 |   |   |-- NativeTest.cs
+|   |   |-- PopupTests.cs
 |   |   |-- RenderTests.cs
 |   |   |-- ShellTests.cs
 |   |   |-- Tests.Flourish.WPF.csproj
@@ -849,8 +861,8 @@ Flourish/
 | `scripts/Convert-MaterialIcons.ps1` | Development-time conversion of maintained Material icon resources | Conversion script and icon provenance manifests |
 | `build/` | Library CSS bundle MSBuild task plus CSS, Culture, ChangeLog, HTTP and independent package-consumer verification scripts | `CssBundle.targets`, `BundleCss.cs`, and focused script entry points |
 | `src/Flourish.Core/` | Platform-neutral contracts and optional application services: settings, project catalogs, commands, navigation, layout, localization, messaging, profile, shell state, motion, tooltips and window-close decisions | `Abstract/`, functional folders and `Hosting/CoreServiceCollectionExtensions.cs` |
-| `src/Flourish.Blazor/` | Abstract contracts, functional components/browser behavior, explicit optional Design, and dependency-only convenience package | Four project files and source responsibilities |
-| `src/Flourish.WPF/` | Independent native WPF contracts, controls/templates/geometry, optional paint/theme resources, and dependency-only convenience package | Four project files; no WPF project reference to Core or Blazor assemblies |
+| `src/Flourish.Blazor/` | Abstract contracts, functional components/browser behavior, popup dismissal policy, semantic presentation bands/progress, explicit optional Design, and dependency-only convenience package | Four project files; `Components/PopupStrength.cs`, Framework controls and browser modules, optional Design CSS |
+| `src/Flourish.WPF/` | Independent native WPF contracts, controls/templates/geometry, owned popup lifecycles and optional paint/theme resources, and dependency-only convenience package | Four project files; native `PopupTrigger`, menus/dialogs and themes; no WPF project reference to Core or Blazor assemblies |
 | `src/Flourish.Extensions/` | Optional Blazor and WPF adapters to Essential.Culture, with each adapter referencing only its target platform Framework | Two bridge projects and their registration/provider APIs |
 | `src/Flourish.WinUI3/` | Unpackable WinUI3 placeholder project with no maintained control implementation | Single project file; no other maintained source in this directory |
 | `src/Gallery.Flourish.Blazor/` | Interactive-server Gallery, API/sample metadata, functional examples, module-based localization and circuit-local demonstration records | `Program.cs`, `Components/`, `Models/`, `Services/RecordStore.cs` |
@@ -910,6 +922,23 @@ The WPF Framework's shared translation JSON and WPF Gallery's shared SVG are **s
 
 No production database connection, remote application API client, message broker, distributed cache, or microservice orchestration was found in the inspected source/configuration. That is an observation about this repository, not a prohibition on consumers supplying such services. External links shown in Gallery samples are navigation/documentation links rather than application backend dependencies.
 
+## Current public API and interaction ownership
+
+`PopupStrength` is a platform-specific public contract in Blazor Abstract (`Components/PopupStrength.cs`) and WPF Abstract (`ControlContracts.cs`). Its default is `Weak`: library-owned popups may dismiss through outside interaction, Escape, or repeated trigger activation. `Strong` requires selection or an explicit completion/cancellation action. Strength does not replace validation, disabled/busy state, `CanClose`/`Dismissible`, authorization, or disposal cleanup. Components validate the enum rather than silently interpreting unsupported values.
+
+Blazor Framework owns the shared popup controller in `wwwroot/controls.js`; native SSR enhancement is bootstrapped by `wwwroot/primitives/input-behaviors.js`, while interactive components retain their own interop lifetimes. Actual control parameters forward strength into their owned menu, selection, dialog, tutorial, or notice surfaces. Native `details` remains the pre-enhancement disclosure boundary, so enhanced dismissal guarantees require the browser module. Browser-managed native select/date/file surfaces and platform tooltips retain their platform behavior; the library does not claim to impose its popup policy on those external surfaces.
+
+WPF Framework implements strength on its owned `ActionMenu`, `SplitButton`, `MultiSelectBox`, `DropdownSurface`, `Dialog`, and `NoticeTrigger` paths. `ServiceMenu` inherits its menu policy. The internal `Controls/PopupTrigger.cs` guards the real toggle operation used by the dropdown and multi-selector templates, including keyboard/automation activation. Owned `Popup` instances use `StaysOpen` and routed event handling; explicit completion still follows the component's busy/close rules, and disabling or unloading releases transient UI. WPF `SelectBox`, `ReferenceDropdown`, and `SearchAutocomplete` retain the native ComboBox selection surface; `DateBox`, `FilePicker`, and ordinary tooltips retain native platform ownership. This is a Windows control boundary, not a browser implementation or a guarantee for operating-system dialogs.
+
+Blazor `PresentationBand` and `PresentationHero` default to `FullHeight=true` and `MinHeight=0`. Full-height CSS establishes `max(100dvh, MinHeight)` with a `100vh` fallback, while content may grow beyond the viewport and scroll naturally. Explicit `FullHeight=false` retains natural height with zero minimum or a caller-specified nonnegative pixel minimum. Hero delegates one band and therefore produces one semantic progress marker. `PresentationFooter` has natural content height; footer boundaries remove the default viewport minimum from nested bands and exclude all footer content from navigation.
+
+`Patterns.ContentSurface.ShowPresentationProgress` defaults to `false`. Enabling it composes the reusable `PresentationProgress` scenario for that surface's main content and marks its Footer slot as an exclusion boundary. `PresentationBand.IncludeInProgress` and `PresentationHero.IncludeInProgress` default to `true`; explicit false excludes a destination without changing content or height. Only eligible outermost semantic bands are counted, rather than arbitrary sections or a footer's nested bands. One band retains one clickable tutorial-style segment, while zero bands hide the navigation. Existing `ContentId="application-content"` compatibility is retained; progress/nav-generated anchor identifiers are instance-specific and discovery is scoped to the actual surface main element.
+
+The bottom-center tutorial segments navigate to the selected band's viewport position below actual sticky headers, reflect manual scrolling, and have accessible link names without hovering titles. `wwwroot/presentation/progress.js` owns scroll-container discovery, viewport/header geometry, reduced-motion handling, observers, route synchronization, and cleanup. Navigation stays outside document flow; it hides in a footer-only viewport or when its actual segment height cannot fit. Its foreground follows the band beneath its position, and footer actions remain available without an added tail row. Static SSR does not require `OnAfterRender`: the native browser entry initializes progress on document startup and enhanced navigation, sharing the same idempotent controller with component interop. Framework `presentation/progress.css` owns layout; optional Design `presentation-progress.css` owns paint. Business `SectionNavigator` remains the independent right-side content navigator.
+
+`ComponentUsageCatalog` registers `PresentationProgress` as an explicit production scenario. Gallery `ComponentCatalog`, `ParameterMeaning`, and the three Components/Parameters/Samples Culture modules describe the actual defaults and scope. `PresentationProgressSample.razor` composes the public ContentSurface opt-in with two actual bands and a natural footer inside a bounded example scroll area. `PresentationProgressChecks.cs` and `presentation-progress-dom.mjs` exercise SSR/lifecycle and actual browser-module behavior; WPF `PopupTests.cs` exercises native popup boundaries. These are maintained verification entry points, not an assertion that this inventory maintenance executed them.
+
+Blazor SelectBox, StandaloneSelectBox and the Culture LanguagePicker expose optional Icon and TriggerVariant (both default null). Customized triggers keep a real native select and standard option/value/change semantics, with base-select enhancement only where supported; classic rendering retains the text selector. ContentSurface.FloatingActions is a separate optional render slot at the upper inline end, outside both TitleBar and the scrolling stage. Its absolute layout and direct action-row spacing reserve no header height; ordinary TitleBar behavior is preserved.
 ## Active project constraints and exceptions
 
 - Product project/solution names, organization-prefixed namespaces and existing `Arkheide.*` package IDs are separate identities. All inspected explicit C#/Razor namespace declarations use an accepted organization prefix. Dependency-only convenience projects omit `RootNamespace` but do not ship a compiled assembly or maintained source API.
@@ -921,7 +950,9 @@ No production database connection, remote application API client, message broker
 
 ## Verification and unresolved facts
 
-The inspection used actual hidden/ignored physical-file enumeration, all maintained project/solution XML, shared MSBuild files, root SDK/tooling/release/launcher configuration, runtime entry points, framework registration, native resource ownership, Culture adapters, and representative executable architecture fixtures. Checks found 678 maintained files, 121 non-root directories, 22 projects, 5 solutions, 33 local project-reference edges, no missing local project/solution references on Windows, and no project-reference cycle. All explicit C#/Razor namespace declarations inspected complied with the organization-prefix rule.
+The inspection used actual hidden/ignored physical-file enumeration, all maintained project/solution XML, shared MSBuild files, root SDK/tooling/release/launcher configuration, runtime entry points, framework registration, native resource ownership, Culture adapters, and representative executable architecture fixtures. The 2026-10-10 full audit found 678 maintained files, 121 non-root directories, 22 projects, 5 solutions, 33 local project-reference edges, no missing local project/solution references on Windows, and no project-reference cycle. All explicit C#/Razor namespace declarations inspected complied with the organization-prefix rule.
+
+The 2026-10-12 maintenance re-enumerated all maintained files under the same exclusions, parsed the regenerated complete tree back into paths, and reconfirmed the 33 declared project-reference targets on Windows. The current inventory contains 688 files and 121 directories, with 22 projects and 5 solutions. It adds ten maintained files to the audit tree and removes none: the Blazor popup enum, six progress component/style/module/test files, the Gallery progress sample, and WPF PopupTrigger/PopupTests. The eleven excluded empty/residual folders are unchanged. No build, test run, application startup, full documentation audit, framework synchronization, or audit-state update was performed by this inventory-maintenance task; coordinated validation is recorded separately by its owner.
 
 Architecture inspection does not prove tests, application startup, browser appearance, Windows architecture support or release publication. This structure inventory did not rerun builds/tests or start applications. The coordinated review separately compiled the actual copyable Culture examples; see [the audit report](1_bugreports/2026-10-10_project-instruction-audit.md) for that focused verification. Independently recorded tests from earlier tasks remain separate evidence. The WinUI3 placeholder and case-sensitive path risk remain current limitations; runtime certification for that platform is unknown.
 

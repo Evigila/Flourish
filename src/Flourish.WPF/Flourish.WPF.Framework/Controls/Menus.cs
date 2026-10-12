@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using ArkheideSystem.Flourish.WPF.Abstract;
 
@@ -7,64 +8,103 @@ namespace ArkheideSystem.Flourish.WPF.Controls;
 
 public class ActionMenu : Button
 {
-    private ContextMenu? menu;
+    private Popup? popup;
     private readonly System.Windows.Threading.DispatcherTimer hoverClose = new() { Interval = TimeSpan.FromMilliseconds(160) };
     private bool openedByHover;
     public ActionMenu()
     {
         Icon = "more_vert"; Variant = ButtonVariant.Quiet;
-        MouseEnter += (_, _) => { hoverClose.Stop(); if (OpenOnHover && menu?.IsOpen != true) Open(true); };
-        MouseLeave += (_, _) => { if (openedByHover) hoverClose.Start(); };
-        hoverClose.Tick += (_, _) => { hoverClose.Stop(); if (openedByHover && !IsMouseOver && menu?.IsMouseOver != true && menu is not null) menu.IsOpen = false; };
-        Unloaded += (_, _) => { hoverClose.Stop(); if (menu is not null) menu.IsOpen = false; };
-        IsEnabledChanged += (_, _) => { if (!IsEnabled && menu is not null) menu.IsOpen = false; };
+        MouseEnter += (_, _) => { hoverClose.Stop(); if (OpenOnHover && !IsOpen) Open(true); };
+        MouseLeave += (_, _) => { if (openedByHover && Strength == PopupStrength.Weak) hoverClose.Start(); };
+        hoverClose.Tick += (_, _) => { hoverClose.Stop(); if (Strength == PopupStrength.Weak && openedByHover && !IsMouseOver && popup?.Child is UIElement { IsMouseOver: false }) Close(); };
+        Unloaded += (_, _) => Close();
+        IsEnabledChanged += (_, _) => { if (!IsEnabled) Close(); };
+    }
+    public static readonly DependencyProperty StrengthProperty = DependencyProperty.Register(nameof(Strength), typeof(PopupStrength), typeof(ActionMenu), new PropertyMetadata(PopupStrength.Weak, StrengthChanged), value => Enum.IsDefined((PopupStrength)value));
+    public PopupStrength Strength { get => (PopupStrength)GetValue(StrengthProperty); set => SetValue(StrengthProperty, value); }
+    private static void StrengthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var owner = (ActionMenu)d;
+        owner.hoverClose.Stop();
+        if (owner.popup is not null) owner.popup.SetCurrentValue(Popup.StaysOpenProperty, owner.Strength == PopupStrength.Strong);
     }
     public static readonly DependencyProperty OpenOnHoverProperty = DependencyProperty.Register(nameof(OpenOnHover), typeof(bool), typeof(ActionMenu), new PropertyMetadata(false));
     public bool OpenOnHover { get => (bool)GetValue(OpenOnHoverProperty); set => SetValue(OpenOnHoverProperty, value); }
     public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register(nameof(Actions), typeof(IEnumerable<MenuAction>), typeof(ActionMenu), new PropertyMetadata(null));
     public IEnumerable<MenuAction>? Actions { get => (IEnumerable<MenuAction>?)GetValue(ActionsProperty); set => SetValue(ActionsProperty, value); }
+    public bool IsOpen => popup?.IsOpen == true;
     public event EventHandler<Exception>? ActionFailed;
     protected override void OnClick() { base.OnClick(); if (IsEnabled) Open(); }
     public void Open() => Open(false);
+    /// <summary>Explicit completion or cancellation of this menu.</summary>
+    public void Close() { hoverClose.Stop(); if (popup is not null) popup.SetCurrentValue(Popup.IsOpenProperty, false); }
     private void Open(bool hover)
     {
         if (!IsEnabled || Actions is null) return;
-        if (menu?.IsOpen == true) { openedByHover = hover; return; }
-        if (menu is not null) menu.IsOpen = false;
+        if (IsOpen) return;
+        Close();
         var origin = Keyboard.FocusedElement;
         openedByHover = hover;
-        menu = new ContextMenu { PlacementTarget = this };
-        var opened = menu;
-        opened.MouseEnter += (_, _) => hoverClose.Stop();
-        opened.MouseLeave += (_, _) => { if (openedByHover) hoverClose.Start(); };
+        var items = new StackPanel();
+        KeyboardNavigation.SetTabNavigation(items, KeyboardNavigationMode.Cycle);
+        var scroll = new ScrollViewer { Content = items, MaxHeight = 600 };
+        scroll.SetResourceReference(StyleProperty, "Flourish.ScrollViewer");
+        var surface = new Border { Child = scroll };
+        surface.SetResourceReference(StyleProperty, "Flourish.ActionMenuSurface");
+        FrameworkResources.ShareResources(this, surface);
+        var opened = popup = new Popup { PlacementTarget = this, Placement = PlacementMode.Bottom, Child = surface,
+            AllowsTransparency = true, StaysOpen = Strength == PopupStrength.Strong };
+        surface.MouseEnter += (_, _) => hoverClose.Stop();
+        surface.MouseLeave += (_, _) => { if (openedByHover && Strength == PopupStrength.Weak) hoverClose.Start(); };
         opened.Closed += (_, _) =>
         {
             hoverClose.Stop();
-            if (hover && origin is UIElement element && element.IsVisible && element.IsEnabled) Keyboard.Focus(origin);
-            else if (IsVisible && IsEnabled) Focus();
+            if (surface.IsKeyboardFocusWithin)
+            {
+                if (hover && origin is UIElement element && element.IsVisible && element.IsEnabled) Keyboard.Focus(origin);
+                else if (IsVisible && IsEnabled) Focus();
+            }
         };
-        FrameworkResources.ShareResources(this, menu);
-        menu.SetResourceReference(StyleProperty, "Flourish.ContextMenu");
         foreach (var action in Actions)
         {
-            var item = new MenuItem { Header = action.Text, IsEnabled = !action.Disabled };
+            var item = new MenuItem { Header = action.Text, IsEnabled = !action.Disabled, StaysOpenOnClick = true };
             item.SetResourceReference(StyleProperty, "Flourish.MenuItem");
             if (action.Destructive) item.SetResourceReference(ForegroundProperty, "Flourish.Brush.Danger");
             item.Click += async (_, _) =>
             {
-                opened.IsOpen = false;
+                if (!item.IsEnabled || !IsEnabled) return;
+                opened.SetCurrentValue(Popup.IsOpenProperty, false);
+                if (IsVisible && IsEnabled) Focus();
                 try { await action.OnClick(); }
                 catch (Exception ex) { if (ActionFailed is null) throw; ActionFailed.Invoke(this, ex); }
             };
-            menu.Items.Add(item);
+            items.Children.Add(item);
         }
-        menu.IsOpen = true;
+        surface.PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == Key.Escape) { e.Handled = true; if (Strength == PopupStrength.Weak) { Close(); Focus(); } return; }
+            var choices = items.Children.OfType<MenuItem>().Where(item => item.IsEnabled).ToArray();
+            if (choices.Length == 0) return;
+            var index = Array.FindIndex(choices, item => item.IsKeyboardFocusWithin);
+            if (e.Key is Key.Down or Key.Up or Key.Home or Key.End)
+            {
+                var next = e.Key switch { Key.Home => 0, Key.End => choices.Length - 1, Key.Down => (index + 1) % choices.Length, _ => (index - 1 + choices.Length) % choices.Length };
+                choices[next].Focus(); e.Handled = true;
+            }
+            else if (index >= 0 && e.Key is Key.Enter or Key.Space)
+            {
+                choices[index].RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent, choices[index])); e.Handled = true;
+            }
+        };
+        opened.Opened += (_, _) => items.Children.OfType<MenuItem>().FirstOrDefault(item => item.IsEnabled)?.Focus();
+        opened.IsOpen = true;
     }
 }
-
 public class SplitButton : ContentControl
 {
     static SplitButton() => DefaultStyleKeyProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata(typeof(SplitButton)));
+    public static readonly DependencyProperty StrengthProperty = DependencyProperty.Register(nameof(Strength), typeof(PopupStrength), typeof(SplitButton), new PropertyMetadata(PopupStrength.Weak), value => Enum.IsDefined((PopupStrength)value));
+    public PopupStrength Strength { get => (PopupStrength)GetValue(StrengthProperty); set => SetValue(StrengthProperty, value); }
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(SplitButton), new PropertyMetadata(""));
     public static readonly DependencyProperty VariantProperty = DependencyProperty.Register(nameof(Variant), typeof(ButtonVariant), typeof(SplitButton), new PropertyMetadata(ButtonVariant.Primary));
     public static readonly DependencyProperty PrimaryDisabledProperty = DependencyProperty.Register(nameof(PrimaryDisabled), typeof(bool), typeof(SplitButton), new PropertyMetadata(false));
@@ -96,9 +136,16 @@ public class MultiSelectBox : Control
     static MultiSelectBox() => DefaultStyleKeyProperty.OverrideMetadata(typeof(MultiSelectBox), new FrameworkPropertyMetadata(typeof(MultiSelectBox)));
     public MultiSelectBox()
     {
-        Unloaded += (_, _) => { lifetime++; if (popup is not null) popup.IsOpen = false; };
-        IsEnabledChanged += (_, _) => { if (!IsEnabled && !Creating && popup is not null) popup.IsOpen = false; };
+        Unloaded += (_, _) => { lifetime++; SetCurrentValue(IsOpenProperty, false); };
+        IsEnabledChanged += (_, _) => { if (!IsEnabled && !Creating) SetCurrentValue(IsOpenProperty, false); };
     }
+    public static readonly DependencyProperty StrengthProperty = DependencyProperty.Register(nameof(Strength), typeof(PopupStrength), typeof(MultiSelectBox), new PropertyMetadata(PopupStrength.Weak, StrengthChanged), value => Enum.IsDefined((PopupStrength)value));
+    public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(MultiSelectBox), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+    public static readonly DependencyProperty CloseLabelProperty = DependencyProperty.Register(nameof(CloseLabel), typeof(string), typeof(MultiSelectBox), new PropertyMetadata("Done", Refresh));
+    public PopupStrength Strength { get => (PopupStrength)GetValue(StrengthProperty); set => SetValue(StrengthProperty, value); }
+    public bool IsOpen { get => (bool)GetValue(IsOpenProperty); set => SetValue(IsOpenProperty, value); }
+    public string CloseLabel { get => (string)GetValue(CloseLabelProperty); set => SetValue(CloseLabelProperty, value); }
+    private static void StrengthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { var owner = (MultiSelectBox)d; owner.UpdateStrength(); owner.Render(); }
     public static readonly DependencyProperty OptionsProperty = DependencyProperty.Register(nameof(Options), typeof(IEnumerable<MultiSelectOption>), typeof(MultiSelectBox), new PropertyMetadata(null, Refresh));
     public static readonly DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(MultiSelectBox), new PropertyMetadata("", Refresh));
     public static readonly DependencyProperty SearchableProperty = DependencyProperty.Register(nameof(Searchable), typeof(bool), typeof(MultiSelectBox), new PropertyMetadata(false, Refresh));
@@ -125,21 +172,35 @@ public class MultiSelectBox : Control
     public event EventHandler<MultiSelectChange>? Changed;
     private StackPanel? items;
     private SearchBox? search;
-    private System.Windows.Controls.Primitives.Popup? popup;
+    private Popup? popup;
+    private ToggleButton? trigger;
     private long lifetime;
     public override void OnApplyTemplate()
     {
+        if (popup?.Child is UIElement previous) previous.PreviewKeyDown -= PopupKeyDown;
         if (search is not null) search.TextChanged -= SearchChanged;
         if (search is not null) search.PreviewKeyDown -= SearchKeyDown;
         base.OnApplyTemplate();
         items = GetTemplateChild("PART_Items") as StackPanel;
         search = GetTemplateChild("PART_Search") as SearchBox;
-        popup = GetTemplateChild("PART_Popup") as System.Windows.Controls.Primitives.Popup;
+        popup = GetTemplateChild("PART_Popup") as Popup;
+        trigger = GetTemplateChild("Trigger") as ToggleButton;
         if (search is not null) search.TextChanged += SearchChanged;
         if (search is not null) search.PreviewKeyDown += SearchKeyDown;
-        if (popup?.Child is FrameworkElement child) FrameworkResources.ShareResources(this, child);
+        if (popup?.Child is FrameworkElement child) { FrameworkResources.ShareResources(this, child); child.PreviewKeyDown += PopupKeyDown; }
+        UpdateStrength();
         Render();
     }
+    private void UpdateStrength() { if (popup is not null) popup.SetCurrentValue(Popup.StaysOpenProperty, Strength == PopupStrength.Strong); }
+    private void PopupKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape || !IsOpen) return;
+        e.Handled = true;
+        if (Strength == PopupStrength.Weak) Close();
+    }
+    /// <summary>Explicit completion; creation keeps the active selection surface busy.</summary>
+    public bool Close() { if (Creating) return false; SetCurrentValue(IsOpenProperty, false); trigger?.Focus(); return true; }
+    protected override void OnPreviewKeyDown(KeyEventArgs e) { PopupKeyDown(this, e); base.OnPreviewKeyDown(e); }
     private static void Refresh(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((MultiSelectBox)d).Render();
     private void SearchChanged(object sender, TextChangedEventArgs e) => Render();
     private async void SearchKeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter && CreateRequested is not null) { e.Handled = true; await RequestCreateAsync(); } }
@@ -214,6 +275,11 @@ public class MultiSelectBox : Control
             var check = new CheckBox { Content = option.Label, IsChecked = option.Selected, IsEnabled = !option.Disabled && option.CanDeselect && (option.Selected ? selected.Length > MinimumSelected : selected.Length < MaximumSelected), Margin = new Thickness(4) };
             check.Click += (_, _) => { if (!SetSelected(option.Key, check.IsChecked == true)) check.IsChecked = option.Selected; };
             row.Children.Add(check); items.Children.Add(row);
+        }
+        if (Strength == PopupStrength.Strong)
+        {
+            var done = new Button { Text = CloseLabel, Variant = ButtonVariant.Secondary, Busy = Creating };
+            done.Click += (_, _) => Close(); items.Children.Add(done);
         }
         var label = search?.Text.Trim() ?? "";
         if (CreateRequested is not null && label.Length > 0 && label.Length <= NewItemMaximumLength && selected.Length < MaximumSelected && !values.Any(o => string.Equals(o.Label.Trim(), label, StringComparison.OrdinalIgnoreCase)))

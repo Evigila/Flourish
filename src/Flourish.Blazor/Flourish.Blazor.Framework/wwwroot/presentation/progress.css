@@ -1,0 +1,6 @@
+/* A surface owns this floating navigation; JS supplies the visible band viewport coordinates. */
+.f-presentation-progress { box-sizing:border-box; position:fixed; z-index:40; left:var(--f-presentation-progress-left,50%); top:var(--f-presentation-progress-top); transform:translateX(-50%); max-width:var(--f-presentation-progress-width,calc(100vw - 32px)); margin:0; padding:0; }
+.f-presentation-progress[hidden] { display:none; }
+.f-presentation-progress > ol { margin:0; padding:0; list-style:none; }
+.f-presentation-progress-link { display:grid; place-items:center; }
+.f-presentation-progress-link[aria-current=location]::after { opacity:1; }

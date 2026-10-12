@@ -1,2 +1,12 @@
 .f-file-picker{display:grid;gap:7px;min-width:0}
 .f-file-input{max-width:100%;min-width:0;box-sizing:border-box}
+
+/* The real select keeps native input and option semantics; older engines retain its text fallback. */
+@supports(appearance:base-select) {
+    .f-select.f-select-customized, .f-select.f-select-customized::picker(select) { appearance:base-select; }
+    .f-select.f-select-customized { padding:0; gap:0; }
+    .f-select.f-select-customized::picker-icon { display:none; }
+    .f-select.f-select-customized > .f-select-trigger { inline-size:100%; box-sizing:border-box; }
+    .f-select.f-select-customized > .f-select-trigger:not(.f-button) { display:flex; align-items:center; justify-content:center; padding:0; border:0; font:inherit; color:inherit; background:transparent; }
+    .f-select.f-select-customized:has(> .f-button-icon) { inline-size:var(--f-control-height,48px); min-inline-size:var(--f-control-height,48px); block-size:var(--f-control-height,48px); }
+}

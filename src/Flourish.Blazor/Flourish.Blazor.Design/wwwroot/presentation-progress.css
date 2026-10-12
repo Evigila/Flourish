@@ -1,0 +1,4 @@
+/* Tutorial segments own the visual treatment; presentation only supplies its location state. */
+.f-presentation-progress { color:var(--f-presentation-progress-foreground,var(--f-text)); }
+.f-presentation-progress-link { color:inherit; text-decoration:none; }
+.f-presentation-progress-link[aria-current=location]::after { box-shadow:0 0 0 2px currentColor; }

@@ -556,3 +556,13 @@
     display: inline-flex;
     align-items: baseline;
 }
+
+/* Button-variant menus float below their control before SSR enhancement reaches the document. */
+.f-action-menu[data-f-native-menu]:not([data-f-enhanced])[open]:has(> .f-disclosure-button-trigger) > .f-menu-panel {
+    position:absolute; inset:auto; inset-block-start:100%; inset-inline-end:0; margin:6px 0 0;
+}
+/* Enhanced menus remain top-layer surfaces even when their trigger no longer has hover/focus. */
+[data-f-popup][data-f-enhanced="true"] > [data-f-popup-panel][data-f-open] {
+    visibility:visible; pointer-events:auto; clip-path:none; opacity:1; transform:none;
+}
+[data-f-popup][data-f-enhanced="true"] > [data-f-popup-panel]:not([data-f-open]) { display:none; }

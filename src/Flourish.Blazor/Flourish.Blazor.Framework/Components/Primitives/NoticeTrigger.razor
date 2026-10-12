@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 @using ArkheideSystem.Flourish.Abstract
 @inherits TextComponentBase
-<span class="notice-trigger @NoticePresentation.CssClass(Severity, Subtle)">
+<span class="notice-trigger @NoticePresentation.CssClass(Severity, Subtle)" data-f-popup="menu" data-f-popup-hover="true" data-f-popup-focus="true" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()">
     <button class="notice-trigger-button" type="button" aria-label="@Label" aria-describedby="@DescriptionId">
         <svg class="notice-trigger-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             @if (Severity == NotificationSeverity.Error)
@@ -19,7 +19,13 @@
             }
         </svg>
     </button>
-    <span id="@DescriptionId" class="notice-trigger-content" role="note">@ChildContent</span>
+    <span id="@DescriptionId" class="notice-trigger-content f-menu-panel" role="note" data-f-popup-panel popover="manual">
+        @ChildContent
+        @if (Strength == PopupStrength.Strong)
+        {
+            <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" data-f-popup-close />
+        }
+    </span>
 </span>
 
 @code {
@@ -29,6 +35,11 @@
     [Parameter, EditorRequired]
     public NotificationSeverity Severity { get; set; } = NotificationSeverity.Warning;
 
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    protected override void OnParametersSet()
+    {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+    }
     [Parameter] public bool Subtle { get; set; }
 
     private readonly string DescriptionId = $"notice-trigger-{Guid.NewGuid():N}";

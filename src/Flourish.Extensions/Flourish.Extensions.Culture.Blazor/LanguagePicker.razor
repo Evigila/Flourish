@@ -1,7 +1,7 @@
 @inherits LocalizedComponentBase
 
 <SelectBox TValue="string" Options="@Cultures" Value="@CurrentCulture" ValueChanged="ChangeCulture"
-           ValueExpression="@(() => CurrentCulture)" Disabled="@Saving" aria-label="@Text(FormatCulture ? "FormatCulture" : "Language")" style="@WidthStyle" />
+           ValueExpression="@(() => CurrentCulture)" Disabled="@Saving" Icon="@Icon" TriggerVariant="@TriggerVariant" aria-label="@Text(FormatCulture ? "FormatCulture" : "Language")" style="@WidthStyle" />
 <Dialog Title="@Text("SaveFailedTitle")" @bind-IsOpen="SaveFailed">
     <Notice Severity="NotificationSeverity.Warning">@Text("SaveFailed")</Notice>
 </Dialog>
@@ -11,6 +11,11 @@
     [Parameter] public string? MaxWidth { get; set; }
     /// <summary>Selects formatting culture while retaining the current UI culture.</summary>
     [Parameter] public bool FormatCulture { get; set; }
+    /// <summary>Displays a decorative icon in the standard native selection trigger.</summary>
+    [Parameter] public string? Icon { get; set; }
+    /// <summary>Uses a standard button appearance in browsers supporting customizable selects.</summary>
+    [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+
 
     private bool SaveFailed;
     private bool Saving;

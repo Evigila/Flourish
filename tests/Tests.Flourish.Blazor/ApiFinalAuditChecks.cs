@@ -174,6 +174,31 @@ internal static class ApiFinalAuditChecks
             });
         }));
 
+        tests.Add(("strong autocomplete retains rendered suggestions after blur Escape and outside dismissal until selection", async () =>
+        {
+            await using var fixture = new Fixture();
+            var parameters = AutocompleteParameters();
+            parameters["Strength"] = PopupStrength.Strong;
+            var selected = new List<string>();
+            parameters["ItemSelected"] = EventCallback.Factory.Create<string>(fixture, value => selected.Add(value));
+            var output = await fixture.Render<Primitives.SearchAutocomplete<string>>(parameters);
+            var component = fixture.Component<Primitives.SearchAutocomplete<string>>();
+            await fixture.Renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                Method(component, "Open").Invoke(component, null);
+                await (Task)Method(component, "CloseAsync").Invoke(component, null)!;
+                await (Task)Method(component, "HandleKeyDownAsync").Invoke(component, [new KeyboardEventArgs { Key = "Escape" }])!;
+                await component.RequestDismissAsync();
+                Rerender(component);
+                Require(output.ToHtmlString().Contains("aria-expanded=\"true\"", StringComparison.Ordinal),
+                    "Strong autocomplete accepted an implicit dismissal.");
+                await (Task)Method(component, "SelectAsync").Invoke(component, ["apple"])!;
+                Rerender(component);
+                Require(selected.SequenceEqual(["apple"]) && output.ToHtmlString().Contains("aria-expanded=\"false\"", StringComparison.Ordinal),
+                    "Strong autocomplete did not notify and close on explicit selection.");
+            });
+        }));
+
         tests.Add(("disabled autocomplete ignores delayed input clearing and selection callbacks", async () =>
         {
             var valueChanges = 0;

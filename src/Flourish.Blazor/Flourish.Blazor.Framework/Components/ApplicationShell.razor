@@ -45,7 +45,7 @@
                 <div class="f-titlebar-center f-topbar-slot">
                     @foreach (var menu in Options.TopBar.MenuItems)
                     {
-                        <ActionMenu Label="@Label(menu, menu.Label)" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
+                        <ActionMenu Strength="@Strength" Label="@Label(menu, menu.Label)" Actions="@CreateMenuActions(menu)" OpenOnHover="true">
                             <TriggerContent>@Label(menu, menu.Label) <ExpansionIndicator /></TriggerContent>
                         </ActionMenu>
                     }
@@ -110,6 +110,7 @@
     [Parameter] public string HomeHref { get; set; } = "/";
     [Parameter] public string SkipLabel { get; set; } = "Skip to content";
     [Parameter] public string MenuLabel { get; set; } = "Open navigation";
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public string CloseMenuLabel { get; set; } = "Close navigation";
     [Parameter] public string MainNavigationLabel { get; set; } = "Main navigation";
     [Parameter] public string SecondaryNavigationLabel { get; set; } = "Secondary navigation";
@@ -248,6 +249,7 @@
 
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         var current = PrimaryEntries;
         if (!ReferenceEquals(previousPrimary, current))
         {

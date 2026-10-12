@@ -20,7 +20,7 @@
     {
         <div class="@(inHeading ? "f-line-chart-controls f-line-chart-heading-controls" : "f-line-chart-controls")">
             @if (ControlsContent is not null) { <div class="f-line-chart-controls-content">@ControlsContent</div> }
-            @if (ShowDisplayOptions) { <MultiSelectBox Items="DisplayItems" Label="@Ui("Table_Display", "Display")" Icon="remove_red_eye" TriggerVariant="ButtonVariant.Secondary" CanReorder="true" Changed="ApplyDisplayOptions" /> }
+            @if (ShowDisplayOptions) { <MultiSelectBox Strength="@Strength" Items="DisplayItems" Label="@Ui("Table_Display", "Display")" Icon="remove_red_eye" TriggerVariant="ButtonVariant.Secondary" CanReorder="true" Changed="ApplyDisplayOptions" /> }
         </div>
     }
     </text>;
@@ -141,8 +141,10 @@
         return (minimum, maximum);
     }
     private string Points(DataSeries series) => string.Join(' ', series.Values.Select((value, index) => $"{Number(X(index))},{Number(Y(value, Scale(series)))}"));
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         ArgumentException.ThrowIfNullOrWhiteSpace(Title);
         if (Labels is null) throw new ArgumentNullException(nameof(Labels));
         if (Series is null) throw new ArgumentNullException(nameof(Series));

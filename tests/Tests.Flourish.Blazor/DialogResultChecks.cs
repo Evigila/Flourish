@@ -56,6 +56,17 @@ internal static class DialogResultChecks
             await f.Dispatch(() => ClickAsync(f.Components.OfType<Button>().Last(button => button.Text == "Cancel")));
             Require(await result!.WaitAsync(TimeSpan.FromSeconds(3)) is null, "Cancel accepted the pending action.");
         }));
+        tests.Add(("strong result dialog ignores implicit dismissal and preserves the explicit close result", async () =>
+        {
+            await using var f = new DialogFixture();
+            await f.Render<Dialog>(new() { ["Title"] = "Strong", ["Strength"] = PopupStrength.Strong });
+            var dialog = f.Component<Dialog>(); Task<object?>? result = null;
+            await f.Dispatch(() => { result = dialog.ShowAsync(); return Task.CompletedTask; });
+            await f.Dispatch(() => dialog.RequestDismissAsync());
+            Require(dialog.HasPendingResult && !result!.IsCompleted, "Strong implicit dismissal completed the result.");
+            await f.Dispatch(() => dialog.CloseAsync(true));
+            Require(Equals(await result!, true), "An explicit close lost the pending strong dialog result.");
+        }));
         tests.Add(("awaitable dialogs reject concurrent controlled and browser-owned opening", async () =>
         {
             await using var f = new DialogFixture(); await f.Render<Dialog>(new() { ["Title"] = "Result" });

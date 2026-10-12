@@ -3,7 +3,7 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<details @attributes="AdditionalAttributes" @ref="Root" id="@RootId" class="@($"f-multi-select-box {Class}".Trim())" data-f-selection-instance="@InstanceId"
+<details @attributes="AdditionalAttributes" @ref="Root" id="@RootId" class="@($"f-multi-select-box {Class}".Trim())" data-f-selection-instance="@InstanceId" data-f-popup="menu" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()"
          inert="@(Disabled ? true : (bool?)null)"
          data-f-selection-static="@(Static ? "true" : null)" data-f-minimum-selected="@MinimumSelected" data-f-maximum-selections="@MaximumSelections"
          data-f-selection-disabled="@Disabled.ToString().ToLowerInvariant()" data-f-creating="@Creating.ToString().ToLowerInvariant()" data-f-reorder-enabled="@CanReorder.ToString().ToLowerInvariant()"
@@ -12,7 +12,7 @@
     <summary id="@(RootId + "-trigger")" class="@TriggerClass" aria-controls="@PanelId" aria-labelledby="@LabelledBy" aria-label="@EffectiveLabel" title="@EffectiveLabel"
              aria-disabled="@Locked.ToString().ToLowerInvariant()">@if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /><span class="f-sr-only" data-f-selection-label>@EffectiveLabel</span> }
              else { <span data-f-selection-label>@EffectiveLabel</span> <ExpansionIndicator /> }</summary>
-    <div id="@PanelId" class="f-multi-select-panel f-dropdown-panel f-menu-panel" popover="manual" role="group" aria-label="@EffectiveLabel">
+    <div id="@PanelId" class="f-multi-select-panel f-dropdown-panel f-menu-panel" popover="manual" data-f-popup-panel role="group" aria-label="@EffectiveLabel">
         @if (Searchable || CreateRequested is not null)
         {
             <input class="f-input f-multi-select-search" type="search" form="@(InstanceId + "-search")"
@@ -43,6 +43,10 @@
             <Button Variant="ButtonVariant.Quiet" Class="f-multi-select-create" Disabled="@Locked" Busy="@Creating"
                     OnClick="CreateAsync">@(Creating ? Ui("Selection_Adding", "Adding…") : Ui("Selection_Add", "Add \"{0}\"", Search.Trim()))</Button>
         }
+        @if (Strength == PopupStrength.Strong)
+        {
+            <Button Variant="ButtonVariant.Quiet" Text="@Ui("Dialog_Close", "Close")" data-f-popup-close Disabled="@Locked" />
+        }
     </div>
 </details>
 
@@ -70,6 +74,7 @@
     [Parameter] public Func<string, Task<bool>>? CreateRequested { get; set; }
     [Parameter] public int NewItemMaximumLength { get; set; } = 100;
     /// <summary>Already-rendered native choices emit a library DOM event rather than requiring a circuit.</summary>
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public bool Static { get; set; }
 
     private string EffectiveEmptyText => DefaultText(nameof(EmptyText), EmptyText, "Selection_NoOptions", "No options available.");
@@ -98,6 +103,7 @@
 
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         ArgumentNullException.ThrowIfNull(Items);
         ArgumentOutOfRangeException.ThrowIfNegative(MinimumSelected);

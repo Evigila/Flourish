@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using ArkheideSystem.Flourish.Blazor;
+using ArkheideSystem.Flourish.Blazor.Components;
 using ArkheideSystem.Flourish.Blazor.Components.Primitives;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -100,6 +101,38 @@ internal static class DropdownChecks
                 Require(Attribute(Trigger(html()), "aria-expanded") == "false" && !html().Contains("role=\"listbox\"", StringComparison.Ordinal), "A disabled trigger opened or contradicted its collapsed state.");
             });
         }));
+
+        tests.Add(("strong reference popup rejects repeated trigger Escape and outside dismissal but accepts selection", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(ReferenceDropdown<Guid>.Strength)] = PopupStrength.Strong;
+            var changes = new List<Guid?>();
+            parameters[nameof(ReferenceDropdown<Guid>.ValueChanged)] = EventCallback.Factory.Create<Guid?>(changes, value => changes.Add(value));
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                await dropdown.ClickTriggerAsync();
+                await dropdown.PressEscapeAsync();
+                await dropdown.RequestDismissAsync();
+                Require(Attribute(Trigger(html()), "aria-expanded") == "true", "An implicit action dismissed a strong popup.");
+                Require(html().Contains("data-f-popup-strength=\"strong\"", StringComparison.Ordinal), "The rendered popup did not communicate its strength to the controller.");
+                await dropdown.ClickOptionAsync(1);
+                Require(changes.SequenceEqual(new Guid?[] { FirstId }), "Strong selection did not notify the host.");
+                Require(Attribute(Trigger(html()), "aria-expanded") == "false", "Explicit selection failed to close a strong popup.");
+            });
+        }));
+        tests.Add(("weak reference popup accepts the real outside dismissal bridge without changing controlled value", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(ReferenceDropdown<Guid>.Value)] = FirstId;
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                await dropdown.RequestDismissAsync();
+                Require(Attribute(Trigger(html()), "aria-expanded") == "false", "Outside dismissal kept a weak popup open.");
+                Require(dropdown.Value == FirstId && focusCalls.Count == 0, "Outside dismissal changed selection or stole focus.");
+            });
+        }));
     }
 
     private static readonly Guid FirstId = Guid.Parse("11111111-1111-1111-1111-111111111111");
@@ -120,6 +153,7 @@ internal static class DropdownChecks
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<IJSRuntime>(javascript);
+        services.AddSingleton<NavigationManager>(new TestNavigation());
         services.AddSingleton<IComponentActivator>(activator);
         services.AddFlourishFramework();
         using var provider = services.BuildServiceProvider();
@@ -153,6 +187,13 @@ internal static class DropdownChecks
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
+    }
+
+    private sealed class TestNavigation : NavigationManager
+    {
+        internal TestNavigation() => Initialize("https://example.test/", "https://example.test/");
+        protected override void NavigateToCore(string uri, bool forceLoad) =>
+            throw new InvalidOperationException("The reference fixture must not navigate.");
     }
 
     private sealed class CapturingActivator : IComponentActivator
@@ -192,6 +233,7 @@ internal static class DropdownChecks
 #pragma warning disable BL0006
         internal Task ClickTriggerAsync() => DispatchAsync("onclick", new MouseEventArgs());
         internal Task ClickOptionAsync(int index) => DispatchAsync("onclick", new MouseEventArgs(), index + 1);
+        internal Task PressEscapeAsync() => DispatchAsync("onkeydown", new KeyboardEventArgs { Key = "Escape" });
         internal Task ChangeSearchAsync(string query) => DispatchAsync("oninput", new ChangeEventArgs { Value = query });
         private Task DispatchAsync(string name, object args, int occurrence = 0)
         {
@@ -208,6 +250,7 @@ internal static class DropdownChecks
                 {
                     EventCallback<MouseEventArgs> callback => callback.InvokeAsync((MouseEventArgs)args),
                     EventCallback<ChangeEventArgs> callback => callback.InvokeAsync((ChangeEventArgs)args),
+                    EventCallback<KeyboardEventArgs> callback => callback.InvokeAsync((KeyboardEventArgs)args),
                     EventCallback callback => callback.InvokeAsync(args),
                     MulticastDelegate callback => ((IHandleEvent)this).HandleEventAsync(new EventCallbackWorkItem(callback), args),
                     _ => throw new InvalidOperationException("The rendered trigger has no invocable event callback.")

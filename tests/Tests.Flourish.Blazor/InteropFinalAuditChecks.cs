@@ -79,6 +79,7 @@ internal static class InteropFinalAuditChecks
                     await InvokeBridge(kind, component);
                     Require(javascript.Module.Releases == 1 && javascript.Imports == 1 && javascript.Module.BehaviorCalls == 1,
                         "Repeated teardown or a disposed handler reused or leaked the bridge.");
+                    Require(javascript.Module.CleanupCalls == 1, "Repeated teardown skipped or repeated DOM cleanup.");
                 });
             }));
             tests.Add(($"{kind} shares concurrent imports and releases late completion exactly once", async () =>
@@ -120,7 +121,7 @@ internal static class InteropFinalAuditChecks
                         await DisposeBridge(component);
                         await DisposeBridge(component);
                         Require(javascript.Module.Releases == 1, "Failed DOM cleanup skipped proxy release or repeated it.");
-                        if (kind != BridgeKind.Reference) Require(javascript.Module.CleanupCalls == 1, "DOM teardown was skipped or repeated.");
+                        Require(javascript.Module.CleanupCalls == 1, "DOM teardown was skipped or repeated.");
                     });
                 }));
             }
@@ -132,7 +133,7 @@ internal static class InteropFinalAuditChecks
                     javascript.Module.DisconnectRelease = true;
                     await DisposeBridge(component);
                     await DisposeBridge(component);
-                    Require(javascript.Module.Releases == 1, "Disconnected proxy teardown was retried.");
+                    Require(javascript.Module.Releases == 1 && javascript.Module.CleanupCalls == 1, "Disconnected proxy teardown skipped cleanup or was retried.");
                 });
             }));
         }
@@ -217,6 +218,76 @@ internal static class InteropFinalAuditChecks
                     Require(javascript.Module.Releases == 1, "An unrelated failure skipped release or caused a second proxy release.");
                 });
         }));
+
+        tests.Add(("reference popup interactive renders share the actual root and dispose its dismissal bridge once", async () =>
+        {
+            await WithComponent<ReferenceProbe>(new DeferredJs(), new()
+            {
+                [nameof(Primitives.ReferenceDropdown<int>.Id)] = "reference",
+                [nameof(Primitives.ReferenceDropdown<int>.LabelledBy)] = "reference-label"
+            }, async (component, javascript, _) =>
+            {
+                await component.InteractiveRenderAsync();
+                await component.InteractiveRenderAsync();
+                await component.DisposeAsync();
+                await component.DisposeAsync();
+                Require(javascript.Imports == 1 && javascript.Module.BehaviorCalls == 2
+                    && javascript.Module.CleanupCalls == 1 && javascript.Module.Releases == 1,
+                    "The popup reimported, skipped cleanup or released its proxy more than once.");
+                var calls = javascript.Module.Calls;
+                Require(calls.Select(call => call.Identifier).SequenceEqual(["attachPopupDismissal", "attachPopupDismissal", "detachPopupDismissal"]),
+                    "The real lifecycle did not attach/update before one teardown.");
+                var first = calls[0].Arguments!;
+                Require(Equals(first[0], calls[1].Arguments![0]) && Equals(first[0], calls[2].Arguments![0])
+                    && ReferenceEquals(first[1], calls[1].Arguments![1]),
+                    "Attachment refresh or disposal switched root or circuit ownership.");
+            });
+        }));
+
+        tests.Add(("reference dropdown retains a popup changed to strong while outside focus checking is pending", async () =>
+        {
+            await WithBridge(BridgeKind.Reference, new DeferredJs(), async (component, javascript) =>
+            {
+                javascript.Module.DelayFocus = true;
+                var pending = InvokeBridge(BridgeKind.Reference, component);
+                await javascript.Module.FocusStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                await component.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    [nameof(Primitives.ReferenceDropdown<int>.Strength)] = PopupStrength.Strong
+                }));
+                javascript.Module.CompleteFocus();
+                await pending;
+                Require(IsReferenceOpen(component), "A stale weak focus result dismissed the current strong popup.");
+                await DisposeBridge(component);
+                Require(javascript.Module.CleanupCalls == 1 && javascript.Module.Releases == 1,
+                    "The strength race lost dismissal cleanup or module ownership.");
+            });
+        }));
+        tests.Add(("autocomplete retains suggestions changed to strong while a weak blur is yielding", async () =>
+        {
+            await WithComponent<Primitives.SearchAutocomplete<string>>(new DeferredJs(), new()
+            {
+                [nameof(Primitives.SearchAutocomplete<string>.Id)] = "strength-race",
+                [nameof(Primitives.SearchAutocomplete<string>.Items)] = new[] { "apple" },
+                [nameof(Primitives.SearchAutocomplete<string>.Value)] = "ap",
+                [nameof(Primitives.SearchAutocomplete<string>.ValueSelector)] = (Func<string, string>)(value => value),
+                [nameof(Primitives.SearchAutocomplete<string>.TextSelector)] = (Func<string, string>)(value => value)
+            }, async (component, _, html) =>
+            {
+                typeof(Primitives.SearchAutocomplete<string>).GetMethod("Open", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(component, null);
+                await component.SetParametersAsync(ParameterView.Empty);
+                Require(html().Contains("aria-expanded=\"true\"", StringComparison.Ordinal), "The real focus handler did not open suggestions.");
+                var pending = InvokePrivate(typeof(Primitives.SearchAutocomplete<string>), component, "CloseAsync");
+                await component.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    [nameof(Primitives.SearchAutocomplete<string>.Strength)] = PopupStrength.Strong
+                }));
+                await pending;
+                await component.SetParametersAsync(ParameterView.Empty);
+                Require(html().Contains("aria-expanded=\"true\"", StringComparison.Ordinal),
+                    "A queued weak blur dismissed the current strong suggestions.");
+            });
+        }));
         tests.Add(("reference dropdown ignores a focus result that arrives after disposal", async () =>
         {
             await WithBridge(BridgeKind.Reference, new DeferredJs(), async (component, javascript) =>
@@ -228,7 +299,7 @@ internal static class InteropFinalAuditChecks
                 javascript.Module.CompleteFocus();
                 await pending;
                 Require(IsReferenceOpen(component), "A completed focus query changed a disposed dropdown's state.");
-                Require(javascript.Module.Releases == 1, "The focus race lost module ownership.");
+                Require(javascript.Module.Releases == 1 && javascript.Module.CleanupCalls == 1, "The focus race lost module or DOM cleanup ownership.");
             });
         }));
         tests.Add(("offer stage ignores synchronization completion after disposal", async () =>
@@ -358,6 +429,11 @@ internal static class InteropFinalAuditChecks
             return component;
         }
     }
+    private sealed class ReferenceProbe : Primitives.ReferenceDropdown<int>
+    {
+        public ReferenceProbe() { }
+        internal Task InteractiveRenderAsync() => base.OnAfterRenderAsync(false);
+    }
     private sealed class StageProbe : OfferStage
     {
         public StageProbe() { }
@@ -448,8 +524,10 @@ internal static class InteropFinalAuditChecks
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             Calls.Add((identifier, args));
-            if (identifier is "dispose" or "detach" or "detachMenu")
+            if (identifier is "dispose" or "detach" or "detachMenu" or "detachPopupDismissal")
             {
+                if (identifier == "detachPopupDismissal")
+                    Require(args is { Length: 1 } && args[0] is ElementReference, "Popup teardown must receive exactly its owned root.");
                 CleanupCalls++;
                 return FailCleanup is not null ? ValueTask.FromException<TValue>(FailCleanup) : ValueTask.FromResult(default(TValue)!);
             }
@@ -460,7 +538,10 @@ internal static class InteropFinalAuditChecks
                 FocusStarted.TrySetResult();
                 return DelayFocus ? new ValueTask<TValue>(CompleteFocusAsync<TValue>()) : ValueTask.FromResult((TValue)(object)false);
             }
-            if (identifier is not "synchronize" and not "toggle" and not "attachMenu" and not "attachDisclosureMenu") throw new InvalidOperationException("Unexpected audit module call: " + identifier);
+            if (identifier == "attachPopupDismissal")
+                Require(args is { Length: 2 } && args[0] is ElementReference && args[1] is DotNetObjectReference<Primitives.ReferenceDropdown<int>>,
+                    "Popup attachment must receive its owned root and typed circuit reference.");
+            if (identifier is not "synchronize" and not "toggle" and not "attachMenu" and not "attachDisclosureMenu" and not "attachPopupDismissal") throw new InvalidOperationException("Unexpected audit module call: " + identifier);
             if (identifier == "synchronize")
             {
                 SynchronizationStarted.TrySetResult();

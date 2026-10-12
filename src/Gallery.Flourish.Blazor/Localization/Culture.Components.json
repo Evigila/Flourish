@@ -600,9 +600,9 @@
     "pt-BR": "Combina fundo de largura total e conteúdo centralizado em uma seção de apresentação."
   },
   "Catalog_PresentationBand_Variants": {
-    "en-US": "MinHeight defaults to 800px and content may grow naturally; Dotted is off by default. Tone uses Canvas/Surface/Primary, with different adjacent band roles recommended. Content shares the same width-limited track.",
-    "zh-CN": "MinHeight 默认 800px，内容允许自然增高；Dotted 默认关闭。Tone 使用 Canvas、Surface 或 Primary，推荐相邻横幅不同色；内容使用同一限宽轨道。",
-    "pt-BR": "MinHeight usa 800px por padrão e o conteúdo pode crescer; Dotted começa desligado. Tone usa Canvas/Surface/Primary, recomendando cores diferentes em banners adjacentes. O conteúdo compartilha a mesma faixa limitada."
+    "en-US": "FullHeight=true and MinHeight=0 default to a browser viewport minimum while allowing content to grow. FullHeight=false supports natural or specified pixel height. IncludeInProgress defaults to true. Dotted is off by default; Tone uses Canvas/Surface/Primary, with different adjacent roles recommended. Content shares the bounded track.",
+    "zh-CN": "默认 FullHeight=true、MinHeight=0，以浏览器视口为最小高度并允许内容增高。FullHeight=false 支持自然高度或指定像素高度。IncludeInProgress 默认 true。Dotted 默认关闭；Tone 使用 Canvas、Surface 或 Primary，推荐相邻板块使用不同色彩角色。内容共享限宽轨道。",
+    "pt-BR": "FullHeight=true e MinHeight=0 usam por padrão o mínimo da janela do navegador, permitindo crescimento do conteúdo. FullHeight=false permite altura natural ou em pixels. IncludeInProgress começa em true. Dotted começa desligado; Tone usa Canvas/Surface/Primary, com papéis diferentes recomendados em faixas adjacentes. O conteúdo compartilha a faixa limitada."
   },
   "Catalog_PresentationHero_Purpose": {
     "en-US": "Artistic title, subtitle and description for product presentation.",
@@ -610,9 +610,9 @@
     "pt-BR": "Título artístico, subtítulo e descrição para apresentação de produto."
   },
   "Catalog_PresentationHero_Variants": {
-    "en-US": "For presentation opening screens and organization access. SideContent supplies a 360–470px right action column, stacked below 860px. StackTitleWords wraps words while preserving the full accessible title. Actions uses standard Button; this is not a business page heading.",
-    "zh-CN": "用于展示首屏与组织入口；SideContent 提供360–470px右侧操作列，860px以下上下排列。StackTitleWords 按词换行并保留完整可访问标题；Actions 使用标准 Button，不用于业务页面标题。",
-    "pt-BR": "Para primeira tela de apresentação e entrada de organizações. SideContent fornece coluna de ações de 360–470px à direita, empilhada abaixo de 860px. StackTitleWords quebra palavras preservando título acessível completo. Actions usa Button padrão; não é título de página de negócio."
+    "en-US": "Opening presentation and organization access scenes. FullHeight=true, MinHeight=0 and IncludeInProgress=true delegate one semantic band with a viewport minimum and natural growth. SideContent supplies a 360–470px right action column, stacked below 860px. StackTitleWords retains the accessible title; Actions uses standard Button. Use PageHeading for business pages.",
+    "zh-CN": "用于展示首屏与组织入口。默认 FullHeight=true、MinHeight=0、IncludeInProgress=true，委托一个语义板块，以视口为最小高度并允许自然增高。SideContent 提供 360–470px 右侧操作列，860px 以下上下排列。StackTitleWords 保留完整可访问标题；Actions 使用标准 Button。业务页面使用 PageHeading。",
+    "pt-BR": "Cenas iniciais de apresentação e acesso a organizações. FullHeight=true, MinHeight=0 e IncludeInProgress=true delegam uma faixa semântica com mínimo da janela e crescimento natural. SideContent fornece coluna de ações de 360–470px à direita, empilhada abaixo de 860px. StackTitleWords preserva o título acessível; Actions usa Button padrão. Use PageHeading em páginas de negócio."
   },
   "Catalog_LogoDisplayer_Purpose": {
     "en-US": "Artistic project name below its logo.",
@@ -630,9 +630,9 @@
     "pt-BR": "Rodapé de apresentação com marca, copyright e nome decorativo grande."
   },
   "Catalog_PresentationFooter_Variants": {
-    "en-US": "Title/watermark follow ConfigureProject name and language unless ProjectName overrides this instance. The override never changes shared project configuration. Copyright is optional and independently host-owned. Actions contains standard Underline navigation buttons.",
-    "zh-CN": "标题与水印默认跟随ConfigureProject项目名及语言，ProjectName可仅覆盖当前实例，不修改共享项目配置；Copyright由宿主独立提供，可省略。Actions放标准Underline导航按钮。",
-    "pt-BR": "Título/marca-d'água seguem o nome e idioma de ConfigureProject, salvo substituição por ProjectName nesta instância. A substituição não altera a configuração compartilhada. Copyright é opcional e pertence ao host. Actions contém botões Underline padrão."
+    "en-US": "Natural content height without a viewport or fixed minimum; excluded from presentation progress, including nested bands. Title/watermark follow ConfigureProject name and language unless ProjectName overrides this instance, without changing shared configuration. Copyright is optional and host-owned. Actions contains standard Underline navigation buttons.",
+    "zh-CN": "保持自然内容高度，不应用视口或固定最小高度；包括内部嵌套板块在内均不参与展示进度。标题与水印跟随 ConfigureProject 项目名及语言，ProjectName 可仅覆盖当前实例，不修改共享配置。Copyright 可省略并由宿主提供。Actions 放标准 Underline 导航按钮。",
+    "pt-BR": "Altura natural do conteúdo, sem mínimo fixo ou da janela; excluído do progresso de apresentação, inclusive faixas aninhadas. Título/marca-d’água seguem o nome e idioma de ConfigureProject, salvo ProjectName nesta instância, sem alterar a configuração compartilhada. Copyright é opcional e pertence ao host. Actions contém botões Underline padrão."
   },
   "Catalog_OfferStage_Purpose": {
     "en-US": "Arranges and progressively enhances presentation offer cards.",
@@ -760,9 +760,9 @@
     "pt-BR": "Barra superior fixa/rolagem do conteúdo, com fluxo de documento opcional."
   },
   "Catalog_Patterns_ContentSurface_Variants": {
-    "en-US": "TitleBar/ChildContent/Footer define regions. DocumentKey identifies content across routes; ContentId/SkipLabel provide the skip link. DocumentFlow=true uses document scrolling and can combine with FullHeight PresentationBand for standalone presentation/access pages.",
-    "zh-CN": "TitleBar / ChildContent / Footer 提供区域；DocumentKey 在页面切换时识别正文；ContentId 与 SkipLabel 提供跳过链接。DocumentFlow=true 使用文档滚动，可与 FullHeight PresentationBand 组合独立展示或访问页面。",
-    "pt-BR": "TitleBar/ChildContent/Footer definem regiões. DocumentKey identifica conteúdo entre rotas; ContentId/SkipLabel fornecem link de salto. DocumentFlow=true usa rolagem do documento e pode combinar FullHeight PresentationBand para páginas independentes de apresentação/acesso."
+    "en-US": "TitleBar/ChildContent/Footer define regions; FloatingActions provides independent upper-corner actions without a reserved header row. DocumentKey identifies content across routes; ContentId/SkipLabel provide the skip link. DocumentFlow=true uses document scrolling for presentation/access scenes. ShowPresentationProgress defaults to false; enabling it adds scoped band navigation and excludes the natural-height footer. Business navigation retains its single content scroll region.",
+    "zh-CN": "TitleBar／ChildContent／Footer 提供区域；FloatingActions 提供不占页眉空间的右上角悬浮操作；DocumentKey 在路由切换时识别正文；ContentId 与 SkipLabel 提供跳过链接。DocumentFlow=true 为展示／访问场景使用文档滚动。ShowPresentationProgress 默认 false；开启后增加当前正文的板块导航，并排除自然高度页脚。业务导航保留单一正文滚动区域。",
+    "pt-BR": "TitleBar/ChildContent/Footer definem regiões; FloatingActions oferece ações independentes no canto superior sem reservar uma linha de cabeçalho. DocumentKey identifica conteúdo entre rotas; ContentId/SkipLabel fornecem o link de salto. DocumentFlow=true usa rolagem do documento em cenas de apresentação/acesso. ShowPresentationProgress começa em false; ativá-lo adiciona navegação das faixas deste conteúdo e exclui o rodapé de altura natural. A navegação de negócio mantém uma região de rolagem."
   },
   "Catalog_Patterns_NavigationSurface_Purpose": {
     "en-US": "Composes top bar, primary/secondary navigation and content.",
@@ -983,5 +983,15 @@
     "en-US": "When FormActions replaces UniformGrid as the form-action container, configure columns on FormActions; this is not a button parameter.",
     "zh-CN": "使用 FormActions 替代 UniformGrid 作为表单操作容器时，在 FormActions 上配置列数；不属于按钮参数。",
     "pt-BR": "Quando FormActions substitui UniformGrid como contêiner de ações, configure as colunas em FormActions; não é parâmetro do botão."
+  },
+  "Catalog_PresentationProgress_Purpose": {
+    "en-US": "Clickable circular navigation for presentation bands, synchronized with scrolling.",
+    "zh-CN": "可点击的展示板块圆形导航，与滚动位置同步。",
+    "pt-BR": "Navegação circular clicável entre faixas de apresentação, sincronizada com a rolagem."
+  },
+  "Catalog_PresentationProgress_Variants": {
+    "en-US": "Prefer ContentSurface.ShowPresentationProgress=true to bind navigation to that host’s main content. Eligible PresentationBand and PresentationHero entries appear at the bottom center without hovering titles; clicks align bands below sticky headers and scrolling updates the active tutorial-style segment. Supports static SSR, reduced motion, local scroll containers and one-band pages. Footer content is excluded and navigation stays outside document flow and hides in a footer-only viewport.",
+    "zh-CN": "优先通过 ContentSurface.ShowPresentationProgress=true 将导航绑定至当前宿主正文。合格的 PresentationBand 与 PresentationHero 在底部居中悬浮显示教程式分段条，不显示悬浮标题；点击后对齐粘性页眉下方，滚动时更新当前分段。支持静态 SSR、减少动态效果、本地滚动容器和单板块页面。页脚不参与导航，导航不占文档空间，仅页脚可见时隐藏。",
+    "pt-BR": "Prefira ContentSurface.ShowPresentationProgress=true para vincular a navegação ao conteúdo principal do host. PresentationBand e PresentationHero elegíveis aparecem como segmentos do tutorial flutuando na parte inferior central, sem títulos flutuantes; cliques alinham as faixas abaixo de cabeçalhos fixos e a rolagem atualiza o segmento ativo. Suporta SSR estático, movimento reduzido, contêineres locais e páginas com uma faixa. O rodapé é excluído e a navegação permanece fora do fluxo e fica oculta quando apenas o rodapé está visível."
   }
 }

@@ -8,7 +8,7 @@
 <dialog @attributes="AdditionalAttributes" @ref="Element" id="@Identifier" class="@($"f-dialog {(Presentation == DialogPresentation.BottomSheet ? "f-bottom-sheet" : null)} {Class}".Trim())"
         aria-labelledby="@(Identifier + "-title")" aria-modal="true" aria-busy="@(Busy || Closing ? "true" : "false")"
         data-f-dialog-browser-controlled="@(BrowserControlled ? "true" : null)" data-f-dialog-dismissible="@Dismissible.ToString().ToLowerInvariant()"
-        data-f-dialog-active-view="@ActiveView">
+        data-f-dialog-active-view="@ActiveView" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()">
     <header class="f-dialog-header">
         <h2 id="@(Identifier + "-title")">@Title</h2>
         @if (Dismissible)
@@ -68,6 +68,8 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public bool BrowserControlled { get; set; }
+    /// <summary>Dismissible=false and Busy take precedence over implicit dismissal; explicit CloseAsync retains its veto policy.</summary>
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public bool Dismissible { get; set; } = true;
     [Parameter] public IReadOnlyList<DialogView> Views { get; set; } = [];
     [Parameter] public string? View { get; set; }
@@ -78,6 +80,7 @@
 
     protected override void OnParametersSet()
     {
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         ArgumentNullException.ThrowIfNull(Views);
         if (Views.Any(view => view is null || string.IsNullOrWhiteSpace(view.Key) || view.Content is null)
             || Views.Select(view => view.Key).Distinct(StringComparer.Ordinal).Count() != Views.Count)
@@ -161,6 +164,9 @@
 
     [JSInvokable]
     public Task RequestCloseAsync() => Dismissible ? CloseAsync() : Task.CompletedTask;
+
+    [JSInvokable]
+    public Task RequestDismissAsync() => Strength == PopupStrength.Weak ? RequestCloseAsync() : Task.CompletedTask;
 
     /// <summary>Closes through the normal busy/veto policy and completes an awaiting result, when present.</summary>
     public async Task CloseAsync(object? result = null)
