@@ -1,5 +1,34 @@
 # Release verification
 
+## Flourish 1.4.1 preparation on 2026-10-19
+
+The authorized stable release preparation promotes the popup and presentation changes already committed in `eec8ac8`. VersionPrefix is 1.4.1, Essential remains 1.4.0, and the existing six Core/Blazor package manifest is unchanged. Gallery adds four release notes in en-US, zh-CN and pt-BR and an empty 1.4.2-preview. This snapshot contains no new commit, tag, push or NuGet upload.
+
+The complete existing `publish-helper.bat -Mode Prepare` entry point completed with exit code 0. Production and Blazor/Gallery verification builds reported zero warnings/errors. Local environment: SDK 10.0.401, .NET 10.0.12, Node 26.4.0, PowerShell 7.6.5 and the already installed Edge 155.0.4283.45. No tool or package was installed/upgraded. The hosted workflow keeps its existing Node 24 declaration; the future hosted run remains a separate acceptance step.
+
+| Gate | Result |
+| --- | --- |
+| Core | 367 passed, no failed/skipped tests |
+| Blazor production contracts | 451/451 |
+| Culture extension | 27 |
+| Gallery | 8,390, including 474 post-event and 311 ChangeLog checks |
+| Node runner | 120 passed, zero failures/skips |
+| Actual menu/native/browser fixture | 38/38, zero browser skips (included in the Node gate) |
+| CSS bundle / SDK assets | 21 / 194 |
+| Launcher | 95 |
+| Culture catalogs | 24,396 |
+| Gallery release-note validator | 112 |
+| Local package verifier | All six 1.4.1 packages |
+| Four independent package-only consumers | 143 |
+
+NuGet printed the existing missing-package-README advisories; compilation and packaging succeeded. Full evidence: `artifacts/release-1.4.1-prepare-final.log`; package outputs: `artifacts/packages`; isolated consumers: `artifacts/package-consumers/1c1d8db49b3f47859bf336b3b3f08521`.
+
+The first complete attempt failed in two existing JavaScript fixtures, retained in `artifacts/release-1.4.1-prepare.log`. The palette test expected three ShellHeader Quiet selectors, although the committed native-select correction added a fourth. Its corrected assertions separately require exactly three button selectors and the exact native-select selector, inherited color and disabled guards. The browser fixture observed an empty dump-dom result because Windows Edge's launcher exited with code 0 while a child browser and its isolated DevTools endpoint continued running. The fixture now reuses its existing isolated DevTools session and waits for page evaluation, including errors, rather than launcher completion. No production UI changed, no assertion was skipped, and no user browser profile was opened. The diagnostic probe was explicitly closed and removed. Targeted corrected results are in `artifacts/release-1.4.1-js-fixed.log`; the failed diagnostic is preserved in `artifacts/release-1.4.1-js-diagnostic.log`.
+
+Public publication is still pending: review and commit the preparation, push master, use the existing Publish entry point to create v1.4.1, require the Trusted Publishing workflow to succeed, verify all six public indexes, then run `build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.1` against fresh caches. The public indexes were checked before preparation and contained only 1.1.1, 1.1.2, 1.1.3 and 1.4.0. Repeat the collision check before publication. Candidate hashes do not identify future CI-produced public package bytes.
+
+Manual visual acceptance remains the [popup and presentation checklist](popup-presentation-manual-checklist.md): inspect native language selection and Quiet header contrast, weak/strong dismissal, fixed access-page floating actions, viewport-sized presentation bands and footer exclusion from progress. Automated headless browser regression is complete; this is not a claim of user-operated visual acceptance.
+
 ## Completed Flourish 1.4.0 release on 2026-10-10
 
 Source commit `8e97e0022086f436ff53b52538adf6377f1cc760` is tagged `v1.4.0` and pushed with the two preceding user-authorized commits. [Run 38023309578](https://github.com/Evigila/Flourish/actions/runs/38023309578) passed both [build verification](https://github.com/Evigila/Flourish/actions/runs/38023309578/job/114128763367) and [Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/38023309578/job/114129401177). All six Core/Blazor packages returned Created between 04:17:30 and 04:17:34 UTC. WPF remains outside this public manifest; Essential stays 1.4.0.

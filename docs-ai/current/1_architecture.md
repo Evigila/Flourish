@@ -1,5 +1,7 @@
 # Project architecture and repository tree
 
+**Release preparation, 2026-10-19:** Current VersionPrefix is 1.4.1 for the unchanged six-package Core/Blazor manifest; Essential stays 1.4.0. The prepared release adds Gallery notes and corrects two release test fixtures without adding maintained source files or changing runtime architecture. The complete Prepare gate passed; publication remains pending. See [release verification](release-verification.md#flourish-141-preparation-on-2026-10-19). The existing tree remains valid because all added records are under its explicitly excluded docs-ai subtree; the audit timestamp is unchanged.
+
 **Status:** Verified source and structure inventory, 2026-10-10 (America/Sao_Paulo, UTC-03:00). Inspected working tree based on commit `3e861b346a145240b8cdabbfe9b39cdd785fc819`, including the pending Essential.Culture 1.4.0 bridge changes and the installed AGENTS framework 1.0.0. This source audit does not certify application startup or visual behavior.
 
 **Release update, 2026-10-10:** Flourish `VersionPrefix=1.4.0` is published from tag `v1.4.0`; Essential.Culture remains 1.4.0. The public manifest contains six Core/Blazor packages, excluding native WPF and its Culture bridge. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The original audit baseline remains dated evidence; the separately dated inventory maintenance below does not renew the audit.

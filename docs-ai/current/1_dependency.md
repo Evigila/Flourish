@@ -1,10 +1,18 @@
 # Project dependency inventory
 
+## Current release preparation 1.4.1, 2026-10-19
+
+Current root VersionPrefix is **1.4.1**, preparing the committed popup and presentation fixes in `eec8ac8` for the same six Core/Blazor packages. EssentialCultureVersion and ReleaseSettings.EssentialVersion remain **1.4.0**; no external dependency or publication ID changed. Native WPF/WinUI remain outside the publication manifest. Public 1.4.0 and local .4 candidate records below are historical evidence; 1.4.1 has not yet been uploaded at this snapshot.
+
+The full `publish-helper.bat -Mode Prepare` gate passed with isolated `artifacts/release-build` outputs and fresh restore caches. The six production project.assets.json files resolve the same 16 external package/version pairs: three Essential Culture packages at 1.4.0 and the existing thirteen Microsoft.Extensions packages at 10.0.8. Referenced Flourish projects now identify 1.4.1. No assertion is made about a fresh restore of desktop projects outside this gate.
+
+All six local 1.4.1 packages passed identity/dependency/asset verification. Four isolated package-only consumer modes passed 143 checks in `artifacts/package-consumers/1c1d8db49b3f47859bf336b3b3f08521`; their six Flourish .nupkg.metadata files identify the newly prepared `artifacts/packages` feed, while Essential remains public NuGet. This proves local packaging, not public availability. See [release verification](release-verification.md#flourish-141-preparation-on-2026-10-19) for the complete results and initial failed fixture evidence.
+
 **Audit baseline:** 2026-10-10 (America/Sao_Paulo, UTC-03:00), working tree based on `3e861b346a145240b8cdabbfe9b39cdd785fc819`. That inventory included the then-uncommitted Essential.Culture 1.4.0 bridge/module update and the installed AGENTS framework 1.0.0. It recorded inspection of declarations and available resolved artifacts; no new restore, build, runtime test, package publication or remote framework version check occurred during that audit.
 
 **Release update, 2026-10-10:** Current root properties declare Flourish `VersionPrefix=1.4.0`, with Essential.Culture still 1.4.0. The same six Core/Blazor packages are published from tag v1.4.0; WPF and its Culture bridge remain outside that public manifest. Local/CI verification, public indexing and fresh public-only consumers passed; see [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10). The earlier 22-project audit snapshots below remain dated 1.1.3 source-version evidence; only separately identified release artifacts establish a new restore.
 
-## Current local popup candidate (.4), 2026-10-12
+## Historical local popup candidate (.4), 2026-10-12
 
 The final local candidate is 1.4.1-local.popup.20261012.4. It retains .3's standard native selection, FloatingActions and tutorial-segment APIs, adding one Design paint correction: enabled customized Quiet selects in ShellHeader inherit chrome foreground instead of the language-option foreground. Native pickers keep their independent option colors. The actual strict browser regression reproduces .3's black icon on blue chrome and verifies the correction while preserving black-on-white picker/options.
 
@@ -187,7 +195,7 @@ These audit project snapshots contain **49 distinct package ID/version pairs**: 
 
 | Evidence | What it establishes |
 | --- | --- |
-| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish `VersionPrefix=1.4.0`, Essential property `1.4.0`, inherited version/license defaults; the extension props explicitly import the root props. |
+| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish `VersionPrefix=1.4.1`, Essential property `1.4.0`, inherited version/license defaults; the extension props explicitly import the root props. |
 | Audited `.csproj` declarations and their dated matching `obj/project.assets.json` | Direct package requirements, project edges, target frameworks, exact observed package versions/parents and SDK download requests at the audit baseline. |
 | `artifacts/release-1.4.0/obj/Gallery.Flourish.Blazor/project.assets.json`, written `2026-10-10T04:10:14.3513983Z` | Fresh release restore identifies five referenced Flourish libraries as source projects at 1.4.0 and Essential Core/Blazor/Generator as packages at 1.4.0. It does not establish build/test completion or publication. |
 | Fresh public consumer `artifacts/package-consumers/9f393f06c97c43efb834ffe4b84510d1`; `artifacts/release-1.4.0/public-consumer-provenance.json` | Four independent package-only consumer modes passed 143 checks. All six Flourish and three Essential 1.4.0 package metadata entries identify NuGet.org; no local feed or source project is used. |
@@ -229,7 +237,7 @@ Project aliases below abbreviate complete consumer sets without omitting project
 | P21 | `tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`)<br>P15 (`Gallery.Flourish.WPF`) |
 | P22 | `tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj` | `net10.0` | P13 (`Gallery.Flourish.Blazor`) |
 
-Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their current inherited source version is 1.4.0; the dated audit snapshots observed 1.1.3 before the release version change. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
+Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their current inherited source version is 1.4.1; the dated audit snapshots observed 1.1.3 before the release version change. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
 
 ## Direct and SDK-injected NuGet packages
 
@@ -457,7 +465,7 @@ No database, cloud storage, cache server, telemetry endpoint, authentication pro
 ## Active constraints and unresolved facts
 
 - Essential.Culture 1.4.0 is the current authorized dependency. Runtime adapters and generator are external NuGet packages even though Essential is maintained by the same organization. No sibling Essential source reference is present. Modular resources are selected through Essential CultureModule generation/deployment; no additional JSON merge or filesystem discovery dependency was introduced.
-- Flourish source/package version is 1.4.0, published and verified for the same six Core/Blazor packages. Native WPF and its Culture bridge remain excluded. The dated audit graphs retain their 1.1.3 source-version observation; separate release/public-consumer artifacts establish 1.4.0 restore and consumption.
+- Flourish source version is 1.4.1, prepared for the same six Core/Blazor packages; the latest verified public release remains 1.4.0 until the new publication completes. Native WPF and its Culture bridge remain excluded. The dated audit graphs retain their 1.1.3 source-version observation; separate release/public-consumer artifacts establish 1.4.0 restore and consumption.
 - No dependency adoption or upgrade was performed for this documentation audit. Unknown licenses, source commits, runner/browser/OS versions and unpinned optional tools remain explicitly unknown. The scope is the resolved project/tool distributions above; it does not enumerate every component internal to an OS, browser, SDK or CI runner image.
 - The human-maintained `docs/docfx.en-us.json` and `docs/docfx.zh-cn.json` currently name missing `src/Flourish.WPF/Flourish.WPF.csproj` and `src/Flourish.WPF/Assets/favicon.ico`. The actual meta project is P12. Successful documentation API/resource generation against those stale paths is unverified; ownership rules prevent silently editing the configs during this audit.
 - Root `LICENSE.txt` contains MIT terms but still has `[year] [fullname]` attribution placeholders. Package MIT/Apache declarations and the retained third-party icon licenses are recorded as actual evidence; this inventory does not invent ownership attribution or repair the root license.

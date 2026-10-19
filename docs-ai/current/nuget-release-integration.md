@@ -1,5 +1,11 @@
 # NuGet release and integration
 
+## Prepared Flourish 1.4.1, 2026-10-19
+
+Current source VersionPrefix is 1.4.1. The same six Core/Blazor IDs and Essential 1.4.0 dependency are retained; WPF remains excluded. Gallery has four three-language stable notes and the next empty 1.4.2-preview. Full `publish-helper.bat -Mode Prepare` and the four local package-only consumers passed; [release verification](release-verification.md#flourish-141-preparation-on-2026-10-19) records counts, fixture corrections and evidence.
+
+This snapshot is ready for review but has not been committed, tagged, pushed or published. Use the existing Publish entry point after reviewed master is clean and synchronized with origin/master. The helper rechecks the release gate, requires the exact v1.4.1 confirmation and pushes the annotated tag for the existing nuget Trusted Publishing environment. Public indexing and a fresh `-PublicSource -Version 1.4.1` consumer run are required after CI publication; local candidate verification is not a substitute. Latest completed public release remains the dated 1.4.0 record below.
+
 ## Published Flourish 1.4.0
 
 The user authorized two pending commits and publication of Flourish 1.4. Source VersionPrefix is 1.4.0; EssentialCultureVersion and the release gate remain pinned to public Essential 1.4.0. Source commit `8e97e0022086f436ff53b52538adf6377f1cc760` is tagged `v1.4.0`; [run 38023309578](https://github.com/Evigila/Flourish/actions/runs/38023309578) passed and uploaded all six Core/Blazor packages. All six public indexes contain 1.4.0 and fresh public-only consumers passed 143 checks. WPF remains outside the publication manifest. See [release verification](release-verification.md#completed-flourish-140-release-on-2026-10-10) for upload, indexing and package-provenance evidence.
@@ -77,7 +83,7 @@ The earlier 1.1.1 release published the Abstract-only Culture adapter before Fra
 
 Exactly these six Core/Blazor packages are in scope. Flourish WPF and its WPF Culture bridge are excluded. Shared is retired. The umbrella installs the Culture extension automatically; the extension brings Essential.Blazor, Core and Generator transitively. Install Framework alone to omit both Design and Culture. Installation does not activate optional services: hosts call AddFlourishFramework, ConfigureCulture inside its callback when desired, and AddFlourishDesign separately when desired. A Web host receives standard interactive Razor registrations through Framework; service-only registration does not construct a host.
 
-Flourish Directory.Build.props owns current stable source VersionPrefix=1.4.0 and EssentialCultureVersion=1.4.0. Earlier released versions used their corresponding pins described in the dated snapshots. scripts/ReleaseSettings.psd1 fixes the IDs, publication order and Essential 1.4.0 verification expectation. Arkheide.* NuGet IDs remain unchanged by product-first project names or the renamed Essential.Culture GitHub repository.
+Flourish Directory.Build.props owns current stable source VersionPrefix=1.4.1 and EssentialCultureVersion=1.4.0. Earlier released versions used their corresponding pins described in the dated snapshots. scripts/ReleaseSettings.psd1 fixes the IDs, publication order and Essential 1.4.0 verification expectation. Arkheide.* NuGet IDs remain unchanged by product-first project names or the renamed Essential.Culture GitHub repository.
 
 ## Package consumption and local preparation
 

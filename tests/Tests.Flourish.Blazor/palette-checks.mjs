@@ -83,7 +83,11 @@ test("shell chrome only adjusts available Quiet buttons, preserving explicit var
   const selectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)]
     .map(match => match[1].trim())
     .filter(selector => selector.includes(".shell-header") && selector.includes(".f-button"));
-  assert.equal(selectors.length, 3);
+  const buttonSelectors = selectors.filter(selector => !selector.includes(".f-select"));
+  const nativeSelectSelectors = selectors.filter(selector => selector.includes(".f-select"));
+  assert.equal(buttonSelectors.length, 3);
+  assert.deepEqual(nativeSelectSelectors, [".f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true])"]);
+  assert.equal(property(blockFor(css, nativeSelectSelectors[0]), "color"), "inherit");
   for (const selector of selectors) {
     assert.match(selector, /\.f-button-quiet\b/);
     assert.match(selector, /:not\(:disabled\)/);

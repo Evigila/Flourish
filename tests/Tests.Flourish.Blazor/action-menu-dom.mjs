@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import { execFileSync, spawn } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -344,29 +344,14 @@ if (browserPath) {
     const progressSource = await fs.readFile(new URL('presentation/progress.js', sourcePath), 'utf8');
     const progressController = `const progressApi=(()=>{${progressSource.replace(/^export /gm, '')};return {initializePresentationProgress};})();`;
     async function browserFixture(markup, measure, { width=1280, height=900, style='' } = {}) {
-        const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'flourish-native-popup-'));
-        try {
-            const fixture = `<!doctype html><html><head><style>${css}${style}</style></head><body class="f-root f-theme-light">${markup}
-                <pre id="measurements" hidden></pre><script>${controller}${progressController}
-                const wait=()=>new Promise(resolve=>setTimeout(resolve,50));
-                (async()=>{try {const measurements=await (async()=>{${measure}})();document.querySelector('#measurements').textContent=JSON.stringify(measurements);}
-                catch(error) {document.querySelector('#measurements').textContent=JSON.stringify({error:String(error)});}})();</script></body></html>`;
-            const fixturePath = path.join(fixtureRoot, 'fixture.html');
-            await fs.writeFile(fixturePath, fixture);
-            const dom = execFileSync(browserPath, ['--headless', '--disable-gpu', '--no-sandbox', '--no-first-run',
-                '--no-default-browser-check', '--disable-extensions', '--virtual-time-budget=3000', '--dump-dom',
-                `--window-size=${width},${height}`, '--user-data-dir=' + path.join(fixtureRoot, 'profile'), pathToFileURL(fixturePath).href],
-                { encoding:'utf8', stdio:['ignore','pipe','ignore'], timeout:20000, maxBuffer:8 * 1024 * 1024, windowsHide:true });
-            const match = dom.match(/<pre id="measurements"[^>]*>([\s\S]*?)<\/pre>/);
-            assert.ok(match?.[1], 'The headless browser did not produce popup measurements.');
-            const measurements = JSON.parse(match[1].replaceAll('&quot;', '"').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&'));
-            assert.equal(measurements.error, undefined, measurements.error);
-            return measurements;
-        } finally {
-            assert.equal(path.dirname(path.resolve(fixtureRoot)), path.resolve(os.tmpdir()));
-            assert.match(path.basename(fixtureRoot), /^flourish-native-popup-/);
-            await fs.rm(fixtureRoot, { recursive:true, force:true, maxRetries:3, retryDelay:200 });
-        }
+        // Windows Edge can hand off to another process and close its launcher before
+        // --dump-dom writes stdout. Use the same isolated DevTools session as native
+        // selection checks so completion follows the page, not the launcher process.
+        return browserSessionFixture(markup, async ({evaluate}) => evaluate(`(async()=>{
+            ${controller}${progressController}
+            const wait=()=>new Promise(resolve=>setTimeout(resolve,50));
+            return await (async()=>{${measure}})();
+        })()`), {width,height,style});
     }
     // A trusted Runtime gesture opens the real native picker; the select continues to own all input.
     async function browserSessionFixture(markup, verify, { width=1280, height=900, styles=css, style='' } = {}) {

@@ -1,4 +1,24 @@
 {
+  "ChangeLog_PopupDismissal": {
+    "en-US": "Standardize weak and strong popup dismissal across menus, dialogs and lookup controls; preserve content-sized overlays and outside-click dismissal for weak popups.",
+    "zh-CN": "统一菜单、对话框及查询控件的弱弹窗与强弹窗关闭行为；弹层宽度适配内容，弱弹窗支持点击外部关闭。",
+    "pt-BR": "Padroniza o fechamento de pop-ups fracos e fortes em menus, diálogos e consultas; mantém a largura conforme o conteúdo e permite fechar pop-ups fracos ao clicar fora."
+  },
+  "ChangeLog_NativeLanguageSelection": {
+    "en-US": "Keep language selection on the standard native selector, with icon-only Quiet triggers and readable header and option colors.",
+    "zh-CN": "语言切换沿用标准原生选择控件，支持仅图标的 Quiet 按钮，并保持顶部栏与选项颜色清晰可读。",
+    "pt-BR": "Mantém a seleção de idioma no seletor nativo padrão, com acionadores Quiet somente com ícone e cores legíveis no cabeçalho e nas opções."
+  },
+  "ChangeLog_FloatingAccessActions": {
+    "en-US": "Add independent floating actions to fixed access surfaces so language and theme controls do not create page height or blank space above the background.",
+    "zh-CN": "固定访问页面支持独立悬浮操作区，语言及主题控件不再增加页面高度或在背景板上方留下空白。",
+    "pt-BR": "Adiciona ações flutuantes independentes às páginas de acesso fixas, sem aumentar a altura da página nem criar espaços vazios acima do fundo."
+  },
+  "ChangeLog_PresentationViewportProgress": {
+    "en-US": "Size presentation sections to the viewport and add bottom progress segments based on TutorialBoard, with section jumps and no footer entry or extra footer space.",
+    "zh-CN": "展示板块默认占据一个视口，底部使用教程板样式的分段进度条并支持跳转；页脚不进入进度条，也不产生额外底部空隙。",
+    "pt-BR": "Dimensiona as seções de apresentação pela área visível e adiciona segmentos de progresso inferiores baseados em TutorialBoard, com navegação entre seções, sem incluir o rodapé nem criar espaço extra abaixo dele."
+  },
   "ChangeLog_ButtonContentHeight": {
     "en-US": "Multiline buttons retain vertical padding and grow with content; single-line buttons keep the standard minimum height.",
     "zh-CN": "多行按钮保留上下内边距并随内容增高；单行按钮保持标准最小高度。",

@@ -1,7 +1,16 @@
 [
   {
-    "version": "1.4.1-preview",
+    "version": "1.4.2-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.1",
+    "changeKeys": [
+      "Key.ChangeLog_PopupDismissal",
+      "Key.ChangeLog_NativeLanguageSelection",
+      "Key.ChangeLog_FloatingAccessActions",
+      "Key.ChangeLog_PresentationViewportProgress"
+    ]
   },
   {
     "version": "1.4.0",
