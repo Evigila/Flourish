@@ -1,6 +1,20 @@
 # Release verification
 
+## Completed Flourish 1.4.2 release on 2026-10-19
+
+Source commit `c8616f0f8712a5ff78b21612f6886004366fe414` is pushed to master and tagged v1.4.2. [Run 39254689722](https://github.com/Evigila/Flourish/actions/runs/39254689722) passed both [build verification](https://github.com/Evigila/Flourish/actions/runs/39254689722/job/118066888261) and [Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/39254689722/job/118068832980). All six Core/Blazor packages returned Created between 12:51:56 and 12:52:01 UTC (09:51:56–09:52:01 in São Paulo). Essential remains 1.4.0, the package manifest/order is unchanged, and WPF/WinUI are excluded. The failed v1.4.1 tag and its evidence remain unchanged; that version was never uploaded.
+
+The Windows hosted gate, including Node 24.21.0, reproduced the complete local success: zero compilation warnings/errors; Core 367, Blazor 451, Culture 27, Gallery 8,422, Node 120 with no failures/skips, action-menu/browser fixture 42/42 with zero browser skips, CSS 21/194, launcher 95, Culture catalog 24,408 and independent candidate consumers 143. Its ChangeLog validator passed 118 checks because the reachable v1.4.2 tag adds one coverage assertion to the local preparation's 117. The browser startup EBUSY recovery therefore passed on the same hosted environment that exposed the previous failure.
+
+After NuGet publication propagation, fresh public flat-container indexes contained 1.4.2 for all six IDs at 12:59:51 UTC. Early responses lacked the new version and the direct package endpoint returned 404; public availability was not declared until the complete six-package closure appeared.
+
+`build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.2` then passed **143 checks**, with fresh package and HTTP caches and NuGet.org as its sole source. FrameworkOnly, MetaNative, MetaDesign and MetaCulture restored, published and ran successfully, verifying registration, SSR, static assets and Culture module deployment. All six Flourish 1.4.2 and three Essential 1.4.0 `.nupkg.metadata` entries identify `https://api.nuget.org/v3/index.json`; no local feed or source project was used. Actual downloaded archive SHA-256 values and NuGet content hashes are recorded separately from local candidate bytes. Publication, public indexing and independent public-only consumption are complete.
+
+Evidence: `artifacts/release-1.4.2-ci.log`, `artifacts/public-release-1.4.2.log`, `artifacts/release-1.4.2-public/{workflow,public-index-fresh,consumer-environment,public-consumer-provenance}.json`; public fixture `artifacts/package-consumers/a0169ef69519433cb66f88f96b4a443e`. The [publication record](1_changelogs/2026-10-19_100102_publish-flourish-1.4.2.md) supersedes the pending state in the preserved preparation snapshots below. No Computer Use or Azure operation was performed; manual visual acceptance remains the [existing checklist](popup-presentation-manual-checklist.md).
+
 ## Flourish 1.4.2 preparation and 1.4.1 publication failure, 2026-10-19
+
+Historical preparation snapshot; the completed 1.4.2 publication above supersedes its pending state.
 
 The current prepared version is **1.4.2**, retaining Essential 1.4.0 and the same six Core/Blazor package IDs. WPF/WinUI are excluded. Gallery carries the four popup/presentation changes in 1.4.2, explicitly marks 1.4.1 as unpublished in en-US/zh-CN/pt-BR, and adds the empty 1.4.3-preview. No production library behavior or external dependency changed during this recovery.
 

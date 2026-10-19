@@ -1,14 +1,12 @@
 # NuGet release and integration
 
-## Prepared Flourish 1.4.2; unpublished 1.4.1
+## Published Flourish 1.4.2
 
-Current source VersionPrefix is **1.4.2**. Essential remains 1.4.0 and the same six Core/Blazor package IDs/order are retained; WPF/WinUI remain outside this public manifest. Gallery contains four three-language product notes for 1.4.2, an explicit unpublished 1.4.1 record and the next empty 1.4.3-preview.
+Current source VersionPrefix is **1.4.2**. Commit `c8616f0f8712a5ff78b21612f6886004366fe414` is pushed to master and tagged v1.4.2. [Run 39254689722](https://github.com/Evigila/Flourish/actions/runs/39254689722) passed its complete build/test/package gate and Trusted Publishing, uploading all six Core/Blazor packages. Essential remains 1.4.0; package IDs/order are unchanged, and WPF/WinUI are outside this public manifest.
 
-The authorized v1.4.1 tag points to source commit `66b0a5aad723830679d71a50a27a048f92e5194b`. [Run 39253305330](https://github.com/Evigila/Flourish/actions/runs/39253305330) failed before publication: Windows Edge temporarily locked its isolated DevToolsActivePort file and the browser fixture did not retry EBUSY. The publish job was skipped. That tag is preserved unchanged and is not a public NuGet release.
+All six public indexes contain 1.4.2. Fresh package/HTTP-cache consumers using only NuGet.org passed 143 checks across FrameworkOnly, MetaNative, MetaDesign and MetaCulture. All six Flourish and three Essential package metadata entries identify the public source. Other machines can restore this release without a sibling Flourish checkout or local preview feed. See [release verification](release-verification.md#completed-flourish-142-release-on-2026-10-19) for the run, upload times, indexing and downloaded-package provenance.
 
-The corrected fixture retries only ENOENT/EBUSY within its existing ten-second deadline, with four explicit recovery/failure checks and unchanged product assertions. Full `publish-helper.bat -Mode Prepare` passed for 1.4.2, including 42 browser/fixture checks without skips and 143 local independent package-consumer checks. See [release verification](release-verification.md#flourish-142-preparation-and-141-publication-failure-2026-10-19) for complete results and the retained CI failure evidence.
-
-This 1.4.2 snapshot is prepared but not yet committed, tagged or published. Use the existing Publish entry point after reviewed master is synchronized; do not move the failed 1.4.1 tag. Successful Trusted Publishing, all six public indexes and fresh `-PublicSource -Version 1.4.2` consumers are still required. Latest verified public release remains 1.4.0.
+Gallery includes four three-language product notes for 1.4.2 and the empty 1.4.3-preview. Its 1.4.1 entry explicitly says unpublished: [run 39253305330](https://github.com/Evigila/Flourish/actions/runs/39253305330) failed on a transient Windows browser-fixture file lock before upload. The existing v1.4.1 tag remains unchanged. The 1.4.2 fixture retries only ENOENT/EBUSY within the original ten-second limit, with explicit recovery/failure checks and unchanged product assertions; both local and hosted gates passed. Publication and public-only consumption are complete.
 
 ## Published Flourish 1.4.0
 
