@@ -1,4 +1,9 @@
 {
+  "ChangeLog_Unpublished141": {
+    "en-US": "Not published: release verification did not complete. The planned changes are included in 1.4.2.",
+    "zh-CN": "未发布：发布验证未完成，原定改动已纳入 1.4.2。",
+    "pt-BR": "Não publicada: a verificação da versão não foi concluída. As alterações planejadas estão incluídas na versão 1.4.2."
+  },
   "ChangeLog_PopupDismissal": {
     "en-US": "Standardize weak and strong popup dismissal across menus, dialogs and lookup controls; preserve content-sized overlays and outside-click dismissal for weak popups.",
     "zh-CN": "统一菜单、对话框及查询控件的弱弹窗与强弹窗关闭行为；弹层宽度适配内容，弱弹窗支持点击外部关闭。",

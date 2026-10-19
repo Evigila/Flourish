@@ -8,6 +8,59 @@ import { pathToFileURL } from 'node:url';
 
 let checks = 0;
 const check = async (name, action) => { await action(); checks++; process.stdout.write(`PASS ${name}\n`); };
+async function waitForBrowserEndpoint(activePortPath, launchError, {
+    readFile = fs.readFile, now = Date.now,
+    pause = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds))
+} = {}) {
+    const deadline = now() + 10000;
+    while (now() < deadline) {
+        const error = launchError();
+        if (error) throw error;
+        try {
+            const [port, route] = (await readFile(activePortPath, 'utf8')).trim().split(/\r?\n/);
+            if (port && route) return `ws://127.0.0.1:${port}${route}`;
+        } catch (error) {
+            // Edge briefly locks this file while publishing its isolated endpoint on Windows.
+            // Other filesystem errors remain failures, and the original deadline is unchanged.
+            if (error.code !== 'ENOENT' && error.code !== 'EBUSY') throw error;
+        }
+        await pause(50);
+    }
+    assert.fail('The installed browser did not expose its isolated native-select test session within 10000ms.');
+}
+await check('Browser endpoint discovery retries a missing or temporarily locked port file and returns the actual endpoint', async () => {
+    const responses = [Object.assign(new Error('not created'), {code:'ENOENT'}), Object.assign(new Error('being written'), {code:'EBUSY'}), '43210\r\n/devtools/browser/fixture\r\n'];
+    let elapsed = 0;
+    const endpoint = await waitForBrowserEndpoint('isolated-profile/DevToolsActivePort', () => undefined, {
+        readFile: async (file, encoding) => {
+            assert.equal(file, 'isolated-profile/DevToolsActivePort'); assert.equal(encoding, 'utf8');
+            const response = responses.shift(); if (response instanceof Error) throw response; return response;
+        },
+        now: () => elapsed, pause: async milliseconds => { elapsed += milliseconds; }
+    });
+    assert.equal(endpoint, 'ws://127.0.0.1:43210/devtools/browser/fixture');
+    assert.equal(responses.length, 0); assert.equal(elapsed, 100);
+});
+await check('A persistently locked browser port file still fails at the original ten-second deadline', async () => {
+    let elapsed = 0;
+    await assert.rejects(waitForBrowserEndpoint('isolated-profile/DevToolsActivePort', () => undefined, {
+        readFile: async () => { throw Object.assign(new Error('still locked'), {code:'EBUSY'}); },
+        now: () => elapsed, pause: async milliseconds => { elapsed += milliseconds; }
+    }), /within 10000ms/);
+    assert.equal(elapsed, 10000);
+});
+await check('Browser endpoint discovery does not conceal permission or unrelated filesystem failures', async () => {
+    const failure = Object.assign(new Error('access denied'), {code:'EPERM'});
+    await assert.rejects(waitForBrowserEndpoint('isolated-profile/DevToolsActivePort', () => undefined, {
+        readFile: async () => { throw failure; }, pause: async () => assert.fail('Unexpected retry')
+    }), error => error === failure);
+});
+await check('Browser launch errors fail endpoint discovery before reading or retrying', async () => {
+    const failure = new Error('browser launch failed');
+    await assert.rejects(waitForBrowserEndpoint('isolated-profile/DevToolsActivePort', () => failure, {
+        readFile: async () => assert.fail('Unexpected read'), pause: async () => assert.fail('Unexpected retry')
+    }), error => error === failure);
+});
 class Style {
     values = new Map();
     getPropertyValue(name) { return this.values.get(name) ?? ''; }
@@ -367,17 +420,7 @@ if (browserPath) {
                 '--disable-extensions', '--remote-debugging-port=0', `--window-size=${width},${height}`, '--user-data-dir=' + profile, 'about:blank'],
                 { stdio:'ignore', windowsHide:true });
             child.on('error', error => { launchError = error; });
-            let endpoint;
-            const deadline = Date.now() + 10000;
-            while (!endpoint && Date.now() < deadline) {
-                if (launchError) throw launchError;
-                try {
-                    const [port, route] = (await fs.readFile(path.join(profile, 'DevToolsActivePort'), 'utf8')).trim().split(/\r?\n/);
-                    if (port && route) endpoint = `ws://127.0.0.1:${port}${route}`;
-                } catch (error) { if (error.code !== 'ENOENT') throw error; }
-                if (!endpoint) await new Promise(resolve => setTimeout(resolve, 50));
-            }
-            assert.ok(endpoint, 'The installed browser did not expose its isolated native-select test session.');
+            const endpoint = await waitForBrowserEndpoint(path.join(profile, 'DevToolsActivePort'), () => launchError);
             socket = new WebSocket(endpoint);
             await new Promise((resolve, reject) => {
                 const timer = setTimeout(() => reject(new Error('Native-select browser connection timed out.')), 5000);

@@ -1,6 +1,33 @@
 # Release verification
 
+## Flourish 1.4.2 preparation and 1.4.1 publication failure, 2026-10-19
+
+The current prepared version is **1.4.2**, retaining Essential 1.4.0 and the same six Core/Blazor package IDs. WPF/WinUI are excluded. Gallery carries the four popup/presentation changes in 1.4.2, explicitly marks 1.4.1 as unpublished in en-US/zh-CN/pt-BR, and adds the empty 1.4.3-preview. No production library behavior or external dependency changed during this recovery.
+
+Source commit `66b0a5aad723830679d71a50a27a048f92e5194b` was pushed to master and tagged v1.4.1 using the authorized Publish entry point. [Run 39253305330](https://github.com/Evigila/Flourish/actions/runs/39253305330) failed in [build verification](https://github.com/Evigila/Flourish/actions/runs/39253305330/job/118062205673); its NuGet publication job was skipped. The Windows runner passed Core 367, Blazor 451, Culture 27 and Gallery 8,390, then the Node runner reported 119 passed, one failed and no skipped tests. Nine actual browser scenarios had already passed before the isolated browser fixture tried to read DevToolsActivePort while Edge held a temporary file lock; Node 24.21.0 raised EBUSY at action-menu-dom.mjs:375. This failure did not report a product assertion regression. The failed log is preserved at `artifacts/release-1.4.1-ci-failed.log`. The failed tag remains unchanged; no 1.4.1 package was uploaded by that run.
+
+Endpoint discovery now retries only ENOENT and the demonstrated EBUSY for that dedicated startup file, preserving the original 10-second deadline and 50ms interval. Other filesystem and launch errors still fail immediately. Four deterministic checks invoke the actual shared fixture helper and verify transient recovery, permanent-lock timeout, permission-error propagation and launch-error propagation. The real browser assertions and isolated profile lifecycle remain intact. The targeted file passed 42/42, with zero browser skips (`artifacts/release-1.4.2-browser.log`).
+
+The complete `publish-helper.bat -Mode Prepare` gate then passed with exit code 0 and zero build warnings/errors:
+
+| Gate | Result |
+| --- | --- |
+| Core / Blazor / Culture extension | 367 / 451 / 27 |
+| Gallery | 8,422, including 474 post-event and 343 ChangeLog checks |
+| Node runner | 120 passed, no failed/skipped tests |
+| Actual menu/native/browser fixture | 42/42, including four endpoint-discovery checks; zero browser skips |
+| CSS bundle / SDK assets / launcher | 21 / 194 / 95 |
+| Culture catalogs / ChangeLog validator | 24,408 / 117 (seven versions) |
+| Package identity, dependencies and assets | All six 1.4.2 packages |
+| Four independent local package consumers | 143 |
+
+Evidence: `artifacts/release-1.4.2-prepare.log`; six candidates in `artifacts/packages`; isolated consumer fixture `artifacts/package-consumers/a7bab80baad749498a5fe97023557614`. Candidate metadata identifies the local package feed, so this does not claim public 1.4.2 availability. The existing missing-package-README advisories remain distinct from successful compilation/packing. No dependency or tool was upgraded; the same local environment as the dated 1.4.1 preparation below was used.
+
+Before this preparation completed, fresh public indexes for all six IDs contained 1.4.0 but neither 1.4.1 nor 1.4.2, and remote v1.4.2 did not exist. Current publication is pending review, commit/push, a new v1.4.2 tag through the existing Publish entry point, successful Trusted Publishing, public indexing and fresh-cache public-only consumers. Preserve v1.4.1 and its failed run as history. Manual visual acceptance remains the [popup and presentation checklist](popup-presentation-manual-checklist.md); no Computer Use was performed.
+
 ## Flourish 1.4.1 preparation on 2026-10-19
+
+Historical preparation snapshot; the failed publication and replacement 1.4.2 preparation above supersede its pending state.
 
 The authorized stable release preparation promotes the popup and presentation changes already committed in `eec8ac8`. VersionPrefix is 1.4.1, Essential remains 1.4.0, and the existing six Core/Blazor package manifest is unchanged. Gallery adds four release notes in en-US, zh-CN and pt-BR and an empty 1.4.2-preview. This snapshot contains no new commit, tag, push or NuGet upload.
 
