@@ -1,4 +1,9 @@
 {
+  "ChangeLog_NativeHiddenState": {
+    "en-US": "Respect native hidden state on access and content surfaces so inactive notices and loading indicators do not appear over valid forms.",
+    "zh-CN": "访问页与内容页面正确遵循原生 hidden 状态，避免无效提示及加载指示误显示在有效表单上。",
+    "pt-BR": "Respeita o estado nativo hidden nas páginas de acesso e conteúdo, evitando avisos e indicadores de carregamento indevidos em formulários válidos."
+  },
   "ChangeLog_Unpublished141": {
     "en-US": "Not published: release verification did not complete. The planned changes are included in 1.4.2.",
     "zh-CN": "未发布：发布验证未完成，原定改动已纳入 1.4.2。",

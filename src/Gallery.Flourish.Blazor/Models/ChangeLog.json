@@ -6,7 +6,8 @@
       "Key.ChangeLog_BoundedAccessLayout",
       "Key.ChangeLog_NativeSelectTriggerStates",
       "Key.ChangeLog_AnchoredPopupPlacement",
-      "Key.ChangeLog_PresentationMediaAndIdentityScale"
+      "Key.ChangeLog_PresentationMediaAndIdentityScale",
+      "Key.ChangeLog_NativeHiddenState"
     ]
   },
   {

@@ -24,8 +24,10 @@ function compound(selector, element) {
   while (selector) {
     let match;
     if ((match = /^\.([\w-]+)/.exec(selector))) { specificity[1]++; matches &&= element.classes.has(match[1]); }
-    else if ((match = /^\[([^\]=]+)(?:=["']?([^\]"']+)["']?)?\]/.exec(selector))) {
-      specificity[1]++; matches &&= element.attributes.has(match[1]) && (match[2] === undefined || element.attributes.get(match[1]) === match[2]);
+    else if ((match = /^\[([\w-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\]\s]+))\s*([is])?\s*)?\]/.exec(selector))) {
+      const expected = match[2] ?? match[3] ?? match[4], actual = element.attributes.get(match[1]);
+      const equal = expected === undefined || (match[5] === "i" ? actual?.toLowerCase() === expected.toLowerCase() : actual === expected);
+      specificity[1]++; matches &&= element.attributes.has(match[1]) && equal;
     } else if ((match = /^:([\w-]+)\(/.exec(selector))) {
       let end = match[0].length, depth = 1;
       for (; end < selector.length && depth; end++) { if (selector[end] === "(") depth++; if (selector[end] === ")") depth--; }
@@ -278,5 +280,80 @@ test("checkbox choice labels have separate marker and longest-label tracks in bo
       assert.equal(cascade(allStyles, checkbox, "grid-column"), "1", kind + "/" + selected);
       assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-control-height,48px) minmax(0,1fr)");
     }
+  }
+});
+
+// Hidden is a native state, independently of the optional Design display paint.
+// Use the same complete author cascade as the popup rows, not hidden-property mocks.
+const ordinaryHiddenValues = ["", "hidden", "true", "false", "other", " until-found"];
+const hiddenScopeClasses = ["f-root", "f-shell", "content-surface", "navigation-surface", "f-dialog", "f-menu-panel"];
+function hiddenScope(className, parent = null, hiddenValue) {
+  const attributes = [["open", ""]];
+  if (className === "f-menu-panel") attributes.push(["popover", "manual"]);
+  if (hiddenValue !== undefined) attributes.push(["hidden", hiddenValue]);
+  return element("div", [className], parent, ["open", "popover-open"], attributes);
+}
+
+test("ordinary hidden hides each library surface itself and descendants after optional Design display paint", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles = rules(css);
+    for (const className of hiddenScopeClasses) for (const value of ordinaryHiddenValues) {
+      const scope = hiddenScope(className, null, value);
+      assert.equal(cascade(allStyles, scope, "display"), "none", className + "/root/" + JSON.stringify(value));
+      const visibleScope = hiddenScope(className);
+      // A top-layer popover retains DOM ancestry; its selected/open paint must not defeat hidden descendants.
+      const popover = hiddenScope("f-menu-panel", visibleScope);
+      for (const parent of [visibleScope, popover]) for (const control of ["f-notice", "f-loading", "f-button"]) {
+        const child = element("div", [control], parent, [], [["hidden", value]]);
+        assert.equal(cascade(allStyles, child, "display"), "none", className + "/" + control + "/" + JSON.stringify(value));
+      }
+    }
+  }
+});
+
+test("standalone Notice and LoadingState honor every ordinary hidden value without a shell or theme root", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles = rules(css);
+    for (const control of ["f-notice", "f-loading"]) for (const value of ordinaryHiddenValues) {
+      const target = element("div", [control], null, [], [["hidden", value]]);
+      assert.equal(cascade(allStyles, target, "display"), "none", control + "/" + JSON.stringify(value));
+    }
+    const themed = rules(frameworkCss + "\n" + designCss);
+    assert.equal(cascade(themed, element("div", ["f-notice"], null), "display"), "grid");
+    assert.equal(cascade(themed, element("div", ["f-loading"], null), "display"), "flex");
+  }
+});
+
+test("until-found remains outside the ordinary hidden guard including case-insensitive native keywords", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles = rules(css);
+    for (const value of ["until-found", "UNTIL-FOUND", "UnTiL-FoUnD"]) {
+      for (const className of hiddenScopeClasses) {
+        const scope = hiddenScope(className, null, value), visibleScope = hiddenScope(className);
+        assert.equal(cascade(allStyles, scope, "display"), cascade(allStyles, visibleScope, "display"), className + "/root/" + value);
+        for (const control of ["f-notice", "f-loading", "f-button"]) {
+          const target = element("div", [control], visibleScope, [], [["hidden", value]]);
+          const visible = element("div", [control], visibleScope);
+          assert.equal(cascade(allStyles, target, "display"), cascade(allStyles, visible, "display"), className + "/" + control + "/" + value);
+        }
+      }
+      for (const control of ["f-notice", "f-loading"]) {
+        const target = element("div", [control], null, [], [["hidden", value]]);
+        const visible = element("div", [control], null);
+        assert.equal(cascade(allStyles, target, "display"), cascade(allStyles, visible, "display"), "standalone/" + control + "/" + value);
+      }
+    }
+  }
+});
+
+test("native hidden correction preserves legacy toggle/dialog hiding and stays outside unrelated host content", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  for (const value of ordinaryHiddenValues) {
+    const toggle = element("div", ["f-toggle-section-content"], null, [], [["hidden", value]]);
+    assert.equal(cascade(allStyles, toggle, "display"), "none", "legacy toggle/" + JSON.stringify(value));
+    const dialog = hiddenScope("f-dialog"), target = element("div", ["f-loading"], dialog, [], [["hidden", value]]);
+    assert.equal(cascade(allStyles, target, "display"), "none", "legacy dialog/" + JSON.stringify(value));
+    const host = element("div", ["host-only-content"], null, [], [["hidden", value]]);
+    assert.equal(cascade(allStyles, host, "display"), undefined, "No new global HTML display policy.");
   }
 });

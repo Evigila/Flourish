@@ -1,0 +1,10 @@
+# Honor native hidden state on access surfaces
+
+Time: 2026-10-22 17:16:13, America/Sao_Paulo (UTC-03:00), corresponding to 2026-10-22T20:16:13Z.
+
+- Add scoped ordinary hidden guards to controlled surface roots and descendants and standalone Notice/LoadingState. Design grid/flex paint can no longer reveal inactive feedback. Exclude hidden="until-found" case-insensitively, consolidate the dialog rule and retain ToggleSection's boolean collapse contract. No global host display policy, new API or token behavior is introduced.
+- Record the fix in the existing three-culture Gallery preview and create local 1.4.3-preview.portals.10, preserving earlier package artifacts. Previous portal work was committed as 07b64e0; this is a separate defect correction.
+- Before the fix, the new native/cascade regression passed 16/19 and failed three relevant states; after it, native/surface passed 35/35 and controls DOM 77/77. Complete Blazor Release build had zero warnings/errors. Final Framework passed 460/460 after correcting an old comma-splitting test helper and retaining unknown-selector rejection; first 458/459 evidence remains. Gallery passed 8,549 (474 post-event, 363 ChangeLog), preview safeguards 12/12 and six-package verification passed.
+- Consumer Release build passed all 17 projects with zero warnings/errors; full Web passed 2,317 with 135 conditional PostgreSQL skips and zero failures. Registration and recovery/setup token matrices passed 30 and 46. Package, producer and consumed-cache hashes agree; no external dependency or maintained source file was added.
+
+See the [diagnosis, evidence and manual acceptance](../1_bugreports/2026-10-22_registration-invitation-hidden-state.md). The preserved Aspire instance still serves old CSS and requires the consumer's operation entry point restart before user acceptance. No real invitation was submitted or consumed, and no Computer Use, browser verification, database/cloud operation or public publication occurred. Audit state is unchanged.

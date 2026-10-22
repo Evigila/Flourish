@@ -26,7 +26,12 @@
 /* Functional layout and state only. Controls retain browser colors, typography and native focus. */
 .f-shell, .f-shell *, .f-shell *::before, .f-shell *::after,
 .f-data, .f-data *, .f-dialog, .f-dialog *, .f-menu-panel, .f-menu-panel * { box-sizing:border-box; }
-.f-shell [hidden], .f-toggle-section-content[hidden] { display:none!important; }
+/* Ordinary native hidden wins over control display paint, including standalone surfaces.
+   Keep until-found discoverable through the browser's native content-visibility behavior. */
+:is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel)[hidden]:not([hidden="until-found" i]),
+:is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel) [hidden]:not([hidden="until-found" i]),
+:is(.f-notice,.f-loading)[hidden]:not([hidden="until-found" i]) { display:none!important; }
+.f-toggle-section-content[hidden] { display:none!important; }
 .f-sr-only, .f-data-sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip-path:inset(50%)!important; white-space:nowrap!important; border:0!important; }
 @font-face {
  font-family:'Material Symbols Outlined'; font-style:normal; font-weight:100 700; font-display:block;
@@ -243,5 +248,4 @@ html:has(.f-shell[data-f-document-shell]),body:has(.f-shell[data-f-document-shel
 /* Unlike hidden, clip cannot be scrolled by fragment navigation or scrollIntoView. */
 .f-shell[data-f-document-shell] { position:fixed; inset:0; height:100dvh; min-height:0; overflow:clip; }
 
-.f-dialog [hidden] { display:none; }
 .f-dialog-view { min-width:0; white-space:normal; }

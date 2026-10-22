@@ -346,6 +346,21 @@ internal static class SplitButtonChecks
             }
             return Task.CompletedTask;
         }));
+        tests.Add(("panel display cascade keeps functional selector commas intact and rejects unreviewed hidden conditions", () =>
+        {
+            const string rootHidden = ":is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel)[hidden]:not([hidden=\"until-found\" i])";
+            const string descendantHidden = ":is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel) [hidden]:not([hidden=\"until-found\" i])";
+            const string bracketComma = ".f-menu-panel[data-label=\"left,right\"]";
+            var expected = new[] { rootHidden, descendantHidden, bracketComma };
+            Require(SelectorArms(string.Join(", ", expected)).SequenceEqual(expected), "Functional or attribute commas were split into unrelated selector arms.");
+            var css = ".f-menu-panel{display:block}" + rootHidden + "," + descendantHidden + "{display:none!important}";
+            Require(PanelDisplay(css, nativeSplit: true, open: true, interactiveOpen: false) == "block", "A reviewed hidden guard applied to a fixture without hidden on its panel or ancestors.");
+            var rejected = false;
+            try { PanelDisplay(".f-menu-panel[hidden]{display:none}", nativeSplit: true, open: true, interactiveOpen: false); }
+            catch (InvalidOperationException error) when (error.Message.StartsWith("Review the new panel display selector", StringComparison.Ordinal)) { rejected = true; }
+            Require(rejected, "The narrow cascade silently ignored an unreviewed selector merely because it mentions hidden.");
+            return Task.CompletedTask;
+        }));
         tests.Add(("native menus reject conflicting controlled callbacks and static expansion attributes", async () =>
         {
             await Reject(new() { [nameof(SplitButton.MenuContent)] = MenuItems(), [nameof(SplitButton.Expanded)] = false }, nameof(SplitButton.Expanded));
@@ -423,12 +438,15 @@ internal static class SplitButtonChecks
         {
             var displays = Regex.Matches(rule.Groups["body"].Value, @"(?:^|;)\s*display\s*:\s*(?<value>[^;}]+)", RegexOptions.IgnoreCase);
             if (displays.Count == 0) continue;
-            foreach (var part in rule.Groups["selector"].Value.Split(','))
+            foreach (var part in SelectorArms(rule.Groups["selector"].Value))
             {
                 var selector = Regex.Replace(part.Trim(), @"\s+", " ");
                 if (!selector.Contains(".f-menu-panel", StringComparison.Ordinal) || selector.Contains("::", StringComparison.Ordinal)) continue;
                 var applies = selector switch
                 {
+                    // Neither this panel nor its ancestors carries hidden in this bounded fixture.
+                    ":is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel)[hidden]:not([hidden=\"until-found\" i])"
+                        or ":is(.f-root,.f-shell,.content-surface,.navigation-surface,.f-dialog,.f-menu-panel) [hidden]:not([hidden=\"until-found\" i])" => false,
                     ".f-menu-panel" => true,
                     ".f-menu-panel:not(:popover-open):not([data-f-open])" => !interactiveOpen,
                     ".f-menu-panel[data-f-open]" => interactiveOpen,
@@ -452,6 +470,23 @@ internal static class SplitButtonChecks
             }
         }
         return winner;
+    }
+
+    private static IEnumerable<string> SelectorArms(string selectors)
+    {
+        var depth = 0;
+        var start = 0;
+        for (var index = 0; index < selectors.Length; index++)
+        {
+            if (selectors[index] is '(' or '[') depth++;
+            else if (selectors[index] is ')' or ']') depth--;
+            else if (selectors[index] == ',' && depth == 0)
+            {
+                yield return selectors[start..index].Trim();
+                start = index + 1;
+            }
+        }
+        yield return selectors[start..].Trim();
     }
 
     private static async Task WithButton(Dictionary<string, object?> parameters, Func<SplitButton, Func<string>, Task> verify)
