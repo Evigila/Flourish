@@ -3,15 +3,13 @@
 .f-dropdown-surface { position:relative; display:inline-block; }
 .f-dropdown-surface > summary { display:flex; align-items:center; gap:8px; list-style:none; cursor:pointer; }
 .f-dropdown-surface > summary::-webkit-details-marker { display:none; }
-.f-dropdown-surface > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; margin:4px 0 0; display:none; width:max-content; min-width:100%; max-width:min(90vw,36rem); z-index:40; }
+.f-dropdown-surface > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; margin:4px 0 0; display:none; width:max-content; min-width:0; max-width:calc(100vw - 24px); z-index:40; }
 .f-dropdown-surface[open] > .f-menu-panel { display:grid; gap:4px; }
 /* Only chrome Quiet actions inherit chrome colors; other variants keep their own contract. */
 @supports(appearance:base-select) {
     .f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true]) { color:inherit; }
 }
-.f-root .shell-header .f-button-quiet:not(:disabled):not([aria-disabled=true]) { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }
-.f-root .shell-header .f-button-quiet:hover:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-preview); }
-.f-root .shell-header .f-button-quiet:active:not(:disabled):not([aria-disabled=true]) { background:var(--f-target-click); }
+.f-root .shell-header .f-select.f-select-customized:not(:disabled):not([aria-disabled=true]) > .f-select-trigger.f-button-quiet:not(:disabled):not([aria-disabled=true]),.f-root .shell-header .f-button-quiet:not(.f-select-trigger):not(:disabled):not([aria-disabled=true]) { color:inherit; --f-target-preview:var(--f-preview-dark); --f-target-click:var(--f-click-dark); }.f-root .shell-header .f-select.f-select-customized:is(:hover,:open):not(:active):not(:disabled):not([aria-disabled=true]) > .f-select-trigger.f-button-quiet,.f-root .shell-header .f-button-quiet:hover:not(:disabled):not([aria-disabled=true]) { color:inherit; background:var(--f-target-preview); }.f-root .shell-header .f-select.f-select-customized:active:not(:disabled):not([aria-disabled=true]) > .f-select-trigger.f-button-quiet,.f-root .shell-header .f-button-quiet:active:not(:disabled):not([aria-disabled=true]) { color:inherit; background:var(--f-target-click); }
 .f-root .service-menu-view a strong { font-weight:400; }
 
 .f-root .secondary-rail .is-active { color:var(--f-surface); background:var(--f-primary); }

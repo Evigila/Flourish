@@ -5,4 +5,5 @@ namespace ArkheideSystem.Flourish.Blazor.Components;
 /// <param name="Label">The visible and accessible choice name.</param>
 /// <param name="Href">The root-relative GET destination selected by the host.</param>
 /// <param name="Disabled">Whether navigation to this choice is unavailable.</param>
-public sealed record NavigationChoiceItem(string Key, string Label, string Href, bool Disabled = false);
+/// <param name="Icon">An optional decorative library icon; the label remains the accessible name.</param>
+public sealed record NavigationChoiceItem(string Key, string Label, string Href, bool Disabled = false, string? Icon = null);

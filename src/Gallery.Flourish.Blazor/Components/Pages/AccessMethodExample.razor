@@ -1,8 +1,18 @@
 @page "/examples/display/access-methods"
+@layout AccessExampleLayout
 @inherits LocalizedComponentBase
 
 <PageTitle>@Localization.Parse(TextKey.Nav_DisplayMethods) · Gallery</PageTitle>
-<PageBody Fluid="true">
-    <p>@Localization.Parse(TextKey.Access_DemoOnly)</p>
-    <ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display.NavigationChoicesSample />
-</PageBody>
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>
+    <AccessLayout Wide="true" Dotted="true">
+        <Brand>
+            <LogoDisplayer Compact="true" ContextPrimary="true" LogoSize="96" ContextName="@Localization.Parse(TextKey.Access_ServiceTitle)" />
+            <InlineActions Alignment="HorizontalAlignment.Start">
+                <Button Href="/examples/display" Variant="ButtonVariant.Quiet" data-enhance-nav="false">@Localization.Parse(TextKey.Display_Back)</Button>
+            </InlineActions>
+        </Brand>
+        <ChildContent>
+            <ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display.NavigationChoicesSample FillHeight="true" />
+        </ChildContent>
+    </AccessLayout>
+</ArkheideSystem.Flourish.Blazor.Components.Patterns.ContentSurface>

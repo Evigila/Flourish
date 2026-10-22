@@ -21,6 +21,12 @@ function Read-Version([string] $Value) {
 [xml]$props = Get-Content -LiteralPath $VersionPropsPath -Raw
 $versionPrefix = [string]($props.Project.PropertyGroup | ForEach-Object { $_.VersionPrefix } | Where-Object { $_ } | Select-Object -First 1)
 $releaseVersion = Read-Version $versionPrefix
+$versionSuffix = [string]($props.SelectNodes('/Project/PropertyGroup/VersionSuffix') | ForEach-Object { $_.InnerText } | Where-Object { $_ } | Select-Object -First 1)
+$isPreviewSource = ![string]::IsNullOrEmpty($versionSuffix)
+if ($isPreviewSource -and ($versionSuffix -cnotmatch '^preview(?:\.[0-9A-Za-z-]+)*$' -or
+    @($versionSuffix.Split('.') | Where-Object { $_ -cmatch '^0\d+$' }).Count)) {
+    throw 'Gallery preview source must use a canonical preview VersionSuffix.'
+}
 $json = Get-Content -LiteralPath $CatalogPath -Raw -Encoding UTF8
 if (!$json.TrimStart().StartsWith('[')) { throw 'ChangeLog must be a JSON array.' }
 $parsed = $json | ConvertFrom-Json
@@ -38,7 +44,7 @@ foreach ($file in $CulturePath) {
 }
 $versions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 $stableVersions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-$highestStable = $releaseVersion
+$highestStable = if ($isPreviewSource) { [version]'0.0.0' } else { $releaseVersion }
 $previous = $null
 $preview = $null
 $checks = 0
@@ -91,9 +97,12 @@ foreach ($tag in $stableTags | Select-Object -Skip 1) {
     if ($number -gt $highestStable) { $highestStable = $number }
     $checks++
 }
-if ($versionPrefix -cne $firstRelease -and !$stableVersions.Contains($versionPrefix)) {
+if (!$isPreviewSource -and $versionPrefix -cne $firstRelease -and !$stableVersions.Contains($versionPrefix)) {
     throw "VersionPrefix '$versionPrefix' needs release notes before creating its tag."
 }
 $expectedPreview = '{0}.{1}.{2}-preview' -f $highestStable.Major, $highestStable.Minor, ($highestStable.Build + 1)
 if ($preview -cne $expectedPreview) { throw "ChangeLog must contain exactly one highest preview '$expectedPreview'." }
+if ($isPreviewSource -and ($versionPrefix + '-preview') -cne $expectedPreview) {
+    throw "Source preview '$versionPrefix-$versionSuffix' must belong to aggregate '$expectedPreview'."
+}
 Write-Output "PASS ChangeLog: $($entries.Count) versions, $checks checks, $expectedPreview."

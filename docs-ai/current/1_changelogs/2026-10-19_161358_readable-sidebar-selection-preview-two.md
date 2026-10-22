@@ -1,0 +1,7 @@
+# Readable selected Sidebar labels in preview two
+
+Recorded 2026-10-19 16:13:58, America/Sao_Paulo (UTC-03:00). Source version: 1.4.3-preview.portals.2. This supersedes the selected-label paint in the initial local .1 candidate; the .1 artifacts are preserved rather than overwritten.
+
+Source review found that the selected Sidebar label paired accent-text with surface-preview. Static color arithmetic showed 4.07:1 for the default green light theme and approximately 4.19:1 for the proposed consumer purple light theme, below the ordinary-text 4.5:1 threshold. Design now uses the existing text role on the same preview/pressed fills. The corresponding green/purple normal-state pairs are approximately 11.01:1 and 10.43:1. Only the selected-label role and package suffix changed; native navigation, geometry, icons, optional indicator and hidden panel lifecycle are unchanged. Gallery continues to group the preview under 1.4.3-preview without claiming a stable release.
+
+The existing palette regression now resolves the actual selected, hover and active Sidebar CSS through the default Light/Dark role tables and requires at least 4.5:1 for each resulting text/fill pair. Consumer-specific blue, purple and orange roles remain consumer-owned and require their matching host tests. This regression was added but not run by this bounded agent; coordinated build, pack and verification belong to the parent task. No public package, Git tag, commit or push was created here.

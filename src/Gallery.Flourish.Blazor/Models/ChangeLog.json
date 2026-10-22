@@ -1,7 +1,13 @@
 [
   {
     "version": "1.4.3-preview",
-    "changeKeys": []
+    "changeKeys": [
+      "Key.ChangeLog_NavigationChoicesSidebar",
+      "Key.ChangeLog_BoundedAccessLayout",
+      "Key.ChangeLog_NativeSelectTriggerStates",
+      "Key.ChangeLog_AnchoredPopupPlacement",
+      "Key.ChangeLog_PresentationMediaAndIdentityScale"
+    ]
   },
   {
     "version": "1.4.2",

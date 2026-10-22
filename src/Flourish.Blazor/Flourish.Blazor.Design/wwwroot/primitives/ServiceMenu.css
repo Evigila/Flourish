@@ -12,7 +12,7 @@
     color: inherit;
     background: transparent;
     border: 0;
-    border-radius: var(--f-radius-small);
+    border-radius: var(--f-radius-control);
     cursor: pointer;
     font: inherit;
     font-size: 17px;
@@ -29,7 +29,9 @@
     outline-offset: -3px;
 }
 .service-menu-view {
-    width: min(320px, calc(100vw - 24px));
+    width: max-content;
+    min-width: 0;
+    max-width: calc(100vw - 24px);
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity 120ms ease, transform 120ms ease, visibility 0s linear 120ms;

@@ -100,7 +100,7 @@ function copyTheme(trigger, panel) {
     const names = new Set(['font-family','font-size','font-weight','line-height','color-scheme']);
     for (let index = 0; index < style.length; index++) {
         const name = style[index];
-        if (name?.startsWith('--f-')) names.add(name);
+        if (name?.startsWith('--f-') && name !== '--f-popup-align') names.add(name);
     }
     const saved = [];
     for (const name of names) {
@@ -116,20 +116,21 @@ function copyTheme(trigger, panel) {
     }
     return () => saved.forEach(([name,value,priority]) => value ? panel.style.setProperty(name,value,priority) : panel.style.removeProperty(name));
 }
-function positionMenu(state) {
+export function positionPopup(state) {
     if (!state.open) return;
     // Hover regions can fill an entire top-bar slot; both modes anchor to the actual control.
     const trigger = state.trigger.getBoundingClientRect();
     const panel = state.panel;
-    // A percentage native-dropdown minimum follows its control, not the fixed top-layer viewport.
-    if (typeof state.minimumWidthRatio === 'number') panel.style.setProperty('min-width',`${trigger.width * state.minimumWidthRatio}px`);
     if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
     else panel.style.removeProperty('max-height');
     const maximumHeight = getComputedStyle(panel).maxHeight;
-    const menu = state.panel.getBoundingClientRect();
     const width = document.documentElement.clientWidth;
+    const alignment = popupAlignment(trigger, width);
+    panel.setAttribute('data-f-popup-align',alignment);
+    const menu = panel.getBoundingClientRect();
     const height = window.innerHeight;
-    panel.style.left = `${Math.max(12, Math.min(trigger.right - menu.width, width - menu.width - 12))}px`;
+    const edge = alignment === 'left' ? trigger.left : trigger.right - menu.width;
+    panel.style.left = `${Math.max(12, Math.min(edge, width - menu.width - 12))}px`;
     // Hover surfaces meet their trigger region so crossing into the menu has no dead gap.
     const gap = state.openOnHover ? 0 : 6;
     const below = Math.max(0,height - trigger.bottom - gap - 12);
@@ -138,10 +139,35 @@ function positionMenu(state) {
     const available = openAbove ? above : below;
     // A long panel scrolls on its chosen side instead of overlapping the control or leaving the viewport.
     panel.style.setProperty('max-height',maximumHeight && maximumHeight !== 'none'
-        ? `min(${available}px, ${maximumHeight})` : `${available}px`);
+        ? `min(${available}px, ${maximumHeight})` : `${available}px`,state.maximumHeightPriority ?? '');
     const panelHeight = Math.min(panel.getBoundingClientRect().height,available);
     const top = openAbove ? trigger.top - panelHeight - gap : trigger.bottom + gap;
     panel.style.top = `${Math.max(12,Math.min(top,height - panelHeight - 12))}px`;
+}
+
+function positionMenu(state) { positionPopup(state); }
+function popupAlignment(trigger, viewportWidth) { return (trigger.left + trigger.right) / 2 <= viewportWidth / 2 ? 'left' : 'right'; }
+
+const nativePickerDocuments = new WeakSet();
+/** Select keeps its native picker; establish its edge before any opening default action. */
+export function initializeNativePickers(root = document) {
+    const owner = root.ownerDocument ?? root;
+    const update = select => {
+        if (select?.tagName !== 'SELECT' || !select.isConnected || !select.getClientRects().length) return;
+        const alignment = popupAlignment(select.getBoundingClientRect(),owner.documentElement.clientWidth);
+        if (select.getAttribute('data-f-popup-align') !== alignment) select.setAttribute('data-f-popup-align',alignment);
+    };
+    const synchronize = target => {
+        if (target.tagName === 'SELECT' && target.matches('.f-select')) update(target);
+        for (const select of target.querySelectorAll('select.f-select')) update(select);
+    };
+    synchronize(root);
+    if (nativePickerDocuments.has(owner)) return;
+    nativePickerDocuments.add(owner);
+    const beforeOpen = event => update(event.target?.closest?.('select.f-select'));
+    for (const type of ['pointerdown','focusin','keydown']) owner.addEventListener(type,beforeOpen,true);
+    (owner.defaultView ?? window).addEventListener('resize',()=>synchronize(owner));
+    owner.addEventListener('scroll',()=>synchronize(owner),true);
 }
 
 /** One nonmodal tutorial entry: native top-layer board plus a passive hover/focus overview. */
@@ -310,8 +336,11 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     });
     listen(window,'resize',()=>positionMenu(state));
     listen(document,'scroll',()=>positionMenu(state),true);
-    const observer = new MutationObserver(() => { if (!trigger.isConnected) detachMenu(trigger,panel); });
-    observer.observe(document.body,{childList:true,subtree:true});
+    const observer = new MutationObserver(() => {
+        if (!trigger.isConnected) detachMenu(trigger,panel);
+        else if (state.open) positionMenu(state);
+    });
+    observer.observe(document.body,{childList:true,subtree:true,characterData:true});
     state.cleanup.push(()=>observer.disconnect());
     menus.set(panel,state);
 }
@@ -354,8 +383,6 @@ function openMenu(state, focusMenu) {
     const geometry = ['position','inset','margin','right','bottom','min-width'];
     const savedGeometry = geometry.map(name => [name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);
     state.restoreGeometry = () => savedGeometry.forEach(([name,value,priority]) => value ? panel.style.setProperty(name,value,priority) : panel.style.removeProperty(name));
-    const minimumWidth = getComputedStyle(panel).getPropertyValue('min-width');
-    state.minimumWidthRatio = minimumWidth.endsWith('%') ? Number.parseFloat(minimumWidth) / 100 : null;
     panel.style.setProperty('position','fixed'); panel.style.setProperty('inset','auto'); panel.style.setProperty('margin','0');
     panel.style.setProperty('right','auto'); panel.style.setProperty('bottom','auto');
     state.maximumHeight = panel.style.getPropertyValue('max-height');
@@ -364,9 +391,16 @@ function openMenu(state, focusMenu) {
     activeMenu = state;
     if (state.disclosure) state.disclosure.open = true;
     panel.setAttribute('data-f-open','');
-    panel.showPopover();
-    trigger.setAttribute('aria-expanded','true');
-    positionMenu(state);
+    const visibility = panel.style.getPropertyValue('visibility'), priority = panel.style.getPropertyPriority('visibility');
+    panel.style.setProperty('visibility','hidden');
+    try {
+        panel.showPopover();
+        trigger.setAttribute('aria-expanded','true');
+        positionMenu(state);
+    } finally {
+        if (visibility) panel.style.setProperty('visibility',visibility,priority);
+        else panel.style.removeProperty('visibility');
+    }
     if (focusMenu) menuItems(state)[0]?.focus({preventScroll:true});
 }
 export function toggleMenu(trigger, panel, focusMenu=true) {
@@ -409,6 +443,7 @@ export function detachMenu(trigger,panel) {
 
 /** Enhances static/native popup content using the same controller as interactive components. */
 export function initializePopups(root = document) {
+    initializeNativePickers(root);
     for (const owner of root.querySelectorAll('[data-f-popup="menu"]')) {
         if (!owner.isConnected) continue;
         const trigger = owner.querySelector(':scope > summary, :scope > button');

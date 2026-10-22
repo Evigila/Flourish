@@ -3,10 +3,10 @@
 @using ArkheideSystem.Flourish.Blazor.Hosting
 @inject ApplicationOptions Options
 
-<header @attributes="AdditionalAttributes" class="@($"f-logo-displayer {Class}".Trim())">
+<header @attributes="AdditionalAttributes" class="@($"f-logo-displayer {(Compact ? "f-logo-displayer-compact" : null)}{(HasPrimaryContext ? " f-logo-displayer-context-primary" : null)} {Class}".Trim())">
     @if (!string.IsNullOrWhiteSpace(EffectiveLogoPath))
     {
-        <img class="f-logo-displayer-logo" src="@EffectiveLogoPath" alt="@EffectiveAlternativeText" width="96" height="96" />
+        <img class="f-logo-displayer-logo" src="@EffectiveLogoPath" alt="@EffectiveAlternativeText" width="@EffectiveLogoSize" height="@EffectiveLogoSize" style="@LogoStyle" />
     }
     @Heading
     @if (!string.IsNullOrWhiteSpace(Description)) { <p class="f-logo-displayer-description">@Description</p> }
@@ -17,6 +17,11 @@
     [Parameter] public string? ProjectName { get; set; }
     [Parameter] public string? ContextName { get; set; }
     [Parameter] public string? Description { get; set; }
+    [Parameter] public bool Compact { get; set; }
+    /// <summary>Promotes a nonempty ContextName to the main title, with ProjectName above it as a smaller brand. Compact aligns the image to the context row.</summary>
+    [Parameter] public bool ContextPrimary { get; set; }
+    /// <summary>Overrides only this instance image size in pixels; omitted values retain the layout default.</summary>
+    [Parameter] public int? LogoSize { get; set; }
     [Parameter] public string TitleId { get; set; } = $"logo-title-{Guid.NewGuid():N}";
     [Parameter] public int HeadingLevel { get; set; } = 1;
     [Parameter] public string? Class { get; set; }
@@ -24,7 +29,11 @@
     protected override void OnParametersSet()
     {
         if (HeadingLevel is < 1 or > 6) throw new ArgumentOutOfRangeException(nameof(HeadingLevel));
+        if (LogoSize is <= 0) throw new ArgumentOutOfRangeException(nameof(LogoSize));
     }
+    private bool HasPrimaryContext => ContextPrimary && !string.IsNullOrWhiteSpace(ContextName);
+    private int EffectiveLogoSize => LogoSize ?? (Compact ? 48 : 96);
+    private string? LogoStyle => LogoSize is { } size ? FormattableString.Invariant($"--f-logo-size:{size}px;") : null;
     private string EffectiveName => ProjectName ?? (Options.Project.NameText is { } text ? Texts.Get(text) : Options.Project.Name);
     private string EffectiveLogoPath => LogoPath ?? Options.Project.LogoPath;
     private string EffectiveAlternativeText => LogoAlternativeText ?? Options.Project.LogoAlternativeText;
@@ -34,13 +43,14 @@
         builder.AddAttribute(1, "id", TitleId);
         builder.AddAttribute(2, "class", "f-logo-displayer-title");
         builder.OpenElement(3, "span");
-        builder.AddContent(4, EffectiveName);
+        builder.AddAttribute(4, "class", HasPrimaryContext ? "f-logo-displayer-project" : null);
+        builder.AddContent(5, EffectiveName);
         builder.CloseElement();
         if (!string.IsNullOrWhiteSpace(ContextName))
         {
-            builder.OpenElement(5, "span");
-            builder.AddAttribute(6, "class", "f-logo-displayer-context");
-            builder.AddContent(7, ContextName);
+            builder.OpenElement(6, "span");
+            builder.AddAttribute(7, "class", "f-logo-displayer-context");
+            builder.AddContent(8, ContextName);
             builder.CloseElement();
         }
         builder.CloseElement();

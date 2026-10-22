@@ -15,6 +15,7 @@
 @import url('./data-table.css');
 @import url('./multi-select-box.css');
 @import url('./navigation-choices.css');
+@import url('./access-layout.css');
 @import url('./expansion-indicator.css');
 @import url('./tutorial-board.css');
 
@@ -132,7 +133,21 @@
 .f-field-errors { overflow-wrap:anywhere; }
 .f-form-actions { display:grid; grid-template-columns:repeat(var(--f-action-columns,2),minmax(0,1fr)); grid-column:1/-1; min-width:0; }
 .f-form-actions > * { min-width:0; }
-.f-menu-panel { display:none; position:fixed; inset:auto; width:max-content; margin:0; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; background:Canvas; color:CanvasText; }
+.f-menu-panel { display:none; position:fixed; inset:auto; width:max-content; min-width:0; margin:0; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; background:Canvas; color:CanvasText; }
+.f-menu-panel,.selection-panel,.search-autocomplete-options { --f-popup-align:left; box-sizing:border-box; width:max-content; min-width:0; max-width:calc(100vw - 24px); text-align:left; }
+:is(.f-menu-panel,.selection-panel,.search-autocomplete-options)[data-f-popup-align="right"] { --f-popup-align:right; text-align:right; }
+:is(.selection-panel,.search-autocomplete-options)[popover]:not(:popover-open) { display:none; }
+:is(.selection-panel,.search-autocomplete-options)[popover]:popover-open { display:grid; }
+/* Menu rows share the longest item's column; ordinary page Buttons keep their own sizing. */
+.f-menu-panel > .f-button,.f-menu-panel .f-menu-item,.f-menu-panel .f-dropdown-item,.service-menu-view nav > a,
+.selection-panel :is(.selection-option,.selection-create),.selection-panel > .f-button,
+.search-autocomplete-options > :is(.search-autocomplete-option,.search-autocomplete-empty,.f-button) { box-sizing:border-box; width:100%; min-width:0; max-width:100%; justify-self:stretch; align-self:stretch; text-align:var(--f-popup-align,left); justify-content:var(--f-popup-align,left); overflow-wrap:anywhere; }
+/* Choice markers own a fixed leading track; only the label track follows popup text alignment. */
+.f-multi-select-panel label.f-dropdown-item { display:grid; grid-template-columns:var(--f-control-height,48px) minmax(0,1fr); column-gap:12px; align-items:center; width:auto; max-width:none; justify-content:stretch; }
+.f-multi-select-panel label.f-dropdown-item > input[type=checkbox] { grid-column:1; grid-row:1; justify-self:center; }
+.f-multi-select-panel label.f-dropdown-item > span { grid-column:2; grid-row:1; min-width:0; text-align:var(--f-popup-align,left); overflow-wrap:anywhere; }
+/* Search fields fill the measured option column without contributing their native 20-character width. */
+.selection-panel .selection-search,.f-multi-select-panel > .f-multi-select-search { box-sizing:border-box; width:0; min-width:100%; max-width:100%; }
 .f-menu-panel:not(:popover-open):not([data-f-open]) { display:none; }
 .f-menu-panel[data-f-open] { display:block; z-index:1000; }
 /* Native menu slots retain a real details opening before JavaScript enhancement. */

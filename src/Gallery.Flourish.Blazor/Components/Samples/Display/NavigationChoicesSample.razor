@@ -3,53 +3,43 @@
 @inherits LocalizedComponentBase
 @inject NavigationManager Navigation
 
-<PresentationHero Title="@Localization.Parse(TextKey.Access_OrganizationName)" StackTitleWords="true" MinHeight="0"
-                  Tone="PresentationTone.Surface" Dotted="true" FullHeight="@(!Preview)">
-    <SideContent>
-        <AccessFormSurface Tone="PresentationTone.Primary">
-            <Section Title="@Localization.Parse(TextKey.Access_MethodOrganizationAction)" TitleId="@(Id + "-title")">
-                <NavigationChoices Id="@Id" Label="@Localization.Parse(TextKey.Access_MethodLabel)" Items="Choices" ActiveKey="@ActiveKey" Compact="true" Variant="ButtonVariant.Elevated" ActiveVariant="ButtonVariant.Elevated">
-                    <ChildContent Context="choice">
-                        @if (choice.Key == "organization")
-                        {
-                            <FormLayout Columns="1">
-                                <Field Id="@(Id + "-username")" Label="@Localization.Parse(TextKey.Access_OrganizationEmail)">
-                                    <StandaloneTextBox Id="@(Id + "-username")" Type="text" inputmode="email" autocomplete="username" />
-                                </Field>
-                                <Field Id="@(Id + "-password")" Label="@Localization.Parse(TextKey.Access_OrganizationPassword)">
-                                    <StandaloneTextBox Id="@(Id + "-password")" Type="password" autocomplete="current-password" />
-                                </Field>
-                                <Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Access_MethodOrganizationAction)</Button>
-                            </FormLayout>
-                        }
-                        else if (choice.Key == "account")
-                        {
-                            <Button Variant="ButtonVariant.Elevated" Href="/examples/display/login" data-enhance-nav="false">@Localization.Parse(TextKey.Access_MethodAccountAction)</Button>
-                        }
-                        else
-                        {
-                            <FormLayout Columns="1">
-                                <Field Id="@(Id + "-pass")" Label="@Localization.Parse(TextKey.Access_MethodCredential)">
-                                    <StandaloneTextBox Id="@(Id + "-pass")" Type="password" autocomplete="off" />
-                                </Field>
-                                <Button Variant="ButtonVariant.Elevated" Disabled="true">@Localization.Parse(TextKey.Access_MethodPassAction)</Button>
-                            </FormLayout>
-                        }
-                    </ChildContent>
-                </NavigationChoices>
-            </Section>
-        </AccessFormSurface>
-    </SideContent>
-</PresentationHero>
-
+    <NavigationChoices Id="@Id" Label="@Localization.Parse(TextKey.Access_MethodLabel)" Items="Choices" ActiveKey="@ActiveKey"
+                       Layout="NavigationChoicesLayout.Sidebar" ActiveVariant="ButtonVariant.Primary" FillHeight="@FillHeight">
+        <ChildContent Context="choice">
+            @if (choice.Key == "organization")
+            {
+                <h3>@Localization.Parse(TextKey.Access_MethodOrganizationAction)</h3>
+                <p>@Localization.Parse(TextKey.Access_OrganizationHint)</p>
+                <FormLayout Columns="1">
+                    <Field Id="@(Id + "-username")" Label="@Localization.Parse(TextKey.Access_OrganizationEmail)">
+                        <StandaloneTextBox Id="@(Id + "-username")" Type="text" inputmode="email" autocomplete="username" />
+                    </Field>
+                    <Field Id="@(Id + "-password")" Label="@Localization.Parse(TextKey.Access_OrganizationPassword)">
+                        <StandaloneTextBox Id="@(Id + "-password")" Type="password" autocomplete="current-password" />
+                    </Field>
+                </FormLayout>
+                <InlineActions Alignment="HorizontalAlignment.Start">
+                    <Button Disabled="true">@Localization.Parse(TextKey.Access_MethodOrganizationAction)</Button>
+                </InlineActions>
+            }
+            else
+            {
+                <h3>@Localization.Parse(TextKey.Access_MethodAccountAction)</h3>
+                <p>@Localization.Parse(TextKey.Access_MethodAccountHint)</p>
+                <InlineActions Alignment="HorizontalAlignment.Start">
+                    <Button Href="/examples/display/login" data-enhance-nav="false">@Localization.Parse(TextKey.Access_MethodAccountAction)</Button>
+                </InlineActions>
+            }
+        </ChildContent>
+    </NavigationChoices>
 @code {
     [Parameter] public bool Preview { get; set; }
+    [Parameter] public bool FillHeight { get; set; }
     private readonly string Id = "navigation-choices-" + Guid.NewGuid().ToString("N");
     private IReadOnlyList<NavigationChoiceItem> Choices =>
     [
-        new("organization", Localization.Parse(TextKey.Access_MethodOrganization), "/examples/display/access-methods?choice=organization"),
-        new("account", Localization.Parse(TextKey.Access_MethodAccount), "/examples/display/access-methods?choice=account"),
-        new("pass", Localization.Parse(TextKey.Access_MethodPass), "/examples/display/access-methods?choice=pass")
+        new("account", Localization.Parse(TextKey.Access_MethodAccount), "/examples/display/access-methods?choice=account", Icon:"account_circle"),
+        new("organization", Localization.Parse(TextKey.Access_MethodOrganization), "/examples/display/access-methods?choice=organization", Icon:"apartment")
     ];
     private string ActiveKey
     {
@@ -57,7 +47,7 @@
         {
             var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(new Uri(Navigation.Uri).Query);
             var key = query.TryGetValue("choice", out var value) ? value.ToString() : string.Empty;
-            return Choices.Any(choice => choice.Key == key) ? key : "organization";
+            return Choices.Any(choice => choice.Key == key) ? key : "account";
         }
     }
 }

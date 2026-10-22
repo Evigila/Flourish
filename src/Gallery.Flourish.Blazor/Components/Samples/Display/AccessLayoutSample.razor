@@ -1,0 +1,19 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Display
+@attribute [SampleFor("AccessLayout", DescriptionKey = "Key.Sample_AccessLayoutSample_Description")]
+@inherits LocalizedComponentBase
+
+<div style="height:540px;width:100%">
+    <AccessLayout Wide="true" Dotted="true">
+        <Brand>
+            <LogoDisplayer Compact="true" ContextPrimary="true" LogoSize="96" ContextName="@Localization.Parse(TextKey.Access_ServiceTitle)" />
+            <InlineActions Alignment="HorizontalAlignment.Start">
+                <Button Href="/examples/display" Variant="ButtonVariant.Quiet" data-enhance-nav="false">@Localization.Parse(TextKey.Display_Back)</Button>
+            </InlineActions>
+        </Brand>
+        <ChildContent>
+            <NavigationChoicesSample FillHeight="true" />
+        </ChildContent>
+    </AccessLayout>
+</div>
+
+@code { [Parameter] public bool Preview { get; set; } }

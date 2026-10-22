@@ -34,7 +34,9 @@
     cursor: not-allowed;
 }
 .selection-dropdown-surface .selection-search {
-    width: 100%;
+    width: 0;
+    min-width: 100%;
+    max-width: 100%;
     height: var(--f-control-height);
     padding: 0 16px;
     color: var(--f-text);
@@ -53,7 +55,8 @@
     border-radius: 10px;
     font: inherit;
     font-size: 17px;
-    text-align: left;
+    text-align: var(--f-popup-align,left);
+    justify-content: var(--f-popup-align,left);
     cursor: pointer;
 }
 .selection-dropdown-surface :is(.selection-option, .selection-create):hover:not(:disabled):not(:has(input:disabled)) {

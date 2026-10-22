@@ -705,9 +705,9 @@
     "pt-BR": "Identidade do projeto em páginas de acesso/apresentação"
   },
   "Usage_LogoDisplayer_Guidance": {
-    "en-US": "Production use: Logo above the artistic project name; reads ConfigureProject by default. Names support scoped localization and instance overrides. HeadingLevel selects actual heading semantics. Branding is distinct from authentication behavior and shell-header identity.",
-    "zh-CN": "生产使用：上方 Logo、下方项目艺术字，默认读取 ConfigureProject 的名称/标志；项目名支持作用域本地化和实例覆盖。HeadingLevel 选择真实标题语义。不是业务壳顶部品牌或认证控件。",
-    "pt-BR": "Uso em produção: Logo acima do nome artístico do projeto; lê ConfigureProject por padrão. Nomes aceitam localização por escopo e substituição por instância. HeadingLevel escolhe a semântica real do título. Marca é distinta de autenticação e da identidade no cabeçalho da estrutura."
+    "en-US": "Production use: configured project identity with semantic HeadingLevel. Compact changes to a simple horizontal layout and preserves ordinary project/context typography. Positive LogoSize independently overrides this image only, even on short viewports. No authentication behavior.",
+    "zh-CN": "生产使用：配置项目身份及语义HeadingLevel。Compact切换简单横向布局，并保留普通项目与上下文字号。正值LogoSize独立覆盖当前图像，短屏也保持；不负责认证。",
+    "pt-BR": "Uso em produção: identidade configurada com HeadingLevel semântico. Compact usa layout horizontal simples e preserva a tipografia comum. LogoSize positivo altera apenas a imagem, mesmo em telas baixas. Sem autenticação."
   },
   "Usage_PresentationHero_Scenario": {
     "en-US": "Artistic product headings",
@@ -715,9 +715,9 @@
     "pt-BR": "Títulos artísticos de produtos"
   },
   "Usage_PresentationHero_Guidance": {
-    "en-US": "Production use: artistic heading, subtitle and standard actions for presentation homepages. Use PageHeading for business records and management pages.",
-    "zh-CN": "生产使用：展示首页的艺术标题、副标题和标准操作；业务记录、管理标题使用 PageHeading，不将艺术字号应用于业务正文。",
-    "pt-BR": "Uso em produção: título artístico, subtítulo e ações padrão para páginas iniciais de apresentação. Use PageHeading em registros e páginas de gerenciamento."
+    "en-US": "Production use: artistic presentation title, subtitle and standard actions. BackgroundImageUrl delegates decorative cover media and the standard Tone gradient to the owned band. Use PageHeading for business records and management pages.",
+    "zh-CN": "生产使用：艺术展示标题、副标题和标准操作。BackgroundImageUrl将装饰cover背景及标准Tone渐变委托给所属Band。业务记录和管理页使用PageHeading。",
+    "pt-BR": "Uso em produção: título artístico, subtítulo e ações padrão. BackgroundImageUrl delega mídia cover decorativa e o gradiente de Tone à faixa. Use PageHeading em registros e páginas de gerenciamento."
   },
   "Usage_PresentationBand_Scenario": {
     "en-US": "Full-width presentation bands",
@@ -725,9 +725,9 @@
     "pt-BR": "Faixas de apresentação de largura total"
   },
   "Usage_PresentationBand_Guidance": {
-    "en-US": "Production use: default minimum height 800px with natural growth. Separate full-width background and internal ContentContainer. Dotted defaults to false; Tone uses standard color roles, with alternating neighboring bands recommended. Do not override widths with consumer CSS.",
-    "zh-CN": "生产使用：默认最小高度 800px，长内容自然增长；全宽背景与内部 ContentContainer 分层。Dotted 默认关闭；Tone 使用标准颜色角色，推荐相邻横幅交替颜色。不通过消费端 CSS 覆盖宽度。",
-    "pt-BR": "Uso em produção: altura mínima padrão de 800px, com crescimento natural. Separe o fundo de largura total e o ContentContainer interno. Dotted é false por padrão; Tone usa funções de cor padrão, com alternância recomendada entre faixas vizinhas. Não substitua larguras com CSS do consumidor."
+    "en-US": "Production use: FullHeight=true and MinHeight=0 keep a viewport minimum and natural content growth. Optional BackgroundImageUrl renders decorative cover media beneath the standard Tone gradient without changing height or actions. Dotted remains independent and defaults false; content uses ContentContainer.",
+    "zh-CN": "生产使用：FullHeight=true、MinHeight=0保持视口最小高度和正文自然增长。可选BackgroundImageUrl在标准Tone渐变下渲染装饰cover背景，不改变高度或操作。Dotted保持独立且默认false，正文使用ContentContainer。",
+    "pt-BR": "Uso em produção: FullHeight=true e MinHeight=0 mantêm o mínimo da janela e crescimento natural. BackgroundImageUrl mostra mídia cover decorativa sob o gradiente de Tone sem alterar altura ou ações. Dotted é independente e false por padrão; o conteúdo usa ContentContainer."
   },
   "Usage_ContentContainer_Scenario": {
     "en-US": "Centered bounded content",
@@ -975,9 +975,9 @@
     "pt-BR": "Seleção única para POST nativo ou modelos sem validação"
   },
   "Usage_StandaloneSelectBox_Guidance": {
-    "en-US": "Production use: options, Value/ValueChanged and native attributes. Does not register EditContext validation; use SelectBox for validated model selection.",
-    "zh-CN": "生产使用：选项、Value / ValueChanged 和原生属性；不自动注册 EditContext 验证，验证模型选择使用 SelectBox。",
-    "pt-BR": "Uso em produção: opções, Value/ValueChanged e atributos nativos. Não registra validação no EditContext; use SelectBox para seleção com validação do modelo."
+    "en-US": "Production use: options, Value/ValueChanged and native attributes. Does not register EditContext validation; use SelectBox for validated model selection. Customized native select state belongs to the real select and projects to its inert standard Button trigger; this does not replace native selection or add popup Strength.",
+    "zh-CN": "生产使用：选项、Value / ValueChanged 和原生属性；不自动注册 EditContext 验证，验证模型选择使用 SelectBox。 自定义原生select状态属于实际select，并投射至inert标准Button触发器；不替换原生选择或新增弹窗Strength。",
+    "pt-BR": "Uso em produção: opções, Value/ValueChanged e atributos nativos. Não registra validação no EditContext; use SelectBox para seleção com validação do modelo. O estado do select nativo é projetado no botão visual inerte; não substitui a seleção nativa nem adiciona Strength."
   },
   "Usage_StandaloneCheckBox_Scenario": {
     "en-US": "Boolean input for native POST or unvalidated models",
@@ -1005,9 +1005,9 @@
     "pt-BR": "Seleção única vinculada ao modelo"
   },
   "Usage_SelectBox_Guidance": {
-    "en-US": "Production use: SelectOption, ValueExpression and optional EditForm validation. Use StandaloneSelectBox for native POST and ReferenceDropdown for searchable references with creation.",
-    "zh-CN": "生产使用：SelectOption 和 ValueExpression / 可选 EditForm 验证；原生 POST 使用 StandaloneSelectBox，带引用搜索创建使用 ReferenceDropdown。",
-    "pt-BR": "Uso em produção: SelectOption, ValueExpression e validação opcional com EditForm. Use StandaloneSelectBox para POST nativo e ReferenceDropdown para referências pesquisáveis com criação."
+    "en-US": "Production use: SelectOption, ValueExpression and optional EditForm validation. Use StandaloneSelectBox for native POST and ReferenceDropdown for searchable references with creation. Customized native select state belongs to the real select and projects to its inert standard Button trigger; this does not replace native selection or add popup Strength.",
+    "zh-CN": "生产使用：SelectOption 和 ValueExpression / 可选 EditForm 验证；原生 POST 使用 StandaloneSelectBox，带引用搜索创建使用 ReferenceDropdown。 自定义原生select状态属于实际select，并投射至inert标准Button触发器；不替换原生选择或新增弹窗Strength。",
+    "pt-BR": "Uso em produção: SelectOption, ValueExpression e validação opcional com EditForm. Use StandaloneSelectBox para POST nativo e ReferenceDropdown para referências pesquisáveis com criação. O estado do select nativo é projetado no botão visual inerte; não substitui a seleção nativa nem adiciona Strength."
   },
   "Usage_MultiSelectBox_Scenario": {
     "en-US": "General multi-selection with optional ordering",
@@ -1195,9 +1195,9 @@
     "pt-BR": "Seleção de método com GET nativo"
   },
   "Usage_NavigationChoices_Guidance": {
-    "en-US": "Production use: NavigationChoiceItem items and a route-derived ActiveKey. Compact selects standard Button links with Variant/ActiveVariant; the default is a grid. The library owns same-site GET links and retained panels, with aria-current on the active link. The host supplies forms and retains authentication/POST/authorization. Disabled is not authorization.",
-    "zh-CN": "生产使用：Items采用NavigationChoiceItem，ActiveKey由当前路由确定。Compact使用Variant/ActiveVariant配置普通Button入口，默认网格。库拥有原生同站点GET链接与保留面板，当前项使用aria-current。宿主提供表单并保留认证/POST/授权；禁用不代替授权。",
-    "pt-BR": "Uso em produção: itens NavigationChoiceItem e ActiveKey derivado da rota. Compact usa links Button padrão com Variant/ActiveVariant; o padrão é grade. A biblioteca controla GET do mesmo site e painéis preservados, com aria-current no link ativo. O aplicativo mantém formulários, autenticação/POST/autorização. Disabled não representa autorização."
+    "en-US": "Production use: NavigationChoiceItem and route-derived ActiveKey. Layout selects Grid, Compact or responsive Sidebar; Sidebar owns the narrow choice surface and detail panel, optional icons and current-item check. Compact/Sidebar use standard Button links with Variant/ActiveVariant. Native same-site GET, aria-current and retained hidden panels preserve host forms. Authentication, POST and authorization remain host-owned; Disabled is not authorization.",
+    "zh-CN": "生产使用：NavigationChoiceItem 与路由决定的 ActiveKey。Layout 选择 Grid、Compact 或响应式 Sidebar；Sidebar 拥有左侧窄列表及右侧详情表面、可选图标及当前项勾选。Compact/Sidebar 使用标准 Button 链接及 Variant/ActiveVariant。原生同站点 GET、aria-current 及保留隐藏面板保持宿主表单；认证、POST 与授权仍归宿主，Disabled 不代表授权。",
+    "pt-BR": "Uso em produção: NavigationChoiceItem e ActiveKey derivado da rota. Layout escolhe Grid, Compact ou Sidebar responsiva; Sidebar controla a lista estreita, o painel de detalhes, ícones e marca atuais opcionais. Compact/Sidebar usam links Button com Variant/ActiveVariant. GET nativo, aria-current e painéis ocultos preservam formulários. Autenticação, POST e autorização pertencem ao aplicativo; Disabled não é autorização."
   },
   "Usage_ValidationMessages_Scenario": {
     "en-US": "Hidden and cross-field validation messages",
@@ -1428,5 +1428,15 @@
     "en-US": "Production use: supply MenuAction through Actions, or standard Button/native form actions through ChildContent; the two are exclusive. One core owns availability, keyboard navigation, closing and async dialog callers. OpenOnHover supports both content modes after browser enhancement; native SSR retains click/keyboard disclosure. Use ServiceMenu for service links.",
     "zh-CN": "生产使用：Actions 使用 MenuAction；ChildContent 使用完整的标准 Button 或原生协议表单动作，两者互斥。统一菜单核心管理可用性、键盘、关闭与异步弹窗调用者；浏览器增强后两种内容均支持 OpenOnHover，原生 SSR 保留点击/键盘展开。服务导航仍使用 ServiceMenu。",
     "pt-BR": "Uso em produção: forneça MenuAction em Actions ou ações com Button/formulários nativos em ChildContent; as opções são exclusivas. Um único núcleo controla disponibilidade, teclado, fechamento e chamadas de diálogos assíncronos. OpenOnHover aceita ambos os modos após aprimoramento no navegador; SSR nativo mantém abertura por clique/teclado. Use ServiceMenu para links de serviços."
+  },
+  "Usage_AccessLayout_Scenario": {
+    "en-US": "Bounded access and operation pages",
+    "zh-CN": "有界访问与操作页面",
+    "pt-BR": "Páginas de acesso e operações limitadas"
+  },
+  "Usage_AccessLayout_Guidance": {
+    "en-US": "Use directly in a bounded ContentSurface stage. Brand holds identity and stable return links; the body gets the remaining height. Wide selects 960px instead of 560px; Dotted uses theme roles. NavigationChoices.FillHeight scrolls the selected details without moving identity/navigation. No main, authentication or native protocol changes.",
+    "zh-CN": "直接用于有界ContentSurface内容区。Brand承载身份与稳定返回链接，正文获得剩余高度。Wide从560px切换到960px，Dotted使用主题角色。NavigationChoices.FillHeight内部滚动当前详情而不移动身份与导航。不创建main、认证或原生协议变更。",
+    "pt-BR": "Use diretamente na área limitada de ContentSurface. Brand contém identidade e retorno estáveis; o corpo recebe a altura restante. Wide seleciona 960px em vez de 560px; Dotted usa papéis do tema. NavigationChoices.FillHeight rola os detalhes sem mover identidade ou navegação. Sem main, autenticação ou alteração de protocolo."
   }
 }

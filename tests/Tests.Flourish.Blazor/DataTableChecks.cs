@@ -355,17 +355,22 @@ internal static class DataTableChecks
                 });
             }
         }));
-        tests.Add(("shared dropdown options override ordinary Button flex centering", () =>
+        tests.Add(("shared dropdown options override ordinary Button centering with physical popup alignment", () =>
         {
             var rootPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
             var framework = ExpandMenuCss(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css"));
             var design = ExpandMenuCss(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/design.css"));
-            Require(MenuItemProperty(framework, "display") == "block"
-                && MenuItemProperty(framework, "text-align") == "start", "Unskinned native menu items lost their start alignment.");
+            Require(MenuItemProperty(framework, "display") == "block", "Unskinned native menu items lost their block layout.");
             var combined = framework + "\n" + design;
             Require(MenuItemProperty(combined, "display") == "flex"
-                && MenuItemProperty(combined, "justify-content") == "flex-start"
-                && MenuItemProperty(combined, "text-align") == "start", "The Design cascade retained ordinary Button centering for menu options.");
+                && MenuItemProperty(combined, "justify-content", ordinaryButton: true) == "center", "The Design menu or ordinary Button lost its own layout contract.");
+            foreach (var css in new[] { framework, combined })
+            {
+                Require(MenuItemProperty(css, "justify-content") == "var(--f-popup-align,left)"
+                    && MenuItemProperty(css, "text-align") == "var(--f-popup-align,left)", "The dropdown cascade retained ordinary Button centering instead of the shared physical alignment.");
+                foreach (var alignment in new string?[] { null, "left", "right" })
+                    Require(MenuPanelAlignment(css, alignment) == (alignment ?? "left"), "The popup attribute did not select physical left/right alignment with a left default.");
+            }
             return Task.CompletedTask;
         }));
         tests.Add(("item range supports localized spacing and unframed totals for populated and empty tables", async () =>
@@ -750,7 +755,7 @@ internal static class DataTableChecks
 
     // Resolve only the base declarations that apply to a Button menu item. State and
     // component-specific selectors are outside this alignment regression's scope.
-    private static string MenuItemProperty(string css, string property)
+    private static string MenuItemProperty(string css, string property, bool ordinaryButton = false)
     {
         var winner = string.Empty;
         var specificity = -1;
@@ -759,12 +764,33 @@ internal static class DataTableChecks
         {
             var score = selector switch
             {
-                ".f-button" or ".f-menu-item" => 1,
-                ".f-dropdown-panel .f-dropdown-item" => 2,
+                ".f-button" => 1,
+                ".f-menu-item" when !ordinaryButton => 1,
+                ".f-dropdown-panel .f-dropdown-item" or ".f-menu-panel .f-menu-item"
+                    or ".f-menu-panel .f-dropdown-item" or ".f-menu-panel > .f-button" when !ordinaryButton => 2,
                 _ => -1
             };
             if (score < specificity || score < 0) continue;
             foreach (Match declaration in Regex.Matches(rule.Groups["body"].Value, $@"(?:^|;)\s*{Regex.Escape(property)}\s*:\s*(?<value>[^;}}]+)"))
+            {
+                winner = declaration.Groups["value"].Value.Trim();
+                specificity = score;
+            }
+        }
+        return winner;
+    }
+
+    private static string MenuPanelAlignment(string css, string? alignment)
+    {
+        var winner = string.Empty;
+        var specificity = -1;
+        foreach (Match rule in Regex.Matches(css, @"(?<selector>[^{}]+)\{(?<body>[^{}]*)\}"))
+        {
+            var selector = Regex.Replace(rule.Groups["selector"].Value.Trim(), @"\s+", " ");
+            var score = alignment == "right" && selector == ":is(.f-menu-panel,.selection-panel,.search-autocomplete-options)[data-f-popup-align=\"right\"]"
+                ? 2 : selector.Split(',').Any(arm => arm.Trim() == ".f-menu-panel") ? 1 : -1;
+            if (score < specificity || score < 0) continue;
+            foreach (Match declaration in Regex.Matches(rule.Groups["body"].Value, @"(?:^|;)\s*--f-popup-align\s*:\s*(?<value>[^;}]+)"))
             {
                 winner = declaration.Groups["value"].Value.Trim();
                 specificity = score;

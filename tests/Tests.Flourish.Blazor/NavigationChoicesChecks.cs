@@ -33,7 +33,7 @@ internal static class NavigationChoicesChecks
         tests.Add(("compact navigation choices use standard buttons without changing native GET destinations", async () =>
         {
             var parameters = Parameters();
-            parameters[nameof(NavigationChoices.Compact)] = true;
+            parameters[nameof(NavigationChoices.Layout)] = NavigationChoicesLayout.Compact;
             await WithComponent(parameters, (_, activator, html) =>
             {
                 var output = html();
@@ -61,7 +61,7 @@ internal static class NavigationChoicesChecks
         tests.Add(("compact navigation choices use selected production button variants without changing retained forms or destinations", async () =>
         {
             var parameters = Parameters();
-            parameters[nameof(NavigationChoices.Compact)] = true;
+            parameters[nameof(NavigationChoices.Layout)] = NavigationChoicesLayout.Compact;
             parameters[nameof(NavigationChoices.Variant)] = ButtonVariant.Elevated;
             parameters[nameof(NavigationChoices.ActiveVariant)] = ButtonVariant.Elevated;
             await WithComponent(parameters, async (component, activator, html) =>
@@ -95,7 +95,7 @@ internal static class NavigationChoicesChecks
         tests.Add(("compact navigation choices retain disabled panels while removing disabled GET activation", async () =>
         {
             var parameters = Parameters();
-            parameters[nameof(NavigationChoices.Compact)] = true;
+            parameters[nameof(NavigationChoices.Layout)] = NavigationChoicesLayout.Compact;
             parameters[nameof(NavigationChoices.Items)] = new NavigationChoiceItem[]
             {
                 new("organization", "Organization", "/entry?method=organization"), new("account", "Account", "/entry?method=account", Disabled:true)
@@ -127,12 +127,12 @@ internal static class NavigationChoicesChecks
                 var originalPanels = Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).ToArray();
                 foreach (var compact in new[] { true, false, true })
                 {
-                    parameters[nameof(NavigationChoices.Compact)] = compact;
+                    parameters[nameof(NavigationChoices.Layout)] = compact ? NavigationChoicesLayout.Compact : NavigationChoicesLayout.Grid;
                     await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
-                    Require(activator.Instances.OfType<RetainedPanel>().SequenceEqual(panels), "Changing Compact recreated host-owned route panel components.");
-                    Require(Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).SequenceEqual(originalPanels), "Changing Compact altered retained panel IDs, content or visibility.");
+                    Require(activator.Instances.OfType<RetainedPanel>().SequenceEqual(panels), "Changing Layout recreated host-owned route panel components.");
+                    Require(Regex.Matches(html(), @"<section\b[^>]*>.*?</section>", RegexOptions.Singleline).Select(match => match.Value).SequenceEqual(originalPanels), "Changing Layout altered retained panel IDs, content or visibility.");
                     foreach (var key in new[] { "organization", "account", "pass" })
-                        Require(OpeningTag(html(), "a", "entry-" + key + "-choice").Contains("href=\"/entry?method=" + key + "\"", StringComparison.Ordinal), "Changing Compact rewrote a GET destination.");
+                        Require(OpeningTag(html(), "a", "entry-" + key + "-choice").Contains("href=\"/entry?method=" + key + "\"", StringComparison.Ordinal), "Changing Layout rewrote a GET destination.");
                 }
                 parameters[nameof(NavigationChoices.ActiveKey)] = "account";
                 await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
@@ -220,6 +220,75 @@ internal static class NavigationChoicesChecks
                 parameters[nameof(NavigationChoices.Items)] = new NavigationChoiceItem[] { new("organization", "Organization", href) };
                 await Reject(parameters, nameof(NavigationChoices.Items));
             }
+        }));
+        tests.Add(("sidebar navigation choices preserve native forms current identity and decorative icons", async () =>
+        {
+            var parameters = Parameters();
+            parameters[nameof(NavigationChoices.Layout)] = NavigationChoicesLayout.Sidebar;
+            parameters[nameof(NavigationChoices.Items)] = new NavigationChoiceItem[]
+            {
+                new("organization", "Organization", "/entry?method=organization", Icon:"apartment"),
+                new("account", "Account", "/entry?method=account", Icon:"account_circle"),
+                new("pass", "Unavailable", "/entry?method=pass", Disabled:true)
+            };
+            await WithComponent(parameters, async (component, activator, html) =>
+            {
+                var buttons = activator.Instances.OfType<Button>().ToArray();
+                Require(buttons.Length == 3 && !activator.Instances.OfType<UniformGridButton>().Any(),
+                    "Sidebar choices must use the real standard Button renderer.");
+                Require(html().Contains("f-navigation-choices-sidebar", StringComparison.Ordinal)
+                    && html().Contains("data-icon=\"apartment\"", StringComparison.Ordinal)
+                    && html().Contains("data-icon=\"account_circle\"", StringComparison.Ordinal),
+                    "Sidebar layout or optional library icons disappeared.");
+                Require(Regex.Matches(html(), "data-icon=\"check\"").Count == 1
+                    && Regex.Matches(html(), "aria-current=\"page\"").Count == 1,
+                    "The current route needs exactly one decorative check and current-page marker.");
+                foreach (var key in new[] { "organization", "account", "pass" })
+                {
+                    var panel = OpeningTag(html(), "section", "entry-" + key + "-panel");
+                    Require(panel.Contains("aria-labelledby=\"entry-" + key + "-choice\"", StringComparison.Ordinal)
+                        && Regex.IsMatch(panel, @"\shidden(?:\s|=|>)") == (key != "organization"),
+                        "A sidebar panel lost its choice name or visibility.");
+                }
+                var disabled = OpeningTag(html(), "a", "entry-pass-choice");
+                Require(!disabled.Contains("href=", StringComparison.Ordinal)
+                    && disabled.Contains("aria-disabled=\"true\"", StringComparison.Ordinal)
+                    && disabled.Contains("tabindex=\"-1\"", StringComparison.Ordinal),
+                    "Disabled sidebar navigation remained actionable.");
+                Require(Regex.Matches(html(), "<form method=\"post\"").Count == 3
+                    && !Regex.IsMatch(html(), "role=\"(?:tablist|tab|tabpanel)\"|aria-selected=|aria-controls="),
+                    "Sidebar layout replaced native host forms or invented interactive tabs.");
+                parameters[nameof(NavigationChoices.ActiveKey)] = "account";
+                await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                Require(activator.Instances.OfType<Button>().SequenceEqual(buttons),
+                    "Changing the selected route recreated standard choice controls.");
+                var accountLink = Regex.Match(html(), @"<a\b(?=[^>]*\bid=""entry-account-choice"")[^>]*>.*?</a>", RegexOptions.Singleline).Value;
+                Require(accountLink.Contains("aria-current=\"page\"", StringComparison.Ordinal)
+                    && accountLink.Contains("data-icon=\"check\"", StringComparison.Ordinal)
+                    && accountLink.Contains("href=\"/entry?method=account\"", StringComparison.Ordinal)
+                    && accountLink.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal),
+                    "The selected sidebar item lost its current state or original GET destination.");
+                foreach (var variant in new[] { ButtonVariant.Primary, ButtonVariant.Danger, ButtonVariant.Elevated })
+                {
+                    parameters[nameof(NavigationChoices.ActiveVariant)] = variant;
+                    await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                    var currentButton = activator.Instances.OfType<Button>().Single(button => button.Href == "/entry?method=account");
+                    Require(currentButton.Variant == variant
+                        && OpeningTag(html(), "a", "entry-account-choice").Contains("f-button-" + variant.ToString().ToLowerInvariant(), StringComparison.Ordinal),
+                        "Sidebar replaced the host-selected standard current Button variant.");
+                    Require(buttons.Where(button => button.Href != "/entry?method=account").All(button => button.Variant == ButtonVariant.Quiet),
+                        "Changing ActiveVariant changed inactive navigation variants.");
+                }
+                parameters[nameof(NavigationChoices.ShowActiveIndicator)] = false;
+                await component.SetParametersAsync(ParameterView.FromDictionary(parameters));
+                Require(!html().Contains("data-icon=\"check\"", StringComparison.Ordinal)
+                    && html().Contains("data-icon=\"account_circle\"", StringComparison.Ordinal)
+                    && Regex.Matches(html(), "aria-current=\"page\"").Count == 1
+                    && Regex.Matches(html(), "<form method=\"post\"").Count == 3,
+                    "Hiding the optional check changed icons, accessibility or retained native forms.");
+            });
+            parameters[nameof(NavigationChoices.Layout)] = (NavigationChoicesLayout)(-1);
+            await Reject(parameters, nameof(NavigationChoices.Layout));
         }));
         tests.Add(("navigation choices keep passive contracts outside Framework and use one packaged style core", () =>
         {

@@ -339,7 +339,7 @@ internal static class PresentationChecks
                 ["TitleId"] = "product-logo-title", ["ContextName"] = "Context <safe>", ["Description"] = "Description <safe>",
                 ["Class"] = "scene-brand", ["AdditionalAttributes"] = new Dictionary<string, object> { ["id"] = "product-brand", ["aria-labelledby"] = "product-logo-title" }
             }, "Product <safe> & name", "configured-logo.svg", "Logo <safe> & alternative");
-            Check(configured.StartsWith("<header", StringComparison.Ordinal) && configured.Contains("class=\"f-logo-displayer scene-brand\"", StringComparison.Ordinal)
+            Check(configured.StartsWith("<header", StringComparison.Ordinal) && Regex.IsMatch(configured, @"class=""f-logo-displayer\s+scene-brand""")
                 && configured.Contains("id=\"product-brand\"", StringComparison.Ordinal)
                 && configured.Contains("aria-labelledby=\"product-logo-title\"", StringComparison.Ordinal), "Brand display discarded standard classes or native identity attributes.");
             Check(configured.Contains("src=\"configured-logo.svg\"", StringComparison.Ordinal)
@@ -1040,9 +1040,33 @@ internal static class PresentationChecks
     }
     private static string Rule(string css, string selector)
     {
-        var match = Regex.Match(css, @"^\s*" + Regex.Escape(selector) + @"\s*\{([^}]*)\}", RegexOptions.Multiline);
-        Check(match.Success, "Missing presentation CSS role: " + selector);
-        return match.Groups[1].Value;
+        css = Regex.Replace(css, @"/\*[\s\S]*?\*/", "");
+        foreach (Match rule in Regex.Matches(css, @"([^{}]+)\{([^{}]*)\}"))
+        {
+            var selectors = rule.Groups[1].Value.Trim();
+            if (selectors == selector)
+                return rule.Groups[2].Value;
+        }
+        foreach (Match rule in Regex.Matches(css, @"([^{}]+)\{([^{}]*)\}"))
+            if (SelectorArms(rule.Groups[1].Value.Trim()).Contains(selector, StringComparer.Ordinal))
+                return rule.Groups[2].Value;
+        throw new InvalidOperationException("Missing presentation CSS role: " + selector);
+    }
+    private static IEnumerable<string> SelectorArms(string selectors)
+    {
+        var depth = 0;
+        var start = 0;
+        for (var index = 0; index < selectors.Length; index++)
+        {
+            if (selectors[index] is '(' or '[') depth++;
+            else if (selectors[index] is ')' or ']') depth--;
+            else if (selectors[index] == ',' && depth == 0)
+            {
+                yield return selectors[start..index].Trim();
+                start = index + 1;
+            }
+        }
+        yield return selectors[start..].Trim();
     }
     private static async Task<string> Render<TComponent>(Dictionary<string, object?> parameters, string? projectName = null,
         string? logoPath = null, string? logoAlternativeText = null) where TComponent : IComponent

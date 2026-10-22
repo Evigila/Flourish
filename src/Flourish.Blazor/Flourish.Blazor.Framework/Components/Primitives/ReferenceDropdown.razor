@@ -13,7 +13,7 @@
     </button>
     @if (IsOpen)
     {
-        <div class="reference-panel selection-panel">
+        <div class="reference-panel selection-panel" popover="manual">
             <div class="selection-panel-width" aria-hidden="true">
                 @foreach (var item in Items) { <span class="selection-option">@item.Name</span> }
             </div>

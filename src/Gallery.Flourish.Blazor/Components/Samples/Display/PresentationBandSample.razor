@@ -3,7 +3,7 @@
 @attribute [SampleFor("PresentationBand", DescriptionKey = "Key.Sample_PresentationBandSample_Description")]
 @foreach (var tone in Enum.GetValues<PresentationTone>())
 {
-    <PresentationBand Title="@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_PresentationBandTitle), tone)" Tone="tone" Dotted="@(tone == PresentationTone.Primary)">
+    <PresentationBand Title="@string.Format(CultureInfo.GetCultureInfo(Localization.Culture), Localization.Parse(TextKey.Sample_PresentationBandTitle), tone)" Tone="tone" BackgroundImageUrl="@(tone == PresentationTone.Canvas ? "gallery.svg" : null)" Dotted="@(tone == PresentationTone.Primary)">
         <Actions><Button Variant="ButtonVariant.Elevated" Href="/examples/display/product">@Localization.Parse(TextKey.Sample_FullExample)</Button></Actions>
         <ChildContent><p>@Localization.Parse(TextKey.Sample_OrganizeInspirationAndStartYourNextProject)</p></ChildContent>
     </PresentationBand>

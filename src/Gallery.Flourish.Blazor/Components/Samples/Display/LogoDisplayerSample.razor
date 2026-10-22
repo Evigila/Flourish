@@ -5,10 +5,11 @@
 @if (!Preview)
 {
     <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_ShowAnExplicitIdentityOverride)" @bind-Value="OverrideIdentity" />
+    <StandaloneCheckBox Label="@Localization.Parse(TextKey.Sample_UseContextAsPrimaryIdentity)" @bind-Value="ShowContextPrimary" />
 }
-<LogoDisplayer LogoPath="@(OverrideIdentity ? "gallery.svg" : null)"
+<LogoDisplayer LogoSize="96" Compact="@(OverrideIdentity || ShowContextPrimary)" ContextPrimary="@ShowContextPrimary" LogoPath="@(OverrideIdentity ? "gallery.svg" : null)"
                ProjectName="@(OverrideIdentity ? Localization.Parse(TextKey.Display_DemoOnly) : null)"
-               ContextName="@Localization.Parse(TextKey.Nav_DisplayLogin)"
+               ContextName="@Localization.Parse(ShowContextPrimary ? TextKey.Access_ServiceTitle : TextKey.Nav_DisplayLogin)"
                Description="@Localization.Parse(TextKey.Access_LoginDescription)" TitleId="@TitleId" HeadingLevel="2" />
 @if (!Preview)
 {
@@ -18,5 +19,6 @@
 @code {
     [Parameter] public bool Preview { get; set; }
     private bool OverrideIdentity;
+    private bool ShowContextPrimary;
     private readonly string TitleId = "logo-displayer-sample-" + Guid.NewGuid().ToString("N");
 }

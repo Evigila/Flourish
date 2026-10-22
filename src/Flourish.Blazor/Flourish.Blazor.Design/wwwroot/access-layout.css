@@ -1,0 +1,9 @@
+.f-access-layout { padding:24px; color:var(--f-text); background-color:var(--f-surface); }
+.f-access-layout-dotted { background-image:radial-gradient(circle,var(--f-border) 1px,transparent 1.2px); background-size:18px 18px; }
+.f-access-layout-content { gap:24px; }
+.f-access-layout-brand { display:grid; justify-items:center; gap:12px; }
+.f-access-layout-brand > :is(.f-access-actions,.f-inline-actions) { justify-self:stretch; margin-block:0; }
+@media(max-width:760px) { .f-access-layout { padding:16px; } .f-access-layout-content { gap:16px; } }
+@media(max-height:520px) { .f-access-layout { padding-block:12px; } .f-access-layout-content { gap:12px; } }
+/* Narrow pages reserve the actual floating preference-control row before identity. */
+@media(max-width:760px) { .f-content-surface-has-floating-actions > .content-stage > .f-access-layout { padding-block-start:80px; } }

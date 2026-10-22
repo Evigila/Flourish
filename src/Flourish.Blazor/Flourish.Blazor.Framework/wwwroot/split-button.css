@@ -10,9 +10,9 @@
 .f-split-button-menu { position:relative; }
 .f-split-button-menu > summary { list-style:none; }
 .f-split-button-menu > summary::-webkit-details-marker { display:none; }
-.f-split-button-menu > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; width:max-content; min-width:100%; max-width:min(90vw,36rem); z-index:40; }
+.f-split-button-menu > .f-menu-panel { position:absolute; inset-block-start:100%; inset-inline-end:0; width:max-content; min-width:0; max-width:calc(100vw - 24px); z-index:40; }
 /* Native details do not set the interactive popover controller's data-f-open flag. */
 .f-split-button > .f-split-button-menu[open] > .f-menu-panel { display:block; }
 .f-split-button-menu-content { display:grid; min-width:0; gap:4px; }
 /* Menu action hit/hover/focus rectangles use the common column, not Button's content width. */
-.f-split-button-menu-content > .f-button { box-sizing:border-box; width:100%; min-width:0; max-width:100%; justify-self:stretch; align-self:stretch; }
+.f-split-button-menu-content > .f-button { box-sizing:border-box; width:100%; min-width:0; max-width:100%; justify-self:stretch; align-self:stretch; text-align:var(--f-popup-align,left); justify-content:var(--f-popup-align,left); overflow-wrap:anywhere; }

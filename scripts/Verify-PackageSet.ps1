@@ -1,6 +1,6 @@
 param([string]$PackageDirectory, [string]$Version)
 . (Join-Path $PSScriptRoot 'Release-Common.ps1')
-if (!$Version) { $Version = Get-ReleaseVersion }
+if (!$Version) { $Version = Get-PackageVersion }
 if (!$PackageDirectory) { $PackageDirectory = Join-Path $ReleaseRoot 'artifacts/packages' }
 $expected = @($ReleaseSettings.Packages | ForEach-Object { "$($_.Id).$Version.nupkg" } | Sort-Object)
 $actual = @(Get-ChildItem -LiteralPath $PackageDirectory -Filter '*.nupkg' -File | Select-Object -ExpandProperty Name | Sort-Object)

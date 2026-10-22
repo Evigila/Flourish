@@ -4,11 +4,11 @@
 
 @if (Preview)
 {
-    <LanguagePicker MaxWidth="16rem" />
+    <LanguagePicker Icon="language" TriggerVariant="ButtonVariant.Quiet" />
 }
 else
 {
-    <LanguagePicker MaxWidth="16rem" />
+    <LanguagePicker Icon="language" TriggerVariant="ButtonVariant.Quiet" />
     <LanguagePicker FormatCulture="true" MaxWidth="20rem" />
     <p>@Localization.Parse(TextKey.Formatted_Sample, arguments)</p>
 }

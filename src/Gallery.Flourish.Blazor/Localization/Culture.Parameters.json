@@ -69,20 +69,15 @@
     "zh-CN": "可换行动作行在可用宽度内的逻辑水平对齐：Start、Center 或 End（默认）。占满整行的内容保持铺满，不改变按钮样式或原生表单传输。 居中 DisplayBoard 中未指定 Alignment 的直接示例动作行居中；显式对齐和嵌套页面、表单、对话框保留各自布局。",
     "pt-BR": "Alinhamento horizontal lógico da linha de ações com quebra na largura disponível: Start, Center ou End (padrão). O conteúdo que ocupa a linha inteira mantém sua largura. Não altera aparência dos botões nem transporte nativo do formulário. DisplayBoard centralizado centraliza linhas diretas de ações quando Alignment é omitido; alinhamento explícito e layouts internos de página, formulário ou diálogo mantêm suas próprias regras."
   },
-  "Parameter_Compact_NavigationChoices": {
-    "en-US": "false uses grid entries; true uses three equal standard Button links with the same GET, current-item and retained-panel contract.",
-    "zh-CN": "默认 false 为网格入口；true 使用三等分普通 Button 导航，保持同一 GET、当前项与保留面板合同。",
-    "pt-BR": "false usa entradas em grade; true usa três links Button iguais, preservando GET, item atual e painéis montados."
-  },
   "Parameter_Variant_NavigationChoices": {
-    "en-US": "Standard Button variant for inactive Compact choices. Defaults to Quiet; Elevated preserves the shared control elevation. Does not change native GET or retained panels.",
-    "zh-CN": "Compact非当前项使用的普通Button样式，默认Quiet；Elevated使用统一控件浮起样式，不改变原生GET或保留面板。",
-    "pt-BR": "Variante Button padrão para opções Compact inativas. Usa Quiet por padrão; Elevated mantém a elevação do controle. Não altera GET nativo nem painéis preservados."
+    "en-US": "Standard Button variant for inactive Compact and Sidebar choices, defaulting to Quiet. Does not change native GET destinations or retained forms.",
+    "zh-CN": "Compact 和 Sidebar 非当前项的标准 Button 样式，默认 Quiet；不改变原生 GET 地址或保留的表单。",
+    "pt-BR": "Variante Button padrão das opções inativas em Compact e Sidebar, com Quiet por padrão. Não altera GET nativo nem formulários preservados."
   },
   "Parameter_ActiveVariant_NavigationChoices": {
-    "en-US": "Standard Button variant for the current Compact choice, defaulting to Secondary. Set both variants to Elevated for matching elevation; aria-current still identifies the current route.",
-    "zh-CN": "Compact当前项的普通Button样式，默认Secondary；两个样式都设为Elevated时统一浮起，当前路由仍由aria-current标记。",
-    "pt-BR": "Variante Button padrão para a opção Compact atual; usa Secondary por padrão. Defina ambas como Elevated para elevação uniforme; aria-current continua marcando a rota atual."
+    "en-US": "Standard Button variant for the current Compact or Sidebar choice, defaulting to Secondary. The Button owns all colors and interaction paint; Sidebar does not override them. Choose Primary for strong selection. aria-current identifies the route.",
+    "zh-CN": "Compact 或 Sidebar 当前项的标准 Button 样式，默认 Secondary。颜色及交互绘制完全由 Button 负责，Sidebar 不额外覆盖。强选中可选择 Primary；aria-current 标识当前路由。",
+    "pt-BR": "Variante Button da opção atual em Compact ou Sidebar, com Secondary por padrão. Button controla todas as cores e estados; Sidebar não os substitui. Use Primary para destaque forte. aria-current identifica a rota."
   },
   "Parameter_StackTitleWords": {
     "en-US": "false by default. true puts each whitespace-separated title word on its own line, preserving the full aria-label, letters and organization name.",
@@ -120,9 +115,9 @@
     "pt-BR": "Desativa apenas botão/link e callback principais; botão secundário e menu nativo continuam disponíveis. Disabled/Busy bloqueiam ambas as partes. Botões nativos emitem apenas disabled para desbloqueio seguro pelo protocolo do host. Padrão false."
   },
   "Parameter_Items_NavigationChoices": {
-    "en-US": "NavigationChoiceItem supplies a unique stable Key, readable Label, same-site root-relative Href and Disabled. Empty collections, duplicate keys and external destinations are rejected.",
-    "zh-CN": "NavigationChoiceItem 的唯一稳定 Key、可读 Label、同站点根相对 Href 和 Disabled；空集合、重复键和外部目的地会拒绝。",
-    "pt-BR": "NavigationChoiceItem fornece Key único e estável, Label legível, Href relativo à raiz do mesmo site e Disabled. Coleções vazias, chaves duplicadas e destinos externos são rejeitados."
+    "en-US": "NavigationChoiceItem supplies a unique stable Key, readable Label, same-site root-relative Href, Disabled and optional decorative Icon. Empty collections, duplicate keys and external destinations are rejected.",
+    "zh-CN": "NavigationChoiceItem 提供唯一稳定 Key、可读 Label、同站点根相对 Href、Disabled 及可选装饰 Icon；拒绝空集合、重复键及外部目的地。",
+    "pt-BR": "NavigationChoiceItem fornece Key estável único, Label legível, Href relativo à raiz, Disabled e Icon decorativo opcional. Coleções vazias, chaves duplicadas e destinos externos são rejeitados."
   },
   "Parameter_ActiveKey_NavigationChoices": {
     "en-US": "Available Key explicitly selected by the current route. Its link uses aria-current=page and only its panel is visible. This is not controlled ARIA tabs.",
@@ -1303,5 +1298,50 @@
     "en-US": "Includes this PresentationBand or PresentationHero as one semantic progress destination, default true. false excludes it without changing height or content. Nested bands and footer content do not create extra destinations.",
     "zh-CN": "将当前 PresentationBand 或 PresentationHero 作为一个语义进度目标，默认 true。false 仅排除导航项，不改变高度或内容。嵌套板块与页脚内容不会增加额外目标。",
     "pt-BR": "Inclui este PresentationBand ou PresentationHero como um destino semântico de progresso, padrão true. false o exclui sem alterar altura ou conteúdo. Faixas aninhadas e conteúdo de rodapé não criam destinos adicionais."
+  },
+  "Parameter_Layout_NavigationChoices": {
+    "en-US": "Grid by default. Compact uses equal-width standard Button links. Sidebar places a narrow vertical choice list beside the current content, stacking below 760px. Replaces the former Compact boolean.",
+    "zh-CN": "默认 Grid。Compact 使用等宽标准 Button 链接；Sidebar 使用左侧窄方式列表及右侧内容，760px 以下堆叠。替代旧 Compact 布尔参数。",
+    "pt-BR": "Grid por padrão. Compact usa links Button de mesma largura. Sidebar dispõe uma lista vertical estreita ao lado do conteúdo e empilha abaixo de 760px. Substitui o antigo booleano Compact."
+  },
+  "Parameter_ShowActiveIndicator_NavigationChoices": {
+    "en-US": "True by default. Sidebar shows a decorative check beside the current choice. Hiding it retains aria-current and the selected Button variant.",
+    "zh-CN": "默认 true。Sidebar 在当前项显示装饰性勾选；关闭仍保留 aria-current 及当前 Button 样式。",
+    "pt-BR": "True por padrão. Sidebar mostra uma marca decorativa na opção atual. Ocultá-la preserva aria-current e a variante Button selecionada."
+  },
+  "Parameter_ContextPrimary_LogoDisplayer": {
+    "en-US": "False by default. Promotes a nonempty ContextName to the fluid main title and places ProjectName above it as a smaller brand, within one semantic heading. With Compact, the image is centered on the context row, including wrapped names; an absent context preserves ordinary identity.",
+    "zh-CN": "默认false。将非空ContextName作为流式主标题，ProjectName以较小品牌名置于上方，仍保留一个语义标题。搭配Compact时，图像仅与上下文主标题所在行居中对齐，名称换行后仍对齐；缺少上下文时保留普通身份。",
+    "pt-BR": "False por padrão. Destaca ContextName não vazio como título principal fluido e coloca ProjectName acima como marca menor, em um único título semântico. Com Compact, centraliza a imagem apenas na linha do contexto, mesmo com quebra de texto; sem contexto mantém a identidade comum."
+  },
+  "Parameter_Compact_LogoDisplayer": {
+    "en-US": "False by default. Uses a simple horizontal image/name composition with the same fluid project title, 28px context and 12px context spacing as ordinary identity. The image keeps its 48px default and short-height fallback unless LogoSize is explicit. Heading semantics and description remain.",
+    "zh-CN": "默认false。使用简单横向图像和名称布局，与普通身份共享流式项目标题、28px上下文及12px上下文间距。图像仍沿用48px默认和短屏回退，显式LogoSize优先；保留标题语义与说明。",
+    "pt-BR": "False por padrão. Usa composição horizontal simples com o mesmo título fluido, contexto de 28px e intervalo de 12px da identidade comum. A imagem mantém 48px e a alternativa para tela baixa, salvo LogoSize explícito. Preserva semântica e descrição."
+  },
+  "Parameter_FillHeight_NavigationChoices": {
+    "en-US": "False by default. Requires a bounded parent; fills its height, keeps navigation stable and allows only the active panel to grow up to the available body height and then scroll. Narrow Sidebar uses a compact navigation row above the panel.",
+    "zh-CN": "默认false。需要高度受限的父容器；填满高度并固定导航位置，当前面板自然增长至正文可用高度后内部滚动。窄屏Sidebar以紧凑导航行位于面板上方。",
+    "pt-BR": "False por padrão. Requer pai com altura limitada; preenche a altura, mantém navegação estável e deixa o painel ativo crescer até o limite antes de rolar. Sidebar estreito usa navegação compacta acima do painel."
+  },
+  "Parameter_Brand_AccessLayout": {
+    "en-US": "Optional stable identity and auxiliary navigation above the scrolling body. Use LogoDisplayer Compact and keep return links here rather than after a variable-height panel.",
+    "zh-CN": "正文上方可选的固定身份与辅助导航区。使用LogoDisplayer Compact，将返回链接放在此处，避免跟随可变高度面板移动。",
+    "pt-BR": "Identidade e navegação auxiliar opcionais acima do corpo. Use LogoDisplayer Compact e mantenha aqui os links de retorno."
+  },
+  "Parameter_ChildContent_AccessLayout": {
+    "en-US": "Receives the height remaining after Brand. Ordinary content scrolls inside this body; direct NavigationChoices with FillHeight gives its own active panel the scroll boundary.",
+    "zh-CN": "获得Brand之外的剩余高度。普通内容在正文内部滚动；直接子级NavigationChoices设置FillHeight后由当前面板独立滚动。",
+    "pt-BR": "Recebe a altura restante após Brand. Conteúdo comum rola no corpo; NavigationChoices direto com FillHeight limita a rolagem ao painel ativo."
+  },
+  "Parameter_LogoSize_LogoDisplayer": {
+    "en-US": "Optional positive image size in pixels for this instance only. null keeps the normal 96px or Compact 48px default and short-height fallback. Explicit sizes set the real image dimensions and remain unchanged on short viewports; title/context sizing stays independent.",
+    "zh-CN": "仅覆盖当前实例图像的可选正像素尺寸。null保留普通96px或Compact48px默认及短屏回退。显式尺寸写入实际图像宽高，短屏不再缩小；标题和上下文字号独立保持。",
+    "pt-BR": "Tamanho positivo opcional da imagem, em pixels, apenas nesta instância. null mantém 96px normal ou 48px Compact e a adaptação em telas baixas. Valores explícitos definem as dimensões reais e não encolhem em telas baixas; nome e contexto mantêm sua escala."
+  },
+  "Parameter_BackgroundImageUrl": {
+    "en-US": "Optional decorative background URL. A nonempty value renders an aria-hidden cover image beneath the standard Canvas/Surface/Primary Tone gradient, without changing content height or actions. null or whitespace leaves ordinary markup unchanged; no custom overlay settings are required.",
+    "zh-CN": "可选装饰背景图地址。非空值在标准Canvas/Surface/Primary Tone渐变下渲染aria-hidden的cover图片，不改变正文高度或操作。null或空白保留普通结构，无需自定义蒙版参数。",
+    "pt-BR": "URL opcional de fundo decorativo. Um valor não vazio mostra uma imagem cover com aria-hidden sob o gradiente padrão de Tone Canvas/Surface/Primary, sem alterar altura ou ações. null ou espaços preservam a estrutura comum, sem configurações de máscara."
   }
 }

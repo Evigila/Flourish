@@ -7,5 +7,6 @@
 @supports(appearance:base-select) {
     .f-select.f-select-customized:has(> .f-button) { padding:0; border:0; background:transparent; }
     .f-select.f-select-customized > .f-select-trigger:not(.f-button) { min-block-size:calc(var(--f-control-height,48px) - 2px); }
-    .f-select.f-select-customized::picker(select) { color:var(--f-text); background:var(--f-surface); }
+    /* The real select owns keyboard focus; the inert visual trigger receives the standard Button ring. */
+    .f-select.f-select-customized:has(> .f-button):focus-visible { outline:none; }
 }

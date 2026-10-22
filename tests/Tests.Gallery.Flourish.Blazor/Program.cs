@@ -81,7 +81,7 @@ internal static class Program
             await CheckPage(provider, scenario);
 
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 82, "Expected all 82 current component guides; update this guard with an intentional inventory change.");
+        Check(entries.Length == 83, "Expected all 83 current component guides, including AccessLayout; update this guard with an intentional inventory change.");
         Check(entries.Count(entry => entry.Name == nameof(LanguagePicker)) == 1, "Culture must register its single library-owned LanguagePicker guide.");
         Check(!entries.Any(entry => entry.Name == "IdentityCard"), "The retired IdentityCard must not retain a Gallery guide or sample.");
         Check(entries.Count(entry => entry.Name == "Card") == 1, "Account summaries must reuse the single Card guide.");

@@ -25,7 +25,7 @@
            @onkeydown="HandleKeyDownAsync" />
     @if (IsOpen)
     {
-        <span id="@ListboxId" class="search-autocomplete-options" role="listbox" aria-label="@EffectiveResultsLabel">
+        <span id="@ListboxId" class="search-autocomplete-options" popover="manual" role="listbox" aria-label="@EffectiveResultsLabel">
             @if (Matches.Count == 0)
             {
                 <span class="search-autocomplete-empty" role="status">@EffectiveEmptyText</span>

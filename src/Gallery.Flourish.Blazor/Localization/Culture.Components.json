@@ -55,14 +55,14 @@
     "pt-BR": "Campos comuns compartilham esta apresentação por Field.For, sem mensagens repetidas. For independente vincula um campo EditContext; Error fornece texto explícito. Troca de formulário/descarte limpa assinaturas; Id associa descrições acessíveis de erro."
   },
   "Catalog_NavigationChoices_Purpose": {
-    "en-US": "Selects an access method through native GET links.",
-    "zh-CN": "使用原生 GET 链接选择访问方式。",
-    "pt-BR": "Seleciona uma forma de acesso por links GET nativos."
+    "en-US": "Native choice navigation with host-owned details",
+    "zh-CN": "原生方式导航与宿主详情",
+    "pt-BR": "Navegação nativa por opções com detalhes do aplicativo"
   },
   "Catalog_NavigationChoices_Variants": {
-    "en-US": "Id/Label/Items/ActiveKey are required; NavigationChoiceItem contains Key/Label/Href/Disabled. Compact=true uses equal-width Button links with Variant/ActiveVariant; set both to Elevated for consistent elevation. Default is a grid. ChildContent supplies each item's business content.\nLinks fully navigate without JS; aria-current marks the current route and inactive panels remain mounted but hidden. See /examples/display/access-methods.",
-    "zh-CN": "Id/Label/Items/ActiveKey必填；NavigationChoiceItem包含Key/Label/Href/Disabled。Compact=true使用等宽普通Button入口，Variant/ActiveVariant都设置为Elevated时保持统一浮起样式；默认仍为网格。ChildContent按项提供业务内容。\n链接完整导航、无JS，aria-current标记当前路由，非活动面板保持挂载但隐藏。案例 /examples/display/access-methods。",
-    "pt-BR": "Id/Label/Items/ActiveKey são obrigatórios; NavigationChoiceItem contém Key/Label/Href/Disabled. Compact=true usa links Button iguais com Variant/ActiveVariant; defina ambos como Elevated para elevação uniforme. O padrão é grade. ChildContent fornece o conteúdo de cada item.\nLinks navegam sem JS; aria-current marca a rota atual e painéis inativos permanecem montados, mas ocultos. Veja /examples/display/access-methods."
+    "en-US": "Grid by default; Compact and responsive Sidebar use standard Button variants. Optional icons and current check preserve native GET and retained hidden panels. FillHeight bounds the active panel inside AccessLayout; narrow screens use a compact navigation row. At visual heights up to 360px, the operation body scrolls as a fallback so controls remain reachable.",
+    "zh-CN": "默认Grid；Compact及响应式Sidebar使用标准Button变种。可选图标和当前勾选保留原生GET及隐藏面板。FillHeight在AccessLayout中限制当前面板高度；窄屏使用紧凑导航行。视口高度不超过360px时降级为正文滚动，保证控件可达。",
+    "pt-BR": "Grid por padrão; Compact e Sidebar responsivo usam variantes padrão de Button. Ícones e marca atual preservam GET nativo e painéis ocultos. FillHeight limita o painel em AccessLayout; telas estreitas usam navegação compacta. Até 360px de altura visual, o corpo rola como alternativa para manter os controles acessíveis."
   },
   "Catalog_Button_Purpose": {
     "en-US": "Triggers actions in headings, toolbars or dialogs, and supports navigation links.",
@@ -600,9 +600,9 @@
     "pt-BR": "Combina fundo de largura total e conteúdo centralizado em uma seção de apresentação."
   },
   "Catalog_PresentationBand_Variants": {
-    "en-US": "FullHeight=true and MinHeight=0 default to a browser viewport minimum while allowing content to grow. FullHeight=false supports natural or specified pixel height. IncludeInProgress defaults to true. Dotted is off by default; Tone uses Canvas/Surface/Primary, with different adjacent roles recommended. Content shares the bounded track.",
-    "zh-CN": "默认 FullHeight=true、MinHeight=0，以浏览器视口为最小高度并允许内容增高。FullHeight=false 支持自然高度或指定像素高度。IncludeInProgress 默认 true。Dotted 默认关闭；Tone 使用 Canvas、Surface 或 Primary，推荐相邻板块使用不同色彩角色。内容共享限宽轨道。",
-    "pt-BR": "FullHeight=true e MinHeight=0 usam por padrão o mínimo da janela do navegador, permitindo crescimento do conteúdo. FullHeight=false permite altura natural ou em pixels. IncludeInProgress começa em true. Dotted começa desligado; Tone usa Canvas/Surface/Primary, com papéis diferentes recomendados em faixas adjacentes. O conteúdo compartilha a faixa limitada."
+    "en-US": "FullHeight=true and MinHeight=0 use a viewport minimum with natural growth. FullHeight=false supports natural or pixel height. IncludeInProgress defaults true; Dotted defaults false. Tone uses Canvas/Surface/Primary. Optional BackgroundImageUrl supplies decorative cover media under the fixed Tone gradient while keeping the bounded content track and ordinary rendering when omitted.",
+    "zh-CN": "默认FullHeight=true、MinHeight=0，以视口为最小高度并自然增高；false支持自然或像素高度。IncludeInProgress默认true，Dotted默认false，Tone为Canvas/Surface/Primary。可选BackgroundImageUrl在固定Tone渐变下放置装饰cover背景，保留正文限宽轨道，省略时保持普通渲染。",
+    "pt-BR": "FullHeight=true e MinHeight=0 usam mínimo da janela e crescimento natural; false aceita altura natural ou em pixels. IncludeInProgress é true, Dotted é false e Tone usa Canvas/Surface/Primary. BackgroundImageUrl adiciona mídia cover decorativa sob o gradiente fixo de Tone, preservando o conteúdo limitado e a renderização comum quando omitido."
   },
   "Catalog_PresentationHero_Purpose": {
     "en-US": "Artistic title, subtitle and description for product presentation.",
@@ -610,19 +610,19 @@
     "pt-BR": "Título artístico, subtítulo e descrição para apresentação de produto."
   },
   "Catalog_PresentationHero_Variants": {
-    "en-US": "Opening presentation and organization access scenes. FullHeight=true, MinHeight=0 and IncludeInProgress=true delegate one semantic band with a viewport minimum and natural growth. SideContent supplies a 360–470px right action column, stacked below 860px. StackTitleWords retains the accessible title; Actions uses standard Button. Use PageHeading for business pages.",
-    "zh-CN": "用于展示首屏与组织入口。默认 FullHeight=true、MinHeight=0、IncludeInProgress=true，委托一个语义板块，以视口为最小高度并允许自然增高。SideContent 提供 360–470px 右侧操作列，860px 以下上下排列。StackTitleWords 保留完整可访问标题；Actions 使用标准 Button。业务页面使用 PageHeading。",
-    "pt-BR": "Cenas iniciais de apresentação e acesso a organizações. FullHeight=true, MinHeight=0 e IncludeInProgress=true delegam uma faixa semântica com mínimo da janela e crescimento natural. SideContent fornece coluna de ações de 360–470px à direita, empilhada abaixo de 860px. StackTitleWords preserva o título acessível; Actions usa Button padrão. Use PageHeading em páginas de negócio."
+    "en-US": "Artistic presentation title and standard actions delegate one semantic band with FullHeight=true, MinHeight=0 and IncludeInProgress=true. BackgroundImageUrl forwards decorative cover media and the standard Tone gradient. SideContent remains a separate bounded column and stacks below 860px. StackTitleWords preserves the accessible title. Business pages use PageHeading.",
+    "zh-CN": "艺术展示标题与标准操作委托一个语义板块，默认FullHeight=true、MinHeight=0、IncludeInProgress=true。BackgroundImageUrl转发装饰cover背景及标准Tone渐变；SideContent仍为独立限宽侧列，860px以下堆叠。StackTitleWords保留可访问标题，业务页使用PageHeading。",
+    "pt-BR": "Título artístico e ações padrão delegam uma faixa semântica com FullHeight=true, MinHeight=0 e IncludeInProgress=true. BackgroundImageUrl encaminha mídia cover decorativa e o gradiente de Tone. SideContent continua uma coluna limitada e empilha abaixo de 860px. StackTitleWords preserva o título acessível; páginas de negócio usam PageHeading."
   },
   "Catalog_LogoDisplayer_Purpose": {
-    "en-US": "Artistic project name below its logo.",
-    "zh-CN": "在 Logo 下展示项目艺术字。",
-    "pt-BR": "Nome artístico do projeto abaixo do logotipo."
+    "en-US": "Project or service identity with a logo and one semantic title.",
+    "zh-CN": "通过Logo和单个语义标题展示项目或服务身份。",
+    "pt-BR": "Identidade de projeto ou serviço com logotipo e um título semântico."
   },
   "Catalog_LogoDisplayer_Variants": {
-    "en-US": "Defaults to ConfigureProject logo/name; ProjectName/LogoPath may override them. Only for access/presentation, without enlarging business body text. HeadingLevel chooses the semantic heading level.",
-    "zh-CN": "默认读取 ConfigureProject 的 Logo 和项目名称；ProjectName/LogoPath 可显式覆盖。仅用于访问和展示场景，不扩大业务正文；HeadingLevel 选择语义标题级别。",
-    "pt-BR": "Usa nome/logotipo de ConfigureProject; ProjectName/LogoPath podem substituí-los. Apenas para acesso/apresentação, sem ampliar texto de negócio. HeadingLevel escolhe o nível semântico do título."
+    "en-US": "Configured identity with instance overrides and semantic HeadingLevel. Ordinary and Compact layouts keep the 56–80px project title and 28px context. ContextPrimary promotes the context to that main scale and makes the project a smaller brand above it; Compact aligns the image only to the context row. Positive LogoSize overrides the image independently, including short viewports.",
+    "zh-CN": "配置身份，支持实例覆盖和语义HeadingLevel。普通与Compact布局保留56–80px项目标题和28px上下文。ContextPrimary将上下文提升为该主标题尺度，项目名变为上方小品牌；搭配Compact时图像仅对齐上下文行。正值LogoSize独立覆盖图像，短屏也保持。",
+    "pt-BR": "Identidade configurada com substituições locais e HeadingLevel semântico. Os layouts comum e Compact mantêm título de projeto de 56–80px e contexto de 28px. ContextPrimary destaca o contexto nessa escala e coloca o projeto como marca menor acima; Compact alinha a imagem apenas à linha do contexto. LogoSize positivo altera a imagem independentemente, inclusive em telas baixas."
   },
   "Catalog_PresentationFooter_Purpose": {
     "en-US": "Presentation footer with brand, copyright and large decorative wordmark.",
@@ -993,5 +993,15 @@
     "en-US": "Prefer ContentSurface.ShowPresentationProgress=true to bind navigation to that host’s main content. Eligible PresentationBand and PresentationHero entries appear at the bottom center without hovering titles; clicks align bands below sticky headers and scrolling updates the active tutorial-style segment. Supports static SSR, reduced motion, local scroll containers and one-band pages. Footer content is excluded and navigation stays outside document flow and hides in a footer-only viewport.",
     "zh-CN": "优先通过 ContentSurface.ShowPresentationProgress=true 将导航绑定至当前宿主正文。合格的 PresentationBand 与 PresentationHero 在底部居中悬浮显示教程式分段条，不显示悬浮标题；点击后对齐粘性页眉下方，滚动时更新当前分段。支持静态 SSR、减少动态效果、本地滚动容器和单板块页面。页脚不参与导航，导航不占文档空间，仅页脚可见时隐藏。",
     "pt-BR": "Prefira ContentSurface.ShowPresentationProgress=true para vincular a navegação ao conteúdo principal do host. PresentationBand e PresentationHero elegíveis aparecem como segmentos do tutorial flutuando na parte inferior central, sem títulos flutuantes; cliques alinham as faixas abaixo de cabeçalhos fixos e a rolagem atualiza o segmento ativo. Suporta SSR estático, movimento reduzido, contêineres locais e páginas com uma faixa. O rodapé é excluído e a navegação permanece fora do fluxo e fica oculta quando apenas o rodapé está visível."
+  },
+  "Catalog_AccessLayout_Purpose": {
+    "en-US": "Stable identity and bounded content for access and simple operation pages.",
+    "zh-CN": "为访问与简易操作页提供稳定身份区及有界正文。",
+    "pt-BR": "Identidade estável e conteúdo limitado para páginas de acesso e operações simples."
+  },
+  "Catalog_AccessLayout_Variants": {
+    "en-US": "Place directly in a bounded ContentSurface stage. Brand stays above the remaining-height body; Wide selects 960px instead of 560px, and Dotted uses theme roles. NavigationChoices.FillHeight scrolls only the active details as needed; no second main or authentication logic.",
+    "zh-CN": "直接放入高度受限的 ContentSurface 内容区。Brand 位于剩余高度正文上方；Wide 从560px切换到960px，Dotted采用主题角色。NavigationChoices.FillHeight仅在需要时滚动当前详情；不创建第二个main或认证逻辑。",
+    "pt-BR": "Coloque diretamente na área limitada de ContentSurface. Brand fica acima do corpo; Wide troca 560px por 960px, e Dotted usa papéis do tema. NavigationChoices.FillHeight rola os detalhes ativos quando necessário, sem outro main nem autenticação."
   }
 }

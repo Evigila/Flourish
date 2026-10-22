@@ -370,24 +370,19 @@
     "pt-BR": "Escolha uma forma de acesso"
   },
   "Access_MethodOrganization": {
-    "en-US": "Workspace",
-    "zh-CN": "Workspace",
-    "pt-BR": "Workspace"
+    "en-US": "Organization account",
+    "zh-CN": "组织账号",
+    "pt-BR": "Conta da organização"
   },
   "Access_MethodAccount": {
-    "en-US": "Colligere",
-    "zh-CN": "Colligere",
-    "pt-BR": "Colligere"
-  },
-  "Access_MethodPass": {
-    "en-US": "Pass",
-    "zh-CN": "通行证",
-    "pt-BR": "Passe"
+    "en-US": "Platform account",
+    "zh-CN": "平台账号",
+    "pt-BR": "Conta da plataforma"
   },
   "Access_OrganizationEmail": {
-    "en-US": "Workspace login address",
-    "zh-CN": "Workspace 登录地址",
-    "pt-BR": "Endereço de login do Workspace"
+    "en-US": "Organization login address",
+    "zh-CN": "组织登录地址",
+    "pt-BR": "Endereço de login da organização"
   },
   "Access_OrganizationPassword": {
     "en-US": "Password",
@@ -395,29 +390,19 @@
     "pt-BR": "Senha"
   },
   "Access_MethodOrganizationAction": {
-    "en-US": "Sign in to Workspace",
-    "zh-CN": "登录 Workspace",
-    "pt-BR": "Entrar no Workspace"
+    "en-US": "Sign in with an organization account",
+    "zh-CN": "使用组织账号登录",
+    "pt-BR": "Entrar com uma conta da organização"
   },
   "Access_MethodAccountAction": {
-    "en-US": "Sign in with Colligere",
-    "zh-CN": "使用 Colligere 登录",
-    "pt-BR": "Entrar com Colligere"
-  },
-  "Access_MethodPassAction": {
-    "en-US": "Sign in with a pass",
-    "zh-CN": "使用通行证登录",
-    "pt-BR": "Entrar com passe"
+    "en-US": "Continue with a platform account",
+    "zh-CN": "使用平台账号继续",
+    "pt-BR": "Continuar com uma conta da plataforma"
   },
   "Access_MethodAccountHint": {
-    "en-US": "Use a fictitious account for this example.",
-    "zh-CN": "使用虚构账号进行演示。",
-    "pt-BR": "Use uma conta fictícia neste exemplo."
-  },
-  "Access_MethodCredential": {
-    "en-US": "Pass",
-    "zh-CN": "通行证",
-    "pt-BR": "Passe"
+    "en-US": "Continue to the platform's sign-in page. This example uses fictitious accounts only.",
+    "zh-CN": "继续前往平台登录页面。本示例仅使用虚构账号。",
+    "pt-BR": "Continue para a página de acesso da plataforma. Este exemplo usa apenas contas fictícias."
   },
   "Wizard_Standard": {
     "en-US": "Standard",
@@ -428,5 +413,20 @@
     "en-US": "Professional",
     "zh-CN": "专业版",
     "pt-BR": "Profissional"
+  },
+  "Access_ServiceTitle": {
+    "en-US": "Service sign in",
+    "zh-CN": "登录服务",
+    "pt-BR": "Acesso ao serviço"
+  },
+  "Access_MethodIntroduction": {
+    "en-US": "Choose how to sign in. The selected method's instructions and form appear beside the choices.",
+    "zh-CN": "选择登录方式，并在右侧查看所选方式的说明和表单。",
+    "pt-BR": "Escolha como entrar. As instruções e o formulário da opção selecionada aparecem ao lado."
+  },
+  "Access_OrganizationHint": {
+    "en-US": "Use the credentials supplied by your organization. Do not enter real credentials in this demonstration.",
+    "zh-CN": "使用组织提供的登录凭据。请勿在此演示中输入真实凭据。",
+    "pt-BR": "Use as credenciais fornecidas pela organização. Não insira credenciais reais nesta demonstração."
   }
 }

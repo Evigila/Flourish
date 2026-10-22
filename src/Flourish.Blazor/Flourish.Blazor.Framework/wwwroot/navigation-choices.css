@@ -1,8 +1,30 @@
 /* Native GET choices are links, not a JavaScript tab widget. */
 .f-navigation-choices { display:grid; min-width:0; }
 .f-navigation-choices-nav,.f-navigation-choice-panel { min-width:0; }
+/* All keyed panels stay mounted; no inactive form can participate in layout. */
 .f-navigation-choice-panel[hidden] { display:none!important; }
-
 .f-navigation-choices-links { display:grid; grid-template-columns:repeat(var(--f-choice-columns,3),minmax(0,1fr)); gap:8px; min-width:0; }
 .f-navigation-choices-links > .f-button { width:100%; min-width:0; }
+.f-navigation-choice-label { min-width:0; overflow-wrap:anywhere; }
+.f-navigation-choices-sidebar { grid-template-columns:minmax(12rem,18rem) minmax(0,1fr); align-items:start; }
+.f-navigation-choices-sidebar > .f-navigation-choices-nav { grid-column:1; grid-row:1; }
+.f-navigation-choices-sidebar > .f-navigation-choice-panel { grid-column:2; grid-row:1; }
+.f-navigation-choices-sidebar .f-navigation-choices-links { grid-template-columns:minmax(0,1fr); }
+.f-navigation-choices-sidebar .f-navigation-choice-link { justify-content:flex-start; text-align:start; }
+.f-navigation-choices-sidebar .f-navigation-choice-label { flex:1; }
+.f-navigation-choice-indicator { flex-shrink:0; margin-inline-start:auto; }
+@media(max-width:760px) {
+ .f-navigation-choices-sidebar { grid-template-columns:minmax(0,1fr); }
+ .f-navigation-choices-sidebar > .f-navigation-choices-nav,.f-navigation-choices-sidebar > .f-navigation-choice-panel { grid-column:1; grid-row:auto; }
+}
 @media(max-width:560px) { .f-navigation-choices-links { grid-template-columns:minmax(0,1fr); } }
+/* Height is opt-in: native route choices keep their content-sized default. */
+.f-navigation-choices-fill-height { box-sizing:border-box; grid-template-rows:auto minmax(0,1fr); height:100%; max-height:100%; min-height:0; overflow:hidden; align-items:start; }
+.f-navigation-choices-fill-height > .f-navigation-choices-nav,.f-navigation-choices-fill-height > .f-navigation-choice-panel { box-sizing:border-box; min-height:0; max-height:100%; overflow:auto; overscroll-behavior:contain; }
+.f-navigation-choices-sidebar.f-navigation-choices-fill-height { grid-template-rows:minmax(0,1fr); }
+@media(max-width:760px) {
+ .f-navigation-choices-sidebar.f-navigation-choices-fill-height { grid-template-rows:auto minmax(0,1fr); }
+ .f-navigation-choices-sidebar.f-navigation-choices-fill-height > .f-navigation-choices-nav { grid-row:1; }
+ .f-navigation-choices-sidebar.f-navigation-choices-fill-height > .f-navigation-choice-panel { grid-row:2; }
+ .f-navigation-choices-sidebar.f-navigation-choices-fill-height .f-navigation-choices-links { grid-template-columns:repeat(var(--f-choice-columns,2),minmax(0,1fr)); }
+}

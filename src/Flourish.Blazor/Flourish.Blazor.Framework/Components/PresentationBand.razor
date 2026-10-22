@@ -1,5 +1,11 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 <section @attributes="AdditionalAttributes" data-presentation-band="@(IncludeInProgress ? "true" : null)" class="@($"f-presentation-band f-presentation-{Tone.ToString().ToLowerInvariant()} {(Dotted ? "f-presentation-dotted" : null)} {(FullHeight ? "f-presentation-fullheight" : null)} {Class}".Trim())" style="@BandStyle" aria-labelledby="@LabelledBy">
+    @if (!string.IsNullOrWhiteSpace(BackgroundImageUrl))
+    {
+        <div class="f-presentation-band-media" aria-hidden="true">
+            <img src="@BackgroundImageUrl" alt="" aria-hidden="true" decoding="async" />
+        </div>
+    }
     <ContentContainer>
         @if (!string.IsNullOrWhiteSpace(Title))
         {
@@ -16,6 +22,8 @@
     [Parameter] public PresentationTone Tone { get; set; }
     [Parameter] public int MinHeight { get; set; } = DefaultMinHeight;
     [Parameter] public bool Dotted { get; set; }
+    /// <summary>Optional decorative background image beneath the standard Tone gradient; omitted images preserve ordinary band rendering.</summary>
+    [Parameter] public string? BackgroundImageUrl { get; set; }
     [Parameter] public bool FullHeight { get; set; } = true;
     [Parameter] public bool IncludeInProgress { get; set; } = true;
     [Parameter] public int HeadingLevel { get; set; } = 2;

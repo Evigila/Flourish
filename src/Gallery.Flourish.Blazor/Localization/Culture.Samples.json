@@ -3229,15 +3229,20 @@
     "zh-CN": "背景由外层横幅负责，ContentContainer 为内部内容提供居中限宽轨道。",
     "pt-BR": "O banner externo controla o fundo; ContentContainer fornece faixa interna central com largura limitada."
   },
+  "Sample_UseContextAsPrimaryIdentity": {
+    "en-US": "Make the service name the primary identity",
+    "zh-CN": "将服务名作为主要身份",
+    "pt-BR": "Destacar o nome do serviço como identidade principal"
+  },
   "Sample_LogoDisplayerSample_Description": {
-    "en-US": "Uses the configured project identity by default. Overrides apply only to this example.",
-    "zh-CN": "默认使用已配置的项目身份；覆盖仅作用于当前示例。",
-    "pt-BR": "Usa identidade configurada do projeto por padrão. Substituições afetam apenas este exemplo."
+    "en-US": "Switch between ordinary project identity and ContextPrimary service identity. The smaller brand sits above the large service name; Compact centers the 96px image on the service row, while retaining one semantic title.",
+    "zh-CN": "切换普通项目身份与ContextPrimary服务身份。较小品牌名位于大服务名上方，Compact将96px图像与服务行居中对齐，并保留单个语义标题。",
+    "pt-BR": "Alterne entre identidade comum de projeto e identidade de serviço ContextPrimary. A marca menor fica acima do nome grande; Compact centraliza a imagem de 96px na linha do serviço e preserva um único título semântico."
   },
   "Sample_NavigationChoicesSample_Description": {
-    "en-US": "A fictional organization appears on the left, with the shared login action area on the right. Three methods switch through native GET links; field values never enter the URL.",
-    "zh-CN": "左侧展示虚构组织名称，右侧是共用的登录操作区。三种方式通过原生 GET 链接切换；字段值不会进入地址。",
-    "pt-BR": "Uma organização fictícia aparece à esquerda e a área compartilhada de login à direita. Três formas alternam por links GET nativos; valores dos campos não entram na URL."
+    "en-US": "A narrow list of native GET choices sits beside the selected method's details, with decorative icons and an optional current-item check. The panels stack on narrow screens; no authentication or credential storage is performed.",
+    "zh-CN": "左侧窄列表以原生 GET 选择方式，右侧展示所选详情，支持装饰图标及可选当前项勾选。窄屏纵向排列；不执行认证或保存凭据。",
+    "pt-BR": "Uma lista estreita de opções GET nativas fica ao lado dos detalhes selecionados, com ícones decorativos e marca opcional da opção atual. Em telas estreitas, as áreas são empilhadas; não há autenticação nem armazenamento de credenciais."
   },
   "Sample_OfferStageSample_Description": {
     "en-US": "With AutoRotate, built-in Quiet text pause/resume buttons become available after enhancement. Labels follow framework localization or explicit PauseRotationLabel/ResumeRotationLabel overrides. The stage handles focus, pointer and reduced motion. Without JavaScript all offers remain visible and rotation controls stay disabled.\nRotationControlIconOnly=true uses standard 48px icon buttons: pause while running, play_arrow after user pause. aria-label/data-tooltip share the localized or explicit labels. Only presentation changes; pause/resume, reduced motion and lifecycle stay the same.",
@@ -3245,9 +3250,9 @@
     "pt-BR": "Com AutoRotate, botões Quiet de pausa/retomada ficam disponíveis após aprimoramento. Textos seguem localização do framework ou substituições PauseRotationLabel/ResumeRotationLabel. O palco trata foco, ponteiro e movimento reduzido. Sem JavaScript, todas as ofertas permanecem visíveis e controles desativados.\nRotationControlIconOnly=true usa ícones padrão de 48px: pause durante execução, play_arrow após pausa. aria-label/data-tooltip compartilham os textos localizados ou explícitos. Apenas apresentação muda; pausa/retomada, movimento reduzido e ciclo de vida permanecem."
   },
   "Sample_PresentationBandSample_Description": {
-    "en-US": "FullHeight=true and MinHeight=0 default to a browser viewport minimum with natural content growth. The dotted background is off by default and enabled only on Primary here. Bands combine full-width backgrounds with a centered content track.",
-    "zh-CN": "默认 FullHeight=true、MinHeight=0，以浏览器视口为最小高度并允许内容自然增高。点阵背景默认关闭，本例仅为 Primary 开启。板块使用全宽背景与居中内容轨道。",
-    "pt-BR": "FullHeight=true e MinHeight=0 usam por padrão o mínimo da janela, com crescimento natural do conteúdo. O fundo pontilhado começa desligado e aqui só é ativado em Primary. As faixas combinam fundo amplo com conteúdo centralizado."
+    "en-US": "Canvas demonstrates the existing local SVG as decorative cover media with the standard Tone gradient. Surface remains plain and Primary retains Dotted. FullHeight/MinHeight and bounded content still apply.",
+    "zh-CN": "Canvas使用现有本地SVG展示装饰cover背景及标准Tone渐变；Surface保持普通背景，Primary保留点阵。FullHeight/MinHeight和正文限宽仍有效。",
+    "pt-BR": "Canvas mostra o SVG local existente como mídia cover decorativa com gradiente de Tone. Surface fica simples e Primary mantém Dotted. FullHeight/MinHeight e conteúdo limitado continuam válidos."
   },
   "Sample_FilePickerSample_Description": {
     "en-US": "Reads only filename and length metadata, without reading content or uploading. Production hosts validate content and size separately.",
@@ -3348,5 +3353,15 @@
     "en-US": "This natural-height footer is outside band progress.",
     "zh-CN": "此自然高度页脚不参与板块进度。",
     "pt-BR": "Este rodapé de altura natural fica fora do progresso das faixas."
+  },
+  "Sample_AccessLayoutSample_Description": {
+    "en-US": "A bounded access page keeps compact identity and return navigation fixed while native method details grow and scroll internally. The 540px wrapper is only the Gallery preview host.",
+    "zh-CN": "有界访问页固定紧凑身份与返回导航，原生方式详情自然增长并在内部滚动。540px外框仅作为Gallery预览宿主。",
+    "pt-BR": "A página limitada mantém identidade compacta e retorno estáveis enquanto os detalhes crescem e rolam internamente. O contêiner de 540px serve apenas à prévia da Gallery."
+  },
+  "Sample_PresentationHeroSample_Description": {
+    "en-US": "Artistic title and standard actions above a decorative local SVG, with a dense Tone gradient and unchanged viewport/natural-growth behavior. The image is a placeholder, not product content.",
+    "zh-CN": "艺术标题与标准操作位于本地SVG装饰图之上，使用密实Tone渐变，视口高度与自然增长行为不变。图片仅为占位，不表示产品内容。",
+    "pt-BR": "Título artístico e ações padrão sobre SVG local decorativo, com gradiente denso de Tone e o mesmo comportamento de janela/crescimento natural. A imagem é ilustrativa, não conteúdo do produto."
   }
 }

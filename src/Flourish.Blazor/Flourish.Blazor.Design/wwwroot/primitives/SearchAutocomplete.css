@@ -17,7 +17,8 @@
     font: inherit;
     font-size: 17px;
     font-weight: 400;
-    text-align: left;
+    text-align: var(--f-popup-align,left);
+    justify-content: var(--f-popup-align,left);
 }
 .search-autocomplete-option {
     cursor: pointer;

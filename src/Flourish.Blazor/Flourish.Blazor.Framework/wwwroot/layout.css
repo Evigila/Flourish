@@ -131,8 +131,8 @@ cursor: not-allowed;
                 vertical-align: middle;
     }
 
-    :is(.navigation-surface, .content-surface) select option,
-    :is(.navigation-surface, .content-surface) select optgroup {
+    :is(.navigation-surface, .content-surface) select:not(.f-select) option,
+    :is(.navigation-surface, .content-surface) select:not(.f-select) optgroup {
     min-height: 44px;
     }
 

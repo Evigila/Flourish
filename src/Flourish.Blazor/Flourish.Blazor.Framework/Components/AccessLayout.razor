@@ -1,0 +1,18 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+<div @attributes="AdditionalAttributes" class="@($"f-access-layout {(Wide ? "f-access-layout-wide" : null)} {(Dotted ? "f-access-layout-dotted" : null)} {Class}".Trim())">
+    <div class="f-access-layout-content">
+        @if (Brand is not null) { <div class="f-access-layout-brand">@Brand</div> }
+        <div class="f-access-layout-body">@ChildContent</div>
+    </div>
+</div>
+
+@code {
+    /// <summary>Identity and stable auxiliary navigation above the bounded operation area.</summary>
+    [Parameter] public RenderFragment? Brand { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool Wide { get; set; }
+    [Parameter] public bool Dotted { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -124,7 +124,7 @@ margin: 10px 0 0;
     font-size: 17px;
 }
 
-@supports (appearance: base-select) {.navigation-surface  select::picker(select) {
+@supports (appearance: base-select) {.navigation-surface  select:not(.f-select)::picker(select) {
     appearance: base-select;
             color: var(--f-text);
             background: var(--f-surface);
@@ -133,7 +133,7 @@ margin: 10px 0 0;
             box-shadow: 0 12px 28px rgb(from var(--f-primary) r g b / 15%);
     }
 
-    .navigation-surface  select option {
+    .navigation-surface  select:not(.f-select) option {
     padding: 10px 13px;
             font-size: 17px;
     }

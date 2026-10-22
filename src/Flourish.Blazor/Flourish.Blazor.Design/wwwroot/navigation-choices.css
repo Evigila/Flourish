@@ -1,2 +1,10 @@
 .f-navigation-choices { gap:24px; }
 .f-navigation-choices-nav > .f-uniform-grid { margin-block:0; }
+.f-navigation-choices-sidebar { gap:40px; }
+.f-navigation-choices-sidebar > .f-navigation-choices-nav { padding:12px; border:1px solid var(--f-border); border-radius:var(--f-radius-panel); background:var(--f-surface); }
+.f-navigation-choices-sidebar .f-navigation-choice-link { padding-inline:16px; }
+.f-navigation-choices-sidebar .f-navigation-choice-panel { padding:24px; border:1px solid var(--f-border); border-radius:var(--f-radius-panel); background:var(--f-surface); color:var(--f-text); }
+@media(max-width:760px) { .f-navigation-choices-sidebar { gap:24px; } }
+/* A panel is already a section boundary; its direct Sections do not reserve another page-sized gap. */
+.f-navigation-choice-panel > .f-section { padding-top:0; }
+@media(max-width:760px) { .f-navigation-choices-sidebar.f-navigation-choices-fill-height { gap:16px; } }

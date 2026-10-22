@@ -1,6 +1,18 @@
 # Project architecture and repository tree
 
-**Release completed, 2026-10-19:** Current VersionPrefix and public release are 1.4.2 for the unchanged six-package Core/Blazor manifest; Essential stays 1.4.0. Tag v1.4.2 identifies commit c8616f0f8712a5ff78b21612f6886004366fe414. Hosted verification/publication, all six public indexes and fresh-cache public-only consumers passed. The failed v1.4.1 tag remains as unpublished history. This recovery only changes the bounded browser-fixture wait and Gallery release records; no maintained source file or runtime responsibility was added. See [release verification](release-verification.md#completed-flourish-142-release-on-2026-10-19). The complete tree and audit timestamp remain unchanged; new records are in its excluded docs-ai subtree.
+**Current local selection/identity preview, 2026-10-22:** Source baseline `2a00a23` plus pending local changes declares **1.4.3-preview.portals.9**. Native option auto sizing removes the intrinsic percentage-width cycle, native checkmarks and multi-select checkboxes keep independent fixed tracks, and labels retain physical popup alignment. `LogoDisplayer.ContextPrimary` defaults false; with nonblank context it puts the smaller brand above the large context and, in Compact layout, aligns the image only to that context row. Native ownership, popup lifecycle and ordinary identity remain available. Final Blazor solution Release build passed with zero warnings/errors; Framework 459/459 (83 components, 762 parameter rows, 353 defaults), Gallery 8,541 (474 post-event and 359 ChangeLog), access Node 13/13, native/placement/palette 61/61, controls 77/77, split 5/5 and preview identity 12/12 passed. Six exact local .9 packages passed identity, dependency and required-asset verification. Seventeen delivered ZIP entries also match their final producer and consumer-cache bytes. See the [selection-column and service-identity report](1_bugreports/2026-10-22_selection-columns-and-service-identity.md) for source evidence, logs and manual acceptance; physical first-frame native picker appearance remains unverified. Coordinated Colligere final verification checked at `2026-10-22T13:02:03Z` also passed its 17-project Release build with zero warnings/errors and full Web result of 2,311 passed, 135 conditional PostgreSQL skips and zero failures; its report retains the earlier guard-only failure and correction. The maintained tree remains 697 files and 121 directories; audit state is unchanged.
+
+**Verified earlier presentation preview, 2026-10-21:** That source baseline `2a00a23` plus pending local portal/popup/presentation changes declared **1.4.3-preview.portals.8**. PresentationBand and PresentationHero expose optional `BackgroundImageUrl`; Framework renders decorative, noninteractive cover media beneath content and Design supplies the existing Tone-role gradient with stronger narrow-screen coverage. Omitting media preserves ordinary band rendering. Compact LogoDisplayer keeps horizontal image/layout behavior while sharing the ordinary primary/context title scale; the old Compact 32px/24px primary and 18px context overrides are retired. Final source/C# Release build passed with zero warnings/errors; Framework 458/458 (83 components, 761 parameter rows, 352 defaults), Gallery 8,541 (474 post-event and 359 ChangeLog), focused Node 36/36 (10 access + 26 palette, including page-body checks) and preview identity 12/12 passed. Six exact local .8 packages passed identity, dependency and asset verification. The [product-media and access-title report](1_bugreports/2026-10-21_product-hero-media-and-access-titles.md) retains the first guard-only failure, corrected empty-alt/URL-encoding assertions, logs and manual acceptance. This round does not add third-party media or another external dependency. That maintained tree contained 697 files and 121 directories; audit state is unchanged.
+
+**Verified earlier anchored-popup preview, 2026-10-21:** That source baseline `2a00a23` plus its pending portal/popup changes declared 1.4.3-preview.portals.7. Anchored menus, selection panels and search suggestions share content/longest-item width and physical left/right alignment; native select direction is synchronized before opening. ReferenceDropdown/SearchAutocomplete keep component-owned selection, keyboard and dismissal state while their panels reuse placement through manual native popovers. Modal dialog geometry and WPF behavior are separate. No external dependency or public parameter was added. Final complete Blazor solution Release build passed with zero warnings/errors; Framework 456/456, Gallery 8,529 (including 474 post-event and 355 ChangeLog), preview identity 12/12, focused Node 70/70, controls 77/77 and ActionMenu DOM-only 28/28 passed. The DOM-only run explicitly skipped 14 real-browser checks; physical first-open painting remains manual acceptance. Six exact local .7 packages passed identity, dependency and asset verification. See [anchored-popup report](1_bugreports/2026-10-21_anchored-popup-placement.md) for logs, the retained first Framework guard failure and manual checks. That maintained tree contained 697 files and 121 directories; audit state remains unchanged.
+
+**Verified earlier control-state preview, 2026-10-21:** That source was 1.4.3-preview.portals.6. Native customized-select triggers reuse standard Button paint through the real select owner state, including chrome and unavailable states; native picker/menu surfaces and option roles are canonical while raw-select styles remain scoped separately. Sidebar navigation and details now share Surface. Optional LogoDisplayer.LogoSize sets positive image pixels independently of Compact, including an explicit 96px image with simple horizontal identity. Gallery/API metadata and focused regressions cover these public contracts. No external dependency changed. Final production/full solution Release builds passed with zero warnings/errors; Framework 456/456, Gallery 8,521, preview-version 12/12 and focused Node 41/41 passed. All six exact local packages passed identity, dependency and asset verification. See [final library verification](1_changelogs/2026-10-21_103800_native-select-preview-six-final-verification.md) for logs and scope; consumer results are maintained in its own report. See [implementation and manual checks](1_changelogs/2026-10-21_103624_native-select-state-and-identity-preview-six.md). That maintained tree contained 696 files and 121 directories; audit state remains unchanged.
+
+**Verified earlier bounded-operation preview, 2026-10-20:** That source is 1.4.3-preview.portals.5. The .4 candidate failed the consumer minimum-text-scale guard; .5 removes its 16px short-height context override and retains the standard 18px context. AccessLayout fills a bounded ContentSurface stage with a stable Brand row and a remaining-height operation body. NavigationChoices.FillHeight is opt-in: the selected details keep natural height up to that body limit, then scroll without recentering the brand or sidebar. LogoDisplayer.Compact reuses identity semantics with a horizontal 48px logo and 32px/18px name/context; ordinary artistic identity is unchanged. Direct panel Sections suppress page-sized top padding even after a Notice. Narrow floating preferences have reserved clearance; at CSS viewport heights up to 360px the operation body scrolls as a reachability fallback. Five maintained files were added, for 695 files and 121 directories. Final coordinated verification passed: Release build with zero warnings/errors, six exact local packages, Framework 455/455, Gallery 8,513 and preview-version checks 12/12. The focused Node group passed 33 checks (7 layout plus 26 palette); Colligere restored/built all 17 projects and its full Web project passed 2,307 tests with 135 conditional PostgreSQL skips and zero failures. See [final .5 verification](1_changelogs/2026-10-20_213621_bounded-access-preview-five-final-verification.md) for evidence and explicit unperformed scopes. Audit state remains unchanged.
+
+**Verified earlier local preview, 2026-10-19:** That source declared VersionPrefix 1.4.3 and VersionSuffix preview.portals.3; public 1.4.2 remains unchanged. NavigationChoices replaces its Compact boolean with NavigationChoicesLayout (Grid, Compact, Sidebar), supports optional item icons and a current-choice check, and retains native GET links and keyed hidden panels. Sidebar geometry belongs to Framework and semantic surfaces to Design. Selected links use their standard Button ActiveVariant without Sidebar paint overrides; the Gallery explicitly uses Primary. Gallery replaces its organization Hero/three-method scene with two native account/organization choices. One maintained Abstract enum and one local version-gate regression were added; that source tree had 690 files and 121 directories. The coordinating task ran and checked the final .3 Release build (zero warnings/errors), Framework 452/452, Gallery 8,422, palette 26/26 and the focused presentation/layout/spacing checks. All six local packages passed package-set verification, and Colligere restored and built them successfully. See [final local verification](1_changelogs/2026-10-19_162544_portal-preview-final-verification.md) for exact scopes, logs and consumer results; visual acceptance remains manual. Audit state remains unchanged.
+
+**Release completed, 2026-10-19:** The completed public release is 1.4.2 for the unchanged six-package Core/Blazor manifest; Essential stays 1.4.0. Tag v1.4.2 identifies commit c8616f0f8712a5ff78b21612f6886004366fe414. Hosted verification/publication, all six public indexes and fresh-cache public-only consumers passed. The failed v1.4.1 tag remains as unpublished history. This recovery only changes the bounded browser-fixture wait and Gallery release records; no maintained source file or runtime responsibility was added. See [release verification](release-verification.md#completed-flourish-142-release-on-2026-10-19). The complete tree and audit timestamp remain unchanged; new records are in its excluded docs-ai subtree.
 
 **Status:** Verified source and structure inventory, 2026-10-10 (America/Sao_Paulo, UTC-03:00). Inspected working tree based on commit `3e861b346a145240b8cdabbfe9b39cdd785fc819`, including the pending Essential.Culture 1.4.0 bridge changes and the installed AGENTS framework 1.0.0. This source audit does not certify application startup or visual behavior.
 
@@ -10,7 +22,7 @@
 
 ## Inventory scope
 
-The complete tree below includes every maintained file observed on 2026-10-12 in the repository outside the two documentation subtrees. The inventory contains **688 files and 121 directories below the root**, including **22 project files and 5 solution files**. It includes hidden maintained files and project-owned untracked files. Files were enumerated with `rg --files --hidden --no-ignore`; explicit generated/temporary exclusions were applied after identifying their roles. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
+The complete tree below includes every maintained file observed on 2026-10-22 in the repository outside the two documentation subtrees. The inventory contains **697 files and 121 directories below the root**, including **22 project files and 5 solution files**. It includes hidden maintained files and project-owned untracked files. Files were enumerated with `rg --files --hidden --no-ignore`; explicit generated/temporary exclusions were applied after identifying their roles. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -60,6 +72,7 @@ Flourish/
 |   |-- Test-CulturePreferences.ps1
 |   |-- Test-GalleryCulture.ps1
 |   |-- Test-GalleryNavigation.ps1
+|   |-- Test-PreviewVersion.ps1
 |   \-- Test-WpfPackageConsumers.ps1
 |-- scripts/
 |   |-- Convert-MaterialIcons.ps1
@@ -82,6 +95,7 @@ Flourish/
 |   |   |   |   |-- CenteredContainer.cs
 |   |   |   |   |-- ControlContracts.cs
 |   |   |   |   |-- NavigationChoiceItem.cs
+|   |   |   |   |-- NavigationChoicesLayout.cs
 |   |   |   |   |-- PopupStrength.cs
 |   |   |   |   |-- PresentationTone.cs
 |   |   |   |   |-- TableContracts.cs
@@ -120,6 +134,7 @@ Flourish/
 |   |   |   |   |   |-- ShellHeader.css
 |   |   |   |   |   |-- StandaloneMaskedInput.css
 |   |   |   |   |   \-- SystemNavigationMenu.css
+|   |   |   |   |-- access-layout.css
 |   |   |   |   |-- controls.css
 |   |   |   |   |-- data-search.css
 |   |   |   |   |-- data.css
@@ -176,6 +191,7 @@ Flourish/
 |   |   |   |   |   \-- StandaloneMaskedInput.razor
 |   |   |   |   |-- AccessActions.razor
 |   |   |   |   |-- AccessFormSurface.razor
+|   |   |   |   |-- AccessLayout.razor
 |   |   |   |   |-- AccessPanel.razor
 |   |   |   |   |-- ActionMenu.razor
 |   |   |   |   |-- ApplicationLayout.razor
@@ -284,6 +300,7 @@ Flourish/
 |   |   |   |   |   |-- navigation-guard.js
 |   |   |   |   |   |-- primary-navigation-item.js
 |   |   |   |   |   \-- reference-dropdown.js
+|   |   |   |   |-- access-layout.css
 |   |   |   |   |-- back-to-top.css
 |   |   |   |   |-- browse.svg
 |   |   |   |   |-- clipboard.js
@@ -560,6 +577,7 @@ Flourish/
 |   |   |   |   |-- Display/
 |   |   |   |   |   |-- AccessActionsSample.razor
 |   |   |   |   |   |-- AccessFormSurfaceSample.razor
+|   |   |   |   |   |-- AccessLayoutSample.razor
 |   |   |   |   |   |-- AccessPanelSample.razor
 |   |   |   |   |   |-- ContentContainerSample.razor
 |   |   |   |   |   |-- LogoDisplayerSample.razor
@@ -646,7 +664,7 @@ Flourish/
 |   |   |-- appsettings.json
 |   |   |-- Gallery.Flourish.Blazor.csproj
 |   |   \-- Program.cs
-|   |-- Gallery.Flourish.WINUI3/
+|   |-- Gallery.Flourish.WinUI3/
 |   |   |-- App.xaml
 |   |   |-- App.xaml.cs
 |   |   |-- Gallery.Flourish.WinUI3.csproj
@@ -666,6 +684,7 @@ Flourish/
 |-- tests/
 |   |-- Tests.Flourish.Blazor/
 |   |   |-- access-form-spacing-dom.mjs
+|   |   |-- access-layout.test.mjs
 |   |   |-- AccessExampleChecks.cs
 |   |   |-- action-menu-dom.mjs
 |   |   |-- ApiFinalAuditChecks.cs
@@ -700,6 +719,7 @@ Flourish/
 |   |   |-- ListViewChecks.cs
 |   |   |-- measurement-lifecycle.test.mjs
 |   |   |-- MultiSelectBoxChecks.cs
+|   |   |-- native-select-trigger.test.mjs
 |   |   |-- NavigationChoicesChecks.cs
 |   |   |-- NavigationControlsChecks.cs
 |   |   |-- NavigationGuardChecks.cs
@@ -707,6 +727,7 @@ Flourish/
 |   |   |-- organization-access-presentation.test.mjs
 |   |   |-- page-body-actions.test.mjs
 |   |   |-- palette-checks.mjs
+|   |   |-- popup-placement.test.mjs
 |   |   |-- presentation-offers-dom.mjs
 |   |   |-- presentation-progress-dom.mjs
 |   |   |-- PresentationChecks.cs
@@ -926,13 +947,28 @@ No production database connection, remote application API client, message broker
 
 ## Current public API and interaction ownership
 
+AccessLayout owns bounded access/simple-operation geometry inside an existing ContentSurface stage, never an additional main or authentication transport. Brand and return navigation stay outside its scrollable body. Wide selects 960px instead of 560px and Dotted uses existing semantic roles. NavigationChoices.FillHeight bounds each current panel without allowing hidden alternatives to affect layout; at <=760px its sidebar becomes a compact header, and at <=360px height AccessLayout permits body scrolling so operations remain reachable. LogoDisplayer.Compact is opt-in and keeps the configured identity, heading level and optional description with horizontal image/title placement. With default `ContextPrimary=false`, its primary title and context inherit ordinary LogoDisplayer typography: `clamp(56px,8vw,80px)` and semantic H2 context (28px default), without a Compact-only or short-height type override. Compact still has its own default image dimensions and geometry. Optional positive LogoSize controls only the image via actual dimensions and image-local --f-logo-size, independently of Compact or short-height defaults. The access-method Gallery demonstrates this actual composition; its catalog preview uses an explicit bounded 540px demonstration host.
+
+Optional `LogoDisplayer.ContextPrimary` defaults false and takes effect only with nonblank ContextName. It promotes context to the ordinary fluid primary scale and places the smaller ProjectName above it within the same encoded semantic heading and existing TitleId/HeadingLevel contract. Compact uses a row subgrid so the image aligns only to the main context row; LogoSize remains independent and description follows the identity. Blank context falls back to the ordinary layout. Gallery samples and localized usage/default metadata describe this actual contract.
+
+NavigationChoices exposes one Layout enum (Grid, Compact, Sidebar); the former Compact boolean is removed. Sidebar composes real Button/Icon entries, optional current-item check and retained keyed panels. Its two-column geometry stacks below 760px, and hidden panels cannot affect layout. The Gallery demonstrates only platform and organization methods; generic presentation/access controls remain available elsewhere.
+
+Local source versions combine VersionPrefix and VersionSuffix. Get-PackageVersion returns the exact preview package identity, and Verify-PackageSet uses it by default. Stable release/tag/publication entry points use Get-ReleaseVersion and reject suffix-bearing source before remote/tag actions. Gallery keeps an X.Y.Z-preview aggregate, validated against the next stable patch; a preview prefix is never counted as an already released version. build/Test-PreviewVersion.ps1 exercises these boundaries using disposable local props only.
+
+
 `PopupStrength` is a platform-specific public contract in Blazor Abstract (`Components/PopupStrength.cs`) and WPF Abstract (`ControlContracts.cs`). Its default is `Weak`: library-owned popups may dismiss through outside interaction, Escape, or repeated trigger activation. `Strong` requires selection or an explicit completion/cancellation action. Strength does not replace validation, disabled/busy state, `CanClose`/`Dismissible`, authorization, or disposal cleanup. Components validate the enum rather than silently interpreting unsupported values.
 
 Blazor Framework owns the shared popup controller in `wwwroot/controls.js`; native SSR enhancement is bootstrapped by `wwwroot/primitives/input-behaviors.js`, while interactive components retain their own interop lifetimes. Actual control parameters forward strength into their owned menu, selection, dialog, tutorial, or notice surfaces. Native `details` remains the pre-enhancement disclosure boundary, so enhanced dismissal guarantees require the browser module. Browser-managed native select/date/file surfaces and platform tooltips retain their platform behavior; the library does not claim to impose its popup policy on those external surfaces.
 
+The shared `positionPopup` function selects a physical left/right edge from the actual trigger center relative to the viewport midpoint, sets `data-f-popup-align` before measuring, and retains viewport clamping, vertical flip, available-height scrolling and hover/action gaps. Menu, selection and search panels use `max-content`, zero fixed minimum width and a viewport cap; options share the longest item's column and align their text/flex content to that edge. Popup search inputs fill that measured column. Theme copying excludes the geometric `--f-popup-align` variable so nested menus compute their own edge. Native select enhancement synchronizes direction during initialization and capture `pointerdown`/`focusin`/`keydown`, before the default opening action, as well as after resize/scroll/enhanced content changes; CSS clears the UA inline-size minimum and uses directional anchor placement without post-open JS measurement. ReferenceDropdown and SearchAutocomplete render their original panels as manual native popovers, reuse only placement through `primitives/reference-dropdown.js`, and retain their own circuit state, keyboard, selection/creation, strong/busy dismissal and lifecycle cleanup. This prevents ancestor overflow clipping without adding a second selection controller. `popup-placement.test.mjs` is a maintained Node regression entry in `scripts/ReleaseSettings.psd1`; simulated DOM/cascade results do not certify physical native-picker painting. See [anchored-popup report](1_bugreports/2026-10-21_anchored-popup-placement.md).
+
+Native option rows now use automatic width/max-width sizing instead of percentages against their content-sized picker. A reserved checkmark track is independent of label alignment; MultiSelectBox likewise uses a fixed checkbox track and flexible label column, including longest-label, gap and normal-padding contributions within the viewport cap. ReferenceDropdown/SearchAutocomplete retain their current selection styling and state. Native direction synchronization writes `data-f-popup-align` only when the physical edge changes; no delayed native opening, text-measuring pass, simulated select or new width parameter is introduced. These source/cascade boundaries do not establish the unique cause or physical absence of the reported first-frame contraction; the [selection-column and service-identity report](1_bugreports/2026-10-22_selection-columns-and-service-identity.md) retains that manual acceptance.
+
 WPF Framework implements strength on its owned `ActionMenu`, `SplitButton`, `MultiSelectBox`, `DropdownSurface`, `Dialog`, and `NoticeTrigger` paths. `ServiceMenu` inherits its menu policy. The internal `Controls/PopupTrigger.cs` guards the real toggle operation used by the dropdown and multi-selector templates, including keyboard/automation activation. Owned `Popup` instances use `StaysOpen` and routed event handling; explicit completion still follows the component's busy/close rules, and disabling or unloading releases transient UI. WPF `SelectBox`, `ReferenceDropdown`, and `SearchAutocomplete` retain the native ComboBox selection surface; `DateBox`, `FilePicker`, and ordinary tooltips retain native platform ownership. This is a Windows control boundary, not a browser implementation or a guarantee for operating-system dialogs.
 
 Blazor `PresentationBand` and `PresentationHero` default to `FullHeight=true` and `MinHeight=0`. Full-height CSS establishes `max(100dvh, MinHeight)` with a `100vh` fallback, while content may grow beyond the viewport and scroll naturally. Explicit `FullHeight=false` retains natural height with zero minimum or a caller-specified nonnegative pixel minimum. Hero delegates one band and therefore produces one semantic progress marker. `PresentationFooter` has natural content height; footer boundaries remove the default viewport minimum from nested bands and exclude all footer content from navigation.
+
+Both presentation components accept optional `BackgroundImageUrl`; Hero forwards it to its owned Band. A nonblank URL renders an empty-alt, `aria-hidden` image in a decorative layer before the content container, using a normal HTML-encoded image attribute rather than CSS URL interpolation. Framework owns absolute cover geometry, isolated stacking and `pointer-events:none`; the media adds no height, landmark, heading or accessible name. Optional Design overlays the existing Canvas/Surface/Primary role as a gradient that stays dense beneath copy and reveals the image toward the opposite edge, with stronger coverage at widths up to 760px. A missing/failed image leaves the underlying Tone surface; no media URL produces the prior ordinary structure. FullHeight, MinHeight, progress and natural footer behavior remain owned by the existing presentation contracts. Gallery samples use the existing local `gallery.svg`; the public API does not require a hosted media service or expose arbitrary mask colors/opacity.
 
 `Patterns.ContentSurface.ShowPresentationProgress` defaults to `false`. Enabling it composes the reusable `PresentationProgress` scenario for that surface's main content and marks its Footer slot as an exclusion boundary. `PresentationBand.IncludeInProgress` and `PresentationHero.IncludeInProgress` default to `true`; explicit false excludes a destination without changing content or height. Only eligible outermost semantic bands are counted, rather than arbitrary sections or a footer's nested bands. One band retains one clickable tutorial-style segment, while zero bands hide the navigation. Existing `ContentId="application-content"` compatibility is retained; progress/nav-generated anchor identifiers are instance-specific and discovery is scoped to the actual surface main element.
 
@@ -940,7 +976,7 @@ The bottom-center tutorial segments navigate to the selected band's viewport pos
 
 `ComponentUsageCatalog` registers `PresentationProgress` as an explicit production scenario. Gallery `ComponentCatalog`, `ParameterMeaning`, and the three Components/Parameters/Samples Culture modules describe the actual defaults and scope. `PresentationProgressSample.razor` composes the public ContentSurface opt-in with two actual bands and a natural footer inside a bounded example scroll area. `PresentationProgressChecks.cs` and `presentation-progress-dom.mjs` exercise SSR/lifecycle and actual browser-module behavior; WPF `PopupTests.cs` exercises native popup boundaries. These are maintained verification entry points, not an assertion that this inventory maintenance executed them.
 
-Blazor SelectBox, StandaloneSelectBox and the Culture LanguagePicker expose optional Icon and TriggerVariant (both default null). Customized triggers keep a real native select and standard option/value/change semantics, with base-select enhancement only where supported; classic rendering retains the text selector. ContentSurface.FloatingActions is a separate optional render slot at the upper inline end, outside both TitleBar and the scrolling stage. Its absolute layout and direct action-row spacing reserve no header height; ordinary TitleBar behavior is preserved.
+Blazor SelectBox, StandaloneSelectBox and the Culture LanguagePicker expose optional Icon and TriggerVariant (both default null). Customized native triggers project the real select owner states into the same standard Button declaration blocks; the inert child is not an independent interaction source. Native pickers use canonical menu surface/option roles, while raw-select rules explicitly exclude .f-select. Native popup dismissal remains browser-owned and is not assigned Strength. Customized triggers keep a real native select and standard option/value/change semantics, with base-select enhancement only where supported; classic rendering retains the text selector. ContentSurface.FloatingActions is a separate optional render slot at the upper inline end, outside both TitleBar and the scrolling stage. Its absolute layout and direct action-row spacing reserve no header height; ordinary TitleBar behavior is preserved.
 ## Active project constraints and exceptions
 
 - Product project/solution names, organization-prefixed namespaces and existing `Arkheide.*` package IDs are separate identities. All inspected explicit C#/Razor namespace declarations use an accepted organization prefix. Dependency-only convenience projects omit `RootNamespace` but do not ship a compiled assembly or maintained source API.
@@ -948,14 +984,14 @@ Blazor SelectBox, StandaloneSelectBox and the Culture LanguagePicker expose opti
 - Optional Design is registered explicitly. Framework owns production controls/behavior and uses a neutral text contract; optional adapters register text services. This inventory describes source responsibilities rather than defining another UI specification.
 - Existing Blazor `Primitives`, `Patterns` and `Internal` folders are source organization. Semantic usage is defined by `ComponentUsageCatalog` and production contracts rather than by assigning every folder a separate deployment/API family.
 - Windows platform projects and their Gallery/test processes require the declared Windows capabilities. Presence in the aggregate solution does not certify an implementation: WinUI3 remains the placeholder described above.
-- The physical `src/Gallery.Flourish.WINUI3/` directory and Gallery namespace/assembly spelling differ in case from `Gallery.Flourish.WinUI3` references in solutions and launcher settings. They resolve on this Windows workspace; a case-sensitive filesystem may fail these references. This audit records the naming/path debt and does not migrate existing identities.
+- The current physical `src/Gallery.Flourish.WinUI3/` directory matches the case used by its project/solution paths. The earlier audit recorded `Gallery.Flourish.WINUI3` and a possible case-sensitive path risk; that observation is retained as dated evidence and does not describe the current physical inventory. This documentation refresh does not rename source files or certify WinUI runtime behavior.
 
 ## Verification and unresolved facts
 
 The inspection used actual hidden/ignored physical-file enumeration, all maintained project/solution XML, shared MSBuild files, root SDK/tooling/release/launcher configuration, runtime entry points, framework registration, native resource ownership, Culture adapters, and representative executable architecture fixtures. The 2026-10-10 full audit found 678 maintained files, 121 non-root directories, 22 projects, 5 solutions, 33 local project-reference edges, no missing local project/solution references on Windows, and no project-reference cycle. All explicit C#/Razor namespace declarations inspected complied with the organization-prefix rule.
 
-The 2026-10-12 maintenance re-enumerated all maintained files under the same exclusions, parsed the regenerated complete tree back into paths, and reconfirmed the 33 declared project-reference targets on Windows. The current inventory contains 688 files and 121 directories, with 22 projects and 5 solutions. It adds ten maintained files to the audit tree and removes none: the Blazor popup enum, six progress component/style/module/test files, the Gallery progress sample, and WPF PopupTrigger/PopupTests. The eleven excluded empty/residual folders are unchanged. No build, test run, application startup, full documentation audit, framework synchronization, or audit-state update was performed by this inventory-maintenance task; coordinated validation is recorded separately by its owner.
+The 2026-10-12 maintenance re-enumerated all maintained files under the same exclusions, parsed the regenerated complete tree back into paths, and reconfirmed the 33 declared project-reference targets on Windows. That maintenance inventory contained 688 files and 121 directories, with 22 projects and 5 solutions. It adds ten maintained files to the audit tree and removes none: the Blazor popup enum, six progress component/style/module/test files, the Gallery progress sample, and WPF PopupTrigger/PopupTests. The eleven excluded empty/residual folders are unchanged. No build, test run, application startup, full documentation audit, framework synchronization, or audit-state update was performed by this inventory-maintenance task; coordinated validation is recorded separately by its owner.
 
-Architecture inspection does not prove tests, application startup, browser appearance, Windows architecture support or release publication. This structure inventory did not rerun builds/tests or start applications. The coordinated review separately compiled the actual copyable Culture examples; see [the audit report](1_bugreports/2026-10-10_project-instruction-audit.md) for that focused verification. Independently recorded tests from earlier tasks remain separate evidence. The WinUI3 placeholder and case-sensitive path risk remain current limitations; runtime certification for that platform is unknown.
+Architecture inspection does not prove tests, application startup, browser appearance, Windows architecture support or release publication. This structure inventory did not rerun builds/tests or start applications. The coordinated review separately compiled the actual copyable Culture examples; see [the audit report](1_bugreports/2026-10-10_project-instruction-audit.md) for that focused verification. Independently recorded tests from earlier tasks remain separate evidence. The WinUI3 placeholder remains a current limitation; runtime certification for that platform is unknown. The earlier case-sensitive path concern is dated audit evidence; the current physical Gallery directory uses the matching `Gallery.Flourish.WinUI3` spelling.
 
 This document supersedes the uninspected seed template. Documentation and installation state are intentionally outside this tree's runtime/source assertions; their audit completion and preserved history are managed by the coordinating audit task.

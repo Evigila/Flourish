@@ -76,3 +76,18 @@
 /* The Primary access variant keeps the same single surface at every width. */
 .f-access-form-primary { padding:clamp(28px,4vw,42px); border-radius:28px; }
 @media(max-width:560px) { .f-access-form-primary { padding:24px 18px; border-radius:22px; } }
+.f-logo-displayer-compact { margin-bottom:0; }
+.f-logo-displayer-context-primary .f-logo-displayer-project { font-size:var(--f-type-h2,28px); font-weight:600; line-height:1.2; letter-spacing:normal; }
+.f-logo-displayer-context-primary .f-logo-displayer-context { margin-top:0; font-size:inherit; color:inherit; letter-spacing:inherit; }
+
+/* The foreground copy sits over a dense Tone veil; media remains decorative in either theme. */
+.f-presentation-canvas > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-canvas) 0%,var(--f-canvas) 52%,rgb(from var(--f-canvas) r g b / 92%) 76%,rgb(from var(--f-canvas) r g b / 20%) 100%); }
+.f-presentation-surface > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-surface) 0%,var(--f-surface) 52%,rgb(from var(--f-surface) r g b / 92%) 76%,rgb(from var(--f-surface) r g b / 20%) 100%); }
+.f-presentation-primary > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-primary) 0%,var(--f-primary) 52%,rgb(from var(--f-primary) r g b / 92%) 76%,rgb(from var(--f-primary) r g b / 20%) 100%); }
+
+/* Narrow copy spans the image; keep the same dense Tone veil across its full width. */
+@media(max-width:760px) {
+ .f-presentation-canvas > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-canvas) 0%,var(--f-canvas) 52%,rgb(from var(--f-canvas) r g b / 92%) 76%,rgb(from var(--f-canvas) r g b / 78%) 100%); }
+ .f-presentation-surface > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-surface) 0%,var(--f-surface) 52%,rgb(from var(--f-surface) r g b / 92%) 76%,rgb(from var(--f-surface) r g b / 78%) 100%); }
+ .f-presentation-primary > .f-presentation-band-media::after { background:linear-gradient(90deg,var(--f-primary) 0%,var(--f-primary) 52%,rgb(from var(--f-primary) r g b / 92%) 76%,rgb(from var(--f-primary) r g b / 78%) 100%); }
+}

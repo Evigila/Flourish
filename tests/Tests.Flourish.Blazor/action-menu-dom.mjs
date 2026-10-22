@@ -344,7 +344,7 @@ await check('The automatic SSR asset enhances a native menu below its real trigg
 });
 await check('Circuit selection pointer dismissal honors strength and removes its actual subscription', async () => {
     const code = await fs.readFile(new URL('primitives/reference-dropdown.js',sourcePath),'utf8');
-    const selection = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+    const selection = await import('data:text/javascript;base64,' + Buffer.from(code.replace("'../controls.js'",JSON.stringify(controlsUrl))).toString('base64'));
     const root = new Node('div'), outside = new Node(); let calls = 0;
     const reference = {invokeMethodAsync:async name => { assert.equal(name,'RequestDismissAsync'); calls++; }};
     selection.attachPopupDismissal(root,reference); selection.attachPopupDismissal(root,reference);
@@ -367,7 +367,7 @@ await check('Native focus-open notices and service menus preserve keyboard entry
     api.detachMenu(control,popup);assert.equal(control.events.get('focus').length,0);
 });
 let browserChecksSkipped = 0;
-const browserPaths = [process.env.FLOURISH_HEADLESS_BROWSER,
+const browserPaths = process.argv.includes('--dom-only') ? [] : [process.env.FLOURISH_HEADLESS_BROWSER,
     'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
     'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
     'C:/Program Files/Google/Chrome/Application/chrome.exe',
@@ -792,6 +792,6 @@ if (browserPath) {
     });
 } else {
     browserChecksSkipped = 14;
-    process.stdout.write('SKIP real-browser SSR geometry: no installed Chromium browser found.\n');
+    process.stdout.write(process.argv.includes('--dom-only') ? 'SKIP real-browser SSR geometry: explicitly requested DOM-only verification.\n' : 'SKIP real-browser SSR geometry: no installed Chromium browser found.\n');
 }
 process.stdout.write(`${checks}/${checks} ActionMenu current-controller DOM checks passed; ${browserChecksSkipped} real-browser checks skipped.\n`);

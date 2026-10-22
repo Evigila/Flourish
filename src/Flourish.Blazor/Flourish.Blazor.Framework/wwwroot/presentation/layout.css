@@ -18,7 +18,7 @@ html:has(.f-document-surface), body:has(.f-document-surface) { overscroll-behavi
 .f-content-surface-footer { flex:0 0 auto; min-width:0; }
 body:has(.f-document-surface) { margin:0; }
 .f-logo-displayer { display:grid; justify-items:center; gap:24px; min-width:0; text-align:center; }
-.f-logo-displayer-logo { display:block; width:96px; height:96px; object-fit:contain; }
+.f-logo-displayer-logo { display:block; width:var(--f-logo-size,96px); height:var(--f-logo-size,96px); object-fit:contain; }
 .f-logo-displayer-title { display:grid; min-width:0; }
 .f-presentation-band-heading { display:flex; flex-direction:column; align-items:flex-start; text-align:start; }
 .f-presentation-hero-content { display:grid; min-width:0; align-content:center; gap:40px; }
@@ -95,3 +95,26 @@ body:has(.f-document-surface) { margin:0; }
 @media(max-width:860px) {
  .f-presentation-hero-layout { grid-template-columns:minmax(0,1fr); gap:48px; }
 }
+.f-logo-displayer-compact { grid-template-columns:auto minmax(0,1fr); align-items:center; justify-items:start; gap:8px 16px; text-align:start; }
+.f-logo-displayer-compact > .f-logo-displayer-logo { grid-column:1; grid-row:1; width:var(--f-logo-size,48px); height:var(--f-logo-size,48px); }
+.f-logo-displayer-compact > .f-logo-displayer-title { grid-column:2; grid-row:1; }
+.f-logo-displayer-compact:not(:has(> .f-logo-displayer-logo)) { grid-template-columns:minmax(0,1fr); }
+.f-logo-displayer-compact:not(:has(> .f-logo-displayer-logo)) > .f-logo-displayer-title { grid-column:1; }
+.f-logo-displayer-compact > .f-logo-displayer-description { grid-column:1/-1; }
+/* A shared context row aligns the logo with the main name while preserving one semantic heading. */
+.f-logo-displayer-context-primary > .f-logo-displayer-title { row-gap:8px; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary { grid-template-rows:auto auto; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary > .f-logo-displayer-title { grid-column:2; grid-row:1/span 2; grid-template-rows:subgrid; align-self:stretch; align-items:center; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary > .f-logo-displayer-logo { grid-column:1; grid-row:2; align-self:center; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary .f-logo-displayer-project { grid-row:1; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary .f-logo-displayer-context { grid-row:2; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary > .f-logo-displayer-description { grid-row:3; }
+.f-logo-displayer-compact.f-logo-displayer-context-primary:not(:has(> .f-logo-displayer-logo)) > .f-logo-displayer-title { grid-column:1; }
+@media(max-height:520px) { .f-logo-displayer-compact > .f-logo-displayer-logo { width:var(--f-logo-size,32px); height:var(--f-logo-size,32px); } }
+
+/* Decorative media never reserves content height or intercepts the foreground actions. */
+.f-presentation-band:has(> .f-presentation-band-media) { position:relative; isolation:isolate; }
+.f-presentation-band-media { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+.f-presentation-band-media > img { display:block; width:100%; height:100%; object-fit:cover; }
+.f-presentation-band-media::after { position:absolute; inset:0; content:""; }
+.f-presentation-band-media + .f-content-container { position:relative; z-index:1; }

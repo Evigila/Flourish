@@ -183,5 +183,30 @@
     "en-US": "Update Culture bridges to Essential.Culture 1.4.0. Split Gallery translations by module with shared key generation and runtime loading.",
     "zh-CN": "Culture 桥接层升级至 Essential.Culture 1.4.0；Gallery 翻译按模块分块，统一生成键并加载词典。",
     "pt-BR": "Atualiza as pontes Culture para Essential.Culture 1.4.0. Divide traduções da Gallery por módulo com geração de chaves e carregamento unificados."
+  },
+  "ChangeLog_NavigationChoicesSidebar": {
+    "en-US": "Add a responsive Sidebar layout to NavigationChoices with optional icons and a current-choice check. Keep native GET links and retained hidden forms; replace the old organization hero and three-method Gallery scene with a two-method sidebar example. Layout replaces the Compact boolean.",
+    "zh-CN": "NavigationChoices 新增响应式 Sidebar，支持可选图标及当前项勾选，保留原生 GET 链接和隐藏表单。以两种方式的侧栏示例替换旧组织 Hero 与三方式场景；Layout 替代 Compact 布尔参数。",
+    "pt-BR": "Adiciona Sidebar responsiva a NavigationChoices com ícones e marca da opção atual opcionais. Mantém links GET nativos e formulários ocultos; substitui o antigo hero de organização e três métodos por um exemplo de dois métodos. Layout substitui o booleano Compact."
+  },
+  "ChangeLog_BoundedAccessLayout": {
+    "en-US": "Adds a bounded AccessLayout, compact identity and optional height-filled native choices. Switching methods keeps identity and navigation stable while long details scroll internally.",
+    "zh-CN": "新增有界AccessLayout、紧凑身份及可选填高原生方式导航。切换方式时身份与导航保持稳定，较长详情在内部滚动。",
+    "pt-BR": "Adiciona AccessLayout limitado, identidade compacta e escolhas nativas com altura opcional. Trocar o método mantém identidade e navegação estáveis, com rolagem interna dos detalhes longos."
+  },
+  "ChangeLog_NativeSelectTriggerStates": {
+    "en-US": "Native selection triggers now share standard Button hover, open, press, focus and disabled paint, including chrome contexts and explicit variants. Pickers reuse the menu surface and option roles; Sidebar surfaces match, and LogoSize enlarges an instance image independently of Compact text.",
+    "zh-CN": "原生选择触发器共享标准Button的悬停、展开、按下、焦点与禁用绘制，覆盖顶栏及显式变种。选择弹层复用菜单表面及选项角色；Sidebar两侧表面一致，LogoSize可独立放大Compact实例图像而不扩大文字。",
+    "pt-BR": "Gatilhos nativos de seleção compartilham os estados padrão de Button, inclusive em barras e variantes explícitas. Seletores usam a superfície e os papéis de opções dos menus; as superfícies de Sidebar coincidem e LogoSize amplia só a imagem, sem ampliar o texto Compact."
+  },
+  "ChangeLog_AnchoredPopupPlacement": {
+    "en-US": "Align anchored menus and selections to the nearest control edge, size each panel to its longest option and align rows to the same side. Preserve vertical flipping and weak/strong dismissal; prepare native picker alignment before opening.",
+    "zh-CN": "锚定菜单与选择面板按控件所在位置靠左或靠右对齐，宽度适配最长选项，选项内容跟随同侧对齐。保留上下避让及强弱弹窗关闭行为，原生选择器在打开前确定对齐方向。",
+    "pt-BR": "Alinha menus e seletores à borda do controle conforme sua posição, dimensiona o painel pela opção mais longa e alinha as linhas ao mesmo lado. Preserva a abertura acima ou abaixo e o fechamento fraco/forte; prepara o alinhamento nativo antes de abrir."
+  },
+  "ChangeLog_PresentationMediaAndIdentityScale": {
+    "en-US": "PresentationBand and PresentationHero accept optional decorative BackgroundImageUrl with a standard Tone gradient. Ordinary Compact identity retains the project/context scale and independent LogoSize. ContextPrimary optionally promotes the service name beneath a smaller brand, with the Compact logo centered on the service row and one semantic heading.",
+    "zh-CN": "PresentationBand与PresentationHero新增可选装饰BackgroundImageUrl及标准Tone渐变。普通Compact身份保留项目及上下文字号和独立LogoSize。可选ContextPrimary将服务名作为小品牌下方的主标题，Compact图标仅与服务行居中对齐，并保留单个语义标题。",
+    "pt-BR": "PresentationBand e PresentationHero aceitam BackgroundImageUrl decorativo com gradiente padrão de Tone. Compact comum preserva a escala de projeto/contexto e LogoSize independente. ContextPrimary destaca opcionalmente o serviço abaixo de uma marca menor, com o logotipo Compact centralizado na linha do serviço e um único título semântico."
   }
 }

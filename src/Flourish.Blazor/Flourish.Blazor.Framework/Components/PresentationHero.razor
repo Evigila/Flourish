@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
-<PresentationBand Class="@($"f-presentation-hero {(SideContent is not null ? "f-presentation-hero-split" : null)} {Class}".Trim())" Tone="Tone" MinHeight="MinHeight" Dotted="Dotted" FullHeight="FullHeight" IncludeInProgress="IncludeInProgress" AdditionalAttributes="HeroAttributes">
+<PresentationBand Class="@($"f-presentation-hero {(SideContent is not null ? "f-presentation-hero-split" : null)} {Class}".Trim())" Tone="Tone" MinHeight="MinHeight" Dotted="Dotted" BackgroundImageUrl="@BackgroundImageUrl" FullHeight="FullHeight" IncludeInProgress="IncludeInProgress" AdditionalAttributes="HeroAttributes">
     @if (SideContent is not null)
     {
         <div class="f-presentation-hero-layout">
@@ -16,6 +16,8 @@
     [Parameter] public PresentationTone Tone { get; set; }
     [Parameter] public int MinHeight { get; set; } = PresentationBand.DefaultMinHeight;
     [Parameter] public bool Dotted { get; set; }
+    /// <summary>Forwards a decorative background image to the owned presentation band and its standard Tone gradient.</summary>
+    [Parameter] public string? BackgroundImageUrl { get; set; }
     [Parameter] public bool FullHeight { get; set; } = true;
     [Parameter] public bool IncludeInProgress { get; set; } = true;
     [Parameter] public string TitleId { get; set; } = $"presentation-hero-{Guid.NewGuid():N}";

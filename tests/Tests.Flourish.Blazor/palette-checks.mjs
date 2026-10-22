@@ -59,7 +59,7 @@ test("presentation and access scenes consume existing theme roles without reskin
   const knownTokens = new Set([...foundation.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1]));
   for (const path of [join(designCssRoot, "presentation.css"), join(designCssRoot, "primitives/AccessBrand.css")]) {
     const css = withoutComments(await readFile(path, "utf8"));
-    assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|color-mix)\s*\(|f-theme-|data-theme|font-family\s*:/i,
+    assert.doesNotMatch(withoutPresentationMediaAlpha(css), /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|color-mix)\s*\(|f-theme-|data-theme|font-family\s*:/i,
       `${relative(repositoryRoot, path)} introduced a local theme, color literal or separate font family.`);
     for (const token of css.matchAll(/var\((--f-[\w-]+)/g))
       assert.ok(knownTokens.has(token[1]), `${relative(repositoryRoot, path)} uses an undefined palette or typography token ${token[1]}.`);
@@ -81,12 +81,15 @@ test("presentation and access scenes consume existing theme roles without reskin
 test("shell chrome only adjusts available Quiet buttons, preserving explicit variants", async () => {
   const css = withoutComments(await readFile(join(designCssRoot, "static-surfaces.css"), "utf8"));
   const selectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)]
-    .map(match => match[1].trim())
+    .flatMap(match => selectorArms(match[1]))
     .filter(selector => selector.includes(".shell-header") && selector.includes(".f-button"));
-  const buttonSelectors = selectors.filter(selector => !selector.includes(".f-select"));
-  const nativeSelectSelectors = selectors.filter(selector => selector.includes(".f-select"));
+  const buttonSelectors = selectors.filter(selector => !selector.includes(".f-select.f-select-customized"));
+  const nativeSelectSelectors = selectors.filter(selector => selector.includes(".f-select.f-select-customized"));
   assert.equal(buttonSelectors.length, 3);
-  assert.deepEqual(nativeSelectSelectors, [".f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true])"]);
+  assert.equal(nativeSelectSelectors.length, 4);
+  assert.ok(nativeSelectSelectors.includes(".f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true])"));
+  assert.ok(nativeSelectSelectors.some(selector => selector.includes(":is(:hover,:open)") && selector.includes(" > .f-select-trigger.f-button-quiet")));
+  assert.ok(nativeSelectSelectors.some(selector => selector.includes(":active:not(:disabled)") && selector.includes(" > .f-select-trigger.f-button-quiet")));
   assert.equal(property(blockFor(css, nativeSelectSelectors[0]), "color"), "inherit");
   for (const selector of selectors) {
     assert.match(selector, /\.f-button-quiet\b/);
@@ -342,6 +345,19 @@ function withoutComments(css) {
   return css.replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
+// Fixed decorative Tone veils are the only presentation alpha exception. Validate
+// the entire paint declaration before excluding its alpha syntax from theme guards.
+function withoutPresentationMediaAlpha(css) {
+  return css.replace(/([^{}]+)\{([^{}]*)\}/g, (full, selector, body) => {
+    const match = /^\.f-presentation-(canvas|surface|primary) > \.f-presentation-band-media::after$/.exec(selector.trim());
+    if (!match) return full;
+    const tone = match[1];
+    const allowed = [20, 78].map(end => `background:linear-gradient(90deg,var(--f-${tone}) 0%,var(--f-${tone}) 52%,rgb(from var(--f-${tone}) r g b / 92%) 76%,rgb(from var(--f-${tone}) r g b / ${end}%) 100%);`.replace(/\s+/g, ""));
+    assert.ok(allowed.includes(body.replace(/\s+/g, "")), `Media mask introduced undeclared paint outside its fixed Tone gradient: ${selector.trim()}`);
+    return full.replace(/rgb\(from var\(--f-(canvas|surface|primary)\) r g b \/ (?:92|20|78)%\)/g, "var(--f-$1)");
+  });
+}
+
 function selectorArms(selector) {
   const arms = [];
   let start = 0, depth = 0, quote = null;
@@ -539,7 +555,8 @@ test("Design CSS derives paint from roles without private palette literals", asy
     if (path === foundationPath) {
       for (const literal of literals) if (!approvedLiterals.has(literal)) violations.push(`${label}: unapproved ${literal}`);
     }
-    for (const expression of cssFunctions(css, ["rgb", "rgba", "hsl", "hsla"])) {
+    const paint = path === join(designCssRoot, "presentation.css") ? withoutPresentationMediaAlpha(css) : css;
+    for (const expression of cssFunctions(paint, ["rgb", "rgba", "hsl", "hsla"])) {
       const primaryAlpha = /^rgb\(\s*from\s+var\(\s*--f-primary\s*\)\s+r\s+g\s+b\s*\/\s*(?:0?\.\d+|\d+(?:\.\d+)?%)\s*\)$/i.test(expression);
       const progressHighlight = path === join(designCssRoot, "controls.css")
         && /^rgb\(from var\(--f-surface-light\) r g b \/ 47%\)$/.test(expression)
@@ -624,7 +641,7 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
     && /background\s*:\s*var\(--f-(?:target|primary|surface)-preview\b/.test(rule.body));
   assert.deepEqual(groupedPreview.map(rule => rule.selector), [], "A grouped hover/active selector makes press indistinguishable from hover.");
 
-  const primaryHover = one("controls", "Primary button hover", rule => hasSelector(rule, ".f-button-primary:hover") && !rule.selector.includes(":active"));
+  const primaryHover = one("controls", "Primary button hover", rule => hasSelector(rule, ".f-button-primary:hover"));
   const primaryPress = one("controls", "Primary button press", rule => hasSelector(rule, ".f-button-primary:active"));
   assert.equal(property(primaryHover.body, "background"), "var(--f-primary-preview)");
   assert.equal(property(primaryPress.body, "background"), "var(--f-primary-click)");
@@ -634,14 +651,14 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
 
   for (const variant of ["secondary", "quiet", "elevated"]) {
     // General variants are distinct from the available Quiet action's Primary-surface context.
-    const hover = one("controls", `${variant} button hover`, rule => hasSelector(rule, `.f-button-${variant}:hover`) && !rule.selector.includes(":active") && !rule.selector.includes(".f-access-form-primary"));
+    const hover = one("controls", `${variant} button hover`, rule => hasSelector(rule, `.f-button-${variant}:hover`) && !rule.selector.includes(".f-access-form-primary"));
     const press = one("controls", `${variant} button press`, rule => hasSelector(rule, `.f-button-${variant}:active`) && !rule.selector.includes(".f-access-form-primary"));
     assert.equal(property(hover.body, "background"), "var(--f-target-preview)");
     assert.equal(property(press.body, "background"), "var(--f-target-click)");
   }
 
   const danger = one("controls", "Danger button", rule => rule.selector.trim() === ".f-button-danger");
-  const dangerHover = one("controls", "Danger button hover", rule => hasSelector(rule, ".f-button-danger:hover") && !rule.selector.includes(":active"));
+  const dangerHover = one("controls", "Danger button hover", rule => hasSelector(rule, ".f-button-danger:hover"));
   const dangerPress = one("controls", "Danger button press", rule => hasSelector(rule, ".f-button-danger:active"));
   assert.equal(property(danger.body, "background"), "var(--f-danger)");
   assert.equal(property(danger.body, "color"), "var(--f-surface)");
@@ -839,5 +856,56 @@ test("default reading, selected and preview foregrounds stay readable in both mo
       const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
       assert.ok(ratio >= 4.5, `${index ? "Dark" : "Light"} ${foreground}/${background}: ${ratio.toFixed(2)}:1`);
     }
+  }
+});
+
+
+test("Sidebar preserves every standard Button variant and Primary labels stay readable in both default themes", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const sidebar = withoutComments(await readFile(join(designCssRoot, "navigation-choices.css"), "utf8"));
+  const controls = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
+  assert.equal(property(blockFor(sidebar, ".f-navigation-choices-sidebar > .f-navigation-choices-nav"), "background"), "var(--f-surface)");
+  assert.equal(property(blockFor(sidebar, ".f-navigation-choices-sidebar .f-navigation-choice-panel"), "background"), "var(--f-surface)");
+  // A navigation layout cannot repaint a Button merely because its link is current.
+  for (const rule of rules(sidebar)) {
+    if (!rule.selector.includes(".f-navigation-choice-link")) continue;
+    for (const paint of ["color", "background", "background-color", "border-color", "box-shadow"])
+      assert.equal(property(rule.body, paint), undefined, `Sidebar must leave ${paint} to the selected Button variant.`);
+  }
+  const standardRules = rules(controls);
+  const composedRules = [...standardRules, ...rules(sidebar)];
+  const base = declarations(blockFor(foundation, ":root, .f-root"));
+  const dark = declarations(blockFor(foundation, ".f-root.f-theme-dark"));
+  const luminance = hex => {
+    const channels = [1, 3, 5].map(offset => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255)
+      .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
+    return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+  };
+  for (const [mode, roles] of [["Light", base], ["Dark", new Map([...base, ...dark])]]) {
+    const resolveColor = input => {
+      const visited = new Set();
+      while (input?.startsWith("var(")) {
+        const key = input.slice(4, -1);
+        assert.ok(!visited.has(key), `Circular Button role ${key}.`);
+        visited.add(key);
+        input = roles.get(key);
+      }
+      assert.match(input, /^#[0-9A-F]{6}$/i, "Button paint must resolve through public roles.");
+      return input;
+    };
+    for (const variant of ["primary", "secondary", "danger", "elevated"])
+      for (const states of [[], ["hover"], ["focus-visible"], ["active"], ["hover", "active"]]) {
+        const standard = { tag:"a", classes:new Set(["f-button", `f-button-${variant}`]), states:new Set(states), attributes:new Map() };
+        const current = { ...standard, classes:new Set([...standard.classes, "f-navigation-choice-link"]), attributes:new Map([["aria-current","page"]]) };
+        for (const paint of ["color", "background", "border-color", "box-shadow"])
+          assert.equal(buttonCascade(composedRules, current, paint), buttonCascade(standardRules, standard, paint),
+            `Sidebar changed standard ${variant} ${paint} for ${states}.`);
+        if (variant !== "primary") continue;
+        const foreground = resolveColor(buttonCascade(composedRules, current, "color"));
+        const background = resolveColor(buttonCascade(composedRules, current, "background"));
+        const values = [luminance(foreground), luminance(background)];
+        const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
+        assert.ok(ratio >= 4.5, `${mode} selected Primary [${states}] label: ${ratio.toFixed(2)}:1`);
+      }
   }
 });
