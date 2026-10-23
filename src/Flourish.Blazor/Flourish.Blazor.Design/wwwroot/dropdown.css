@@ -8,7 +8,7 @@
 .f-dropdown-panel,.selection-dropdown-surface .selection-panel,.search-autocomplete-options,.service-menu-view { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); }
 /* Keep each primitive's layout, keyboard state, filtering and selection semantics. */
 :is(.f-dropdown-panel .f-dropdown-item,.selection-dropdown-surface .selection-option,.search-autocomplete-option,.service-menu-view a) { box-sizing:border-box; min-height:40px; padding:8px 10px; border:0; border-radius:10px; }
-.f-dropdown-panel .f-dropdown-item { box-sizing:border-box; display:flex; align-items:center; justify-content:var(--f-popup-align,left); text-align:var(--f-popup-align,left); gap:12px; min-height:40px; padding:8px 10px; border:0; border-radius:10px; color:var(--f-text); background:transparent; cursor:pointer; }
+.f-dropdown-panel .f-dropdown-item { box-sizing:border-box; display:flex; align-items:center; justify-content:left; text-align:left; gap:12px; min-height:40px; padding:8px 10px; border:0; border-radius:10px; color:var(--f-text); background:transparent; cursor:pointer; }
 .f-dropdown-panel .f-dropdown-item:hover:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:focus-visible:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:has(:focus-visible):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
 .f-dropdown-panel .f-dropdown-item.is-selected { color:var(--f-text); background:transparent; }
 .f-dropdown-panel .f-dropdown-item.is-selected:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
@@ -26,8 +26,11 @@
     /* A grid keeps its dense borderless editor and separate decorative marker. */
     .editing-grid-table .f-select,.editing-grid-table .f-select::picker(select) { appearance:base-select; }
     .editing-grid-table .f-select::picker-icon { display:none; }
-    .f-select::picker(select) { box-sizing:border-box; width:max-content; min-width:0; max-width:calc(100vw - 24px); min-inline-size:0; max-inline-size:calc(100vw - 24px); --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif); }
+    .f-select::picker(select) { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif); }
     .f-select option { font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif); border:0; border-radius:10px; color:var(--f-text); background:transparent; }
+    /* The native selection marker shares Checkbox geometry and paint without a nested input. */
+    .f-select option::checkmark { color:var(--f-accent-ink); background:var(--f-surface); border:1px solid var(--f-border); border-radius:6px; font:800 17px/1 var(--f-font,"Segoe UI",sans-serif); }
+    .f-select option:checked::checkmark { background:var(--f-primary); border-color:var(--f-border); }
     .f-select option:is(:hover,:focus-visible):not(:disabled) { background:var(--f-surface-preview); }
     .f-select option:active:not(:disabled) { color:var(--f-text); background:var(--f-surface-click); }
     .f-select option:disabled { opacity:.5; cursor:not-allowed; }

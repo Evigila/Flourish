@@ -355,7 +355,7 @@ internal static class DataTableChecks
                 });
             }
         }));
-        tests.Add(("shared dropdown options override ordinary Button centering with physical popup alignment", () =>
+        tests.Add(("shared dropdown options remain left aligned at either physical popup anchor", () =>
         {
             var rootPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
             var framework = ExpandMenuCss(Path.Combine(rootPath, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css"));
@@ -366,10 +366,10 @@ internal static class DataTableChecks
                 && MenuItemProperty(combined, "justify-content", ordinaryButton: true) == "center", "The Design menu or ordinary Button lost its own layout contract.");
             foreach (var css in new[] { framework, combined })
             {
-                Require(MenuItemProperty(css, "justify-content") == "var(--f-popup-align,left)"
-                    && MenuItemProperty(css, "text-align") == "var(--f-popup-align,left)", "The dropdown cascade retained ordinary Button centering instead of the shared physical alignment.");
+                Require(MenuItemProperty(css, "justify-content") == "left"
+                    && MenuItemProperty(css, "text-align") == "left", "The dropdown cascade retained ordinary Button centering or changed content alignment to follow the popup anchor.");
                 foreach (var alignment in new string?[] { null, "left", "right" })
-                    Require(MenuPanelAlignment(css, alignment) == (alignment ?? "left"), "The popup attribute did not select physical left/right alignment with a left default.");
+                    Require(MenuPanelTextAlignment(css, alignment) == "left", "Anchoring the popup to either physical edge must keep its contents left aligned.");
             }
             return Task.CompletedTask;
         }));
@@ -780,7 +780,7 @@ internal static class DataTableChecks
         return winner;
     }
 
-    private static string MenuPanelAlignment(string css, string? alignment)
+    private static string MenuPanelTextAlignment(string css, string? alignment)
     {
         var winner = string.Empty;
         var specificity = -1;
@@ -790,7 +790,7 @@ internal static class DataTableChecks
             var score = alignment == "right" && selector == ":is(.f-menu-panel,.selection-panel,.search-autocomplete-options)[data-f-popup-align=\"right\"]"
                 ? 2 : selector.Split(',').Any(arm => arm.Trim() == ".f-menu-panel") ? 1 : -1;
             if (score < specificity || score < 0) continue;
-            foreach (Match declaration in Regex.Matches(rule.Groups["body"].Value, @"(?:^|;)\s*--f-popup-align\s*:\s*(?<value>[^;}]+)"))
+            foreach (Match declaration in Regex.Matches(rule.Groups["body"].Value, @"(?:^|;)\s*text-align\s*:\s*(?<value>[^;}]+)"))
             {
                 winner = declaration.Groups["value"].Value.Trim();
                 specificity = score;

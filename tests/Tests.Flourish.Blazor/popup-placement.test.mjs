@@ -16,7 +16,7 @@ class Style {
     values = new Map(); priorities = new Map();
     getPropertyValue(name) { return this[name] ?? this.values.get(name) ?? ''; }
     getPropertyPriority(name) { return this.priorities.get(name) ?? ''; }
-    setProperty(name, value, priority = '') { this.values.set(name, String(value)); this.priorities.set(name, priority); this[name] = String(value); }
+    setProperty(name, value, priority = '') { this.writeCount = (this.writeCount ?? 0) + 1; this.values.set(name, String(value)); this.priorities.set(name, priority); this[name] = String(value); }
     removeProperty(name) { this.values.delete(name); this.priorities.delete(name); delete this[name]; }
 }
 class Events {
@@ -44,6 +44,26 @@ class Element extends Events {
         this.attributes.set(name, String(value));
         if (name.startsWith('data-')) this.dataset[name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = String(value);
     }
+    get childNodes() { return this.nodes ?? this.children; }
+    get childElementCount() { return this.children.length; }
+    appendChild(node) {
+        this.nodes ??= [...this.children]; this.nodes.push(node);
+        if (node.nodeType === 1) this.children.push(node);
+        node.parentElement = this; node.ownerDocument = this.ownerDocument;
+        return node;
+    }
+    remove() {
+        const parent = this.parentElement;
+        if (parent) {
+            parent.children = parent.children.filter(node => node !== this);
+            if (parent.nodes) parent.nodes = parent.nodes.filter(node => node !== this);
+        }
+        this.parentElement = null;
+    }
+    cloneNode() {
+        const clone = new Element(this.localName, this.rect);
+        clone.attributes = new Map(this.attributes); return clone;
+    }
     contains(node) { return node === this || this.children.some(child => child.contains(node)); }
     getAttribute(name) { return this.attributes.get(name) ?? null; }
     hasAttribute(name) { return this.attributes.has(name); }
@@ -56,6 +76,12 @@ class Element extends Events {
     getClientRects() { return this.isConnected ? [this.getBoundingClientRect()] : []; }
     getBoundingClientRect() {
         this.measurements++;
+        if (this.style.left === '-100000px') {
+            this.ownerDocument.probeMeasurements ??= [];
+            this.ownerDocument.probeMeasurements.push(this);
+            this.ownerDocument.inspectProbe?.(this);
+            return { width: this.ownerDocument.probeWidth ?? 200 };
+        }
         const limits = (this.style.getPropertyValue('max-height') || this.cssMaxHeight).match(/[\d.]+(?=px)/g)?.map(Number) ?? [];
         const width = Math.min(this.rect.width, this.cssMaxWidth ?? Infinity), height = Math.min(this.rect.height, ...limits);
         return { ...this.rect, width, height, right: this.rect.left + width, bottom: this.rect.top + height };
@@ -66,16 +92,18 @@ function environment() {
     const saved = new Map(names.map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
     const window = new Events(), document = new Element();
     document.nodeType = 9; document.ownerDocument = null; document.documentElement = { clientWidth: 800 }; document.body = new Element();
-    document.defaultView = window; window.document = document; window.innerWidth = 800; window.innerHeight = 600;
+    document.defaultView = window; window.document = document; document.body.ownerDocument = document; window.innerWidth = 800; window.innerHeight = 600;
     document.createElement = tag => { assert.notEqual(tag, 'canvas', 'Native geometry must not measure text on canvas.'); return new Element(tag); };
     globalThis.window = window; globalThis.document = document;
     globalThis.HTMLSelectElement = Element; globalThis.HTMLElement = Element;
     globalThis.CSS = { supports: () => true, escape: value => value };
-    globalThis.getComputedStyle = node => {
-        const keys = [...new Set([...node.style.values.keys(), ...Object.keys(node.computedTheme ?? {})])];
-        return Object.assign({ maxHeight: node.style.getPropertyValue('max-height') || node.cssMaxHeight,
-            getPropertyValue: name => node.style.getPropertyValue(name) || node.computedTheme?.[name] || '', length: keys.length }, keys);
+    globalThis.getComputedStyle = (node, pseudo) => {
+        const theme = pseudo ? node.pseudoTheme?.[pseudo] ?? {} : node.computedTheme ?? {};
+        const keys = [...new Set([...node.style.values.keys(), ...Object.keys(theme)])];
+        return Object.assign({ display: theme.display ?? 'block', maxHeight: node.style.getPropertyValue('max-height') || node.cssMaxHeight,
+            getPropertyValue: name => node.style.getPropertyValue(name) || theme[name] || '', length: keys.length }, keys);
     };
+    window.getComputedStyle = globalThis.getComputedStyle;
     globalThis.requestAnimationFrame = () => { throw new Error('Popup placement must finish before the native default opening, without a later animation frame.'); };
     globalThis.cancelAnimationFrame = () => {};
     const mutations = [];
@@ -155,9 +183,9 @@ test('native initialization installs document listeners once and covers inserted
 }));
 test('picker and menu CSS retain intrinsic width without the UA anchor minimum or width animation', async () => {
     const design = new URL('../../src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/', import.meta.url);
-    const css = (await Promise.all(['controls.css', 'dropdown.css'].map(path => readFile(new URL(path, design), 'utf8')))).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+    const css = [await source('wwwroot/form-inputs.css'), ...(await Promise.all(['controls.css', 'dropdown.css'].map(path => readFile(new URL(path, design), 'utf8'))))].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
     const blocks = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].filter(match => /\.f-select::picker\(select\)/.test(match[1]));
-    assert.ok(blocks.some(match => /(?:width|inline-size)\s*:\s*max-content\b/.test(match[2])), 'Picker must use intrinsic option width.');
+    assert.ok(blocks.some(match => /(?:width|inline-size)\s*:\s*var\(--f-picker-inline-size,\s*max-content\)/.test(match[2])), 'Picker consumes the pre-open intrinsic measurement with a CSS-only intrinsic default.');
     assert.ok(blocks.some(match => /min-inline-size\s*:\s*0\b/.test(match[2])), 'Explicitly reset the UA anchor-size minimum.');
     assert.ok(blocks.some(match => /max-(?:width|inline-size)\s*:/.test(match[2])), 'Long option labels need a viewport width constraint.');
     for (const block of blocks) assert.doesNotMatch(block[2], /transition(?:-property)?\s*:[^;}]*(?:\bwidth\b|\binline-size\b|\ball\b)/);
@@ -300,4 +328,101 @@ test('native pre-open synchronization does not rewrite an unchanged alignment or
     assert.equal(select.attributeWrites, 2); assert.equal(select.getAttribute('data-f-popup-align'), 'right');
     env.document.emit('focusin', select); env.document.emit('keydown', select);
     assert.equal(select.attributeWrites, 2);
+}));
+
+// These fixtures check synchronous lifecycle and copied metrics, not browser layout or physical first-frame painting.
+class PickerText {
+    nodeType = 3; childNodes = [];
+    constructor(text) { this.textContent = text; }
+    cloneNode() { return new PickerText(this.textContent); }
+}
+function measuredSelect(env, labels = ['English', 'Português (Brasil)', '简体中文']) {
+    const select = env.adopt(new Element('select', { left: 650 }));
+    select.value = 'selected-native-value';
+    select.pseudoTheme = { '::picker(select)': { 'font-size': '17px', 'padding-left': '6px', 'padding-right': '6px',
+        'border-left-width': '1px', 'border-right-width': '1px', 'border-left-style': 'solid', 'border-right-style': 'solid' } };
+    for (const text of labels) {
+        const option = env.adopt(new Element('option'), select);
+        option.value = text; option.label = text;
+        option.computedTheme = { 'font-family': 'Example Sans', 'font-size': '17px', 'letter-spacing': '.25px',
+            'padding-left': '10px', 'padding-right': '10px', 'column-gap': '12px', 'grid-template-columns': '48px minmax(0px, 1fr)' };
+        option.pseudoTheme = { '::checkmark': { 'box-sizing': 'border-box', 'width': '48px', 'height': '48px',
+            'border-left-width': '1px', 'border-right-width': '1px', 'border-left-style': 'solid', 'border-right-style': 'solid' } };
+        option.nodes = [new PickerText(text)];
+    }
+    return select;
+}
+test('native picker settles one rounded intrinsic width before the opening default and never leaves its probe mounted', () => run(env => {
+    const select = measuredSelect(env); env.document.probeWidth = 243.125;
+    env.document.inspectProbe = probe => {
+        assert.equal(probe.inert, true); assert.equal(probe.getAttribute('aria-hidden'), 'true');
+        assert.equal(probe.style.visibility, 'hidden'); assert.equal(probe.style.width, 'max-content');
+        assert.equal(probe.style.getPropertyValue('padding-left'), '6px');
+        assert.equal(probe.style.getPropertyValue('border-left-width'), '1px');
+        assert.equal(probe.children.length, 3);
+        const row = probe.children[1], [marker, label] = row.children;
+        assert.equal(row.style.display, 'grid'); assert.equal(row.style.gridTemplateColumns, '48px max-content');
+        assert.equal(row.style.getPropertyValue('letter-spacing'), '.25px'); assert.equal(row.style.getPropertyValue('column-gap'), '12px');
+        assert.equal(marker.style.getPropertyValue('width'), '48px'); assert.equal(marker.style.getPropertyValue('height'), '48px');
+        assert.equal(label.childNodes[0].textContent, 'Português (Brasil)');
+        assert.equal(select.value, 'selected-native-value'); assert.equal(select.getAttribute('data-f-popup-align'), 'right');
+    };
+    api.initializeNativePickers(env.document);
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '244px');
+    assert.equal(env.document.body.children.length, 0);
+    env.document.probeWidth = 260.25;
+    env.document.emit('pointerdown', select, () => assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '261px'));
+    assert.equal(env.document.body.children.length, 0);
+    assert.equal(select.children.length, 3); assert.equal(select.value, 'selected-native-value');
+}));
+test('native discovery does not remeasure its own removed probes but every new opening remeasures changed labels and fonts', () => run(env => {
+    const select = measuredSelect(env); api.initializeNativePickers(env.document);
+    api.initializeNativePickers(env.document); api.initializeNativePickers(select);
+    assert.equal(env.document.probeMeasurements.length, 1);
+    const changed = select.children[0]; changed.nodes[0].textContent = 'A newly localized longer label'; changed.computedTheme['font-family'] = 'New Font';
+    env.document.probeWidth = 321.5;
+    env.document.emit('focusin', select);
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '322px');
+    assert.equal(env.document.probeMeasurements.at(-1).children[0].style.getPropertyValue('font-family'), 'New Font');
+    assert.equal(env.document.probeMeasurements.at(-1).children[0].children[1].childNodes[0].textContent, 'A newly localized longer label');
+    const writes = select.style.writeCount;
+    env.document.emit('keydown', select); assert.equal(select.style.writeCount, writes); assert.equal(select.attributeWrites, 1);
+}));
+test('rich option content and group labels retain actual metrics while IDs stay out of the inert probe', () => run(env => {
+    const select = measuredSelect(env, ['Rich text']);
+    const option = select.children[0], icon = new Element('svg'); icon.ownerDocument = env.document;
+    icon.setAttribute('id', 'real-option-icon'); icon.computedTheme = { 'display': 'inline-block', 'width': '24px', 'height': '24px' };
+    option.nodes.unshift(icon);
+    const group = env.adopt(new Element('optgroup'), select); group.label = 'Group header';
+    group.pseudoTheme = { '::before': { 'font-weight': '700' } };
+    const nested = new Element('option'); nested.ownerDocument = env.document; nested.nodes = [new PickerText('Ignored child')];
+    nested.setAttribute('label', 'Displayed option label'); nested.label = 'Displayed option label'; group.appendChild(nested);
+    api.initializeNativePickers(env.document);
+    const probe = env.document.probeMeasurements[0], clone = probe.children[0].children[1].childNodes[0];
+    assert.equal(clone.localName, 'svg'); assert.equal(clone.hasAttribute('id'), false); assert.equal(icon.getAttribute('id'), 'real-option-icon');
+    assert.equal(clone.style.getPropertyValue('width'), '24px');
+    assert.equal(probe.children[1].children[0].textContent, 'Group header');
+    assert.equal(probe.children[1].children[0].style.getPropertyValue('font-weight'), '700');
+    assert.equal(probe.children[1].children[1].children[1].textContent, 'Displayed option label');
+    assert.equal(env.document.body.children.length, 0);
+}));
+test('unsupported engines, hidden options and an already open picker keep their native behavior', () => run(env => {
+    const select = measuredSelect(env); globalThis.CSS.supports = () => false;
+    api.initializeNativePickers(env.document);
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), ''); assert.equal(env.document.probeMeasurements, undefined);
+    globalThis.CSS.supports = () => true;
+    select.children[0].hidden = true; select.children[1].computedTheme.display = 'none';
+    env.document.emit('pointerdown', select); assert.equal(env.document.probeMeasurements[0].children.length, 1);
+    const originalMatches = select.matches.bind(select); select.matches = query => query === ':open' || originalMatches(query);
+    const before = env.document.probeMeasurements.length, width = select.style.getPropertyValue('--f-picker-inline-size');
+    env.document.probeWidth = 500; env.document.emit('keydown', select); env.document.emit('focusin', select);
+    assert.equal(env.document.probeMeasurements.length, before); assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), width);
+}));
+test('measurement cleanup survives an exception and the next opening can retry', () => run(env => {
+    const select = measuredSelect(env);
+    env.document.inspectProbe = () => { throw new Error('Controlled layout failure'); };
+    assert.throws(() => api.initializeNativePickers(env.document), /Controlled layout failure/);
+    assert.equal(env.document.body.children.length, 0); assert.equal(select.value, 'selected-native-value');
+    delete env.document.inspectProbe; api.initializeNativePickers(env.document); env.document.emit('pointerdown', select);
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '200px'); assert.equal(env.document.body.children.length, 0);
 }));

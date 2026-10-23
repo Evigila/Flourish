@@ -144,16 +144,6 @@ async function expandCss(path) {
 }
 const frameworkCss = await expandCss(resolve(root, "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css"));
 const designCss = await expandCss(resolve(root, design + "design.css"));
-function popupAlignment(styles, target) {
-  for (let node = target; node; node = node.parent) {
-    const value = cascade(styles, node, "--f-popup-align");
-    if (value !== undefined) return value;
-  }
-  return "left";
-}
-function popupValue(styles, target, property) {
-  return cascade(styles, target, property)?.replace(/var\(--f-popup-align,\s*left\)/g, popupAlignment(styles, target));
-}
 function popupFixture(kind, alignment) {
   const rootElement = element("div", ["f-root"], null);
   const attributes = alignment ? [["data-f-popup-align", alignment]] : [];
@@ -177,6 +167,10 @@ function popupFixture(kind, alignment) {
   }
   return { rootElement, panel, item };
 }
+test("popup placement attributes do not define a competing text-alignment token", () => {
+  assert.doesNotMatch(strip(frameworkCss + "\n" + designCss), /--f-popup-align/);
+});
+
 test("all anchored panels retain intrinsic width with one viewport bound in the complete optional Design cascade", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
     const allStyles = rules(css);
@@ -187,7 +181,7 @@ test("all anchored panels retain intrinsic width with one viewport bound in the 
       for (const [property, expected] of [["width", kind === "multi" ? "auto" : "100%"], ["min-width", "0"], ["max-width", kind === "multi" ? "none" : "100%"], ["box-sizing", "border-box"], ["justify-self", "stretch"], ["align-self", "stretch"]])
         assert.equal(cascade(allStyles, item, property), expected, `${kind}/${alignment}/item ${property}`);
       for (const property of ["text-align", "justify-content"])
-        assert.equal(popupValue(allStyles, item, property), kind === "multi" && property === "justify-content" ? "stretch" : alignment ?? "left", `${kind}/${alignment}/${property}`);
+        assert.equal(cascade(allStyles, item, property), kind === "multi" && property === "justify-content" ? "stretch" : "left", `${kind}/${alignment}/${property}`);
     }
   }
 });
@@ -197,7 +191,7 @@ test("popup completion Buttons share row alignment while ordinary page Buttons r
     const { rootElement, panel } = popupFixture(kind, alignment);
     const completion = element("button", ["f-button", "f-button-quiet"], panel);
     assert.equal(cascade(allStyles, completion, "width"), "100%", kind);
-    for (const property of ["text-align", "justify-content"]) assert.equal(popupValue(allStyles, completion, property), alignment, kind);
+    for (const property of ["text-align", "justify-content"]) assert.equal(cascade(allStyles, completion, property), "left", kind);
     const ordinary = element("button", ["f-button", "f-button-quiet"], rootElement);
     assert.equal(cascade(allStyles, ordinary, "width"), "max-content");
     assert.equal(cascade(allStyles, ordinary, "justify-content"), "center");
@@ -212,14 +206,14 @@ test("circuit-owned popover panels remain hidden until the browser opens their e
     assert.equal(cascade(allStyles, panel, "display"), "grid", kind);
   }
 });
-test("native option alignment follows its physical owner side without changing the trigger Button", () => {
+test("native options remain left aligned on either physical owner side without changing the trigger Button", () => {
   const allStyles = rules(frameworkCss + "\n" + designCss);
   for (const alignment of [null, "left", "right"]) {
     const owner = element("select", ["f-select", "f-select-customized"], null, [], alignment ? [["data-f-popup-align", alignment]] : []);
     const option = element("option", [], owner);
     assert.equal(cascade(allStyles, option, "width"), "auto");
     assert.equal(cascade(allStyles, option, "max-width"), "none");
-    for (const property of ["text-align", "justify-content"]) assert.equal(popupValue(allStyles, option, property), alignment ?? "left");
+    for (const property of ["text-align", "justify-content"]) assert.equal(cascade(allStyles, option, property), "left");
     const trigger = element("button", ["f-select-trigger", "f-button", "f-button-quiet"], owner);
     assert.equal(cascade(allStyles, trigger, "justify-content"), "center");
   }
@@ -237,24 +231,47 @@ test("popup search inputs fill the option width without imposing the browser's d
 });
 
 
-test("native intrinsic sizing excludes cyclic percentage rows and reserves a fixed checkmark column", () => {
+test("native picker sizing uses the pre-opening measurement in Framework with optional Design paint", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const picker = new Map(rules(css).filter(rule => rule.selectors.includes(".f-select::picker(select)")).flatMap(rule => [...rule.declarations]));
+    for (const [property, expected] of [["box-sizing", "border-box"], ["width", "var(--f-picker-inline-size,max-content)"], ["min-width", "0"], ["max-width", "calc(100vw - 24px)"], ["min-inline-size", "0"], ["max-inline-size", "calc(100vw - 24px)"]])
+      assert.equal(picker.get(property), expected, property);
+  }
+});
+
+test("native options reserve the same square choice column for every label and selection", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left", "right"]) {
     const allStyles = rules(css);
     const owner = element("select", ["f-select", "f-select-customized"], null, [], [["data-f-popup-align", alignment]]);
     const option = element("option", [], owner);
-    for (const [property, expected] of [["width", "auto"], ["max-width", "none"], ["min-width", "0"], ["position", "relative"], ["white-space", "normal"], ["overflow-wrap", "anywhere"]])
+    for (const [property, expected] of [["width", "auto"], ["max-width", "none"], ["min-width", "0"], ["display", "grid"], ["grid-template-columns", "var(--f-control-height,48px) minmax(0,1fr)"], ["column-gap", "12px"], ["white-space", "normal"], ["overflow-wrap", "anywhere"]])
       assert.equal(cascade(allStyles, option, property), expected, alignment + "/" + property);
-    assert.equal(cascade(allStyles, option, "padding-left"), "calc(10px + var(--f-control-height,48px) + 12px)");
-    assert.equal(popupValue(allStyles, option, "text-align"), alignment);
-    assert.equal(cascade(allStyles, option, "min-height"), "40px");
+    assert.equal(cascade(allStyles, option, "padding-left"), undefined, "The marker column replaces extra padding rather than adding a second reservation.");
+    assert.equal(cascade(allStyles, option, "text-align"), "left");
+    assert.equal(cascade(allStyles, option, "min-height"), "calc(var(--f-control-height,48px) + 16px)");
     assert.equal(cascade(allStyles, option, "padding"), "8px 10px");
-    const marker = rules(css).filter(rule => rule.selectors.includes(".f-select option::checkmark"));
-    assert.equal(marker.length, 1);
-    for (const [property, expected] of [["position", "absolute"], ["left", "10px"], ["width", "var(--f-control-height,48px)"], ["margin", "0"], ["text-align", "center"]])
-      assert.equal(marker[0].declarations.get(property), expected, property);
-    // Selected visibility and label length cannot contribute to an out-of-flow marker's width.
-    assert.equal(marker[0].declarations.get("content"), undefined, "Keep the native checkmark and selection semantics.");
+    const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
+    for (const [property, expected] of [["box-sizing", "border-box"], ["display", "grid"], ["grid-column", "1"], ["grid-row", "1"], ["place-content", "center"], ["width", "var(--f-control-height,48px)"], ["height", "var(--f-control-height,48px)"], ["padding", "0"], ["margin", "0"], ["text-align", "center"], ["visibility", "visible"], ["content", '""']])
+      assert.equal(marker.get(property), expected, property);
+    for (const property of ["position", "left", "top", "transform"]) assert.equal(marker.get(property), undefined, property + " must not remove the native marker from its grid column.");
+    const selected = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
+    assert.equal(selected.get("content"), '"✓"');
+    for (const property of ["width", "height", "display", "grid-column", "grid-row"]) assert.equal(selected.get(property), undefined, "Selecting a row must preserve " + property + ".");
   }
+});
+
+test("native choice markers reuse Checkbox geometry, paint and check glyph", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
+  const selectedMarker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
+  const checkbox = element("input", ["f-checkbox"], null);
+  for (const property of ["box-sizing", "display", "width", "height", "padding", "margin", "place-content", "border", "border-radius", "color", "background"])
+    assert.equal(marker.get(property), cascade(allStyles, checkbox, property), property);
+  checkbox.states.add("checked");
+  for (const property of ["background", "border-color"]) assert.equal(selectedMarker.get(property), cascade(allStyles, checkbox, property), property);
+  const standardCheck = new Map(allStyles.filter(rule => rule.selectors.includes(".f-checkbox:checked::before")).flatMap(rule => [...rule.declarations]));
+  assert.equal(selectedMarker.get("content"), standardCheck.get("content"));
+  assert.equal(marker.get("font"), standardCheck.get("font"));
 });
 
 test("checkbox choice labels have separate marker and longest-label tracks in both physical alignments", () => {
@@ -274,7 +291,7 @@ test("checkbox choice labels have separate marker and longest-label tracks in bo
     assert.equal(cascade(allStyles, text, "grid-column"), "2");
     assert.equal(cascade(allStyles, text, "grid-row"), "1");
     assert.equal(cascade(allStyles, text, "min-width"), "0");
-    assert.equal(popupValue(allStyles, text, "text-align"), alignment);
+    assert.equal(cascade(allStyles, text, "text-align"), "left");
     for (const selected of [false, true]) {
       checkbox.states = new Set(selected ? ["checked"] : []);
       assert.equal(cascade(allStyles, checkbox, "grid-column"), "1", kind + "/" + selected);

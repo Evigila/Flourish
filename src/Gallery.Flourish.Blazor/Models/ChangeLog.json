@@ -7,7 +7,8 @@
       "Key.ChangeLog_NativeSelectTriggerStates",
       "Key.ChangeLog_AnchoredPopupPlacement",
       "Key.ChangeLog_PresentationMediaAndIdentityScale",
-      "Key.ChangeLog_NativeHiddenState"
+      "Key.ChangeLog_NativeHiddenState",
+      "Key.ChangeLog_StableLeftAlignedPickers"
     ]
   },
   {

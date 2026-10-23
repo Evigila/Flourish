@@ -1,4 +1,9 @@
 {
+  "ChangeLog_StableLeftAlignedPickers": {
+    "en-US": "Popup options stay left-aligned independently of their anchor edge. Native select pickers measure their content before opening and use standard fixed-size choice indicators.",
+    "zh-CN": "浮层选项始终左对齐，与浮层靠左或靠右弹出无关。原生选择菜单在展开前测量内容宽度，并使用标准固定尺寸选择器。",
+    "pt-BR": "As opções dos menus permanecem alinhadas à esquerda, independentemente da posição do menu. Os seletores nativos medem o conteúdo antes de abrir e usam indicadores de seleção com tamanho padrão."
+  },
   "ChangeLog_NativeHiddenState": {
     "en-US": "Respect native hidden state on access and content surfaces so inactive notices and loading indicators do not appear over valid forms.",
     "zh-CN": "访问页与内容页面正确遵循原生 hidden 状态，避免无效提示及加载指示误显示在有效表单上。",

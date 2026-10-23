@@ -149,13 +149,91 @@ function positionMenu(state) { positionPopup(state); }
 function popupAlignment(trigger, viewportWidth) { return (trigger.left + trigger.right) / 2 <= viewportWidth / 2 ? 'left' : 'right'; }
 
 const nativePickerDocuments = new WeakSet();
-/** Select keeps its native picker; establish its edge before any opening default action. */
+const measuredNativePickers = new WeakSet();
+const pickerMeasureProperties = [
+    'font-family','font-size','font-style','font-weight','font-stretch','font-kerning','font-feature-settings',
+    'font-variation-settings','line-height','letter-spacing','word-spacing','text-transform','text-indent','white-space',
+    'box-sizing','padding-top','padding-right','padding-bottom','padding-left',
+    'border-top-width','border-right-width','border-bottom-width','border-left-width',
+    'border-top-style','border-right-style','border-bottom-style','border-left-style',
+    'column-gap','row-gap','grid-template-columns','align-items'
+];
+function copyPickerMetrics(source, target, properties = pickerMeasureProperties) {
+    for (const name of properties) {
+        const value = source.getPropertyValue(name);
+        if (value) target.style.setProperty(name,value);
+    }
+}
+function measureNativePicker(select) {
+    const owner = select.ownerDocument, view = owner.defaultView;
+    if (!(view?.CSS ?? globalThis.CSS)?.supports('appearance','base-select') || select.matches(':open')) return;
+    const styles = (node, pseudo) => view.getComputedStyle(node,pseudo);
+    const probe = owner.createElement('div');
+    probe.setAttribute('aria-hidden','true'); probe.inert = true;
+    copyPickerMetrics(styles(select,'::picker(select)'),probe);
+    Object.assign(probe.style,{position:'fixed',left:'-100000px',top:'0',display:'block',width:'max-content',
+        minWidth:'0',maxWidth:'none',minInlineSize:'0',maxInlineSize:'none',margin:'0',height:'auto',maxHeight:'none',overflow:'visible',visibility:'hidden',pointerEvents:'none'});
+    function cloneContent(node) {
+        const clone = node.cloneNode(false);
+        if (node.nodeType === 1) {
+            clone.removeAttribute('id');
+            // Retain actual rich-option content metrics even outside its themed ancestor tree.
+            copyPickerMetrics(styles(node),clone,[...pickerMeasureProperties,'display','width','height',
+                'min-width','max-width','margin-top','margin-right','margin-bottom','margin-left','flex','gap']);
+        }
+        for (const child of node.childNodes) clone.appendChild(cloneContent(child));
+        return clone;
+    }
+    function appendOptions(source, target) {
+        for (const child of source.children) {
+            if (!['OPTION','OPTGROUP'].includes(child.tagName)) continue;
+            const computed = styles(child);
+            if (computed.display === 'none' || child.hidden) continue;
+            const row = owner.createElement('div');
+            copyPickerMetrics(computed,row);
+            if (child.tagName === 'OPTGROUP') {
+                const heading = owner.createElement('div');
+                copyPickerMetrics(styles(child,'::before'),heading);
+                heading.textContent = child.label;
+                row.appendChild(heading); appendOptions(child,row);
+            } else {
+                row.style.display = 'grid';
+                const marker = owner.createElement('span'), label = owner.createElement('span');
+                copyPickerMetrics(styles(child,'::checkmark'),marker,[...pickerMeasureProperties,'width','height']);
+                row.style.gridTemplateColumns = styles(child,'::checkmark').getPropertyValue('width') + ' max-content';
+                marker.style.gridColumn = '1'; marker.style.gridRow = '1';
+                label.style.gridColumn = '2'; label.style.gridRow = '1'; label.style.minWidth = '0';
+                if (child.getAttribute('label')) label.textContent = child.label;
+                else for (const content of child.childNodes) label.appendChild(cloneContent(content));
+                row.appendChild(marker); row.appendChild(label);
+            }
+            target.appendChild(row);
+        }
+    }
+    appendOptions(select,probe);
+    if (!probe.childElementCount) return;
+    // Measure a private inert copy before the native opening default, never the visible picker.
+    try {
+        (owner.body ?? owner.documentElement).appendChild(probe);
+        const width = Math.ceil(probe.getBoundingClientRect().width);
+        if (Number.isFinite(width) && width > 0) {
+            const value = `${width}px`;
+            if (select.style.getPropertyValue('--f-picker-inline-size') !== value)
+                select.style.setProperty('--f-picker-inline-size',value);
+        }
+    } finally { probe.remove(); }
+}
+/** Select keeps its native picker; settle its intrinsic width and edge before the opening default action. */
 export function initializeNativePickers(root = document) {
     const owner = root.ownerDocument ?? root;
-    const update = select => {
+    const update = (select, opening = false) => {
         if (select?.tagName !== 'SELECT' || !select.isConnected || !select.getClientRects().length) return;
         const alignment = popupAlignment(select.getBoundingClientRect(),owner.documentElement.clientWidth);
         if (select.getAttribute('data-f-popup-align') !== alignment) select.setAttribute('data-f-popup-align',alignment);
+        if (opening || !measuredNativePickers.has(select)) {
+            // A removed measurement probe may trigger the host's DOM discovery observer again.
+            measuredNativePickers.add(select); measureNativePicker(select);
+        }
     };
     const synchronize = target => {
         if (target.tagName === 'SELECT' && target.matches('.f-select')) update(target);
@@ -164,7 +242,7 @@ export function initializeNativePickers(root = document) {
     synchronize(root);
     if (nativePickerDocuments.has(owner)) return;
     nativePickerDocuments.add(owner);
-    const beforeOpen = event => update(event.target?.closest?.('select.f-select'));
+    const beforeOpen = event => update(event.target?.closest?.('select.f-select'),true);
     for (const type of ['pointerdown','focusin','keydown']) owner.addEventListener(type,beforeOpen,true);
     (owner.defaultView ?? window).addEventListener('resize',()=>synchronize(owner));
     owner.addEventListener('scroll',()=>synchronize(owner),true);

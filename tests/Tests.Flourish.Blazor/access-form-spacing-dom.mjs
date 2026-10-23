@@ -117,7 +117,7 @@ check('Inline production action rows and the existing AccessFormSurface Actions 
 });
 await checkAsync('The native input entry discovers SSR forms, survives document replacement and disposes the one shared controller', async () => {
     const f = nativeFixture();
-    globalThis.document = { readyState: 'complete', roots: [f.root], documentElement: {}, addEventListener() {}, querySelectorAll(selector) { return this.roots.filter(root => root.matches(selector)); } };
+    globalThis.document = { defaultView: { addEventListener() {} }, readyState: 'complete', roots: [f.root], documentElement: {}, addEventListener() {}, querySelectorAll(selector) { return this.roots.filter(root => root.matches(selector)); } };
     const previousCount = resized.length;
     const nativeCode = await readFile(new URL(moduleRoot + 'primitives/input-behaviors.js', import.meta.url), 'utf8');
     const progressCode = await readFile(new URL(moduleRoot + 'presentation/progress.js', import.meta.url), 'utf8');

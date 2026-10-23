@@ -4,15 +4,15 @@
 /* The real select keeps native input and option semantics; older engines retain its text fallback. */
 @supports(appearance:base-select) {
     .f-select.f-select-customized, .f-select.f-select-customized::picker(select) { appearance:base-select; }
+    .f-select::picker(select) { box-sizing:border-box; width:var(--f-picker-inline-size,max-content); min-width:0; max-width:calc(100vw - 24px); min-inline-size:0; max-inline-size:calc(100vw - 24px); }
     .f-select.f-select-customized { padding:0; gap:0; }
     .f-select.f-select-customized::picker-icon { display:none; }
     .f-select.f-select-customized > .f-select-trigger { inline-size:100%; box-sizing:border-box; }
     .f-select.f-select-customized > .f-select-trigger:not(.f-button) { display:flex; align-items:center; justify-content:center; padding:0; border:0; font:inherit; color:inherit; background:transparent; }
     .f-select.f-select-customized:has(> .f-button-icon) { inline-size:var(--f-control-height,48px); min-inline-size:var(--f-control-height,48px); block-size:var(--f-control-height,48px); }
-    .f-select { --f-popup-align:left; }
-    .f-select[data-f-popup-align="right"] { --f-popup-align:right; }
-    /* Auto-sized rows avoid percentage feedback in picker sizing; the leading marker never sizes or moves with its text. */
-    .f-select option { position:relative; box-sizing:border-box; width:auto; min-width:0; max-width:none; display:flex; align-items:center; justify-content:var(--f-popup-align,left); text-align:var(--f-popup-align,left); gap:12px; min-height:40px; padding:8px 10px; padding-left:calc(10px + var(--f-control-height,48px) + 12px); white-space:normal; overflow-wrap:anywhere; cursor:pointer; }
-    .f-select option::checkmark { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:var(--f-control-height,48px); margin:0; text-align:center; }
+    /* A native option owns one standard choice column before its left-aligned content. */
+    .f-select option { box-sizing:border-box; width:auto; min-width:0; max-width:none; display:grid; grid-template-columns:var(--f-control-height,48px) minmax(0,1fr); align-items:center; justify-content:left; text-align:left; column-gap:12px; min-height:calc(var(--f-control-height,48px) + 16px); padding:8px 10px; white-space:normal; overflow-wrap:anywhere; cursor:pointer; }
+    .f-select option::checkmark { content:""; visibility:visible; box-sizing:border-box; display:grid; grid-column:1; grid-row:1; place-content:center; width:var(--f-control-height,48px); height:var(--f-control-height,48px); padding:0; margin:0; text-align:center; border:1px solid currentColor; border-radius:6px; }
+    .f-select option:checked::checkmark { content:"✓"; }
 
 }
