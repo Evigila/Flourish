@@ -1,8 +1,29 @@
 # Release verification
 
+## Completed Flourish 1.4.3 release on 2026-10-26
+
+Stable tag `v1.4.3` identifies source commit `d4e8cd95c58e87646684903a0fdb2f9767994931`, pushed to master and tagged through `publish-helper.bat`. [Run 40315212418](https://github.com/Evigila/Flourish/actions/runs/40315212418) completed successfully for that exact tag and commit, including [build verification](https://github.com/Evigila/Flourish/actions/runs/40315212418/job/121545977158) and [NuGet Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/40315212418/job/121547917670). The six package uploads succeeded from 11:33:09 through 11:33:16 UTC; no duplicate-skip result or repeated publication was used.
+
+The six public flat-container indexes all contained **1.4.3** at **2026-10-26 11:46:01 UTC** (08:46:01 America/Sao_Paulo, UTC-03:00). Earlier partial or missing indexes were propagation observations, not successful public-consumption evidence. Framework was the final index to appear. The package manifest and Essential.Culture 1.4.0 dependency are unchanged; WPF/WinUI are outside this release.
+
+`build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.3` then passed **143/143 checks** using both a new package cache and a new `NUGET_HTTP_CACHE_PATH`. FrameworkOnly, MetaNative, MetaDesign and MetaCulture each restored from NuGet.org, published and ran successfully, verifying dependency graphs, registration, SSR and published static assets. All six Flourish 1.4.3 and three Essential 1.4.0 `.nupkg.metadata` entries identify `https://api.nuget.org/v3/index.json`; no local feed or source-project substitution was used.
+
+The following SHA-256 values identify actual publicly downloaded archives, separately from the locally prepared candidate archives:
+
+| Public package, version 1.4.3 | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Core | `36F3C20A8E39F9FB0DCE0B0D28390DEDA2D9F53BEEDA33330BBF0ECE318DCA29` |
+| Arkheide.Flourish.Blazor.Abstract | `60B784A1ED4D870C0F12C0920E74BD53C2D8EC3E62B3DB45E74F756F2C2CAA13` |
+| Arkheide.Flourish.Blazor.Framework | `A9B2C6EA92D6040EAF2803FDCAA03BBFAAB0A6C4D96DED2A340BFC0E59D31A7A` |
+| Arkheide.Flourish.Blazor.Design | `2D72D4654BDF6FB0F77903FC7F27228892B9F4B26C6610F54EBD8FD209540496` |
+| Arkheide.Flourish.Extensions.Culture.Blazor | `A897D8019AAEC90CE47E6514605487C1028133722F9B7AEF70DAD7300AA0CD80` |
+| Arkheide.Flourish.Blazor | `F0E30178C7CD25951CA0E7F221DAF48CB666B806EBFAB79433DCC816CE4C6000` |
+
+Evidence: `artifacts/final-release-20261026/public-workflow.json`, `tag-workflow.log`, `public-index.json`, `public-consumers.log` and `public-consumer-provenance.json`. The independent public-consumer fixture is `artifacts/package-consumers/0b49f656575a4c4ba07728e6883d64f5`. This completed publication supersedes the pending state in the historical preparation snapshot below. No new tests, source changes or publication were performed while recording these already completed results; tag `v1.4.3` remains unchanged.
+
 ## Flourish 1.4.3 final preparation, 2026-10-26
 
-The six existing Core/Blazor packages are prepared as stable **1.4.3**, retaining Essential.Culture **1.4.0**. Gallery promotes the preview notes, adds the Notice/menu/Field-hover changes in three languages and starts an empty 1.4.4-preview. This section records local preparation only; the coordinator must still commit/push, publish the tag through `publish-helper.bat`, observe successful Trusted Publishing and verify all six public indexes and public-only consumers.
+Historical preparation snapshot; the completed publication above supersedes its pending state. The six existing Core/Blazor packages were prepared as stable **1.4.3**, retaining Essential.Culture **1.4.0**. Gallery promotes the preview notes, adds the Notice/menu/Field-hover changes in three languages and starts an empty 1.4.4-preview. At this preparation stage, commit/push, tag publication, Trusted Publishing and public-only consumption had not yet been completed.
 
 Final source review covered automatic Button busy handling and heading progress, Notice title/semantic paints, compact choices, ActionMenu tile composition, label/input hover continuity and package asset boundaries. No new component defect was established. The review found an existing hosted CI failure in [run 39257011009](https://github.com/Evigila/Flourish/actions/runs/39257011009): `Upsert_ReplacesExpirationTimer` assumed 30 ms/100 ms wall-clock delays would occur before expiration. On a delayed runner the original timer could fire before replacement, complete the test's expiration signal and make the final assertion inspect the still-active replacement. The internal notification service now accepts an optional platform `TimeProvider` with a system-clock default. Its test advances controlled time, asserts the old timer is canceled and observes the replacement's actual expiration. This adds no dependency or public API; the focused eight notification tests passed.
 
