@@ -9,11 +9,11 @@
 }
 .search-autocomplete-option,
 .search-autocomplete-empty {
-    padding: 8px 10px;
+    padding: 6px 10px;
     color: inherit;
     background: transparent;
     border: 0;
-    border-radius: calc(var(--f-radius-control) - 2px);
+    border-radius: 12px;
     font: inherit;
     font-size: 17px;
     font-weight: 400;

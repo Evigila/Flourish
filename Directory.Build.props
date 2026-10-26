@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
     <VersionPrefix>1.4.3</VersionPrefix>
-    <VersionSuffix>preview.portals.11</VersionSuffix>
     <Authors>ArkheideSystem</Authors>
     <Company>ArkheideSystem</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

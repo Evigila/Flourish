@@ -3,7 +3,7 @@
 @using System.Globalization
 
 <div class="f-progress" role="progressbar" aria-label="@EffectiveLabel" aria-valuemin="0" aria-valuemax="100"
-     aria-valuenow="@NumericValue" aria-valuetext="@StatusText">
+     aria-valuenow="@NumericValue" aria-valuetext="@StatusText" data-f-loading="@((Value is null || Value.Value < 100) ? "true" : "false")">
     <progress class="f-progress-native" max="100" value="@NumericValue" aria-hidden="true"></progress>
     <div class="f-progress-track @(Value is null ? "f-progress-indeterminate" : null)">
         <span class="f-progress-fill" style="@(Value is null ? null : "width:" + NumericValue + "%")"></span>

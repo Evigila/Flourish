@@ -13,7 +13,7 @@
             else if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
             else { <span aria-hidden="true">•••</span> }
         </summary>
-        <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel"
+        <div @ref="Panel" id="@MenuId" class="@PanelClass" style="@PanelStyle" role="menu" aria-label="@EffectiveLabel"
              inert="@(Disabled || Executing ? true : (bool?)null)"
              data-f-popup-panel data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" popover="@(NativeEnhanced ? "manual" : null)" aria-busy="@(Executing ? "true" : "false")">
             @ChildContent
@@ -33,7 +33,7 @@ else
         else if (!string.IsNullOrWhiteSpace(Icon)) { <Icon Name="@Icon" /> }
             else { <span aria-hidden="true">•••</span> }
     </button>
-    <div @ref="Panel" id="@MenuId" class="f-menu-panel f-dropdown-panel" role="menu" aria-label="@EffectiveLabel" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" popover="manual"
+    <div @ref="Panel" id="@MenuId" class="@PanelClass" style="@PanelStyle" role="menu" aria-label="@EffectiveLabel" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()" popover="manual"
          aria-busy="@(Executing ? "true" : "false")">
         @for (var index = 0; index < Actions.Count; index++)
         {
@@ -73,6 +73,15 @@ else
     [Parameter] public RenderFragment? TriggerContent { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    /// <summary>Removes the popup's decorative surface while retaining its placement, scroll and dismissal behavior.</summary>
+    [Parameter] public bool Unframed { get; set; }
+    /// <summary>Optional positive number of equal popup columns. Null retains the ordinary menu list.</summary>
+    [Parameter] public int? PanelColumns { get; set; }
+    private string PanelClass => "f-menu-panel f-dropdown-panel"
+        + (Unframed ? " f-menu-panel-unframed" : string.Empty)
+        + (PanelColumns.HasValue ? " f-menu-panel-columns" : string.Empty);
+    private string? PanelStyle => PanelColumns is { } columns
+        ? FormattableString.Invariant($"--f-menu-panel-columns:{columns}") : null;
     private string TriggerClass => TriggerVariant is { } variant
         ? $"f-disclosure-button-trigger f-button f-button-{variant.ToString().ToLowerInvariant()} {(TriggerContent is null ? "f-button-icon" : null)}"
         : $"f-menu-trigger {(TriggerContent is not null ? "f-menu-trigger-label" : null)}";
@@ -82,6 +91,7 @@ else
     protected override void OnParametersSet()
     {
         if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+        if (PanelColumns is <= 0) throw new ArgumentOutOfRangeException(nameof(PanelColumns));
         if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
         if (ChildContent is not null && Actions.Count > 0)
             throw new InvalidOperationException("Provide either Actions or ChildContent, not both.");

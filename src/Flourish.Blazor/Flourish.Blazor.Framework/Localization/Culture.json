@@ -1125,9 +1125,9 @@
     "pt-BR": "Notificações de estado e erro"
   },
   "Usage_Notice_Guidance": {
-    "en-US": "Production use: NotificationSeverity, Title, Subtle and announcement control. Errors requiring immediate attention must be directly visible, not available only on hover.",
-    "zh-CN": "生产使用：NotificationSeverity、Title、Subtle 和播报控制；必须立即可见的错误不能仅放入悬停说明。",
-    "pt-BR": "Uso em produção: NotificationSeverity, Title, Subtle e controle de anúncios. Erros que exigem atenção imediata devem estar diretamente visíveis, e não apenas ao passar o mouse."
+    "en-US": "Production use: every Notice has a localized severity title unless Title supplies a specific summary. Title and body use body-size text, with a bold title in its own row and normal body weight. Information uses a white surface, blue title and dark body; warning uses orange, success green and error red, with white title and body on filled states. All notices have the standard control shadow. These semantic colors remain stable under host branding and dark/system themes. ChildContent is one body block so inline text and controls remain together. Subtle controls announcement priority only and does not change this shared visual treatment. Errors requiring immediate attention must be directly visible, not available only on hover.",
+    "zh-CN": "生产使用：所有 Notice 默认显示本地化类型标题，Title 可指定具体摘要。标题独占一行、与正文同字号、粗体，正文为默认字重。信息提示白底蓝标题深色正文；警告橙底、成功绿底、错误红底，均为白色标题和正文。所有提示使用标准控件阴影，语义颜色不随品牌和明暗主题改变。ChildContent 统一置于正文容器，内联文本和控件不被拆成多行。Subtle 仅调整播报优先级，不改变统一外观；必须立即可见的错误不能仅放入悬停说明。",
+    "pt-BR": "Uso em produção: cada Notice recebe um título localizado pela severidade, salvo quando Title fornece um resumo específico. Título e corpo usam o tamanho de texto normal, com título em negrito em linha própria e corpo de peso normal. Informação usa fundo branco, título azul e corpo escuro; aviso usa fundo laranja, sucesso verde e erro vermelho, com título e corpo brancos. Todos recebem a sombra padrão de controle. As cores semânticas permanecem estáveis nos temas e na marca do aplicativo. ChildContent permanece em um único bloco. Subtle ajusta apenas a prioridade dos anúncios, sem alterar o visual. Erros urgentes devem ficar diretamente visíveis."
   },
   "Usage_LoadingState_Scenario": {
     "en-US": "Actual loading feedback",

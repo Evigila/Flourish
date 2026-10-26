@@ -1,13 +1,16 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @using ArkheideSystem.Flourish.Abstract
+@inherits TextComponentBase
 
-<div @attributes="AdditionalAttributes" class="f-notice @(Subtle ? "f-notice-subtle" : "f-notice-" + Severity.ToString().ToLowerInvariant()) @Class"
+<div @attributes="AdditionalAttributes" class="f-notice f-notice-@Severity.ToString().ToLowerInvariant() @(Subtle ? "f-notice-subtle" : null) @Class"
      role="@(Role ?? (Announce ? !Subtle && Severity is NotificationSeverity.Error or NotificationSeverity.Warning ? "alert" : "status" : null))">
-    @if (!string.IsNullOrWhiteSpace(Title)) { <strong>@Title</strong> }
-    @ChildContent
+    <strong class="f-notice-title">@EffectiveTitle</strong>
+    <div class="f-notice-body">@ChildContent</div>
 </div>
 
 @code {
+    private string EffectiveTitle => string.IsNullOrWhiteSpace(Title)
+        ? Ui("Notice_" + Severity, Severity.ToString()) : Title;
     [Parameter] public NotificationSeverity Severity { get; set; } = NotificationSeverity.Information;
     [Parameter] public bool Announce { get; set; } = true;
     [Parameter] public string? Role { get; set; }

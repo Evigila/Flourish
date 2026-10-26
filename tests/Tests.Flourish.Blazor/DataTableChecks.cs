@@ -583,6 +583,91 @@ internal static class DataTableChecks
                 throw new InvalidOperationException("ActionMenu accepted two independent content contracts at once.");
             });
         }));
+        tests.Add(("unframed ActionMenu renders direct accessible tiles and retains layout through native enhancement", async () =>
+        {
+            var menu = new ActionMenuProbe();
+            var javascript = new MenuJavaScript();
+            await WithMenu(menu, javascript, async output =>
+            {
+                Require(!menu.Unframed && menu.PanelColumns is null, "Ordinary menus no longer default to their existing panel.");
+                RenderFragment tiles = builder =>
+                {
+                    foreach (var name in new[] { "Foundation", "Liquidity", "People" })
+                    {
+                        builder.OpenComponent<UniformGridButton>(0);
+                        builder.AddAttribute(1, nameof(UniformGridButton.Title), name);
+                        builder.AddAttribute(2, nameof(UniformGridButton.Href), "/" + name.ToLowerInvariant() + "/");
+                        builder.AddAttribute(3, nameof(UniformGridButton.Variant), UniformGridVariant.Elevated);
+                        builder.AddAttribute(4, "role", "menuitem");
+                        builder.CloseComponent();
+                    }
+                };
+                await menu.ParametersAsync(new()
+                {
+                    [nameof(ActionMenu.Label)] = "Portals",
+                    [nameof(ActionMenu.TriggerVariant)] = ButtonVariant.Quiet,
+                    [nameof(ActionMenu.TriggerContent)] = (RenderFragment)(builder => builder.AddContent(0, "Portals")),
+                    [nameof(ActionMenu.ChildContent)] = tiles,
+                    [nameof(ActionMenu.Unframed)] = true,
+                    [nameof(ActionMenu.PanelColumns)] = 3
+                });
+                void VerifyTiles()
+                {
+                    var html = output();
+                    Require(html.Contains("f-menu-panel-unframed f-menu-panel-columns", StringComparison.Ordinal)
+                        && html.Contains("style=\"--f-menu-panel-columns:3\"", StringComparison.Ordinal), "The actual panel lost its unframed three-column contract.");
+                    Require(Regex.Matches(html, "<div\\b").Count == 1 && !html.Contains("f-uniform-grid ", StringComparison.Ordinal), "Tiles acquired a wrapping grid or decorative host surface.");
+                    Require(Regex.Matches(html, "<a\\b[^>]*role=\"menuitem\"").Count == 3
+                        && Regex.Matches(html, "f-uniform-variant-elevated").Count == 3, "Direct tiles lost native navigation, accessible menu roles or individual elevation.");
+                    var trigger = Regex.Match(html, "<summary\\b[^>]*>").Value;
+                    Require(trigger.Contains("f-disclosure-button-trigger f-button f-button-quiet", StringComparison.Ordinal)
+                        && !trigger.Contains("f-menu-trigger", StringComparison.Ordinal)
+                        && !trigger.Contains("f-button-icon", StringComparison.Ordinal), "A text trigger inherited a fixed icon-only menu width.");
+                }
+                VerifyTiles();
+                await menu.AfterRenderAsync();
+                await menu.AfterRenderAsync();
+                VerifyTiles();
+                Require(output().Contains("popover=\"manual\"", StringComparison.Ordinal)
+                    && javascript.Module.Calls.SequenceEqual(new[] { "attachDisclosureMenu" }), "Tile presentation replaced the native menu controller or duplicated its subscription.");
+                await menu.ParametersAsync(new() { [nameof(ActionMenu.Unframed)] = false, [nameof(ActionMenu.PanelColumns)] = null });
+                Require(!output().Contains("f-menu-panel-unframed", StringComparison.Ordinal)
+                    && !output().Contains("f-menu-panel-columns", StringComparison.Ordinal)
+                    && !output().Contains("--f-menu-panel-columns", StringComparison.Ordinal), "Resetting panel options retained a stale class or grid column value.");
+            });
+        }));
+        tests.Add(("generated ActionMenu actions share optional unframed columns without changing command state", async () =>
+        {
+            var menu = new ActionMenuProbe();
+            await WithMenu(menu, new MenuJavaScript(), async output =>
+            {
+                await menu.ParametersAsync(new()
+                {
+                    [nameof(ActionMenu.ChildContent)] = null,
+                    [nameof(ActionMenu.Actions)] = new[] { new MenuAction("Unavailable", () => Task.CompletedTask, Disabled: true) },
+                    [nameof(ActionMenu.Unframed)] = true,
+                    [nameof(ActionMenu.PanelColumns)] = 2
+                });
+                var html = output();
+                Require(!html.Contains("<details", StringComparison.Ordinal)
+                    && html.Contains("f-menu-panel-unframed f-menu-panel-columns", StringComparison.Ordinal)
+                    && html.Contains("--f-menu-panel-columns:2", StringComparison.Ordinal), "Generated action panels did not expose the same supported layout contract.");
+                Require(Regex.IsMatch(html, "<button\\b[^>]*role=\"menuitem\"[^>]*disabled"), "Panel layout changed an unavailable command's native disabled state.");
+            });
+        }));
+        tests.Add(("ActionMenu rejects zero and negative panel column counts", async () =>
+        {
+            foreach (var columns in new[] { 0, -1 })
+            {
+                var invalid = new ActionMenuProbe();
+                await WithMenu(invalid, new MenuJavaScript(), async _ =>
+                {
+                    try { await invalid.ParametersAsync(new() { [nameof(ActionMenu.PanelColumns)] = columns }); }
+                    catch (ArgumentOutOfRangeException exception) when (exception.ParamName == nameof(ActionMenu.PanelColumns)) { return; }
+                    throw new InvalidOperationException("Nonpositive popup columns escaped validation.");
+                });
+            }
+        }));
         tests.Add(("native ActionMenu enhances one SSR DOM and detaches its old branch before switching", async () =>
         {
             var menu = new ActionMenuProbe();
@@ -661,6 +746,7 @@ internal static class DataTableChecks
         var services = new ServiceCollection();
         services.AddLogging().AddFlourishFramework();
         services.AddSingleton<IJSRuntime>(javascript);
+        services.AddSingleton<NavigationManager>(new TestNavigation());
         services.AddSingleton<IComponentActivator>(new MenuActivator(menu));
         using var provider = services.BuildServiceProvider();
         using var scope = provider.CreateScope();

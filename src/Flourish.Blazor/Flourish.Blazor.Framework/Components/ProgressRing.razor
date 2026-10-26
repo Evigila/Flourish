@@ -3,7 +3,7 @@
 @using System.Globalization
 
 <span class="f-progress-ring @(Stopped ? "f-progress-stopped" : null) @(Compact ? "f-progress-ring-compact" : null)" role="progressbar" aria-label="@EffectiveLabel"
-      aria-valuemin="0" aria-valuemax="100" aria-valuenow="@NumericValue" aria-valuetext="@StatusText" title="@StatusText">
+      data-f-loading="@((!Stopped && (Value is null || Value < 100)) ? "true" : "false")" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@NumericValue" aria-valuetext="@StatusText" title="@StatusText">
     <svg viewBox="0 0 52 52" aria-hidden="true">
         <circle class="f-progress-ring-track" cx="26" cy="26" r="23" />
         <circle class="f-progress-ring-arc" cx="26" cy="26" r="23" pathLength="100" stroke-dasharray="@((Value ?? 28).ToString(CultureInfo.InvariantCulture) + " 100")" />

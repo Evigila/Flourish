@@ -1,15 +1,20 @@
 @inherits TextComponentBase
-<header class="f-page-heading" data-page-heading data-heading-mode="@(Compact ? "compact" : null)">
+<header class="f-page-heading" data-page-heading data-heading-mode="@(Compact ? "compact" : null)" data-heading-loading="@(Loading ? "true" : null)">
     <div class="f-heading-title">
         @if (!string.IsNullOrEmpty(ParentHref)) { <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref" Class="f-parent-link" Icon="arrow_back" Text="@(ParentLabel ?? string.Empty)" aria-label="@(string.IsNullOrWhiteSpace(ParentLabel) ? Texts.Get(new TextReference("Flourish", "Heading_Back", "Back")) : ParentLabel)" /> }
         <h1>@Title</h1>
     </div>
     @if (Actions is not null) { <div class="f-heading-actions">@Actions</div> }
+    <div class="f-heading-loading" data-f-heading-progress role="progressbar" aria-label="@Ui("Progress_Label", "Progress")" aria-valuemin="0" aria-valuemax="100">
+        <span class="f-heading-loading-fill" aria-hidden="true"></span>
+    </div>
 </header>
 @code {
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;
     [Parameter] public RenderFragment? Actions { get; set; }
     [Parameter] public bool Compact { get; set; }
+    /// <summary>Shows heading progress directly; active loading controls also show it automatically.</summary>
+    [Parameter] public bool Loading { get; set; }
     [Parameter] public string? ParentHref { get; set; }
     [Parameter] public string? ParentLabel { get; set; }
 }

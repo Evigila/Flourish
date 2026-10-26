@@ -1,5 +1,32 @@
 # Release verification
 
+## Flourish 1.4.3 final preparation, 2026-10-26
+
+The six existing Core/Blazor packages are prepared as stable **1.4.3**, retaining Essential.Culture **1.4.0**. Gallery promotes the preview notes, adds the Notice/menu/Field-hover changes in three languages and starts an empty 1.4.4-preview. This section records local preparation only; the coordinator must still commit/push, publish the tag through `publish-helper.bat`, observe successful Trusted Publishing and verify all six public indexes and public-only consumers.
+
+Final source review covered automatic Button busy handling and heading progress, Notice title/semantic paints, compact choices, ActionMenu tile composition, label/input hover continuity and package asset boundaries. No new component defect was established. The review found an existing hosted CI failure in [run 39257011009](https://github.com/Evigila/Flourish/actions/runs/39257011009): `Upsert_ReplacesExpirationTimer` assumed 30 ms/100 ms wall-clock delays would occur before expiration. On a delayed runner the original timer could fire before replacement, complete the test's expiration signal and make the final assertion inspect the still-active replacement. The internal notification service now accepts an optional platform `TimeProvider` with a system-clock default. Its test advances controlled time, asserts the old timer is canceled and observes the replacement's actual expiration. This adds no dependency or public API; the focused eight notification tests passed.
+
+The complete final `publish-helper.bat -Mode Prepare` passed with exit code 0:
+
+| Gate | Result |
+| --- | --- |
+| Production and Gallery Release builds | Zero warnings and errors |
+| Core / Framework / Culture extension | 367 / 474 / 27 passed |
+| Gallery | 8593, including 474 post-event and 423 ChangeLog checks |
+| Node | 198 passed, zero failed/skipped |
+| Actual browser/menu fixture | 42/42, zero physical-browser skips |
+| CSS bundle / SDK integration / launcher | 21 / 194 / 95 |
+| Culture catalogs / ChangeLog validator | 24787 / 158 |
+| Stable/preview version gates (separate run) | 12 |
+| Six package identities, dependencies and assets | All verified at 1.4.3 |
+| Independent candidate package consumers | 143 |
+
+Evidence is in `artifacts/final-release-20261026/prepare-final.log`, `notification-tests.log` and `package-hashes.json`; consumer fixture `artifacts/package-consumers/bcb38ad41b7b4b83a073d55d31e453cc` uses isolated caches. The earlier `prepare.log` preceded the deterministic-clock repair and is retained as intermediate evidence. `git diff --check` passed. These are source/package/automated-browser checks, not a new manual user workflow acceptance.
+
+Read-only preflight found no remote v1.4.3 tag and no published 1.4.3 in any of the six public package indexes. The GitHub `nuget` environment exists with `NUGET_USER` configured and no required-review protection rule; secret contents were not read. Actual OIDC/NuGet authorization is only established by the publishing job. Local API keys are neither required nor used. WPF/WinUI and Azure hosting are outside this library release.
+
+Manual visual recheck: move the pointer slowly from an input through its label gap, exercise all four Notice statuses, open a three-column portal menu at narrow and wide viewport sizes, and trigger an asynchronous button under a PageHeading to compare immediate progress feedback with the related loading control. Physical animation appearance remains a visual acceptance boundary.
+
 ## Completed Flourish 1.4.2 release on 2026-10-19
 
 Source commit `c8616f0f8712a5ff78b21612f6886004366fe414` is pushed to master and tagged v1.4.2. [Run 39254689722](https://github.com/Evigila/Flourish/actions/runs/39254689722) passed both [build verification](https://github.com/Evigila/Flourish/actions/runs/39254689722/job/118066888261) and [Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/39254689722/job/118068832980). All six Core/Blazor packages returned Created between 12:51:56 and 12:52:01 UTC (09:51:56–09:52:01 in São Paulo). Essential remains 1.4.0, the package manifest/order is unchanged, and WPF/WinUI are excluded. The failed v1.4.1 tag and its evidence remain unchanged; that version was never uploaded.

@@ -38,6 +38,8 @@ internal static class ParameterMeaning
         "SideContent" when parameter.DeclaringType == typeof(Controls.PresentationHero) => "Key.Parameter_SideContent_PresentationHero",
         "Tone" when parameter.DeclaringType == typeof(Controls.AccessFormSurface) => "Key.Parameter_Tone_AccessFormSurface",
         "TriggerVariant" => "Key.Parameter_TriggerVariant",
+        "Unframed" when parameter.DeclaringType == typeof(Controls.ActionMenu) => "Key.Parameter_Unframed_ActionMenu",
+        "PanelColumns" when parameter.DeclaringType == typeof(Controls.ActionMenu) => "Key.Parameter_PanelColumns_ActionMenu",
         "Icon" when parameter.DeclaringType == typeof(Controls.MultiSelectBox) => "Key.Parameter_Icon_MultiSelectBox",
         "Icon" when parameter.DeclaringType == typeof(Controls.ActionMenu) => "Key.Parameter_Icon_ActionMenu",
         "PrimaryDisabled" when parameter.DeclaringType == typeof(Controls.SplitButton) => "Key.Parameter_PrimaryDisabled_SplitButton",

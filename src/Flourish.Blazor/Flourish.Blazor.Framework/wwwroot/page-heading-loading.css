@@ -1,0 +1,47 @@
+/* Heading feedback is part of the same style update as each source, without a JS observer delay. */
+.f-page-heading { position:relative; }
+.f-heading-loading {
+    display:none;
+    position:absolute;
+    inset-block-end:0;
+    inset-inline:var(--f-content-gutter,var(--f-page-gutter,24px));
+    block-size:4px;
+    min-inline-size:0;
+    margin:0;
+    padding:0;
+    border:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+/* A full-width title still follows ContentContainer's bounded content, rather than its own width. */
+.f-page-full > .f-page-heading > .f-heading-loading {
+    inset-inline:max(24px,calc((100% - var(--f-content-width,1180px))/2 + 24px));
+}
+@media(max-width:560px) {
+    .f-page-full > .f-page-heading > .f-heading-loading { inset-inline:18px; }
+}
+.f-heading-loading-fill {
+    display:block;
+    position:absolute;
+    inset-block:0;
+    inset-inline-start:0;
+    inline-size:35%;
+    background:currentColor;
+    animation:f-heading-loading-travel 1.4s ease-in-out infinite alternate;
+}
+@keyframes f-heading-loading-travel {
+    from { inset-inline-start:0; }
+    to { inset-inline-start:65%; }
+}
+/* Only observable loading state is a source. The heading never publishes a source of its own. */
+.f-page-heading[data-heading-loading="true"] > .f-heading-loading,
+:is(body,.f-root,.f-page-body,.f-shell,.content-surface,.navigation-surface,.content-stage,.application-stage,.f-content-scroll):has(
+    :is([data-f-loading="true"],[aria-busy="true"]):not(:is(
+        [hidden],[hidden] *,[aria-hidden="true"],[aria-hidden="true"] *,[inert],[inert] *,
+        dialog:not([open]),dialog:not([open]) *,
+        [popover]:not(:popover-open):not([data-f-open]),[popover]:not(:popover-open):not([data-f-open]) *
+    ))
+) .f-heading-loading { display:block; }
+@media(prefers-reduced-motion:reduce) {
+    .f-heading-loading-fill { animation:none; inset-inline-start:25%; inline-size:50%; }
+}

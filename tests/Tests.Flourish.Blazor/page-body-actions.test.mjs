@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import "./page-heading-loading.test.mjs";
 
 const root = new URL("../../", import.meta.url);
 const read = async path => (await readFile(new URL(path, root), "utf8")).replace(/\/\*[\s\S]*?\*\//g, "");

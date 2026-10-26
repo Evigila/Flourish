@@ -107,9 +107,9 @@ display: flex;
 
 .form-check > input[type="checkbox"] {
 display: grid;
-    width: var(--f-control-height);
-    height: var(--f-control-height);
-    flex: 0 0 var(--f-control-height);
+    width: var(--f-choice-size,28px);
+    height: var(--f-choice-size,28px);
+    flex: 0 0 var(--f-choice-size,28px);
     place-content: center;
     cursor: pointer;
 }

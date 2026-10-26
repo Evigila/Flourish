@@ -1,6 +1,10 @@
 [
   {
-    "version": "1.4.3-preview",
+    "version": "1.4.4-preview",
+    "changeKeys": []
+  },
+  {
+    "version": "1.4.3",
     "changeKeys": [
       "Key.ChangeLog_NavigationChoicesSidebar",
       "Key.ChangeLog_BoundedAccessLayout",
@@ -8,7 +12,13 @@
       "Key.ChangeLog_AnchoredPopupPlacement",
       "Key.ChangeLog_PresentationMediaAndIdentityScale",
       "Key.ChangeLog_NativeHiddenState",
-      "Key.ChangeLog_StableLeftAlignedPickers"
+      "Key.ChangeLog_StableLeftAlignedPickers",
+      "Key.ChangeLog_CompactChoiceIndicators",
+      "Key.ChangeLog_HeadingLoading",
+      "Key.ChangeLog_StableProgressRendering",
+      "Key.ChangeLog_NoticeTitlesAndColors",
+      "Key.ChangeLog_MenuTileColumns",
+      "Key.ChangeLog_ContinuousFieldHover"
     ]
   },
   {

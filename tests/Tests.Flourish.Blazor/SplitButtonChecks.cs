@@ -343,6 +343,9 @@ internal static class SplitButtonChecks
                 Require(PanelDisplay(css, nativeSplit: false, open: false, interactiveOpen: true) == "block", "The native override broke an unrelated data-f-open interactive panel.");
                 Require(PanelDisplay(css, nativeSplit: false, open: true, interactiveOpen: false, nativeActionMenu: true) == "block", "A native row action disclosure is still hidden by the interactive panel cascade.");
                 Require(PanelDisplay(css, nativeSplit: false, open: false, interactiveOpen: false, nativeActionMenu: true) == "none", "A closed native row action disclosure leaks its panel into layout.");
+                Require(PanelDisplay(css, nativeSplit: false, open: true, interactiveOpen: false, nativeActionMenu: true, panelColumns: true) == "grid", "Native action tiles lost their explicit columns when details opened.");
+                Require(PanelDisplay(css, nativeSplit: false, open: false, interactiveOpen: false, nativeActionMenu: true, panelColumns: true) == "none", "Configuring action tile columns opened a closed native panel.");
+                Require(PanelDisplay(css, nativeSplit: false, open: false, interactiveOpen: true, panelColumns: true) == "grid", "Interactive action tiles lost their columns after top-layer enhancement.");
             }
             return Task.CompletedTask;
         }));
@@ -355,10 +358,13 @@ internal static class SplitButtonChecks
             Require(SelectorArms(string.Join(", ", expected)).SequenceEqual(expected), "Functional or attribute commas were split into unrelated selector arms.");
             var css = ".f-menu-panel{display:block}" + rootHidden + "," + descendantHidden + "{display:none!important}";
             Require(PanelDisplay(css, nativeSplit: true, open: true, interactiveOpen: false) == "block", "A reviewed hidden guard applied to a fixture without hidden on its panel or ancestors.");
-            var rejected = false;
-            try { PanelDisplay(".f-menu-panel[hidden]{display:none}", nativeSplit: true, open: true, interactiveOpen: false); }
-            catch (InvalidOperationException error) when (error.Message.StartsWith("Review the new panel display selector", StringComparison.Ordinal)) { rejected = true; }
-            Require(rejected, "The narrow cascade silently ignored an unreviewed selector merely because it mentions hidden.");
+            foreach (var unreviewed in new[] { ".f-menu-panel[hidden]", ".f-menu-panel.f-menu-panel-columns[data-host-open]" })
+            {
+                var rejected = false;
+                try { PanelDisplay(unreviewed + "{display:none}", nativeSplit: true, open: true, interactiveOpen: false, panelColumns: true); }
+                catch (InvalidOperationException error) when (error.Message.StartsWith("Review the new panel display selector", StringComparison.Ordinal)) { rejected = true; }
+                Require(rejected, "The narrow cascade silently ignored an unreviewed panel selector.");
+            }
             return Task.CompletedTask;
         }));
         tests.Add(("native menus reject conflicting controlled callbacks and static expansion attributes", async () =>
@@ -429,7 +435,7 @@ internal static class SplitButtonChecks
     }
     // Deliberately narrow display cascade, not a pretend browser engine: resolve all panel-display
     // rules from both fully expanded stylesheets, fail on unknown selectors and honor specificity/order.
-    private static string PanelDisplay(string css, bool nativeSplit, bool open, bool interactiveOpen, bool nativeActionMenu = false)
+    private static string PanelDisplay(string css, bool nativeSplit, bool open, bool interactiveOpen, bool nativeActionMenu = false, bool panelColumns = false)
     {
         var winner = string.Empty;
         var winnerImportance = -1;
@@ -450,6 +456,8 @@ internal static class SplitButtonChecks
                     ".f-menu-panel" => true,
                     ".f-menu-panel:not(:popover-open):not([data-f-open])" => !interactiveOpen,
                     ".f-menu-panel[data-f-open]" => interactiveOpen,
+                    ".f-menu-panel.f-menu-panel-columns:is([data-f-open],:popover-open)" => panelColumns && interactiveOpen,
+                    ".f-action-menu[data-f-native-menu]:not([data-f-enhanced])[open] > .f-menu-panel-columns" => panelColumns && nativeActionMenu && open,
                     ".f-multi-select-panel[data-f-open]" => false,
                     ".f-dropdown-surface > .f-menu-panel" => nativeSplit || nativeActionMenu,
                     ".f-dropdown-surface[open] > .f-menu-panel" => (nativeSplit || nativeActionMenu) && open,

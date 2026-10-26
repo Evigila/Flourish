@@ -1,0 +1,6 @@
+.f-heading-loading { color:var(--f-primary); background:var(--f-soft); }
+.f-heading-loading-fill { background:var(--f-primary); }
+@media(forced-colors:active) {
+    .f-heading-loading { color:Highlight; background:Canvas; }
+    .f-heading-loading-fill { background:Highlight; }
+}

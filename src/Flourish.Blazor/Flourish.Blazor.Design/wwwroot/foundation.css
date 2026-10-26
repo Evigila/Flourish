@@ -1,14 +1,16 @@
 /* Public foundation tokens. All element rules are scoped to a library surface. */
 :root, .f-root {
  --f-primary-light:#153A32; --f-accent-light:#16745F; --f-primary-dark:#BBD7C9; --f-accent-dark:#75CBB2;
- --f-primary:var(--f-primary-light); --f-accent:var(--f-accent-light); --f-canvas:#F3F5F5; --f-surface-light:#FFFFFF; --f-surface:var(--f-surface-light); --f-text:#112924; --f-muted:#4F645D;
- --f-display-board:#E5E8EB; --f-preview-light:#C9DFDA; --f-preview-dark:#2F5049; --f-click-light:#B5C9C4; --f-click-dark:#2A4842; --f-danger:#9D322D; --f-preview-danger:#7E2824; --f-click-danger:#712420; --f-info-text:#1565C0; --f-warning-background:#F2A33A; --f-warning-ink:var(--f-text); --f-border:#9FAEA9;
+ --f-primary:var(--f-primary-light); --f-accent:var(--f-accent-light); --f-canvas:#F3F5F5; --f-surface-light:#FFFFFF; --f-surface:var(--f-surface-light); --f-text-light:#112924; --f-text:var(--f-text-light); --f-muted:#4F645D;
+ --f-display-board:#E5E8EB; --f-preview-light:#C9DFDA; --f-preview-dark:#2F5049; --f-click-light:#B5C9C4; --f-click-dark:#2A4842; --f-danger-light:#9D322D; --f-danger:var(--f-danger-light); --f-preview-danger:#7E2824; --f-click-danger:#712420; --f-info-text-light:#1565C0; --f-info-text:var(--f-info-text-light); --f-warning-background:#F2A33A; --f-warning-ink:var(--f-text); --f-border:#9FAEA9;
+ /* Filled status colors stay semantic when a host changes its brand or theme. */
+ --f-success-background:#16745F; --f-warning-strong:#B45309;
  --f-font:'Segoe UI',system-ui,sans-serif; --f-body-size:17px; --f-label-weight:400;
  --f-type-page:50px; --f-type-page-compact:38px; --f-type-h1:34px; --f-type-h2:28px; --f-type-h3:20px; --f-type-body:17px;
  --f-space-1:4px; --f-space-2:8px; --f-space-3:12px; --f-space-4:16px;
  --f-space-5:20px; --f-space-6:24px; --f-space-8:32px; --f-space-11:44px; --f-space-16:64px; --f-space-21:84px;
  --f-radius-small:10px; --f-radius-control:12px; --f-radius-panel:16px; --f-radius-emphasis:28px;
- --f-page-gutter:24px; --f-field-label-gap:7px; --f-control-height:48px; --f-dense-height:36px; --f-topbar-height:68px; --f-primary-width:76px; --f-secondary-width:232px;
+ --f-page-gutter:24px; --f-field-label-gap:7px; --f-control-height:48px; --f-choice-size:28px; --f-choice-radius:9px; --f-dense-height:36px; --f-topbar-height:68px; --f-primary-width:76px; --f-secondary-width:232px;
  --f-content-width:1180px; --f-shadow-control:0 2px 6px rgb(from var(--f-primary) r g b / .16); --f-shadow-popup:0 16px 48px rgb(from var(--f-primary) r g b / .16); --f-focus-width:3px;
  --f-icon-default-size:26px; --f-icon-primary-size:24px; --f-icon-tool-size:26px; --f-icon-information-size:22px;
  --f-primary-ink:var(--f-surface); --f-accent-ink:var(--f-surface); --f-accent-text:var(--f-accent); --f-accent-text-light:var(--f-accent); --f-accent-text-dark:var(--f-accent); --f-accent-hover:var(--f-accent);

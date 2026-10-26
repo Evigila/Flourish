@@ -13,7 +13,7 @@
 
 @if (Preview)
 {
-    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_PageTitle)" />
+    <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_PageTitle)" Loading="true" />
     <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_CompactTitle)" Compact="true" />
     <ArkheideSystem.Flourish.Blazor.Components.PageHeading Title="@Localization.Parse(TextKey.Sample_TitleWithActions)"><Actions><ArkheideSystem.Flourish.Blazor.Components.Button>@Localization.Parse(TextKey.Sample_Action)</ArkheideSystem.Flourish.Blazor.Components.Button></Actions></ArkheideSystem.Flourish.Blazor.Components.PageHeading>
 }
@@ -32,5 +32,9 @@ else
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = $"heading-sample-{Guid.NewGuid():N}";
     private bool Compact, Created;
-    private void Create() => Created = true;
+    private async Task Create()
+    {
+        await Task.Delay(800);
+        Created = true;
+    }
 }

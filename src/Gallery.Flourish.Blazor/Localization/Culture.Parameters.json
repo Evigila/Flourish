@@ -1,4 +1,14 @@
 {
+  "Parameter_Unframed_ActionMenu": {
+    "en-US": "Remove the popup background, border, padding and shared shadow. Child controls keep their own appearance; placement, scrolling and dismissal are unchanged. Defaults to false.",
+    "zh-CN": "移除弹层底板、边框、内边距和整体阴影；子控件保留各自外观，定位、滚动与关闭行为不变。默认 false。",
+    "pt-BR": "Remove o fundo, a borda, o espaçamento interno e a sombra geral do menu. Os controles filhos mantêm sua aparência; posição, rolagem e fechamento permanecem iguais. Padrão: false."
+  },
+  "Parameter_PanelColumns_ActionMenu": {
+    "en-US": "Optional positive number of equal popup columns. Null keeps the ordinary list. Place standalone UniformGridButton controls directly inside for independent action tiles.",
+    "zh-CN": "可选的弹层等宽列数，必须为正数；null 保留普通列表。直接放入独立 UniformGridButton 即可排列操作卡片。",
+    "pt-BR": "Número positivo opcional de colunas iguais no menu. Null mantém a lista comum. Use UniformGridButton diretamente para blocos de ação independentes."
+  },
   "Parameter_MaxWidth_LanguagePicker": {
     "en-US": "Optional selector width, bounded by the available space.",
     "zh-CN": "可选的选择器宽度，不超过可用空间。",

@@ -6,13 +6,13 @@
 {
     <a @attributes="LinkAttributes" href="@(Unavailable ? null : LinkHref)" class="@ButtonClass"
        role="@LinkRole" aria-disabled="@(Unavailable ? "true" : "false")"
-       aria-busy="@(Busy ? "true" : "false")" tabindex="@LinkTabIndex"
+       aria-busy="@(IsBusy ? "true" : "false")" tabindex="@LinkTabIndex"
        @onclick="ClickAsync" @onclick:preventDefault="Unavailable">@Contents</a>
 }
 else
 {
     <button @attributes="AdditionalAttributes" type="@Type" class="@ButtonClass"
-            disabled="@Unavailable" aria-busy="@(Busy ? "true" : "false")" @onclick="ClickAsync">@Contents</button>
+            disabled="@Unavailable" aria-busy="@(IsBusy ? "true" : "false")" @onclick="ClickAsync">@Contents</button>
 }
 
 @code {
@@ -31,7 +31,10 @@ else
     [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-    private bool Unavailable => Disabled || Busy;
+    private bool Initialized;
+    private bool Executing;
+    private bool IsBusy => Busy || Executing;
+    private bool Unavailable => Disabled || IsBusy;
     private string? LinkRole => AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("role", out var role) ? role?.ToString() : Unavailable ? "link" : null;
     private string? LinkTabIndex => Unavailable ? "-1" : AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("tabindex", out var index) ? index?.ToString() : null;
     private string? LinkHref => Href?.StartsWith('#') == true ? Navigation.Uri.Split('#', 2)[0] + Href : Href;
@@ -44,7 +47,7 @@ else
         : AdditionalAttributes.Where(attribute => !string.Equals(attribute.Key, "href", StringComparison.OrdinalIgnoreCase))
             .ToDictionary(attribute => attribute.Key, attribute => attribute.Value);
     private RenderFragment Contents => @<text>
-        @if (Busy)
+        @if (IsBusy)
         {
             <span class="f-spinner" aria-hidden="true"></span>
             <span class="f-busy-text f-sr-only" role="status">@EffectiveBusyLabel</span>
@@ -77,11 +80,30 @@ else
         ButtonVariant.Elevated => "f-button-elevated",
         _ => throw new ArgumentOutOfRangeException(nameof(Variant))
     };
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Initialized = true;
+    }
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         if (HasStructuredLabel && (string.IsNullOrWhiteSpace(Text) || ChildContent is not null))
             throw new InvalidOperationException("A structured button requires Text as its primary label and does not accept ChildContent. Description and TrailingText are passive text.");
     }
-    private Task ClickAsync(MouseEventArgs args) => Unavailable ? Task.CompletedTask : OnClick.InvokeAsync(args);
+    private async Task ClickAsync(MouseEventArgs args)
+    {
+        if (Unavailable || !OnClick.HasDelegate) return;
+        Executing = true;
+        try
+        {
+            await OnClick.InvokeAsync(args);
+        }
+        finally
+        {
+            Executing = false;
+            // A failed event skips ComponentBase's completion render, so release its busy presentation here.
+            if (Initialized) StateHasChanged();
+        }
+    }
 }

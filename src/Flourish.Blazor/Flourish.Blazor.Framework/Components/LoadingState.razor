@@ -1,7 +1,7 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @inherits TextComponentBase
 
-<div @attributes="AdditionalAttributes" class="f-loading" role="status" aria-live="polite">
+<div @attributes="AdditionalAttributes" class="f-loading" data-f-loading="true" role="status" aria-live="polite">
     <span class="f-spinner" aria-hidden="true"></span>
     @if (ChildContent is not null) { @ChildContent } else { <span>@EffectiveMessage</span> }
 </div>

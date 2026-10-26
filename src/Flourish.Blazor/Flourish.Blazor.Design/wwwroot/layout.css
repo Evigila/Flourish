@@ -129,9 +129,9 @@ gap:12px;
 }
 
 .form-check > input[type="checkbox"] {
-width:var(--f-control-height,48px);
-    height:var(--f-control-height,48px);
-    flex:0 0 var(--f-control-height,48px);
+width:var(--f-choice-size,28px);
+    height:var(--f-choice-size,28px);
+    flex:0 0 var(--f-choice-size,28px);
     box-sizing:border-box;
     margin:0;
     padding:0;
@@ -139,7 +139,7 @@ width:var(--f-control-height,48px);
     color:var(--f-accent-ink);
     background:var(--f-surface);
     border:1px solid var(--f-border);
-    border-radius:6px;
+    border-radius:var(--f-choice-radius,9px);
 }
 
 .form-check > input[type="checkbox"]::before {

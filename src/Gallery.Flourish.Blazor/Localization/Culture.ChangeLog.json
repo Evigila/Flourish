@@ -1,4 +1,34 @@
 {
+  "ChangeLog_NoticeTitlesAndColors": {
+    "en-US": "Give every Notice a separate bold body-sized title, localized severity fallback and shadow. Information uses a white surface with a blue title and dark body; warning, success and error use orange, green and red with white text, including subtle Notices.",
+    "zh-CN": "所有 Notice 使用独立一行的正文大小粗体标题、本地化状态默认标题和阴影。信息提示使用白底蓝标题深色正文；警告、成功与错误分别使用橙、绿、红底及白色文字，Subtle 提示同样适用。",
+    "pt-BR": "Todo Notice recebe título em negrito em linha própria, no tamanho do corpo, título de estado localizado e sombra. Informação usa fundo branco, título azul e corpo escuro; aviso, sucesso e erro usam laranja, verde e vermelho com texto branco, inclusive no modo Subtle."
+  },
+  "ChangeLog_MenuTileColumns": {
+    "en-US": "ActionMenu supports equal tile columns and an optional unframed surface while preserving popup placement, scrolling, dismissal and standard trigger variants.",
+    "zh-CN": "ActionMenu 支持等宽瓦片列及可选无边框表面，同时保留弹窗定位、滚动、关闭行为和标准触发按钮样式。",
+    "pt-BR": "ActionMenu aceita colunas iguais de blocos e superfície sem moldura opcional, preservando posicionamento, rolagem, fechamento e variantes padrão do botão."
+  },
+  "ChangeLog_ContinuousFieldHover": {
+    "en-US": "Bridge the small gap between a Field label and its input so pointer movement keeps hover feedback continuous without changing label geometry or validation actions.",
+    "zh-CN": "衔接 Field 标签与输入框之间的小空隙，使鼠标移动时悬停反馈连续，同时保持标签几何尺寸和验证操作不变。",
+    "pt-BR": "Preenche a pequena lacuna entre o rótulo de Field e a entrada para manter o estado de passagem do ponteiro contínuo, sem alterar a geometria do rótulo nem as ações de validação."
+  },
+  "ChangeLog_HeadingLoading": {
+    "en-US": "Page headings automatically follow active loading controls and asynchronous buttons with a thin progress bar aligned to the content container; Loading also enables it directly.",
+    "zh-CN": "页面大标题自动联动加载控件及异步按钮，以紧贴底部分割线、对齐正文容器的细加载条反馈状态，也可通过 Loading 单独启用。",
+    "pt-BR": "Os títulos de página acompanham controles de carregamento e botões assíncronos com uma barra fina alinhada ao conteúdo; Loading também permite ativação direta."
+  },
+  "ChangeLog_StableProgressRendering": {
+    "en-US": "Indeterminate horizontal progress uses a single moving segment without nested transform animations, reducing clipping artifacts while preserving native progress semantics.",
+    "zh-CN": "不定进度横条改用单段位移，移除嵌套变换动画以减少裁剪残影，同时保留原生进度语义。",
+    "pt-BR": "O progresso horizontal indeterminado usa um único segmento móvel sem animações de transformação aninhadas, reduzindo artefatos de recorte e preservando a semântica nativa."
+  },
+  "ChangeLog_CompactChoiceIndicators": {
+    "en-US": "Use smaller, rounder choice indicators and compact menu options while preserving readable multiline labels, keyboard behavior and full-size form triggers.",
+    "zh-CN": "缩小选择标记并增大圆角，选项行更紧凑，同时保留长文本换行、键盘操作与完整表单触发区域。",
+    "pt-BR": "Indicadores de seleção menores e mais arredondados e opções mais compactas, mantendo textos longos legíveis, navegação por teclado e campos de formulário no tamanho padrão."
+  },
   "ChangeLog_StableLeftAlignedPickers": {
     "en-US": "Popup options stay left-aligned independently of their anchor edge. Native select pickers measure their content before opening and use standard fixed-size choice indicators.",
     "zh-CN": "浮层选项始终左对齐，与浮层靠左或靠右弹出无关。原生选择菜单在展开前测量内容宽度，并使用标准固定尺寸选择器。",

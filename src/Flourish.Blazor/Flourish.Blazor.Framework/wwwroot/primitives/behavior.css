@@ -326,7 +326,7 @@
 .search-autocomplete-option,
 .search-autocomplete-empty {
     display: flex;
-    min-height: 44px;
+    min-height: 40px;
     align-items: center;
 }
 
@@ -385,7 +385,7 @@
     min-width: 0;
 }
 .selection-dropdown-surface :is(.selection-option, .selection-create) {
-    min-height: 44px;
+    min-height: 40px;
     min-width: 0;
     overflow-wrap: anywhere;
 }

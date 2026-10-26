@@ -345,8 +345,8 @@ function measuredSelect(env, labels = ['English', 'Português (Brasil)', '简体
         const option = env.adopt(new Element('option'), select);
         option.value = text; option.label = text;
         option.computedTheme = { 'font-family': 'Example Sans', 'font-size': '17px', 'letter-spacing': '.25px',
-            'padding-left': '10px', 'padding-right': '10px', 'column-gap': '12px', 'grid-template-columns': '48px minmax(0px, 1fr)' };
-        option.pseudoTheme = { '::checkmark': { 'box-sizing': 'border-box', 'width': '48px', 'height': '48px',
+            'padding-left': '10px', 'padding-right': '10px', 'column-gap': '10px', 'grid-template-columns': '28px minmax(0px, 1fr)' };
+        option.pseudoTheme = { '::checkmark': { 'box-sizing': 'border-box', 'width': '28px', 'height': '28px',
             'border-left-width': '1px', 'border-right-width': '1px', 'border-left-style': 'solid', 'border-right-style': 'solid' } };
         option.nodes = [new PickerText(text)];
     }
@@ -361,9 +361,9 @@ test('native picker settles one rounded intrinsic width before the opening defau
         assert.equal(probe.style.getPropertyValue('border-left-width'), '1px');
         assert.equal(probe.children.length, 3);
         const row = probe.children[1], [marker, label] = row.children;
-        assert.equal(row.style.display, 'grid'); assert.equal(row.style.gridTemplateColumns, '48px max-content');
-        assert.equal(row.style.getPropertyValue('letter-spacing'), '.25px'); assert.equal(row.style.getPropertyValue('column-gap'), '12px');
-        assert.equal(marker.style.getPropertyValue('width'), '48px'); assert.equal(marker.style.getPropertyValue('height'), '48px');
+        assert.equal(row.style.display, 'grid'); assert.equal(row.style.gridTemplateColumns, '28px max-content');
+        assert.equal(row.style.getPropertyValue('letter-spacing'), '.25px'); assert.equal(row.style.getPropertyValue('column-gap'), '10px');
+        assert.equal(marker.style.getPropertyValue('width'), '28px'); assert.equal(marker.style.getPropertyValue('height'), '28px');
         assert.equal(label.childNodes[0].textContent, 'Português (Brasil)');
         assert.equal(select.value, 'selected-native-value'); assert.equal(select.getAttribute('data-f-popup-align'), 'right');
     };
@@ -375,6 +375,26 @@ test('native picker settles one rounded intrinsic width before the opening defau
     assert.equal(env.document.body.children.length, 0);
     assert.equal(select.children.length, 3); assert.equal(select.value, 'selected-native-value');
 }));
+test('native measurement respects changed choice sizes on every opening without changing selection', () => run(env => {
+    const select = measuredSelect(env); api.initializeNativePickers(env.document);
+    for (const size of ['28px', '36px', '48px']) {
+        for (const option of select.children) {
+            option.computedTheme['grid-template-columns'] = size + ' minmax(0px, 1fr)';
+            option.pseudoTheme['::checkmark'].width = size; option.pseudoTheme['::checkmark'].height = size;
+        }
+        env.document.inspectProbe = probe => {
+            for (const row of probe.children) {
+                assert.equal(row.style.gridTemplateColumns, size + ' max-content');
+                assert.equal(row.children[0].style.getPropertyValue('width'), size);
+                assert.equal(row.children[0].style.getPropertyValue('height'), size);
+            }
+        };
+        env.document.emit('pointerdown', select);
+        assert.equal(select.value, 'selected-native-value'); assert.equal(select.children.length, 3);
+        assert.equal(env.document.body.children.length, 0);
+    }
+}));
+
 test('native discovery does not remeasure its own removed probes but every new opening remeasures changed labels and fonts', () => run(env => {
     const select = measuredSelect(env); api.initializeNativePickers(env.document);
     api.initializeNativePickers(env.document); api.initializeNativePickers(select);

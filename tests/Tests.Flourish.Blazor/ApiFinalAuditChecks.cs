@@ -62,6 +62,49 @@ internal static class ApiFinalAuditChecks
                 });
             }
         }));
+        tests.Add(("Notice always renders a localized severity title and keeps inline body content together", async () =>
+        {
+            foreach (var severity in Enum.GetValues<ArkheideSystem.Flourish.Abstract.NotificationSeverity>())
+            {
+                await using var fixture = new Fixture();
+                var output = await fixture.Render<Notice>(new()
+                {
+                    [nameof(Notice.Severity)] = severity, [nameof(Notice.Subtle)] = true,
+                    [nameof(Notice.ChildContent)] = (RenderFragment)(builder =>
+                    {
+                        builder.AddContent(0, "Retry in "); builder.OpenElement(1, "span");
+                        builder.AddContent(2, "3"); builder.CloseElement(); builder.AddContent(3, " seconds.");
+                    })
+                });
+                await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+                {
+                    var html = output.ToHtmlString();
+                    Require(html.Contains($"f-notice-{severity.ToString().ToLowerInvariant()} f-notice-subtle", StringComparison.Ordinal),
+                        "Subtle styling lost its semantic severity.");
+                    Require(html.Contains($"<strong class=\"f-notice-title\">en-US:Flourish/Notice_{severity}</strong>", StringComparison.Ordinal),
+                        "An omitted title did not use the localized severity label: " + html);
+                    Require(html.Contains("<div class=\"f-notice-body\">Retry in <span>3</span> seconds.</div>", StringComparison.Ordinal),
+                        "Inline body fragments became separate grid children: " + html);
+                    fixture.Provider.Select("zh-CN");
+                });
+                await fixture.Renderer.Dispatcher.InvokeAsync(() => Require(output.ToHtmlString().Contains($"zh-CN:Flourish/Notice_{severity}", StringComparison.Ordinal),
+                    "The default notice title did not follow culture changes."));
+            }
+        }));
+        tests.Add(("Notice preserves an explicit escaped summary and gives empty titles a default", async () =>
+        {
+            foreach (var title in new[] { "Create <organization>", "", "  " })
+            {
+                await using var fixture = new Fixture();
+                var output = await fixture.Render<Notice>(new() { [nameof(Notice.Title)] = title });
+                await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+                {
+                    var expected = string.IsNullOrWhiteSpace(title) ? "en-US:Flourish/Notice_Information" : "Create &lt;organization&gt;";
+                    Require(output.ToHtmlString().Contains($"<strong class=\"f-notice-title\">{expected}</strong>", StringComparison.Ordinal),
+                        "A notice lost its explicit summary, escaping or default title.");
+                });
+            }
+        }));
         tests.Add(("Notice explicit role is authoritative and subtle warnings keep informational announcement", async () =>
         {
             await using var fixture = new Fixture();

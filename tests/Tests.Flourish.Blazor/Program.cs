@@ -455,6 +455,12 @@ AsyncTest("fragment buttons remain on their current document under a root base h
 });
 AsyncTest("page heading parent navigation uses the standard underline button above the title", async () => {
     var html = await Render<PageHeading>(new() { ["Title"] = "Draft", ["ParentLabel"] = "Records", ["ParentHref"] = "/records" });
+    Check(TagsWithClass(html, "f-heading-loading").Count == 1 && !html.Contains("data-heading-loading=\"true\""), "The heading needs a dormant progress target without requesting loading.");
+    var loading = await Render<PageHeading>(new() { ["Title"] = "Draft", ["Loading"] = true, ["Compact"] = true });
+    Check(loading.Contains("data-heading-loading=\"true\"") && loading.Contains("data-heading-mode=\"compact\""), "Direct progress must remain available on compact headings.");
+    var indicator = TagsWithClass(loading, "f-heading-loading").Single();
+    Check(AttributeValue(indicator, "role") == "progressbar" && !string.IsNullOrWhiteSpace(AttributeValue(indicator, "aria-label")), "Direct heading progress needs an accessible name and indeterminate progress semantics.");
+    Check(!loading.Contains("data-f-loading") && !loading.Contains("aria-busy"), "A heading must not feed its own automatic loading detection.");
     var parent = TagsWithClass(html, "f-button-underline").Single();
     Equal("/records", AttributeValue(parent, "href"));
     Equal(1, TagsWithClass(html, "f-icon").Count);
@@ -800,6 +806,15 @@ AsyncTest("shell brand and start slots render without host-owned layout markup",
 AsyncTest("unknown progress stays indeterminate while actual values expose progress semantics", async () => {
     var unknown = await Render<ProgressBar>(new() { ["StatusText"] = "Waiting for server" });
     Check(unknown.Contains("role=\"progressbar\"") && unknown.Contains("f-progress-indeterminate") && !unknown.Contains("aria-valuenow") && !unknown.Contains("0%"), "Unknown progress fabricated a zero value.");
+    Equal("true", AttributeValue(TagsWithClass(unknown, "f-progress").Single(), "data-f-loading"));
+    foreach (var value in new[] { 0d, 37.5d, 100d }) {
+        var bar = await Render<ProgressBar>(new() { ["Value"] = value, ["StatusText"] = "Actual stage" });
+        var tag = TagsWithClass(bar, "f-progress").Single();
+        Equal(value < 100 ? "true" : "false", AttributeValue(tag, "data-f-loading"));
+        Equal(value.ToString("0.##", CultureInfo.InvariantCulture), AttributeValue(tag, "aria-valuenow"));
+        Equal("Actual stage", AttributeValue(tag, "aria-valuetext"));
+        Check(!bar.Contains("f-progress-indeterminate"), "A determinate bar acquired the indeterminate animation.");
+    }
     var actual = await Render<ProgressRing>(new() { ["Value"] = 37.5d, ["StatusText"] = "Preparing", ["Stopped"] = true });
     Check(actual.Contains("aria-valuenow=\"37.5\"") && actual.Contains("aria-valuetext=\"Preparing\"") && actual.Contains("f-progress-stopped"), "Actual progress or its stopped state was lost.");
     foreach (var value in new[] { -1d, 101d, double.NaN, double.PositiveInfinity }) {
@@ -866,6 +881,15 @@ ApiFinalAuditChecks.Register(tests);
 InteropFinalAuditChecks.Register(tests);
 AccessExampleChecks.Register(tests);
 ArkheideSystem.Tests.Flourish.Blazor.ComponentInventoryChecks.Register(tests);
+AsyncTest("progress ring and loading state expose active sources without treating completion as work", async () => {
+    foreach (var (value, stopped, active) in new (double?, bool, bool)[] { (null, false, true), (0d, false, true), (37.5d, false, true), (100d, false, false), (null, true, false), (37.5d, true, false) }) {
+        var ring = await Render<ProgressRing>(new() { ["Value"] = value, ["Stopped"] = stopped });
+        Check(AttributeValue(TagsWithClass(ring, "f-progress-ring").Single(), "data-f-loading") == (active ? "true" : "false"), "Stopped or complete ring must not keep a heading loading.");
+    }
+    var state = await Render<LoadingState>(new() { ["AdditionalAttributes"] = new Dictionary<string, object> { ["hidden"] = true } });
+    var source = TagsWithClass(state, "f-loading").Single();
+    Check(AttributeValue(source, "data-f-loading") == "true" && Regex.IsMatch(source, @"\bhidden(?:\s|=|>)"), "A dormant LoadingState must keep both its source identity and native hidden guard.");
+});
 Test("catalog covers component parameters and constructor defaults", ArkheideSystem.Tests.Flourish.Blazor.CatalogChecks.Run);
 
 var passed = 0;

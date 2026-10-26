@@ -33,7 +33,7 @@ function compound(selector, element) {
       for (; end < selector.length && depth; end++) { if (selector[end] === "(") depth++; if (selector[end] === ")") depth--; }
       const argument = selector.slice(match[0].length, end - 1), name = match[1];
       if (["is", "not", "where"].includes(name)) {
-        const choices = arms(argument).map(arm => compound(arm, element));
+        const choices = arms(argument).map(arm => complex(arm, element));
         specificity = add(specificity, name === "where" ? [0, 0, 0] : maximum(choices.map(choice => choice.specificity)));
         matches &&= name === "not" ? choices.every(choice => !choice.matches) : choices.some(choice => choice.matches);
       } else if (name === "has") {
@@ -127,7 +127,7 @@ test("native picker and service menus share canonical surface and option roles w
   const menu = styleRules.find(rule => rule.selectors.includes(".service-menu-view"));
   for (const property of ["padding", "border", "border-radius", "color", "background", "box-shadow", "--f-target-preview", "--f-target-click"]) assert.equal(picker.declarations.get(property), menu.declarations.get(property), property);
   const option = styleRules.find(rule => rule.selectors.includes(".f-select option") && rule.declarations.has("border-radius"));
-  for (const [property, expected] of [["border-radius", "10px"], ["background", "transparent"], ["color", "var(--f-text)"]]) assert.equal(option.declarations.get(property), expected);
+  for (const [property, expected] of [["border-radius", "12px"], ["background", "transparent"], ["color", "var(--f-text)"]]) assert.equal(option.declarations.get(property), expected);
   assert.doesNotMatch(css, /option:checked[^{}]*\{[^{}]*(?:disabled|opacity\s*:|cursor\s*:\s*not-allowed)/);
   const navigation = await read(design + "patterns/navigation-surface.css");
   for (const rule of rules(navigation)) for (const selector of rule.selectors.filter(value => /select.*(?:::picker|option|optgroup)/.test(value))) assert.match(selector, /select:not\(\.f-select\)/);
@@ -136,8 +136,8 @@ test("native picker and service menus share canonical surface and option roles w
 async function expandCss(path) {
   const css = await readFile(path, "utf8");
   let result = "", offset = 0;
-  for (const match of css.matchAll(/@import\s+url\(['"]([^'"]+)['"]\)\s*;/g)) {
-    result += css.slice(offset, match.index) + await expandCss(resolve(dirname(path), match[1]));
+  for (const match of css.matchAll(/@import\s+(?:url\(['"]([^'"]+)['"]\)|['"]([^'"]+)['"])\s*;/g)) {
+    result += css.slice(offset, match.index) + await expandCss(resolve(dirname(path), match[1] ?? match[2]));
     offset = match.index + match[0].length;
   }
   return result + css.slice(offset);
@@ -167,6 +167,49 @@ function popupFixture(kind, alignment) {
   }
   return { rootElement, panel, item };
 }
+test("unframed column menus keep closed, native-open and enhanced visibility gates without a shared surface", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles = rules(css), { panel } = popupFixture("action", "right"), owner = panel.parent;
+    owner.attributes.set("data-f-native-menu", "");
+    panel.classes.add("f-menu-panel-unframed"); panel.classes.add("f-menu-panel-columns");
+    assert.equal(cascade(allStyles, panel, "display"), "none", "A configured grid must remain closed.");
+    assert.equal(cascade(allStyles, panel, "grid-template-columns"), "repeat(var(--f-menu-panel-columns),minmax(0,1fr))");
+    assert.equal(cascade(allStyles, panel, "gap"), "12px");
+    assert.equal(cascade(allStyles, panel, "max-width"), "calc(100vw - 24px)");
+    owner.attributes.set("open", "");
+    assert.equal(cascade(allStyles, panel, "display"), "grid", "Native SSR opening must show all configured columns.");
+    owner.attributes.delete("open"); owner.attributes.set("data-f-enhanced", "true"); panel.attributes.set("popover", "manual");
+    assert.equal(cascade(allStyles, panel, "display"), "none");
+    panel.states.add("popover-open");
+    assert.equal(cascade(allStyles, panel, "display"), "grid", "The interactive top layer retains grid layout.");
+    panel.states.delete("popover-open"); panel.attributes.set("data-f-open", "");
+    assert.equal(cascade(allStyles, panel, "display"), "grid");
+    panel.attributes.set("hidden", "");
+    assert.equal(cascade(allStyles, panel, "display"), "none", "Native hidden remains stronger than open grid state.");
+  }
+  const allStyles = rules(frameworkCss + "\n" + designCss), { panel } = popupFixture("action", "left");
+  panel.classes.add("f-menu-panel-unframed");
+  for (const [property, expected] of [["padding", "0"], ["border", "0"], ["border-radius", "0"], ["background", "transparent"], ["box-shadow", "none"], ["overflow", "auto"]])
+    assert.equal(cascade(allStyles, panel, property), expected, property);
+  const ordinary = popupFixture("action", "left").panel;
+  assert.equal(cascade(allStyles, ordinary, "padding"), "6px");
+  assert.equal(cascade(allStyles, ordinary, "background"), "var(--f-surface)");
+  assert.equal(cascade(allStyles, ordinary, "border-radius"), "16px");
+});
+
+test("direct accessible menu tiles retain standalone size, centering, rounding and individual elevation", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss), { panel } = popupFixture("action", "left");
+  panel.classes.add("f-menu-panel-columns"); panel.classes.add("f-menu-panel-unframed");
+  const tile = element("a", ["f-button", "f-button-primary", "f-menu-item", "f-dropdown-item", "f-uniform-cell", "f-uniform-grid-button", "f-uniform-variant-elevated"], panel, [], [["role", "menuitem"]]);
+  for (const [property, expected] of [["min-height", "110px"], ["padding", "16px"], ["border-radius", "var(--f-radius-control,12px)"], ["box-shadow", "var(--f-uniform-cell-shadow,var(--f-shadow-control))"], ["text-align", "center"], ["justify-content", "center"], ["width", "100%"]])
+    assert.equal(cascade(allStyles, tile, property), expected, property);
+  assert.equal(cascade(allStyles, tile, "max-height"), undefined, "Long tile labels can grow instead of inheriting a grouped grid cap.");
+  tile.states.add("focus-visible");
+  assert.equal(cascade(allStyles, tile, "outline"), "3px solid var(--f-accent)");
+  tile.attributes.set("aria-disabled", "true");
+  assert.equal(cascade(allStyles, tile, "cursor"), "not-allowed");
+});
+
 test("popup placement attributes do not define a competing text-alignment token", () => {
   assert.doesNotMatch(strip(frameworkCss + "\n" + designCss), /--f-popup-align/);
 });
@@ -244,14 +287,14 @@ test("native options reserve the same square choice column for every label and s
     const allStyles = rules(css);
     const owner = element("select", ["f-select", "f-select-customized"], null, [], [["data-f-popup-align", alignment]]);
     const option = element("option", [], owner);
-    for (const [property, expected] of [["width", "auto"], ["max-width", "none"], ["min-width", "0"], ["display", "grid"], ["grid-template-columns", "var(--f-control-height,48px) minmax(0,1fr)"], ["column-gap", "12px"], ["white-space", "normal"], ["overflow-wrap", "anywhere"]])
+    for (const [property, expected] of [["width", "auto"], ["max-width", "none"], ["min-width", "0"], ["display", "grid"], ["grid-template-columns", "var(--f-choice-size,28px) minmax(0,1fr)"], ["column-gap", "10px"], ["white-space", "normal"], ["overflow-wrap", "anywhere"]])
       assert.equal(cascade(allStyles, option, property), expected, alignment + "/" + property);
     assert.equal(cascade(allStyles, option, "padding-left"), undefined, "The marker column replaces extra padding rather than adding a second reservation.");
     assert.equal(cascade(allStyles, option, "text-align"), "left");
-    assert.equal(cascade(allStyles, option, "min-height"), "calc(var(--f-control-height,48px) + 16px)");
-    assert.equal(cascade(allStyles, option, "padding"), "8px 10px");
+    assert.equal(cascade(allStyles, option, "min-height"), "calc(var(--f-choice-size,28px) + 12px)");
+    assert.equal(cascade(allStyles, option, "padding"), "6px 10px");
     const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
-    for (const [property, expected] of [["box-sizing", "border-box"], ["display", "grid"], ["grid-column", "1"], ["grid-row", "1"], ["place-content", "center"], ["width", "var(--f-control-height,48px)"], ["height", "var(--f-control-height,48px)"], ["padding", "0"], ["margin", "0"], ["text-align", "center"], ["visibility", "visible"], ["content", '""']])
+    for (const [property, expected] of [["box-sizing", "border-box"], ["display", "grid"], ["grid-column", "1"], ["grid-row", "1"], ["place-content", "center"], ["width", "var(--f-choice-size,28px)"], ["height", "var(--f-choice-size,28px)"], ["padding", "0"], ["margin", "0"], ["text-align", "center"], ["visibility", "visible"], ["content", '""']])
       assert.equal(marker.get(property), expected, property);
     for (const property of ["position", "left", "top", "transform"]) assert.equal(marker.get(property), undefined, property + " must not remove the native marker from its grid column.");
     const selected = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
@@ -281,8 +324,8 @@ test("checkbox choice labels have separate marker and longest-label tracks in bo
     const checkbox = element("input", [], label, [], [["type", "checkbox"]]);
     const text = element("span", [], label);
     assert.equal(cascade(allStyles, label, "display"), "grid", kind);
-    assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-control-height,48px) minmax(0,1fr)");
-    assert.equal(cascade(allStyles, label, "column-gap"), "12px");
+    assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-choice-size,28px) minmax(0,1fr)");
+    assert.equal(cascade(allStyles, label, "column-gap"), "10px");
     assert.equal(cascade(allStyles, label, "justify-content"), "stretch");
     assert.equal(cascade(allStyles, label, "width"), "auto");
     assert.equal(cascade(allStyles, checkbox, "grid-column"), "1");
@@ -295,8 +338,45 @@ test("checkbox choice labels have separate marker and longest-label tracks in bo
     for (const selected of [false, true]) {
       checkbox.states = new Set(selected ? ["checked"] : []);
       assert.equal(cascade(allStyles, checkbox, "grid-column"), "1", kind + "/" + selected);
-      assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-control-height,48px) minmax(0,1fr)");
+      assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-choice-size,28px) minmax(0,1fr)");
     }
+  }
+});
+
+test("compact choice markers are independent of form heights while labelled checkboxes retain their hit area", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss), surface = element("div", ["f-root"], null);
+  assert.equal(cascade(allStyles, surface, "--f-choice-size"), "28px");
+  assert.equal(cascade(allStyles, surface, "--f-choice-radius"), "9px");
+  assert.equal(cascade(allStyles, surface, "--f-control-height"), "48px");
+  const label = element("label", ["f-checkbox-label"], surface), checkbox = element("input", ["f-checkbox"], label);
+  assert.equal(cascade(allStyles, label, "min-height"), "var(--f-control-height,48px)");
+  for (const property of ["width", "height"]) assert.equal(cascade(allStyles, checkbox, property), "var(--f-choice-size,28px)");
+  assert.equal(cascade(allStyles, checkbox, "border-radius"), "var(--f-choice-radius,9px)");
+  const nativeLabel = element("label", ["form-check"], surface), nativeCheckbox = element("input", [], nativeLabel, [], [["type", "checkbox"]]);
+  for (const property of ["width", "height"]) assert.equal(cascade(allStyles, nativeCheckbox, property), "var(--f-choice-size,28px)");
+  assert.equal(cascade(allStyles, nativeCheckbox, "border-radius"), "var(--f-choice-radius,9px)");
+  assert.equal(cascade(allStyles, nativeLabel, "min-height"), "var(--f-control-height)");
+  const field = element("input", ["f-input"], surface), button = element("button", ["f-button", "f-button-primary"], surface);
+  assert.equal(cascade(allStyles, field, "height"), "var(--f-control-height,48px)");
+  assert.equal(cascade(allStyles, button, "min-height"), "48px");
+  checkbox.states.add("disabled");
+  assert.equal(cascade(allStyles, checkbox, "cursor"), "not-allowed");
+  checkbox.states.add("focus-visible");
+  assert.equal(cascade(allStyles, checkbox, "outline"), "3px solid var(--f-accent)");
+  checkbox.attributes.set("required", ""); checkbox.attributes.set("aria-invalid", "true");
+  assert.equal(cascade(allStyles, checkbox, "border-color"), "var(--f-danger)");
+});
+
+test("compact popup rows retain wrapping and intrinsic growth across text, checkbox and action choices", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  for (const kind of ["service", "action", "multi", "reference", "search"]) for (const alignment of ["left", "right"]) {
+    const { item } = popupFixture(kind, alignment);
+    assert.equal(cascade(allStyles, item, "min-height"), "40px", kind);
+    assert.equal(cascade(allStyles, item, "padding"), "6px 10px", kind);
+    assert.equal(cascade(allStyles, item, "border-radius"), "12px", kind);
+    for (const property of ["height", "max-height"]) assert.equal(cascade(allStyles, item, property), undefined, kind + " must grow for multiline labels.");
+    assert.notEqual(cascade(allStyles, item, "white-space"), "nowrap", kind);
+    assert.equal(cascade(allStyles, item, "overflow-wrap"), "anywhere", kind);
   }
 });
 

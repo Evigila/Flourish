@@ -99,7 +99,8 @@ public sealed class NotificationServiceTests
     [Fact]
     public async Task Upsert_ReplacesExpirationTimer()
     {
-        using var sut = CreateService();
+        var clock = new ControlledTimeProvider();
+        using var sut = new NotificationService(NullLogger<NotificationService>.Instance, clock);
         var expired = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously
         );
@@ -118,7 +119,7 @@ public sealed class NotificationServiceTests
                 Duration: TimeSpan.FromMilliseconds(80)
             )
         );
-        await Task.Delay(30);
+        clock.Advance(TimeSpan.FromMilliseconds(30));
         sut.Upsert(
             new Notification(
                 "timed",
@@ -128,10 +129,12 @@ public sealed class NotificationServiceTests
             )
         );
 
-        await Task.Delay(100);
+        Assert.Equal(1, clock.ActiveTimers);
+        clock.Advance(TimeSpan.FromMilliseconds(100));
         Assert.Single(sut.Current.Notifications);
         Assert.Equal("Replacement", sut.Current.Notifications[0].Notification.Message);
 
+        clock.Advance(TimeSpan.FromMilliseconds(120));
         await expired.Task.WaitAsync(TimeSpan.FromSeconds(2));
         Assert.Empty(sut.Current.Notifications);
         Assert.Equal(3, sut.Current.Version);
@@ -295,4 +298,46 @@ public sealed class NotificationServiceTests
 
     private static NotificationService CreateService() =>
         new(NullLogger<NotificationService>.Instance);
+
+    private sealed class ControlledTimeProvider : TimeProvider
+    {
+        private readonly List<ControlledTimer> timers = [];
+        private TimeSpan elapsed;
+        public int ActiveTimers => timers.Count(timer => timer.Due is not null);
+        public override DateTimeOffset GetUtcNow() => DateTimeOffset.UnixEpoch + elapsed;
+        public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
+        {
+            var timer = new ControlledTimer(this, callback, state);
+            timers.Add(timer);
+            timer.Change(dueTime, period);
+            return timer;
+        }
+
+        public void Advance(TimeSpan duration)
+        {
+            elapsed += duration;
+            foreach (var timer in timers.ToArray())
+                if (timer.Due is { } due && due <= elapsed) timer.Fire();
+        }
+
+        private sealed class ControlledTimer(ControlledTimeProvider owner, TimerCallback callback, object? state) : ITimer
+        {
+            private bool disposed;
+            public TimeSpan? Due { get; private set; }
+            public bool Change(TimeSpan dueTime, TimeSpan period)
+            {
+                if (disposed) return false;
+                Assert.Equal(Timeout.InfiniteTimeSpan, period);
+                Due = dueTime == Timeout.InfiniteTimeSpan ? null : owner.elapsed + dueTime;
+                return true;
+            }
+            public void Fire()
+            {
+                Due = null;
+                callback(state);
+            }
+            public void Dispose() { disposed = true; Due = null; }
+            public ValueTask DisposeAsync() { Dispose(); return ValueTask.CompletedTask; }
+        }
+    }
 }

@@ -4,6 +4,7 @@ import { dirname, extname, join, relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import "./page-body-actions.test.mjs";
+import "./progress-rendering.test.mjs";
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(testDirectory, "../..");
@@ -285,18 +286,18 @@ const light = {
   "--f-accent": "var(--f-accent-light)",
   "--f-canvas": "#F3F5F5",
   "--f-surface": "var(--f-surface-light)",
-  "--f-text": "#112924",
+  "--f-text": "var(--f-text-light)",
   "--f-muted": "#4F645D",
   "--f-display-board": "#E5E8EB",
   "--f-preview-light": "#C9DFDA",
   "--f-preview-dark": "#2F5049",
   "--f-border": "#9FAEA9",
-  "--f-danger": "#9D322D",
+  "--f-danger": "var(--f-danger-light)",
   "--f-preview-danger": "#7E2824",
   "--f-click-danger": "#712420",
   "--f-click-light": "#B5C9C4",
   "--f-click-dark": "#2A4842",
-  "--f-info-text": "#1565C0",
+  "--f-info-text": "var(--f-info-text-light)",
   "--f-warning-background": "#F2A33A",
 };
 
@@ -327,7 +328,7 @@ const approvedLiterals = new Set([
   "#B8C9BF", "#31483B", "#D5E5DE", "#395A48", "#526F60",
   "#9D322D", "#FFB4AB", "#B5C9C4", "#C0CEC8", "#2A4842", "#335141",
   "#1565C0", "#8CB8FF", "#F2A33A", "#E5A047",
-  "#7E2824", "#712420", "#8C3430", "#7E2F2B",
+  "#7E2824", "#712420", "#8C3430", "#7E2F2B", "#B45309",
 ]);
 
 async function filesUnder(root, extensions) {
@@ -730,39 +731,113 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   assert.equal(property(gridPress.body, "background"), "var(--f-uniform-cell-click,var(--f-target-click))");
 });
 
-test("Notice has one semantic foreground and background contract without retired status aliases", async () => {
-  const source = await readFile(join(designCssRoot, "controls.css"), "utf8");
+test("Notice uses one four-severity title/body palette and no alternate subtle skin", async () => {
+  const source = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
   const mappings = [
-    ["information", "info-text", "surface"],
-    ["success", "surface", "primary"],
-    ["warning", "warning-ink", "warning-background"],
-    ["error", "surface", "danger"],
-    ["subtle", "muted", "display-board"],
+    ["information", "text-light", "surface-light", "info-text-light"],
+    ["success", "surface-light", "success-background", "surface-light"],
+    ["warning", "surface-light", "warning-strong", "surface-light"],
+    ["error", "surface-light", "danger-light", "surface-light"],
   ];
-  for (const [severity, foreground, background] of mappings) {
+  for (const [severity, foreground, background, title] of mappings) {
     const semantic = matchingRule(source, `${severity} semantic mapping`, rule => rule.selector === `.f-notice-${severity}`);
     assert.equal(semantic.declarations.get("--f-notice-text"), `var(--f-${foreground})`);
     assert.equal(semantic.declarations.get("--f-notice-background"), `var(--f-${background})`);
+    assert.equal(semantic.declarations.get("--f-notice-title"), `var(--f-${title})`);
   }
   const notice = matchingRule(source, "Notice base", rule => rule.selector === ".f-notice");
-  assert.equal(property(notice.body, "color"), "var(--f-notice-text,var(--f-info-text))");
-  assert.equal(property(notice.body, "background"), "var(--f-notice-background,var(--f-surface))");
-  assert.ok(!notice.declarations.has("--f-notice-text") && !notice.declarations.has("--f-notice-background"),
-    "The Notice base overrides its explicit severity mapping.");
+  assert.equal(property(notice.body, "color"), "var(--f-notice-text,var(--f-text-light))");
+  assert.equal(property(notice.body, "background"), "var(--f-notice-background,var(--f-surface-light))");
+  assert.equal(property(notice.body, "font"), '400 var(--f-body-size,17px)/1.55 var(--f-font,"Segoe UI",sans-serif)');
+  assert.equal(property(notice.body, "box-shadow"), "var(--f-shadow-control)");
+  assert.equal(property(notice.body, "color-scheme"), "light");
+  assert.equal(property(notice.body, "grid-template-columns"), "minmax(0,1fr)");
+  assert.ok(!notice.declarations.has("--f-notice-text") && !notice.declarations.has("--f-notice-background")
+    && !notice.declarations.has("--f-notice-title"), "The Notice base overrides explicit severity mappings.");
+  const title = matchingRule(source, "Notice title", rule => rule.selector === ".f-notice-title");
+  assert.equal(property(title.body, "display"), "block");
+  assert.equal(property(title.body, "grid-column"), "1/-1");
+  assert.equal(property(title.body, "font-size"), "inherit");
+  assert.equal(property(title.body, "font-weight"), "700");
+  assert.equal(property(title.body, "color"), "var(--f-notice-title,var(--f-info-text-light))");
+  const body = matchingRule(source, "Notice body", rule => rule.selector === ".f-notice-body");
+  assert.equal(property(body.body, "font-size"), "inherit");
+  assert.equal(property(body.body, "font-weight"), "400");
+  assert.equal(property(body.body, "color"), "inherit");
+
   const files = await filesUnder(designCssRoot, new Set([".css"]));
   for (const path of files) {
-    const css = await readFile(path, "utf8");
+    const css = withoutComments(await readFile(path, "utf8"));
+    assert.doesNotMatch(css, /--f-notice-subtle-(?:background|foreground)/,
+      `${relative(repositoryRoot, path)} retains unused alternate Notice paints.`);
     for (const rule of rules(css)) {
-      for (const selector of selectorArms(rule.selector))
+      for (const selector of selectorArms(rule.selector)) {
         assert.doesNotMatch(selector, /^\.notice-(?:info|success|warning|error|subtle)(?![\w-])/,
           `${relative(repositoryRoot, path)} keeps a retired StatusNotice selector.`);
-    }
-    if (path === join(designCssRoot, "controls.css")) continue;
-    for (const rule of rules(css)) {
-      if (/\.f-notice-(?:information|success|warning|error|subtle)\b/.test(rule.selector)) {
+        assert.doesNotMatch(selector, /\.f-notice-subtle\b/,
+          `${relative(repositoryRoot, path)} reintroduces a gray or separately themed Notice skin.`);
+      }
+      if (path !== join(designCssRoot, "controls.css") && /\.f-notice-(?:information|success|warning|error)\b/.test(rule.selector)) {
         assert.ok(!property(rule.body, "color") && !property(rule.body, "background")
-          && !rule.declarations.has("--f-notice-text") && !rule.declarations.has("--f-notice-background"),
-          `${relative(repositoryRoot, path)} overrides the shared semantic Notice colors.`);
+          && !rule.declarations.has("--f-notice-text") && !rule.declarations.has("--f-notice-background")
+          && !rule.declarations.has("--f-notice-title"),
+          `${relative(repositoryRoot, path)} overrides shared semantic Notice colors.`);
+      }
+    }
+  }
+});
+
+test("Notice title and body retain their status colors and readable contrast across theme, system, brand and subtle states", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const controls = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
+  const styles = rules(controls), seeds = declarations(blockFor(foundation, ":root, .f-root"));
+  const darkMode = declarations(blockFor(foundation, ".f-root.f-theme-dark"));
+  const systemDarkMode = declarations(blockFor(foundation, ".f-root.f-theme-system"));
+  for (const [token, value] of [["surface-light", "#FFFFFF"], ["text-light", "#112924"], ["info-text-light", "#1565C0"],
+    ["danger-light", "#9D322D"], ["success-background", "#16745F"], ["warning-strong", "#B45309"]])
+    assert.equal(seeds.get(`--f-${token}`), value, `Incorrect fixed status role ${token}.`);
+  const expected = new Map([
+    ["information", ["#112924", "#FFFFFF", "#1565C0"]],
+    ["success", ["#FFFFFF", "#16745F", "#FFFFFF"]],
+    ["warning", ["#FFFFFF", "#B45309", "#FFFFFF"]],
+    ["error", ["#FFFFFF", "#9D322D", "#FFFFFF"]],
+  ]);
+  const luminance = hex => {
+    const channels = [1, 3, 5].map(offset => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255)
+      .map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
+    return channels[0] * .2126 + channels[1] * .7152 + channels[2] * .0722;
+  };
+  for (const [mode, overrides] of [["Light", new Map()], ["Dark", darkMode], ["System light", new Map()], ["System dark", systemDarkMode]]) {
+    for (const [brand, brandSeeds] of [["Default", new Map()], ["Blue", new Map([
+      ["--f-primary-light", "#153A61"], ["--f-accent-light", "#1D5B96"],
+      ["--f-primary-dark", "#BCD4ED"], ["--f-accent-dark", "#8CB8E5"],
+    ])]]) {
+      const inherited = new Map([...seeds, ...overrides, ...brandSeeds]);
+      for (const [severity, paints] of expected) for (const subtle of [false, true]) {
+        const element = { tag:"div", classes:new Set(["f-notice", `f-notice-${severity}`, ...(subtle ? ["f-notice-subtle"] : [])]),
+          states:new Set(), attributes:new Map() };
+        const roles = new Map(inherited);
+        for (const name of ["--f-notice-text", "--f-notice-background", "--f-notice-title"])
+          roles.set(name, buttonCascade(styles, element, name));
+        const resolvePaint = (input, visited = new Set()) => {
+          const variable = /^var\((--[\w-]+)(?:,(.*))?\)$/.exec(input);
+          if (!variable) { assert.match(input, /^#[0-9A-F]{6}$/i, `Unresolved Notice paint ${input}.`); return input.toUpperCase(); }
+          assert.ok(!visited.has(variable[1]), `Circular Notice paint ${variable[1]}.`);
+          visited.add(variable[1]);
+          return resolvePaint(roles.get(variable[1]) ?? variable[2], visited);
+        };
+        const foreground = resolvePaint(buttonCascade(styles, element, "color"));
+        const background = resolvePaint(buttonCascade(styles, element, "background"));
+        const titleElement = { ...element, tag:"strong", classes:new Set(["f-notice-title"]) };
+        const title = resolvePaint(buttonCascade(styles, titleElement, "color"));
+        const context = `${mode}/${brand}/${severity}/subtle=${subtle}`;
+        assert.deepEqual([foreground, background, title], paints, `${context} lost its semantic status palette.`);
+        assert.equal(buttonCascade(styles, element, "box-shadow"), "var(--f-shadow-control)", `${context} lost elevation.`);
+        for (const [part, ink] of [["body", foreground], ["title", title]]) {
+          const values = [luminance(ink), luminance(background)];
+          const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
+          assert.ok(ratio >= 4.5, `${context}/${part}: ${ratio.toFixed(2)}:1`);
+        }
       }
     }
   }
@@ -907,5 +982,75 @@ test("Sidebar preserves every standard Button variant and Primary labels stay re
         const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
         assert.ok(ratio >= 4.5, `${mode} selected Primary [${states}] label: ${ratio.toFixed(2)}:1`);
       }
+  }
+});
+
+
+test("Field label hover bridge spans the shared gap without altering measured label bounds", async () => {
+  const css = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
+  const field = matchingRule(css, "Field geometry", rule => selectorArms(rule.selector).includes(".f-field"));
+  assert.equal(property(field.body, "gap"), "var(--f-field-label-gap,7px)");
+  const anchor = matchingRule(css, "Direct Field label anchor", rule => rule.selector === ".f-field > .f-field-label");
+  assert.equal(property(anchor.body, "position"), "relative");
+  const bridge = matchingRule(css, "Direct Field label gap bridge", rule => rule.selector === ".f-field > .f-field-label::before");
+  for (const [name, value] of Object.entries({
+    content:'""', position:"absolute", "inset-inline":"0", "inset-block-start":"100%",
+    "block-size":"var(--f-field-label-gap,7px)", "pointer-events":"auto"
+  })) assert.equal(property(bridge.body, name), value, `The label gap bridge changed ${name}.`);
+  assert.deepEqual(bridge.body.split(";").filter(part => part.trim()).map(part => part.split(":", 1)[0].trim()).sort(),
+    ["content", "position", "inset-inline", "inset-block-start", "block-size", "pointer-events"].sort(),
+    "The passive label hit bridge must not add paint, layout or hover state.");
+
+  // Label height is measured by access-form action spacing. Only an out-of-flow
+  // pseudo-element may cover the gap; padding or margins would change that measurement.
+  for (const rule of rules(css)) {
+    if (!selectorArms(rule.selector).some(selector => selector.includes(".f-field-label") && !selector.includes("::"))) continue;
+    for (const name of ["padding", "padding-block", "padding-block-start", "padding-block-end", "padding-top", "padding-bottom",
+      "margin", "margin-block", "margin-block-start", "margin-block-end", "margin-top", "margin-bottom", "height", "block-size", "transform"])
+      assert.equal(property(rule.body, name), undefined, `Label measurement changed through ${rule.selector}: ${name}.`);
+  }
+  assert.doesNotMatch(css, /\.f-field\s*:hover|\.f-field:hover|\.f-field:has\([^)]*\.f-field-(?:actions|errors)/,
+    "Broad field hover would make action or validation regions highlight the paired input.");
+  assert.doesNotMatch(bridge.selector, /:hover|:active|:focus|actions|errors|input|disabled/,
+    "A transparent bridge must keep native control and disabled behavior authoritative.");
+});
+
+test("Field hover bridge has continuous derived hit geometry for default and custom gaps and excludes actions and errors", async () => {
+  const css = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const field = matchingRule(css, "Field gap", rule => selectorArms(rule.selector).includes(".f-field"));
+  const bridge = matchingRule(css, "Field bridge geometry", rule => rule.selector === ".f-field > .f-field-label::before");
+  const framework = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/framework.css"), "utf8"));
+  const actionsLabel = matchingRule(framework, "Action Field label column", rule => rule.selector === ".f-field-with-actions > .f-field-label");
+  assert.equal(property(actionsLabel.body, "grid-column"), "1");
+  assert.equal(property(actionsLabel.body, "grid-row"), "1");
+  const actions = matchingRule(framework, "Action Field adjacent actions", rule => rule.selector === ".f-field-with-actions > .f-field-actions" && property(rule.body, "grid-column") === "2");
+  assert.equal(property(actions.body, "grid-column"), "2");
+  assert.equal(property(actions.body, "grid-row"), "2");
+  const sharedGap = "var(--f-field-label-gap,7px)";
+  assert.equal(property(field.body, "gap"), sharedGap);
+  assert.equal(property(bridge.body, "block-size"), sharedGap);
+  assert.equal(property(bridge.body, "inset-block-start"), "100%");
+  assert.equal(property(bridge.body, "inset-inline"), "0");
+  assert.equal(property(bridge.body, "position"), "absolute");
+  const defaultGap = Number.parseFloat(declarations(blockFor(foundation, ":root, .f-root")).get("--f-field-label-gap"));
+  assert.equal(defaultGap, 7);
+  // This is derived hit geometry, not a browser DOM: the checked CSS properties
+  // put an out-of-flow label child exactly between label bottom and control top.
+  for (const gap of [defaultGap, 0, 3, 14, 32]) for (const width of [240, 176]) {
+    const label = { x:20, top:30, width, height:26.35 };
+    const measuredBefore = { ...label };
+    const labelBottom = label.top + label.height;
+    const control = { x:label.x, top:labelBottom + gap, width, height:48 };
+    const hitLabel = (x, y) => x >= label.x && x < label.x + label.width && y >= label.top && y < labelBottom + gap;
+    const hitInput = (x, y) => x >= control.x && x < control.x + control.width && y >= control.top && y < control.top + control.height;
+    const highlighted = (x, y) => hitLabel(x, y) || hitInput(x, y);
+    for (let y = label.top + .25; y < control.top + control.height; y += .25)
+      assert.ok(highlighted(label.x + 1, y), `Hover dropped inside a ${gap}px gap (${width}px label).`);
+    assert.deepEqual(label, measuredBefore, "The pseudo-element must not enlarge the label's measured rectangle.");
+    assert.equal(control.top, measuredBefore.top + measuredBefore.height + gap, "Input layout moved to build the bridge.");
+    assert.equal(highlighted(label.x + width + 6, control.top + 12), false, "The action-column gutter belongs outside the bridge.");
+    assert.equal(highlighted(label.x + width + 24, control.top + 12), false, "The adjacent action is not the label's control.");
+    assert.equal(highlighted(label.x + 1, control.top + control.height + 8), false, "Validation below the control must not extend hover.");
   }
 });

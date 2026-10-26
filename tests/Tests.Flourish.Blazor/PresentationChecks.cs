@@ -157,7 +157,7 @@ internal static class PresentationChecks
             var heading = Rule(layout, ".f-presentation-band-heading");
             Check(heading.Contains("align-items:flex-start", StringComparison.Ordinal) && heading.Contains("text-align:start", StringComparison.Ordinal), "Section headings use a centered host-specific default.");
             Check(Rule(design, ".f-presentation-band-heading :is(h1,h2,h3,h4,h5,h6)").Contains("font-size:var(--f-type-h2,28px)", StringComparison.Ordinal), "Band section titles do not use the standard H2 scale.");
-            Check(Rule(layout, ".f-document-surface .f-page-heading").Contains("position:static", StringComparison.Ordinal), "A website page title competes with its sticky top bar.");
+            Check(Rule(layout, ".f-document-surface .f-page-heading").Contains("position:relative", StringComparison.Ordinal), "A website page title competes with its sticky top bar.");
             var gutter = Rule(layout, ".f-document-surface .f-page-body.f-page-full > .f-page-heading");
             Check(gutter.Contains("var(--f-content-width,1180px)", StringComparison.Ordinal) && gutter.Contains("24px", StringComparison.Ordinal), "Full-width page titles drift away from the centered band track.");
             Check(Regex.IsMatch(layout, @"@media\(max-width:560px\)[\s\S]*?\.f-document-surface \.f-page-body\.f-page-full > \.f-page-heading\s*\{\s*padding-inline:18px"), "Small-screen title and content gutters differ.");

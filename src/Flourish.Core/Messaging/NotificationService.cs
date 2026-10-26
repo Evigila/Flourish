@@ -11,10 +11,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ArkheideSystem.Flourish.Messaging;
 
-internal sealed class NotificationService(ILogger<NotificationService> logger)
+internal sealed class NotificationService(ILogger<NotificationService> logger, TimeProvider? timeProvider = null)
     : INotificationService,
         IDisposable
 {
+    private readonly TimeProvider clock = timeProvider ?? TimeProvider.System;
     private readonly Lock gate = new();
     private readonly Dictionary<string, NotificationEntry> entries = new(StringComparer.Ordinal);
     private readonly Queue<NotificationState> pendingStates = new();
@@ -172,7 +173,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
         var cancellation = new CancellationTokenSource();
         var entry = new NotificationEntry(
             notification,
-            DateTimeOffset.UtcNow,
+            clock.GetUtcNow(),
             ++version,
             cancellation,
             lease
@@ -204,7 +205,7 @@ internal sealed class NotificationService(ILogger<NotificationService> logger)
     {
         try
         {
-            await Task.Delay(duration, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(duration, clock, cancellationToken).ConfigureAwait(false);
 
             NotificationEntry? removed = null;
             lock (gate)
