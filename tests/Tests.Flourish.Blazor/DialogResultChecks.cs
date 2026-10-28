@@ -12,6 +12,29 @@ internal static class DialogResultChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("DangerTitle decorates only the existing encoded accessible title in either dialog presentation", async () =>
+        {
+            foreach (var danger in new[] { false, true })
+            foreach (var presentation in Enum.GetValues<DialogPresentation>())
+            {
+                await using var fixture = new DialogFixture();
+                var output = await fixture.Render<Dialog>(new()
+                {
+                    [nameof(Dialog.Id)] = "semantic-dialog", [nameof(Dialog.Title)] = "Confirm <deletion>",
+                    [nameof(Dialog.DangerTitle)] = danger, [nameof(Dialog.Presentation)] = presentation,
+                    [nameof(Dialog.BrowserControlled)] = true
+                });
+                var html = await fixture.Read(output);
+                var title = System.Text.RegularExpressions.Regex.Match(html, "<h2\\b[^>]*>[^<]*</h2>").Value;
+                Require(title.Contains("id=\"semantic-dialog-title\"", StringComparison.Ordinal)
+                    && title.Contains("Confirm &lt;deletion&gt;", StringComparison.Ordinal)
+                    && title.Contains("f-dialog-title-danger", StringComparison.Ordinal) == danger,
+                    "The title lost encoding, identity or its optional semantic foreground.");
+                Require(html.Contains("aria-labelledby=\"semantic-dialog-title\"", StringComparison.Ordinal)
+                    && html.Contains("data-f-dialog-browser-controlled=\"true\"", StringComparison.Ordinal)
+                    && !fixture.Component<Dialog>().HasPendingResult, "Title paint changed modal ownership or result handling.");
+            }
+        }));
         tests.Add(("form grouping preserves native disable boundaries and production image and footer content", async () =>
         {
             using var services = Services(); using var scope = services.CreateScope();

@@ -3,7 +3,17 @@
 @typeparam TValue
 @inherits TextInputBase<TValue>
 
-<select @attributes="AdditionalAttributes" name="@NameAttributeValue" id="@(Id ?? Field?.Id)" class="f-input f-select@(CustomizedTrigger ? " f-select-customized" : null) @CssClass" value="@CurrentValueAsString"
+@if (OpenOnHover)
+{
+    @Internal.NativeSelectPopup.Render(NativeControl, PopupLabel, Icon, TriggerVariant, Strength, Disabled, PopupStyle)
+}
+else
+{
+    @NativeControl
+}
+
+@code {
+    private RenderFragment NativeControl => @<select @attributes="AdditionalAttributes" name="@NameAttributeValue" id="@(Id ?? Field?.Id)" class="f-input f-select@(CustomizedTrigger ? " f-select-customized" : null) @CssClass" value="@CurrentValueAsString"
         disabled="@Disabled" required="@InputSemantics.Required(Field, AdditionalAttributes)" aria-invalid="@InputSemantics.Invalid(EditContext, FieldIdentifier, Field, AdditionalAttributes)" aria-describedby="@Description" @onchange="Change">
     @if (CustomizedTrigger)
     {
@@ -20,9 +30,8 @@
             <option value="@Internal.SelectValueConversion.Format(option.Value, Texts.FormatCulture)" disabled="@option.Disabled">@option.Text</option>
         }
     }
-</select>
+</select>;
 
-@code {
     [CascadingParameter] private FieldContext? Field { get; set; }
     private string? Description => InputSemantics.Description(Field, AdditionalAttributes);
     [Parameter] public string? Id { get; set; }
@@ -31,6 +40,12 @@
     [Parameter] public string? Icon { get; set; }
     /// <summary>Uses a standard button appearance for the native select trigger; unsupported browsers retain the text selector.</summary>
     [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    /// <summary>Uses the shared menu controller on mouse hover, preserving the native select as the form and change-event carrier. Defaults to the ordinary native picker.</summary>
+    [Parameter] public bool OpenOnHover { get; set; }
+    /// <summary>Controls the opt-in shared menu; the default native picker retains browser dismissal behavior.</summary>
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
+    private string? PopupLabel => AdditionalAttributes?.TryGetValue("aria-label", out var value) == true ? value?.ToString() : null;
+    private string? PopupStyle => AdditionalAttributes?.TryGetValue("style", out var value) == true ? value?.ToString() : null;
     private bool CustomizedTrigger => !string.IsNullOrWhiteSpace(Icon) || TriggerVariant is not null;
     private string TriggerClass => $"f-select-trigger {(TriggerVariant is { } variant ? $"f-button f-button-{variant.ToString().ToLowerInvariant()}" : null)} {(!string.IsNullOrWhiteSpace(Icon) ? "f-button-icon" : null)}";
 
@@ -40,6 +55,7 @@
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+        if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
         if (TriggerVariant is { } variant && !Enum.IsDefined(variant)) throw new ArgumentOutOfRangeException(nameof(TriggerVariant));
     }
     private void Change(ChangeEventArgs args) { if (!Disabled) CurrentValueAsString = args.Value?.ToString(); }

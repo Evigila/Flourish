@@ -1,4 +1,34 @@
 {
+  "ChangeLog_CompactHeaderBrand": {
+    "en-US": "Fit the header brand into the standard 48px Quiet Button with a 24px logo and unchanged control padding. Restore the normal 68px single-row header minimum while preserving outer spacing and responsive row growth.",
+    "zh-CN": "顶部品牌使用 24px Logo 与标准 48px Quiet 按钮，保持标准内边距，恢复单行顶部栏 68px 基准，同时保留外围留白和响应式换行。",
+    "pt-BR": "Ajuste a marca ao Button Quiet padrão de 48px, com logotipo de 24px e o mesmo espaçamento interno dos controles. Restaure o mínimo de 68px do cabeçalho em uma linha, preservando as margens externas e a adaptação de linhas."
+  },
+  "ChangeLog_InformationGridsAndHeaderControls": {
+    "en-US": "Use information-mode UniformGrid items for read-only facts, with body labels and H1-sized values; Card is deprecated and retained for compatibility. Dialog can emphasize its title in Danger. Header brand controls have shared Quiet feedback and outer spacing, while structured menu rows have more room.",
+    "zh-CN": "只读信息使用 UniformGrid 信息格：标签为正文，内容为 H1 字号；Card 标记弃用并保留兼容。Dialog 支持 Danger 标题。顶部品牌按钮统一 Quiet 反馈并增加外围留白，结构化菜单项增加适当间距。",
+    "pt-BR": "Use itens informativos de UniformGrid para dados somente de leitura, com rótulos no corpo e valores em tamanho H1; Card foi descontinuado e permanece por compatibilidade. Dialog pode destacar o título em Danger. A marca do cabeçalho compartilha o realce Quiet e recebe margem, e as linhas estruturadas do menu ganham espaço."
+  },
+  "ChangeLog_FooterAlignmentAndProgressThreshold": {
+    "en-US": "Enlarge the presentation footer by half of its previous default baseline and align foreground content with the header's page boundary. Activate incoming sections after they occupy about two thirds of the usable viewport; directory clicks select their target immediately during smooth navigation.",
+    "zh-CN": "展示页 Footer 默认高度基准增加 50%，前景内容与顶部栏的页面边界对齐。新章节占可用视口约三分之二时切换指示器，点击目录时立即选中目标并在平滑滚动期间保持。",
+    "pt-BR": "Amplie o rodapé de apresentação em metade da altura padrão anterior e alinhe o conteúdo à mesma margem da página usada pelo cabeçalho. Ative a próxima seção ao ocupar cerca de dois terços da área visível; ao clicar no índice, selecione o destino imediatamente durante a rolagem suave."
+  },
+  "ChangeLog_HeaderBrandAndServiceRows": {
+    "en-US": "Use the standard Quiet Button for header branding, limit hover to the button, and support structured dropdown actions with an icon and two body-sized lines. Language options use regular body weight.",
+    "zh-CN": "顶部品牌使用标准 Quiet Button，悬停反馈仅作用于按钮；下拉操作支持图标和两行正文大小文案，语言选项使用普通正文字重。",
+    "pt-BR": "A marca do cabeçalho usa o Button Quiet padrão, com realce restrito ao botão. Ações estruturadas do menu usam ícone e duas linhas no tamanho do corpo; idiomas usam peso normal."
+  },
+  "ChangeLog_HeaderContentAlignment": {
+    "en-US": "Align ShellHeader service navigation with the actual presentation or business content container. Keep branding and actions in separate wings, with two-row reflow when space is limited and white Quiet or raised brand-colored actions.",
+    "zh-CN": "ShellHeader 的服务菜单跟随展示页或业务页的实际正文边界，品牌和操作分居两翼；空间不足时分两行，支持白字 Quiet 与白底品牌色 Elevated 操作。",
+    "pt-BR": "Alinhe a navegação de serviços do ShellHeader ao contêiner real da apresentação ou da página de trabalho. Marca e ações ficam nas laterais, com duas linhas quando necessário, Quiet branco e ações Elevated brancas com texto da marca."
+  },
+  "ChangeLog_HoverLanguagePopups": {
+    "en-US": "SelectBox, StandaloneSelectBox and LanguagePicker can opt into hover menus using the shared popup controller while retaining native form values and change events. Popup surface colors remain separate from header button colors.",
+    "zh-CN": "SelectBox、StandaloneSelectBox 和 LanguagePicker 可选用共享弹窗控制器的悬停菜单，同时保留原生表单值与 change 事件；弹层表面颜色与顶部栏按钮颜色独立。",
+    "pt-BR": "SelectBox, StandaloneSelectBox e LanguagePicker podem usar menus por passagem do ponteiro com o controlador compartilhado, preservando valores e eventos change nativos. As cores do painel ficam separadas das cores dos botões do cabeçalho."
+  },
   "ChangeLog_NoticeTitlesAndColors": {
     "en-US": "Give every Notice a separate bold body-sized title, localized severity fallback and shadow. Information uses a white surface with a blue title and dark body; warning, success and error use orange, green and red with white text, including subtle Notices.",
     "zh-CN": "所有 Notice 使用独立一行的正文大小粗体标题、本地化状态默认标题和阴影。信息提示使用白底蓝标题深色正文；警告、成功与错误分别使用橙、绿、红底及白色文字，Subtle 提示同样适用。",

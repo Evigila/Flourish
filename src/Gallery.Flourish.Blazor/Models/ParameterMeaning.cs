@@ -8,6 +8,8 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "Information" when parameter.DeclaringType == typeof(Controls.UniformGridItem) => "Key.Parameter_Information_UniformGridItem",
+        "DangerTitle" when parameter.DeclaringType == typeof(Controls.Dialog) => "Key.Parameter_DangerTitle_Dialog",
         "MaxWidth" when parameter.DeclaringType == typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker) => "Key.Parameter_MaxWidth_LanguagePicker",
         "FormatCulture" when parameter.DeclaringType == typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker) => "Key.Parameter_FormatCulture_LanguagePicker",
         "Steps" when parameter.DeclaringType == typeof(Controls.TutorialBoard) => "Key.Parameter_Steps_TutorialBoard",

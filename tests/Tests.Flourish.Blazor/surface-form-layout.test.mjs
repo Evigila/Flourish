@@ -7,8 +7,10 @@ const source = path => readFile(new URL(path, framework), 'utf8');
 const moduleUrl = text => `data:text/javascript;base64,${Buffer.from(text).toString('base64')}`;
 const shellUrl = moduleUrl(await source('wwwroot/shell.js'));
 const shell = await import(shellUrl);
+const headerUrl = moduleUrl(await source('wwwroot/patterns/header-layout.js'));
 const surfaces = await import(moduleUrl((await source('wwwroot/patterns/surfaces.js'))
-    .replace("from '../shell.js'", `from '${shellUrl}'`)));
+    .replace("from '../shell.js'", `from '${shellUrl}'`)
+    .replace("from './header-layout.js'", `from '${headerUrl}'`)));
 
 // Execute the production controllers with simulated DOM geometry. These are
 // lifecycle and CSS contract tests, not browser/computed-style acceptance.

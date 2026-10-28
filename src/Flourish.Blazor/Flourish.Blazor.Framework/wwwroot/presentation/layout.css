@@ -25,7 +25,8 @@ body:has(.f-document-surface) { margin:0; }
 .f-presentation-hero-actions { display:flex; flex-wrap:wrap; align-items:center; }
 .f-presentation-footer { position:relative; flex:0 0 auto; overflow:hidden; isolation:isolate; }
 .f-presentation-watermark { position:absolute; z-index:0; white-space:nowrap; pointer-events:none; }
-.f-presentation-footer-content { position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:space-between; }
+.f-presentation-footer-content { position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:space-between; min-block-size:var(--f-presentation-footer-min-height,0px); }
+.f-presentation-footer[data-presentation-footer-layout] > .f-presentation-footer-content { max-width:none; padding-inline-start:var(--f-presentation-footer-content-start); padding-inline-end:var(--f-presentation-footer-content-end); }
 .f-presentation-footer-identity { display:grid; }
 .f-offer-stage { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
 .f-offer-controls { display:none; }

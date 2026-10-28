@@ -1,29 +1,48 @@
 .shell-header {
+    --f-shell-header-ink: var(--f-surface-light, #FFFFFF);
+    --f-shell-header-button-surface: var(--f-surface-light, #FFFFFF);
+    --f-shell-header-button-ink: var(--f-primary-light, var(--f-primary));
+    --f-shell-brand-min: 82px;
     width: 100%;
-    height: var(--f-topbar-height, 68px);
+    min-height: 68px;
     color: var(--f-chrome-ink, var(--f-surface));
     background: var(--f-chrome, var(--f-primary));
     border-bottom: 1px solid var(--f-border);
 }
+/* Tokens belong to the actual chrome control, never to a menu's panel subtree. */
+.shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
+    --f-accent-text: var(--f-shell-header-ink);
+    --f-text: var(--f-shell-header-ink);
+    --f-target-preview: var(--f-primary-preview);
+    --f-target-click: var(--f-primary-click);
+}
+.shell-header-start {
+    padding: 8px 10px;
+}
+.shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
+    --f-text: var(--f-shell-header-button-ink);
+    --f-surface: var(--f-shell-header-button-surface);
+    --f-surface-preview: color-mix(in srgb, var(--f-shell-header-button-surface) 92%, var(--f-shell-header-button-ink));
+    --f-surface-click: color-mix(in srgb, var(--f-shell-header-button-surface) 84%, var(--f-shell-header-button-ink));
+}
+@supports (appearance: base-select) {
+    .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)):not(:disabled):not([aria-disabled=true]) {
+        color: var(--f-shell-header-ink);
+    }
+}
 .shell-header-brand {
-    align-self: stretch;
-    max-width: min(58vw, 560px);
-    color: inherit;
-    text-decoration: none;
+    max-width: 100%;
 }
 .shell-header-logo {
-    align-self: stretch;
-    width: 76px;
-    padding: 8px;
+    width: 24px;
 }
 .shell-header-logo img {
-    width: 48px;
-    height: 48px;
+    width: 24px;
+    height: 24px;
     max-width: 100%;
 }
 .shell-header-title {
     gap: 7px;
-    padding: 0 22px 0 10px;
     font-size: 17px;
     letter-spacing: -.01em;
     text-overflow: ellipsis;
@@ -36,12 +55,15 @@
     font-weight: 760;
 }
 .shell-header-context {
-    color: var(--shell-context-color, var(--f-chrome-ink, var(--f-surface)));
     font-weight: 650;
 }
 .shell-header-actions {
-    margin-left: auto;
     padding-right: 10px;
+    padding-block: 8px;
+    row-gap: 8px;
+}
+.shell-header-center {
+    padding-block: 8px;
 }
 .shell-header-identity {
     max-width: 290px;
@@ -116,17 +138,15 @@ a.shell-header-identity:focus-visible {
     outline: 3px solid var(--f-accent);
     outline-offset: -3px;
 }
-@media (max-width: 760px) {.shell-header-logo {
-    width: 60px;
-    padding: 7px;
+@media (max-width: 760px) {
+.shell-header {
+    --f-shell-brand-min: 78px;
 }
-.shell-header-logo img {
-    width: 43px;
-    height: 43px;
+.shell-header-start {
+    padding-inline: 8px;
 }
 .shell-header-title {
     max-width: 190px;
-    padding-inline: 7px 12px;
 }
 .shell-header-actions {
     padding-right: 4px;
@@ -154,16 +174,5 @@ a.shell-header-identity:active {
 }
 
 .shell-header-actions .shell-header-text-action:active {
-    background: var(--f-click-dark);
-}
-
-a.shell-header-brand:hover {
-    background: var(--f-preview-dark);
-}
-a.shell-header-brand:focus-visible {
-    outline: 3px solid var(--f-accent);
-    outline-offset: -3px;
-}
-a.shell-header-brand:active {
     background: var(--f-click-dark);
 }

@@ -145,6 +145,7 @@ check('Continuous scroll events have a bounded alignment deadline and disposal r
 document.body = new Node('body');
 let surfaceCode = await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/surfaces.js', import.meta.url), 'utf8');
 surfaceCode = surfaceCode.replace("import { updateCompactHeading, resetCompactHeading } from '../shell.js';", 'const updateCompactHeading=()=>{}; const resetCompactHeading=()=>{};');
+surfaceCode = surfaceCode.replace("import { initializeShellHeaders, disposeShellHeader } from './header-layout.js';", 'const initializeShellHeaders=()=>{}; const disposeShellHeader=()=>{};');
 const surfaceApi = await import('data:text/javascript;base64,' + Buffer.from(surfaceCode).toString('base64'));
 const makeTop = () => { const control = new Node('span'), link = new Node('a'), icon = new Node('span'); link.append(icon); control.append(link); control.style.removeProperty = name => control.style.values.delete(name); return { control, link, icon }; };
 const topRegion = new Node('main'); topRegion.id = 'top-report'; topRegion.setAttribute('tabindex', '-1');

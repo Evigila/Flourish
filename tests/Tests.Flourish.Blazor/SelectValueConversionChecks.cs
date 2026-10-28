@@ -213,6 +213,56 @@ internal static class SelectValueConversionChecks
             await ScalarRoundTrip(Guid.Parse("edeb6c85-2c90-44c2-8a01-32ebca1634df"), Guid.Parse("770f83a9-ddce-46d2-90ce-9ca32cbb1b68"), "770f83a9-ddce-46d2-90ce-9ca32cbb1b68");
             await ScalarRoundTrip("before", "after", "after");
         }));
+
+        tests.Add(("hover selectors keep one native form carrier and its existing binding and validation", async () =>
+        {
+            foreach (var bound in new[] { true, false })
+            {
+                var model = new Selection<bool?> { Value = false };
+                var context = new EditContext(model);
+                await using var fixture = new Fixture();
+                var output = bound ? await fixture.RenderBound(model, context, NullableBooleanOptions)
+                    : await fixture.RenderStandalone(model, NullableBooleanOptions);
+                IComponent control = bound ? fixture.Component<SelectBox<bool?>>() : fixture.Component<StandaloneSelectBox<bool?>>();
+                await fixture.Parameters(control, new()
+                {
+                    ["Value"] = model.Value, ["OpenOnHover"] = true, ["Strength"] = PopupStrength.Weak,
+                    ["Icon"] = "language", ["TriggerVariant"] = ButtonVariant.Quiet,
+                    ["AdditionalAttributes"] = new Dictionary<string, object> { ["name"] = "culture", ["data-culture-picker"] = "true", ["aria-label"] = "Language" }
+                });
+                var html = await fixture.Html(output);
+                Require(Regex.Matches(html, "<select\\b").Count == 1, "Hover mode cloned or removed the form control.");
+                Require(html.Contains("data-f-native-select-popup", StringComparison.Ordinal) && html.Contains("data-f-native-select-options", StringComparison.Ordinal), "Hover mode lost its shared native/menu bridge.");
+                Require(html.Contains("data-f-popup-hover=\"true\"", StringComparison.Ordinal) && html.Contains("data-f-popup-strength=\"weak\"", StringComparison.Ordinal), "Hover mode did not use the public ActionMenu behavior.");
+                Require(html.Contains("data-culture-picker=\"true\"", StringComparison.Ordinal) && html.Contains("name=\"culture\"", StringComparison.Ordinal), "The native protocol attributes were moved to the visual trigger.");
+                await fixture.Change(control, "true");
+                Require(model.Value == true && model.Changes == 1, "Hover mode bypassed the original native onchange binding.");
+                RequireSelected(await fixture.Html(output), "true", "Enabled");
+                await fixture.Change(control, "invalid");
+                Require(model.Value == true && context.GetValidationMessages().Any() == bound, "Hover mode changed bound/standalone validation semantics.");
+            }
+            Require(!typeof(SelectBox<>).Assembly.GetExportedTypes().Any(type => type.Name == "NativeSelectPopup"), "An internal input enhancement became a public control.");
+        }));
+
+        tests.Add(("select popup disposal during a shared deferred import releases its module without installing observers", async () =>
+        {
+            await using var fixture = new Fixture();
+            var model = new Selection<bool> { Value = true };
+            _ = await fixture.RenderStandalone(model, BooleanOptions);
+            var control = fixture.Component<StandaloneSelectBox<bool>>();
+            await fixture.Parameters(control, new() { ["OpenOnHover"] = true, ["Value"] = model.Value });
+            var helper = fixture.InternalPopup();
+            var javascript = new DeferredJs();
+            helper.GetType().GetProperty("JS")!.SetValue(helper, javascript);
+            var first = fixture.InteractiveAfterRender(helper);
+            await javascript.Started.Task;
+            var second = fixture.InteractiveAfterRender(helper);
+            await ((IAsyncDisposable)helper).DisposeAsync();
+            javascript.Complete();
+            await Task.WhenAll(first, second);
+            Require(javascript.Imports == 1 && javascript.Module.Releases == 1 && javascript.Module.Invocations == 0,
+                "Disposal leaked a deferred module, imported twice, or initialized detached DOM.");
+        }));
     }
 
     private static readonly SelectOption<bool>[] BooleanOptions = [new(true, "Enabled"), new(false, "Disabled")];
@@ -268,11 +318,22 @@ internal static class SelectValueConversionChecks
     {
         using var tree = new RenderTreeBuilder();
         component.GetType().GetMethod("BuildRenderTree", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(component, [tree]);
+        return DispatchFrames(tree, component, value) ?? throw new InvalidOperationException("The production select lost its native onchange binding.");
+    }
+
+    private static Task? DispatchFrames(RenderTreeBuilder tree, IComponent component, string? value)
+    {
         var frames = tree.GetFrames();
         for (var index = 0; index < frames.Count; index++)
         {
             var frame = frames.Array[index];
-            if (frame.FrameType != RenderTreeFrameType.Attribute || frame.AttributeName != "onchange") continue;
+            if (frame.FrameType != RenderTreeFrameType.Attribute) continue;
+            if (frame.AttributeValue is RenderFragment content)
+            {
+                using var child = new RenderTreeBuilder(); content(child);
+                if (DispatchFrames(child, component, value) is { } nested) return nested;
+            }
+            if (frame.AttributeName != "onchange") continue;
             var args = new ChangeEventArgs { Value = value };
             return frame.AttributeValue switch
             {
@@ -282,7 +343,7 @@ internal static class SelectValueConversionChecks
                 _ => throw new InvalidOperationException("The production select's native onchange binding cannot be invoked.")
             };
         }
-        throw new InvalidOperationException("The production select lost its native onchange binding.");
+        return null;
     }
 #pragma warning restore BL0006
 
@@ -333,6 +394,9 @@ internal static class SelectValueConversionChecks
         };
 
         internal TComponent Component<TComponent>() where TComponent : IComponent => capture.Items.OfType<TComponent>().Single();
+        internal IComponent InternalPopup() => capture.Items.Single(component => component.GetType().Name == "NativeSelectPopup");
+        internal Task InteractiveAfterRender(IComponent component) => renderer.Dispatcher.InvokeAsync(() =>
+            (Task)component.GetType().GetMethod("OnAfterRenderAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(component, [false])!);
         internal Task<string> Html(HtmlRootComponent output) => renderer.Dispatcher.InvokeAsync(output.ToHtmlString);
         internal Task Change(IComponent component, string? value) => renderer.Dispatcher.InvokeAsync(() => DispatchChange(component, value));
         internal Task Parameters(IComponent component, Dictionary<string, object?> parameters) => renderer.Dispatcher.InvokeAsync(() => component.SetParametersAsync(ParameterView.FromDictionary(parameters)));
@@ -349,5 +413,28 @@ internal static class SelectValueConversionChecks
     {
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => throw new InvalidOperationException("Static rendering must not call browser services.");
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<T>(identifier, args);
+    }
+    private sealed class DeferredJs : IJSRuntime
+    {
+        internal TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly TaskCompletionSource<IJSObjectReference> ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal DeferredModule Module { get; } = new();
+        internal int Imports { get; private set; }
+        internal void Complete() => ready.TrySetResult(Module);
+        public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => InvokeAsync<T>(identifier, CancellationToken.None, args);
+        public async ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken token, object?[]? args)
+        {
+            Require(identifier == "import", "Unexpected browser operation.");
+            Imports++; Started.TrySetResult();
+            return (T)(object)await ready.Task;
+        }
+    }
+    private sealed class DeferredModule : IJSObjectReference
+    {
+        internal int Invocations { get; private set; }
+        internal int Releases { get; private set; }
+        public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) { Invocations++; return ValueTask.FromResult(default(T)!); }
+        public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken token, object?[]? args) => InvokeAsync<T>(identifier, args);
+        public ValueTask DisposeAsync() { Releases++; return ValueTask.CompletedTask; }
     }
 }

@@ -210,6 +210,37 @@ test("direct accessible menu tiles retain standalone size, centering, rounding a
   assert.equal(cascade(allStyles, tile, "cursor"), "not-allowed");
 });
 
+test("information grid fields grow naturally beyond shape and fixed-height caps while ordinary action geometry stays intact", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const shape of ["rectangle", "square"]) for (const fixed of [false, true]) {
+    if (shape === "square" && fixed) continue;
+    const allStyles = rules(css), grid = element("div", ["f-uniform-grid", `f-uniform-grid-${shape}`, "f-uniform-grid-rows", ...(fixed ? ["f-uniform-grid-fixed-height"] : [])], null);
+    const info = element("div", ["f-uniform-cell", "f-uniform-grid-item", "f-uniform-information"], grid);
+    const action = element("button", ["f-uniform-cell", "f-uniform-grid-button"], grid);
+    assert.equal(cascade(allStyles, grid, "grid-auto-rows"), "minmax(min-content,auto)");
+    assert.equal(cascade(allStyles, grid, "grid-template-rows"), "repeat(var(--f-grid-rows),minmax(min-content,auto))");
+    for (const [property, expected] of [["aspect-ratio", "auto"], ["height", "auto"], ["max-height", "none"], ["overflow", "visible"], ["text-align", "start"]])
+      assert.equal(cascade(allStyles, info, property), expected, `${shape}/${fixed}/${property}`);
+    assert.equal(cascade(allStyles, action, "aspect-ratio"), fixed ? "auto" : shape === "square" ? "1" : "2/1");
+    assert.equal(cascade(allStyles, action, "max-height"), fixed ? "var(--f-grid-cell-height)" : shape === "square" ? "var(--f-grid-cell-max,280px)" : "var(--f-grid-cell-max-height,260px)");
+  }
+});
+
+test("information labels use body type and selectable values use H1 size without changing dialog-body or ordinary grid typography", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss), grid = element("div", ["f-uniform-grid"], null);
+  const cell = element("div", ["f-uniform-cell", "f-uniform-information"], grid), pair = element("dl", ["f-uniform-information-pair"], cell);
+  const label = element("dt", ["f-uniform-information-label"], pair), value = element("dd", ["f-uniform-information-value"], pair);
+  const copy = element("code", ["f-copy-text"], value);
+  assert.equal(cascade(allStyles, label, "font-size"), "var(--f-type-body,17px)");
+  assert.equal(cascade(allStyles, label, "font-weight"), "400");
+  assert.equal(cascade(allStyles, value, "font-size"), "var(--f-type-h1,34px)");
+  assert.equal(cascade(allStyles, value, "overflow-wrap"), "anywhere");
+  assert.equal(cascade(allStyles, copy, "font"), "inherit");
+  const dialog = element("dialog", ["f-dialog"], null), header = element("header", ["f-dialog-header"], dialog);
+  const title = element("h2", ["f-dialog-title-danger"], header), body = element("div", ["f-dialog-body"], dialog);
+  assert.equal(cascade(allStyles, title, "color"), "var(--f-danger)");
+  assert.equal(cascade(allStyles, body, "color"), undefined);
+});
+
 test("popup placement attributes do not define a competing text-alignment token", () => {
   assert.doesNotMatch(strip(frameworkCss + "\n" + designCss), /--f-popup-align/);
 });
@@ -238,6 +269,68 @@ test("popup completion Buttons share row alignment while ordinary page Buttons r
     const ordinary = element("button", ["f-button", "f-button-quiet"], rootElement);
     assert.equal(cascade(allStyles, ordinary, "width"), "max-content");
     assert.equal(cascade(allStyles, ordinary, "justify-content"), "center");
+  }
+});
+
+test("structured dropdown actions use two body-sized lines without enlarging ordinary Button descriptions", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss), { rootElement, panel } = popupFixture("action", "left");
+  const action = element("button", ["f-button", "f-button-quiet", "f-button-structured", "f-menu-item", "f-dropdown-item"], panel, [], [["role", "menuitem"]]);
+  const label = element("span", ["f-button-label"], action), title = element("span", ["f-button-text"], label), description = element("span", ["f-button-description"], label);
+  for (const [property, expected] of [["padding", "10px 16px"], ["min-height", "72px"], ["gap", "16px"], ["box-sizing", "border-box"]])
+    assert.equal(cascade(allStyles, action, property), expected, property);
+  for (const states of [[], ["hover"], ["focus-visible"], ["active"]]) {
+    action.states = new Set(states);
+    assert.equal(cascade(allStyles, action, "color"), "var(--f-text)", states.join("/"));
+    for (const [line, weight] of [[title, "700"], [description, "400"]]) {
+      assert.equal(cascade(allStyles, line, "font-size"), "17px");
+      assert.equal(cascade(allStyles, line, "font-weight"), weight);
+      assert.equal(cascade(allStyles, line, "line-height"), "1.55");
+      assert.equal(cascade(allStyles, line, "color"), "inherit");
+    }
+  }
+  const ordinary = element("button", ["f-button", "f-button-quiet", "f-button-structured"], rootElement);
+  const ordinaryDescription = element("span", ["f-button-description"], element("span", ["f-button-label"], ordinary));
+  assert.equal(cascade(allStyles, ordinaryDescription, "font-size"), ".875em");
+  assert.equal(cascade(allStyles, ordinaryDescription, "font-weight"), "400");
+});
+
+test("hover language and native select choices retain body weight including the selected choice", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss), { panel } = popupFixture("action", "left");
+  for (const checked of [false, true]) {
+    const choice = element("button", ["f-native-select-option", "f-dropdown-item"], panel, [], [["role", "menuitemradio"], ["aria-checked", String(checked)]]);
+    assert.equal(cascade(allStyles, choice, "font-size"), "17px");
+    assert.equal(cascade(allStyles, choice, "font-weight"), "400");
+    assert.equal(cascade(allStyles, choice, "line-height"), "1.55");
+    assert.equal(cascade(allStyles, choice, "padding"), "6px 10px");
+    assert.equal(cascade(allStyles, choice, "min-height"), "40px");
+    assert.equal(cascade(allStyles, choice, "gap"), "12px");
+    const marker = element("span", ["f-select-checkmark"], choice);
+    assert.equal(cascade(allStyles, marker, "background"), checked ? "var(--f-primary)" : "var(--f-surface)");
+    const native = element("select", ["f-select"], null), option = element("option", [], native, checked ? ["checked"] : []);
+    assert.equal(cascade(allStyles, option, "font-weight"), "400");
+  }
+});
+
+test("header Quiet branding buttons disclosure summaries and native select triggers share feedback roles", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  for (const theme of ["f-theme-light", "f-theme-dark"]) for (const states of scenarios) for (const unavailable of [false, true]) {
+    const rootElement = element("div", ["f-root", theme], null), header = element("header", ["shell-header"], rootElement);
+    const attributes = [["aria-disabled", String(unavailable)]], ordinaryStates = states.map(state => state === "open" ? "hover" : state);
+    const brand = element("a", ["shell-header-brand", "f-button", "f-button-quiet"], header, ordinaryStates, attributes);
+    const ordinary = element("button", ["f-button", "f-button-quiet"], header, ordinaryStates, attributes);
+    const disclosure = element("summary", ["f-disclosure-button-trigger", "f-button", "f-button-quiet"], element("details", ["f-action-menu"], header), ordinaryStates, attributes);
+    const select = element("select", ["f-input", "f-select", "f-select-customized"], header, states, attributes);
+    const trigger = element("button", ["f-select-trigger", "f-button", "f-button-quiet"], select, [], attributes);
+    for (const actual of [ordinary, disclosure, trigger]) for (const property of ["color", "background", "outline", "outline-offset", "--f-target-preview", "--f-target-click", "--f-accent-text"])
+      assert.equal(cascade(allStyles, actual, property), cascade(allStyles, brand, property), `${theme}/${states}/${unavailable}/${actual.tag}/${property}`);
+    for (const property of ["--f-target-preview", "--f-target-click"])
+      assert.equal(cascade(allStyles, select, property), cascade(allStyles, brand, property), `native carrier must not restore a different surface role: ${property}`);
+
+    for (const excluded of [["f-menu-panel", "f-dropdown-panel"], ["f-dialog"]]) {
+      const panel = element("div", excluded, header), action = element("button", ["f-button", "f-button-quiet"], panel, ["hover"]);
+      assert.notEqual(cascade(allStyles, action, "--f-accent-text"), cascade(allStyles, brand, "--f-accent-text"), "header white ink must not enter panels or dialogs");
+      assert.notEqual(cascade(allStyles, action, "--f-target-preview"), cascade(allStyles, brand, "--f-target-preview"), "header feedback roles must remain on actual chrome controls");
+    }
   }
 });
 test("circuit-owned popover panels remain hidden until the browser opens their existing grid", () => {

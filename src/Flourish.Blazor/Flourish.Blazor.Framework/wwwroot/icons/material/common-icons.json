@@ -1,0 +1,13 @@
+{
+  "names": [
+    "add", "add_circle", "archive", "arrow_back", "arrow_downward", "arrow_forward", "arrow_upward",
+    "block", "calendar_month", "calendar_today", "cancel", "check", "check_circle", "chevron_left", "chevron_right",
+    "close", "cloud_upload", "content_copy", "crossword", "dashboard", "delete", "description", "domain", "download",
+    "edit", "email", "error", "expand_less", "expand_more", "explore", "filter_alt", "folder", "groups", "help",
+    "help_outline", "history", "home", "info", "input", "inventory", "inventory_2", "language", "layers", "list", "lock",
+    "login", "logout", "menu", "more_horiz", "more_vert", "navigation", "open_in_new", "palette", "payments", "person",
+    "person_add", "print", "refresh", "remove_red_eye", "responsive_layout", "restart_alt", "save", "search", "security",
+    "settings", "shapes", "sort", "star", "stylus_fountain_pen", "sync", "table_chart", "title", "tune", "upload",
+    "visibility", "visibility_off", "warning", "widgets"
+  ]
+}

@@ -682,4 +682,94 @@ check('Strong browser modal still accepts an enabled explicit close control',()=
   api.synchronizeDialog(root,true);root.emit('cancel',event());assert.equal(root.open,true);
   root.emit('click',{target:button,preventDefault(){}});assert.equal(root.open,false);api.detachDialog(root);
 });
+check('Header button contrast stays out of its popup while scoped brand and fonts survive',()=>{
+  const chrome=new Node(),button=new Node(),popup=new Node();chrome.children=[button,popup];button.parentElement=chrome;
+  button.closest=selector=>selector==='.shell-header,.f-titlebar'?chrome:null;
+  button.computedTheme={'--f-primary':'#493267','--f-text':'#fff','--f-surface':'#fff','--f-accent-text':'#fff','--f-font':'Scoped Serif','--f-danger':'#9D322D'};
+  popup.computedTheme={'--f-primary':'body-brand','--f-text':'#2E2438','--f-surface':'#F6F3F9','--f-accent-text':'#7851A9'};
+  popup.children=[new Node()];api.attachMenu(button,popup);api.toggleMenu(button,popup);
+  assert.equal(popup.style.getPropertyValue('--f-primary'),'#493267');assert.equal(popup.style.getPropertyValue('--f-font'),'Scoped Serif');
+  assert.equal(popup.style.getPropertyValue('--f-text'),'#2E2438');assert.equal(popup.style.getPropertyValue('--f-surface'),'#F6F3F9');
+  assert.equal(popup.style.getPropertyValue('--f-accent-text'),'#7851A9');api.detachMenu(button,popup);
+});
+check('A detached popup keeps its trigger scope rather than adopting the body palette',()=>{
+  const chrome=new Node(),scope=new Node(),button=new Node(),popup=new Node();chrome.children=[scope];scope.children=[button];button.parentElement=scope;
+  button.closest=selector=>selector==='.shell-header,.f-titlebar'?chrome:null;
+  scope.computedTheme={'--f-text':'#282038','--f-surface':'#F5F0FA','--f-accent-text':'#7851A9'};
+  button.computedTheme={'--f-primary':'#493267','--f-font':'Brand Font','--f-text':'#fff','--f-surface':'#fff'};
+  popup.computedTheme={'--f-primary':'#153A32','--f-font':'Body Font','--f-text':'#112924','--f-surface':'#fff'};
+  popup.children=[new Node()];api.attachMenu(button,popup);api.toggleMenu(button,popup);
+  assert.equal(popup.style.getPropertyValue('--f-primary'),'#493267');assert.equal(popup.style.getPropertyValue('--f-font'),'Brand Font');
+  assert.equal(popup.style.getPropertyValue('--f-text'),'#282038');assert.equal(popup.style.getPropertyValue('--f-surface'),'#F5F0FA');api.detachMenu(button,popup);
+});
+
+function nativeSelectPopupFixture(){
+  class Element extends Node {
+    constructor(tag='SPAN'){super();this.tagName=tag.toUpperCase();this.textContent='';this.parentElement=null;}
+    hasAttribute(name){return this.attrs.has(name);}
+    append(...nodes){for(const node of nodes){node.parentElement=this;this.children.push(node);}}
+    appendChild(node){this.append(node);return node;}
+    replaceChildren(...nodes){this.replacements=(this.replacements??0)+1;this.children=[];for(const node of nodes)this.append(...(node.tagName==='FRAGMENT'?node.children:[node]));}
+    contains(node){return this===node||this.children.some(child=>child.contains?.(node));}
+    matches(selector){if(selector===':disabled')return this.disabled;if(selector==='[data-f-native-select-popup]')return this.hasAttribute('data-f-native-select-popup');return super.matches(selector);}
+    closest(selector){
+      if(selector==='[data-f-popup]'&&this.hasAttribute('data-f-popup'))return this;
+      if(selector==='button[data-f-native-select-value]'&&this.tagName==='BUTTON'&&this.hasAttribute('data-f-native-select-value'))return this;
+      if(selector.includes('[disabled]')&&(this.disabled||this.hidden||this.getAttribute('aria-disabled')==='true'||this.hasAttribute('inert')))return this;
+      return this.parentElement?.closest(selector)??null;
+    }
+  }
+  const owner=new Element(),select=new Element('select'),menu=new Element('details'),summary=new Element('summary'),popup=new Element(),options=new Element(),caption=new Element();
+  const sourceDocument={defaultView:{Event},documentElement:{lang:'en-US'},createElement:tag=>new Element(tag),createDocumentFragment:()=>new Element('fragment')};
+  Object.defineProperty(sourceDocument,'activeElement',{get:()=>document.activeElement});
+  select.ownerDocument=sourceDocument;select.labels=[];select.form=new Element('form');select.size=1;select.multiple=false;
+  select.options=[['en-US','English',false],['pt-BR','Português',false],['fr-FR','Français',true]].map(([value,label,disabled])=>{
+    const option=new Element('option');Object.assign(option,{value,label,disabled,parentElement:select});
+    Object.defineProperty(option,'selected',{get:()=>select.value===value});return option;
+  });
+  select.value='pt-BR';select.setAttribute('value','pt-BR');select.setAttribute('name','culture');select.setAttribute('data-culture-picker','true');select.setAttribute('aria-label','Language');
+  Object.defineProperty(select,'selectedOptions',{get:()=>select.options.filter(option=>option.selected)});
+  owner.append(select,menu);menu.append(summary,popup);popup.append(options);menu.open=false;
+  owner.setAttribute('data-f-native-select-popup','');menu.setAttribute('data-f-popup','menu');menu.setAttribute('data-f-popup-strength','weak');
+  summary.querySelector=selector=>selector==='[data-f-native-select-caption]'?caption:null;
+  popup.querySelector=selector=>selector==='[data-f-native-select-options]'?options:null;
+  popup.querySelectorAll=()=>options.children.filter(choice=>!choice.disabled);
+  menu.querySelector=selector=>selector===':scope > summary'?summary:selector===':scope > [data-f-popup-panel]'?popup:null;
+  owner.querySelector=selector=>selector===':scope > select'?select:selector==='.f-native-select-actions > .f-action-menu'?menu:null;
+  owner.querySelectorAll=()=>[];
+  api.attachDisclosureMenu(menu,summary,popup,true,true);
+  api.initializeNativeSelectPopups(owner);
+  return{owner,select,menu,summary,popup,options,caption};
+}
+check('Hover select retains its actual carrier and native change transport without a circuit',()=>{
+  const f=nativeSelectPopupFixture();let saves=0;f.select.addEventListener('change',()=>saves++);
+  assert.equal(f.owner.getAttribute('data-f-native-select-ready'),'true');assert.equal(f.select.getAttribute('data-culture-picker'),'true');
+  assert.equal(f.select.getAttribute('name'),'culture');assert.equal(f.options.children[1].getAttribute('aria-checked'),'true');
+  assert.equal(f.options.children[1].children[0].textContent,'✓');assert.equal(f.options.children[0].children[0].textContent,'');
+  f.menu.emit('pointerenter',{pointerType:'mouse'});assert.equal(f.popup.popoverOpen,true);
+  f.options.emit('click',{target:f.options.children[0],preventDefault(){}});
+  assert.equal(f.select.value,'en-US');assert.equal(saves,1);assert.equal(f.caption.textContent,'English');assert.equal(f.popup.popoverOpen,false);
+  assert.equal(document.activeElement,f.summary);api.detachMenu(f.summary,f.popup);
+});
+check('Select discovery is idempotent and disabled options cannot persist another value',()=>{
+  const f=nativeSelectPopupFixture(),count=f.options.replacements;
+  api.initializeNativeSelectPopups(f.owner);assert.equal(f.options.replacements,count);
+  f.options.emit('click',{target:f.options.children[2],preventDefault(){}});assert.equal(f.select.value,'pt-BR');
+  f.select.disabled=true;f.select.emit('change',{});f.menu.emit('pointerenter',{pointerType:'mouse'});
+  assert.equal(Boolean(f.popup.popoverOpen),false);assert.equal(f.summary.getAttribute('aria-disabled'),'true');
+  f.select.disabled=false;f.select.value='en-US';f.select.emit('change',{});
+  assert.equal(f.caption.textContent,'English');api.detachMenu(f.summary,f.popup);
+});
+check('Select validation and detached menu cleanup retain native fallback and remove transport listeners',()=>{
+  const original=globalThis.MutationObserver,observed=[];
+  globalThis.MutationObserver=class extends original {observe(target,options){this.target=target;observed.push(this);super.observe(target,options);}};
+  try{
+    const f=nativeSelectPopupFixture(),invalid=event();f.select.emit('invalid',invalid);
+    assert.equal(invalid.defaultPrevented,true);assert.equal(document.activeElement,f.summary);assert.equal(f.summary.getAttribute('aria-invalid'),'true');
+    api.detachMenu(f.summary,f.popup);
+    assert.equal(f.owner.hasAttribute('data-f-native-select-ready'),false);assert.equal(f.select.events.get('change').length,0);
+    assert.equal(f.options.events.get('click').length,0);assert.equal(f.select.form.events.get('reset').length,0);
+    assert.equal(observed.find(observer=>observer.target===f.select).disconnected,true);
+  }finally{globalThis.MutationObserver=original;}
+});
 process.stdout.write(`${count}/${count} mocked DOM checks passed.\n`);

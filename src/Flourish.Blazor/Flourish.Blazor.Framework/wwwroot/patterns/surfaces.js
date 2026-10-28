@@ -1,4 +1,5 @@
 import { updateCompactHeading, resetCompactHeading } from '../shell.js';
+import { initializeShellHeaders, disposeShellHeader } from './header-layout.js';
 
 const surfaces = new WeakMap();
 const topControls = new WeakMap();
@@ -14,6 +15,7 @@ export function synchronize(root, stage) {
         surfaces.set(root, state);
     }
     state.update();
+    initializeShellHeaders(root);
 }
 export function synchronizeBackToTop(root, contentId, threshold) {
     const content = document.getElementById(contentId);
@@ -73,6 +75,9 @@ export function dispose(root) {
     if (!state) return;
     state.stage.removeEventListener('scroll', state.update);
     state.observer?.disconnect();
+    for (const header of root.querySelectorAll('.shell-header')) {
+        if (header.closest('.content-surface,.navigation-surface') === root) disposeShellHeader(header);
+    }
     resetCompactHeading(root);
     surfaces.delete(root);
 }

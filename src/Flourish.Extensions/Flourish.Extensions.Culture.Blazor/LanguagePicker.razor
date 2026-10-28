@@ -1,7 +1,7 @@
 @inherits LocalizedComponentBase
 
 <SelectBox TValue="string" Options="@Cultures" Value="@CurrentCulture" ValueChanged="ChangeCulture"
-           ValueExpression="@(() => CurrentCulture)" Disabled="@Saving" Icon="@Icon" TriggerVariant="@TriggerVariant" aria-label="@Text(FormatCulture ? "FormatCulture" : "Language")" style="@WidthStyle" />
+           ValueExpression="@(() => CurrentCulture)" Disabled="@Saving" Icon="@Icon" TriggerVariant="@TriggerVariant" OpenOnHover="@OpenOnHover" Strength="@Strength" aria-label="@Text(FormatCulture ? "FormatCulture" : "Language")" style="@WidthStyle" />
 <Dialog Title="@Text("SaveFailedTitle")" @bind-IsOpen="SaveFailed">
     <Notice Severity="NotificationSeverity.Warning">@Text("SaveFailed")</Notice>
 </Dialog>
@@ -15,6 +15,9 @@
     [Parameter] public string? Icon { get; set; }
     /// <summary>Uses a standard button appearance in browsers supporting customizable selects.</summary>
     [Parameter] public ButtonVariant? TriggerVariant { get; set; }
+    /// <summary>Opens the shared selection menu on mouse hover; touch and keyboard retain explicit activation.</summary>
+    [Parameter] public bool OpenOnHover { get; set; }
+    [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
 
 
     private bool SaveFailed;

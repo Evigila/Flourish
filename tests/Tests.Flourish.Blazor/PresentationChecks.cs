@@ -91,6 +91,104 @@ internal static class PresentationChecks
             Check(Regex.IsMatch(html, @"<button\b[^>]*type=""submit""[^>]*class=""[^""]*f-button-quiet"), "Native sign-out lost its real library submit control.");
         }));
 
+        tests.Add(("shell header keeps services between independent brand and action wings", async () =>
+        {
+            var html = await Render<Primitives.ShellHeader>(new()
+            {
+                [nameof(Primitives.ShellHeader.HomeHref)] = "/",
+                [nameof(Primitives.ShellHeader.HomeAriaLabel)] = "Home",
+                [nameof(Primitives.ShellHeader.LogoPath)] = "/logo.svg",
+                [nameof(Primitives.ShellHeader.BrandName)] = "Project",
+                [nameof(Primitives.ShellHeader.Services)] = ButtonFragment(ButtonVariant.Quiet, "Services", "/services/"),
+                [nameof(Primitives.ShellHeader.EndActions)] = ButtonFragment(ButtonVariant.Elevated, "Sign in", "/login/")
+            });
+            Check(Regex.IsMatch(html, @"</a>\s*</div>\s*<div class=""shell-header-center""><div class=""f-topbar-slot"">"),
+                "Services still share the brand wing rather than their content-aligned track.");
+            Check(html.IndexOf("shell-header-start", StringComparison.Ordinal) < html.IndexOf("shell-header-center", StringComparison.Ordinal)
+                && html.IndexOf("shell-header-center", StringComparison.Ordinal) < html.IndexOf("shell-header-actions", StringComparison.Ordinal),
+                "Visual track order diverges from reading and keyboard order.");
+            Check(html.Contains("href=\"/services/\"") && html.Contains("href=\"/login/\""),
+                "Header layout replaced native link behavior.");
+        }));
+
+        tests.Add(("shell header brand is one standard Quiet link button with a bounded logo and encoded title", async () =>
+        {
+            var html = await Render<Primitives.ShellHeader>(new()
+            {
+                [nameof(Primitives.ShellHeader.HomeHref)] = "/home/",
+                [nameof(Primitives.ShellHeader.HomeAriaLabel)] = "Project home",
+                [nameof(Primitives.ShellHeader.LogoPath)] = "/logo.svg",
+                [nameof(Primitives.ShellHeader.BrandName)] = "Project <safe>",
+                [nameof(Primitives.ShellHeader.ContextName)] = "Portal <safe>"
+            });
+            var brand = Regex.Match(html, @"<a\b[^>]*class=""[^""]*\bshell-header-brand\b[^""]*""[^>]*>[\s\S]*?</a>").Value;
+            Check(Regex.Matches(html, @"<a\b").Count == 1 && !string.IsNullOrEmpty(brand),
+                "The brand entry introduced more than one interactive link.");
+            Check(Regex.IsMatch(brand, @"class=""[^""]*\bf-button\b[^""]*\bf-button-quiet\b")
+                && brand.Contains("href=\"/home/\"") && brand.Contains("aria-label=\"Project home\"")
+                && brand.Contains("aria-disabled=\"false\"") && brand.Contains("aria-busy=\"false\""),
+                "The brand bypassed standard Button navigation or availability semantics.");
+            var logo = Regex.Match(brand, @"<img\b[^>]*>").Value;
+            Check(logo.Contains("src=\"/logo.svg\"") && Regex.IsMatch(logo, "\\salt(?:=\"\"|='')?(?=\\s|/?>)")
+                && logo.Contains("width=\"24\"") && logo.Contains("height=\"24\"")
+                && brand.Contains("class=\"shell-header-logo\" aria-hidden=\"true\"")
+                && brand.Contains("Project &lt;safe&gt;") && brand.Contains("Portal &lt;safe&gt;"),
+                "The Quiet button lost its decorative logo or encoded brand/context content: " + brand);
+            var paint = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css");
+            Check(!Regex.IsMatch(paint, @"(?:a\.)?shell-header-brand\s*:(?:hover|focus-visible|active)"),
+                "The brand still owns a second interaction paint instead of using Quiet Button.");
+            var geometry = Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/behavior.css"), ".shell-header-brand");
+            Check(!geometry.Contains("stretch") && !Regex.IsMatch(geometry, @"(?:width\s*:\s*100%|flex\s*:\s*1(?:\s|;))"),
+                "The interactive brand can still stretch across the reserved left wing.");
+            Check(Rule(paint, ".shell-header-start").Contains("padding: 8px 10px", StringComparison.Ordinal)
+                && Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/behavior.css"), ".shell-header-start")
+                    .Contains("box-sizing: border-box", StringComparison.Ordinal),
+                "The brand lacks noninteractive outer spacing or its padding escapes the measured wing.");
+            Check(paint.Contains("--f-shell-brand-min: 82px", StringComparison.Ordinal)
+                && paint.Contains("--f-shell-brand-min: 78px", StringComparison.Ordinal),
+                "The fallback header no longer reserves its logo, standard Button bounds and responsive wing insets.");
+        }));
+
+        tests.Add(("compact header branding fits its 68px minimum using unchanged standard Button geometry", () =>
+        {
+            static double Number(string declarations, string pattern)
+            {
+                var match = Regex.Match(declarations, pattern);
+                Check(match.Success, "Missing header/Button dimension: " + pattern);
+                return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            var paint = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css");
+            var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/behavior.css");
+            var button = Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/controls.css"), ".f-button");
+            Check(button.Contains("padding:10px 13px", StringComparison.Ordinal) && button.Contains("gap:10px", StringComparison.Ordinal),
+                "Compact branding replaced standard Button padding or its content gap.");
+            var buttonMinimum = Number(button, @"(?:^|;)\s*min-height\s*:\s*([\d.]+)px");
+            var buttonPadding = Number(button, @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
+            var buttonBorder = Number(button, @"(?:^|;)\s*border\s*:\s*([\d.]+)px");
+            var textLine = Number(Rule(paint, ".shell-header-title"), @"(?:^|;)\s*font-size\s*:\s*([\d.]+)px")
+                * Number(button, @"(?:^|;)\s*line-height\s*:\s*([\d.]+)");
+            var logoSize = Number(Rule(paint, ".shell-header-logo img"), @"(?:^|;)\s*height\s*:\s*([\d.]+)px");
+            var wingPadding = Number(Rule(paint, ".shell-header-start"), @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
+            var header = Rule(paint, ".shell-header");
+            var baseline = Number(header, @"(?:^|;)\s*min-height\s*:\s*([\d.]+)px");
+            var headerBorder = Number(header, @"(?:^|;)\s*border-bottom\s*:\s*([\d.]+)px");
+            var brandHeight = Math.Max(buttonMinimum, Math.Max(logoSize, textLine) + 2 * (buttonPadding + buttonBorder));
+            Check(logoSize == 24 && buttonMinimum == 48 && brandHeight == 48
+                && brandHeight + 2 * wingPadding + headerBorder <= baseline && baseline == 68,
+                "The logo/text line, standard Button box, wing spacing and border force a single-row header above its original baseline.");
+            Check(Rule(layout, ".shell-header-logo").Contains("flex: 0 0 24px", StringComparison.Ordinal)
+                && !paint.Contains("43px", StringComparison.Ordinal) && !layout.Contains("flex-basis: 43px", StringComparison.Ordinal),
+                "A larger logo reservation survived the compact desktop/narrow dimensions.");
+            foreach (var declarations in new[] { header, Rule(layout, ".shell-header"), Rule(paint, ".shell-header-brand"), Rule(layout, ".shell-header-brand") })
+                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|max-height|overflow(?:-[xy])?|padding(?:-[a-z]+)?)\s*:(?!\s*auto\b)"),
+                    "Header or brand introduces a fixed cap, clipping or custom Button padding instead of natural multi-row growth.");
+            foreach (var surface in new[] { "content-surface", "navigation-surface" })
+                Check(Regex.IsMatch(ReadSource($"src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/{surface}.css"), @"--f-topbar-height\s*:\s*auto\b")
+                    && Rule(layout, ".shell-header").Contains("min-height: 68px", StringComparison.Ordinal),
+                    "An automatic surface row overrides ShellHeader's independent 68px minimum.");
+            return Task.CompletedTask;
+        }));
+
         tests.Add(("card retains its original default title and child DOM", async () =>
         {
             var plain = await Render<Card>(new() { ["Title"] = "Title <safe>", ["ChildContent"] = Text("Body <safe>") });
@@ -508,10 +606,40 @@ internal static class PresentationChecks
             Check(html.Contains("f-content-container f-presentation-footer-content", StringComparison.Ordinal)
                 && html.Contains("<strong>Product</strong>", StringComparison.Ordinal)
                 && html.Contains("aria-label=\"Footer links\"", StringComparison.Ordinal), "Footer content lost limit, identity or link naming.");
+            Check(Regex.IsMatch(html, @"<span class=""f-presentation-watermark""[^>]*>[^<]*</span>\s*<div class=""f-content-container f-presentation-footer-content"""),
+                "Decorative full-bleed text entered the content-alignment container.");
             Check(html.Contains("f-button-underline", StringComparison.Ordinal) && html.Contains("data-enhance-nav=\"false\"", StringComparison.Ordinal), "Footer did not retain the actual standard native link.");
             var fallback = await Render<PresentationFooter>(new());
             Check(fallback.Contains("<strong>Application</strong>", StringComparison.Ordinal)
                 && fallback.Contains("aria-hidden=\"true\">Application</span>", StringComparison.Ordinal), "An unconfigured footer did not use the shared default project identity.");
+        }));
+
+        tests.Add(("presentation footer grows its original overall baseline by half and bottom-aligns bounded foreground", () =>
+        {
+            var layout = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css");
+            var design = ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css");
+            var footer = Rule(design, ".f-presentation-footer");
+            Check(footer.Contains("--f-presentation-footer-title-size:clamp(64px,9vw,112px)", StringComparison.Ordinal)
+                && footer.Contains("calc((90px + var(--f-presentation-footer-title-size) + 14px + 17px * 1.55 + 48px) * 1.5)", StringComparison.Ordinal),
+                "Footer enlargement no longer accounts for the original title, copyright, identity gap and both outer insets.");
+            var foreground = Rule(layout, ".f-presentation-footer-content");
+            Check(foreground.Contains("min-block-size:var(--f-presentation-footer-min-height,0px)", StringComparison.Ordinal)
+                && foreground.Contains("align-items:flex-end", StringComparison.Ordinal), "Footer cannot grow for wrapped content or bottom-align its desktop foreground.");
+            var spacing = Rule(design, ".f-presentation-footer-content");
+            Check(spacing.Contains("padding-block:90px 48px", StringComparison.Ordinal)
+                && !Regex.IsMatch(spacing, @"(?:^|;)\s*padding(?:-inline[^:]*)?\s*:"),
+                "Footer lost its bottom inset or replaced the shared ContentContainer inline gutters.");
+            var measured = Rule(layout, ".f-presentation-footer[data-presentation-footer-layout] > .f-presentation-footer-content");
+            Check(measured.Contains("max-width:none", StringComparison.Ordinal)
+                && measured.Contains("padding-inline-start:var(--f-presentation-footer-content-start)", StringComparison.Ordinal)
+                && measured.Contains("padding-inline-end:var(--f-presentation-footer-content-end)", StringComparison.Ordinal),
+                "Measured footer edges are narrowed again by a second center-width container.");
+            Check(layout.Contains(".f-presentation-footer-content { align-items:flex-start; flex-direction:column; justify-content:flex-end; }", StringComparison.Ordinal),
+                "Narrow footer actions do not stack above the same bottom inset.");
+            Check(Rule(layout, ".f-presentation-watermark").Contains("position:absolute", StringComparison.Ordinal)
+                && Rule(layout, ".f-presentation-watermark").Contains("pointer-events:none", StringComparison.Ordinal),
+                "Decorative text reserves foreground height or intercepts its actions.");
+            return Task.CompletedTask;
         }));
 
         tests.Add(("presentation footer derives encoded identity from project configuration and keeps copyright independent", async () =>
@@ -732,7 +860,7 @@ internal static class PresentationChecks
                 "The footer occupies a fixed or sticky portion of the viewport.");
             foreach (var declarations in new[] { footerRules, Rule(layout, ".f-presentation-footer-content"),
                 Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css"), ".f-presentation-footer") })
-                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|min-height|max-height)\s*:"), "The footer has a fixed or minimum-height floor instead of its natural content height.");
+                Check(!Regex.IsMatch(declarations, @"(?:^|;)\s*(?:height|max-height|block-size|max-block-size)\s*:"), "The footer has a fixed size that clips growing content instead of a responsive minimum baseline.");
         }));
 
         tests.Add(("access panel is reusable inside existing main and keeps compact wide and emphasis explicit", async () =>

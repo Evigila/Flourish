@@ -240,9 +240,9 @@
     "pt-BR": "Grade de largura igual para diretórios, escolhas de assistentes e resumos de informações."
   },
   "Catalog_UniformGrid_Variants": {
-    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects FilledElevated/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.",
-    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 FilledElevated、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。",
-    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe FilledElevated/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton."
+    "en-US": "Shape defaults to Rectangle; Square gives equal sides. Variant selects FilledElevated/Danger/default Elevated. The transparent container paints no unused slots. Rectangles fill and divide each row; MaxCellHeight defaults to 260px without a width cap. Optional CellHeight fixes rectangular height in pixels, overrides the ordinary cap and aspect ratio, and stays fixed at narrow widths; Square rejects it.\nAutomatic columns use twice the fixed height or ordinary maximum as a threshold and may keep widening. Squares use fit-content with MaxCellSize default 280px on both dimensions. Columns/Rows are explicit; NarrowColumns overrides only when supplied.\nCentered affects placement without shrinking rectangles. IconSupport enables equal vertical halves; null enables them with an icon, false keeps continuous layout. Cells may override IconSupport and Variant and use UniformGridItem or UniformGridButton.\nInformation-mode items are an explicit natural-height exception to the ordinary shape and row-height caps.",
+    "zh-CN": "Shape 默认 Rectangle，Square 为正方形。Variant 控制 FilledElevated、Danger 或默认 Elevated 外观。容器透明，不为未占用位置绘制背景或阴影。长方形先铺满行再均分；MaxCellHeight 默认 260px，仅限制高度。可选 CellHeight 以像素固定长方形高度，覆盖通常的高度上限与宽高比，窄窗口也保持固定高度；Square 拒绝此参数。\n自动列数使用固定高度或通常高度上限的两倍作为换列阈值，轨道仍可拉宽。正方形保留 fit-content 与 MaxCellSize 默认 280px 的等量宽高上限。Columns / Rows 可显式指定，NarrowColumns 仅在设置后覆盖窄窗口列数。\nCentered 只控制定位，不收缩长方形。IconSupport 可配置上下等分布局，null 时有图标自动启用，false 保留连续布局；单格可覆盖。单元格使用 UniformGridItem 或 UniformGridButton，可各自覆盖 Variant。\nInformation 信息单元格明确采用自然高度，不受普通形状和行高上限限制。",
+    "pt-BR": "Shape usa Rectangle por padrão; Square tem lados iguais. Variant escolhe FilledElevated/Danger/Elevated padrão. O contêiner transparente não pinta espaços vazios. Retângulos preenchem e dividem a linha; MaxCellHeight padrão 260px não limita largura. CellHeight opcional fixa a altura retangular em pixels, substitui o limite e a proporção normais e mantém a altura em telas estreitas; Square rejeita esse parâmetro.\nColunas automáticas usam duas vezes a altura fixa ou máxima como limite e podem continuar crescendo. Quadrados usam fit-content e MaxCellSize padrão 280px nas duas dimensões. Columns/Rows são explícitos; NarrowColumns só substitui quando informado.\nCentered posiciona sem estreitar retângulos. IconSupport ativa metades verticais; null as ativa com ícone, false mantém layout contínuo. Células podem substituir IconSupport/Variant e usam UniformGridItem ou UniformGridButton.\nItens em modo Information são uma exceção explícita de altura natural aos limites normais de forma e altura."
   },
   "Catalog_UniformGridItem_Purpose": {
     "en-US": "Noninteractive information cell in an equal-width grid.",
@@ -250,9 +250,9 @@
     "pt-BR": "Célula informativa não interativa em grade de largura igual."
   },
   "Catalog_UniformGridItem_Variants": {
-    "en-US": "Shares FilledElevated/Danger/Elevated with UniformGridButton. Omitted Variant inherits the grid, or Elevated standalone. Title uses 34px H1 size; Text/ChildContent use 17px body size. Icon is optional; there is no Href or OnClick.",
-    "zh-CN": "与 UniformGridButton 共用 FilledElevated、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。",
-    "pt-BR": "Compartilha FilledElevated/Danger/Elevated com UniformGridButton. Variant omitido herda a grade ou Elevated independente. Title usa H1 de 34px; Text/ChildContent usam 17px. Icon é opcional; não há Href nem OnClick."
+    "en-US": "Shares FilledElevated/Danger/Elevated with UniformGridButton. Omitted Variant inherits the grid, or Elevated standalone. Title uses 34px H1 size; Text/ChildContent use 17px body size. Icon is optional; there is no Href or OnClick.\nInformation=false preserves those ordinary defaults. Information=true instead renders one semantic label/value pair: Title is body-sized, Text or ChildContent is H1-sized. ChildContent takes precedence and supports CopyText. Values wrap and grow naturally without icon tracks, aspect ratio or fixed-height clipping.",
+    "zh-CN": "与 UniformGridButton 共用 FilledElevated、Danger、Elevated 外观。Variant 省略时继承网格外观，独立使用时为 Elevated。Title 使用 H1 的 34px，Text 与 ChildContent 使用正文 17px；Icon 可选。没有 Href 或 OnClick。\nInformation=false 保留上述普通默认值。Information=true 改为每格一个语义标签和值：Title 使用正文，Text 或 ChildContent 使用 H1 字号；ChildContent 优先，支持 CopyText。内容自然换行增高，不分配图标轨道，不受宽高比或固定高度裁剪。",
+    "pt-BR": "Compartilha FilledElevated/Danger/Elevated com UniformGridButton. Variant omitido herda a grade ou Elevated independente. Title usa H1 de 34px; Text/ChildContent usam 17px. Icon é opcional; não há Href nem OnClick.\nInformation=false mantém esses padrões. Information=true renderiza um par semântico por célula: Title em tamanho de corpo e Text ou ChildContent em tamanho H1. ChildContent tem prioridade e aceita CopyText. Valores quebram e crescem naturalmente, sem faixas de ícone, proporção ou corte por altura fixa."
   },
   "Catalog_SectionNavigator_Purpose": {
     "en-US": "Section entries beside the content without consuming its width.",
@@ -320,9 +320,9 @@
     "pt-BR": "Diálogo modal com gestão de foco/fechamento, também adequado para confirmação."
   },
   "Catalog_Dialog_Variants": {
-    "en-US": "Presentation supports centered/bottom-sheet modes. Busy prevents closing; CanClose asynchronously guards it. Actions uses ordinary Button for confirmation/cancel. ShowAsync awaits CloseAsync results; BrowserControlled/Views connect browser protocol states without another popup component.",
-    "zh-CN": "Presentation 支持居中或底部面板；Busy 禁用关闭；CanClose 可异步确认；Actions 使用普通 Button 执行确认与取消。ShowAsync 等待 CloseAsync 的结果；BrowserControlled / Views 接入浏览器协议状态，而不用另一个弹窗控件。",
-    "pt-BR": "Presentation permite centro/painel inferior. Busy impede fechar; CanClose protege de forma assíncrona. Actions usa Button comum para confirmar/cancelar. ShowAsync espera resultado de CloseAsync; BrowserControlled/Views conectam estados do protocolo sem outro componente de diálogo."
+    "en-US": "Presentation supports centered/bottom-sheet modes. Busy prevents closing; CanClose asynchronously guards it. Actions uses ordinary Button for confirmation/cancel. ShowAsync awaits CloseAsync results; BrowserControlled/Views connect browser protocol states without another popup component.\nDangerTitle defaults false; true changes only the accessible title to the semantic Danger foreground.",
+    "zh-CN": "Presentation 支持居中或底部面板；Busy 禁用关闭；CanClose 可异步确认；Actions 使用普通 Button 执行确认与取消。ShowAsync 等待 CloseAsync 的结果；BrowserControlled / Views 接入浏览器协议状态，而不用另一个弹窗控件。\nDangerTitle 默认 false；true 仅将可访问标题改为语义 Danger 前景色。",
+    "pt-BR": "Presentation permite centro/painel inferior. Busy impede fechar; CanClose protege de forma assíncrona. Actions usa Button comum para confirmar/cancelar. ShowAsync espera resultado de CloseAsync; BrowserControlled/Views conectam estados do protocolo sem outro componente de diálogo.\nDangerTitle é false por padrão; true altera somente o título acessível para o primeiro plano semântico Danger."
   },
   "Catalog_Disclosure_Purpose": {
     "en-US": "Native details disclosure region.",
@@ -415,14 +415,14 @@
     "pt-BR": "Title nomeia conteúdo real; Actions fornece ações da seção; ChildContent fornece o corpo."
   },
   "Catalog_Card_Purpose": {
-    "en-US": "Content, identity and record summaries, or large presentation cards.",
-    "zh-CN": "承载内容、身份和记录摘要，或展示页大卡片。",
-    "pt-BR": "Resumos de conteúdo, identidade e registros, ou cartões grandes de apresentação."
+    "en-US": "Deprecated content renderer retained for existing applications. Do not introduce new Card usage.",
+    "zh-CN": "已弃用的内容组件，为既有应用保留；新代码请勿使用 Card。",
+    "pt-BR": "Renderizador de conteúdo descontinuado, mantido para aplicativos existentes. Não introduza novos usos de Card."
   },
   "Catalog_Card_Variants": {
-    "en-US": "Use Title and semantic ChildContent for identity or record summaries; CopyText displays identifiers and Actions supplies controls. Default Title/ChildContent retains h3/body structure. Prominent places Actions left and Title/Text right; Stacked=true always puts body above actions. Text is an H1-sized p, not another h1.\nNarrow screens stack, absent actions allow full width and long text grows naturally. Reuses card roles and standard Elevated Button without a host skin.",
-    "zh-CN": "身份和记录摘要使用 Title 与语义 ChildContent；CopyText 显示标识符，Actions 提供操作。默认 Title / ChildContent 保持原 h3 与正文结构。Prominent 默认将 Actions 放左侧、Title 和 Text 放右侧正文；Stacked=true 始终正文在上、操作在下。Text 使用 H1 字号的 p，不新增页面 h1。\n窄屏纵排、无动作占满宽度、长文自然增长；使用现有卡片角色色与标准 Elevated Button，不是新控件或宿主皮肤。",
-    "pt-BR": "Use Title e ChildContent semântico para resumos de identidade ou registros; CopyText exibe identificadores e Actions fornece controles. Title/ChildContent padrão mantém h3/corpo. Prominent coloca Actions à esquerda e Title/Text à direita; Stacked=true mantém corpo acima das ações. Text é p de tamanho H1, não outro h1.\nTelas estreitas empilham; sem ações ocupa largura total e textos longos crescem naturalmente. Reutiliza cores do cartão e Button Elevated padrão, sem estilo do host."
+    "en-US": "Existing parameters and rendering remain available without compiler-warning changes. Use UniformGrid with Information=true UniformGridItem for read-only fields, Section for grouped content, and presentation components for display pages. The examples retain legacy rendering only for migration.",
+    "zh-CN": "现有参数和渲染继续可用，不额外产生编译弃用警告。只读字段改用 UniformGrid 与 Information=true 的 UniformGridItem，分组内容使用 Section，展示页使用展示组件。旧渲染示例仅用于迁移参考。",
+    "pt-BR": "Parâmetros e renderização existentes continuam disponíveis sem novas advertências de compilação. Use UniformGrid com UniformGridItem Information=true para campos somente leitura, Section para conteúdo agrupado e componentes de apresentação para páginas de exibição. Exemplos antigos permanecem apenas como referência de migração."
   },
   "Catalog_Icon_Purpose": {
     "en-US": "Self-hosted Material Symbols Outlined icon.",
@@ -1003,5 +1003,10 @@
     "en-US": "Place directly in a bounded ContentSurface stage. Brand stays above the remaining-height body; Wide selects 960px instead of 560px, and Dotted uses theme roles. NavigationChoices.FillHeight scrolls only the active details as needed; no second main or authentication logic.",
     "zh-CN": "直接放入高度受限的 ContentSurface 内容区。Brand 位于剩余高度正文上方；Wide 从560px切换到960px，Dotted采用主题角色。NavigationChoices.FillHeight仅在需要时滚动当前详情；不创建第二个main或认证逻辑。",
     "pt-BR": "Coloque diretamente na área limitada de ContentSurface. Brand fica acima do corpo; Wide troca 560px por 960px, e Dotted usa papéis do tema. NavigationChoices.FillHeight rola os detalhes ativos quando necessário, sem outro main nem autenticação."
+  },
+  "Guide_UseDeprecated": {
+    "en-US": "Deprecated · do not use for new code",
+    "zh-CN": "已弃用 · 新代码请勿使用",
+    "pt-BR": "Descontinuado · não usar em código novo"
   }
 }

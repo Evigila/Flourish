@@ -43,6 +43,10 @@ internal static class CatalogChecks
             => Check(Default(type, name) == expected, $"Unexpected {type.Name}.{name} default: {Default(type, name)}.");
 
         Equal("false", typeof(Controls.Button), "Disabled");
+        Equal("false", typeof(Controls.UniformGridItem), "Information");
+        Equal("false", typeof(Controls.Dialog), "DangerTitle");
+        Check(!Entry(typeof(Controls.Card)).IsProductionEntry && Entry(typeof(Controls.Card)).Usage.Kind == Controls.ComponentUseKind.Deprecated
+            && Entry(typeof(Controls.Card)).Usage.PreferredEntry == typeof(Controls.UniformGrid), "Gallery must expose Card as deprecated and link its replacement.");
         Equal("\"\"", typeof(Controls.Button), "Description");
         Equal("\"\"", typeof(Controls.Button), "TrailingText");
         Equal("HorizontalAlignment.End", typeof(Controls.InlineActions), "Alignment");

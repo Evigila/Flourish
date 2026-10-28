@@ -19,10 +19,11 @@
 @if (!Preview)
 {
     <CheckBox Label="@Localization.Parse(TextKey.Sample_SimulateIncompleteInputAndPreventClosing)" @bind-Value="PreventClose" />
+    <CheckBox Label="@Localization.Parse("Key.Sample_DangerDialogTitle")" @bind-Value="DangerTitle" />
     <p role="status">@Localization.Parse(TextKey.Sample_ArchivedCount, CompletedCount)</p>
     <Button Variant="ButtonVariant.Underline" Href="/examples/overlays/reconnect">@Localization.Parse(TextKey.Sample_ReconnectionStateCompositionExample)</Button>
 }
-<Dialog @ref="Modal" Title="@(Preview ? Localization.Parse(TextKey.Sample_EmptyDialog) : Localization.Parse(TextKey.Sample_ArchiveDemoDraft))" Presentation="Presentation" Busy="Busy" CanClose="CanCloseAsync" CloseLabel="@Localization.Parse(TextKey.Sample_Off)">
+<Dialog @ref="Modal" Title="@(Preview ? Localization.Parse(TextKey.Sample_EmptyDialog) : Localization.Parse(TextKey.Sample_ArchiveDemoDraft))" DangerTitle="DangerTitle" Presentation="Presentation" Busy="Busy" CanClose="CanCloseAsync" CloseLabel="@Localization.Parse(TextKey.Sample_Off)">
     <ChildContent>
         @if (!Preview)
         {
@@ -49,7 +50,7 @@
     private Dialog? Modal;
     private readonly string Identifier = "dialog-sample-" + Guid.NewGuid().ToString("N");
     private string? Note = "虚构草稿备注。";
-    private bool Busy, PreventClose;
+    private bool Busy, PreventClose, DangerTitle;
     private int CompletedCount;
     private DialogPresentation Presentation;
     private async Task Open(DialogPresentation presentation)

@@ -30,7 +30,7 @@
 .f-input.invalid,.f-input[aria-invalid="true"]{border-color:var(--f-danger)}
 .f-textarea{min-height:116px;height:auto;padding:12px 16px;resize:vertical}
 .f-select{vertical-align:middle;line-height:1.2}
-.f-select option{color:var(--f-text);background:var(--f-surface);font:inherit}
+.f-select option{color:var(--f-text);background:var(--f-surface);font:inherit;font-weight:400}
 @supports(appearance:base-select){.f-select,.f-select::picker(select){appearance:base-select}.f-select{display:flex;align-items:center;justify-content:space-between;gap:12px}.f-select::picker(select){position-area:bottom span-right;inset:auto;margin:0;position-try-fallbacks:flip-block;transition:none;animation:none}.f-select[data-f-popup-align="right"]::picker(select){position-area:bottom span-left}.f-select::picker-icon{flex:0 0 auto;margin-inline-start:auto;transition:transform 140ms ease}.f-select:open::picker-icon{transform:rotate(180deg)}}
 .f-field-errors{position:absolute;top:calc(100% + 8px);left:0;z-index:45;display:grid;width:max-content;max-width:min(360px,calc(100vw - 48px));gap:4px;padding:9px 12px;color:var(--f-surface);background:var(--f-danger);border-radius:10px;box-shadow:0 12px 28px rgb(from var(--f-primary) r g b / 22%);font-size:17px;overflow-wrap:anywhere}
 .f-form-actions{display:grid;grid-template-columns:repeat(var(--f-action-columns,2),minmax(0,1fr));gap:0;margin-top:44px;width:100%;min-width:0;border-radius:16px;overflow:hidden;background:transparent;color:var(--f-text);grid-column:1/-1}
@@ -90,6 +90,7 @@
 .f-menu-trigger-label{display:inline-flex;width:auto;min-width:var(--f-control-height,48px);height:auto;min-height:var(--f-control-height,48px);justify-content:center;gap:8px;padding:0 14px;font-weight:650;letter-spacing:normal;line-height:1.55}
 .f-menu-trigger:focus-visible{outline-offset:2px}
 .f-menu-panel::backdrop{background:transparent}
+.f-dialog-header > h2.f-dialog-title-danger { color:var(--f-danger); }
 .f-bottom-sheet .f-dialog-header{width:100%;max-width:none;margin-inline:0;padding-inline:max(var(--f-page-gutter,24px),calc((100% - 960px)/2 + var(--f-page-gutter,24px)))}
 
 /* Pressed feedback is distinct from hover and persistent selection. */

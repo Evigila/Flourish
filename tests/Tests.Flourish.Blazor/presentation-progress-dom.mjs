@@ -292,4 +292,83 @@ check('A footer inside main cannot keep segments visible after its actual band l
     window.scrollY = 0; document.emit('scroll'); assert.equal(inlineFooter.nav.hidden, false);
 });
 api.detach(inlineFooter.nav);
+const currentIndex = example => example.links().findIndex(link => link.getAttribute('aria-current') === 'location');
+check('Manual selection changes when the incoming band covers about two thirds of the header-aware viewport in either direction', () => {
+    const example = fixture({ count:4 }); api.synchronize(example.nav, example.content.id);
+    // Usable viewport is 64..800; its upper-third line is 309.33, not the header's exact lower edge.
+    window.scrollY = 554; document.emit('scroll'); assert.equal(currentIndex(example), 0);
+    window.scrollY = 555; document.emit('scroll'); assert.equal(currentIndex(example), 1);
+    window.scrollY = 554; document.emit('scroll'); assert.equal(currentIndex(example), 0);
+    example.header.height = 160; window.emit('resize'); flush();
+    window.scrollY = 490; document.emit('scroll'); assert.equal(currentIndex(example), 0);
+    window.scrollY = 491; document.emit('scroll'); assert.equal(currentIndex(example), 1);
+    Object.assign(window.visualViewport, { offsetTop:80, height:600 });
+    window.scrollY = 530; document.emit('scroll'); assert.equal(currentIndex(example), 0);
+    window.scrollY = 531; document.emit('scroll'); assert.equal(currentIndex(example), 1);
+    Object.assign(window.visualViewport, { offsetTop:0, height:800 }); api.detach(example.nav); example.surface.remove();
+});
+check('Contained scroll selection measures the clipped viewport rather than the browser height', () => {
+    const example = fixture({ local:true }); api.synchronize(example.nav, example.content.id);
+    // The local viewport is 100..500 with a header ending at 164, so the selection line is 276.
+    example.content.scrollTop = 623; example.content.emit('scroll'); assert.equal(currentIndex(example), 0);
+    example.content.scrollTop = 624; example.content.emit('scroll'); assert.equal(currentIndex(example), 1);
+    api.detach(example.nav); example.surface.remove();
+});
+check('A long smooth jump selects its destination immediately and intermediate bands cannot steal forward or backward selection', () => {
+    const example = fixture({ count:4 }), scroll = window.scrollTo; api.synchronize(example.nav, example.content.id);
+    // Unlike the default fixture, smooth scroll reports its intermediate positions before settling.
+    window.scrollTo = options => { window.scrolled = options; if (options.behavior === 'auto') { window.scrollY = options.top; document.emit('scroll'); } };
+    try {
+        example.nav.emit('click', click(example.links()[3]));
+        assert.equal(window.scrollY, 0); assert.equal(window.scrolled.top, 2400); assert.equal(currentIndex(example), 3);
+        assert.equal(document.activeElement, example.bands[3].heading);
+        for (const top of [800, 1600, 2320]) { window.scrollY = top; document.emit('scroll'); assert.equal(currentIndex(example), 3); }
+        window.scrollY = 2400; document.emit('scroll'); advance(120); assert.equal(currentIndex(example), 3); assert.equal(timers.size, 0);
+        example.nav.emit('click', click(example.links()[0])); assert.equal(currentIndex(example), 0);
+        for (const top of [1600, 800]) { window.scrollY = top; document.emit('scroll'); assert.equal(currentIndex(example), 0); }
+        window.scrollY = 0; document.emit('scroll'); advance(120); assert.equal(currentIndex(example), 0);
+        example.nav.emit('click', click(example.links()[3])); example.nav.emit('click', click(example.links()[1]));
+        assert.equal(currentIndex(example), 1); window.scrollY = 800; document.emit('scroll'); advance(120);
+        assert.equal(currentIndex(example), 1); assert.equal(timers.size, 0);
+    } finally { window.scrollTo = scroll; api.detach(example.nav); example.surface.remove(); }
+});
+check('Each user interruption releases destination selection immediately without a delayed corrective scroll', () => {
+    const example = fixture({ count:4 }), scroll = window.scrollTo; api.synchronize(example.nav, example.content.id);
+    window.scrollTo = options => { window.scrolled = options; };
+    try {
+        for (const input of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
+            window.scrollY = 0; document.emit('scroll'); example.nav.emit('click', click(example.links()[3]));
+            assert.equal(currentIndex(example), 3);
+            window.scrollY = 800; document.emit(input); assert.equal(currentIndex(example), 1);
+            advance(2000); assert.equal(window.scrollY, 800); assert.equal(timers.size, 0);
+        }
+    } finally { window.scrollTo = scroll; api.detach(example.nav); example.surface.remove(); }
+});
+check('Reduced-motion navigation settles its selection and returns to manual viewport tracking', () => {
+    const example = fixture({ count:4 }); api.synchronize(example.nav, example.content.id); motion.matches = true;
+    example.nav.emit('click', click(example.links()[3]));
+    assert.equal(window.scrolled.behavior, 'auto'); assert.equal(currentIndex(example), 3); advance(120);
+    window.scrollY = 555; document.emit('scroll'); assert.equal(currentIndex(example), 1);
+    motion.matches = false; api.detach(example.nav); example.surface.remove();
+});
+check('Short and tall bands follow the same start line and a clamped final band remains current above its footer', () => {
+    const example = fixture({ count:4 }), scroll = window.scrollTo;
+    for (const [index, top, height] of [[0, 64, 160], [1, 224, 1200], [2, 1424, 120], [3, 1544, 260]]) {
+        example.bands[index].section.docTop = example.bands[index].heading.docTop = top;
+        example.bands[index].section.height = height;
+    }
+    example.content.height = 1740; example.ending.docTop = 1804; api.synchronize(example.nav, example.content.id);
+    assert.equal(currentIndex(example), 1, 'A short first band need not cover the viewport to advance naturally.');
+    window.scrollY = 1114; document.emit('scroll'); assert.equal(currentIndex(example), 1);
+    window.scrollY = 1115; document.emit('scroll'); assert.equal(currentIndex(example), 2);
+    window.scrollY = 1235; document.emit('scroll'); assert.equal(currentIndex(example), 3);
+    window.scrollTo = options => { window.scrolled = options; window.scrollY = Math.min(options.top, 1244); document.emit('scroll'); };
+    try {
+        example.nav.emit('click', click(example.links()[3])); advance(120);
+        assert.equal(window.scrollY, 1244); assert.equal(currentIndex(example), 3); assert.equal(timers.size, 0);
+        assert.equal(example.nav.hidden, false);
+        assert.ok(Number.parseFloat(example.nav.style.values.get('--f-presentation-progress-top')) + example.nav.height <= example.ending.getBoundingClientRect().top);
+        window.scrollY = example.ending.docTop; document.emit('scroll'); assert.equal(example.nav.hidden, true); assert.equal(currentIndex(example), 3);
+    } finally { window.scrollTo = scroll; api.detach(example.nav); example.surface.remove(); }
+});
 console.log(checks + ' presentation progress checks passed.');

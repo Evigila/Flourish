@@ -1353,5 +1353,15 @@
     "en-US": "Optional decorative background URL. A nonempty value renders an aria-hidden cover image beneath the standard Canvas/Surface/Primary Tone gradient, without changing content height or actions. null or whitespace leaves ordinary markup unchanged; no custom overlay settings are required.",
     "zh-CN": "可选装饰背景图地址。非空值在标准Canvas/Surface/Primary Tone渐变下渲染aria-hidden的cover图片，不改变正文高度或操作。null或空白保留普通结构，无需自定义蒙版参数。",
     "pt-BR": "URL opcional de fundo decorativo. Um valor não vazio mostra uma imagem cover com aria-hidden sob o gradiente padrão de Tone Canvas/Surface/Primary, sem alterar altura ou ações. null ou espaços preservam a estrutura comum, sem configurações de máscara."
+  },
+  "Parameter_Information_UniformGridItem": {
+    "en-US": "Defaults false. true displays one read-only label/value pair: Title is body text, Text is H1-sized, or ChildContent supplies the value instead. It disables icon tracks and grows naturally beyond shape/height caps.",
+    "zh-CN": "默认 false。true 时每格展示一个只读标签和值：Title 为正文，Text 为 H1 字号，或由 ChildContent 代替提供值。不使用图标轨道，内容可超出普通形状和高度上限自然增高。",
+    "pt-BR": "false por padrão. true exibe um par rótulo/valor somente leitura: Title em corpo, Text em H1, ou ChildContent no lugar do valor. Não usa faixas de ícone e cresce naturalmente além dos limites de forma/altura."
+  },
+  "Parameter_DangerTitle_Dialog": {
+    "en-US": "Defaults false. Applies the semantic Danger foreground only to the existing accessible title; it does not change dismissal, confirmation, focus or result handling.",
+    "zh-CN": "默认 false。仅给现有可访问标题使用语义 Danger 前景色，不改变关闭、确认、焦点或结果处理。",
+    "pt-BR": "false por padrão. Aplica o primeiro plano semântico Danger apenas ao título acessível existente; não altera fechamento, confirmação, foco nem resultado."
   }
 }

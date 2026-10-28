@@ -14,6 +14,19 @@ internal static class CenteredContentChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("content surfaces share configured container width in fixed and static document flow", async () =>
+        {
+            foreach (var documentFlow in new[] { false, true })
+            {
+                var html = await Render<ContentSurface>(new()
+                {
+                    [nameof(ContentSurface.DocumentFlow)] = documentFlow,
+                    [nameof(ContentSurface.Style)] = "height:440px"
+                }, width: 1400);
+                Require(html.Contains("height:440px;--f-content-width:1400px"),
+                    "Content/presentation width diverged from the configured navigation shell width.");
+            }
+        }));
         tests.Add(("navigation shells configure content width without owning page gutter variants", async () =>
         {
             var previous = CultureInfo.CurrentCulture;

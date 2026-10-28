@@ -4,6 +4,10 @@
 @namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Content
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("UniformGridItem")]
 
+<UniformGrid Columns="2" NarrowColumns="1">
+    <UniformGridItem Information="true" Title="@Localization.Parse("Key.Sample_Identifier")"><CopyText Value="DEMO-001-with-a-long-readable-identifier" /></UniformGridItem>
+    <UniformGridItem Information="true" Title="@Localization.Parse("Key.Sample_InformationStatus")" Text="@Localization.Parse(TextKey.Sample_InProgress)" />
+</UniformGrid>
 @if (Preview)
 {
     <UniformGrid Shape="UniformGridShape.Square">

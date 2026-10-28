@@ -6,7 +6,7 @@
 .navigation-surface {
 --f-content-gutter: max(var(--f-page-gutter), calc((100% - var(--f-content-width)) / 6));
     display: grid;
-    grid-template-rows: var(--f-topbar-height) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
     height: 100vh;
     height: 100dvh;
     min-height: 0;

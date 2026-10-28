@@ -6,7 +6,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-# Windows supplies the WOFF2 decoder; no downloaded converter or runtime package is required.
+# Windows supplies WOFF/WOFF2 decoding; no downloaded converter or runtime package is required.
 # IDWriteFactory5::UnpackFontFile: https://learn.microsoft.com/windows/win32/api/dwrite_3/nf-dwrite_3-idwritefactory5-unpackfontfile
 # IDWriteFactory6::CreateFontFaceReference: https://learn.microsoft.com/windows/win32/api/dwrite_3/nf-dwrite_3-idwritefactory6-createfontfacereference
 $nativeSource = @'
@@ -36,8 +36,9 @@ public static class NativeFontContainer
     public static void Convert(string source, string destination)
     {
         byte[] bytes = File.ReadAllBytes(source);
-        if (bytes.Length < 4 || bytes[0] != 0x77 || bytes[1] != 0x4f || bytes[2] != 0x46 || bytes[3] != 0x32)
-            throw new InvalidDataException("The source is not a WOFF2 container.");
+        if (bytes.Length < 4 || bytes[0] != 0x77 || bytes[1] != 0x4f || bytes[2] != 0x46 || (bytes[3] != 0x32 && bytes[3] != 0x46))
+            throw new InvalidDataException("The source is not a WOFF/WOFF2 container.");
+        uint container = bytes[3] == 0x32 ? 2u : 1u;
         Guid iid = new Guid("958DB99A-BE2A-4F09-AF7D-65189803D1D3");
         IntPtr factory = IntPtr.Zero, stream = IntPtr.Zero, context = IntPtr.Zero;
         GCHandle pin = default(GCHandle);
@@ -47,7 +48,7 @@ public static class NativeFontContainer
             Marshal.ThrowExceptionForHR(DWriteCreateFactory(0, ref iid, out factory));
             pin = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             // IUnknown(3), Factory(21), Factory1(2), Factory2(5), Factory3(9), Factory4(3), Factory5(5).
-            Marshal.ThrowExceptionForHR(Method<Unpack>(factory, 47)(factory, 2, pin.AddrOfPinnedObject(), checked((uint)bytes.Length), out stream));
+            Marshal.ThrowExceptionForHR(Method<Unpack>(factory, 47)(factory, container, pin.AddrOfPinnedObject(), checked((uint)bytes.Length), out stream));
             ulong length;
             Marshal.ThrowExceptionForHR(Method<GetSize>(stream, 5)(stream, out length));
             IntPtr fragment;

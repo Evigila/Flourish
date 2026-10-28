@@ -107,6 +107,7 @@ function beginNavigation(state, band) {
     interruptionEvents.forEach(type => document.addEventListener(type, state.interrupt, { capture:true, passive:true }));
     navigation.deadlineTimer = setTimeout(() => finishNavigation(state, navigation), 1000);
     scheduleAlignment(state);
+    update(state);
 }
 function update(state) {
     if (state.disposed || !state.targets.length) { state.root.hidden = true; return; }
@@ -131,9 +132,16 @@ function update(state) {
         && rect.top <= centerY && rect.bottom > centerY)?.band;
     if (backgroundBand) state.root.style.setProperty('--f-presentation-progress-foreground', getComputedStyle(backgroundBand).color);
     else state.root.style.removeProperty('--f-presentation-progress-foreground');
-    let active = state.targets[0];
-    const boundary = alignmentTop(state) + 1;
-    for (const target of state.targets) if (target.band.getBoundingClientRect().top <= boundary) active = target;
+    // A new band becomes current once it fills roughly two thirds of the usable
+    // viewport. Its top crosses the upper-third line; tall bands need not fit.
+    const usableTop = alignmentTop(state);
+    const boundary = usableTop + Math.max(0, bounds.bottom - usableTop) / 3;
+    // Keep the chosen destination current while our own smooth scroll crosses intermediate bands.
+    let active = state.targets.find(target => target.band === state.navigation?.band);
+    if (!active) {
+        active = state.targets[0];
+        for (const target of state.targets) if (target.band.getBoundingClientRect().top <= boundary) active = target;
+    }
     for (const target of state.targets) {
         if (target === active) target.link.setAttribute('aria-current', 'location');
         else target.link.removeAttribute('aria-current');
@@ -212,7 +220,7 @@ export function synchronize(root, contentId) {
             state.frame = requestAnimationFrame(() => { state.frame = 0; refresh(state); scheduleAlignment(state); });
         };
         state.scroll = () => { update(state); scheduleAlignment(state); };
-        state.interrupt = () => cancelNavigation(state);
+        state.interrupt = () => { cancelNavigation(state); update(state); };
         state.click = event => {
             const link = event.target.closest('.f-presentation-progress-link');
             const target = state.targets.find(entry => entry.link === link);

@@ -10,7 +10,7 @@
         data-f-dialog-browser-controlled="@(BrowserControlled ? "true" : null)" data-f-dialog-dismissible="@Dismissible.ToString().ToLowerInvariant()"
         data-f-dialog-active-view="@ActiveView" data-f-popup-strength="@Strength.ToString().ToLowerInvariant()">
     <header class="f-dialog-header">
-        <h2 id="@(Identifier + "-title")">@Title</h2>
+        <h2 id="@(Identifier + "-title")" class="@(DangerTitle ? "f-dialog-title-danger" : null)">@Title</h2>
         @if (Dismissible)
         {
             @if (BrowserControlled)
@@ -57,6 +57,8 @@
 
     [Parameter] public string? Id { get; set; }
     [Parameter, EditorRequired] public string Title { get; set; } = "";
+    /// <summary>Uses the semantic Danger foreground for the existing title without changing modal behavior or its accessible name.</summary>
+    [Parameter] public bool DangerTitle { get; set; }
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback<bool> IsOpenChanged { get; set; }
     [Parameter] public bool Busy { get; set; }

@@ -72,6 +72,9 @@
 .f-uniform-cell.f-uniform-grid-button { align-self:stretch; justify-self:stretch; }
 .f-uniform-cell-title { font-size:var(--f-type-h1,34px); font-weight:740; line-height:1.14; letter-spacing:-.035em; }
 .f-uniform-cell-text { font-size:var(--f-type-body,17px); font-weight:400; line-height:1.45; }
+.f-uniform-information-label { font-size:var(--f-type-body,17px); font-weight:400; line-height:1.55; }
+.f-uniform-information-value { font-size:var(--f-type-h1,34px); font-weight:740; line-height:1.14; letter-spacing:-.035em; }
+.f-uniform-information-value .f-copy-text { font:inherit; letter-spacing:inherit; }
 .f-uniform-cell-heading > .f-icon,.f-uniform-cell-icon > .f-icon { --f-icon-size:34px; }
 .f-uniform-grid-square > .f-uniform-cell { min-height:0; }
 .f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; }

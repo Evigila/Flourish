@@ -3363,5 +3363,25 @@
     "en-US": "Artistic title and standard actions above a decorative local SVG, with a dense Tone gradient and unchanged viewport/natural-growth behavior. The image is a placeholder, not product content.",
     "zh-CN": "艺术标题与标准操作位于本地SVG装饰图之上，使用密实Tone渐变，视口高度与自然增长行为不变。图片仅为占位，不表示产品内容。",
     "pt-BR": "Título artístico e ações padrão sobre SVG local decorativo, com gradiente denso de Tone e o mesmo comportamento de janela/crescimento natural. A imagem é ilustrativa, não conteúdo do produto."
+  },
+  "Sample_CardDeprecatedTitle": {
+    "en-US": "Card is deprecated",
+    "zh-CN": "Card 已弃用",
+    "pt-BR": "Card foi descontinuado"
+  },
+  "Sample_CardDeprecatedHelp": {
+    "en-US": "Do not add new Card usage. Use one UniformGrid information cell per read-only field; existing Card examples below remain available for migration.",
+    "zh-CN": "新代码请勿再使用 Card。只读字段使用 UniformGrid，每格一项信息；下方旧 Card 示例保留供迁移参考。",
+    "pt-BR": "Não adicione novos usos de Card. Use uma célula de informação UniformGrid por campo somente leitura; os exemplos antigos abaixo permanecem para migração."
+  },
+  "Sample_InformationStatus": {
+    "en-US": "Status",
+    "zh-CN": "状态",
+    "pt-BR": "Situação"
+  },
+  "Sample_DangerDialogTitle": {
+    "en-US": "Use the semantic Danger title",
+    "zh-CN": "使用语义 Danger 标题",
+    "pt-BR": "Usar título semântico Danger"
   }
 }

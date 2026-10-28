@@ -96,6 +96,12 @@ function menuUnavailable(element) {
 function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(element => visible(element) && !menuUnavailable(element)); }
 function copyTheme(trigger, panel) {
     const style = getComputedStyle(trigger);
+    const chrome = trigger.closest?.('.shell-header,.f-titlebar');
+    // A header can invert only its button's foreground/surface. Keep scoped
+    // brands/fonts from the trigger; use the sibling popup's own surface roles
+    // only for that chrome boundary. Detached previews keep their source theme.
+    const roleSource = chrome?.contains(panel) ? panel : chrome ? trigger.parentElement : null;
+    const surface = roleSource ? getComputedStyle(roleSource) : null;
     // Preserve the trigger's scoped surface roles on native top-layer popups.
     const names = new Set(['font-family','font-size','font-weight','line-height','color-scheme']);
     for (let index = 0; index < style.length; index++) {
@@ -105,11 +111,12 @@ function copyTheme(trigger, panel) {
     const saved = [];
     for (const name of names) {
         // A popup is a surface even when its trigger lives on dark chrome.
+        const own = ['--f-text','--f-surface','--f-accent-text'].includes(name) ? surface?.getPropertyValue(name) : '';
         const value = ['--f-target-preview','--f-row-hover'].includes(name)
             ? style.getPropertyValue('--f-surface-preview') || style.getPropertyValue(name)
             : ['--f-target-click','--f-row-active'].includes(name)
             ? style.getPropertyValue('--f-surface-click') || style.getPropertyValue(name)
-            : style.getPropertyValue(name);
+            : own || style.getPropertyValue(name);
         if (!value) continue;
         saved.push([name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);
         panel.style.setProperty(name,value);
@@ -246,6 +253,114 @@ export function initializeNativePickers(root = document) {
     for (const type of ['pointerdown','focusin','keydown']) owner.addEventListener(type,beforeOpen,true);
     (owner.defaultView ?? window).addEventListener('resize',()=>synchronize(owner));
     owner.addEventListener('scroll',()=>synchronize(owner),true);
+}
+
+const nativeSelectPopups = new WeakMap();
+/** Opt-in hover selection uses the shared menu; the original select still owns form and change semantics. */
+export function initializeNativeSelectPopups(root = document) {
+    const owners = [...(root.matches?.('[data-f-native-select-popup]') ? [root] : []),
+        ...root.querySelectorAll('[data-f-native-select-popup]')];
+    for (const owner of owners) {
+        const select = owner.querySelector(':scope > select');
+        const menu = owner.querySelector('.f-native-select-actions > .f-action-menu');
+        const trigger = menu?.querySelector(':scope > summary');
+        const panel = menu?.querySelector(':scope > [data-f-popup-panel]');
+        const options = panel?.querySelector('[data-f-native-select-options]');
+        if (!select || select.multiple || Number(select.size) > 1 || !trigger || !panel || !options || typeof panel.showPopover !== 'function') continue;
+        const existing = nativeSelectPopups.get(owner);
+        if (existing && (existing.select !== select || existing.trigger !== trigger || existing.panel !== panel)) detachNativeSelectPopup(owner);
+        else if (existing) { existing.refresh(); continue; }
+        const cleanup = [], view = select.ownerDocument.defaultView;
+        const on = (target, type, callback, capture = false) => {
+            target.addEventListener(type,callback,capture);
+            cleanup.push(()=>target.removeEventListener(type,callback,capture));
+        };
+        const labels = () => [...(select.labels ?? [])];
+        const caption = trigger.querySelector('[data-f-native-select-caption]');
+        let search = '', searchedAt = 0, previousSignature = null;
+        const disabled = option => select.disabled || select.matches(':disabled') || option.disabled || option.parentElement?.disabled;
+        const refresh = () => {
+            if (!owner.isConnected || !select.isConnected) { detachNativeSelectPopup(owner); return; }
+            const label = select.getAttribute('aria-label') || labels().map(item=>item.textContent.trim()).join(' ');
+            const signature = JSON.stringify([select.disabled,select.matches(':disabled'),select.value,label,
+                select.getAttribute('aria-labelledby'),select.getAttribute('aria-describedby'),select.getAttribute('aria-invalid'),
+                [...select.options].map(option=>[option.value,option.label,option.selected,!!disabled(option),option.hidden,option.parentElement?.hidden])]);
+            if (signature === previousSignature) return;
+            previousSignature = signature;
+            const oldFocus = options.contains(select.ownerDocument.activeElement)
+                ? select.ownerDocument.activeElement.getAttribute('data-f-native-select-value') : null;
+            const fragment = select.ownerDocument.createDocumentFragment();
+            for (const option of select.options) {
+                if (option.hidden || option.parentElement?.hidden) continue;
+                const choice = select.ownerDocument.createElement('button');
+                choice.type = 'button'; choice.className = 'f-native-select-option f-dropdown-item';
+                choice.setAttribute('role','menuitemradio'); choice.setAttribute('aria-checked',String(option.selected));
+                choice.setAttribute('data-f-native-select-value',option.value);
+                choice.setAttribute('data-f-native-select-text',option.label);
+                choice.disabled = !!disabled(option);
+                const marker = select.ownerDocument.createElement('span');
+                marker.className = 'f-select-checkmark'; marker.setAttribute('aria-hidden','true'); marker.textContent = option.selected ? '✓' : '';
+                const text = select.ownerDocument.createElement('span'); text.textContent = option.label;
+                choice.append(marker,text); fragment.appendChild(choice);
+            }
+            options.replaceChildren(fragment);
+            if (caption) caption.textContent = select.selectedOptions[0]?.label ?? '';
+            if (label) { trigger.setAttribute('aria-label',label); panel.setAttribute('aria-label',label); }
+            const labelledBy = select.getAttribute('aria-labelledby'), description = select.getAttribute('aria-describedby');
+            for (const [name,value] of [['aria-labelledby',labelledBy],['aria-describedby',description],['aria-invalid',select.getAttribute('aria-invalid')]])
+                value ? trigger.setAttribute(name,value) : trigger.removeAttribute(name);
+            trigger.setAttribute('tabindex','0');
+            trigger.setAttribute('aria-disabled',String(select.disabled || select.matches(':disabled')));
+            if (select.disabled || select.matches(':disabled')) closeMenu(trigger,panel,false);
+            if (oldFocus !== null) [...options.children].find(item=>item.getAttribute('data-f-native-select-value') === oldFocus)?.focus({preventScroll:true});
+        };
+        const initial = select.getAttribute('value');
+        if (initial !== null && [...select.options].some(option=>option.value === initial)) select.value = initial;
+        on(options,'click',event=>{
+            const choice = event.target.closest?.('button[data-f-native-select-value]');
+            if (!choice || !options.contains(choice) || menuUnavailable(select) || choice.disabled) return;
+            event.preventDefault();
+            const value = choice.getAttribute('data-f-native-select-value');
+            const option = [...select.options].find(item=>item.value === value && !disabled(item));
+            if (!option) return;
+            rememberInvoker(trigger);
+            const changed = select.value !== value;
+            select.value = value;
+            closeMenu(trigger,panel,true);
+            refresh();
+            if (changed) select.dispatchEvent(new (view?.Event ?? Event)('change',{bubbles:true}));
+        });
+        on(select,'change',refresh);
+        on(select,'invalid',event=>{
+            event.preventDefault(); trigger.setAttribute('aria-invalid','true');
+            trigger.focus({preventScroll:true});
+        });
+        for (const label of labels()) on(label,'click',event=>{
+            if (!owner.hasAttribute('data-f-native-select-ready') || menuUnavailable(select)) return;
+            event.preventDefault(); toggleMenu(trigger,panel,true);
+        });
+        on(menu,'keydown',event=>{
+            if (event.key.length !== 1 || event.ctrlKey || event.altKey || event.metaKey || event.key === ' ' || menuUnavailable(select)) return;
+            const now = Date.now(); search = now - searchedAt < 700 ? search + event.key : event.key; searchedAt = now;
+            const text = search.toLocaleLowerCase(select.ownerDocument.documentElement.lang || undefined);
+            const choices = [...options.children].filter(item=>!item.disabled);
+            const match = choices.find(item=>item.getAttribute('data-f-native-select-text').toLocaleLowerCase(select.ownerDocument.documentElement.lang || undefined).startsWith(text));
+            if (match) { event.preventDefault(); if (!menus.get(panel)?.open) toggleMenu(trigger,panel,false); match.focus({preventScroll:true}); }
+        });
+        if (select.form) on(select.form,'reset',()=>queueMicrotask(refresh));
+        const observer = new MutationObserver(refresh);
+        observer.observe(select,{childList:true,subtree:true,characterData:true,attributes:true,
+            attributeFilter:['disabled','selected','value','label','hidden','aria-label','aria-labelledby','aria-describedby','aria-invalid']});
+        cleanup.push(()=>observer.disconnect());
+        nativeSelectPopups.set(owner,{select,trigger,panel,refresh,cleanup});
+        menus.get(panel)?.cleanup.push(()=>detachNativeSelectPopup(owner));
+        refresh(); owner.setAttribute('data-f-native-select-ready','true');
+    }
+}
+export function detachNativeSelectPopup(owner) {
+    const state = nativeSelectPopups.get(owner); if (!state) return;
+    state.cleanup.forEach(remove=>remove()); nativeSelectPopups.delete(owner);
+    owner.removeAttribute('data-f-native-select-ready');
 }
 
 /** One nonmodal tutorial entry: native top-layer board plus a passive hover/focus overview. */
@@ -548,6 +663,7 @@ export function initializePopups(root = document) {
             }
         }
     }
+    initializeNativeSelectPopups(root);
 }
 
 function restoreDialogFocus(state) {

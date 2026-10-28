@@ -1,9 +1,9 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
 <header class="shell-header @Class">
     <div class="shell-header-start">
-        <a class="shell-header-brand" href="@HomeHref" aria-label="@HomeAriaLabel">
+        <ArkheideSystem.Flourish.Blazor.Components.Button Class="shell-header-brand" Href="@HomeHref" Variant="ButtonVariant.Quiet" aria-label="@HomeAriaLabel">
             <span class="shell-header-logo" aria-hidden="true">
-                <img src="@LogoPath" alt="" width="48" height="48" />
+                <img src="@LogoPath" alt="" width="24" height="24" />
             </span>
             <span class="shell-header-title">
                 <strong>@BrandName</strong>
@@ -12,12 +12,12 @@
                     <span class="shell-header-context">@ContextName</span>
                 }
             </span>
-        </a>
-        @if (Services is not null)
-        {
-            <div class="f-topbar-slot">@Services</div>
-        }
+        </ArkheideSystem.Flourish.Blazor.Components.Button>
     </div>
+    @if (Services is not null)
+    {
+        <div class="shell-header-center"><div class="f-topbar-slot">@Services</div></div>
+    }
     @if (LeadingActions is not null || !string.IsNullOrWhiteSpace(IdentityName) || EndActions is not null)
     {
         <div class="shell-header-actions">
@@ -58,6 +58,7 @@
     [Parameter] public string? IdentityHref { get; set; }
     [Parameter] public string? IdentityAriaLabel { get; set; }
     [Parameter] public string? Class { get; set; }
+    /// <summary>Navigation aligned to the owning surface's current page content; wraps below the wings when they do not fit.</summary>
     [Parameter] public RenderFragment? Services { get; set; }
     [Parameter] public RenderFragment? LeadingActions { get; set; }
     [Parameter] public RenderFragment? EndActions { get; set; }

@@ -2,8 +2,9 @@
 @inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
+@inject ArkheideSystem.Flourish.Blazor.Hosting.ApplicationOptions Options
 
-<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @(FloatingActions is null ? Class : $"f-content-surface-has-floating-actions {Class}")" style="@Style">
+<div @ref="root" class="content-surface @(DocumentFlow ? "f-document-surface" : null) @(FloatingActions is null ? Class : $"f-content-surface-has-floating-actions {Class}")" style="@RootStyle">
     <a class="skip-link" href="#@ContentId">@EffectiveSkipLabel</a>
     @if (TitleBar is not null) { <div class="@(DocumentFlow ? "f-document-surface-header" : "f-content-surface-header")">@TitleBar</div> }
     @if (FloatingActions is not null) { <div class="f-content-surface-floating-actions">@FloatingActions</div> }
@@ -31,6 +32,7 @@
     private IJSObjectReference? module;
     private Task<IJSObjectReference?>? moduleLoading;
     private bool disposed;
+    private string RootStyle => $"{Style};--f-content-width:{Options.Layout.ContentWidth}px";
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (disposed) return;
         try {

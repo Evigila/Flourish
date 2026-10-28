@@ -8,6 +8,17 @@ internal static class ComponentInventoryChecks
 {
     public static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("Card is explicitly deprecated with a current replacement while existing rendering stays available", () =>
+        {
+            var usage = ComponentUsageCatalog.For(typeof(Card));
+            Check(usage.Kind == ComponentUseKind.Deprecated && usage.PreferredEntry == typeof(UniformGrid)
+                && usage.Guidance.FallbackText!.StartsWith("Deprecated:", StringComparison.Ordinal), "Card still recommends new production usage.");
+            var metadata = typeof(Card).GetCustomAttributes(typeof(System.ComponentModel.EditorBrowsableAttribute), false)
+                .Cast<System.ComponentModel.EditorBrowsableAttribute>().Single();
+            Check(metadata.State == System.ComponentModel.EditorBrowsableState.Never && !typeof(Card).IsDefined(typeof(ObsoleteAttribute), false),
+                "Deprecation is undiscoverable or adds compiler warnings to retained consumers.");
+            return Task.CompletedTask;
+        }));
         tests.Add(("every exported Framework component has explicit source-owned usage guidance", () =>
         {
             var exported = typeof(Button).Assembly.GetExportedTypes()

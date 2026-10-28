@@ -10,6 +10,11 @@
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Card", DescriptionKey = "Key.Sample_CardSample_Description")]
 @using Microsoft.AspNetCore.Components
 @using ArkheideSystem.Flourish.Blazor.Components
+<Notice Severity="NotificationSeverity.Warning" Title="@Localization.Parse("Key.Sample_CardDeprecatedTitle")">@Localization.Parse("Key.Sample_CardDeprecatedHelp")</Notice>
+<UniformGrid Columns="2" NarrowColumns="1">
+    <UniformGridItem Information="true" Title="@Localization.Parse("Key.Sample_Identifier")"><CopyText Value="DEMO-001" /></UniformGridItem>
+    <UniformGridItem Information="true" Title="@Localization.Parse("Key.Sample_InformationStatus")" Text="@Localization.Parse(TextKey.Sample_InProgress)" />
+</UniformGrid>
 @if (Preview)
 {
     <Card />

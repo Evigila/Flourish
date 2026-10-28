@@ -5,6 +5,22 @@ namespace ArkheideSystem.Flourish.Blazor.Components.Internal;
 /// <summary>Shares the content structure of passive and interactive grid cells.</summary>
 internal static class UniformGridContent
 {
+    internal static RenderFragment Information(string label, string value, RenderFragment? valueContent) => builder =>
+    {
+        builder.OpenElement(0, "dl");
+        builder.AddAttribute(1, "class", "f-uniform-information-pair");
+        builder.OpenElement(2, "dt");
+        builder.AddAttribute(3, "class", "f-uniform-information-label");
+        builder.AddContent(4, label);
+        builder.CloseElement();
+        builder.OpenElement(5, "dd");
+        builder.AddAttribute(6, "class", "f-uniform-information-value");
+        if (valueContent is not null) builder.AddContent(7, valueContent);
+        else builder.AddContent(8, value);
+        builder.CloseElement();
+        builder.CloseElement();
+    };
+
     internal static RenderFragment Create(string title, string icon, string text, RenderFragment? childContent, bool iconSupport = false) => builder =>
     {
         if (iconSupport)

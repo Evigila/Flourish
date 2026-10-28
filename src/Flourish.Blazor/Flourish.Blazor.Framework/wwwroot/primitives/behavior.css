@@ -208,29 +208,58 @@
 .shell-header {
     position: relative;
     z-index: 50;
-    display: flex;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(var(--f-shell-brand-min, 82px), 1fr) fit-content(calc(100% - var(--f-shell-brand-min, 82px)));
+    align-items: center;
     min-width: 0;
-    min-height: var(--f-topbar-height, 68px);
+    /* Surface rows can be auto while chrome keeps its own growable baseline. */
+    min-height: 68px;
 }
 .shell-header-start,
+.shell-header-center,
 .shell-header-actions,
-.shell-header-brand,
 .shell-header-title,
 .shell-header-identity {
     display: flex;
     align-items: center;
 }
 .shell-header-start {
+    box-sizing: border-box;
+    grid-column: 1;
+    grid-row: 1;
     min-width: 0;
-    flex: 1;
+    align-self: center;
+}
+.shell-header-center {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    box-sizing: border-box;
+    min-width: 0;
+    margin-inline-start: var(--f-shell-content-start, var(--f-page-gutter, 0px));
+    margin-inline-end: var(--f-shell-content-end, var(--f-page-gutter, 0px));
+}
+.shell-header[data-shell-header-layout="aligned"] {
+    grid-template-columns: var(--f-shell-content-start) minmax(0, 1fr) var(--f-shell-content-end);
+}
+.shell-header[data-shell-header-layout="aligned"] > .shell-header-center {
+    grid-column: 2;
+    grid-row: 1;
+    margin-inline: 0;
+}
+.shell-header[data-shell-header-layout="aligned"] > .shell-header-actions {
+    grid-column: 3;
 }
 .shell-header-brand {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
     min-width: 0;
     flex: 0 1 auto;
 }
 .shell-header-logo {
     display: grid;
-    flex: 0 0 76px;
+    flex: 0 0 24px;
     place-items: center;
     overflow: hidden;
 }
@@ -251,8 +280,15 @@
     white-space: nowrap;
 }
 .shell-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    width: max-content;
+    max-width: 100%;
     min-width: 0;
-    flex: 0 0 auto;
 }
 .shell-header-identity {
     min-width: 48px;
@@ -294,8 +330,8 @@
     justify-content: center;
 }
 @media (max-width: 760px) {
-.shell-header-logo {
-    flex-basis: 60px;
+.shell-header {
+    --f-shell-brand-min: 78px;
 }
 .shell-header-identity strong {
     position: absolute;

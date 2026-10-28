@@ -46,5 +46,25 @@
       "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
       "bytes": 11357
     }
-  ]
+  ],
+  "commonSubset": {
+    "generator": "scripts/Subset-MaterialIcons.py",
+    "manifest": "common-icons.json",
+    "path": "MaterialSymbolsOutlined.common.woff",
+    "format": "WOFF 1.0",
+    "names": 78,
+    "codepoints": 76,
+    "originalBytes": 4003088,
+    "commonBytes": 125404,
+    "sha256": "098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1",
+    "defaultAndFilledShapesMatch": true,
+    "windowsWoffRoundTripMatches": true,
+    "variationTablesPreserved": [
+      "fvar",
+      "avar",
+      "STAT",
+      "HVAR"
+    ],
+    "commonUnicodeRange": "U+E145, U+E149, U+E14D, U+E159, U+E161, U+E164, U+E179, U+E1A1, U+E1BD, U+E264-E265, U+E2C3, U+E2C7, U+E32A, U+E40A, U+E429, U+E53B, U+E55D, U+E5C4, U+E5C8, U+E5CB-E5CF, U+E5D2-E5D5, U+E5D8, U+E5DB, U+E602, U+E627, U+E668, U+E7EE, U+E871, U+E873, U+E87A, U+E888, U+E88E, U+E890, U+E896, U+E899, U+E89E, U+E8AD, U+E8B3, U+E8B8, U+E8F4-E8F5, U+E8FD, U+E92E, U+E935, U+E990, U+E9B2, U+E9BA, U+E9DA, U+EA07, U+EA4D, U+EA77, U+EBCC, U+EF4F, U+EF63, U+EF7A, U+F053, U+F083, U+F08C, U+F090, U+F097, U+F09A-F09B, U+F0BE, U+F0D3, U+F233, U+F365, U+F5E5, U+F8B6"
+  }
 }

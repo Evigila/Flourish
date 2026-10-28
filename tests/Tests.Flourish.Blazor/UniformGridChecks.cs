@@ -12,6 +12,39 @@ internal static class UniformGridChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("information cells render one encoded label value pair without headings actions or icon tracks", async () =>
+        {
+            var value = "tenant-" + new string('x', 160) + "<private>";
+            var html = await Render<UniformGridItem>(new()
+            {
+                [nameof(UniformGridItem.Information)] = true, [nameof(UniformGridItem.Title)] = "Identifier <label>",
+                [nameof(UniformGridItem.Text)] = value, [nameof(UniformGridItem.Icon)] = "domain", [nameof(UniformGridItem.IconSupport)] = true,
+                [nameof(UniformGridItem.AdditionalAttributes)] = new Dictionary<string, object> { ["id"] = "tenant-identifier" }
+            });
+            var cell = Tag(html, "div", "f-uniform-information");
+            Require(Attribute(cell, "id") == "tenant-identifier" && HasClass(cell, "f-uniform-grid-item"), "The read-only field lost its native identifier or shared cell.");
+            Require(Regex.Matches(html, "<dl\\b").Count == 1 && Regex.Matches(html, "<dt\\b").Count == 1 && Regex.Matches(html, "<dd\\b").Count == 1,
+                "Information mode does not describe exactly one field per cell.");
+            Require(html.Contains("Identifier &lt;label&gt;", StringComparison.Ordinal) && html.Contains(WebUtility.HtmlEncode(value), StringComparison.Ordinal), "Field labels or long values were not encoded or retained.");
+            Require(!Regex.IsMatch(html, "<(?:h[1-6]|button|input|a)\\b") && !html.Contains("f-uniform-cell-icon", StringComparison.Ordinal)
+                && !HasClass(cell, "f-uniform-icon-support"), "Information type scale introduced headings, actions or an icon track.");
+            var ordinary = await Render<UniformGridItem>(new() { [nameof(UniformGridItem.Title)] = "Title", [nameof(UniformGridItem.Text)] = "Body" });
+            Require(!ordinary.Contains("f-uniform-information", StringComparison.Ordinal) && ordinary.Contains("<strong", StringComparison.Ordinal)
+                && ordinary.Contains("f-uniform-cell-text", StringComparison.Ordinal), "The opt-in changed ordinary cell rendering.");
+        }));
+        tests.Add(("information values preserve selectable CopyText child content without duplicating the fallback value", async () =>
+        {
+            var value = new string('a', 64);
+            RenderFragment copy = builder => { builder.OpenComponent<CopyText>(0); builder.AddAttribute(1, nameof(CopyText.Value), value); builder.CloseComponent(); };
+            var html = await Render<UniformGridItem>(new()
+            {
+                [nameof(UniformGridItem.Information)] = true, [nameof(UniformGridItem.Title)] = "SHA-256",
+                [nameof(UniformGridItem.Text)] = "Unused fallback", [nameof(UniformGridItem.ChildContent)] = copy
+            });
+            Require(Regex.Matches(html, "<code\\b").Count == 1 && html.Contains("f-copy-text", StringComparison.Ordinal) && html.Contains(value, StringComparison.Ordinal), "Information mode lost the original selectable value.");
+            Require(Regex.IsMatch(html, "<dd\\b[^>]*class=\"f-uniform-information-value\"[^>]*><code\\b")
+                && !html.Contains("Unused fallback", StringComparison.Ordinal), "Child content is outside the value or duplicated its fallback.");
+        }));
         tests.Add(("uniform grid centering is opt-in and preserves actual cell geometry", async () =>
         {
             var parameters = new Dictionary<string, object?> { [nameof(UniformGrid.Columns)] = 3, [nameof(UniformGrid.ChildContent)] = PassiveCells() };

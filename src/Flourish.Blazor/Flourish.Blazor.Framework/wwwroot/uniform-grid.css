@@ -71,6 +71,12 @@
 }
 .f-uniform-cell-icon { overflow:hidden; justify-content:flex-end; padding-block-end:4px; }
 .f-uniform-cell-copy { overflow:auto; justify-content:flex-start; padding-block-start:4px; }
+/* Information is a natural-height field layout, independently of action-cell shape/caps. */
+.f-uniform-grid:has(> .f-uniform-information) { grid-auto-rows:minmax(min-content,auto); }
+.f-uniform-grid.f-uniform-grid-rows:has(> .f-uniform-information) { grid-template-rows:repeat(var(--f-grid-rows),minmax(min-content,auto)); }
+.f-uniform-grid > .f-uniform-cell.f-uniform-information { aspect-ratio:auto; height:auto; min-height:0; max-height:none; overflow:visible; align-items:stretch; justify-content:flex-start; text-align:start; }
+.f-uniform-information-pair { display:flex; flex-direction:column; gap:12px; width:100%; min-width:0; max-width:100%; margin:0; }
+.f-uniform-information-label,.f-uniform-information-value { display:block; min-width:0; max-width:100%; margin:0; white-space:normal; overflow-wrap:anywhere; }
 @media(max-width:760px) {
     /* Let narrow content grow up to its cap instead of collapsing to half the cell width. */
     .f-uniform-grid-rectangle > .f-uniform-cell:not(.f-uniform-icon-support):has(.f-uniform-cell-heading,.f-uniform-cell-text) { aspect-ratio:auto; }

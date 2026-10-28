@@ -1,4 +1,9 @@
 /* Action menus and selection menus share the same popup and option surface. */
+:root,.f-root { --f-popup-text:var(--f-text); --f-popup-surface:var(--f-surface); --f-popup-accent-text:var(--f-accent-text); --f-popup-accent-ink:var(--f-accent-ink); }
+/* Header trigger contrast belongs to the trigger, not to its menu or native picker. */
+:is(.shell-header,.f-titlebar) .f-dropdown-panel { --f-text:var(--f-popup-text); --f-surface:var(--f-popup-surface); --f-accent-text:var(--f-popup-accent-text); }
+.f-select-checkmark { display:inline-grid; place-items:center; flex:0 0 var(--f-choice-size,28px); inline-size:var(--f-choice-size,28px); block-size:var(--f-choice-size,28px); border:1px solid var(--f-border); border-radius:var(--f-choice-radius,9px); color:transparent; background:var(--f-surface); font-weight:800; }
+.f-native-select-option[aria-checked=true] > .f-select-checkmark { color:var(--f-accent-ink); background:var(--f-primary); }
 .f-dropdown-trigger,.selection-dropdown-surface .selection-trigger { box-sizing:border-box; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:var(--f-control-height,48px); padding:0 16px; border:1px solid var(--f-border); border-radius:12px; color:var(--f-text); background:var(--f-surface); font:inherit; font-weight:400; list-style:none; cursor:pointer; }
 .f-dropdown-trigger::-webkit-details-marker { display:none; }
 .f-select,.f-dropdown-trigger,.selection-dropdown-surface .selection-trigger { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); }
@@ -9,6 +14,12 @@
 /* Keep each primitive's layout, keyboard state, filtering and selection semantics. */
 :is(.f-dropdown-panel .f-dropdown-item,.selection-dropdown-surface .selection-option,.search-autocomplete-option,.service-menu-view a) { box-sizing:border-box; min-height:40px; padding:6px 10px; border:0; border-radius:12px; }
 .f-dropdown-panel .f-dropdown-item { box-sizing:border-box; display:flex; align-items:center; justify-content:left; text-align:left; gap:12px; min-height:40px; padding:6px 10px; border:0; border-radius:12px; color:var(--f-text); background:transparent; cursor:pointer; }
+/* Structured menu actions use two body-sized lines; ordinary Button descriptions keep their compact type. */
+.f-dropdown-panel .f-button-structured.f-dropdown-item { min-height:72px; padding:10px 16px; gap:16px; color:var(--f-text); font-size:17px; font-weight:400; line-height:1.55; }
+.f-dropdown-panel .f-button-structured.f-dropdown-item .f-button-text { color:inherit; font-size:17px; font-weight:700; line-height:1.55; }
+.f-dropdown-panel .f-button-structured.f-dropdown-item .f-button-description { color:inherit; font-size:17px; font-weight:400; line-height:1.55; }
+/* Language choices retain body typography independently of the browser's button default or selected state. */
+.f-dropdown-panel .f-native-select-option { font-family:var(--f-font,"Segoe UI",sans-serif); font-size:17px; font-weight:400; line-height:1.55; }
 .f-dropdown-panel .f-dropdown-item:hover:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:focus-visible:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:has(:focus-visible):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
 .f-dropdown-panel .f-dropdown-item.is-selected { color:var(--f-text); background:transparent; }
 .f-dropdown-panel .f-dropdown-item.is-selected:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
@@ -27,6 +38,8 @@
     .editing-grid-table .f-select,.editing-grid-table .f-select::picker(select) { appearance:base-select; }
     .editing-grid-table .f-select::picker-icon { display:none; }
     .f-select::picker(select) { --f-target-preview:var(--f-surface-preview); --f-target-click:var(--f-surface-click); padding:6px; border:1px solid var(--f-border); border-radius:16px; color:var(--f-text); background:var(--f-surface); box-shadow:var(--f-shadow-popup); font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif); }
+    .shell-header .f-select::picker(select),.f-titlebar .f-select::picker(select) { --f-text:var(--f-popup-text); --f-surface:var(--f-popup-surface); --f-accent-text:var(--f-popup-accent-text); --f-accent-ink:var(--f-popup-accent-ink); }
+    .shell-header .f-select option,.f-titlebar .f-select option { --f-text:var(--f-popup-text); --f-surface:var(--f-popup-surface); --f-accent-ink:var(--f-popup-accent-ink); }
     .f-select option { font:400 17px/1.55 var(--f-font,"Segoe UI",sans-serif); border:0; border-radius:12px; color:var(--f-text); background:transparent; }
     /* The native selection marker shares Checkbox geometry and paint without a nested input. */
     .f-select option::checkmark { color:var(--f-accent-ink); background:var(--f-surface); border:1px solid var(--f-border); border-radius:var(--f-choice-radius,9px); font:800 17px/1 var(--f-font,"Segoe UI",sans-serif); }

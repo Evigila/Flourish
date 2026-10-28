@@ -16,3 +16,11 @@
     .f-select option:checked::checkmark { content:"✓"; }
 
 }
+/* Opt-in hover uses one native carrier until the shared menu has initialized. */
+.f-native-select-popup { display:inline-block; width:100%; max-width:100%; min-width:0; vertical-align:middle; }
+.f-native-select-popup.f-native-select-button { width:max-content; }
+.f-native-select-actions { display:none; }
+.f-native-select-popup[data-f-native-select-ready] > select { display:none; }
+.f-native-select-popup[data-f-native-select-ready] > .f-native-select-actions { display:inline-block; }
+[data-f-native-select-options] { display:grid; gap:4px; }
+.f-native-select-option { display:flex; align-items:center; gap:12px; width:100%; white-space:nowrap; }
