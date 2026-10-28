@@ -239,15 +239,15 @@
     margin-inline-start: var(--f-shell-content-start, var(--f-page-gutter, 0px));
     margin-inline-end: var(--f-shell-content-end, var(--f-page-gutter, 0px));
 }
-.shell-header[data-shell-header-layout="aligned"] {
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) {
     grid-template-columns: var(--f-shell-content-start) minmax(0, 1fr) var(--f-shell-content-end);
 }
-.shell-header[data-shell-header-layout="aligned"] > .shell-header-center {
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-center {
     grid-column: 2;
     grid-row: 1;
     margin-inline: 0;
 }
-.shell-header[data-shell-header-layout="aligned"] > .shell-header-actions {
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-actions {
     grid-column: 3;
 }
 .shell-header-brand {
@@ -289,6 +289,24 @@
     width: max-content;
     max-width: 100%;
     min-width: 0;
+}
+/* Document InlineActions fills its row; chrome slots reserve only their controls. */
+.shell-header-actions > .f-topbar-slot {
+    flex: 0 1 auto;
+    width: max-content;
+    max-width: 100%;
+}
+.shell-header-actions > .f-topbar-slot > .f-inline-actions[data-alignment],
+.shell-header-actions > .f-topbar-slot > form > .f-inline-actions[data-alignment] {
+    width: max-content;
+    max-width: 100%;
+}
+/* The measured fit already includes every action. Release both rows again in
+   stacked/no-script fallback instead of forcing narrow controls out of reach. */
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-actions,
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-actions > .f-topbar-slot > .f-inline-actions,
+.shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-actions > .f-topbar-slot > form > .f-inline-actions {
+    flex-wrap: nowrap;
 }
 .shell-header-identity {
     min-width: 48px;

@@ -4,6 +4,7 @@
 @import url('./layout.css');
 @import url('./primitives/primitives.css');
 @import url('./patterns/navigation-surface.css');
+@import url('./patterns/primary-navigation-preview.css');
 @import url('./patterns/content-surface.css');
 @import url('./native-overrides.css');
 @import url('./display-board.css');

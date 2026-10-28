@@ -2,17 +2,141 @@
 
 ## Current local shell candidate, 2026-10-28
 
-Root source declares **1.4.4-preview.shell.20261027.7** on stable-release baseline `37a42ae` (`v1.4.3` source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The candidate retains the six-package Core/Blazor manifest: Arkheide.Flourish.Core, Arkheide.Flourish.Blazor.Abstract, Arkheide.Flourish.Blazor.Framework, Arkheide.Flourish.Blazor.Design, Arkheide.Flourish.Extensions.Culture.Blazor and Arkheide.Flourish.Blazor. Internal package edges use the same candidate version; Essential.Culture remains **1.4.0**. WPF/WinUI release scope is unchanged. No additional external NuGet/npm package, SDK installation, font/service or host-side control implementation is required.
+Root source declares **1.4.4-preview.shell.20261027.11** on stable-release baseline `37a42ae` (`v1.4.3` source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The candidate retains the six-package Core/Blazor manifest: Arkheide.Flourish.Core, Arkheide.Flourish.Blazor.Abstract, Arkheide.Flourish.Blazor.Framework, Arkheide.Flourish.Blazor.Design, Arkheide.Flourish.Extensions.Culture.Blazor and Arkheide.Flourish.Blazor. Internal package edges use the same candidate version; Essential.Culture remains **1.4.0**. WPF/WinUI release scope is unchanged. No additional external NuGet/npm package, SDK installation, font/service or host-side control implementation is required.
 
-The header/footer controller reuses existing browser ResizeObserver/MutationObserver, animation-frame, computed-style and CSS-grid APIs. Its owned footer foreground shares the actual header/page content bounds; responsive minimum-height and bottom alignment remain Framework/Design responsibilities. The existing progress controller owns the header-aware upper-third activation line, immediate click destination and interruption lifecycle without a new dependency. Static SSR uses the existing browser entry; interactive surfaces share the same module. Hover selection reuses ActionMenu and its existing popup controller around a native select, implemented by the internal NativeSelectPopup helper rather than a new public dependency/component. Framework owns behavior and optional Design owns paint. The normal no-JavaScript header layout and native select remain usable; exact content alignment and opt-in hover behavior require the library browser modules.
+The header/footer controller reuses existing browser ResizeObserver/MutationObserver, animation-frame, computed-style and CSS-grid APIs. The fitted header menu uses measured intrinsic controls while the owned footer foreground keeps the actual page content bounds; responsive minimum-height and bottom alignment remain Framework/Design responsibilities. The existing progress controller owns the header-aware upper-third activation line, immediate click destination and interruption lifecycle without a new dependency. Static SSR uses the existing browser entry; interactive surfaces share the same module. Hover selection reuses ActionMenu and its existing popup controller around a native select, implemented by the internal NativeSelectPopup helper rather than a new public dependency/component. Framework owns behavior and optional Design owns paint. The normal no-JavaScript header layout and native select remain usable; exact content alignment and opt-in hover behavior require the library browser modules.
 
-Information-mode UniformGrid items, Card compatibility metadata and Dialog.DangerTitle use existing component/rendering, semantic-token and .NET attribute facilities. Header inset and structured-row spacing changes remain in Framework/Design CSS; no new browser library, package or service is introduced.
+The default-enabled primary preview uses the existing native manual Popover API, DOM pointer/focus/keyboard events, ResizeObserver/MutationObserver and animation frames. A reserved slot preserves layout while the same rail enters the top layer; there is no cloned fragment, extra browser library, package or external service. The same module is shared by static initialization, NavigationSurface and ApplicationShell lifecycle; normal ESM URL caching shares that module instance. Tooltip rebinding remains in the existing primary-navigation module. Framework/Design CSS partials are inlined into the existing bundles, not delivered as additional stylesheet requests. The controller is one new same-origin module request; both complete/common font assets remain unchanged. Candidate .11 corrects action-slot sizing and preview box/icon coordinates in the existing browser/CSS modules.
 
-The compact brand correction changes only existing native image attributes and Framework/Design geometry: 24px logo at every width, standard 48px Button target, an explicit growable 68px header minimum and 82px/78px fallback wing widths. It reuses the existing required-width controller; no additional dependency or maintained file is introduced.
+Information-mode UniformGrid items now have 24px internal padding instead of 16px, with natural height and unchanged H1/copy semantics; ordinary action/form layouts retain their prior spacing. This and Card compatibility metadata/Dialog.DangerTitle use existing component/rendering, semantic-token and .NET attribute facilities. Header inset and structured-row spacing changes remain in Framework/Design CSS; no new browser library, package or service is introduced.
+
+The compact brand correction changes only existing native image attributes and Framework/Design geometry: 24px logo at every width, standard 48px Button target, an explicit growable 68px header minimum and 82px/78px fallback wing widths. The .9 intrinsic-width correction retains real control boxes, existing minimum widths and fixed nonshrinking row-flex bases while ignoring stretched layout tracks; no additional dependency or maintained file is introduced.
 
 The current icon derivative adds no third-party package: common variable-font WOFF generation uses existing Windows DirectWrite/WPF and PowerShell plus installed Python **3.12.14 standard-library zlib/struct**. These are optional maintenance tools, not normal build/consumer dependencies. The original Apache-2.0 variable font is retained byte-identically, with a derived 125,404-byte common WOFF and explicit disjoint character ranges; both styles and all supported variation axes remain available. Font provenance is in the existing source.json, including the generator, manifest and common hash. No font CDN or external conversion service is contacted.
 
 ### Current candidate archive and asset evidence
+
+Candidate **1.4.4-preview.shell.20261027.11** is frozen in the independent `artifacts/header-preview-alignment-20261028/nuget` feed. Six archives pass the existing identity/dependency/required-asset verifier; twelve producer graphs retain 33 external package/version pairs, Essential 1.4.0 and the same SDK/runtime requirements. Five of these archives are consumed by Colligere; its cache and closure evidence belongs to that repository.
+
+This follow-up fixes ShellHeader's actual data-alignment action-group sizing and both wrapping levels in measured fit modes; it retains stacked/no-script wrapping and observes right-wing content/enhancement changes. Primary preview neutralizes native popover box defaults, preserves block insets and per-row geometry, aligns each actual icon and handles DOM collection replacement without layout reads. It adds no maintained source file or public API; the source tree remains 714 files/121 directories.
+
+Frozen-source 12-project Release passed with zero warnings/errors; Framework 487/487, Gallery 8653/8653, focused Node 62/62 (header 9, native CSS 33, preview 20) and CSS bundle 21/21 passed. No Computer Use or physical-browser measurements were performed. No old archive was overwritten, cache cleared, external dependency installed/upgraded, public package published, Git commit created or service deployed. Pack retains existing informational package-readme notices.
+
+| Candidate archive | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.4-preview.shell.20261027.11.nupkg | `deb66a1df423d6acd3b970021c2ff4f89c4e2b6f11076f419f9f37658de015da` |
+| Arkheide.Flourish.Blazor.Abstract.1.4.4-preview.shell.20261027.11.nupkg | `50f2197409ab1c40f171bfbdd48d44e7572b9b5f9178738f42a73fb7fbe752e6` |
+| Arkheide.Flourish.Blazor.Design.1.4.4-preview.shell.20261027.11.nupkg | `50e44423b96285b4f9e8a29ed0545286cbf4afa4161b98e06de0df63de703e18` |
+| Arkheide.Flourish.Blazor.Framework.1.4.4-preview.shell.20261027.11.nupkg | `0df33857b1193a92b2f5f0fe497a5bdba2c94b102bdf3c4c04b6c66275272edf` |
+| Arkheide.Flourish.Core.1.4.4-preview.shell.20261027.11.nupkg | `21155cffbb0bdfe98ffae20b2b3be2f56f97336925c00c05afccae84a71799ef` |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.4-preview.shell.20261027.11.nupkg | `7d2cb410c333cff7c997db47fe2d78783305de0b1ef2d61e32dec9cf20f3fa67` |
+
+| Delivered resource | Bytes | SHA-256 |
+| --- | --- | --- |
+| Framework / `staticwebassets/framework.css` | 99094 | `9f77ed7aae7d22d885be6db41aeb7dadd044bcac62ebfa493bf35d23e132ebeb` |
+| Design / `staticwebassets/design.css` | 136543 | `6314fd2fc6a6fd077fc3fee101db2d745768e2c9445c9806d17df14ef346ab6c` |
+| Framework / `staticwebassets/patterns/primary-navigation-preview.js` | 12049 | `72a1bcf52505db9791cc56005e949550c8ae54a6ad9a263fa99c65010a747ac0` |
+| Framework / `staticwebassets/primitives/primary-navigation-item.js` | 5155 | `72040afbb84665c74056eb6ea003a0fc3e51341416a21c7eec4f7424113193f0` |
+| Framework / `staticwebassets/primitives/input-behaviors.js` | 3920 | `9a16206034d09ed972ef3ea8004e379fff487c97338a8b18a985eb8f1a5d6a76` |
+| Framework / `staticwebassets/patterns/surfaces.js` | 4453 | `289218875cd68d9c36e17dfbd2df309f57814dc87d96314a558158a68a5ee3a7` |
+| Framework / `staticwebassets/shell.js` | 7467 | `fbab6783433c57add981c092af3fd40f1fb4a22adaac229f873519a477a6717e` |
+| Framework / `staticwebassets/patterns/header-layout.js` | 11050 | `2eac112ff5f06aad443df5073be724a69e87449bd3c9360d394db70d4659eb64` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.common.woff` | 125404 | `098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.woff2` | 4003088 | `96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3` |
+| Framework / `lib/net10.0/Flourish.Blazor.Framework.dll` | 777216 | `b7060734ebad93b4823f4b1d9f2020ba796305785440f990f96a15808ab99078` |
+
+All eleven packaged CSS/JS/font/assembly resources equal current maintained source or actual Release outputs. Both fonts match .10 byte-for-byte; the new header/preview corrections are present in the Release bundles and modules. Previous .10 archives were also rehashed unchanged. Evidence is under `artifacts/header-preview-alignment-20261028/`: build.log, build-frozen.log, framework-tests.log, gallery-tests.log, node-tests-final.log, css-bundle-tests.log, pack.log, package-verification.log, package-hashes.json and package-delivery.json. See [diagnosis, preserved contracts and manual acceptance](1_bugreports/2026-10-28_header-action-row-and-preview-box-alignment.md).
+
+## Historical release and preview records
+
+### Historical shell candidate .10 archive and asset evidence
+
+The local **1.4.4-preview.shell.20261027.10** candidate is frozen in `artifacts/primary-preview-20261028/nuget`, preserving .9 and earlier feeds. The same six Core/Blazor nuspec identities/internal edges pass `scripts/Verify-PackageSet.ps1`; Essential remains **1.4.0**. Twelve producer assets graphs still resolve **33 external package/version pairs**. SDK **10.0.400**, web assets **10.0.11**, and existing native browser APIs remain; no external dependency, font or tool was installed/upgraded.
+
+The final 12-project Release build passed with zero warnings/errors. Framework **487/487** (83 components, 775 parameter rows/363 documented defaults), Gallery **8,653/8,653**, focused Node **76/76** and CSS bundle **21/21** passed. Node includes the new preview controller **10/10**, complete CSS-cascade **33/33** and retained header **9/9** plus existing heading/surface/navigation checks; the section/top-control script reports 26 internal checks. No Computer Use, physical browser measurement or production behavior is claimed. Consumer restore/runtime acceptance is recorded separately by its owner.
+
+The repo has no debug-handler, and Prepare remains stable-only. The authorized explicit preview build/pack route generated six new archives with existing informational missing-package-readme notices. The verifier now explicitly requires the new preview JS module; source CSS partials remain inlined. No archive was replaced; there was no commit, remote tag/publication or deployment.
+
+| Candidate archive | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.4-preview.shell.20261027.10.nupkg | `108bc265cedf6fbde1cc7513b141a89096e06aa022f85ce4f931b13d0e31fabc` |
+| Arkheide.Flourish.Blazor.Abstract.1.4.4-preview.shell.20261027.10.nupkg | `f988947aa4bbbc7994d4c1f3c1630ee3246cae42ee6aa44354eb417d23d25329` |
+| Arkheide.Flourish.Blazor.Design.1.4.4-preview.shell.20261027.10.nupkg | `a70bdabe614893775a4f62a04e2bd790202cafe3eb38237cd8873d58772fdd50` |
+| Arkheide.Flourish.Blazor.Framework.1.4.4-preview.shell.20261027.10.nupkg | `ce3e1b4afd679fdf73c5760cc07aefe61aace43e1609d6b293656cd66e314fd6` |
+| Arkheide.Flourish.Core.1.4.4-preview.shell.20261027.10.nupkg | `59f3adb93f8d0974fd06eeff7fadbaf1e773285380e17abcd0e43bb60b967d3c` |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.4-preview.shell.20261027.10.nupkg | `7ba9e4a1cf424da91a6697f9b6497d0445854bbbb5f9378bff6e367be51b0244` |
+
+| Delivered resource | Bytes | SHA-256 |
+| --- | --- | --- |
+| Framework / `staticwebassets/framework.css` | 97336 | `5e347d4c171e5bfb9c1bc63d3fe00f9396b8dbe2b31d6e5aecba72a0175725e0` |
+| Design / `staticwebassets/design.css` | 136827 | `98f1ba0ed9abe7140c0c5699c6c23f788a4958842145a7c034f5ad447b7ecd3d` |
+| Framework / `staticwebassets/patterns/primary-navigation-preview.js` | 9220 | `0767ad706cefd6e709d35e2ab8d8b60051e4b4200847e330b2017ad131ccd6dc` |
+| Framework / `staticwebassets/primitives/primary-navigation-item.js` | 5155 | `72040afbb84665c74056eb6ea003a0fc3e51341416a21c7eec4f7424113193f0` |
+| Framework / `staticwebassets/primitives/input-behaviors.js` | 3920 | `9a16206034d09ed972ef3ea8004e379fff487c97338a8b18a985eb8f1a5d6a76` |
+| Framework / `staticwebassets/patterns/surfaces.js` | 4453 | `289218875cd68d9c36e17dfbd2df309f57814dc87d96314a558158a68a5ee3a7` |
+| Framework / `staticwebassets/shell.js` | 7467 | `fbab6783433c57add981c092af3fd40f1fb4a22adaac229f873519a477a6717e` |
+| Framework / `staticwebassets/patterns/header-layout.js` | 10939 | `dbabc63c91dd8a28778c2ffebb565c04c7444b9b5bce5844e89bfb9e4460c238` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.common.woff` | 125404 | `098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.woff2` | 4003088 | `96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3` |
+| Framework / `lib/net10.0/Flourish.Blazor.Framework.dll` | 777216 | `47fc5eab2e1f0b3d845834eab4b148cf52f045d279e0f58711fa7940fe6f4a08` |
+
+All eleven delivered resources equal maintained source or actual Release bundle/assembly outputs. The .9 header-layout.js and both fonts additionally match their previous immutable archives byte for byte. Both preview CSS partials are in the existing bundles; the shared controller adds one normal same-origin ESM resource and uses no new third-party browser dependency. Evidence: `artifacts/primary-preview-20261028/{restore.log,build.log,build-final.log,build-frozen.log,node-tests-final.log,preview-tests.log,framework-tests.log,gallery-tests.log,css-bundle-tests.log,pack.log,package-verification.log,package-hashes.json,package-delivery.json}`. See [primary-navigation design, boundary fixes and manual checks](1_bugreports/2026-10-28_weak-primary-navigation-preview.md).
+
+### Historical shell candidate .9 archive and asset evidence
+
+The local **1.4.4-preview.shell.20261027.9** candidate is frozen in `artifacts/header-height-20261028/nuget`, following .8 and committed shell .7 source `feee3ea`. All six nuspec identities/internal dependency edges passed `scripts/Verify-PackageSet.ps1`; Essential remains **1.4.0**. Twelve producer assets graphs still contain **33 external package/version pairs**. The SDK remains **10.0.400**, with web assets package **10.0.11**. No package, SDK/runtime, font or tool was installed/upgraded.
+
+The 12-project Release build passed with zero warnings/errors. Framework **485/485**, header mock-DOM **9/9**, complete native-select/CSS-cascade **32/32** and CSS bundle **21/21** passed. The full business-header mock reserves actual identity, enhanced native-language and POST/logout targets, including already-constrained 26px bounding boxes recovering their CSS 48px bases, a 318px action-wing requirement, and the 801/802px genuine fit boundary. Complete Framework/Design CSS independently confirms both NavigationSurface and ContentSurface targets and their ordinary 68px height budget; it retains wrapping instead of imposing height or clipping. This is source/mock evidence, not measured browser geometry. Consumer integration is recorded separately by its owner.
+
+No debug-handler exists, and Prepare remains stable-only. The authorized explicit local preview build/pack route produced these six independent .9 archives; no .8 or older archive was overwritten. No commit, remote publication, tag or deployment occurred.
+
+| Candidate archive | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.4-preview.shell.20261027.9.nupkg | `d5382ae71c35e99de5e0c5447acbea7137daa7144c3a4fdc050563d9b1c5dd89` |
+| Arkheide.Flourish.Blazor.Abstract.1.4.4-preview.shell.20261027.9.nupkg | `bb26f216e0c875f3081fdad5e07394b3c7b226824e1dcf61bf933e240c8746a8` |
+| Arkheide.Flourish.Blazor.Design.1.4.4-preview.shell.20261027.9.nupkg | `30524d0892c645a35847f07ba841f2f5c1322aa79b7f12cd15e20e2a89061cb6` |
+| Arkheide.Flourish.Blazor.Framework.1.4.4-preview.shell.20261027.9.nupkg | `65163fa5f285d575c3baf288c5efb3992228ff2309b81e62ea557d251aeb7589` |
+| Arkheide.Flourish.Core.1.4.4-preview.shell.20261027.9.nupkg | `c1543ff85a35df7205b1a4cfcc697f8227f4e205c09fa1495306efd57665d888` |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.4-preview.shell.20261027.9.nupkg | `ce7247217fa6292a47221e5e773651aa7b736386f5192930b7a6629283489115` |
+
+| Delivered resource | Bytes | SHA-256 |
+| --- | --- | --- |
+| Framework / `staticwebassets/framework.css` | 94404 | `c890ae895db285f214bb6501f6a16fbb98f5672f5b7a862f7cadfbf95befee0f` |
+| Design / `staticwebassets/design.css` | 135502 | `90b5c131e808498e0f58d6f219b3dc36c938b15977a62eafeb0041d7d65db089` |
+| Framework / `staticwebassets/patterns/header-layout.js` | 10939 | `dbabc63c91dd8a28778c2ffebb565c04c7444b9b5bce5844e89bfb9e4460c238` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.common.woff` | 125404 | `098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.woff2` | 4003088 | `96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3` |
+
+The header module matches maintained source. Framework/Design CSS equal actual bundled Release output and the immutable .8 archives; both icon fonts also remain byte-identical to .8. Only header-layout.js changes among these browser assets. The .8 fitted-menu and 24px information-inset features remain, as do the .7 common/full font partition and dynamic-icon fallback. Evidence: `artifacts/header-height-20261028/{restore.log,build.log,header-css-tests.log,framework-tests.log,css-bundle-tests.log,pack.log,package-verification.log,package-hashes.json,package-delivery.json}`. See the [business-header width-budget report](1_bugreports/2026-10-28_business-header-control-width-budget.md).
+
+### Historical shell candidate .8 archive and asset evidence
+
+The local **1.4.4-preview.shell.20261027.8** candidate is frozen in `artifacts/header-information-20261028/nuget`, based on committed .7 source `feee3ea`. All six nuspec identities/internal dependency edges passed `scripts/Verify-PackageSet.ps1`; Essential remains **1.4.0**. Twelve producer assets graphs still contain **33 external package/version pairs**. The selected SDK remains **10.0.400** and its web assets package **10.0.11**; no package, SDK/runtime, font or tool was installed or upgraded for this refinement.
+
+The 12-project Release build passed with zero warnings/errors. Existing Framework checks **485/485**, header mock-DOM **9/9**, native-select/full CSS-cascade **31/31** and CSS bundle **21/21** passed. The header checks cover page-wide stretched menu wrappers, both-wing fit, real 663/664px overflow boundaries, translated-control resizing, exact/fitted/stacked modes, RTL, footer page-edge preservation and observer cleanup. Information cascade checks retain H1/CopyText typography, natural height and action-cell geometry while increasing only information-cell padding. No browser or Computer Use validation ran. Consumer integration results are maintained by the consuming project; no .8 runtime acceptance is asserted here.
+
+The repository has no debug-handler entry, and the existing Prepare route is stable-only. Following its documented preview direction, .8 was explicitly built and packed into its independent local feed, then passed the existing package verifier. The .7 and older feeds/archives remain unchanged. There was no commit, remote publication, tag or deployment.
+
+| Candidate archive | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.4-preview.shell.20261027.8.nupkg | `1063e57332ece43a62854761dd8a30ade2965d80baa18947fbb8c2057098b695` |
+| Arkheide.Flourish.Blazor.Abstract.1.4.4-preview.shell.20261027.8.nupkg | `c25071c627e0dadb596683ad77e890ef3a087debf9c432db98bbcd66a5faeb17` |
+| Arkheide.Flourish.Blazor.Design.1.4.4-preview.shell.20261027.8.nupkg | `2f160aae96f91fda7ca5ff0ba8370aebc44b395235db90cc7912bb4e59957d13` |
+| Arkheide.Flourish.Blazor.Framework.1.4.4-preview.shell.20261027.8.nupkg | `c080bc68eeeb14284387940cb2c46edc676052ba870769f99836b1e95dd93b13` |
+| Arkheide.Flourish.Core.1.4.4-preview.shell.20261027.8.nupkg | `ec69f9617f6d1625a80698e05ba3931884e2f804646b3bd881f29df1ee493ada` |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.4-preview.shell.20261027.8.nupkg | `0b7479e86b81cf6361f5e31cbc9422eacea18f0279a5150f005a77899b5e33c4` |
+
+| Delivered resource | Bytes | SHA-256 |
+| --- | --- | --- |
+| Framework / `staticwebassets/framework.css` | 94404 | `c890ae895db285f214bb6501f6a16fbb98f5672f5b7a862f7cadfbf95befee0f` |
+| Design / `staticwebassets/design.css` | 135502 | `90b5c131e808498e0f58d6f219b3dc36c938b15977a62eafeb0041d7d65db089` |
+| Framework / `staticwebassets/patterns/header-layout.js` | 10340 | `c56db024c7056be1d99efc8dc0261fa4adcdb25a1acec12e7f3be08f9c22f131` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.common.woff` | 125404 | `098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.woff2` | 4003088 | `96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3` |
+
+The Framework/Design CSS bytes equal the actual bundled Release outputs, and header-layout.js equals maintained source. Both fonts equal source and the previous immutable .7 package byte for byte. The .7 common/full unicode-range selection and dynamic-icon compatibility remain unchanged. Evidence: `artifacts/header-information-20261028/{restore.log,build.log,header-css-tests.log,framework-tests.log,css-bundle-tests.log,pack.log,package-verification.log,package-hashes.json,package-delivery.json}`. See the [wide-header and information-inset report](1_bugreports/2026-10-28_wide-header-menu-and-information-insets.md).
+
+### Historical shell candidate .7 archive and asset evidence
 
 The local **1.4.4-preview.shell.20261027.7** candidate is packed in `artifacts/icon-subset-20261028/nuget`. All six nuspec identities/internal dependency edges passed scripts/Verify-PackageSet.ps1; Essential remains **1.4.0**. The 12 producer assets graphs contain **33 external package/version pairs**, unchanged in identity from the previous scoped candidate. The selected SDK remains **10.0.400** and its web assets package **10.0.11**; no SDK/runtime/tool/package installation occurred.
 
@@ -40,8 +164,6 @@ Flourish has no debug-handler entry. The existing publish-helper.bat Prepare rou
 All listed resources equal their maintained source or actual bundled Release output. The two font faces are in the single bundled framework.css; source subsets.css is not a separate runtime stylesheet. Common-only glyphs select **125,404 bytes**, a **96.87% reduction** from the previous 4,003,088-byte font requirement. Introducing an uncommon dynamic glyph legitimately selects the retained full file as well; that compatibility cost is explicit, and the same full URL is not duplicated into several faces. This request-selection conclusion follows the nonoverlapping unicode-range declarations; physical browser network acceptance remains manual.
 
 Local evidence: `artifacts/icon-subset-20261028/{generation.json,regeneration-verification.json,font-tests.log,framework-tests.log,css-bundle-tests.log,build.log,package-verification.log,package-hashes.json,font-delivery.json,publish-helper-prepare.log}`. See the [common-font report](1_bugreports/2026-10-28_common-icon-font-subset.md) for regeneration, standards references, boundary cases and manual checks. The .6 and older archive/runtime evidence below is historical.
-
-## Historical release and preview records
 
 ### Historical shell candidate .6 archive and asset evidence
 
@@ -549,7 +671,7 @@ These audit project snapshots contain **49 distinct package ID/version pairs**: 
 
 | Evidence | What it establishes |
 | --- | --- |
-| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish `VersionPrefix=1.4.4`, `VersionSuffix=preview.shell.20261027.7`, Essential property `1.4.0`, inherited version/license defaults; extension props import the root props. The selected six-package candidate is local; dated public 1.4.3 evidence remains separate. |
+| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish `VersionPrefix=1.4.4`, `VersionSuffix=preview.shell.20261027.10`, Essential property `1.4.0`, inherited version/license defaults; extension props import the root props. The selected six-package candidate is local; dated public 1.4.3 evidence remains separate. |
 | Audited `.csproj` declarations and their dated matching `obj/project.assets.json` | Direct package requirements, project edges, target frameworks, exact observed package versions/parents and SDK download requests at the audit baseline. |
 | `artifacts/release-1.4.0/obj/Gallery.Flourish.Blazor/project.assets.json`, written `2026-10-10T04:10:14.3513983Z` | Fresh release restore identifies five referenced Flourish libraries as source projects at 1.4.0 and Essential Core/Blazor/Generator as packages at 1.4.0. It does not establish build/test completion or publication. |
 | Fresh public consumer `artifacts/package-consumers/9f393f06c97c43efb834ffe4b84510d1`; `artifacts/release-1.4.0/public-consumer-provenance.json` | Four independent package-only consumer modes passed 143 checks. All six Flourish and three Essential 1.4.0 package metadata entries identify NuGet.org; no local feed or source project is used. |
@@ -591,7 +713,7 @@ Project aliases below abbreviate complete consumer sets without omitting project
 | P21 | `tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`)<br>P15 (`Gallery.Flourish.WPF`) |
 | P22 | `tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj` | `net10.0` | P13 (`Gallery.Flourish.Blazor`) |
 
-Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their shared inherited source version is now 1.4.4-preview.shell.20261027.7 for this local candidate; the selected package manifest still contains only the six Core/Blazor IDs above. The dated audit snapshots observed 1.1.3 and later 1.4.1 before subsequent release changes. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
+Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their shared inherited source version is now 1.4.4-preview.shell.20261027.10 for this local candidate; the selected package manifest still contains only the six Core/Blazor IDs above. The dated audit snapshots observed 1.1.3 and later 1.4.1 before subsequent release changes. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
 
 ## Direct and SDK-injected NuGet packages
 
@@ -824,7 +946,7 @@ No database, cloud storage, cache server, telemetry endpoint, authentication pro
 ## Active constraints and unresolved facts
 
 - Essential.Culture 1.4.0 is the current authorized dependency. Runtime adapters and generator are external NuGet packages even though Essential is maintained by the same organization. No sibling Essential source reference is present. Modular resources are selected through Essential CultureModule generation/deployment; no additional JSON merge or filesystem discovery dependency was introduced.
-- Current source is the local **1.4.4-preview.shell.20261027.7** candidate based on **37a42ae**, after the verified public **stable 1.4.3** release, for the same six Core/Blazor package IDs and Essential.Culture 1.4.0. Current artifact evidence belongs to the explicitly labeled current-candidate section; .6 and older preview hashes remain historical. No new remote publication has occurred. Native WPF and its Culture bridge remain outside this candidate package manifest. The dated audit and public-release records do not certify consumption or verification of this local candidate.
+- Current source is the local **1.4.4-preview.shell.20261027.10** candidate based on **37a42ae**, after the verified public **stable 1.4.3** release, for the same six Core/Blazor package IDs and Essential.Culture 1.4.0. Current artifact evidence belongs to the explicitly labeled current-candidate section; .9 and older preview hashes remain historical. No new remote publication has occurred. Native WPF and its Culture bridge remain outside this candidate package manifest. The dated audit and public-release records do not certify consumption or verification of this local candidate.
 - No dependency adoption or upgrade was performed for this documentation audit. Unknown licenses, source commits, runner/browser/OS versions and unpinned optional tools remain explicitly unknown. The scope is the resolved project/tool distributions above; it does not enumerate every component internal to an OS, browser, SDK or CI runner image.
 - The human-maintained `docs/docfx.en-us.json` and `docs/docfx.zh-cn.json` currently name missing `src/Flourish.WPF/Flourish.WPF.csproj` and `src/Flourish.WPF/Assets/favicon.ico`. The actual meta project is P12. Successful documentation API/resource generation against those stale paths is unverified; ownership rules prevent silently editing the configs during this audit.
 - Root `LICENSE.txt` contains MIT terms but still has `[year] [fullname]` attribution placeholders. Package MIT/Apache declarations and the retained third-party icon licenses are recorded as actual evidence; this inventory does not invent ownership attribution or repair the root license.

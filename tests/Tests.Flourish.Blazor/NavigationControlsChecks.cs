@@ -12,6 +12,31 @@ internal static class NavigationControlsChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("primary preview keeps one real link and full disabled description with encoded visual labels", async () =>
+        {
+            foreach (var disabled in new[] { false, true })
+            {
+                var html = await Render<PrimaryNavigationItem>(new() { [nameof(PrimaryNavigationItem.Id)] = "preview-one", [nameof(PrimaryNavigationItem.Label)] = "Registry <safe>", [nameof(PrimaryNavigationItem.Href)] = "/registry", [nameof(PrimaryNavigationItem.Icon)] = "inventory_2", [nameof(PrimaryNavigationItem.Disabled)] = disabled, [nameof(PrimaryNavigationItem.DisabledMessage)] = "Approval <required>" });
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "class=\"f-primary-preview-label\"").Count == 1, "A preview duplicates navigation labels or real fragments.");
+                Require(html.Contains("class=\"f-primary-preview-copy\" aria-hidden=\"true\"", StringComparison.Ordinal) && html.Contains("Registry &lt;safe&gt;", StringComparison.Ordinal), "The visual label duplicates the accessible name or bypasses encoding.");
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "id=\"preview-one-tooltip\"").Count == 1 && html.Contains("aria-describedby=\"preview-one-tooltip\"", StringComparison.Ordinal), "The original unique description relationship was lost.");
+                Require(disabled ? !html.Contains("href=", StringComparison.Ordinal) && html.Contains("Approval &lt;required&gt;", StringComparison.Ordinal) && html.Contains("f-primary-preview-reason", StringComparison.Ordinal) : System.Text.RegularExpressions.Regex.Matches(html, "href=\"/registry\"").Count == 1, "Preview changes real navigation or discards a disabled reason.");
+            }
+        }));
+        tests.Add(("navigation preview defaults on and can opt out without cloning the primary fragment", async () =>
+        {
+            foreach (var enabled in new[] { false, true })
+            {
+                var html = await Render<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface>(new()
+                {
+                    [nameof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface.PrimaryNavigationPreview)] = enabled,
+                    [nameof(ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface.PrimaryNavigation)] = (RenderFragment)(builder => builder.AddMarkupContent(0, "<a id=\"one-primary\" href=\"/one\">One</a>"))
+                });
+                Require(System.Text.RegularExpressions.Regex.Matches(html, "id=\"one-primary\"").Count == 1 && System.Text.RegularExpressions.Regex.Matches(html, "href=\"/one\"").Count == 1, "The primary fragment or its IDs were cloned for preview.");
+                Require(html.Contains("data-f-primary-preview=", StringComparison.Ordinal) == enabled && html.Contains("data-f-primary-preview-slot", StringComparison.Ordinal), "Preview opt-out does not retain its normal narrow slot.");
+            }
+            Require(new ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface().PrimaryNavigationPreview && new ApplicationShell().PrimaryNavigationPreview, "Both primary-rail hosts must use the same enabled default.");
+        }));
         tests.Add(("both production primary navigation entries share the canonical icon-size role", async () =>
         {
             var html = await Render<PrimaryNavigationItem>(new() { [nameof(PrimaryNavigationItem.Id)] = "inventory", [nameof(PrimaryNavigationItem.Label)] = "Inventory", [nameof(PrimaryNavigationItem.Href)] = "/inventory", [nameof(PrimaryNavigationItem.Icon)] = "inventory_2" });

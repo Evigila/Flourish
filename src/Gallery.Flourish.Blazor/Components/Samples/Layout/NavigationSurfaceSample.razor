@@ -15,13 +15,15 @@
 
 @if (!Preview) {
     <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_ShowSecondaryNavigation)" @bind-Value="Secondary" />
+    <ArkheideSystem.Flourish.Blazor.Components.CheckBox Label="@Localization.Parse(TextKey.Sample_PrimaryNavigationPreview)" @bind-Value="PrimaryPreview" />
 }
-<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" ContentId="@Id" DocumentKey="@Page" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)" PrimaryLabel="@Localization.Parse(TextKey.Sample_ExampleModules)" SecondaryLabel="@Localization.Parse(TextKey.Sample_ExamplePages)" TopLabel="@Localization.Parse(TextKey.Sample_BackToExampleTop)">
+<ArkheideSystem.Flourish.Blazor.Components.Patterns.NavigationSurface Style="height:440px; min-height:0; position:relative; contain:layout paint;" ShowSecondary="Secondary" PrimaryNavigationPreview="PrimaryPreview" ContentId="@Id" DocumentKey="@Page" SkipLabel="@Localization.Parse(TextKey.Sample_SkipToExampleContent)" PrimaryLabel="@Localization.Parse(TextKey.Sample_ExampleModules)" SecondaryLabel="@Localization.Parse(TextKey.Sample_ExamplePages)" TopLabel="@Localization.Parse(TextKey.Sample_BackToExampleTop)">
     <TitleBar><header class="app-topbar"><strong>@(Preview ? Localization.Parse(TextKey.Nav_TopBar) : Localization.Parse(TextKey.Sample_ResourceCenterFictional))</strong></header></TitleBar>
     <PrimaryNavigation>
         <div @onclick="ShowDocuments" @onclick:preventDefault>
             <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-documents")" Label="@Localization.Parse(TextKey.Sample_Resources)" Icon="folder" Href="@($"#{Id}")" IsCurrent="true" />
         </div>
+        <ArkheideSystem.Flourish.Blazor.Components.Primitives.PrimaryNavigationItem Id="@(Id + "-manage")" Label="@Localization.Parse(TextKey.Sample_Manage)" Icon="settings" Disabled="true" DisabledMessage="@Localization.Parse(TextKey.Sample_TheDemoVisitorDoesNotHaveManagementPermission)" />
     </PrimaryNavigation>
     <SecondaryNavigation>
         <div @onclick="ShowDocuments" @onclick:preventDefault><ArkheideSystem.Flourish.Blazor.Components.Primitives.SecondaryNavigationItem Label="@Localization.Parse(TextKey.Sample_AllResources)" Href="@($"#{Id}-documents")" IsCurrent="@(Page == 0)" /></div>
@@ -41,6 +43,7 @@
     [Parameter] public bool Preview { get; set; }
     private readonly string Id = $"navigation-sample-{Guid.NewGuid():N}";
     private bool Secondary = true;
+    private bool PrimaryPreview = true;
     private int Page;
     private void ShowDocuments() => Page = 0;
     private void ShowArchived() => Page = 1;

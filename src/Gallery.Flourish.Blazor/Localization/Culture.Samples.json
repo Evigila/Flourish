@@ -1,4 +1,9 @@
 {
+  "Sample_PrimaryNavigationPreview": {
+    "en-US": "Preview primary navigation on hover or keyboard focus",
+    "zh-CN": "悬停或键盘焦点时预览一级导航",
+    "pt-BR": "Prévia da navegação primária ao passar o mouse ou focar pelo teclado"
+  },
   "Sample_FictionalMember": {
     "en-US": "Fictional member",
     "zh-CN": "虚构成员",

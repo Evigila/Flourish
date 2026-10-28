@@ -220,6 +220,11 @@ test("information grid fields grow naturally beyond shape and fixed-height caps 
     assert.equal(cascade(allStyles, grid, "grid-template-rows"), "repeat(var(--f-grid-rows),minmax(min-content,auto))");
     for (const [property, expected] of [["aspect-ratio", "auto"], ["height", "auto"], ["max-height", "none"], ["overflow", "visible"], ["text-align", "start"]])
       assert.equal(cascade(allStyles, info, property), expected, `${shape}/${fixed}/${property}`);
+    if (css.includes("--f-uniform-cell-background")) {
+      assert.equal(cascade(allStyles, info, "padding"), "24px", `${shape}/${fixed}/information inset`);
+      assert.equal(cascade(allStyles, info, "min-height"), "0", 'information grows from padded label/value content rather than an action-cell cap');
+      assert.equal(cascade(allStyles, action, "padding"), "16px", 'information spacing must not enlarge ordinary actions');
+    }
     assert.equal(cascade(allStyles, action, "aspect-ratio"), fixed ? "auto" : shape === "square" ? "1" : "2/1");
     assert.equal(cascade(allStyles, action, "max-height"), fixed ? "var(--f-grid-cell-height)" : shape === "square" ? "var(--f-grid-cell-max,280px)" : "var(--f-grid-cell-max-height,260px)");
   }
@@ -331,6 +336,94 @@ test("header Quiet branding buttons disclosure summaries and native select trigg
       assert.notEqual(cascade(allStyles, action, "--f-accent-text"), cascade(allStyles, brand, "--f-accent-text"), "header white ink must not enter panels or dialogs");
       assert.notEqual(cascade(allStyles, action, "--f-target-preview"), cascade(allStyles, brand, "--f-target-preview"), "header feedback roles must remain on actual chrome controls");
     }
+  }
+});
+test("business identity language and native POST controls retain their own target boxes within the ordinary header baseline", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  for (const surfaceClass of ["navigation-surface", "content-surface"]) {
+    const surface = element("div", ["f-root", surfaceClass], null), header = element("header", ["shell-header"], surface);
+    const wing = element("div", ["shell-header-actions"], header), identity = element("span", ["shell-header-identity"], wing);
+    const slot = element("div", ["f-topbar-slot"], wing), group = element("div", ["f-inline-actions"], slot);
+    group.attributes.set("data-alignment", "end"); // InlineActions always renders its default alignment too.
+    const popup = element("span", ["f-native-select-popup", "f-native-select-button"], group);
+    const nativeActions = element("span", ["f-native-select-actions"], popup), menu = element("details", ["f-action-menu"], nativeActions);
+    const language = element("summary", ["f-disclosure-button-trigger", "f-button", "f-button-icon", "f-button-quiet"], menu);
+    const form = element("form", [], group), logout = element("button", ["f-button", "f-button-icon", "f-button-quiet"], form);
+    for (const control of [language, logout]) {
+      const glyph = element("span", ["f-icon"], control);
+      assert.equal(cascade(allStyles, control, "width"), "48px");
+      assert.equal(cascade(allStyles, control, "height"), "48px");
+      assert.equal(cascade(allStyles, control, "flex"), "0 0 48px", 'the own 48px target is nonshrinking, independently of a 26px glyph');
+      assert.equal(cascade(allStyles, control, "padding"), "0");
+      assert.equal(cascade(allStyles, surface, "--f-icon-default-size"), "26px");
+      assert.equal(cascade(allStyles, glyph, "--f-icon-size"), "var(--f-icon-default-size,26px)");
+    }
+    assert.equal(cascade(allStyles, identity, "height"), "48px");
+    assert.equal(cascade(allStyles, group, "margin-block"), "0", 'document InlineActions margin cannot inflate either chrome surface');
+    assert.equal(cascade(allStyles, form, "display"), "flex");
+    assert.equal(cascade(allStyles, form, "align-items"), "center");
+    const targetHeight = Number.parseFloat(cascade(allStyles, language, "height"));
+    const wingInset = Number.parseFloat(cascade(allStyles, wing, "padding-block"));
+    const border = Number.parseFloat(cascade(allStyles, header, "border-bottom"));
+    const minimum = Number.parseFloat(cascade(allStyles, header, "min-height"));
+    assert.equal(Math.max(minimum, targetHeight + 2 * wingInset + border), 68, 'the full business row fits the same growable baseline as the presentation row');
+    assert.equal(cascade(allStyles, header, "height"), undefined);
+    assert.equal(cascade(allStyles, wing, "flex-wrap"), "wrap", 'genuine narrow-screen overflow remains reachable');
+    const transportSlot = element("div", ["f-topbar-slot"], wing), transportForm = element("form", [], transportSlot);
+    const transportGroup = element("div", ["f-inline-actions"], transportForm); transportGroup.attributes.set("data-alignment", "end");
+    const bodyGroup = element("div", ["f-inline-actions"], surface); bodyGroup.attributes.set("data-alignment", "end");
+    const dialog = element("dialog", ["f-dialog"], group), dialogActions = element("div", ["f-dialog-actions"], dialog);
+    const dialogGroup = element("div", ["f-inline-actions"], dialogActions); dialogGroup.attributes.set("data-alignment", "end");
+    const panel = element("div", ["f-menu-panel"], group), popupGroup = element("div", ["f-inline-actions"], panel); popupGroup.attributes.set("data-alignment", "end");
+    for (const mode of [null, "aligned", "fitted", "stacked", "fitted"]) {
+      if (mode === null) header.attributes.delete("data-shell-header-layout"); else header.attributes.set("data-shell-header-layout", mode);
+      const wraps = mode === "aligned" || mode === "fitted" ? "nowrap" : "wrap";
+      assert.equal(cascade(allStyles, slot, "width"), "max-content");
+      assert.equal(cascade(allStyles, slot, "flex"), "0 1 auto");
+      assert.equal(cascade(allStyles, wing, "flex-wrap"), wraps, `${mode}/identity and end-slot row`);
+      for (const actual of [group, transportGroup]) {
+        assert.equal(cascade(allStyles, actual, "width"), "max-content", `${mode}/chrome must override the actual 100%-width data-alignment rule`);
+        assert.equal(cascade(allStyles, actual, "max-width"), "100%");
+        assert.equal(cascade(allStyles, actual, "flex-wrap"), wraps, `${mode}/nested control row`);
+        assert.equal(cascade(allStyles, actual, "justify-content"), "flex-end");
+      }
+      for (const outside of [bodyGroup, dialogGroup, popupGroup]) {
+        assert.equal(cascade(allStyles, outside, "width"), "100%", 'document, popup and Dialog actions retain their full row');
+        assert.equal(cascade(allStyles, outside, "flex-wrap"), "wrap", 'chrome nowrap cannot enter nested control surfaces');
+      }
+      assert.equal(cascade(allStyles, form, "display"), "flex");
+    }
+  }
+});
+test("weak primary previews override actual surface widths without changing ordinary icon links or multiline row geometry", () => {
+  const allStyles = rules(frameworkCss + "\n" + designCss);
+  for (const configured of [false, true]) {
+    const outer = element("div", ["f-shell"], null);
+    const surface = element("div", ["f-root", configured ? "f-shell" : "navigation-surface"], outer);
+    const body = element(configured ? "aside" : "div", [configured ? "f-navigation" : "app-body"], surface);
+    const slot = element("div", ["f-primary-preview-slot"], body);
+    const rail = element(configured ? "nav" : "aside", [configured ? "f-primary-navigation" : "primary-rail"], slot);
+    const parent = configured ? element("div", ["f-primary-navigation-main"], rail) : element("nav", [], rail);
+    const entry = configured ? parent : element("div", ["primary-navigation-entry"], parent);
+    const link = element("a", [configured ? "f-primary-item" : "primary-nav-item"], entry);
+    const copy = element("span", ["f-primary-preview-copy"], link), label = element("span", ["f-primary-preview-label"], copy);
+    assert.equal(cascade(allStyles, copy, "display"), "none");
+    assert.equal(cascade(allStyles, link, "width"), "45px", 'the complete cascade includes the narrow-screen target rule');
+    assert.equal(cascade(allStyles, slot, "grid-row"), configured ? "2/4" : undefined, 'configured-shell placement must not leak into a nested composed surface without a secondary rail');
+    rail.attributes.set("data-f-primary-preview-open", ""); slot.attributes.set("data-f-primary-preview-active", "");
+    assert.equal(cascade(allStyles, rail, "position"), "fixed", 'the actual navigation surface position rule must not defeat the top-layer geometry');
+    assert.equal(cascade(allStyles, rail, "max-inline-size"), "min(var(--f-primary-preview-max-width,22rem),var(--f-primary-preview-available))");
+    assert.equal(cascade(allStyles, slot, "inline-size"), "var(--f-primary-preview-reserved-width)");
+    assert.equal(cascade(allStyles, link, "width"), "auto", 'the real 55px surface-specific link rule must not clip label clicks');
+    assert.equal(cascade(allStyles, link, "display"), "grid");
+    assert.equal(cascade(allStyles, link, "grid-template-columns"), "var(--f-primary-preview-target-width) minmax(0,1fr)");
+    assert.equal(cascade(allStyles, link, "height"), "var(--f-primary-preview-row-height,var(--f-primary-preview-target-height))");
+    assert.equal(cascade(allStyles, link, "max-height"), "var(--f-primary-preview-row-height,var(--f-primary-preview-target-height))");
+    assert.equal(cascade(allStyles, copy, "display"), "flex");
+    assert.equal(cascade(allStyles, label, "white-space"), "nowrap");
+    assert.equal(cascade(allStyles, label, "text-overflow"), "ellipsis");
+    const ordinary = element("a", [configured ? "f-primary-item" : "primary-nav-item"], configured ? surface : element("aside", ["primary-rail"], surface));
+    assert.equal(cascade(allStyles, ordinary, "width"), "45px");
   }
 });
 test("circuit-owned popover panels remain hidden until the browser opens their existing grid", () => {

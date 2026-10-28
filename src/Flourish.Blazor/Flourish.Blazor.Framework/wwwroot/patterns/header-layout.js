@@ -5,13 +5,28 @@ const clamp = (value, minimum, maximum) => Math.max(minimum, Math.min(maximum, v
 
 // Geometry is taken from the actual page, including navigation rails and its
 // scrollbar. The wings never change the page's selected container width.
-export function resolveHeaderLayout(header, content, startWidth, endWidth, direction = 'ltr') {
+export function resolveHeaderLayout(header, content, startWidth, endWidth, direction = 'ltr', centerWidth = 0) {
     if (!(header.width > 0) || !(content.right > content.left)) return null;
     const left = clamp(content.left - header.left, 0, header.width);
     const right = clamp(header.right - content.right, 0, header.width - left);
     const start = direction === 'rtl' ? right : left;
     const end = direction === 'rtl' ? left : right;
-    return { start, end, mode:start + 0.5 >= startWidth && end + 0.5 >= endWidth ? 'aligned' : 'stacked' };
+    // A wide business page can leave almost no outside gutter. Only the menu's
+    // intrinsic controls, not that page-wide center track, must fit beside wings.
+    if (startWidth + centerWidth + endWidth > header.width + 0.5)
+        return { start, end, mode:'stacked' };
+    let fittedStart = Math.max(start, startWidth), fittedEnd = Math.max(end, endWidth);
+    const excess = fittedStart + centerWidth + fittedEnd - header.width;
+    if (excess > 0) {
+        const startSpace = fittedStart - startWidth, endSpace = fittedEnd - endWidth;
+        const space = startSpace + endSpace;
+        if (space > 0) {
+            fittedStart -= excess * startSpace / space;
+            fittedEnd -= excess * endSpace / space;
+        }
+    }
+    const exact = Math.abs(fittedStart - start) < 0.5 && Math.abs(fittedEnd - end) < 0.5;
+    return { start:fittedStart, end:fittedEnd, mode:exact ? 'aligned' : 'fitted' };
 }
 
 function stageFor(header) {
@@ -48,7 +63,7 @@ function contentBounds(target) {
     }
     return { left, right };
 }
-function requiredWidth(element) {
+function intrinsicWidth(element, parentStyle) {
     if (!element) return 0;
     const style = getComputedStyle(element);
     const children = [...element.children].filter(node => {
@@ -56,18 +71,24 @@ function requiredWidth(element) {
         return !node.matches('.f-menu-panel,[data-f-popup-panel]') && !['absolute','fixed'].includes(position)
             && node.getBoundingClientRect().width > 0;
     });
-    // The brand wing stretches to its grid track; that empty track is not an
-    // intrinsic brand requirement and must not prevent a stacked header widening.
-    const width = element.matches('.shell-header-start') ? 0 : element.getBoundingClientRect().width;
-    if (!children.length) return Math.max(width, pixels(element.scrollWidth));
+    // Ignore stretched layout wrappers, but retain a real control's own box.
+    // An icon-only Button is wider than its glyph even with zero padding.
+    const control = element.matches('button,a,input,select,textarea,summary,.f-button,.f-menu-trigger,.service-menu-trigger,.shell-header-identity');
+    const width = !children.length || control ? element.getBoundingClientRect().width : 0;
+    // Keep nonshrinking flex constraints even when a previous narrow track has
+    // constrained the measured box. Read CSS rather than duplicating target sizes.
+    const basis = style.flexShrink === '0' && parentStyle?.display.includes('flex')
+        && !parentStyle.flexDirection.startsWith('column') && style.flexBasis?.endsWith('px') ? pixels(style.flexBasis) : 0;
+    const minimum = Math.max(pixels(style.minWidth), basis);
+    if (!children.length) return Math.max(width, minimum, pixels(element.scrollWidth));
     const sizes = children.map(node => {
         const childStyle = getComputedStyle(node);
-        return requiredWidth(node) + pixels(childStyle.marginLeft) + pixels(childStyle.marginRight);
+        return intrinsicWidth(node, style) + pixels(childStyle.marginLeft) + pixels(childStyle.marginRight);
     });
     const row = style.display.includes('flex') ? !style.flexDirection.startsWith('column') : style.display.startsWith('inline');
     const content = row ? sizes.reduce((total, size) => total + size, 0)
         + Math.max(0, sizes.length - 1) * pixels(style.columnGap) : Math.max(...sizes);
-    return Math.max(width, content + pixels(style.paddingLeft) + pixels(style.paddingRight)
+    return Math.max(width, minimum, content + pixels(style.paddingLeft) + pixels(style.paddingRight)
         + pixels(style.borderLeftWidth) + pixels(style.borderRightWidth));
 }
 function setProperty(header, name, value) {
@@ -94,8 +115,11 @@ function update(state) {
     }
     state.footers = footers;
     const start = header.querySelector(':scope > .shell-header-start');
+    const center = header.querySelector(':scope > .shell-header-center');
     const end = header.querySelector(':scope > .shell-header-actions');
-    const observed = new Set([header, context.stage, target, start, end, ...footers,
+    const controlsFor = container => container ? [...container.querySelectorAll('.f-button,button,select,.service-menu-trigger,.shell-header-identity strong')]
+        .filter(node => !node.closest('.f-menu-panel,[data-f-popup-panel],.f-dialog')) : [];
+    const observed = new Set([header, context.stage, target, start, center, end, ...controlsFor(center), ...controlsFor(end), ...footers,
         ...header.querySelectorAll(':scope > .shell-header-start .shell-header-title > *')].filter(Boolean));
     for (const node of state.observed) if (!observed.has(node)) state.resize?.unobserve(node);
     for (const node of observed) if (!state.observed.has(node)) state.resize?.observe(node);
@@ -103,11 +127,11 @@ function update(state) {
     if (state.surface !== context.surface) {
         state.mutation?.disconnect();
         state.surface = context.surface;
-        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden'], childList:true, subtree:true });
+        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden','data-f-native-select-ready'], childList:true, subtree:true });
     }
     const bounds = contentBounds(target);
     const layout = resolveHeaderLayout(header.getBoundingClientRect(), bounds,
-        requiredWidth(start), requiredWidth(end), getComputedStyle(header).direction);
+        intrinsicWidth(start), intrinsicWidth(end), getComputedStyle(header).direction, intrinsicWidth(center));
     if (!layout) return;
     setProperty(header, '--f-shell-content-start', layout.start);
     setProperty(header, '--f-shell-content-end', layout.end);

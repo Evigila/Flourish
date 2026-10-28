@@ -1,4 +1,9 @@
 {
+  "Parameter_PrimaryNavigationPreview": {
+    "en-US": "Enabled by default. Preview primary icons and labels on mouse hover over the entire rail or keyboard focus. The same links float above content without resizing it. Leave the region or press Escape to close; touch retains ordinary icon navigation. False keeps individual hints.",
+    "zh-CN": "默认启用。鼠标进入整个一级栏或键盘焦点进入时，使用同一组真实链接浮层展示图标和标签，不改变正文宽度。移出区域或按 Escape 收起；触屏保留图标导航。false 保留原单项提示。",
+    "pt-BR": "Ativo por padrão. Exibe ícones e rótulos ao passar o mouse pela barra primária ou receber foco de teclado. Os mesmos links flutuam sobre o conteúdo sem redimensioná-lo. Saia da região ou pressione Escape para fechar; toque mantém a navegação por ícones. False preserva dicas individuais."
+  },
   "Parameter_Unframed_ActionMenu": {
     "en-US": "Remove the popup background, border, padding and shared shadow. Child controls keep their own appearance; placement, scrolling and dismissal are unchanged. Defaults to false.",
     "zh-CN": "移除弹层底板、边框、内边距和整体阴影；子控件保留各自外观，定位、滚动与关闭行为不变。默认 false。",

@@ -1,0 +1,54 @@
+/* A normal-flow slot retains the narrow track while its one real rail is in the top layer. */
+.f-primary-preview-slot { display:flex; min-width:0; min-height:0; }
+.f-primary-preview-slot > :is(.primary-rail,.f-primary-navigation) { flex:1; min-width:0; }
+.f-primary-preview-slot[data-f-primary-preview-active] { inline-size:var(--f-primary-preview-reserved-width); }
+.f-primary-preview-copy { display:none; min-width:0; overflow:hidden; text-align:start; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] {
+    position:fixed;
+    inset:auto;
+    top:var(--f-primary-preview-top);
+    left:var(--f-primary-preview-left);
+    right:var(--f-primary-preview-right);
+    box-sizing:border-box;
+    margin:0;
+    border:0;
+    padding:var(--f-primary-preview-padding-top,0px) 0 var(--f-primary-preview-padding-bottom,0px);
+    inline-size:max-content;
+    min-inline-size:min(var(--f-primary-preview-min-width,16rem),var(--f-primary-preview-available));
+    max-inline-size:min(var(--f-primary-preview-max-width,22rem),var(--f-primary-preview-available));
+    block-size:var(--f-primary-preview-height);
+    max-block-size:var(--f-primary-preview-height);
+    overflow-x:hidden;
+    overscroll-behavior:contain;
+    z-index:60;
+}
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open].f-primary-navigation { display:flex; align-items:stretch; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] :is(.f-primary-navigation-main,.f-primary-navigation-fixed) { align-items:stretch; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open].f-primary-navigation,
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open].primary-rail > nav { padding-inline:var(--f-primary-preview-inline-inset,0px); }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] :is(.primary-nav-item,.f-primary-item) {
+    display:grid;
+    grid-template-columns:var(--f-primary-preview-target-width) minmax(0,1fr);
+    place-items:center start;
+    inline-size:auto;
+    width:auto;
+    min-width:0;
+    box-sizing:border-box;
+    border:0;
+    padding:0;
+    height:var(--f-primary-preview-row-height,var(--f-primary-preview-target-height));
+    min-height:var(--f-primary-preview-row-height,var(--f-primary-preview-target-height));
+    max-height:var(--f-primary-preview-row-height,var(--f-primary-preview-target-height));
+    justify-content:start;
+}
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] :is(.primary-nav-symbol,.f-primary-item > .f-icon) {
+    justify-self:start;
+    align-self:start;
+    margin:0;
+    margin-inline-start:var(--f-primary-preview-icon-inline-inset,0px);
+    margin-block-start:var(--f-primary-preview-icon-block-inset,0px);
+}
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] .f-primary-preview-copy { display:flex; flex-direction:column; gap:2px; align-self:center; }
+.f-primary-preview-label,.f-primary-preview-reason { display:block; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open]::backdrop { background:transparent; pointer-events:none; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] .primary-nav-item:not([aria-disabled=true]) ~ .primary-navigation-tooltip { display:none; }

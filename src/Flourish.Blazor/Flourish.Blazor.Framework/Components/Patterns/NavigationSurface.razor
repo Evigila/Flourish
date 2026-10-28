@@ -9,7 +9,9 @@
     @TitleBar
     <div class="app-body @(ShowSecondary && SecondaryNavigation is not null ? "has-secondary-navigation" : null)">
         @if (PrimaryNavigation is not null) {
-            <aside class="primary-rail"><nav aria-label="@EffectivePrimaryLabel">@PrimaryNavigation</nav></aside>
+            <div class="f-primary-preview-slot" data-f-primary-preview-slot>
+                <aside class="primary-rail" data-f-primary-preview="@(PrimaryNavigationPreview ? "" : null)"><nav aria-label="@EffectivePrimaryLabel">@PrimaryNavigation</nav></aside>
+            </div>
         }
         @if (ShowSecondary && SecondaryNavigation is not null) {
             <aside class="secondary-rail"><nav aria-label="@EffectiveSecondaryLabel">@SecondaryNavigation</nav></aside>
@@ -23,6 +25,8 @@
     private string EffectiveSkipLabel => DefaultText(nameof(SkipLabel), SkipLabel, "Shell_Skip", "Skip to content");
     [Parameter] public RenderFragment? TitleBar { get; set; }
     [Parameter] public RenderFragment? PrimaryNavigation { get; set; }
+    /// <summary>Previews primary icons and labels on mouse hover or keyboard focus without moving page content.</summary>
+    [Parameter] public bool PrimaryNavigationPreview { get; set; } = true;
     [Parameter] public bool ShowSecondary { get; set; } = true;
     [Parameter] public RenderFragment? SecondaryNavigation { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const source = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/shell.js', import.meta.url), 'utf8');
-const { updateCompactHeading, resetCompactHeading, attach, detach } = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+const { updateCompactHeading, resetCompactHeading, attach, detach } = await import(`data:text/javascript;base64,${Buffer.from(source.replace(/^import \{ initializePrimaryNavigationPreviews.*$/m, 'const initializePrimaryNavigationPreviews=()=>{}; const disposePrimaryNavigationPreviews=()=>{};')).toString('base64')}`);
 
 function fixture(range = 110, shrink = 102) {
     const attrs = new Set(), events = [];

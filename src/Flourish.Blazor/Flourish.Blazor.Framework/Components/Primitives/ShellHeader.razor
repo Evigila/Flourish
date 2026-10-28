@@ -58,7 +58,7 @@
     [Parameter] public string? IdentityHref { get; set; }
     [Parameter] public string? IdentityAriaLabel { get; set; }
     [Parameter] public string? Class { get; set; }
-    /// <summary>Navigation aligned to the owning surface's current page content; wraps below the wings when they do not fit.</summary>
+    /// <summary>Navigation follows the page content when space permits, fits between the wings on wide pages, and wraps only when the controls cannot share a row.</summary>
     [Parameter] public RenderFragment? Services { get; set; }
     [Parameter] public RenderFragment? LeadingActions { get; set; }
     [Parameter] public RenderFragment? EndActions { get; set; }

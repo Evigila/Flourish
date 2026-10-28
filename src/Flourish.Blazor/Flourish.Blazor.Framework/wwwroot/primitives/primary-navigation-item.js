@@ -2,13 +2,15 @@ const entries = new WeakMap();
 let active = null;
 
 export function attach(container) {
-    if (entries.has(container)) return;
     const trigger = container.querySelector('[data-navigation-trigger]');
     const tooltip = container.querySelector('[data-navigation-tooltip]');
+    const previous = entries.get(container);
+    if (previous?.trigger === trigger && previous?.tooltip === tooltip) return;
+    detach(container);
     if (!trigger || !tooltip) return;
 
     const state = { triggerHover: false, tooltipHover: false, focused: false, dismissed: false,
-        open: false, showTimer: null, hideTimer: null, disposed: false };
+        open: false, showTimer: null, hideTimer: null, disposed: false, trigger, tooltip };
     const listeners = [];
     const listen = (target, name, handler, options) => {
         target.addEventListener(name, handler, options);
@@ -44,7 +46,8 @@ export function attach(container) {
     };
     const show = () => {
         state.showTimer = null;
-        if (state.disposed || state.dismissed || !interacting() || !container.isConnected) return;
+        if (state.disposed || state.dismissed || !interacting() || !container.isConnected
+            || trigger.closest('[data-f-primary-preview-open]') && trigger.getAttribute('aria-disabled') !== 'true') return;
         if (active && active !== state) active.hide();
         active = state;
         state.open = true;
@@ -107,6 +110,10 @@ export function attach(container) {
         state.focused = true;
         requestShow(0);
     }
+}
+
+export function suppressPrimaryNavigationTooltip(scope) {
+    if (active && scope.contains(active.trigger) && active.trigger.getAttribute('aria-disabled') !== 'true') active.hide();
 }
 
 export function detach(container) {

@@ -770,9 +770,9 @@
     "pt-BR": "Combina barra superior, navegação primária/secundária e conteúdo."
   },
   "Catalog_Patterns_NavigationSurface_Variants": {
-    "en-US": "ShowSecondary controls the secondary rail; named fragments supply regions; DocumentKey identifies pages. PrimaryNavigationItem supplies primary links; page actions use standard Button, with Underline for light actions/links.",
-    "zh-CN": "ShowSecondary 控制二级栏；区域由命名片段提供；DocumentKey 识别页面。一级导航使用 PrimaryNavigationItem，插槽中的页面操作使用标准 Button；Underline 适合轻量操作或链接。",
-    "pt-BR": "ShowSecondary controla barra secundária; fragmentos nomeados fornecem regiões; DocumentKey identifica páginas. PrimaryNavigationItem fornece links primários; ações usam Button padrão, com Underline para ações/links leves."
+    "en-US": "ShowSecondary controls the secondary rail; PrimaryNavigationPreview defaults to true and weakly previews the same primary links with icons and labels on rail hover or keyboard focus, without resizing content. Named fragments supply regions; DocumentKey identifies pages. Set preview false for individual hints.",
+    "zh-CN": "ShowSecondary 控制二级栏；PrimaryNavigationPreview 默认 true，悬停一级栏或键盘焦点进入时用同一组链接弱性预览图标与标签，不改变正文。区域由命名片段提供，DocumentKey 识别页面。设为 false 保留单项提示。",
+    "pt-BR": "ShowSecondary controla a barra secundária; PrimaryNavigationPreview padrão true mostra os mesmos links primários com ícones e rótulos ao passar o mouse ou focar pelo teclado, sem redimensionar conteúdo. Fragmentos fornecem regiões; DocumentKey identifica páginas. False mantém dicas individuais."
   },
   "Catalog_Primitives_MaskedInput_Purpose": {
     "en-US": "Masked input with EditForm integration.",

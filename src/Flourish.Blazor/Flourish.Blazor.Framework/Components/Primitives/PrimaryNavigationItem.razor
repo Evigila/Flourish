@@ -8,14 +8,14 @@
     {
         <span class="primary-nav-item is-disabled" role="link" tabindex="0" aria-disabled="true"
               aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" Filled="@Filled" Class="primary-navigation-icon" /></span>
+            @NavigationContent
         </span>
     }
     else
     {
         <NavLink class="@NavigationClass" ActiveClass="is-active" href="@Href" Match="@Match"
                  aria-label="@Label" aria-describedby="@TooltipId" data-navigation-trigger>
-            <span class="primary-nav-symbol"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" Filled="@Filled" Class="primary-navigation-icon" /></span>
+            @NavigationContent
         </NavLink>
     }
     <span id="@TooltipId" class="primary-navigation-tooltip" role="tooltip" popover="manual"
@@ -34,23 +34,40 @@
     [Parameter] public bool IsCurrent { get; set; }
 
     private string TooltipId => Id + "-tooltip";
+    private RenderFragment NavigationContent => @<text>
+        <span class="primary-nav-symbol"><ArkheideSystem.Flourish.Blazor.Components.Icon Name="@Icon" Filled="@Filled" Class="primary-navigation-icon" /></span>
+        <span class="f-primary-preview-copy" aria-hidden="true"><span class="f-primary-preview-label">@Label</span>
+            @if (Disabled) { <span class="f-primary-preview-reason">@(DisabledMessage ?? Ui("Navigation_UnavailableStatus", "Unavailable"))</span> }
+        </span>
+    </text>;
     private string NavigationClass => IsCurrent ? "primary-nav-item is-active" : "primary-nav-item";
     private ElementReference Container;
     private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
     private bool IsDisposed;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender || IsDisposed) return;
+        if (IsDisposed) return;
+        try
+        {
+            var module = Module ?? await (ModuleLoading ??= ImportModuleAsync());
+            if (!IsDisposed && module is not null) await module.InvokeVoidAsync("attach", Container);
+        }
+        catch (Exception error) when (error is JSDisconnectedException or TaskCanceledException) { if (Module is null) ModuleLoading = null; }
+    }
+
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
         var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/primitives/primary-navigation-item.js");
         if (IsDisposed)
         {
             await module.DisposeAsync();
-            return;
+            return null;
         }
 
         Module = module;
-        await Module.InvokeVoidAsync("attach", Container);
+        return module;
     }
 
     public async ValueTask DisposeAsync()

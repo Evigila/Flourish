@@ -1,4 +1,9 @@
 {
+  "Navigation_UnavailableStatus": {
+    "en-US": "Unavailable",
+    "zh-CN": "不可用",
+    "pt-BR": "Indisponível"
+  },
   "Tutorial_Label": {
     "en-US": "Getting started",
     "zh-CN": "入门引导",

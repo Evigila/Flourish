@@ -1,3 +1,5 @@
+import { initializePrimaryNavigationPreviews, disposePrimaryNavigationPreviews } from './patterns/primary-navigation-preview.js';
+
 const blockedLayouts = new WeakMap();
 const expandAt = 24;
 const collapseAfter = 96;
@@ -44,7 +46,7 @@ export function attach(root, content) {
     };
     const measureLayout = () => {
         const titlebar = root.querySelector('.f-titlebar');
-        const primary = root.querySelector('.f-primary-navigation');
+        const primary = root.querySelector('.f-primary-preview-slot') ?? root.querySelector('.f-primary-navigation');
         root.style.setProperty('--f-shell-titlebar-size', (titlebar?.getBoundingClientRect().height ?? 0) + 'px');
         root.style.setProperty('--f-shell-primary-size', (primary?.getBoundingClientRect().width ?? 0) + 'px');
     };
@@ -118,6 +120,7 @@ export function attach(root, content) {
     updateHeading();
 }
 export function synchronize(root, open, resetScroll) {
+    initializePrimaryNavigationPreviews(root);
     const state=instances.get(root); if (!state) return;
     if (resetScroll) { resetCompactHeading(root); state.content.scrollTop=0; }
     else state.scheduleHeading();
@@ -132,6 +135,7 @@ export function synchronize(root, open, resetScroll) {
     }
 }
 export function detach(root) {
+    disposePrimaryNavigationPreviews(root);
     const state = instances.get(root); if(!state) return;
     if(state.frame) cancelAnimationFrame(state.frame);
     state.removers.forEach(remove => remove()); state.content.inert=false;

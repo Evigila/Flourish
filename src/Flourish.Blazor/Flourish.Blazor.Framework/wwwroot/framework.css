@@ -8,6 +8,7 @@
 @import url('./display-board.css');
 @import url('./split-button.css');
 @import url('./uniform-grid.css');
+@import url('./patterns/primary-navigation-preview.css');
 @import url('./section-navigator.css');
 @import url('./back-to-top.css');
 @import url('./line-chart.css');
@@ -216,7 +217,7 @@
  .f-shell { grid-template-columns:max-content minmax(0,1fr); grid-template-rows:auto auto minmax(0,1fr); }
  .f-titlebar > .f-icon-button { display:inline-block; }
  .f-navigation { display:contents; }
- .f-primary-navigation { grid-column:1; grid-row:2/4; }
+ .f-shell > .f-navigation > .f-primary-preview-slot { grid-column:1; grid-row:2/4; }
  .f-secondary-navigation { grid-column:2; grid-row:2; display:flex; align-items:center; min-width:0; overflow-x:auto; }
  .f-secondary-list { display:flex; align-items:center; }
  .f-secondary-item { white-space:nowrap; flex-shrink:0; }
@@ -233,13 +234,13 @@
  .f-no-navigation,.f-no-secondary { grid-template-rows:auto minmax(0,1fr); }
  .f-no-navigation { grid-template-columns:minmax(0,1fr); }
  .f-no-navigation .f-content-scroll { grid-column:1; grid-row:2; }
- .f-no-secondary .f-primary-navigation,.f-no-secondary .f-content-scroll { grid-row:2; }
+ .f-shell.f-no-secondary > .f-navigation > .f-primary-preview-slot,.f-no-secondary .f-content-scroll { grid-row:2; }
  .f-no-titlebar { grid-template-rows:auto minmax(0,1fr); }
- .f-no-titlebar .f-primary-navigation { grid-row:1/3; }
+ .f-shell.f-no-titlebar > .f-navigation > .f-primary-preview-slot { grid-row:1/3; }
  .f-no-titlebar .f-secondary-navigation { grid-row:1; }
  .f-no-titlebar .f-content-scroll { grid-row:2; }
  .f-no-titlebar.f-no-navigation,.f-no-titlebar.f-no-secondary { grid-template-rows:minmax(0,1fr); }
- .f-no-titlebar.f-no-navigation .f-content-scroll,.f-no-titlebar.f-no-secondary .f-primary-navigation,.f-no-titlebar.f-no-secondary .f-content-scroll { grid-row:1; }
+ .f-no-titlebar.f-no-navigation .f-content-scroll,.f-shell.f-no-titlebar.f-no-secondary > .f-navigation > .f-primary-preview-slot,.f-no-titlebar.f-no-secondary .f-content-scroll { grid-row:1; }
  .f-form-layout { grid-template-columns:minmax(0,1fr); }
  .f-form-actions { grid-template-columns:repeat(var(--f-action-narrow-columns,2),minmax(0,1fr)); }
 }

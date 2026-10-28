@@ -156,7 +156,8 @@
  .f-application-title { padding-inline:7px 12px; max-width:170px; }
  .f-title-search { max-width:200px; }
  .f-navigation { display:contents; }
- .f-primary-navigation { grid-column:1; grid-row:2/4; padding-top:10px; gap:6px; }
+ .f-shell > .f-navigation > .f-primary-preview-slot { grid-column:1; grid-row:2/4; }
+ .f-primary-navigation { padding-top:10px; gap:6px; }
  .f-primary-item { width:45px; height:48px; border-radius:14px; }
  .f-primary-item.is-selected::before { left:-6px; height:24px; }
  .f-secondary-navigation { grid-column:2; grid-row:2; display:flex; align-items:center; gap:4px; padding:8px 12px; border-right:0; border-bottom:1px solid var(--f-border); overflow-x:auto; overflow-y:hidden; }
@@ -190,16 +191,16 @@
  .f-no-navigation { grid-template-columns:minmax(0,1fr); }
  .f-no-navigation .f-content-scroll { grid-row:2; grid-column:1; }
  .f-no-secondary .f-content-scroll { grid-row:2; }
- .f-no-secondary .f-primary-navigation { grid-row:2; }
+ .f-shell.f-no-secondary > .f-navigation > .f-primary-preview-slot { grid-row:2; }
  .f-no-titlebar { grid-template-rows:58px minmax(0,1fr); }
- .f-no-titlebar .f-primary-navigation { grid-row:1/3; }
+ .f-shell.f-no-titlebar > .f-navigation > .f-primary-preview-slot { grid-row:1/3; }
  .f-no-titlebar .f-secondary-navigation { grid-row:1; }
  .f-no-titlebar .f-content-scroll { grid-row:2; }
  .f-no-titlebar.f-has-navigation-tree { grid-template-rows:auto minmax(0,1fr); }
  .f-no-titlebar.f-no-navigation { grid-template-rows:minmax(0,1fr); }
  .f-no-titlebar.f-no-navigation .f-content-scroll { grid-row:1; }
  .f-no-titlebar.f-no-secondary { grid-template-rows:minmax(0,1fr); }
- .f-no-titlebar.f-no-secondary .f-primary-navigation,.f-no-titlebar.f-no-secondary .f-content-scroll { grid-row:1; }
+ .f-shell.f-no-titlebar.f-no-secondary > .f-navigation > .f-primary-preview-slot,.f-no-titlebar.f-no-secondary .f-content-scroll { grid-row:1; }
 }
 @media(max-width:520px) { .f-title-search { display:none; } .f-application-logo + .f-application-title { display:none; } .f-page-heading { min-height:126px; } .f-page-heading h1 { font-size:var(--f-type-page,50px); } .f-section,.f-page-body > .f-data { padding-top:44px; } }
 @media(prefers-reduced-motion:reduce) { .f-root *, .f-root *::before, .f-root *::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; } }

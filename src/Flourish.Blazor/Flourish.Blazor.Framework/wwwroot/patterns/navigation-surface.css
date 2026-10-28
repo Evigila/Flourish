@@ -165,7 +165,7 @@ position: absolute;
             grid-template-rows: auto minmax(0, 1fr);
     }
 
-    .navigation-surface .app-body.has-secondary-navigation > .primary-rail {
+    .navigation-surface .app-body.has-secondary-navigation > .f-primary-preview-slot {
     grid-row: 1 / -1;
     }
 

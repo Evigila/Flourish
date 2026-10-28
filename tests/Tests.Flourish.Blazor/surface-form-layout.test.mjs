@@ -5,10 +5,11 @@ import test from 'node:test';
 const framework = new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/', import.meta.url);
 const source = path => readFile(new URL(path, framework), 'utf8');
 const moduleUrl = text => `data:text/javascript;base64,${Buffer.from(text).toString('base64')}`;
-const shellUrl = moduleUrl(await source('wwwroot/shell.js'));
+const isolatePreview = code => code.replace(/^import \{ initializePrimaryNavigationPreviews.*$/m, 'const initializePrimaryNavigationPreviews=()=>{}; const disposePrimaryNavigationPreviews=()=>{};');
+const shellUrl = moduleUrl(isolatePreview(await source('wwwroot/shell.js')));
 const shell = await import(shellUrl);
 const headerUrl = moduleUrl(await source('wwwroot/patterns/header-layout.js'));
-const surfaces = await import(moduleUrl((await source('wwwroot/patterns/surfaces.js'))
+const surfaces = await import(moduleUrl(isolatePreview(await source('wwwroot/patterns/surfaces.js'))
     .replace("from '../shell.js'", `from '${shellUrl}'`)
     .replace("from './header-layout.js'", `from '${headerUrl}'`)));
 
