@@ -412,7 +412,9 @@ test("weak primary previews override actual surface widths without changing ordi
     assert.equal(cascade(allStyles, slot, "grid-row"), configured ? "2/4" : undefined, 'configured-shell placement must not leak into a nested composed surface without a secondary rail');
     rail.attributes.set("data-f-primary-preview-open", ""); slot.attributes.set("data-f-primary-preview-active", "");
     assert.equal(cascade(allStyles, rail, "position"), "fixed", 'the actual navigation surface position rule must not defeat the top-layer geometry');
-    assert.equal(cascade(allStyles, rail, "max-inline-size"), "min(var(--f-primary-preview-max-width,22rem),var(--f-primary-preview-available))");
+    assert.equal(cascade(allStyles, rail, "--f-primary-preview-min-width"), "15rem");
+    assert.equal(cascade(allStyles, rail, "--f-primary-preview-max-width"), "18rem");
+    assert.equal(cascade(allStyles, rail, "max-inline-size"), "min(var(--f-primary-preview-max-width,18rem),var(--f-primary-preview-available),var(--f-primary-preview-secondary-limit))");
     assert.equal(cascade(allStyles, slot, "inline-size"), "var(--f-primary-preview-reserved-width)");
     assert.equal(cascade(allStyles, link, "width"), "auto", 'the real 55px surface-specific link rule must not clip label clicks');
     assert.equal(cascade(allStyles, link, "display"), "grid");
@@ -420,6 +422,13 @@ test("weak primary previews override actual surface widths without changing ordi
     assert.equal(cascade(allStyles, link, "height"), "var(--f-primary-preview-row-height,var(--f-primary-preview-target-height))");
     assert.equal(cascade(allStyles, link, "max-height"), "var(--f-primary-preview-row-height,var(--f-primary-preview-target-height))");
     assert.equal(cascade(allStyles, copy, "display"), "flex");
+    for (const phase of ["collapsed", "expanded", "collapsed"]) {
+      rail.attributes.set("data-f-primary-preview-phase", phase);
+      assert.equal(cascade(allStyles, rail, "min-inline-size"), "0", 'the 15rem measure-phase minimum cannot truncate the width animation at the narrow rail');
+      assert.equal(cascade(allStyles, rail, "inline-size"), phase === "expanded" ? "var(--f-primary-preview-expanded-width)" : "var(--f-primary-preview-reserved-width)");
+      assert.equal(cascade(allStyles, copy, "opacity"), phase === "expanded" ? "1" : "0");
+      assert.equal(cascade(allStyles, link, "height"), "var(--f-primary-preview-row-height,var(--f-primary-preview-target-height))");
+    }
     assert.equal(cascade(allStyles, label, "white-space"), "nowrap");
     assert.equal(cascade(allStyles, label, "text-overflow"), "ellipsis");
     const ordinary = element("a", [configured ? "f-primary-item" : "primary-nav-item"], configured ? surface : element("aside", ["primary-rail"], surface));

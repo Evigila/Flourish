@@ -1,5 +1,7 @@
 :is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] {
-    --f-primary-preview-min-width:18rem;
+    --f-primary-preview-min-width:15rem;
+    --f-primary-preview-max-width:18rem;
+    --f-primary-preview-duration:180ms;
     color:var(--f-chrome-ink,var(--f-surface));
     background:var(--f-chrome,var(--f-primary));
     border:0;

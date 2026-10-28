@@ -2,11 +2,11 @@
 
 ## Current local shell candidate, 2026-10-28
 
-Root source declares **1.4.4-preview.shell.20261027.11** on stable-release baseline `37a42ae` (`v1.4.3` source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The candidate retains the six-package Core/Blazor manifest: Arkheide.Flourish.Core, Arkheide.Flourish.Blazor.Abstract, Arkheide.Flourish.Blazor.Framework, Arkheide.Flourish.Blazor.Design, Arkheide.Flourish.Extensions.Culture.Blazor and Arkheide.Flourish.Blazor. Internal package edges use the same candidate version; Essential.Culture remains **1.4.0**. WPF/WinUI release scope is unchanged. No additional external NuGet/npm package, SDK installation, font/service or host-side control implementation is required.
+Root source declares **1.4.4-preview.shell.20261027.12** on stable-release baseline `37a42ae` (`v1.4.3` source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The candidate retains the six-package Core/Blazor manifest: Arkheide.Flourish.Core, Arkheide.Flourish.Blazor.Abstract, Arkheide.Flourish.Blazor.Framework, Arkheide.Flourish.Blazor.Design, Arkheide.Flourish.Extensions.Culture.Blazor and Arkheide.Flourish.Blazor. Internal package edges use the same candidate version; Essential.Culture remains **1.4.0**. WPF/WinUI release scope is unchanged. No additional external NuGet/npm package, SDK installation, font/service or host-side control implementation is required.
 
 The header/footer controller reuses existing browser ResizeObserver/MutationObserver, animation-frame, computed-style and CSS-grid APIs. The fitted header menu uses measured intrinsic controls while the owned footer foreground keeps the actual page content bounds; responsive minimum-height and bottom alignment remain Framework/Design responsibilities. The existing progress controller owns the header-aware upper-third activation line, immediate click destination and interruption lifecycle without a new dependency. Static SSR uses the existing browser entry; interactive surfaces share the same module. Hover selection reuses ActionMenu and its existing popup controller around a native select, implemented by the internal NativeSelectPopup helper rather than a new public dependency/component. Framework owns behavior and optional Design owns paint. The normal no-JavaScript header layout and native select remain usable; exact content alignment and opt-in hover behavior require the library browser modules.
 
-The default-enabled primary preview uses the existing native manual Popover API, DOM pointer/focus/keyboard events, ResizeObserver/MutationObserver and animation frames. A reserved slot preserves layout while the same rail enters the top layer; there is no cloned fragment, extra browser library, package or external service. The same module is shared by static initialization, NavigationSurface and ApplicationShell lifecycle; normal ESM URL caching shares that module instance. Tooltip rebinding remains in the existing primary-navigation module. Framework/Design CSS partials are inlined into the existing bundles, not delivered as additional stylesheet requests. The controller is one new same-origin module request; both complete/common font assets remain unchanged. Candidate .11 corrects action-slot sizing and preview box/icon coordinates in the existing browser/CSS modules.
+The default-enabled primary preview uses the existing native manual Popover API, DOM pointer/focus/keyboard events, ResizeObserver/MutationObserver and animation frames. A reserved slot preserves layout while the same rail enters the top layer; there is no cloned fragment, extra browser library, package or external service. The same module is shared by static initialization, NavigationSurface and ApplicationShell lifecycle; normal ESM URL caching shares that module instance. Tooltip rebinding remains in the existing primary-navigation module. Framework/Design CSS partials are inlined into the existing bundles, not delivered as additional stylesheet requests. The controller is one new same-origin module request; both complete/common font assets remain unchanged. Candidate .12 narrows the preview, reserves a visible quarter of vertical secondary navigation and adds reversible local CSS motion, using the existing browser/CSS modules.
 
 Information-mode UniformGrid items now have 24px internal padding instead of 16px, with natural height and unchanged H1/copy semantics; ordinary action/form layouts retain their prior spacing. This and Card compatibility metadata/Dialog.DangerTitle use existing component/rendering, semantic-token and .NET attribute facilities. Header inset and structured-row spacing changes remain in Framework/Design CSS; no new browser library, package or service is introduced.
 
@@ -15,6 +15,41 @@ The compact brand correction changes only existing native image attributes and F
 The current icon derivative adds no third-party package: common variable-font WOFF generation uses existing Windows DirectWrite/WPF and PowerShell plus installed Python **3.12.14 standard-library zlib/struct**. These are optional maintenance tools, not normal build/consumer dependencies. The original Apache-2.0 variable font is retained byte-identically, with a derived 125,404-byte common WOFF and explicit disjoint character ranges; both styles and all supported variation axes remain available. Font provenance is in the existing source.json, including the generator, manifest and common hash. No font CDN or external conversion service is contacted.
 
 ### Current candidate archive and asset evidence
+
+Candidate **1.4.4-preview.shell.20261027.12**, based on committed shell source `c1ae486`, is frozen in `artifacts/dashboard-preview-motion-20261028/nuget`. It retains six package IDs, twelve project graphs/33 external package-version pairs, Essential 1.4.0 and the existing SDK/runtime requirements. No external dependency or maintained source file/public parameter was added.
+
+The preview now prefers 15–18rem, caps itself to retain a visible quarter of a vertical secondary rail and follows secondary size/node changes. The same popover animates width/caption opacity for 180ms with reversible closing, reduced-motion and forced-cleanup paths. Original icon anchors, narrow layout reservation, local-only hover, native links and header/font behavior remain.
+
+Final-source twelve-project Release passed with zero warnings/errors. Framework 487/487, Gallery 8653/8653, Node 79/79 (preview 37/header 9/native CSS 33) and CSS bundle 21/21 passed. No Computer Use or physical browser measurement ran. Six archives pass the existing package-set verifier; pack retains existing informational readme notices.
+
+| Candidate archive | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Blazor.1.4.4-preview.shell.20261027.12.nupkg | `a936bb19730879484dbfe5c729c666924165361cc504d6e76976a486e9fbfdc9` |
+| Arkheide.Flourish.Blazor.Abstract.1.4.4-preview.shell.20261027.12.nupkg | `5e5af149845521180592ddbd40ccad81a7e394c050e224e69901de0322c52a70` |
+| Arkheide.Flourish.Blazor.Design.1.4.4-preview.shell.20261027.12.nupkg | `62b5814b6ff6971df576b332de996c0dfe2f3c9285dfe4d94032bccf9bb446c6` |
+| Arkheide.Flourish.Blazor.Framework.1.4.4-preview.shell.20261027.12.nupkg | `486333debf44eb0dff5ce4cbfbe73cf5d76d22ca2fc7fc1b5d8e17383dd9ffb1` |
+| Arkheide.Flourish.Core.1.4.4-preview.shell.20261027.12.nupkg | `8f9cf6815d0fba31197f5635fb8268a599937559e9268deb252264714489d618` |
+| Arkheide.Flourish.Extensions.Culture.Blazor.1.4.4-preview.shell.20261027.12.nupkg | `449beedc64e66275170e33cbf2c00879172aa9516e164022b40f960024f53041` |
+
+| Delivered resource | Bytes | SHA-256 |
+| --- | --- | --- |
+| Framework / `staticwebassets/framework.css` | 100472 | `c2f98d33e257947eecbd532d55f9c1320022d9141b081e5eb0e0bb5319435b07` |
+| Design / `staticwebassets/design.css` | 136624 | `e54bbb363c384773a39c0191dec146ba8a1293af33c8111623768fe03f3c6eaa` |
+| Framework / `staticwebassets/patterns/primary-navigation-preview.js` | 17644 | `ed0e793d9d97788f515ed5880b00ef3e210be62e3ffb123f3ee700c89a59efcd` |
+| Framework / `staticwebassets/primitives/primary-navigation-item.js` | 5155 | `72040afbb84665c74056eb6ea003a0fc3e51341416a21c7eec4f7424113193f0` |
+| Framework / `staticwebassets/primitives/input-behaviors.js` | 3920 | `9a16206034d09ed972ef3ea8004e379fff487c97338a8b18a985eb8f1a5d6a76` |
+| Framework / `staticwebassets/patterns/surfaces.js` | 4453 | `289218875cd68d9c36e17dfbd2df309f57814dc87d96314a558158a68a5ee3a7` |
+| Framework / `staticwebassets/shell.js` | 7467 | `fbab6783433c57add981c092af3fd40f1fb4a22adaac229f873519a477a6717e` |
+| Framework / `staticwebassets/patterns/header-layout.js` | 11050 | `2eac112ff5f06aad443df5073be724a69e87449bd3c9360d394db70d4659eb64` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.common.woff` | 125404 | `098865209c2ad1173ba59feb02fbb232cb69cb56155cdd263999d84f0a6c65c1` |
+| Framework / `staticwebassets/icons/material/MaterialSymbolsOutlined.woff2` | 4003088 | `96c9913f4d415adeefcc3fa13f4f75912648f6f426be8b50e5e20c035b17cdf3` |
+| Framework / `lib/net10.0/Flourish.Blazor.Framework.dll` | 777216 | `d87406712f6ea48e8a6df6c31d159c59c41c9040e5adef91437a992dcc923ce2` |
+
+All eleven packaged CSS/JS/font/DLL assets equal maintained source or actual Release outputs. Header-layout.js and both fonts match .11 byte-for-byte, and all previous .11 archives were rehashed unchanged. Evidence is under `artifacts/dashboard-preview-motion-20261028/`: build-frozen.log, build-final.log, framework-tests.log, gallery-tests.log, node-tests-final.log, css-bundle-tests.log, pack.log, package-verification.log, package-hashes.json and package-delivery.json. See [width, motion lifecycle and manual acceptance](1_bugreports/2026-10-28_primary-preview-width-and-motion.md). No public publication, deployment, cache clearing or old-feed replacement was performed.
+
+## Historical release and preview records
+
+### Historical shell candidate .11 archive and asset evidence
 
 Candidate **1.4.4-preview.shell.20261027.11** is frozen in the independent `artifacts/header-preview-alignment-20261028/nuget` feed. Six archives pass the existing identity/dependency/required-asset verifier; twelve producer graphs retain 33 external package/version pairs, Essential 1.4.0 and the same SDK/runtime requirements. Five of these archives are consumed by Colligere; its cache and closure evidence belongs to that repository.
 
@@ -46,8 +81,6 @@ Frozen-source 12-project Release passed with zero warnings/errors; Framework 487
 | Framework / `lib/net10.0/Flourish.Blazor.Framework.dll` | 777216 | `b7060734ebad93b4823f4b1d9f2020ba796305785440f990f96a15808ab99078` |
 
 All eleven packaged CSS/JS/font/assembly resources equal current maintained source or actual Release outputs. Both fonts match .10 byte-for-byte; the new header/preview corrections are present in the Release bundles and modules. Previous .10 archives were also rehashed unchanged. Evidence is under `artifacts/header-preview-alignment-20261028/`: build.log, build-frozen.log, framework-tests.log, gallery-tests.log, node-tests-final.log, css-bundle-tests.log, pack.log, package-verification.log, package-hashes.json and package-delivery.json. See [diagnosis, preserved contracts and manual acceptance](1_bugreports/2026-10-28_header-action-row-and-preview-box-alignment.md).
-
-## Historical release and preview records
 
 ### Historical shell candidate .10 archive and asset evidence
 

@@ -1,0 +1,7 @@
+# Narrow and animate primary-navigation previews
+
+2026-10-28 16:03:21 America/Sao_Paulo (UTC-03:00).
+
+Following committed shell source `c1ae486`, candidate `1.4.4-preview.shell.20261027.12` narrows the shared preview to 15–18rem and limits it against actual visible vertical-secondary geometry, preserving a quarter. Differential secondary-node observation handles size/replacement without measuring layout in mutation callbacks. The same native popover animates numeric width/caption opacity for 180ms; quick reentry reverses collapse and invalidates old work. Reduced-motion/forced paths release immediately. Existing real links, icon anchors, narrow reservation, focus, scroll and keyboard/touch behavior remain.
+
+Final-source twelve-project Release passed with zero warnings/errors; Framework 487, Gallery 8653, Node 79 (preview 37/header 9/native CSS 33) and CSS bundle 21 passed. Six archives/eleven assets match source or actual Release outputs; header JS/fonts and prior .11 archives are unchanged. Twelve graphs retain 33 external package/version pairs; no maintained source file, public parameter or external dependency was added. This follow-up is included in the user-authorized commit. No Computer Use, physical measurement, public publication, push or deployment occurred. See [width/motion lifecycle, final edge cases and manual checks](../1_bugreports/2026-10-28_primary-preview-width-and-motion.md) and [current package evidence](../1_dependency.md#current-candidate-archive-and-asset-evidence).

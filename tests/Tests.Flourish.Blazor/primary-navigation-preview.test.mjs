@@ -47,22 +47,25 @@ class Node {
         for (const handler of [...this.events.get(type) ?? []]) handler(event);
         return event;
     }
-    showPopover() { if (this.failOpen) throw new Error('unsupported'); this.popoverOpen = true; }
-    hidePopover() { this.popoverOpen = false; if (this.contains(document.activeElement)) document.activeElement = document.body; }
+    showPopover() { if (this.failOpen) throw new Error('unsupported'); this.popoverOpen = true; this.showCount = (this.showCount ?? 0) + 1; }
+    hidePopover() { this.popoverOpen = false; this.hideCount = (this.hideCount ?? 0) + 1; if (this.contains(document.activeElement)) document.activeElement = document.body; }
     focus(options) { this.focusCalls.push(options); document.activeElement = this; }
 }
-function fixture(legacy = false, rtl = false) {
-    const keys = ['document','window','getComputedStyle','ResizeObserver','MutationObserver','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout'];
+function fixture(legacy = false, rtl = false, reducedMotion = true) {
+    const keys = ['document','window','getComputedStyle','ResizeObserver','MutationObserver','requestAnimationFrame','cancelAnimationFrame','setTimeout','clearTimeout','matchMedia'];
     const previous = new Map(keys.map(key => [key, globalThis[key]]));
     const document = new Node(), window = new Node(), body = new Node();
     document.body = body; document.activeElement = body; document.documentElement = { clientWidth:1280 };
     window.innerHeight = 800;
-    const observers = [], resizes = [], frames = new Map(), timers = new Map(); let sequence = 0;
-    Object.assign(globalThis, { document, window, getComputedStyle:node => ({ direction:node.direction }),
-        ResizeObserver:class { constructor(callback) { this.callback = callback; this.observed = new Set(); resizes.push(this); } observe(node) { this.observed.add(node); } disconnect() { this.disconnected = true; } },
+    const observers = [], resizes = [], frames = new Map(), timers = new Map(), timerDelays = new Map(); let sequence = 0;
+    const motion = new Node(); motion.matches = reducedMotion;
+    Object.assign(globalThis, { document, window, matchMedia:() => motion,
+        getComputedStyle:node => ({ direction:node.direction, getPropertyValue:property => property === '--f-primary-preview-duration' ? '180ms' : '' }),
+        ResizeObserver:class { constructor(callback) { this.callback = callback; this.observed = new Set(); resizes.push(this); } observe(node) { this.observed.add(node); } unobserve(node) { this.observed.delete(node); } disconnect() { this.disconnected = true; } },
         MutationObserver:class { constructor(callback) { this.callback = callback; observers.push(this); } observe(node, options) { this.options = options; } disconnect() { this.disconnected = true; } },
         requestAnimationFrame:callback => { frames.set(++sequence, callback); return sequence; }, cancelAnimationFrame:id => frames.delete(id),
-        setTimeout:callback => { timers.set(++sequence, callback); return sequence; }, clearTimeout:id => timers.delete(id) });
+        setTimeout:(callback, delay) => { timers.set(++sequence, callback); timerDelays.set(sequence, delay); return sequence; },
+        clearTimeout:id => { timers.delete(id); timerDelays.delete(id); } });
     const host = new Node([legacy ? 'f-shell' : 'navigation-surface'], { left:0, right:1280, top:0, bottom:800, width:1280, height:800 });
     const slot = new Node(['f-primary-preview-slot'], rtl ? { left:1204, right:1280, top:68, bottom:768, width:76, height:700 } : { left:0, right:76, top:68, bottom:768, width:76, height:700 });
     slot.setAttribute('data-f-primary-preview-slot', '');
@@ -77,8 +80,8 @@ function fixture(legacy = false, rtl = false) {
     if (legacy) { rail.append(main, fixed); main.append(first); fixed.append(last); } else rail.append(first, last);
     slot.append(rail); host.append(slot); body.append(host);
     const flush = () => { const pending = [...frames.values()]; frames.clear(); pending.forEach(callback => callback()); };
-    return { document, window, host, slot, rail, first, last, main, fixed, observers, resizes, frames, timers, flush,
-        timerFlush() { const pending = [...timers.values()]; timers.clear(); pending.forEach(callback => callback()); },
+    return { document, window, host, slot, rail, first, last, main, fixed, observers, resizes, frames, timers, timerDelays, motion, flush,
+        timerFlush() { const pending = [...timers.values()]; timers.clear(); timerDelays.clear(); pending.forEach(callback => callback()); },
         cleanup() { api.disposePrimaryNavigationPreviews(host); for (const [key, value] of previous) { if (value === undefined) delete globalThis[key]; else globalThis[key] = value; } } };
 }
 for (const legacy of [false, true]) test(`${legacy ? 'configured shell' : 'composed surface'} previews the same links and scroll owners above a stable narrow slot`, () => {
@@ -316,4 +319,180 @@ test('open rerenders compare all node identities without layout reads, keep exis
         prune([{ type:'attributes', attributeName:'hidden', target:replaced }]);
         assert.equal(f.rail.popoverOpen,false);
     } finally { f.cleanup(); }
+});
+
+function motionGeometry(f) {
+    const railBox = { ...f.rail.rect }, rowBox = { ...f.first.rect }, rtl = f.rail.direction === 'rtl';
+    const icon = new Node(['primary-nav-symbol']);
+    const iconBox = { left:rtl ? rowBox.right - 39.5 : rowBox.left + 15.5, top:rowBox.top + 15.5, width:24, height:24 };
+    iconBox.right = iconBox.left + 24; iconBox.bottom = iconBox.top + 24;
+    f.first.children.unshift(icon); icon.parent = f.first;
+    const number = (element, name) => Number.parseFloat(element.style.getPropertyValue('--f-primary-preview-' + name)) || 0;
+    f.rail.layoutReads = 0;
+    f.rail.getBoundingClientRect = () => {
+        f.rail.layoutReads++;
+        if (!f.rail.popoverOpen) return railBox;
+        const cap = Math.min(288, number(f.rail, 'available'), number(f.rail, 'secondary-limit'));
+        const phase = f.rail.getAttribute('data-f-primary-preview-phase');
+        const target = phase === 'collapsed' ? railBox.width : number(f.rail,'expanded-width') || Math.min(320,cap);
+        const width = Math.min(f.rail.usedWidth ?? target, cap), left = rtl ? railBox.right - width : railBox.left;
+        return { ...railBox, left, right:left + width, width };
+    };
+    f.first.getBoundingClientRect = () => {
+        if (!f.rail.popoverOpen) return rowBox;
+        const rail = f.rail.getBoundingClientRect(), inset = number(f.rail, 'inline-inset');
+        return { ...rowBox, left:rail.left + inset, right:rail.right - inset, width:rail.width - inset * 2 };
+    };
+    icon.getBoundingClientRect = () => {
+        if (!f.rail.popoverOpen) return iconBox;
+        const row = f.first.getBoundingClientRect(), inset = number(f.first, 'icon-inline-inset');
+        const left = rtl ? row.right - inset - 24 : row.left + inset, top = row.top + number(f.first, 'icon-block-inset');
+        return { left, right:left + 24, top, bottom:top + 24, width:24, height:24 };
+    };
+    return { icon, iconBox };
+}
+for (const rtl of [false,true]) test(`actual ${rtl ? 'RTL' : 'LTR'} secondary geometry keeps a quarter exposed without reading its labels`, () => {
+    const f = fixture(false,rtl);
+    try {
+        const secondary = new Node(['secondary-rail'], { left:rtl ? 972 : 76, right:rtl ? 1204 : 308, width:232, top:68,bottom:768,height:700 });
+        secondary.append(new Node(['long-label'], { width:9000,height:24 })); f.host.append(secondary);
+        api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'250px');
+        assert.ok(f.resizes[0].observed.has(secondary));
+        assert.equal(f.slot.style.getPropertyValue('--f-primary-preview-reserved-width'),'76px');
+    } finally { f.cleanup(); }
+});
+for (const rtl of [false,true]) test(`${rtl ? 'RTL' : 'LTR'} narrow embedded roots preserve a quarter of the secondary portion that is actually visible`, () => {
+    const f = fixture(false,rtl);
+    try {
+        f.host.rect.left = rtl ? 1080 : 0; f.host.rect.right = rtl ? 1280 : 200; f.host.rect.width = 200;
+        const secondary = new Node(['secondary-rail'], { left:rtl ? 972 : 76,right:rtl ? 1204 : 308,width:232,top:68,bottom:768,height:700 }); f.host.append(secondary);
+        api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-available'),'200px');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'169px', '124 visible secondary pixels retain their 31px strip');
+    } finally { f.cleanup(); }
+});
+test('secondary width and replacement refresh the cap during opening or open without changing host or slot size', () => {
+    const f = fixture(false,false,false);
+    try {
+        const secondary = new Node(['secondary-rail'], { left:76,right:308,width:232,top:68,bottom:768,height:700 }); f.host.append(secondary);
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'250px');
+        secondary.rect.right = 176; secondary.rect.width = 100;
+        f.resizes[0].callback(); f.flush();
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'151px');
+        assert.equal(f.rail.getBoundingClientRect().width,151);
+        const replacement = new Node(['secondary-rail'], { left:76,right:276,width:200,top:68,bottom:768,height:700 }); replacement.parent = f.host;
+        f.host.children = f.host.children.map(node => node === secondary ? replacement : node);
+        const rect = replacement.getBoundingClientRect; replacement.getBoundingClientRect = () => { throw new Error('mutation must defer layout to its frame'); };
+        f.observers.find(observer => observer.options?.attributeFilter).callback();
+        assert.equal(f.resizes[0].observed.has(secondary),false); assert.equal(f.resizes[0].observed.has(replacement),true);
+        replacement.getBoundingClientRect = rect; f.flush();
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'226px');
+    } finally { f.cleanup(); }
+});
+test('horizontal, missing and narrow-viewport secondary layouts use the ordinary viewport bound', () => {
+    const f = fixture();
+    try {
+        const secondary = new Node(['secondary-rail'], { left:76,right:1280,width:1204,top:68,bottom:126,height:58 }); f.host.append(secondary);
+        f.document.documentElement.clientWidth = 210;
+        api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'210px');
+        assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-available'),'210px');
+        f.rail.emit('pointerleave'); f.host.children = f.host.children.filter(node => node !== secondary);
+        f.rail.emit('pointerenter'); assert.equal(f.rail.style.getPropertyValue('--f-primary-preview-secondary-limit'),'210px');
+    } finally { f.cleanup(); }
+});
+for (const rtl of [false,true]) test(`${rtl ? 'RTL' : 'LTR'} width motion never scales or moves the actual icon and hides only after collapse`, () => {
+    const f = fixture(false,rtl,false);
+    try {
+        const { icon, iconBox } = motionGeometry(f); f.main.scrollTop = 127;
+        api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        assert.equal(f.rail.getAttribute('data-f-primary-preview-phase'),'collapsed');
+        assert.equal(f.rail.getBoundingClientRect().width,76); assert.equal(f.rail.popoverOpen,true);
+        f.flush(); assert.equal(f.rail.getAttribute('data-f-primary-preview-phase'),'expanded');
+        for (const width of [76,144,220,288]) { f.rail.usedWidth = width; assert.deepEqual(icon.getBoundingClientRect(),iconBox); }
+        f.rail.emit('pointerleave'); assert.equal(f.rail.getAttribute('data-f-primary-preview-phase'),'collapsed');
+        assert.equal(f.rail.popoverOpen,true); assert.equal(f.slot.hasAttribute('data-f-primary-preview-active'),true);
+        assert.equal([...f.timerDelays.values()][0],230);
+        for (const width of [288,190,110,76]) { f.rail.usedWidth = width; assert.deepEqual(icon.getBoundingClientRect(),iconBox); }
+        f.rail.emit('transitionend',{ propertyName:'opacity',target:f.first.children[1] }); assert.equal(f.rail.popoverOpen,true);
+        f.rail.emit('transitionend',{ propertyName:'inline-size' });
+        assert.equal(f.rail.popoverOpen,false); assert.equal(f.main.scrollTop,127); assert.equal(f.rail.properties.size,0);
+        assert.equal(f.timers.size,0); assert.deepEqual(icon.getBoundingClientRect(),iconBox);
+    } finally { f.cleanup(); }
+});
+test('rapid reversal keeps the same top-layer node and rejects stale close timers and earlier expansion-end events', () => {
+    const f = fixture(false,false,false);
+    try {
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter'); f.flush();
+        f.rail.usedWidth = 190; f.rail.emit('pointerleave'); const stale = [...f.timers.values()][0];
+        f.rail.emit('transitionend',{ propertyName:'inline-size' }); assert.equal(f.rail.popoverOpen,true,'an old expansion end is not a completed collapse');
+        const reads = f.rail.layoutReads;
+        f.rail.emit('pointerenter'); assert.equal(f.rail.getAttribute('data-f-primary-preview-phase'),'expanded');
+        assert.equal(f.rail.layoutReads,reads,'reverse from current CSS width without recapturing expanded/normal DOM geometry');
+        stale(); assert.equal(f.rail.popoverOpen,true); assert.equal(f.rail.showCount,1); assert.equal(f.rail.hideCount,undefined);
+        assert.equal(f.timers.size,0);
+        f.rail.emit('pointerleave'); f.rail.usedWidth = 76; f.timerFlush();
+        assert.equal(f.rail.popoverOpen,false); assert.equal(f.rail.hideCount,1);
+    } finally { f.cleanup(); }
+});
+test('pre-paint cancellation and later native closure cannot leave frames or a clickable stale popover', () => {
+    const f = fixture(false,false,false);
+    try {
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter');
+        const oldFrame = [...f.frames.values()][0];
+        f.rail.emit('pointerleave'); assert.equal(f.rail.popoverOpen,false); assert.equal(f.frames.size,0);
+        f.rail.emit('pointerenter'); const newFrameCount = f.frames.size;
+        oldFrame(); assert.equal(f.frames.size,newFrameCount); f.flush();
+        f.rail.popoverOpen = false; f.rail.emit('toggle',{ newState:'closed' });
+        assert.equal(f.rail.hasAttribute('popover'),false); assert.equal(f.slot.properties.size,0); assert.equal(f.frames.size,0);
+    } finally { f.cleanup(); }
+});
+test('reduced motion is immediate initially and immediately settles an active close when changed', () => {
+    const f = fixture(false,false,false);
+    try {
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter'); f.flush();
+        f.rail.emit('pointerleave'); assert.equal(f.timers.size,1);
+        f.motion.matches = true; f.motion.emit('change');
+        assert.equal(f.rail.popoverOpen,false); assert.equal(f.timers.size,0); assert.equal(f.frames.size,0);
+        f.rail.emit('pointerenter'); assert.equal(f.rail.getAttribute('data-f-primary-preview-phase'),'expanded'); assert.equal(f.frames.size,0);
+        f.rail.emit('pointerleave'); assert.equal(f.rail.popoverOpen,false); assert.equal(f.timers.size,0);
+    } finally { f.cleanup(); }
+});
+for (const reason of ['resize','blur','opt-out','dispose']) test(`an animated close interrupted by ${reason} immediately releases geometry and every pending callback`, () => {
+    const f = fixture(false,false,false);
+    try {
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.rail.emit('pointerenter'); f.flush(); f.rail.emit('pointerleave');
+        const stale = [...f.timers.values()][0];
+        f.document.emit('scroll',{ target:f.document.body });
+        if (reason === 'resize' || reason === 'blur') f.window.emit(reason);
+        else if (reason === 'opt-out') { f.rail.removeAttribute('data-f-primary-preview'); f.observers.find(observer => observer.options?.attributeFilter).callback(); }
+        else api.disposePrimaryNavigationPreviews(f.host);
+        assert.equal(f.rail.popoverOpen,false); assert.equal(f.rail.properties.size,0); assert.equal(f.slot.properties.size,0);
+        assert.equal(f.frames.size,0); assert.equal(f.timers.size,0);
+        stale(); assert.equal(f.rail.properties.size,0); assert.equal(f.rail.hasAttribute('popover'),false);
+    } finally { f.cleanup(); }
+});
+test('animated Escape preserves link focus after cleanup and never consumes an outside dialog key', () => {
+    const f = fixture(false,false,false);
+    try {
+        motionGeometry(f); api.initializePrimaryNavigationPreviews(f.host); f.first.focusVisible = true; f.document.activeElement = f.first;
+        f.rail.emit('focusin',{ target:f.first }); f.flush();
+        const escape = f.document.emit('keydown',{ key:'Escape',target:f.first });
+        assert.equal(escape.prevented,true); assert.equal(f.rail.popoverOpen,true); assert.equal(f.document.activeElement,f.first);
+        f.rail.usedWidth = 76; f.timerFlush(); assert.equal(f.document.activeElement,f.first); assert.equal(f.rail.popoverOpen,false);
+        f.rail.emit('pointerleave'); f.rail.emit('pointerenter'); f.flush();
+        const dialog = new Node(); f.document.body.append(dialog); f.document.activeElement = dialog;
+        const outside = f.document.emit('keydown',{ key:'Escape',target:dialog }); assert.equal(outside.prevented,false); assert.equal(outside.stopped,false);
+        f.timerFlush(); assert.equal(f.document.activeElement,dialog); assert.equal(dialog.focusCalls.length,0);
+    } finally { f.cleanup(); }
+});
+test('motion CSS preserves the narrow initial width, limits only the overlay and never introduces an icon scale', () => {
+    assert.match(previewCss,/inline-size:var\(--f-primary-preview-reserved-width\)/);
+    assert.match(previewCss,/min-inline-size:0;/);
+    assert.match(previewCss,/transition:inline-size var\(--f-primary-preview-duration,180ms\)/);
+    assert.match(previewCss,/@media \(prefers-reduced-motion:reduce\)/);
+    assert.match(previewCss,/transition:none/);
+    assert.doesNotMatch(previewCss,/scale(?:X|Y)?\(|transform:/);
 });
