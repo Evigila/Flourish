@@ -1,0 +1,165 @@
+@inherits TextComponentBase
+@implements IAsyncDisposable
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<div @attributes="AdditionalAttributes" @ref="Root" id="@Id" class="f-save-changes-bar @Class"
+     data-f-save-changes-bar data-active="@(Active ? "true" : "false")" aria-busy="@(IsBusy ? "true" : null)">
+    @if (Active)
+    {
+        <div class="f-save-changes-panel">
+            <p class="f-save-changes-message" role="status" aria-live="polite" aria-atomic="true">@EffectiveMessage</p>
+            <div class="f-save-changes-actions">
+                <Button Type="button" Variant="ButtonVariant.Primary" OnClick="SaveAsync" Busy="@IsBusy" Disabled="@(!HasChanges || IsBusy || !OnSave.HasDelegate)">@EffectiveSaveText</Button>
+                <Button Type="button" Variant="ButtonVariant.Quiet" OnClick="DiscardAsync" Disabled="@(!HasChanges || IsBusy || !OnDiscard.HasDelegate)">@EffectiveDiscardText</Button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public bool HasChanges { get; set; }
+    [Parameter] public bool Busy { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnDiscard { get; set; }
+    [Parameter] public string Message { get; set; } = "You have unsaved changes.";
+    [Parameter] public string SaveText { get; set; } = "Save";
+    [Parameter] public string DiscardText { get; set; } = "Discard";
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private ElementReference Root;
+    private bool Executing, Disposed, BrowserAttached, Initialized;
+    private bool IsBusy => Busy || Executing;
+    private bool Active => HasChanges || IsBusy;
+    private string EffectiveMessage => DefaultText(nameof(Message), Message, "SaveChanges_Message", "You have unsaved changes.");
+    private string EffectiveSaveText => DefaultText(nameof(SaveText), SaveText, "SaveChanges_Save", "Save");
+    private string EffectiveDiscardText => DefaultText(nameof(DiscardText), DiscardText, "SaveChanges_Discard", "Discard");
+    private IDisposable? LocationChangingRegistration;
+    private IJSObjectReference? Module;
+    private Task<IJSObjectReference?>? ModuleLoading;
+    private readonly SemaphoreSlim BrowserSync = new(1, 1);
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Initialized = true;
+    }
+
+    protected override void OnParametersSet() => SynchronizeNavigationGuard();
+
+    private void SynchronizeNavigationGuard()
+    {
+        if (Disposed) return;
+        if (!Active)
+        {
+            LocationChangingRegistration?.Dispose();
+            LocationChangingRegistration = null;
+        }
+        else if (LocationChangingRegistration is null)
+        {
+            try { LocationChangingRegistration = Navigation.RegisterLocationChangingHandler(PreventLeavingAsync); }
+            catch (NotSupportedException) { /* Static rendering has no interactive navigation lifecycle. */ }
+        }
+    }
+
+    private ValueTask PreventLeavingAsync(LocationChangingContext context)
+    {
+        if (!Disposed && Active && !IsLocalFragment(context.TargetLocation)) context.PreventNavigation();
+        return ValueTask.CompletedTask;
+    }
+
+    private bool IsLocalFragment(string destination)
+    {
+        var current = Navigation.ToAbsoluteUri(Navigation.Uri);
+        var target = Navigation.ToAbsoluteUri(destination);
+        return target.Fragment.Length > 1 && !string.Equals(current.Fragment, target.Fragment, StringComparison.Ordinal)
+            && string.Equals(current.GetLeftPart(UriPartial.Authority), target.GetLeftPart(UriPartial.Authority), StringComparison.OrdinalIgnoreCase)
+            && string.Equals(current.AbsolutePath, target.AbsolutePath, StringComparison.Ordinal)
+            && string.Equals(current.Query, target.Query, StringComparison.Ordinal);
+    }
+
+    private Task SaveAsync() => ExecuteAsync(OnSave);
+    private Task DiscardAsync() => ExecuteAsync(OnDiscard);
+    private async Task ExecuteAsync(EventCallback action)
+    {
+        if (Disposed || !HasChanges || IsBusy || !action.HasDelegate) return;
+        Executing = true;
+        SynchronizeNavigationGuard();
+        try { await action.InvokeAsync(); }
+        finally
+        {
+            Executing = false;
+            SynchronizeNavigationGuard();
+            if (Initialized && !Disposed) StateHasChanged();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await BrowserSync.WaitAsync();
+        try
+        {
+            if (Disposed) return;
+            if (!Active)
+            {
+                if (BrowserAttached && Module is not null) await Module.InvokeVoidAsync("disposeSaveChangesBar", Root);
+                BrowserAttached = false;
+                return;
+            }
+            var module = await GetModuleAsync();
+            if (Disposed || module is null || !Active) return;
+            if (!BrowserAttached)
+            {
+                await module.InvokeVoidAsync("initializeSaveChangesBar", Root, true);
+                BrowserAttached = true;
+            }
+            else await module.InvokeVoidAsync("updateSaveChangesBar", Root, true);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { BrowserSync.Release(); }
+    }
+
+    private async ValueTask<IJSObjectReference?> GetModuleAsync()
+    {
+        if (Module is not null) return Module;
+        var loading = ModuleLoading ??= ImportModuleAsync();
+        try { return await loading; }
+        finally { if (ReferenceEquals(ModuleLoading, loading)) ModuleLoading = null; }
+    }
+
+    private async Task<IJSObjectReference?> ImportModuleAsync()
+    {
+        var imported = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/patterns/save-changes-bar.js");
+        if (Disposed) { await ReleaseModuleAsync(imported); return null; }
+        Module = imported;
+        return imported;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        base.Dispose();
+        LocationChangingRegistration?.Dispose();
+        LocationChangingRegistration = null;
+        await BrowserSync.WaitAsync();
+        try
+        {
+            var module = Module;
+            Module = null;
+            if (module is null) return;
+            try { if (BrowserAttached) await module.InvokeVoidAsync("disposeSaveChangesBar", Root); }
+            catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+            finally { BrowserAttached = false; await ReleaseModuleAsync(module); }
+        }
+        finally { BrowserSync.Release(); }
+    }
+
+    private static async ValueTask ReleaseModuleAsync(IJSObjectReference module)
+    {
+        try { await module.DisposeAsync(); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

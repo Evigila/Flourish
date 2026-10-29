@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ArkheideSystem.Flourish.Blazor.Abstract;
@@ -81,11 +81,16 @@ internal static class Program
             await CheckPage(provider, scenario);
 
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 83, "Expected all 83 current component guides, including AccessLayout; update this guard with an intentional inventory change.");
+        Check(entries.Length == 84, "Expected all 84 current component guides, including SaveChangesBar; update this guard with an intentional inventory change.");
+        Check(entries.Count(entry => entry.Name == nameof(SaveChangesBar)) == 1
+            && entries.Single(entry => entry.Name == nameof(SaveChangesBar)).Usage.Kind == ComponentUseKind.Scenario,
+            "The persistent save bar must have one explicit production guide.");
         Check(entries.Count(entry => entry.Name == nameof(LanguagePicker)) == 1, "Culture must register its single library-owned LanguagePicker guide.");
         Check(!entries.Any(entry => entry.Name == "IdentityCard"), "The retired IdentityCard must not retain a Gallery guide or sample.");
         Check(entries.Count(entry => entry.Name == "Card") == 1, "Account summaries must reuse the single Card guide.");
         var registeredSamples = typeof(SampleCatalog).Assembly.GetTypes().Select(type => type.GetCustomAttribute<SampleFor>()).Where(sample => sample is not null).ToArray();
+        Check(registeredSamples.Count(sample => sample!.ComponentName == nameof(SaveChangesBar)) == 1,
+            "The persistent save bar must have one executable sample.");
         Check(registeredSamples.Count(sample => sample!.ComponentName == "Card") == 1 && !registeredSamples.Any(sample => sample!.ComponentName == "IdentityCard"),
             "Account summaries must reuse the single Card sample without a retired IdentityCard registration.");
         foreach (var entry in entries)
@@ -131,14 +136,10 @@ internal static class Program
             {
                 var actions = Regex.Matches(html, @"<div class=""f-inline-actions"" data-alignment=""end"">(.*?)</div>", RegexOptions.Singleline)
                     .Select(match => match.Groups[1].Value).ToArray();
-                Check(actions.Length == 2, context + ": palette and framework navigation must use the default standard action row.");
-                var palette = actions.Single(row => row.Contains("<button", StringComparison.Ordinal));
-                Check(Regex.Matches(palette, @"<button\b").Count == 2
-                    && Regex.IsMatch(palette, @"<button\b[^>]*type=""submit""[^>]*class=""f-button f-button-primary")
-                    && Regex.IsMatch(palette, @"<button\b[^>]*type=""button""[^>]*class=""f-button f-button-secondary"),
-                    context + ": palette alignment changed the standard apply/reset controls or their form behavior.");
-                ContainsTranslatedAction(palette, "Key.Appearance_Apply");
-                ContainsTranslatedAction(palette, "Key.Appearance_Reset");
+                Check(actions.Length == 1, context + ": only the framework navigation may retain an inline action row.");
+                Check(html.Contains("data-f-save-changes-bar", StringComparison.Ordinal)
+                    && html.Contains("data-active=\"false\"", StringComparison.Ordinal), context + ": the clean palette must use the inactive standard SaveChangesBar.");
+                Check(!Regex.IsMatch(html, @"<button\b[^>]*type=""submit"""), context + ": palette retained an inline apply action.");
                 var frameworkLink = actions.Single(row => row.Contains("<a", StringComparison.Ordinal));
                 Check(Regex.IsMatch(frameworkLink, @"<a\b[^>]*href=""/framework""[^>]*class=""f-button f-button-secondary"),
                     context + ": framework integration navigation does not use the standard link Button.");

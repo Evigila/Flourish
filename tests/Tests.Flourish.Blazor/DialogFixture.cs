@@ -16,11 +16,11 @@ internal sealed class DialogFixture : IAsyncDisposable
     private readonly CaptureActivator Activator = new();
     internal CountingDialogJs Javascript { get; } = new();
     internal List<IComponent> Components => Activator.Components;
-    internal DialogFixture(ITextProvider? texts = null, NavigationManager? navigation = null)
+    internal DialogFixture(ITextProvider? texts = null, NavigationManager? navigation = null, IJSRuntime? javascript = null)
     {
         var services = new ServiceCollection(); services.AddLogging(); services.AddFlourishFramework();
         services.AddSingleton<NavigationManager>(navigation ?? new TestNavigation());
-        services.AddSingleton<IJSRuntime>(Javascript); services.AddSingleton<IComponentActivator>(Activator);
+        services.AddSingleton<IJSRuntime>(javascript ?? Javascript); services.AddSingleton<IComponentActivator>(Activator);
         if (texts is not null) services.AddScoped<ITextProvider>(_ => texts);
         Provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true }); Scope = Provider.CreateScope();
         Renderer = new(Scope.ServiceProvider, Scope.ServiceProvider.GetRequiredService<ILoggerFactory>());

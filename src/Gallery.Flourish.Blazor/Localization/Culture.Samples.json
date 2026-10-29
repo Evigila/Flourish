@@ -1,4 +1,14 @@
 {
+  "Sample_SaveChangesBar_Description": {
+    "en-US": "Edit this fictional draft to show a persistent save bar. Saving updates the demo snapshot; discarding restores it. Leaving stays blocked until the draft is saved or discarded.",
+    "zh-CN": "编辑虚构草稿即可显示持续保存栏。保存更新演示快照，放弃恢复快照；保存或放弃前不能离开。",
+    "pt-BR": "Edite o rascunho fictício para exibir a barra. Salvar atualiza a versão de demonstração; descartar a restaura. A saída permanece bloqueada até salvar ou descartar."
+  },
+  "Sample_SaveChangesBar_Field": {
+    "en-US": "Fictional draft title",
+    "zh-CN": "虚构草稿标题",
+    "pt-BR": "Título do rascunho fictício"
+  },
   "Sample_PrimaryNavigationPreview": {
     "en-US": "Preview primary navigation on hover or keyboard focus",
     "zh-CN": "悬停或键盘焦点时预览一级导航",

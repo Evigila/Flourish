@@ -1,0 +1,9 @@
+.f-save-changes-bar,.f-save-changes-bar * { box-sizing:border-box; }
+.f-save-changes-bar { display:none; }
+.f-save-changes-bar[data-active="true"] { display:block; min-width:0; flex-shrink:0; block-size:var(--f-save-changes-clearance,calc(9rem + env(safe-area-inset-bottom,0px))); }
+.f-save-changes-panel { position:fixed; z-index:60; left:max(16px,env(safe-area-inset-left,0px)); right:max(16px,env(safe-area-inset-right,0px)); bottom:max(16px,env(safe-area-inset-bottom,0px)); display:flex; align-items:center; gap:24px; width:auto; max-width:64rem; max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)); margin-inline:auto; overflow:auto; padding:16px 20px; background:Canvas; color:CanvasText; border:1px solid ButtonBorder; }
+.f-save-changes-message { flex:1 1 16rem; min-width:0; margin:0; overflow-wrap:anywhere; }
+.f-save-changes-actions { display:flex; flex:0 1 auto; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:12px; min-width:0; }
+.f-save-changes-actions > .f-button { min-width:0; max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+:is(a,area,button,input,summary)[data-f-edit-blocked] { cursor:not-allowed; }
+@media(max-width:600px) { .f-save-changes-panel { flex-direction:column; align-items:stretch; gap:16px; } .f-save-changes-message { flex-basis:auto; } }

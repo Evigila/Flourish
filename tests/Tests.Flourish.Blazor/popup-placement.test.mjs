@@ -68,7 +68,12 @@ class Element extends Events {
     getAttribute(name) { return this.attributes.get(name) ?? null; }
     hasAttribute(name) { return this.attributes.has(name); }
     removeAttribute(name) { this.attributes.delete(name); }
-    matches(selector) { return selector === ':popover-open' ? this.popoverOpen === true : this.localName === 'select' && /select|\.f-select/.test(selector); }
+    matches(selector) {
+        if (selector === ':popover-open') return this.popoverOpen === true;
+        if (selector.startsWith('.')) return selector.split(',').some(part =>
+            part.trim().slice(1).split('.').every(name => (this.getAttribute('class') ?? '').split(/\s+/).includes(name)));
+        return this.localName === 'select' && /select|\.f-select/.test(selector);
+    }
     closest(selector) { return this.matches(selector) ? this : this.parentElement?.closest(selector) ?? null; }
     querySelectorAll(selector) { return this.children.flatMap(child => [...(child.matches(selector) ? [child] : []), ...child.querySelectorAll(selector)]); }
     showPopover() { this.showCount = (this.showCount ?? 0) + 1; this.visibilityAtShow = this.style.getPropertyValue('visibility'); this.popoverOpen = true; }
@@ -83,12 +88,14 @@ class Element extends Events {
             return { width: this.ownerDocument.probeWidth ?? 200 };
         }
         const limits = (this.style.getPropertyValue('max-height') || this.cssMaxHeight).match(/[\d.]+(?=px)/g)?.map(Number) ?? [];
-        const width = Math.min(this.rect.width, this.cssMaxWidth ?? Infinity), height = Math.min(this.rect.height, ...limits);
+        const dropdown = this.matches('.f-menu-panel,.selection-panel,.search-autocomplete-options');
+        const minimum = dropdown ? Math.min(...(this.style.getPropertyValue('--f-popup-trigger-width').match(/[\d.]+(?=px)/g)?.map(Number) ?? [0])) : 0;
+        const width = Math.min(Math.max(this.rect.width, minimum), this.cssMaxWidth ?? Infinity), height = Math.min(this.rect.height, ...limits);
         return { ...this.rect, width, height, right: this.rect.left + width, bottom: this.rect.top + height };
     }
 }
 function environment() {
-    const names = ['document', 'window', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame', 'MutationObserver', 'HTMLSelectElement', 'HTMLElement', 'CSS'];
+    const names = ['document', 'window', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame', 'MutationObserver', 'ResizeObserver', 'HTMLSelectElement', 'HTMLElement', 'CSS'];
     const saved = new Map(names.map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
     const window = new Events(), document = new Element();
     document.nodeType = 9; document.ownerDocument = null; document.documentElement = { clientWidth: 800 }; document.body = new Element();
@@ -101,6 +108,7 @@ function environment() {
         const theme = pseudo ? node.pseudoTheme?.[pseudo] ?? {} : node.computedTheme ?? {};
         const keys = [...new Set([...node.style.values.keys(), ...Object.keys(theme)])];
         return Object.assign({ display: theme.display ?? 'block', maxHeight: node.style.getPropertyValue('max-height') || node.cssMaxHeight,
+            maxWidth: node.style.getPropertyValue('max-width') || theme['max-width'] || (node.cssMaxWidth === undefined ? 'none' : `${node.cssMaxWidth}px`),
             getPropertyValue: name => node.style.getPropertyValue(name) || theme[name] || '', length: keys.length }, keys);
     };
     window.getComputedStyle = globalThis.getComputedStyle;
@@ -108,8 +116,17 @@ function environment() {
     globalThis.cancelAnimationFrame = () => {};
     const mutations = [];
     globalThis.MutationObserver = class { constructor(callback) { this.callback = callback; mutations.push(this); } observe(target, options) { this.target = target; this.options = options; } disconnect() { this.disconnected = true; } };
+    const resizes = [];
+    globalThis.ResizeObserver = class {
+        targets = new Set();
+        constructor(callback) { this.callback = callback; resizes.push(this); }
+        observe(target) { this.targets.add(target); }
+        unobserve(target) { this.targets.delete(target); }
+        disconnect() { this.targets.clear(); this.disconnected = true; }
+        emit(target) { assert.ok(this.targets.has(target), 'Only observed targets may resize.'); this.callback([{ target }]); }
+    };
     return {
-        document, window, mutations,
+        document, window, mutations, resizes,
         adopt(node, parent = document) { node.ownerDocument = document; node.parentElement = parent; parent.children.push(node); return node; },
         restore() { for (const [name, descriptor] of saved) if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete globalThis[name]; }
     };
@@ -117,6 +134,7 @@ function environment() {
 function run(action) { const env = environment(); try { action(env); } finally { env.restore(); } }
 function popup(triggerRect = {}, panelRect = {}, options = {}) {
     const trigger = new Element('button', triggerRect), panel = new Element('div', { width: 120, height: 120, ...panelRect });
+    panel.setAttribute('class', 'f-menu-panel');
     return { trigger, panel, open: true, openOnHover: false, maximumHeight: '', maximumHeightPriority: '', ...options };
 }
 const left = state => Number.parseFloat(state.panel.style.getPropertyValue('left'));
@@ -134,13 +152,35 @@ test('popup clamps horizontal placement to both viewport gutters', () => run(() 
         const state = popup(rect); api.positionPopup(state); assert.equal(left(state), expected);
     }
 }));
-test('popup respects measured intrinsic content rather than forcing a trigger or menu width', () => run(() => {
+test('popup fills the trigger while retaining longer natural content and an independently owned CSS width', () => run(() => {
     const narrow = popup({ left: 100, width: 300 }, { width: 80 }); api.positionPopup(narrow);
-    assert.equal(left(narrow), 100);
+    assert.equal(left(narrow), 100); assert.equal(narrow.panel.getBoundingClientRect().width, 300);
     const long = popup({ left: 650 }, { width: 2000 }); long.panel.cssMaxWidth = 776; api.positionPopup(long);
-    assert.equal(left(long), 12);
+    assert.equal(left(long), 12); assert.equal(long.panel.getBoundingClientRect().width, 776);
     for (const state of [narrow, long]) for (const property of ['width', 'min-width', 'inline-size', 'min-inline-size'])
         assert.equal(state.panel.style.getPropertyValue(property), '', `${property} must stay owned by intrinsic CSS.`);
+}));
+test('popup floor follows trigger and filtered natural content in both directions without retaining the prior width', () => run(() => {
+    const state = popup({ width: 420 }, { width: 200 });
+    api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 420);
+    state.trigger.rect.width = 80; api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 200);
+    state.panel.rect.width = 110; api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 110);
+    state.panel.rect.width = 310; api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 310);
+    state.trigger.rect.width = 360; api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 360);
+}));
+test('trigger floor respects explicit maximum and the client viewport even when CSS vw includes a scrollbar', () => run(env => {
+    env.window.innerWidth = 800; env.document.documentElement.clientWidth = 783;
+    const state = popup({ left: 0, width: 900 }, { width: 80 });
+    api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 759); assert.equal(left(state), 12);
+    state.panel.style.setProperty('max-width', '220px', 'important');
+    api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 220);
+    assert.equal(state.panel.style.getPropertyValue('max-width'), '220px');
+    assert.equal(state.panel.style.getPropertyPriority('max-width'), 'important');
+}));
+test('non-dropdown tutorial placement retains its authored intrinsic width', () => run(() => {
+    const state = popup({ width: 420 }, { width: 80 }); state.panel.setAttribute('class', 'f-tutorial-preview');
+    api.positionPopup(state); assert.equal(state.panel.getBoundingClientRect().width, 80);
+    assert.equal(state.panel.style.getPropertyValue('--f-popup-trigger-width'), '');
 }));
 test('popup remains below when there is room and keeps hover transfer gap semantics', () => run(() => {
     const action = popup(); api.positionPopup(action); assert.equal(top(action), 154);
@@ -171,7 +211,8 @@ test('native picker initial alignment and activation events are synchronous and 
         env.document.emit(event, inert, () => assert.equal(select.getAttribute('data-f-popup-align'), expected, `${event}: native default opening must see the new side.`));
         assert.ok((env.document.listeners.get(event) ?? []).some(listener => listener.capture), `${event} must run before native activation.`);
     }
-    assert.equal(select.style.values.size, 0, 'Native picker sizing must remain CSS owned.');
+    assert.equal(select.style.getPropertyValue('--f-popup-trigger-width'), '48px');
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '', 'A select without options has no natural option measurement.');
 }));
 test('native initialization installs document listeners once and covers inserted scoped selects', () => run(env => {
     const select = env.adopt(new Element('select', { left: 100 })); api.initializeNativePickers(env.document); api.initializeNativePickers(env.document);
@@ -186,7 +227,7 @@ test('picker and menu CSS retain intrinsic width without the UA anchor minimum o
     const css = [await source('wwwroot/form-inputs.css'), ...(await Promise.all(['controls.css', 'dropdown.css'].map(path => readFile(new URL(path, design), 'utf8'))))].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
     const blocks = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].filter(match => /\.f-select::picker\(select\)/.test(match[1]));
     assert.ok(blocks.some(match => /(?:width|inline-size)\s*:\s*var\(--f-picker-inline-size,\s*max-content\)/.test(match[2])), 'Picker consumes the pre-open intrinsic measurement with a CSS-only intrinsic default.');
-    assert.ok(blocks.some(match => /min-inline-size\s*:\s*0\b/.test(match[2])), 'Explicitly reset the UA anchor-size minimum.');
+    assert.ok(blocks.some(match => /min-inline-size\s*:\s*min\(var\(--f-popup-trigger-width,0px\),calc\(100vw - 24px\)\)/.test(match[2])), 'The explicit trigger floor remains bounded by the viewport.');
     assert.ok(blocks.some(match => /max-(?:width|inline-size)\s*:/.test(match[2])), 'Long option labels need a viewport width constraint.');
     for (const block of blocks) assert.doesNotMatch(block[2], /transition(?:-property)?\s*:[^;}]*(?:\bwidth\b|\binline-size\b|\ball\b)/);
     assert.doesNotMatch(controlsSource, /createElement\(['"]canvas['"]\)|measureText\(/);
@@ -207,6 +248,7 @@ function selectionFixture(env, kind, withPanel = true) {
     const reference = { invokeMethodAsync(method, ...args) { calls.push({ method, args }); return Promise.resolve(); } };
     function addPanel() {
         const panel = env.adopt(new Element(kind === 'reference' ? 'div' : 'span', { width: 160, height: 120 }), root);
+        panel.setAttribute('class', kind === 'reference' ? 'selection-panel' : 'search-autocomplete-options');
         panel.style.setProperty('position', 'absolute'); panel.style.setProperty('left', '7px'); panel.style.setProperty('top', '11px');
         const option = env.adopt(new Element(kind === 'reference' ? 'button' : 'span'), panel);
         option.setAttribute('role', 'option'); option.setAttribute('aria-selected', 'true'); option.value = 'selected-key';
@@ -215,6 +257,31 @@ function selectionFixture(env, kind, withPanel = true) {
     return { root, trigger, calls, reference, addPanel, ...(withPanel ? addPanel() : {}) };
 }
 for (const kind of ['reference', 'search']) {
+    test(`${kind}: trigger resize refreshes the floor and replacement/detach restore authored sizing and priority`, () => run(env => {
+        const f = selectionFixture(env, kind);
+        f.panel.style.setProperty('--f-popup-trigger-width', '19px', 'important');
+        f.panel.style.setProperty('max-width', '600px', 'important');
+        f.trigger.rect.width = 420;
+        try {
+            references.attachPopupDismissal(f.root, f.reference);
+            const resize = env.resizes[0];
+            assert.equal(f.panel.getBoundingClientRect().width, 420);
+            f.trigger.rect.width = 80; resize.emit(f.trigger);
+            assert.equal(f.panel.getBoundingClientRect().width, 160, 'The reference sizer or live search content remains the natural width.');
+            f.panel.rect.width = 230; env.mutations[0].callback();
+            assert.equal(f.panel.getBoundingClientRect().width, 230);
+            const old = f.panel, replacement = f.addPanel(); env.mutations[0].callback();
+            assert.equal(old.style.getPropertyValue('--f-popup-trigger-width'), '19px');
+            assert.equal(old.style.getPropertyPriority('--f-popup-trigger-width'), 'important');
+            assert.equal(old.style.getPropertyValue('max-width'), '600px');
+            assert.equal(old.style.getPropertyPriority('max-width'), 'important');
+            assert.equal(replacement.panel.getBoundingClientRect().width, 160);
+            assert.deepEqual(f.calls, [], 'Geometry changes must not dispatch selection or dismissal.');
+            references.detachPopupDismissal(f.root);
+            assert.equal(replacement.panel.style.getPropertyValue('--f-popup-trigger-width'), '');
+            assert.equal(resize.disconnected, true); assert.equal(resize.targets.size, 0);
+        } finally { references.detachPopupDismissal(f.root); }
+    }));
     test(`${kind}: an actually rendered panel enters manual top layer before shared left/right/up/down placement`, () => run(env => {
         const f = selectionFixture(env, kind, false);
         try {
@@ -296,6 +363,29 @@ for (const kind of ['reference', 'search']) {
     }));
 }
 
+test('shared menus resize without a window event and restore authored floor on close, reopen and detach', () => run(env => {
+    const trigger = env.adopt(new Element('button', { width: 420 })), panel = env.adopt(new Element('div', { width: 160 }));
+    panel.setAttribute('class', 'f-menu-panel');
+    panel.style.setProperty('--f-popup-trigger-width', '19px', 'important');
+    trigger.computedTheme = { '--f-popup-trigger-width': '999px' };
+    try {
+        api.attachMenu(trigger, panel); api.toggleMenu(trigger, panel, false);
+        const resize = env.resizes[0];
+        assert.equal(panel.getBoundingClientRect().width, 420);
+        trigger.rect.width = 80; resize.emit(trigger); assert.equal(panel.getBoundingClientRect().width, 160);
+        api.closeMenu(trigger, panel);
+        assert.equal(panel.style.getPropertyValue('--f-popup-trigger-width'), '19px');
+        assert.equal(panel.style.getPropertyPriority('--f-popup-trigger-width'), 'important');
+        const writes = panel.style.writeCount; resize.emit(trigger);
+        assert.equal(panel.style.writeCount, writes, 'Closed menus must not measure or rewrite the floor.');
+        trigger.rect.width = 210; api.toggleMenu(trigger, panel, false); assert.equal(panel.getBoundingClientRect().width, 210);
+        api.detachMenu(trigger, panel);
+        assert.equal(panel.style.getPropertyValue('--f-popup-trigger-width'), '19px');
+        assert.equal(panel.style.getPropertyPriority('--f-popup-trigger-width'), 'important');
+        assert.equal(resize.disconnected, true);
+    } finally { api.detachMenu(trigger, panel); }
+}));
+
 test('nested menu copies semantic theme roles while its own geometry overrides inherited popup direction', () => run(env => {
     for (const [triggerLeft, inherited, actual] of [[100, 'right', 'left'], [650, 'left', 'right']]) {
         const trigger = env.adopt(new Element('button', { left: triggerLeft })), panel = env.adopt(new Element('div', { width: 120, height: 120 }));
@@ -352,6 +442,23 @@ function measuredSelect(env, labels = ['English', 'Português (Brasil)', '简体
     }
     return select;
 }
+test('native trigger resizing retains independent natural option width and never reuses a former wide floor', () => run(env => {
+    const select = measuredSelect(env); select.rect.width = 420;
+    api.initializeNativePickers(env.document);
+    const resize = env.resizes[0];
+    assert.equal(select.style.getPropertyValue('--f-popup-trigger-width'), '420px');
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '200px');
+    select.rect.width = 80; resize.emit(select);
+    assert.equal(select.style.getPropertyValue('--f-popup-trigger-width'), '80px');
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '200px');
+    select.rect.width = 900; env.document.documentElement.clientWidth = 783; resize.emit(select);
+    assert.equal(select.style.getPropertyValue('--f-popup-trigger-width'), '759px');
+    select.pseudoTheme['::picker(select)']['max-width'] = '220px'; resize.emit(select);
+    assert.equal(select.style.getPropertyValue('--f-popup-trigger-width'), 'min(759px, 220px)');
+    env.document.probeWidth = 110; env.document.emit('pointerdown', select);
+    assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '110px', 'Reopening remeasures natural options without the former trigger floor.');
+    select.isConnected = false; resize.emit(select); assert.equal(resize.targets.has(select), false);
+}));
 test('native picker settles one rounded intrinsic width before the opening default and never leaves its probe mounted', () => run(env => {
     const select = measuredSelect(env); env.document.probeWidth = 243.125;
     env.document.inspectProbe = probe => {

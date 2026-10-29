@@ -1,4 +1,29 @@
 {
+  "Usage_SaveChangesBar_Scenario": {
+    "en-US": "Persistent unsaved form changes",
+    "zh-CN": "持续提示未保存的表单更改",
+    "pt-BR": "Alterações não salvas persistentes em formulários"
+  },
+  "Usage_SaveChangesBar_Guidance": {
+    "en-US": "Production use: place last inside the editable page. HasChanges and Busy control a persistent bottom save/discard bar and measured page clearance; the page owns its saved snapshot, validation, save and discard callbacks. Active callbacks also prevent leaving until complete. Unsaved or busy state blocks application navigation and query changes while allowing same-document fragments; opt-in edit-interruption actions use data-f-edit-interruption. Browser close/reload uses its native unsaved prompt and remains subject to browser policy. No automatic dismissal or discard confirmation; use NavigationGuard only for the separate confirm-before-leaving scenario.",
+    "zh-CN": "生产用途：放在编辑页面末尾。HasChanges 与 Busy 控制持续显示的底部保存、放弃栏及按实际高度预留的页面空间；页面负责已保存快照、校验与回调。回调完成前同样阻止离开。未保存或忙碌状态阻止应用导航和查询参数变更，允许当前文档的锚点；使用 data-f-edit-interruption 标记中断编辑的操作。关闭或刷新浏览器使用原生提示，受浏览器策略限制。不会自动关闭，也不提供丢弃确认；需要离开确认时使用独立的 NavigationGuard 场景。",
+    "pt-BR": "Uso em produção: coloque no fim da página editável. HasChanges e Busy controlam a barra persistente de salvar/descartar e a reserva de espaço medida; a página mantém a versão salva, validação e callbacks. Callbacks ativos também bloqueiam a saída. Alterações ou processamento bloqueiam navegação e mudanças de consulta, permitindo fragmentos locais; marque ações que interrompem a edição com data-f-edit-interruption. Fechar/recarregar usa o aviso nativo sujeito à política do navegador. Sem fechamento automático ou confirmação de descarte; NavigationGuard atende ao cenário separado de confirmação antes de sair."
+  },
+  "SaveChanges_Message": {
+    "en-US": "You have unsaved changes.",
+    "zh-CN": "有尚未保存的更改。",
+    "pt-BR": "Você tem alterações não salvas."
+  },
+  "SaveChanges_Save": {
+    "en-US": "Save",
+    "zh-CN": "保存",
+    "pt-BR": "Salvar"
+  },
+  "SaveChanges_Discard": {
+    "en-US": "Discard",
+    "zh-CN": "放弃更改",
+    "pt-BR": "Descartar"
+  },
   "Navigation_UnavailableStatus": {
     "en-US": "Unavailable",
     "zh-CN": "不可用",

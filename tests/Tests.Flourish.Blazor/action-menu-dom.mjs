@@ -333,7 +333,17 @@ await check('The automatic SSR asset enhances a native menu below its real trigg
     const entry = await fs.readFile(new URL('primitives/input-behaviors.js',sourcePath),'utf8');
     const progress = await fs.readFile(new URL('presentation/progress.js',sourcePath),'utf8');
     const progressUrl = 'data:text/javascript;base64,' + Buffer.from(progress).toString('base64');
-    await import('data:text/javascript;base64,' + Buffer.from(entry.replace("'../controls.js'",JSON.stringify(controlsUrl)).replace("'../presentation/progress.js'",JSON.stringify(progressUrl))).toString('base64'));
+    const header = await fs.readFile(new URL('patterns/header-layout.js',sourcePath),'utf8');
+    const headerUrl = 'data:text/javascript;base64,' + Buffer.from(header).toString('base64');
+    const tooltip = await fs.readFile(new URL('primitives/primary-navigation-item.js',sourcePath),'utf8');
+    const tooltipUrl = 'data:text/javascript;base64,' + Buffer.from(tooltip).toString('base64');
+    const preview = await fs.readFile(new URL('patterns/primary-navigation-preview.js',sourcePath),'utf8');
+    const previewUrl = 'data:text/javascript;base64,' + Buffer.from(preview.replace("'../primitives/primary-navigation-item.js'",JSON.stringify(tooltipUrl))).toString('base64');
+    await import('data:text/javascript;base64,' + Buffer.from(entry
+        .replace("'../controls.js'",JSON.stringify(controlsUrl))
+        .replace("'../presentation/progress.js'",JSON.stringify(progressUrl))
+        .replace("'../patterns/header-layout.js'",JSON.stringify(headerUrl))
+        .replace("'../patterns/primary-navigation-preview.js'",JSON.stringify(previewUrl))).toString('base64'));
     assert.equal(owner.getAttribute('data-f-enhanced'),'true'); assert.equal(popup.getAttribute('popover'),'manual');
     owner.open = true; owner.emit('toggle',{});
     assert.equal(popup.popoverOpen,true); assert.equal(popup.style.getPropertyValue('position'),'fixed');

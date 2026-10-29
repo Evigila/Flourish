@@ -858,6 +858,7 @@ NavigationChoicesChecks.Register(tests);
 PresentationIdentityChecks.Register(tests);
 DialogViewChecks.Register(tests);
 NavigationGuardChecks.Register(tests);
+SaveChangesBarChecks.Register(tests);
 NoCompatibilityApiChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 TutorialBoardChecks.Register(tests);

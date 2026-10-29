@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -10,6 +10,8 @@ using ArkheideSystem.Flourish.Extensions.Culture.Blazor;
 using ArkheideSystem.Gallery.Flourish.Blazor.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Forms;
+using ArkheideSystem.Gallery.Flourish.Blazor.Components.Pages;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Web.HtmlRendering;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,7 @@ internal static class DynamicSampleChecks
     {
         Checks = 0;
         await RunCulturePreferences(provider);
+        await RunAppearance(provider);
         await RunSample(provider, "Button", async (renderer, root, sample, language) =>
         {
             await Event(renderer, sample, "SaveAsync");
@@ -207,6 +210,61 @@ internal static class DynamicSampleChecks
         });
         Console.WriteLine($"{Checks} actual post-event sample translation and retained-state checks passed.");
         return Checks;
+    }
+
+    private static async Task RunAppearance(ServiceProvider provider)
+    {
+        await using var scope = provider.CreateAsyncScope();
+        Appearance? page = null; SaveChangesBar? bar = null;
+        var services = new CaptureServices(scope.ServiceProvider, component =>
+        {
+            if (component is Appearance appearance) page = appearance;
+            if (component is SaveChangesBar changes) bar = changes;
+        });
+        await using var renderer = new HtmlRenderer(services, provider.GetRequiredService<ILoggerFactory>());
+        var appearance = scope.ServiceProvider.GetRequiredService<IAppearanceService>();
+        var original = appearance.Current;
+        try
+        {
+            var root = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<Appearance>());
+            Check(page is not null && bar is not null && !bar.HasChanges, "Appearance starts with pending palette changes.");
+            var component = page ?? throw new InvalidOperationException("Appearance was not captured.");
+            var paletteBar = bar ?? throw new InvalidOperationException("SaveChangesBar was not captured.");
+            var draft = Get<PaletteDraft>(component, "Palette");
+            var context = Get<EditContext>(component, "PaletteContext");
+            await Change("invalid");
+            Check(paletteBar.HasChanges, "Palette input did not activate the shared save bar.");
+            await renderer.Dispatcher.InvokeAsync(() => paletteBar.OnSave.InvokeAsync());
+            Check(appearance.Current.Primary == original.Primary && paletteBar.HasChanges, "Invalid palette was applied or its draft lost.");
+            await Change(original.Primary);
+            Check(!paletteBar.HasChanges, "Restoring the original palette did not clear pending changes.");
+            await Change("#123456");
+            var oldSave = paletteBar.OnSave; var oldDiscard = paletteBar.OnDiscard;
+            await renderer.Dispatcher.InvokeAsync(() => oldDiscard.InvokeAsync());
+            draft = Get<PaletteDraft>(component, "Palette"); context = Get<EditContext>(component, "PaletteContext");
+            Check(draft.Primary == original.Primary && !paletteBar.HasChanges, "Discard changed the applied theme or failed to restore its snapshot.");
+            await Change("#234567");
+            await renderer.Dispatcher.InvokeAsync(() => oldSave.InvokeAsync());
+            await renderer.Dispatcher.InvokeAsync(() => oldDiscard.InvokeAsync());
+            Check(draft.Primary == "#234567" && appearance.Current.Primary == original.Primary && paletteBar.HasChanges,
+                "A stale palette callback changed a later draft.");
+            await renderer.Dispatcher.InvokeAsync(() => paletteBar.OnSave.InvokeAsync());
+            Check(appearance.Current.Primary == "#234567" && !paletteBar.HasChanges, "Save did not apply the valid palette and reset the snapshot.");
+            draft = Get<PaletteDraft>(component, "Palette"); context = Get<EditContext>(component, "PaletteContext");
+            await Change("#345678");
+            await renderer.Dispatcher.InvokeAsync(() => paletteBar.OnDiscard.InvokeAsync());
+            Check(Get<PaletteDraft>(component, "Palette").Primary == "#234567" && appearance.Current.Primary == "#234567",
+                "Discard restored default seeds instead of the last applied palette.");
+            var html = await renderer.Dispatcher.InvokeAsync(root.ToHtmlString);
+            Check(!Regex.IsMatch(html, @"<button\b[^>]*type=""submit"""), "Appearance retained its inline Apply control.");
+
+            Task Change(string value) => renderer.Dispatcher.InvokeAsync(() =>
+            {
+                draft.Primary = value;
+                context.NotifyFieldChanged(new(draft, nameof(PaletteDraft.Primary)));
+            });
+        }
+        finally { appearance.SetColors(original.Primary, original.Accent); appearance.SetTheme(original.Theme); }
     }
 
     private static async Task RunCulturePreferences(ServiceProvider provider)

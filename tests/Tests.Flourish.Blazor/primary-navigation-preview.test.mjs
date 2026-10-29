@@ -229,6 +229,52 @@ test('top-layer UA padding and borders are neutralized only while open, with cap
     assert.match(previewCss, /height:var\(--f-primary-preview-row-height,var\(--f-primary-preview-target-height\)\)/);
 });
 
+test('preview labels fill the bounded text track so long single-line labels ellipsize instead of clipping at the rail edge', async () => {
+    const block = selector => {
+        const body = [...previewCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(match => match[1].trim() === selector)?.[2];
+        assert.ok(body, `Missing preview selector: ${selector}`);
+        return new Map([...body.matchAll(/([\w-]+)\s*:\s*([^;]+);/g)].map(match => [match[1], match[2].trim()]));
+    };
+    const scope = ':is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open]';
+    const row = block(scope + ' :is(.primary-nav-item,.f-primary-item)');
+    const copy = block(scope + ' .f-primary-preview-copy');
+    assert.equal(row.get('grid-template-columns'), 'var(--f-primary-preview-target-width) minmax(0,1fr)');
+    assert.equal(row.get('place-items'), 'center start');
+    // The text cell must override the row's start alignment: shrink-to-fit can
+    // otherwise keep the nowrap label's intrinsic width despite min-width:0.
+    assert.equal(copy.get('justify-self'), 'stretch');
+    assert.equal(copy.get('align-self'), 'center');
+    assert.equal(block('.f-primary-preview-copy').get('min-width'), '0');
+    assert.equal(block('.f-primary-preview-copy').get('overflow'), 'hidden');
+    assert.equal(block('.f-primary-preview-copy').get('text-align'), 'start');
+    const text = block('.f-primary-preview-label,.f-primary-preview-reason');
+    for (const [property, expected] of [['display','block'],['min-width','0'],['overflow','hidden'],['white-space','nowrap'],['text-overflow','ellipsis']])
+        assert.equal(text.get(property), expected, property);
+    const design = await readFile(new URL('../../Flourish.Blazor.Design/wwwroot/patterns/primary-navigation-preview.css', framework), 'utf8');
+    assert.doesNotMatch(design, /\.f-primary-preview-(?:copy|label|reason)\s*\{[^}]*(?:justify-self|inline-size|width|white-space|overflow|text-overflow)\s*:/,
+        'Design typography must not replace the Framework text-track constraint');
+});
+
+for (const legacy of [false,true]) for (const rtl of [false,true])
+test(`${legacy ? 'shell' : 'surface'} ${rtl ? 'RTL' : 'LTR'} keeps the complete Portuguese accessible name and same label node through preview and Escape`, () => {
+    const f = fixture(legacy,rtl);
+    try {
+        const label = 'Administração das organizações e configurações de faturação';
+        const copy = f.first.querySelector('.f-primary-preview-copy'), text = new Node(['f-primary-preview-label']);
+        text.textContent = label; copy.append(text); f.first.setAttribute('aria-label',label);
+        api.initializePrimaryNavigationPreviews(f.host);
+        f.first.focusVisible = true; f.document.activeElement = f.first;
+        f.rail.emit('focusin',{ target:f.first });
+        assert.equal(f.rail.popoverOpen,true);
+        assert.equal(f.first.querySelector('.f-primary-preview-label'),text);
+        assert.equal(text.textContent,label); assert.equal(f.first.getAttribute('aria-label'),label);
+        assert.equal(copy.getAttribute('aria-hidden'),'true'); assert.equal(f.first.getAttribute('href'),'/same-real-link');
+        f.document.emit('keydown',{ key:'Escape',target:f.first });
+        assert.equal(f.rail.popoverOpen,false); assert.equal(f.document.activeElement,f.first);
+        assert.equal(text.textContent,label); assert.equal(f.first.getAttribute('aria-label'),label);
+    } finally { f.cleanup(); }
+});
+
 for (const legacy of [false, true]) for (const rtl of [false, true]) for (const gutter of [0, 17])
 test(`${legacy ? 'shell' : 'surface'} ${rtl ? 'RTL' : 'LTR'} icons retain real route, disabled and command coordinates with ${gutter}px inline scrollbar`, () => {
     const f = fixture(legacy, rtl);

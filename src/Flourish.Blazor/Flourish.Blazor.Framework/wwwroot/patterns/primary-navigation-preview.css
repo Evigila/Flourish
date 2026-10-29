@@ -55,7 +55,7 @@
     margin-inline-start:var(--f-primary-preview-icon-inline-inset,0px);
     margin-block-start:var(--f-primary-preview-icon-block-inset,0px);
 }
-:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] .f-primary-preview-copy { display:flex; flex-direction:column; gap:2px; align-self:center; }
+:is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open] .f-primary-preview-copy { display:flex; flex-direction:column; gap:2px; align-self:center; justify-self:stretch; }
 :is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open][data-f-primary-preview-phase] .f-primary-preview-copy { opacity:0; transition:opacity var(--f-primary-preview-duration,180ms) ease-out; }
 :is(.navigation-surface,.f-shell) .f-primary-preview-slot > [data-f-primary-preview-open][data-f-primary-preview-phase=expanded] .f-primary-preview-copy { opacity:1; }
 .f-primary-preview-label,.f-primary-preview-reason { display:block; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }

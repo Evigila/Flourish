@@ -20,6 +20,7 @@
 @import url('./expansion-indicator.css');
 @import url('./tutorial-board.css');
 @import url('./page-heading-loading.css');
+@import url('./patterns/save-changes-bar.css');
 
 @import url('./presentation/layout.css');
 @import url('./presentation/progress.css');
@@ -139,6 +140,13 @@
 .f-form-actions > * { min-width:0; }
 .f-menu-panel { display:none; position:fixed; inset:auto; width:max-content; min-width:0; margin:0; max-width:calc(100vw - 24px); max-height:calc(100dvh - 24px); overflow:auto; background:Canvas; color:CanvasText; }
 .f-menu-panel,.selection-panel,.search-autocomplete-options { box-sizing:border-box; width:max-content; min-width:0; max-width:calc(100vw - 24px); text-align:left; }
+/* Open anchored dropdowns fill their trigger unless longer content needs more;
+   a minimum can never override the viewport or an explicit width boundary. */
+:is(.f-menu-panel,.selection-panel,.search-autocomplete-options)[data-f-popup-align],
+.f-dropdown-surface > .f-menu-panel[data-f-popup-align] {
+    min-width:min(var(--f-popup-trigger-width,0px),calc(100vw - 24px));
+    min-inline-size:min(var(--f-popup-trigger-width,0px),calc(100vw - 24px));
+}
 :is(.selection-panel,.search-autocomplete-options)[popover]:not(:popover-open) { display:none; }
 :is(.selection-panel,.search-autocomplete-options)[popover]:popover-open { display:grid; }
 /* Menu rows share the longest item's column; ordinary page Buttons keep their own sizing. */

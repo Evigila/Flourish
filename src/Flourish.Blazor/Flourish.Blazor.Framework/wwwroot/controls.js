@@ -94,6 +94,17 @@ function menuUnavailable(element) {
         || element.closest('[disabled],[aria-disabled="true"],[hidden],[inert]') !== null;
 }
 function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(element => visible(element) && !menuUnavailable(element)); }
+const popupTriggerWidthProperty = '--f-popup-trigger-width';
+function setPopupTriggerWidth(element, width, maximumWidth = 'none') {
+    if (!Number.isFinite(width) || width < 0) return;
+    const viewport = (element.ownerDocument ?? document).documentElement.clientWidth;
+    width = Math.min(width,Math.max(0,viewport - 24));
+    // Preserve an existing explicit maximum as well as the CSS viewport bound.
+    // Only a minimum changes; max-content keeps the live longest-option width.
+    const value = maximumWidth && maximumWidth !== 'none' ? `min(${width}px, ${maximumWidth})` : `${width}px`;
+    if (element.style.getPropertyValue(popupTriggerWidthProperty) !== value)
+        element.style.setProperty(popupTriggerWidthProperty, value);
+}
 function copyTheme(trigger, panel) {
     const style = getComputedStyle(trigger);
     const chrome = trigger.closest?.('.shell-header,.f-titlebar');
@@ -106,7 +117,7 @@ function copyTheme(trigger, panel) {
     const names = new Set(['font-family','font-size','font-weight','line-height','color-scheme']);
     for (let index = 0; index < style.length; index++) {
         const name = style[index];
-        if (name?.startsWith('--f-') && name !== '--f-popup-align') names.add(name);
+        if (name?.startsWith('--f-') && !['--f-popup-align',popupTriggerWidthProperty].includes(name)) names.add(name);
     }
     const saved = [];
     for (const name of names) {
@@ -130,7 +141,9 @@ export function positionPopup(state) {
     const panel = state.panel;
     if (state.maximumHeight) panel.style.setProperty('max-height',state.maximumHeight,state.maximumHeightPriority);
     else panel.style.removeProperty('max-height');
-    const maximumHeight = getComputedStyle(panel).maxHeight;
+    const style = getComputedStyle(panel), maximumHeight = style.maxHeight;
+    if (panel.matches('.f-menu-panel,.selection-panel,.search-autocomplete-options'))
+        setPopupTriggerWidth(panel, trigger.width, style.maxWidth);
     const width = document.documentElement.clientWidth;
     const alignment = popupAlignment(trigger, width);
     panel.setAttribute('data-f-popup-align',alignment);
@@ -155,7 +168,7 @@ export function positionPopup(state) {
 function positionMenu(state) { positionPopup(state); }
 function popupAlignment(trigger, viewportWidth) { return (trigger.left + trigger.right) / 2 <= viewportWidth / 2 ? 'left' : 'right'; }
 
-const nativePickerDocuments = new WeakSet();
+const nativePickerDocuments = new WeakMap();
 const measuredNativePickers = new WeakSet();
 const pickerMeasureProperties = [
     'font-family','font-size','font-style','font-weight','font-stretch','font-kerning','font-feature-settings',
@@ -233,10 +246,16 @@ function measureNativePicker(select) {
 /** Select keeps its native picker; settle its intrinsic width and edge before the opening default action. */
 export function initializeNativePickers(root = document) {
     const owner = root.ownerDocument ?? root;
+    let state = nativePickerDocuments.get(owner);
     const update = (select, opening = false) => {
         if (select?.tagName !== 'SELECT' || !select.isConnected || !select.getClientRects().length) return;
-        const alignment = popupAlignment(select.getBoundingClientRect(),owner.documentElement.clientWidth);
+        const bounds = select.getBoundingClientRect();
+        const alignment = popupAlignment(bounds,owner.documentElement.clientWidth);
         if (select.getAttribute('data-f-popup-align') !== alignment) select.setAttribute('data-f-popup-align',alignment);
+        const view = owner.defaultView ?? window;
+        if ((view.CSS ?? globalThis.CSS)?.supports('appearance','base-select'))
+            setPopupTriggerWidth(select, bounds.width, view.getComputedStyle(select,'::picker(select)').maxWidth);
+        if (state.resize && !state.observed.has(select)) { state.observed.add(select); state.resize.observe(select); }
         if (opening || !measuredNativePickers.has(select)) {
             // A removed measurement probe may trigger the host's DOM discovery observer again.
             measuredNativePickers.add(select); measureNativePicker(select);
@@ -246,13 +265,22 @@ export function initializeNativePickers(root = document) {
         if (target.tagName === 'SELECT' && target.matches('.f-select')) update(target);
         for (const select of target.querySelectorAll('select.f-select')) update(select);
     };
+    if (!state) {
+        state = { observed:new Set(), resize:null };
+        if (typeof ResizeObserver === 'function') state.resize = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                if (!entry.target.isConnected) { state.resize.unobserve(entry.target); state.observed.delete(entry.target); }
+                else update(entry.target);
+            }
+        });
+        nativePickerDocuments.set(owner,state);
+        const beforeOpen = event => update(event.target?.closest?.('select.f-select'),true);
+        for (const type of ['pointerdown','focusin','keydown']) owner.addEventListener(type,beforeOpen,true);
+        (owner.defaultView ?? window).addEventListener('resize',()=>synchronize(owner));
+        owner.addEventListener('scroll',()=>synchronize(owner),true);
+    }
+    for (const select of state.observed) if (!select.isConnected) { state.resize.unobserve(select); state.observed.delete(select); }
     synchronize(root);
-    if (nativePickerDocuments.has(owner)) return;
-    nativePickerDocuments.add(owner);
-    const beforeOpen = event => update(event.target?.closest?.('select.f-select'),true);
-    for (const type of ['pointerdown','focusin','keydown']) owner.addEventListener(type,beforeOpen,true);
-    (owner.defaultView ?? window).addEventListener('resize',()=>synchronize(owner));
-    owner.addEventListener('scroll',()=>synchronize(owner),true);
 }
 
 const nativeSelectPopups = new WeakMap();
@@ -529,6 +557,11 @@ export function attachMenu(trigger, panel, openOnHover=false) {
     });
     listen(window,'resize',()=>positionMenu(state));
     listen(document,'scroll',()=>positionMenu(state),true);
+    if (typeof ResizeObserver === 'function') {
+        const resize = new ResizeObserver(() => positionMenu(state));
+        resize.observe(trigger);
+        state.cleanup.push(()=>resize.disconnect());
+    }
     const observer = new MutationObserver(() => {
         if (!trigger.isConnected) detachMenu(trigger,panel);
         else if (state.open) positionMenu(state);
@@ -573,7 +606,7 @@ function openMenu(state, focusMenu) {
     if (typeof panel.showPopover !== 'function') throw new TypeError('Native Popover API is required.');
     if (activeMenu && weakPopup(activeMenu.panel)) closeMenu(activeMenu.trigger,activeMenu.panel,false);
     state.restoreTheme = copyTheme(trigger,panel);
-    const geometry = ['position','inset','margin','right','bottom','min-width'];
+    const geometry = ['position','inset','margin','right','bottom','min-width',popupTriggerWidthProperty];
     const savedGeometry = geometry.map(name => [name,panel.style.getPropertyValue(name),panel.style.getPropertyPriority(name)]);
     state.restoreGeometry = () => savedGeometry.forEach(([name,value,priority]) => value ? panel.style.setProperty(name,value,priority) : panel.style.removeProperty(name));
     panel.style.setProperty('position','fixed'); panel.style.setProperty('inset','auto'); panel.style.setProperty('margin','0');

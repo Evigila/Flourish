@@ -45,6 +45,11 @@ internal static class CatalogChecks
         Equal("false", typeof(Controls.Button), "Disabled");
         Equal("false", typeof(Controls.UniformGridItem), "Information");
         Equal("false", typeof(Controls.Dialog), "DangerTitle");
+        Equal("false", typeof(Controls.SaveChangesBar), "HasChanges");
+        Equal("false", typeof(Controls.SaveChangesBar), "Busy");
+        Equal("\"You have unsaved changes.\"", typeof(Controls.SaveChangesBar), "Message");
+        Equal("\"Save\"", typeof(Controls.SaveChangesBar), "SaveText");
+        Equal("\"Discard\"", typeof(Controls.SaveChangesBar), "DiscardText");
         Check(!Entry(typeof(Controls.Card)).IsProductionEntry && Entry(typeof(Controls.Card)).Usage.Kind == Controls.ComponentUseKind.Deprecated
             && Entry(typeof(Controls.Card)).Usage.PreferredEntry == typeof(Controls.UniformGrid), "Gallery must expose Card as deprecated and link its replacement.");
         Equal("\"\"", typeof(Controls.Button), "Description");

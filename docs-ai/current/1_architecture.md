@@ -1,8 +1,16 @@
 # Project architecture and repository tree
 
-## Current local shell candidate, 2026-10-28
+The 2026-10-29 [editable-settings adoption](1_bugreports/2026-10-29_appearance-save-bar-adoption.md) updates the Blazor Gallery color settings to use the existing SaveChangesBar. Dedicated record forms and component mechanism samples keep their own bottom actions; immediate theme/language preferences keep their existing behavior. Gallery application/test builds passed with zero warnings/errors, and its regression executable passed 8755 checks, including 483 post-event checks. This changes no public library contract, package payload, dependency, maintained-file count or native framework. The .15 archives remain frozen; their initial producer evidence below is retained as such.
 
-The root source declares **1.4.4-preview.shell.20261027.12**, based on `37a42ae` after the public stable 1.4.3 release (`v1.4.3`, source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The selected release scope remains the same six Core/Blazor package IDs with Essential.Culture 1.4.0; no additional external package, SDK or service is introduced. This refinement starts from committed shell .11 source `c1ae486`; this section describes the local candidate source and its scoped verification. Public-release and older test evidence below remain dated historical records; this local candidate has not been publicly published.
+Current local candidate is **1.4.4-preview.shell.20261027.15**, based on `aaac88c` plus the retained .13/.14 work and the new library-owned SaveChangesBar. The maintained tree is **721 files/121 directories**, with 22 projects/5 solutions; the public catalog now contains **84 components, 785 parameter rows and 368 documented defaults**. Twelve-project Release passed with zero warnings/errors; Framework **494/494**, Gallery **8750/8750** (including 474 post-event and 443 changelog checks), Culture bridge **27/27**, focused save-bar Node **24/24** and CSS bundler **21/21** passed. Six archives and **14 unique delivery entries (13 static resources and one Framework DLL)** match source/Release bytes in the independent `artifacts/save-changes-bar-20261029/nuget` feed. See [dependency evidence](1_dependency.md) and [behavior, limits and manual acceptance](1_bugreports/2026-10-29_save-changes-bar.md). No browser visual verification, public publication or application restart is asserted.
+
+SaveChangesBar is a public Framework scenario for page-owned unsaved edits. HasChanges, Busy and an executing save/discard callback keep a persistent bottom bar active; Primary Save and Quiet Discard remain the actual shared Button controls. Message/SaveText/DiscardText have English, Portuguese and Chinese defaults, with encoded explicit overrides. The page owns the saved snapshot, validation, persistence and restoration; the component does not mutate the draft or dismiss itself. Busy and duplicate callback guards remain in force until completion, including callback failure and the interval after the host clears HasChanges but still awaits its callback. An inactive component retains only its empty root.
+
+The active bar owns a NavigationManager location-changing registration and an instance-scoped `patterns/save-changes-bar.js` browser lifecycle. Ordinary route/query changes and same-URL refresh are blocked; only a distinct nonempty fragment of the same origin/path/query remains allowed. Native link capture and explicitly marked `data-f-edit-interruption` actions are blocked by the browser module, with reversible disabled semantics and appearance; the bar's own actions are exempt. Multiple roots aggregate without overwriting one another. Browser close/reload uses its native beforeunload prompt, subject to browser policy, rather than a discard-confirmation shortcut or an absolute browser-navigation lock. The existing confirmation-based NavigationGuard is unchanged.
+
+Framework `patterns/save-changes-bar.css` owns fixed placement, wrapping, safe-area offsets, scrolling and page clearance; Design's corresponding partial owns normal Surface/Text/Border roles, radius, shadow and disabled paint. Both partials are bundled into existing CSS. A ResizeObserver measures the actual wrapped panel and writes only the root's owned clearance property, restoring prior state on disposal; page/body padding is not overwritten. The component belongs last in the editable page, does not steal focus or add motion, and releases managed registrations, browser observers/listeners and late module imports when inactive or disposed. Gallery includes one executable fictional-draft sample and reviewed public API/default/localization metadata.
+
+The root source declares **1.4.4-preview.shell.20261027.15** on committed baseline `aaac88c`, retaining the preceding .13/.14 refinements after the public stable 1.4.3 release (`v1.4.3`, source `d4e8cd95c58e87646684903a0fdb2f9767994931`). The selected release scope remains six Core/Blazor package IDs with Essential.Culture 1.4.0; no external package, SDK or service is added. Public-release and older test evidence below remains dated history. This local candidate has not been publicly published.
 
 Browser Icon still renders the single Unicode character selected by the complete bundled IconCatalog; it does not render ASCII ligature names. The font asset is now split by two disjoint unicode-range faces of the same Material Symbols family. A 125,404-byte WOFF 1.0 contains 78 common names/76 codepoints, including the unknown-name help fallback. Only characters outside that partition select the unchanged 4,003,088-byte original WOFF2. The ranges cover all Unicode without overlap, so common glyphs do not also select the complete font and rare dynamically selected icons remain compatible. Existing Filled and four-axis variable-font data are preserved. This is an asset/request-selection improvement, not a measured LCP or visual first-paint result.
 
@@ -34,13 +42,19 @@ UniformGridItem adds optional **Information=false** for passive read-only fields
 
 Card is now **deprecated for new composition** in ComponentUsageCatalog, which points read-only fields to UniformGrid information items and grouped/display content to existing Section/presentation entries. The original public Card type, rendering and parameters remain available for compatibility. Its new Card.razor.cs partial declaration adds EditorBrowsable(Never), hiding it from normal API discovery without removing the renderer or introducing a warning-producing Obsolete attribute. Dialog adds optional **DangerTitle=false**; true applies the existing semantic Danger ink to its own title without changing body text, actions, native dialog behavior or result handling.
 
-Candidate .12 narrows the preview to a 15rem preferred minimum/18rem maximum, further capped to preserve a quarter of the visible vertical secondary rail. Secondary size/replacement changes are observed without layout reads in mutation callbacks. The same popover transitions numeric width and caption opacity for 180ms; quick reentry reverses closing, and generation/target guards reject stale callbacks. Reduced-motion and forced paths settle immediately. Original icon positions and content/header/footer tracks remain.
-
-No maintained source file/public parameter is added: **714 files/121 directories**, 22 projects/5 solutions, 83 public components and 775 parameter rows/363 defaults remain. The final-source 12-project Release build passed with zero warnings/errors; Framework **487/487**, Gallery **8653/8653**, Node **79/79** (preview 37/header 9/native CSS 33) and CSS bundle **21/21** passed. Six verified archives and eleven delivery assets are in `artifacts/dashboard-preview-motion-20261028/nuget` and its evidence directory. Header JS/fonts and previous .11 archives remain unchanged. No physical browser test or deployment is asserted; see [width/motion and manual acceptance](1_bugreports/2026-10-28_primary-preview-width-and-motion.md).
-
 The .11 action-row correction gives only direct ShellHeader action slots/InlineActions content width, with a 100% ceiling. Measured aligned/fitted modes keep both action levels on one row; stacked/no-script modes retain wrapping. Actual right-wing controls and identity text are observed, including native-select enhancement readiness. This covers the data-alignment width:100% rule that the earlier fixture omitted. Preview now neutralizes the UA popover box, preserves original block insets and each row's height, and positions each actual icon from measured collapsed/expanded rectangles, including scrollbar/RTL correction. Collection checks compare DOM identities without layout reads; replaced/inserted/hidden items or icon nodes close the old preview and clear temporary geometry.
 
 ## Historical release and preview records
+
+**Historical shell candidate .14 verification, 2026-10-29:** The local candidate was `1.4.4-preview.shell.20261027.14`, based on `aaac88c` with the preceding .13 work and primary-preview truncation follow-up. The expanded text container now stretches across its bounded grid track, so existing ellipsis applies to long localized labels. Public contracts, JavaScript, fonts, twelve projects and the maintained source tree are unchanged. Release passed with zero warnings/errors; Framework 487, Gallery 8653, CSS bundle 21 and preview Node 42 checks passed. Six archives and thirteen exact assets are verified in the independent admin-account-and-navigation-20261029 feed; see [the current dependency evidence](1_dependency.md) and [diagnosis/manual checks](1_bugreports/2026-10-29_primary-preview-text-truncation.md). No browser visual verification, publication or application restart is asserted.
+
+**Historical shell candidate .13 behavior, 2026-10-28:** Candidate .13 adds a trigger border-box floor to natural dropdown content width, while preserving the viewport/author maximum. Shared menu, enhanced/native select, reference/search and multiple-selection paths are covered. Menu/reference owned geometry restores on release, native option measurements remain independent, and trigger ResizeObserver tracks container changes. The full Design cascade retains the floor over its later static-dropdown reset; non-dropdown Tutorial surfaces are unaffected.
+
+**Historical .13 verification:** No maintained source file or public API is added: **714 files/121 directories**, 22 projects/5 solutions, 83 components and 775 parameter rows/363 defaults remain. Twelve-project final Release passed with zero warnings/errors; Framework **487/487**, Gallery **8653/8653**, scoped DOM/CSS **176/176** and CSS bundle **21/21** passed. Fourteen physical-browser checks remain manual. Six archives and thirteen assets are verified in `artifacts/dropdown-width-and-admin-navigation-20261028/nuget` and its evidence directory; header/preview JS, fonts and .12 archives remain unchanged. See [trigger-floor lifecycle and manual acceptance](1_bugreports/2026-10-28_dropdown-trigger-width-floor.md).
+
+**Historical shell candidate .12 verification, 2026-10-28:** Candidate .12 narrows the preview to a 15rem preferred minimum/18rem maximum, further capped to preserve a quarter of the visible vertical secondary rail. Secondary size/replacement changes are observed without layout reads in mutation callbacks. The same popover transitions numeric width and caption opacity for 180ms; quick reentry reverses closing, and generation/target guards reject stale callbacks. Reduced-motion and forced paths settle immediately. Original icon positions and content/header/footer tracks remain.
+
+No maintained source file/public parameter is added: **714 files/121 directories**, 22 projects/5 solutions, 83 public components and 775 parameter rows/363 defaults remain. The final-source 12-project Release build passed with zero warnings/errors; Framework **487/487**, Gallery **8653/8653**, Node **79/79** (preview 37/header 9/native CSS 33) and CSS bundle **21/21** passed. Six verified archives and eleven delivery assets are in `artifacts/dashboard-preview-motion-20261028/nuget` and its evidence directory. Header JS/fonts and previous .11 archives remain unchanged. No physical browser test or deployment is asserted; see [width/motion and manual acceptance](1_bugreports/2026-10-28_primary-preview-width-and-motion.md).
 
 **Historical shell candidate .11 verification, 2026-10-28:** Candidate .11 adds no maintained source file or public parameter: the tree remains **714 files/121 directories**, with 22 projects/5 solutions, 83 public components and 775 parameter rows/363 documented defaults. The frozen 12-project Release build passed with zero warnings/errors; Framework **487/487**, Gallery **8,653/8,653**, focused Node **62/62** (preview **20**, header **9**, native CSS **33**) and CSS bundle **21/21** passed. Six immutable .11 packages pass the existing verifier; eleven delivered resources equal current source or actual Release outputs. Both icon fonts remain byte-identical to .10. The independent feed is `artifacts/header-preview-alignment-20261028/nuget`. Consumer restore and physical input/geometry acceptance remain separate. See [action-row and preview-box diagnosis](1_bugreports/2026-10-28_header-action-row-and-preview-box-alignment.md) and [current package identities](1_dependency.md#current-candidate-archive-and-asset-evidence).
 
@@ -105,7 +119,7 @@ The .11 action-row correction gives only direct ShellHeader action slots/InlineA
 
 ## Inventory scope
 
-The complete tree below includes every maintained file observed through 2026-10-28 in the repository outside the two documentation subtrees. The inventory contains **714 files and 121 directories below the root**, including **22 project files and 5 solution files**. Candidate .7 added five font-generation/asset/regression files, .8/.9 changed existing files, and .10 adds four preview source/regression files; it does not perform or claim a new full documentation audit. It includes hidden maintained files and project-owned untracked files. The prior hidden-file-aware filesystem scan applied the explicit generated/temporary exclusions below and retained the existing directory-first ordering. Git ignore rules were not used to discard maintained source, assets, configuration, or deployment definitions.
+The complete tree below includes every maintained file observed through 2026-10-29 outside the two documentation subtrees. The current physical scan contains **721 files and 121 directories below the root**, including **22 project files and 5 solution files**. Relative to the prior 714-file tree, SaveChangesBar adds exactly seven maintained files: its Razor component, Framework/Design CSS partials, browser module, Gallery sample and C#/Node regression files; no maintained file is removed. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules are not used to discard maintained source, assets, configuration or deployment definitions. This scoped architecture update does not perform or claim a new full documentation audit.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -117,9 +131,9 @@ The complete tree below includes every maintained file observed through 2026-10-
 | Any `bin/**`, `obj/**` | Compiler output, NuGet resolution files, generated source and intermediates |
 | Any `node_modules/**`, `__pycache__/**`, `TestResults/**` | Dependency caches, Python bytecode and test output |
 | `*.user`, `*.tmp`, `*.log`, `*.binlog`, `*.nupkg`, `*.snupkg` | Personal project settings, temporary files, logs and generated package archives; no maintained source matching these extensions was observed |
-| Directories with no maintained descendants | Empty/residual physical folders are not maintained tree nodes; the concrete folders are listed below |
+| Directories with no maintained descendants | Empty/residual physical folders are not maintained tree nodes; none were found in the current scan after the output exclusions |
 
-The physical scan also found eleven folders without maintained files after the output exclusions: `src/Flourish.Blazor/Flourish.Blazor.Design/Components`, `src/Flourish.Blazor/Flourish.Blazor.Shared`, `src/Flourish.WPF/BackgroundTasks`, `src/Flourish.WPF/Localization`, `src/Flourish.WPF/Shell`, `src/Flourish.WPF/Shell/StatusBar`, `src/Gallery.Flourish.Blazor/Components/Layout`, `src/Gallery.Flourish.WPF/Localization`, `src/Gallery.Flourish.WPF/Localization/Catalogs`, `tests/Flourish.Command.Test`, and `tests/LangKey.Test`. They contain no maintained files or directory markers; their physical presence does not retain a retired API or create an implemented module. They remain untouched.
+Earlier scans recorded eleven empty/residual folders. The current physical scan found no included directory without maintained descendants after the generated/output exclusions. Those earlier physical-folder observations are historical, not current implemented modules or maintained tree nodes. This documentation update performs no directory removal.
 
 No maintained source subtree was collapsed. In particular, `.agents/`, `.config/`, `.github/`, checked-in fonts, compressed icon data, Culture modules, and test scripts are included. The removed `script/preview-docs-*.ps1` files were absent and are not restored or represented as maintained files. There is no maintained root `Directory.Packages.props` or `.editorconfig` in this inspected tree.
 
@@ -202,7 +216,8 @@ Flourish/
 |   |   |   |   |-- patterns/
 |   |   |   |   |   |-- content-surface.css
 |   |   |   |   |   |-- navigation-surface.css
-|   |   |   |   |   \-- primary-navigation-preview.css
+|   |   |   |   |   |-- primary-navigation-preview.css
+|   |   |   |   |   \-- save-changes-bar.css
 |   |   |   |   |-- primitives/
 |   |   |   |   |   |-- AccessBrand.css
 |   |   |   |   |   |-- DataPager.css
@@ -330,6 +345,7 @@ Flourish/
 |   |   |   |   |-- PresentationProgress.razor
 |   |   |   |   |-- ProgressBar.razor
 |   |   |   |   |-- ProgressRing.razor
+|   |   |   |   |-- SaveChangesBar.razor
 |   |   |   |   |-- SearchBox.razor
 |   |   |   |   |-- Section.razor
 |   |   |   |   |-- SectionNavigator.razor
@@ -377,6 +393,8 @@ Flourish/
 |   |   |   |   |   |-- navigation-surface.css
 |   |   |   |   |   |-- primary-navigation-preview.css
 |   |   |   |   |   |-- primary-navigation-preview.js
+|   |   |   |   |   |-- save-changes-bar.css
+|   |   |   |   |   |-- save-changes-bar.js
 |   |   |   |   |   \-- surfaces.js
 |   |   |   |   |-- presentation/
 |   |   |   |   |   |-- layout.css
@@ -720,6 +738,7 @@ Flourish/
 |   |   |   |       |-- PageBodySample.razor
 |   |   |   |       |-- PageHeadingSample.razor
 |   |   |   |       |-- PrimaryNavigationItemSample.razor
+|   |   |   |       |-- SaveChangesBarSample.razor
 |   |   |   |       |-- SecondaryNavigationItemSample.razor
 |   |   |   |       |-- SectionNavigatorSample.razor
 |   |   |   |       |-- ServiceMenuSample.razor
@@ -834,6 +853,8 @@ Flourish/
 |   |   |-- primary-navigation-preview.test.mjs
 |   |   |-- Program.cs
 |   |   |-- progress-rendering.test.mjs
+|   |   |-- save-changes-bar.test.mjs
+|   |   |-- SaveChangesBarChecks.cs
 |   |   |-- section-navigator-dom.mjs
 |   |   |-- SectionNavigatorChecks.cs
 |   |   |-- SelectValueConversionChecks.cs
@@ -970,7 +991,7 @@ Flourish/
 | --- | --- | --- |
 | `Flourish.slnx` | Aggregate development solution containing all 22 projects; it is not a deployment orchestrator | Actual solution project entries and platform mappings |
 | `global.json` | Requires .NET SDK 10.0.400 with latest-patch roll-forward and no prerelease SDK | SDK declaration |
-| `Directory.Build.props` | Shared package metadata, deterministic output, Flourish 1.4.4-preview.shell.20261027.10 local candidate version, Essential.Culture 1.4.0 version property, generated package output directory | Current shared MSBuild properties; user-authorized release preparation |
+| `Directory.Build.props` | Shared package metadata, deterministic output, Flourish 1.4.4-preview.shell.20261027.15 local candidate version, Essential.Culture 1.4.0 version property, generated package output directory | Current shared MSBuild properties; user-authorized release preparation |
 | `Directory.Build.targets` | Refuses architecture-specific pack output for managed libraries whose package assemblies are TFM-wide | `RequireArchitectureNeutralLibraryPackage` target |
 | `AGENTS.md`, `AGENTS.ensure.json`, `AGENTS.framework.json`, `AGENTS.lock.json` | Instruction routing, separate audit state, installed managed-payload manifest and installation provenance | Current framework files; audit-state validity is evaluated by the coordinator |
 | `.agents/` | Two project-owned workflow skills: documentation audit and shared framework synchronization | Each skill manifest and UI metadata |

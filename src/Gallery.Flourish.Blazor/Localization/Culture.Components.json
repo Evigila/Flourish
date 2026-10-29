@@ -1,4 +1,14 @@
 {
+  "Catalog_SaveChangesBar_Purpose": {
+    "en-US": "Persistent save and discard actions for a page-owned unsaved draft.",
+    "zh-CN": "为页面维护的未保存草稿提供持续显示的保存与放弃操作。",
+    "pt-BR": "Ações persistentes para salvar ou descartar um rascunho controlado pela página."
+  },
+  "Catalog_SaveChangesBar_Variants": {
+    "en-US": "Hidden when clean; unsaved or busy state displays a bottom bar and blocks leaving or changing the query. Same-document fragment links remain available. The page owns data, validation and callbacks; browser close/reload uses its native prompt.",
+    "zh-CN": "无更改时隐藏；有更改或忙碌时显示底部操作栏，阻止离开及查询参数导航，保留当前文档内的锚点导航。页面负责数据、校验与回调；关闭或刷新浏览器使用原生提示。",
+    "pt-BR": "Oculta sem alterações; alterações ou processamento exibem a barra inferior e bloqueiam saída ou mudança de consulta. Links para fragmentos do mesmo documento continuam disponíveis. A página controla dados, validação e ações; fechar ou recarregar usa o aviso nativo."
+  },
   "Catalog_LanguagePicker_Purpose": {
     "en-US": "Select and persist the interface language or number/date format through the Culture extension.",
     "zh-CN": "通过 Culture 扩展选择并保存界面语言或数字、日期格式。",

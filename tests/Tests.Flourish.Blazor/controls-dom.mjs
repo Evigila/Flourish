@@ -429,7 +429,17 @@ check('Text selection keeps ordinary replacement but preserves masked carets',()
 const inputBehaviorCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/input-behaviors.js',import.meta.url),'utf8');
 const progressCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/progress.js',import.meta.url),'utf8');
 const progressUrl='data:text/javascript;base64,'+Buffer.from(progressCode).toString('base64');
-await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode.replace(/(["'])\.\.\/controls\.js\1/,JSON.stringify(controlsUrl)).replace(/(["'])\.\.\/presentation\/progress\.js\1/,JSON.stringify(progressUrl))).toString('base64'));
+const headerCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/header-layout.js',import.meta.url),'utf8');
+const headerUrl='data:text/javascript;base64,'+Buffer.from(headerCode).toString('base64');
+const tooltipCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/primary-navigation-item.js',import.meta.url),'utf8');
+const tooltipUrl='data:text/javascript;base64,'+Buffer.from(tooltipCode).toString('base64');
+const previewCode=await fs.readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/primary-navigation-preview.js',import.meta.url),'utf8');
+const previewUrl='data:text/javascript;base64,'+Buffer.from(previewCode.replace(/(["'])\.\.\/primitives\/primary-navigation-item\.js\1/,JSON.stringify(tooltipUrl))).toString('base64');
+await import('data:text/javascript;base64,'+Buffer.from(inputBehaviorCode
+  .replace(/(["'])\.\.\/controls\.js\1/,JSON.stringify(controlsUrl))
+  .replace(/(["'])\.\.\/presentation\/progress\.js\1/,JSON.stringify(progressUrl))
+  .replace(/(["'])\.\.\/patterns\/header-layout\.js\1/,JSON.stringify(headerUrl))
+  .replace(/(["'])\.\.\/patterns\/primary-navigation-preview\.js\1/,JSON.stringify(previewUrl))).toString('base64'));
 check('Primitive focus selection cannot reselect a masked input through its document listener',()=>{
   const input=new Node();input.type='text';input.value='AB-1234';input.dataset={inputMask:'AA-0000'};let selections=0;input.select=()=>selections++;
   document.activeElement=input;document.emit('focusin',{target:input});assert.equal(selections,0);

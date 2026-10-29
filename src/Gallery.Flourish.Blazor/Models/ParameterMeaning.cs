@@ -9,6 +9,10 @@ internal static class ParameterMeaning
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
         "PrimaryNavigationPreview" => "Key.Parameter_PrimaryNavigationPreview",
+        "HasChanges" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_HasChanges_SaveChangesBar",
+        "OnSave" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_OnSave_SaveChangesBar",
+        "OnDiscard" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_OnDiscard_SaveChangesBar",
+        "SaveText" or "DiscardText" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_ActionText_SaveChangesBar",
         "Information" when parameter.DeclaringType == typeof(Controls.UniformGridItem) => "Key.Parameter_Information_UniformGridItem",
         "DangerTitle" when parameter.DeclaringType == typeof(Controls.Dialog) => "Key.Parameter_DangerTitle_Dialog",
         "MaxWidth" when parameter.DeclaringType == typeof(ArkheideSystem.Flourish.Extensions.Culture.Blazor.LanguagePicker) => "Key.Parameter_MaxWidth_LanguagePicker",

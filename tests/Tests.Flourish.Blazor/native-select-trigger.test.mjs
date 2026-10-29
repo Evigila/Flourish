@@ -250,13 +250,14 @@ test("popup placement attributes do not define a competing text-alignment token"
   assert.doesNotMatch(strip(frameworkCss + "\n" + designCss), /--f-popup-align/);
 });
 
-test("all anchored panels retain intrinsic width with one viewport bound in the complete optional Design cascade", () => {
+test("anchored dropdowns retain natural width and a viewport-bounded trigger floor in the complete optional Design cascade", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
     const allStyles = rules(css);
     for (const kind of ["service", "action", "dropdown", "split", "multi", "reference", "search"]) for (const alignment of [null, "left", "right"]) {
       const { panel, item } = popupFixture(kind, alignment);
-      for (const [property, expected] of [["width", "max-content"], ["min-width", "0"], ["max-width", "calc(100vw - 24px)"]])
+      for (const [property, expected] of [["width", "max-content"], ["min-width", alignment ? "min(var(--f-popup-trigger-width,0px),calc(100vw - 24px))" : "0"], ["max-width", "calc(100vw - 24px)"]])
         assert.equal(cascade(allStyles, panel, property), expected, `${kind}/${alignment}/panel ${property}`);
+      if (alignment) assert.equal(cascade(allStyles, panel, "min-inline-size"), "min(var(--f-popup-trigger-width,0px),calc(100vw - 24px))", `${kind}/${alignment}/logical minimum`);
       for (const [property, expected] of [["width", kind === "multi" ? "auto" : "100%"], ["min-width", "0"], ["max-width", kind === "multi" ? "none" : "100%"], ["box-sizing", "border-box"], ["justify-self", "stretch"], ["align-self", "stretch"]])
         assert.equal(cascade(allStyles, item, property), expected, `${kind}/${alignment}/item ${property}`);
       for (const property of ["text-align", "justify-content"])
@@ -472,7 +473,7 @@ test("popup search inputs fill the option width without imposing the browser's d
 test("native picker sizing uses the pre-opening measurement in Framework with optional Design paint", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
     const picker = new Map(rules(css).filter(rule => rule.selectors.includes(".f-select::picker(select)")).flatMap(rule => [...rule.declarations]));
-    for (const [property, expected] of [["box-sizing", "border-box"], ["width", "var(--f-picker-inline-size,max-content)"], ["min-width", "0"], ["max-width", "calc(100vw - 24px)"], ["min-inline-size", "0"], ["max-inline-size", "calc(100vw - 24px)"]])
+    for (const [property, expected] of [["box-sizing", "border-box"], ["width", "var(--f-picker-inline-size,max-content)"], ["min-width", "min(var(--f-popup-trigger-width,0px),calc(100vw - 24px))"], ["max-width", "calc(100vw - 24px)"], ["min-inline-size", "min(var(--f-popup-trigger-width,0px),calc(100vw - 24px))"], ["max-inline-size", "calc(100vw - 24px)"]])
       assert.equal(picker.get(property), expected, property);
   }
 });

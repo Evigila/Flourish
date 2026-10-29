@@ -1,4 +1,4 @@
-@page "/foundations"
+﻿@page "/foundations"
 @page "/foundations/{Topic}"
 @inherits LocalizedComponentBase
 @inject IAppearanceService AppearanceService
@@ -18,23 +18,22 @@
     }
     @if (TopicKey == "colors")
     {
+    var draft = Palette; var context = PaletteContext;
     <Section Title="@Localization.Parse(TextKey.Nav_Colors)">
         <p>@Localization.Parse(TextKey.Appearance_ColorDescription)<br />@Localization.Parse(TextKey.Appearance_ColorInteractions)</p>
-        <EditForm @key="Palette" novalidate OnInvalidSubmit="InvalidSubmit" Model="Palette" OnValidSubmit="ApplyPalette" FormName="palette-example">
+        <EditForm @key="context" novalidate EditContext="context" OnValidSubmit="() => ApplyPalette(context, draft)" FormName="palette-example">
             <DataAnnotationsValidator />
             <FormLayout>
-                <Field Label="@Localization.Parse(TextKey.Appearance_Primary)" Id="palette-primary" Required="true" For="@(() => Palette.Primary)" MessageFormatter="LocalizeValidation">
-                    <TextBox Id="palette-primary" @bind-Value="Palette.Primary" MaxLength="7" />
+                <Field Label="@Localization.Parse(TextKey.Appearance_Primary)" Id="palette-primary" Required="true" For="@(() => draft.Primary)" MessageFormatter="LocalizeValidation">
+                    <TextBox Id="palette-primary" @bind-Value="draft.Primary" MaxLength="7" />
                 </Field>
-                <Field Label="@Localization.Parse(TextKey.Appearance_Accent)" Id="palette-accent" Required="true" For="@(() => Palette.Accent)" MessageFormatter="LocalizeValidation">
-                    <TextBox Id="palette-accent" @bind-Value="Palette.Accent" MaxLength="7" />
+                <Field Label="@Localization.Parse(TextKey.Appearance_Accent)" Id="palette-accent" Required="true" For="@(() => draft.Accent)" MessageFormatter="LocalizeValidation">
+                    <TextBox Id="palette-accent" @bind-Value="draft.Accent" MaxLength="7" />
                 </Field>
             </FormLayout>
-            <InlineActions>
-                <Button Variant="ButtonVariant.Primary" Type="submit" Text="@Localization.Parse(TextKey.Appearance_Apply)" />
-                <Button Variant="ButtonVariant.Secondary" OnClick="ResetPalette" Text="@Localization.Parse(TextKey.Appearance_Reset)" />
-            </InlineActions>
+
         </EditForm>
+        <SaveChangesBar HasChanges="@PaletteDirty" OnSave="() => ApplyPalette(context, draft)" OnDiscard="() => DiscardPalette(context, draft)" />
         @if (ColorsApplied) { <Notice Severity="NotificationSeverity.Success">@Localization.Parse(TextKey.Appearance_Applied)</Notice> }
         <UniformGrid>
             @foreach (var token in Colors)
@@ -129,7 +128,10 @@
 
     private string LocalizeValidation(string message) => Localization.TryParse(message, [], out var text) ? text : message;
     private PaletteDraft Palette = new();
-    private bool ColorsApplied;
+    private bool ColorsApplied, Disposed;
+    private EditContext PaletteContext = null!;
+    private string SavedPrimary = "", SavedAccent = "";
+    private bool PaletteDirty => Palette.Primary != SavedPrimary || Palette.Accent != SavedAccent;
     private string ThemeLabel => Localization.Parse(AppearanceService.Current.Theme switch { ApplicationTheme.Dark => TextKey.Appearance_Dark, ApplicationTheme.Light => TextKey.Appearance_Light, _ => TextKey.Appearance_System });
     private static readonly (string Label, string Name)[] Colors =
     [ (TextKey.Appearance_Primary, "--f-primary"), (TextKey.Appearance_Accent, "--f-accent"), (TextKey.Appearance_Canvas, "--f-canvas"), (TextKey.Appearance_Surface, "--f-surface"),
@@ -146,15 +148,44 @@
     {
         base.OnInitialized();
         Palette.Primary = AppearanceService.Current.Primary; Palette.Accent = AppearanceService.Current.Accent;
+        SavedPrimary = Palette.Primary; SavedAccent = Palette.Accent;
+        SetPaletteContext();
         AppearanceService.Changed += AppearanceChanged;
     }
-    private void InvalidSubmit(EditContext _) => ColorsApplied = false;
+    private void SetPaletteContext()
+    {
+        if (PaletteContext is not null) PaletteContext.OnFieldChanged -= PaletteChanged;
+        PaletteContext = new(Palette);
+        PaletteContext.OnFieldChanged += PaletteChanged;
+    }
+    private void PaletteChanged(object? sender, FieldChangedEventArgs args)
+    {
+        if (Disposed || !ReferenceEquals(sender, PaletteContext)) return;
+        ColorsApplied = false;
+        _ = InvokeAsync(StateHasChanged);
+    }
     private void AppearanceChanged(object? sender, EventArgs args) => _ = InvokeAsync(StateHasChanged);
     private void ChangeTheme(ApplicationTheme theme) => AppearanceService.SetTheme(theme);
-    private void ApplyPalette() { AppearanceService.SetColors(Palette.Primary, Palette.Accent); ColorsApplied = true; }
-    private void ResetPalette() { Palette = new(); ApplyPalette(); }
+    private void ApplyPalette(EditContext context, PaletteDraft draft)
+    {
+        if (Disposed || !ReferenceEquals(context, PaletteContext) || !ReferenceEquals(draft, Palette) || !PaletteDirty) return;
+        ColorsApplied = false;
+        if (!context.Validate()) return;
+        AppearanceService.SetColors(draft.Primary, draft.Accent);
+        SavedPrimary = AppearanceService.Current.Primary; SavedAccent = AppearanceService.Current.Accent;
+        Palette = new() { Primary = SavedPrimary, Accent = SavedAccent };
+        SetPaletteContext(); ColorsApplied = true;
+    }
+    private void DiscardPalette(EditContext context, PaletteDraft draft)
+    {
+        if (Disposed || !ReferenceEquals(context, PaletteContext) || !ReferenceEquals(draft, Palette)) return;
+        Palette = new() { Primary = SavedPrimary, Accent = SavedAccent };
+        SetPaletteContext(); ColorsApplied = false;
+    }
     public override void Dispose()
     {
+        Disposed = true;
+        PaletteContext.OnFieldChanged -= PaletteChanged;
         AppearanceService.Changed -= AppearanceChanged;
         base.Dispose();
     }

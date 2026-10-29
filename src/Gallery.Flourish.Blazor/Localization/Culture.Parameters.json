@@ -1,4 +1,24 @@
 {
+  "Parameter_HasChanges_SaveChangesBar": {
+    "en-US": "The page compares its current draft with the saved snapshot. True keeps the bar visible and blocks navigation; the component never changes this value automatically.",
+    "zh-CN": "页面将当前草稿与已保存快照比较。true 持续显示操作栏并阻止导航；组件不会自动修改此值。",
+    "pt-BR": "A página compara o rascunho com a versão salva. True mantém a barra e bloqueia navegação; o componente nunca altera esse valor automaticamente."
+  },
+  "Parameter_OnSave_SaveChangesBar": {
+    "en-US": "Requests page-owned validation and persistence. Keep HasChanges or Busy true until the saved snapshot is authoritative. Duplicate actions and navigation stay blocked while the callback runs.",
+    "zh-CN": "请求页面执行校验与保存。在已保存快照可信之前保持 HasChanges 或 Busy。回调运行期间阻止重复操作与导航。",
+    "pt-BR": "Solicita validação e gravação pela página. Mantenha HasChanges ou Busy até a versão salva ser confirmada. Ações duplicadas e navegação ficam bloqueadas durante o callback."
+  },
+  "Parameter_OnDiscard_SaveChangesBar": {
+    "en-US": "Requests restoration of the page's saved values. The page updates its fields and HasChanges; no confirmation dialog or automatic draft mutation is added.",
+    "zh-CN": "请求恢复页面已保存的值。页面更新字段与 HasChanges；组件不增加确认框，也不自动修改草稿。",
+    "pt-BR": "Solicita restaurar os valores salvos da página. A página atualiza os campos e HasChanges; não há confirmação nem alteração automática do rascunho."
+  },
+  "Parameter_ActionText_SaveChangesBar": {
+    "en-US": "Optional explicit button text. If omitted, Save and Discard follow the current text provider's language.",
+    "zh-CN": "可选的显式按钮文案。省略时，保存与放弃按钮使用当前文本提供器的语言。",
+    "pt-BR": "Texto opcional do botão. Sem valor explícito, Salvar e Descartar seguem o idioma do provedor de textos."
+  },
   "Parameter_PrimaryNavigationPreview": {
     "en-US": "Enabled by default. Preview primary icons and labels on mouse hover over the entire rail or keyboard focus. The same links float above content without resizing it. Leave the region or press Escape to close; touch retains ordinary icon navigation. False keeps individual hints.",
     "zh-CN": "默认启用。鼠标进入整个一级栏或键盘焦点进入时，使用同一组真实链接浮层展示图标和标签，不改变正文宽度。移出区域或按 Escape 收起；触屏保留图标导航。false 保留原单项提示。",

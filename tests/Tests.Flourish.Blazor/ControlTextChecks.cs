@@ -244,6 +244,9 @@ internal static class ControlTextChecks
             ["Id"] = "search", ["ValueSelector"] = (Func<string,string>)(item => item), ["TextSelector"] = (Func<string,string>)(item => item)
         }, "EffectiveResultsLabel"),
         new(typeof(Primitive.NavigationGuard), "Navigation_Unsaved", "Message", "There are unsaved changes. Leave and discard them?", new(), "EffectiveMessage"),
+        new(typeof(SaveChangesBar), "SaveChanges_Message", "Message", "You have unsaved changes.", new() { ["HasChanges"] = true }, "EffectiveMessage"),
+        new(typeof(SaveChangesBar), "SaveChanges_Save", "SaveText", "Save", new() { ["HasChanges"] = true }, "EffectiveSaveText"),
+        new(typeof(SaveChangesBar), "SaveChanges_Discard", "DiscardText", "Discard", new() { ["HasChanges"] = true }, "EffectiveDiscardText"),
         new(typeof(Primitive.ServiceMenu), "Menu_Services", "Label", "Services", new()),
         new(typeof(Primitive.InteractionBoundary), "Interaction_Unavailable", "Title", "Interaction unavailable", new() { ["Locked"] = true }),
         new(typeof(Primitive.EditingGrid), "Grid_Label", "Label", "Editable grid", new()),

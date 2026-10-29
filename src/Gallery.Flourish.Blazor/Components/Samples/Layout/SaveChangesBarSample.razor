@@ -1,0 +1,23 @@
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("SaveChangesBar", DescriptionKey = "Key.Sample_SaveChangesBar_Description")]
+@inherits LocalizedComponentBase
+
+<Field Id="@Id" Label="@Localization.Parse("Key.Sample_SaveChangesBar_Field")">
+    <StandaloneTextBox Id="@Id" @bind-Value="Draft" Disabled="@(Preview || Saving)" />
+</Field>
+<SaveChangesBar HasChanges="@(!Preview && IsDirty)" Busy="@Saving" OnSave="SaveAsync" OnDiscard="Discard" />
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"save-changes-demo-{Guid.NewGuid():N}";
+    private string Draft = "Demo", Saved = "Demo";
+    private bool Saving;
+    private bool IsDirty => !string.Equals(Draft, Saved, StringComparison.Ordinal);
+    private async Task SaveAsync()
+    {
+        Saving = true;
+        try { await Task.Yield(); Saved = Draft; }
+        finally { Saving = false; }
+    }
+    private void Discard() => Draft = Saved;
+}

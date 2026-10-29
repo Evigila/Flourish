@@ -1,0 +1,2 @@
+.f-save-changes-panel { background:var(--f-surface); color:var(--f-text); border-color:var(--f-border); border-radius:12px; box-shadow:var(--f-shadow-popup); font:inherit; }
+:is(a,area,button,input,summary)[data-f-edit-blocked] { opacity:.55; cursor:not-allowed; }

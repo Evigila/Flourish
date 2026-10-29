@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <VersionPrefix>1.4.4</VersionPrefix>
-    <VersionSuffix>preview.shell.20261027.12</VersionSuffix>
+    <VersionSuffix>preview.shell.20261027.15</VersionSuffix>
     <Authors>ArkheideSystem</Authors>
     <Company>ArkheideSystem</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

@@ -46,6 +46,8 @@ internal static class ComponentInventoryChecks
                 "Closed generic controls must use their reviewed generic definition.");
             Check(ComponentUsageCatalog.For(typeof(MultiSelectBox)).Kind == ComponentUseKind.General,
                 "The shared multi-selection controller must be a general production control.");
+            Check(ComponentUsageCatalog.For(typeof(SaveChangesBar)).Kind == ComponentUseKind.Scenario,
+                "A page-owned unsaved draft must have an explicit production scenario.");
             var unknownRejected = false;
             try { _ = ComponentUsageCatalog.For(typeof(string)); }
             catch (KeyNotFoundException) { unknownRejected = true; }
