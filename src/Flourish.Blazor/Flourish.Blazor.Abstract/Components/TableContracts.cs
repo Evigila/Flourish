@@ -40,6 +40,10 @@ public sealed record TableSearchRequest(string? ColumnKey, string Value);
 
 public enum TableSortDirection { Default, Descending, Ascending }
 
+/// <summary>A controlled server-page request; the host owns fetching, authorization and accepting the resulting state.</summary>
+public sealed record TableQueryRequest(int Page, int PageSize, string? SortColumnKey,
+    TableSortDirection SortDirection, string? SearchColumnKey, string SearchQuery);
+
 /// <summary>Replace visible table captions without coupling the library to a product locale.</summary>
 public sealed record TableText(
     string SearchBy = "Search by",

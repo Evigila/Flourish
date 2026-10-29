@@ -14,7 +14,7 @@
     @if (Searchable)
     {
         <ArkheideSystem.Flourish.Blazor.Components.DataSearch TItem="TItem" Columns="Columns" ColumnKey="@_searchColumn" Value="@_query" Changed="ChangeSearchAsync"
-                    Disabled="@(SearchDisabled || BulkEditing || EditingBusy)" Id="@SearchId" MaximumLength="SearchMaximumLength"
+                    Disabled="@(SearchDisabled || BulkEditing || EditingBusy || ServerBusy)" Id="@SearchId" MaximumLength="SearchMaximumLength"
                     IncludeAllColumns="@(SearchMode == TableSearchMode.Local)" Text="EffectiveText" ChildContent="SearchContent" />
     }
     <div class="f-data-toolbar">
@@ -97,7 +97,7 @@
                             <th scope="col" data-f-column="@column.Key" data-f-last-column="@(i == _visibleColumns.Count - 1 ? "true" : null)" aria-sort="@AriaSort(column)">
                                 @if (column.Sortable && Purpose == TablePurpose.Registry)
                                 {
-                                    <Button Variant="ButtonVariant.Quiet" Class="f-data-sort" Disabled="@(BulkEditing || EditingBusy)" data-f-sort-key="@column.Key" title="@SortHint(column)" OnClick="@(_ => SortColumn(column))">
+                                    <Button Variant="ButtonVariant.Quiet" Class="f-data-sort" Disabled="@(BulkEditing || EditingBusy || ServerBusy)" data-f-sort-key="@column.Key" title="@SortHint(column)" OnClick="@(_ => SortColumn(column))">
                                         <span class="f-data-sort-label">
                                             <span class="f-data-sort-text" title="@column.Header">@column.Header</span>
                                         @if (_sortKey == column.Key && _sortDirection != TableSortDirection.Default)
@@ -195,6 +195,13 @@
     [Parameter] public string SearchQuery { get; set; } = string.Empty;
     [Parameter] public string? SearchColumnKey { get; set; }
     [Parameter] public EventCallback<TableSearchRequest> SearchChanged { get; set; }
+    /// <summary>Items contains exactly one server page. Local filtering, sorting, pagination and stored sort preferences are bypassed.</summary>
+    [Parameter] public bool ServerData { get; set; }
+    [Parameter] public int TotalCount { get; set; }
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public string? SortColumnKey { get; set; }
+    [Parameter] public TableSortDirection SortDirection { get; set; }
+    [Parameter] public EventCallback<TableQueryRequest> QueryChanged { get; set; }
     [Parameter] public RenderFragment? SearchContent { get; set; }
     [Parameter] public bool SearchDisabled { get; set; }
     [Parameter] public string? SearchId { get; set; }
@@ -301,9 +308,12 @@
     private bool _resizeDirty = true;
     private bool CanAdvancedEdit => BulkEditRequested.HasDelegate || !string.IsNullOrWhiteSpace(SpreadsheetEditHref);
     private bool ShowCounts => Items.Count > 0 || (!Loading && string.IsNullOrWhiteSpace(Error));
-    private int PageCount => Math.Max(1, (int)Math.Ceiling(_processed.Count / (double)_pageSize));
-    private int FirstItem => _processed.Count == 0 ? 0 : (_page - 1) * _pageSize + 1;
-    private int LastItem => (int)Math.Min((long)_page * _pageSize, _processed.Count);
+    private bool _requesting;
+    private bool ServerBusy => ServerData && (Loading || _requesting);
+    private int ItemCount => ServerData ? TotalCount : _processed.Count;
+    private int PageCount => Math.Max(1, (int)Math.Ceiling(ItemCount / (double)_pageSize));
+    private int FirstItem => _processed.Count == 0 ? 0 : (int)Math.Min((long)(_page - 1) * _pageSize + 1, int.MaxValue);
+    private int LastItem => _processed.Count == 0 ? 0 : ServerData ? (int)Math.Min((long)(_page - 1) * _pageSize + Items.Count, TotalCount) : (int)Math.Min((long)_page * _pageSize, _processed.Count);
     private bool RetainsEditingRows => Purpose is TablePurpose.Pool or TablePurpose.Worklist;
     private IReadOnlyList<TableColumn<TItem>> OrderedColumns => _columnOrder.Select(key => Columns.First(column => column.Key == key)).ToArray();
     private IReadOnlyList<MultiSelectOption> DisplayItems => OrderedColumns.Select(column => new MultiSelectOption(
@@ -342,6 +352,17 @@
             || Columns.Any(column => !column.DefaultVisible && column.CanHide || column.SortValue is not null || column.SearchValue is not null)))
             throw new InvalidOperationException("Progressive directories browse only already-visible presentation text; hidden defaults, independent search/sort values, remote requests and editing require the interactive table.");
         ArgumentOutOfRangeException.ThrowIfLessThan(PageSize, 1);
+        if (ServerData)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(TotalCount);
+            ArgumentOutOfRangeException.ThrowIfLessThan(CurrentPage, 1);
+            if (!Enum.IsDefined(SortDirection)) throw new ArgumentOutOfRangeException(nameof(SortDirection));
+            if (Purpose != TablePurpose.Registry || Progressive || BulkEditing || Searchable && SearchMode != TableSearchMode.Remote)
+                throw new InvalidOperationException("Server data requires an interactive registry with remote or disabled search and no buffered bulk editing.");
+            if (SortColumnKey is not null && !Columns.Any(column => column.Key == SortColumnKey && column.Sortable))
+                throw new ArgumentException("Server sort must name a sortable column.", nameof(SortColumnKey));
+            if (Items.Count > PageSize) throw new ArgumentException("Server data must contain at most one page.", nameof(Items));
+        }
         ArgumentOutOfRangeException.ThrowIfLessThan(SearchMaximumLength, 1);
         if (!Enum.IsDefined(SearchMode)) throw new ArgumentOutOfRangeException(nameof(SearchMode));
         if (!Enum.IsDefined(Purpose)) throw new ArgumentOutOfRangeException(nameof(Purpose));
@@ -366,7 +387,13 @@
         _hidden.RemoveWhere(key => Columns.All(column => column.Key != key || !column.CanHide));
         if (!string.IsNullOrEmpty(_searchColumn) && Columns.All(column => column.Key != _searchColumn || !column.Searchable)) _searchColumn = string.Empty;
         if (_sortKey is not null && Columns.All(column => column.Key != _sortKey || !column.Sortable)) { _sortKey = null; _sortDirection = TableSortDirection.Default; }
-        RestoreSortPreference();
+        if (ServerData)
+        {
+            _page = CurrentPage;
+            _sortKey = SortColumnKey;
+            _sortDirection = SortDirection;
+        }
+        else RestoreSortPreference();
         Rebuild();
     }
 
@@ -414,11 +441,11 @@
     {
         _visibleColumns = OrderedColumns.Where(column => Purpose != TablePurpose.Registry || !_hidden.Contains(column.Key)).ToArray();
         if (_visibleColumns.Count == 0 && Columns.Count > 0) { _hidden.Remove(Columns[0].Key); _visibleColumns = new[] { Columns[0] }; }
-        _processed = TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable && SearchMode == TableSearchMode.Local ? _query : null, _searchColumn, EffectiveCulture),
+        _processed = ServerData ? Items : TableData<TItem>.Sort(TableData<TItem>.Filter(Items, Columns, Searchable && SearchMode == TableSearchMode.Local ? _query : null, _searchColumn, EffectiveCulture),
             Purpose == TablePurpose.Registry ? Columns.FirstOrDefault(column => column.Key == _sortKey) : null, _sortDirection, EffectiveCulture);
-        _page = TableData<TItem>.ClampPage(_page, _processed.Count, _pageSize);
-        var offset = (_page - 1) * _pageSize;
-        var displayedItems = RetainsEditingRows || Progressive ? _processed : _processed.Skip(offset).Take(_pageSize);
+        if (!ServerData) _page = TableData<TItem>.ClampPage(_page, _processed.Count, _pageSize);
+        var offset = (long)(_page - 1) * _pageSize;
+        var displayedItems = ServerData || RetainsEditingRows || Progressive ? _processed : _processed.Skip((int)offset).Take(_pageSize);
         _rows = displayedItems.Select((item, index) =>
         {
             var values = _visibleColumns.Select(column => TableData<TItem>.Display(item, column, EffectiveCulture)).ToArray();
@@ -491,26 +518,33 @@
 
     private async Task ChangeSearchAsync(TableSearchRequest request)
     {
-        if (SearchDisabled || BulkEditing || EditingBusy || !await CanLeavePageAsync()) return;
+        if (SearchDisabled || BulkEditing || EditingBusy || ServerBusy || !await CanLeavePageAsync()) return;
         var key = request.ColumnKey ?? string.Empty;
         if (SearchMode == TableSearchMode.Remote && string.IsNullOrEmpty(key)) return;
         if (!string.IsNullOrEmpty(key) && Columns.All(column => column.Key != key || !column.Searchable)) return;
         var query = request.Value ?? string.Empty;
         if (query.Length > SearchMaximumLength) query = query[..SearchMaximumLength];
+        if (ServerData) { await RequestQueryAsync(new(1, _pageSize, _sortKey, _sortDirection, key, query)); return; }
         _searchColumn = key; _query = query; _page = 1;
         if (SearchMode == TableSearchMode.Remote) await SearchChanged.InvokeAsync(new TableSearchRequest(key, query));
         else Rebuild();
     }
     private async Task ChangeView(TableView view) { if (EditingBusy || BulkEditing || !await CanLeavePageAsync()) return; _view = view; Rebuild(); await ViewChanged.InvokeAsync(view); }
-    private void SortColumn(TableColumn<TItem> column)
+    private async Task SortColumn(TableColumn<TItem> column)
     {
-        if (Purpose != TablePurpose.Registry || BulkEditing || EditingBusy) return;
-        _sortDirection = _sortKey != column.Key ? TableSortDirection.Descending : _sortDirection switch
+        if (Purpose != TablePurpose.Registry || BulkEditing || EditingBusy || ServerBusy || !column.Sortable) return;
+        var direction = _sortKey != column.Key ? TableSortDirection.Descending : _sortDirection switch
         {
             TableSortDirection.Descending => TableSortDirection.Ascending,
             TableSortDirection.Ascending => TableSortDirection.Default,
             _ => TableSortDirection.Descending
         };
+        if (ServerData)
+        {
+            await RequestQueryAsync(new(1, _pageSize, direction == TableSortDirection.Default ? null : column.Key, direction, _searchColumn, _query));
+            return;
+        }
+        _sortDirection = direction;
         _sortKey = _sortDirection == TableSortDirection.Default ? null : column.Key;
         SaveSortPreference();
         _page = 1;
@@ -531,7 +565,7 @@
     private static string Shown(string value) => string.IsNullOrEmpty(value) ? "—" : value;
     public async Task<bool> CanLeavePageAsync()
     {
-        if (_disposed || EditingBusy) return false;
+        if (_disposed || EditingBusy || ServerBusy) return false;
         return !RetainsEditingRows || _module is null || await _module.InvokeAsync<bool>("canChangePage", _root);
     }
     private string? ColumnWidthStyle(string key) => _manualWidths.TryGetValue(key, out var width)
@@ -550,6 +584,7 @@
     private async Task MovePage(int page)
     {
         if (!await CanLeavePageAsync()) return;
+        if (ServerData) { await RequestQueryAsync(new(Math.Clamp(page, 1, PageCount), _pageSize, _sortKey, _sortDirection, _searchColumn, _query)); return; }
         _page = TableData<TItem>.ClampPage(page, _processed.Count, _pageSize); Rebuild();
     }
     private Task SetPage(ChangeEventArgs args) => int.TryParse(args.Value?.ToString(), out var page) ? MovePage(page) : Task.CompletedTask;
@@ -557,6 +592,7 @@
     {
         if (!int.TryParse(args.Value?.ToString(), out var pageSize) || pageSize < 1 || pageSize == _pageSize) return;
         if (!await CanLeavePageAsync()) return;
+        if (ServerData) { await RequestQueryAsync(new(1, pageSize, _sortKey, _sortDirection, _searchColumn, _query)); return; }
         _pageSize = pageSize;
         _page = 1;
         Rebuild();
@@ -565,17 +601,25 @@
 
     private IEnumerable<int> PageSizes => new[] { 10, 20, 50, 100, _pageSize }.Distinct().Order();
 
+    private async Task RequestQueryAsync(TableQueryRequest request)
+    {
+        if (_disposed || ServerBusy || !QueryChanged.HasDelegate) return;
+        _requesting = true;
+        try { await QueryChanged.InvokeAsync(request); }
+        finally { _requesting = false; }
+    }
+
     private RenderFragment Pager() => @<div class="f-data-pager-row">
-        <div class="f-data-count"><span>@string.Format(EffectiveCulture, EffectiveText.ItemRangeFormat, EffectiveText.Items, FirstItem, LastItem, EffectiveText.Total, _processed.Count)</span>@if (IsLimited) { <span aria-label="@Texts.Get(new TextReference("Flourish", "Pager_Limited", "Loaded records; the complete result may contain more items."))">+</span> }</div>
+        <div class="f-data-count"><span>@string.Format(EffectiveCulture, EffectiveText.ItemRangeFormat, EffectiveText.Items, FirstItem, LastItem, EffectiveText.Total, ItemCount)</span>@if (IsLimited) { <span aria-label="@Texts.Get(new TextReference("Flourish", "Pager_Limited", "Loaded records; the complete result may contain more items."))">+</span> }</div>
         <div class="f-data-pager" role="group" aria-label="@EffectiveText.Page">
-            <button type="button" data-f-page-previous aria-label="@EffectiveText.PreviousPage" disabled="@(_page <= 1)" @onclick="() => MovePage(_page - 1)">‹</button>
-            <button type="button" data-f-page-next aria-label="@EffectiveText.NextPage" disabled="@(_page >= PageCount)" @onclick="() => MovePage(_page + 1)">›</button>
-            <span class="f-data-page-input"><input type="number" aria-label="@EffectiveText.Page" min="1" max="@PageCount" value="@_page" @onchange="SetPage" data-f-page /></span>
+            <button type="button" data-f-page-previous aria-label="@EffectiveText.PreviousPage" disabled="@(_page <= 1 || ServerBusy)" @onclick="() => MovePage(_page - 1)">‹</button>
+            <button type="button" data-f-page-next aria-label="@EffectiveText.NextPage" disabled="@(_page >= PageCount || ServerBusy)" @onclick="() => MovePage(_page + 1)">›</button>
+            <span class="f-data-page-input"><input type="number" aria-label="@EffectiveText.Page" min="1" max="@PageCount" value="@_page" disabled="@ServerBusy" @onchange="SetPage" data-f-page /></span>
             <span class="f-data-page-total" data-f-page-prefix="@EffectiveText.Of">@EffectiveText.Of @PageCount</span>
         </div>
         <label class="f-data-page-size">
             <span>@EffectiveText.ItemsPerPage</span>
-            <select class="f-input f-select" value="@_pageSize" @onchange="ChangePageSize" data-f-page-size>
+            <select class="f-input f-select" value="@_pageSize" disabled="@ServerBusy" @onchange="ChangePageSize" data-f-page-size>
                 @foreach (var pageSize in PageSizes) { <option value="@pageSize">@pageSize</option> }
             </select>
         </label>

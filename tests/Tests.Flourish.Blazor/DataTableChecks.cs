@@ -16,6 +16,47 @@ internal static class DataTableChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("server table renders one authoritative page and forwards page sort and search without local transforms", async () =>
+        {
+            var requests = new List<TableQueryRequest>();
+            var parameters = Parameters(pageSize: 2);
+            parameters["Items"] = new[] { new Row("Zulu", "server first"), new Row("Alpha", "server second") };
+            parameters["ServerData"] = true; parameters["CurrentPage"] = 3; parameters["TotalCount"] = 9;
+            parameters["SortColumnKey"] = "name"; parameters["SortDirection"] = TableSortDirection.Ascending;
+            parameters["Searchable"] = true; parameters["SearchMode"] = TableSearchMode.Remote;
+            parameters["SearchColumnKey"] = "name"; parameters["SearchQuery"] = "unmatched server query";
+            parameters["QueryChanged"] = EventCallback.Factory.Create<TableQueryRequest>(new object(), request => requests.Add(request));
+            await WithTable(parameters, async (table, html) =>
+            {
+                var rendered = html();
+                Require(RowCount(rendered) == 2 && rendered.IndexOf("server first", StringComparison.Ordinal) < rendered.IndexOf("server second", StringComparison.Ordinal), "A server page was filtered, sorted or paged twice.");
+                Require(rendered.Contains("5-6 / Total 9", StringComparison.Ordinal), "Server total and range are not authoritative.");
+                await table.ChangeAsync("data-f-page", null, "4");
+                Require(requests[^1] == new TableQueryRequest(4, 2, "name", TableSortDirection.Ascending, "name", "unmatched server query"), "Page request lost its query scope.");
+                Require(html().Contains("5-6 / Total 9", StringComparison.Ordinal), "A request changed accepted page state before the host supplied results.");
+                await table.SortAsync("name");
+                Require(requests[^1].Page == 1 && requests[^1].SortColumnKey is null && requests[^1].SortDirection == TableSortDirection.Default, "Server sorting did not request a new first page.");
+                await table.QueryAsync("changed");
+                Require(requests[^1].Page == 1 && requests[^1].SearchQuery == "changed", "Remote search did not use the unified page request.");
+                await table.ChangeAsync("data-f-page-size", null, "20");
+                Require(requests[^1].Page == 1 && requests[^1].PageSize == 20, "Server page size did not reset to the first page.");
+            });
+        }));
+        tests.Add(("server table blocks new queries while loading and keeps failure state host owned", async () =>
+        {
+            var calls = 0;
+            var parameters = Parameters(pageSize: 25);
+            parameters["ServerData"] = true; parameters["TotalCount"] = 50; parameters["Loading"] = true;
+            parameters["QueryChanged"] = EventCallback.Factory.Create<TableQueryRequest>(new object(), _ => calls++);
+            await WithTable(parameters, async (table, html) =>
+            {
+                await table.ChangeAsync("data-f-page", null, "2"); await table.SortAsync("name");
+                Require(calls == 0, "A loading table accepted another server query.");
+                await table.ParametersAsync(new() { ["Loading"] = false, ["Error"] = "Server request failed" });
+                await table.ChangeAsync("data-f-page", null, "2");
+                Require(calls == 1 && html().Contains("Server request failed", StringComparison.Ordinal), "Retry erased the host error or did not dispatch.");
+            });
+        }));
         tests.Add(("bulk completion uses one ordinary action aligned by the library rather than a wizard grid", async () =>
         {
             var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../.."));
@@ -926,11 +967,10 @@ internal static class DataTableChecks
         }
         internal Task ParametersAsync(Dictionary<string, object?> parameters) => SetParametersAsync(ParameterView.FromDictionary(parameters));
 
-        internal Task SortAsync(string key)
+        internal async Task SortAsync(string key)
         {
-            typeof(DataTable<Row>).GetMethod("SortColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [Columns.Single(column => column.Key == key)]);
+            await (Task)typeof(DataTable<Row>).GetMethod("SortColumn", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(this, [Columns.Single(column => column.Key == key)])!;
             StateHasChanged();
-            return Task.CompletedTask;
         }
 
 #pragma warning disable BL0006
