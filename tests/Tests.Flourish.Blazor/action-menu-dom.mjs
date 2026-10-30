@@ -639,9 +639,9 @@ if (browserPath) {
         assert.equal(result.initial.triggerColor,result.initial.ordinaryColor);
         assert.equal(result.initial.selectColor,result.initial.ordinaryColor);
         assert.equal(result.picker.open,true);
-        assert.equal(result.picker.color,'rgb(0, 0, 0)');
+        assert.equal(result.picker.color,'rgb(17, 41, 36)','Header picker restores the root theme text rather than trigger wrapper overrides.');
         assert.equal(result.picker.background,'rgb(255, 255, 255)');
-        assert.ok(result.picker.optionColors.every(color=>color==='rgb(0, 0, 0)'));
+        assert.ok(result.picker.optionColors.every(color=>color==='rgb(17, 41, 36)'));
     });
     await check('Real browser native login picker opens beneath floating preferences and closes without changing the viewport', async () => {
         const result = await browserSessionFixture(floatingSurface(), async ({evaluate,send}) => {

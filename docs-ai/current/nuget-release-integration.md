@@ -1,5 +1,13 @@
 # NuGet release and integration
 
+## Current stable 1.4.4 preparation, 2026-10-30
+
+Current source declares stable **1.4.4** without VersionSuffix, promoting the existing .16 implementation. Gallery records 1.4.4 and opens an empty 1.4.5-preview. The six-package publication manifest, dependency order and Essential.Culture **1.4.0** remain unchanged; WPF/WinUI are excluded.
+
+The existing publish helper and Trusted Publishing workflow remain the release path. Local preparation is running; passing verification, commit/tag and push must precede publication. Public availability is not yet asserted. After publication, verify all six indexes and run build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.4 with fresh caches before treating Colligere public-only consumption as verified. See [verification state](release-verification.md#flourish-144-preparation-2026-10-30).
+
+Published-version sections below preserve their original dates and evidence; their former “current source” wording is historical.
+
 ## Published Flourish 1.4.2
 
 Current source VersionPrefix is **1.4.2**. Commit `c8616f0f8712a5ff78b21612f6886004366fe414` is pushed to master and tagged v1.4.2. [Run 39254689722](https://github.com/Evigila/Flourish/actions/runs/39254689722) passed its complete build/test/package gate and Trusted Publishing, uploading all six Core/Blazor packages. Essential remains 1.4.0; package IDs/order are unchanged, and WPF/WinUI are outside this public manifest.

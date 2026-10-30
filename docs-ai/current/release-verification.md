@@ -1,5 +1,13 @@
 # Release verification
 
+## Flourish 1.4.4 preparation, 2026-10-30
+
+Current preparation promotes **1.4.4-preview.shell.20261027.16** to stable **1.4.4** and opens the empty Gallery **1.4.5-preview**. The public manifest still contains exactly six Core/Blazor packages; Essential.Culture **1.4.0** and the exclusion of WPF/WinUI remain unchanged.
+
+The local full gate is currently running through scripts/Test-Release.ps1, with evidence in artifacts/stable-1.4.4-verification.log. No final local test count, tag, Trusted Publishing upload, public index or independent public-only consumer result is claimed at this preparation stage. The coordinator must record actual outcomes after completion.
+
+Manual acceptance remains recommended for header/footer alignment, hover menus/language selection, primary navigation alignment/motion, long labels, save/discard interruption handling, dropdown widths and controlled server table paging/search/row actions. Automated browser behavior checks do not substitute for visual acceptance. No Computer Use acceptance was performed by this documentation update.
+
 ## Completed Flourish 1.4.3 release on 2026-10-26
 
 Stable tag `v1.4.3` identifies source commit `d4e8cd95c58e87646684903a0fdb2f9767994931`, pushed to master and tagged through `publish-helper.bat`. [Run 40315212418](https://github.com/Evigila/Flourish/actions/runs/40315212418) completed successfully for that exact tag and commit, including [build verification](https://github.com/Evigila/Flourish/actions/runs/40315212418/job/121545977158) and [NuGet Trusted Publishing](https://github.com/Evigila/Flourish/actions/runs/40315212418/job/121547917670). The six package uploads succeeded from 11:33:09 through 11:33:16 UTC; no duplicate-skip result or repeated publication was used.

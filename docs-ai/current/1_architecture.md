@@ -1,5 +1,13 @@
 # Project architecture and repository tree
 
+## Stable 1.4.4 preparation, 2026-10-30
+
+Current source promotes **1.4.4-preview.shell.20261027.16** to stable **1.4.4**, removing VersionSuffix while retaining the six-package Core/Blazor manifest and Essential.Culture **1.4.0**. Gallery promotes 1.4.4 notes and starts an empty **1.4.5-preview**. Release identity and notes change; component ownership, package IDs, project direction and native publication scope remain unchanged. No maintained source path is added or removed by the promotion, so the complete tree below remains applicable.
+
+The full release gate is running in artifacts/stable-1.4.4-verification.log. Tagging, Trusted Publishing, public indexing and fresh public-only consumers are pending. Earlier candidate evidence below is historical, not evidence of public 1.4.4 publication. See [release verification](release-verification.md#flourish-144-preparation-2026-10-30).
+
+## Historical controlled-table candidate
+
 Current local candidate is **1.4.4-preview.shell.20261027.16**, extending committed baseline `8999b26` with opt-in controlled server data in the existing DataTable. The maintained tree remains **721 files/121 directories**, with 22 projects/5 solutions; no source file or external dependency is added. The public catalog contains **84 components, 791 parameter rows and 372 documented defaults**. Coordinated Release passed with zero warnings/errors, Framework **496/496**, and Gallery **8755/8755**. Six unique .16 packages were produced and checked for local consumption; this is not public publication or application-runtime verification. See [dependency evidence](1_dependency.md) and the [contract and manual acceptance record](1_changelogs/2026-10-29_192626_add-controlled-server-data-table.md).
 
 Abstract owns the new `TableQueryRequest` record. Framework's DataTable owns its default-off `ServerData` mode and accepted `CurrentPage`, `TotalCount`, `SortColumnKey` and `SortDirection`. In that mode the supplied Items are already one authoritative page; local sorting/filtering/paging and persisted sort restoration are bypassed. `QueryChanged` carries the complete paging/sort/search query, with page-one resets for changes to size/sort/search, and no optimistic accepted-state changes. Existing remote search supplies the query text/column. Loading and an executing query prevent duplicates; incompatible progressive/bulk modes and nonremote enabled search are rejected. Host APIs retain authority over data scope, stable ordering, counts and query validation; host pages retain cancellation, late-response handling and errors. Existing local mode, row menus/double-click, column visibility and layout are retained.

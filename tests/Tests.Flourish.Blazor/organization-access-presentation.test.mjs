@@ -170,7 +170,7 @@ test("Quiet buttons and links retain transparent borders through hover press and
   const contexts = [
     { parent: root, ink: "var(--f-accent-text)", hoverInk: "var(--f-text)", preview: "var(--f-target-preview)", click: "var(--f-target-click)" },
     { parent: element("div", ["f-access-form-surface", "f-access-form-primary"], root), ink: "var(--f-primary-ink)", hoverInk: "var(--f-primary-ink)", preview: "var(--f-primary-preview)", click: "var(--f-primary-click)" },
-    { parent: element("header", ["shell-header"], root), ink: "inherit", hoverInk: "inherit", preview: "var(--f-target-preview)", click: "var(--f-target-click)" },
+    { parent: element("header", ["shell-header"], root), ink: "var(--f-accent-text)", hoverInk: "var(--f-text)", preview: "var(--f-target-preview)", click: "var(--f-target-click)" },
   ];
   for (const { parent, ink, hoverInk, preview, click } of contexts) {
     for (const tag of ["button", "a"]) {

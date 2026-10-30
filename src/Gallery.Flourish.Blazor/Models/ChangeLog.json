@@ -1,13 +1,20 @@
 [
   {
-    "version": "1.4.4-preview",
+    "version": "1.4.5-preview",
+    "changeKeys": []
+  },
+  {
+    "version": "1.4.4",
     "changeKeys": [
       "Key.ChangeLog_HeaderContentAlignment",
       "Key.ChangeLog_HoverLanguagePopups",
       "Key.ChangeLog_HeaderBrandAndServiceRows",
       "Key.ChangeLog_FooterAlignmentAndProgressThreshold",
       "Key.ChangeLog_InformationGridsAndHeaderControls",
-      "Key.ChangeLog_CompactHeaderBrand"
+      "Key.ChangeLog_CompactHeaderBrand",
+      "Key.ChangeLog_SaveChangesBar",
+      "Key.ChangeLog_PrimaryPreviewMotion",
+      "Key.ChangeLog_ServerTableQueries"
     ]
   },
   {

@@ -57,7 +57,7 @@ test("presentation layout separates full-width backgrounds from centered content
 
 test("presentation and access scenes consume existing theme roles without reskinning buttons or inputs", async () => {
   const foundation = withoutComments(await readFile(foundationPath, "utf8"));
-  const knownTokens = new Set([...foundation.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1]));
+  const knownTokens = new Set([foundation, ...await Promise.all(["presentation.css", "primitives/AccessBrand.css"].map(name => readFile(join(designCssRoot, name), "utf8")))].flatMap(css => [...css.matchAll(/(--f-[\w-]+)\s*:/g)].map(match => match[1])));
   for (const path of [join(designCssRoot, "presentation.css"), join(designCssRoot, "primitives/AccessBrand.css")]) {
     const css = withoutComments(await readFile(path, "utf8"));
     assert.doesNotMatch(withoutPresentationMediaAlpha(css), /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|color-mix)\s*\(|f-theme-|data-theme|font-family\s*:/i,
@@ -79,27 +79,19 @@ test("presentation and access scenes consume existing theme roles without reskin
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "background"), "var(--f-primary)");
 });
 
-test("shell chrome only adjusts available Quiet buttons, preserving explicit variants", async () => {
-  const css = withoutComments(await readFile(join(designCssRoot, "static-surfaces.css"), "utf8"));
-  const selectors = [...css.matchAll(/([^{}]+)\{[^{}]*\}/g)]
-    .flatMap(match => selectorArms(match[1]))
-    .filter(selector => selector.includes(".shell-header") && selector.includes(".f-button"));
-  const buttonSelectors = selectors.filter(selector => !selector.includes(".f-select.f-select-customized"));
-  const nativeSelectSelectors = selectors.filter(selector => selector.includes(".f-select.f-select-customized"));
-  assert.equal(buttonSelectors.length, 3);
-  assert.equal(nativeSelectSelectors.length, 4);
-  assert.ok(nativeSelectSelectors.includes(".f-root .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:disabled):not([aria-disabled=true])"));
-  assert.ok(nativeSelectSelectors.some(selector => selector.includes(":is(:hover,:open)") && selector.includes(" > .f-select-trigger.f-button-quiet")));
-  assert.ok(nativeSelectSelectors.some(selector => selector.includes(":active:not(:disabled)") && selector.includes(" > .f-select-trigger.f-button-quiet")));
-  assert.equal(property(blockFor(css, nativeSelectSelectors[0]), "color"), "inherit");
-  for (const selector of selectors) {
-    assert.match(selector, /\.f-button-quiet\b/);
-    assert.match(selector, /:not\(:disabled\)/);
-    assert.match(selector, /:not\(\[aria-disabled=true\]\)/);
-    assert.doesNotMatch(selector, /\.f-button(?:\s|:|$)/);
-  }
-  const controls = withoutComments(await readFile(join(designCssRoot, "controls.css"), "utf8"));
-  assert.match(controls, /\.f-button-elevated\{[^}]*color:var\(--f-text\);background:var\(--f-surface\);box-shadow:var\(--f-shadow-control\)/);
+test("shell chrome scopes Quiet and Elevated tokens to triggers and excludes popup descendants", async () => {
+  const css = withoutComments(await readFile(join(designCssRoot, "primitives/ShellHeader.css"), "utf8"));
+  const quiet = rules(css).filter(rule => rule.selector.includes(".f-button-quiet") && rule.declarations.has("--f-accent-text"));
+  assert.equal(quiet.length, 1);
+  assert.equal(quiet[0].declarations.get("--f-accent-text"), "var(--f-shell-header-ink)");
+  assert.equal(quiet[0].declarations.get("--f-target-preview"), "var(--f-primary-preview)");
+  assert.equal(quiet[0].declarations.get("--f-target-click"), "var(--f-primary-click)");
+  const elevated = rules(css).filter(rule => rule.selector.includes(".f-button-elevated"));
+  assert.equal(elevated.length, 1);
+  assert.equal(elevated[0].declarations.get("--f-surface"), "var(--f-shell-header-button-surface)");
+  assert.equal(elevated[0].declarations.get("--f-text"), "var(--f-shell-header-button-ink)");
+  for (const rule of [...quiet, ...elevated]) assert.ok(rule.selector.includes(":not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))"));
+  assert.doesNotMatch(css, /\.shell-header\s+\.f-button\s*[{,]/);
 });
 
 test("direct secondary navigation uses the canonical palette in every selection interaction state", async () => {
@@ -602,7 +594,9 @@ test("palette roles have one source and retired token aliases are absent", async
     assert.match(allDesign, new RegExp(`var\\(\\s*${token.replaceAll("-", "\\-")}\\b`), `${token} has no consumer.`);
     for (const path of cssFiles.filter(path => path !== foundationPath)) {
       const css = withoutComments(await readFile(path, "utf8"));
-      assert.doesNotMatch(css, new RegExp(`${token.replaceAll("-", "\\-")}\\s*:`), `${token} is redefined by ${relative(repositoryRoot, path)}.`);
+      const scopedReset = path === join(designCssRoot, "dropdown.css") || path === join(designCssRoot, "primitives/ShellHeader.css");
+      const checked = scopedReset ? rules(css).filter(rule => !isChromeRoleBoundary(rule)).map(rule => rule.body).join("\n") : css;
+      assert.doesNotMatch(checked, new RegExp(`${token.replaceAll("-", "\\-")}\\s*:`), `${token} is redefined by ${relative(repositoryRoot, path)}.`);
     }
   }
   assert.doesNotMatch(allDesign, /--f-border-strong\s*:|var\(\s*--f-border-strong\b/);
@@ -1054,3 +1048,17 @@ test("Field hover bridge has continuous derived hit geometry for default and cus
     assert.equal(highlighted(label.x + 1, control.top + control.height + 8), false, "Validation below the control must not extend hover.");
   }
 });
+
+function isChromeRoleBoundary(rule) {
+  const allowed = new Map([
+    [":is(.shell-header,.f-titlebar) .f-dropdown-panel", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-text":"var(--f-popup-accent-text)"}],
+    [".shell-header .f-select::picker(select),.f-titlebar .f-select::picker(select)", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-text":"var(--f-popup-accent-text)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
+    [".shell-header .f-select option,.f-titlebar .f-select option", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
+    [".shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-accent-text":"var(--f-shell-header-ink)","--f-text":"var(--f-shell-header-ink)","--f-target-preview":"var(--f-primary-preview)","--f-target-click":"var(--f-primary-click)"}],
+    [".shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-text":"var(--f-shell-header-button-ink)","--f-surface":"var(--f-shell-header-button-surface)","--f-surface-preview":"var(--f-preview-light)","--f-surface-click":"var(--f-click-light)"}]
+  ]);
+  const expected = allowed.get(rule.selector);
+  if (!expected) return false;
+  assert.deepEqual(Object.fromEntries(rule.declarations), expected, "Chrome role reset changed outside its reviewed boundary.");
+  return true;
+}

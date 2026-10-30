@@ -117,14 +117,16 @@ check('Inline production action rows and the existing AccessFormSurface Actions 
 });
 await checkAsync('The native input entry discovers SSR forms, survives document replacement and disposes the one shared controller', async () => {
     const f = nativeFixture();
-    globalThis.document = { defaultView: { addEventListener() {} }, readyState: 'complete', roots: [f.root], documentElement: {}, addEventListener() {}, querySelectorAll(selector) { return this.roots.filter(root => root.matches(selector)); } };
+    globalThis.document = { defaultView: { addEventListener() {} }, readyState: 'complete', roots: [f.root], documentElement: {}, addEventListener() {}, querySelectorAll(selector) { return selector.includes(".f-access-form-surface") ? this.roots.filter(root => root.matches(selector)) : []; } };
     const previousCount = resized.length;
     const nativeCode = await readFile(new URL(moduleRoot + 'primitives/input-behaviors.js', import.meta.url), 'utf8');
     const progressCode = await readFile(new URL(moduleRoot + 'presentation/progress.js', import.meta.url), 'utf8');
     await import(url(nativeCode
         .replace(/(["'])\.\.\/controls\.js\1/, JSON.stringify(controlsUrl))
-        .replace(/(["'])\.\.\/presentation\/progress\.js\1/, JSON.stringify(url(progressCode)))));
-    assert.equal(resized.length, previousCount + 1);
+        .replace(/(["'])\.\.\/presentation\/progress\.js\1/, JSON.stringify(url(progressCode)))
+        .replace(/(["'])\.\.\/patterns\/header-layout\.js\1/, JSON.stringify(url("export function initializeShellHeaders() {}")))
+        .replace(/(["'])\.\.\/patterns\/primary-navigation-preview\.js\1/, JSON.stringify(url("export function initializePrimaryNavigationPreviews() {}")))));
+    assert.equal(resized.slice(previousCount).filter(observer => observer.observed.includes(f.password.label)).length, 1, "The access form must install exactly one label observer independently of popup observers.");
     assert.equal(space(f.submit), 33.35);
     const scan = mutated.find(observer => observer.target === document.documentElement);
     const rootObserver = mutated.findLast(observer => observer.target === f.root);

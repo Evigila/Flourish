@@ -1,5 +1,11 @@
 # Project dependency inventory
 
+## Stable 1.4.4 preparation, 2026-10-30
+
+Current source removes VersionSuffix from **1.4.4-preview.shell.20261027.16** and declares stable **1.4.4**. All six public Core/Blazor identities and aligned internal edges are retained: Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor umbrella. Essential.Culture remains **1.4.0**. No external package, SDK, browser module, font or service is introduced or upgraded by this promotion; WPF/WinUI remain outside publication.
+
+The full release gate is running in artifacts/stable-1.4.4-verification.log. Locally packed stable archives do not prove public publication or provenance. Tagging, Trusted Publishing, public indexes and fresh NuGet.org-only consumer results remain pending. The .16 archive hashes and verification below identify the immutable historical candidate, not stable 1.4.4 archives. See [release verification](release-verification.md#flourish-144-preparation-2026-10-30).
+
 ## Current controlled-table candidate, 2026-10-29
 
 Root source now declares **1.4.4-preview.shell.20261027.16**, based on `8999b26`. The six-package Core/Blazor manifest, aligned internal versions and Essential.Culture **1.4.0** are retained. No external package, SDK, browser module, font, service or storage dependency is added. The new `TableQueryRequest` public record changes Abstract; the existing DataTable changes Framework. Both assemblies therefore require the new package identity, while the preceding .15 feed remains immutable. The six locally produced .16 packages are in `artifacts/liquidity-directory-20261029/nuget`; they have not been publicly published.

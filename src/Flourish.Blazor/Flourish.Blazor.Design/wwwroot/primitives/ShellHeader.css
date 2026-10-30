@@ -1,6 +1,6 @@
 .shell-header {
-    --f-shell-header-ink: var(--f-surface-light, #FFFFFF);
-    --f-shell-header-button-surface: var(--f-surface-light, #FFFFFF);
+    --f-shell-header-ink: var(--f-surface-light);
+    --f-shell-header-button-surface: var(--f-surface-light);
     --f-shell-header-button-ink: var(--f-primary-light, var(--f-primary));
     --f-shell-brand-min: 82px;
     width: 100%;
@@ -22,8 +22,8 @@
 .shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
     --f-text: var(--f-shell-header-button-ink);
     --f-surface: var(--f-shell-header-button-surface);
-    --f-surface-preview: color-mix(in srgb, var(--f-shell-header-button-surface) 92%, var(--f-shell-header-button-ink));
-    --f-surface-click: color-mix(in srgb, var(--f-shell-header-button-surface) 84%, var(--f-shell-header-button-ink));
+    --f-surface-preview: var(--f-preview-light);
+    --f-surface-click: var(--f-click-light);
 }
 @supports (appearance: base-select) {
     .shell-header .f-select.f-select-customized:has(> .f-button-quiet):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)):not(:disabled):not([aria-disabled=true]) {

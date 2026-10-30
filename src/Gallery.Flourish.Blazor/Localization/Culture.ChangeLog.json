@@ -278,5 +278,20 @@
     "en-US": "PresentationBand and PresentationHero accept optional decorative BackgroundImageUrl with a standard Tone gradient. Ordinary Compact identity retains the project/context scale and independent LogoSize. ContextPrimary optionally promotes the service name beneath a smaller brand, with the Compact logo centered on the service row and one semantic heading.",
     "zh-CN": "PresentationBand与PresentationHero新增可选装饰BackgroundImageUrl及标准Tone渐变。普通Compact身份保留项目及上下文字号和独立LogoSize。可选ContextPrimary将服务名作为小品牌下方的主标题，Compact图标仅与服务行居中对齐，并保留单个语义标题。",
     "pt-BR": "PresentationBand e PresentationHero aceitam BackgroundImageUrl decorativo com gradiente padrão de Tone. Compact comum preserva a escala de projeto/contexto e LogoSize independente. ContextPrimary destaca opcionalmente o serviço abaixo de uma marca menor, com o logotipo Compact centralizado na linha do serviço e um único título semântico."
+  },
+  "ChangeLog_SaveChangesBar": {
+    "en-US": "Editable detail pages can coordinate saving and discarding through a persistent save changes bar.",
+    "zh-CN": "可编辑详情页支持通过持续显示的更改提示栏集中保存或放弃修改。",
+    "pt-BR": "Páginas de detalhes editáveis podem centralizar salvar e descartar em uma barra persistente de alterações."
+  },
+  "ChangeLog_PrimaryPreviewMotion": {
+    "en-US": "Primary navigation previews align icons, truncate long labels and animate expansion; dropdowns respect trigger width.",
+    "zh-CN": "一级导航预览对齐图标、截断长标签并支持展开动画；下拉弹窗兼顾触发按钮宽度。",
+    "pt-BR": "A prévia da navegação primária alinha ícones, trunca textos longos e anima a expansão; menus respeitam a largura do botão."
+  },
+  "ChangeLog_ServerTableQueries": {
+    "en-US": "DataTable supports controlled server paging, sorting and search while retaining native row actions.",
+    "zh-CN": "DataTable 支持受控的服务端分页、排序和搜索，并保留原生行操作。",
+    "pt-BR": "DataTable oferece paginação, ordenação e busca controladas pelo servidor, preservando ações nativas por linha."
   }
 }
