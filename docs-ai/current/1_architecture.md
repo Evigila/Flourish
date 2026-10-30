@@ -1,10 +1,14 @@
 # Project architecture and repository tree
 
+## Stable 1.4.4 publication, 2026-10-30
+
+Stable tag **v1.4.4** identifies source **2edf8fd69c40f9c4d9c68205f52e14f888529627**. [Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) completed its build and NuGet Trusted Publishing jobs successfully for the six Core/Blazor packages. Source removes the .16 VersionSuffix; Gallery records 1.4.4 and opens an empty **1.4.5-preview**. Essential.Culture remains **1.4.0** and WPF/WinUI stay outside publication. Component ownership and project direction are unchanged; no maintained source path is added or removed, so the complete tree below remains applicable.
+
+Final local preparation passed Core **367**, Framework **496**, Gallery **8775**, Node **290** and local package-consumer **147** checks. ShellHeader now uses existing semantic light preview/click roles rather than private color mixing or a literal white fallback; obsolete palette/DOM expectations were corrected against current control contracts. Evidence is artifacts/stable-1.4.4-verification-final.log. All six public indexes contain 1.4.4. Fresh NuGet.org-only FrameworkOnly, MetaNative, MetaDesign and MetaCulture consumers passed **147 checks**, and all six downloaded archive metadata entries identify NuGet.org. Colligere separately restored all 17 projects against only public stable packages; its 168-pair closure retains the other 163 external identities and consumer sets. See [release verification](release-verification.md#flourish-144-uploaded-2026-10-30).
+
 ## Stable 1.4.4 preparation, 2026-10-30
 
-Current source promotes **1.4.4-preview.shell.20261027.16** to stable **1.4.4**, removing VersionSuffix while retaining the six-package Core/Blazor manifest and Essential.Culture **1.4.0**. Gallery promotes 1.4.4 notes and starts an empty **1.4.5-preview**. Release identity and notes change; component ownership, package IDs, project direction and native publication scope remain unchanged. No maintained source path is added or removed by the promotion, so the complete tree below remains applicable.
-
-The full release gate is running in artifacts/stable-1.4.4-verification.log. Tagging, Trusted Publishing, public indexing and fresh public-only consumers are pending. Earlier candidate evidence below is historical, not evidence of public 1.4.4 publication. See [release verification](release-verification.md#flourish-144-preparation-2026-10-30).
+Historical preparation snapshot: the stable promotion was initially pending local verification and publication. [The preparation record](1_changelogs/2026-10-30_192659_prepare-flourish-1.4.4-stable.md) preserves that state; the current publication section above supersedes it.
 
 ## Historical controlled-table candidate
 

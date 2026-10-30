@@ -1,10 +1,14 @@
 # Project dependency inventory
 
+## Stable 1.4.4 publication, 2026-10-30
+
+Stable source **2edf8fd69c40f9c4d9c68205f52e14f888529627**, tagged **v1.4.4**, removes VersionSuffix from **1.4.4-preview.shell.20261027.16**. All six Core/Blazor identities and aligned internal edges remain: Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor umbrella. Essential.Culture stays **1.4.0**. No external package, SDK, module, font or service is introduced or upgraded; WPF/WinUI publication scope is unchanged.
+
+[Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) passed build and Trusted Publishing. Final local preparation passed Core367, Framework496, Gallery8775, Node290 and147 local consumer checks; evidence is artifacts/stable-1.4.4-verification-final.log. All six public indexes contain 1.4.4. Fresh NuGet.org-only consumers passed **147 checks**, with all six archive metadata entries identifying the public source. Colligere separately restored 17 projects/168 package pairs: its five consumed Flourish packages resolve to stable 1.4.4 from NuGet.org; the other 163 identities and consumer sets remain unchanged. The .16 hashes below identify historical local candidates, not stable public archives. See [release verification](release-verification.md#flourish-144-uploaded-2026-10-30).
+
 ## Stable 1.4.4 preparation, 2026-10-30
 
-Current source removes VersionSuffix from **1.4.4-preview.shell.20261027.16** and declares stable **1.4.4**. All six public Core/Blazor identities and aligned internal edges are retained: Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor umbrella. Essential.Culture remains **1.4.0**. No external package, SDK, browser module, font or service is introduced or upgraded by this promotion; WPF/WinUI remain outside publication.
-
-The full release gate is running in artifacts/stable-1.4.4-verification.log. Locally packed stable archives do not prove public publication or provenance. Tagging, Trusted Publishing, public indexes and fresh NuGet.org-only consumer results remain pending. The .16 archive hashes and verification below identify the immutable historical candidate, not stable 1.4.4 archives. See [release verification](release-verification.md#flourish-144-preparation-2026-10-30).
+Historical preparation snapshot: stable archives and public provenance had not yet been verified. The append-only preparation record retains that earlier state; current publication evidence above takes precedence.
 
 ## Current controlled-table candidate, 2026-10-29
 

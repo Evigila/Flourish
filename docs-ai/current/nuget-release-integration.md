@@ -1,12 +1,16 @@
 # NuGet release and integration
 
-## Current stable 1.4.4 preparation, 2026-10-30
+## Stable 1.4.4 uploaded, 2026-10-30
 
-Current source declares stable **1.4.4** without VersionSuffix, promoting the existing .16 implementation. Gallery records 1.4.4 and opens an empty 1.4.5-preview. The six-package publication manifest, dependency order and Essential.Culture **1.4.0** remain unchanged; WPF/WinUI are excluded.
+Source **2edf8fd69c40f9c4d9c68205f52e14f888529627** is tagged **v1.4.4**. [Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) successfully completed build and NuGet Trusted Publishing for the unchanged six-package Core/Blazor manifest. Gallery records 1.4.4 and opens an empty 1.4.5-preview; Essential.Culture remains **1.4.0**, with WPF/WinUI excluded.
 
-The existing publish helper and Trusted Publishing workflow remain the release path. Local preparation is running; passing verification, commit/tag and push must precede publication. Public availability is not yet asserted. After publication, verify all six indexes and run build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.4 with fresh caches before treating Colligere public-only consumption as verified. See [verification state](release-verification.md#flourish-144-preparation-2026-10-30).
+The full local release gate passed, including 147 local package-consumer checks, in artifacts/stable-1.4.4-verification-final.log. Publication used the existing helper/tag and Trusted Publishing workflow. All six public indexes now contain 1.4.4. build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.4 passed **147 checks** with fresh package and HTTP caches. FrameworkOnly, MetaNative, MetaDesign and MetaCulture verified public graphs, registration, SSR and assets; all six Flourish metadata entries identify NuGet.org. Colligere separately restored its 17 projects with only NuGet.org and stable 1.4.4, without the sibling preview feed. See [actual publication and verification state](release-verification.md#flourish-144-uploaded-2026-10-30).
 
 Published-version sections below preserve their original dates and evidence; their former “current source” wording is historical.
+
+## Current stable 1.4.4 preparation, 2026-10-30
+
+Historical preparation snapshot: local verification and tag publication were pending. Current publication and fresh public-consumer evidence above supersede that pending state.
 
 ## Published Flourish 1.4.2
 

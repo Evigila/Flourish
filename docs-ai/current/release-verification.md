@@ -1,12 +1,29 @@
 # Release verification
 
+## Flourish 1.4.4 uploaded, 2026-10-30
+
+Stable tag **v1.4.4** identifies source **2edf8fd69c40f9c4d9c68205f52e14f888529627**. [Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) completed both build verification and NuGet Trusted Publishing successfully. Exactly six Core/Blazor packages were uploaded; Essential.Culture **1.4.0** and WPF/WinUI exclusion remain unchanged. Gallery promotes the .16 candidate notes into 1.4.4 and opens an empty **1.4.5-preview**.
+
+Final local scripts/Test-Release.ps1 preparation passed Core **367**, Framework **496**, Gallery **8775**, Node **290** and four-mode local package-consumer **147** checks. Evidence: artifacts/stable-1.4.4-verification-final.log and local consumer fixture artifacts/package-consumers/fff0a737cf5e4369a78314308b66bf94. Initial failure exposed ShellHeader's literal-white fallback/private color mixing and obsolete palette/DOM fixture assumptions. The header now uses existing semantic light preview/click roles; fixtures were aligned with current contracts without dropping the release gates, and the entire preparation was rerun successfully.
+
+All six public flat-container indexes now contain **1.4.4**. Fresh public-only build/Test-BlazorPackageConsumers.ps1 -PublicSource -Version 1.4.4 passed **147/147 checks**, using fixture artifacts/package-consumers/7453b38f8b3e449f9136dab6d817aaab and fresh package/HTTP caches. FrameworkOnly, MetaNative, MetaDesign and MetaCulture each verified public dependency graphs, registration, SSR and published assets. All six Flourish archive metadata entries identify https://api.nuget.org/v3/index.json. Evidence: artifacts/stable-1.4.4-public-consumers.log. Colligere separately restored 17 projects and 168 package pairs with only NuGet.org; all five consumed Flourish packages resolve to stable 1.4.4, while the other 163 identities and consumer sets remain unchanged. Publicly downloaded archive hashes are recorded below. The append-only [preparation record](1_changelogs/2026-10-30_192659_prepare-flourish-1.4.4-stable.md) preserves the earlier pending snapshot.
+
+The following SHA-256 values identify the actual NuGet.org-downloaded **1.4.4** archives in that fresh fixture; they are not substituted local candidate hashes.
+
+| Public package | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Core | 79B5A5FBA67948F1D6C9BB85B810AF1428490B09A15CBCDFAE2637C28A8E719F |
+| Arkheide.Flourish.Blazor.Abstract | CCB067889739641F401ADA0AFF30EB2834B3E3F4263F7C31C5BC27D3CC75F5C0 |
+| Arkheide.Flourish.Blazor.Framework | 3A2276401BFD406E48C5E1EC479A6CBC50D56B4A7BB8FB95F9FD4EBD62FEDAF3 |
+| Arkheide.Flourish.Blazor.Design | 5EC3E0DBE332AF29882A4980C0EF0824156671BBB07F612D99688DCA65F98A75 |
+| Arkheide.Flourish.Extensions.Culture.Blazor | 5EA7872315D6E8B3C0D9B791403DA1A16936DFEF526E38F0346662B45558AA7E |
+| Arkheide.Flourish.Blazor | 03D8CFDA0D71ECA7978E5717956AEA06308164962B719A5AB4A9F5509551D666 |
+
+Manual acceptance remains recommended for header/footer alignment, hover menus/language selection, primary navigation alignment/motion, long labels, save/discard interruption handling, dropdown widths and controlled server table paging/search/row actions. Automated checks do not substitute for visual acceptance; no Computer Use acceptance was performed.
+
 ## Flourish 1.4.4 preparation, 2026-10-30
 
-Current preparation promotes **1.4.4-preview.shell.20261027.16** to stable **1.4.4** and opens the empty Gallery **1.4.5-preview**. The public manifest still contains exactly six Core/Blazor packages; Essential.Culture **1.4.0** and the exclusion of WPF/WinUI remain unchanged.
-
-The local full gate is currently running through scripts/Test-Release.ps1, with evidence in artifacts/stable-1.4.4-verification.log. No final local test count, tag, Trusted Publishing upload, public index or independent public-only consumer result is claimed at this preparation stage. The coordinator must record actual outcomes after completion.
-
-Manual acceptance remains recommended for header/footer alignment, hover menus/language selection, primary navigation alignment/motion, long labels, save/discard interruption handling, dropdown widths and controlled server table paging/search/row actions. Automated browser behavior checks do not substitute for visual acceptance. No Computer Use acceptance was performed by this documentation update.
+Historical preparation snapshot: verification, tag and uploads were pending when [the preparation record](1_changelogs/2026-10-30_192659_prepare-flourish-1.4.4-stable.md) was created. The successful local gate and upload evidence above supersede that state without editing the original record.
 
 ## Completed Flourish 1.4.3 release on 2026-10-26
 
