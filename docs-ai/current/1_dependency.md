@@ -2,7 +2,7 @@
 
 ## Stable 1.4.5 preparation, 2026-10-31
 
-Source VersionPrefix is now 1.4.5 with no prerelease suffix. The six Core/Blazor package identities and existing external dependency declarations are unchanged. This promotes the previously verified local dropdown result limit, CollectionView, StepIndicator and NavigationTree candidate. Historical preview archives remain immutable. Public publication is verified separately after the tagged Trusted Publishing workflow completes.
+Source VersionPrefix is now 1.4.5 with no prerelease suffix. The six Core/Blazor package identities and existing external dependency declarations are unchanged. This promotes the previously verified local dropdown result limit, CollectionView, StepIndicator and NavigationTree candidate. Historical preview archives remain immutable. Public NuGet 1.4.5 publication is now verified: tagged workflow 41249499118 succeeded, all six canonical flatcontainer archives were downloaded and their version indices/metadata/internal dependencies/required assets passed Verify-PackageSet. Source commit is 4a656bda88eecbe7e497daa388df3ddc7b8fb3a1; tag v1.4.5 remains fixed at that release. Public archive hashes are in artifacts/public-1.4.5/sha256.json.
 
 ## Local shared-navigation candidate, 2026-10-31
 
