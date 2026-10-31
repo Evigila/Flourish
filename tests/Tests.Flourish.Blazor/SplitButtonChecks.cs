@@ -463,6 +463,8 @@ internal static class SplitButtonChecks
                     ".f-dropdown-surface[open] > .f-menu-panel" => (nativeSplit || nativeActionMenu) && open,
                     ".f-split-button > .f-split-button-menu[open] > .f-menu-panel" => nativeSplit && open,
                     ".f-action-menu[data-f-native-menu]:not([data-f-enhanced])[open] > .f-menu-panel" => nativeActionMenu && open,
+                    // Counted collections own a separate disclosure; no fixture ancestor here is a collection.
+                    ".f-collection-view:not([data-f-enhanced])[open] > .f-menu-panel" => false,
                     _ => throw new InvalidOperationException("Review the new panel display selector in the cascade contract: " + selector)
                 };
                 if (!applies) continue;

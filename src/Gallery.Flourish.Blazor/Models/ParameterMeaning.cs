@@ -8,6 +8,16 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "Items" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_Items_NavigationTree",
+        "CurrentPath" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_CurrentPath_NavigationTree",
+        "ItemLabel" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_ItemLabel_NavigationTree",
+        "Navigated" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_Navigated_NavigationTree",
+        "ExpandLabel" or "CollapseLabel" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_ExpansionLabel_NavigationTree",
+        "Items" when parameter.DeclaringType == typeof(Controls.StepIndicator) => "Key.Parameter_Items_StepIndicator",
+        "CurrentKey" when parameter.DeclaringType == typeof(Controls.StepIndicator) => "Key.Parameter_CurrentKey_StepIndicator",
+        "Items" when IsGenericControl(parameter, typeof(Controls.CollectionView<>)) => "Key.Parameter_Items_CollectionView",
+        "ItemText" when IsGenericControl(parameter, typeof(Controls.CollectionView<>)) => "Key.Parameter_ItemText_CollectionView",
+        "ItemTemplate" when IsGenericControl(parameter, typeof(Controls.CollectionView<>)) => "Key.Parameter_ItemTemplate_CollectionView",
         "PrimaryNavigationPreview" => "Key.Parameter_PrimaryNavigationPreview",
         "HasChanges" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_HasChanges_SaveChangesBar",
         "OnSave" when parameter.DeclaringType == typeof(Controls.SaveChangesBar) => "Key.Parameter_OnSave_SaveChangesBar",
@@ -86,6 +96,7 @@ internal static class ParameterMeaning
         "Series" when parameter.DeclaringType == typeof(Controls.LineChart) => "Key.Parameter_Series_LineChart",
         "Value" when parameter.DeclaringType == typeof(Controls.CopyText) => "Key.Parameter_Value_CopyText",
         "Value" when IsGenericControl(parameter, typeof(Controls.Primitives.ReferenceDropdown<>)) => "Key.Parameter_Value_Primitives_ReferenceDropdown",
+        "MaximumResults" when IsGenericControl(parameter, typeof(Controls.Primitives.ReferenceDropdown<>)) => "Key.Parameter_MaximumResults_ReferenceDropdown",
         "Value" => "Key.Parameter_Value",
         "ValueChanged" when IsGenericControl(parameter, typeof(Controls.Primitives.ReferenceDropdown<>)) => "Key.Parameter_ValueChanged_Primitives_ReferenceDropdown",
         "ValueChanged" => "Key.Parameter_ValueChanged",

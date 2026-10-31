@@ -1,5 +1,29 @@
 # Project architecture and repository tree
 
+## Local shared-navigation candidate, 2026-10-31
+
+`NavigationTree` extracts ApplicationShell's existing secondary/child renderer into one dynamic public component. Shell and NavigationSurface hosts share native lists, parent route links and independent SplitButton disclosure triangles; no host clone or skin is needed. Internal NavigationSelection is shared by Shell primary selection and the tree. Standalone selection defaults to Navigation.Uri's absolute-root path, while Shell explicitly preserves its original base-relative path. Query/fragment are ignored for matching and original Href values are preserved. Hierarchical semantic node identity permits a parent and landing child to share a route, preserves manual collapse across equivalent fresh records, and rejects stale removed/replaced-node callbacks. Disabled ancestry is inherited. Surface narrow layouts retain the hierarchy vertically with existing shared rounded child backgrounds.
+
+Gallery documents **87 components / 808 parameter rows / 381 defaults**, including a three-language executable sample and the actual Framework navigation guide. Four maintained additions bring the full tree to **731 files / 121 directories**. The six-package feed `artifacts/navigation-tree-20261031/nuget` contains local **1.4.5-preview.4**; source props remain stable 1.4.4 and previous previews remain intact. Release build passed with zero warnings/errors; Framework522, Gallery9023, fresh consumers155, other Node289, controller/actual-CSS geometry44 (zero skips), Culture25787, changelog200, CSS bundle21 and CSS SDK194 passed. See [implementation, diagnostics and manual acceptance](1_bugreports/2026-10-31_shared-dynamic-navigation-tree.md). No Computer Use, Git action or public publication occurred.
+
+## Previous local step-indicator candidate, 2026-10-30
+
+`StepIndicator` displays a host-owned process state as a full-width ordered list. Its `IReadOnlyList<StepIndicatorItem>` supplies stable keys and labels; `CurrentKey` highlights exactly one segment or null highlights none. The component owns equal grid tracks, wrapping, accessible list/current-step semantics and optional Design accent paint. It has no click, navigation or inferred completion behavior. Empty items render nothing; malformed/duplicate keys, missing labels and unknown current keys are rejected. Gallery now documents **86 components / 802 parameter rows / 378 defaults**. The four maintained additions bring the complete tree to **727 files / 121 directories**.
+
+The immutable six-package feed is `artifacts/step-indicator-20261030/nuget`, version **1.4.5-preview.3**. Source props remain stable 1.4.4; preview.1 and preview.2 archives remain intact. Release build passed without warnings/errors, Framework **512**, Gallery **8939**, fresh-cache package consumers **151**, other Node **289**, controller/actual-CSS geometry **43** (zero skips), Culture **25568**, changelog **197**, CSS bundle **21** and CSS SDK integration **194** passed. The [implementation and manual checks](1_bugreports/2026-10-30_equal-step-indicator.md) document the small-width padding correction and the inherited cascade-test maintenance. No Computer Use, Git action or public publication occurred.
+
+## Previous local counted-collection candidate, 2026-10-30
+
+`CollectionView<TItem>` owns a compact count trigger for multi-value cells, a keyboard-readable semantic list and optional typed item templates. Required Label supplies the accessible name; zero/Disabled prevent opening. Native details/summary reuse the shared weak hover/click/keyboard disclosure controller and existing standard Button/popup paint. The host retains business retrieval, permission, link and underlying-value indexing responsibilities; existing TableColumn.SearchValue separates searchable values from the count/template. Gallery now documents **85 components / 798 parameter rows / 376 defaults**. This adds only the library component and Gallery sample, bringing the complete tree to **723 maintained files / 121 directories**.
+
+The immutable six-package feed is `artifacts/collection-view-20261030/nuget`, version **1.4.5-preview.2**. Root source props remain stable1.4.4, and preview.1 remains unchanged. Release passed without warnings/errors; Framework507, Gallery8863, Node290, controls DOM88 subchecks and fresh-cache consumers147 passed. The [implementation report](1_bugreports/2026-10-30_counted-collection-popup.md) records semantics, the corrected inventory guard, packaging-wrapper error, source/archive provenance and remaining manual checks. No Computer Use, commit, push, tag or publication occurred.
+
+## Previous local reference-catalog candidate, 2026-10-30
+
+`ReferenceDropdown<TValue>` now accepts `MaximumResults` (`int?`, default **50**). Filtering precedes the limit; `null` displays the complete supplied catalog, and nonpositive limits are rejected. Selection, nullable/unlisted values, accessibility, focus restoration and disabled behavior retain their existing owners and contracts. Gallery describes the parameter and records the feature under **1.4.5-preview**. The component count remains **84**, with **792 parameter rows/373 documented defaults**; no maintained source path is added or removed, so the complete **721-file/121-directory** tree remains applicable.
+
+Candidate **1.4.5-preview.1** is local only, frozen in `artifacts/reference-dropdown-20261030/nuget`. Source `Directory.Build.props` remains stable 1.4.4; explicit build/pack version overrides keep the candidate distinct without changing WPF/WinUI declarations. Release builds all twelve Blazor projects with zero warnings/errors. Framework **501**, Gallery **8779**, fresh-cache consumer **147**, changelog **191** and localization-integrity **25271** checks passed. No Computer Use, application restart, commit, push, tag or public publication was performed. See [the diagnosis and verification record](1_bugreports/2026-10-30_reference-dropdown-result-limit.md) and [dependency provenance](1_dependency.md#local-reference-catalog-candidate-2026-10-30).
+
 ## Stable 1.4.4 publication, 2026-10-30
 
 Stable tag **v1.4.4** identifies source **2edf8fd69c40f9c4d9c68205f52e14f888529627**. [Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) completed its build and NuGet Trusted Publishing jobs successfully for the six Core/Blazor packages. Source removes the .16 VersionSuffix; Gallery records 1.4.4 and opens an empty **1.4.5-preview**. Essential.Culture remains **1.4.0** and WPF/WinUI stay outside publication. Component ownership and project direction are unchanged; no maintained source path is added or removed, so the complete tree below remains applicable.
@@ -135,7 +159,7 @@ No maintained source file/public parameter is added: **714 files/121 directories
 
 ## Inventory scope
 
-The complete tree below includes every maintained file observed through 2026-10-29 outside the two documentation subtrees. The current physical scan contains **721 files and 121 directories below the root**, including **22 project files and 5 solution files**. Relative to the prior 714-file tree, SaveChangesBar adds exactly seven maintained files: its Razor component, Framework/Design CSS partials, browser module, Gallery sample and C#/Node regression files; no maintained file is removed. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules are not used to discard maintained source, assets, configuration or deployment definitions. This scoped architecture update does not perform or claim a new full documentation audit.
+The complete tree below includes every maintained file observed through 2026-10-30 outside the two documentation subtrees. The current physical scan contains **731 files and 121 directories below the root**, including **22 project files and 5 solution files**. The shared navigation selection helper, public renderer, Gallery sample and interaction checks add four files to the prior 727-file inventory. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -212,6 +236,7 @@ Flourish/
 |   |   |   |   |-- NavigationChoicesLayout.cs
 |   |   |   |   |-- PopupStrength.cs
 |   |   |   |   |-- PresentationTone.cs
+|   |   |   |   |-- StepIndicatorItem.cs
 |   |   |   |   |-- TableContracts.cs
 |   |   |   |   |-- TutorialStep.cs
 |   |   |   |   |-- UniformGridShape.cs
@@ -321,6 +346,7 @@ Flourish/
 |   |   |   |   |-- Card.razor.cs
 |   |   |   |   |-- CheckBox.razor
 |   |   |   |   |-- CodeBlock.razor
+|   |   |   |   |-- CollectionView.razor
 |   |   |   |   |-- ContentContainer.razor
 |   |   |   |   |-- CopyText.razor
 |   |   |   |   |-- DataSearch.razor
@@ -349,6 +375,8 @@ Flourish/
 |   |   |   |   |-- MultiSelectBox.razor
 |   |   |   |   |-- MultiSelectOption.cs
 |   |   |   |   |-- NavigationChoices.razor
+|   |   |   |   |-- NavigationSelection.cs
+|   |   |   |   |-- NavigationTree.razor
 |   |   |   |   |-- Notice.razor
 |   |   |   |   |-- NumberBox.razor
 |   |   |   |   |-- OfferCard.razor
@@ -370,6 +398,7 @@ Flourish/
 |   |   |   |   |-- StandaloneCheckBox.razor
 |   |   |   |   |-- StandaloneSelectBox.razor
 |   |   |   |   |-- StandaloneTextBox.razor
+|   |   |   |   |-- StepIndicator.razor
 |   |   |   |   |-- TablePreferences.cs
 |   |   |   |   |-- TextBox.razor
 |   |   |   |   |-- TextComponentBase.cs
@@ -450,6 +479,7 @@ Flourish/
 |   |   |   |   |-- section-navigator.js
 |   |   |   |   |-- shell.js
 |   |   |   |   |-- split-button.css
+|   |   |   |   |-- step-indicator.css
 |   |   |   |   |-- tutorial-board.css
 |   |   |   |   \-- uniform-grid.css
 |   |   |   |-- _Imports.razor
@@ -686,6 +716,7 @@ Flourish/
 |   |   |   |   |   |-- ActionMenuSample.razor
 |   |   |   |   |   |-- ButtonSample.razor
 |   |   |   |   |   |-- CanonicalDataSearchSample.razor
+|   |   |   |   |   |-- CollectionViewSample.razor
 |   |   |   |   |   |-- DataPagerSample.razor
 |   |   |   |   |   |-- DataTableSample.razor
 |   |   |   |   |   |-- DialogSample.razor
@@ -696,11 +727,13 @@ Flourish/
 |   |   |   |   |   |-- LineChartSample.razor
 |   |   |   |   |   |-- ListViewSample.razor
 |   |   |   |   |   |-- LoadingStateSample.razor
+|   |   |   |   |   |-- NavigationTreeSample.razor
 |   |   |   |   |   |-- NoticeSample.razor
 |   |   |   |   |   |-- NoticeTriggerSample.razor
 |   |   |   |   |   |-- ProgressBarSample.razor
 |   |   |   |   |   |-- ProgressRingSample.razor
 |   |   |   |   |   |-- SplitButtonSample.razor
+|   |   |   |   |   |-- StepIndicatorSample.razor
 |   |   |   |   |   |-- TutorialBoardSample.razor
 |   |   |   |   |   \-- UniformGridButtonSample.razor
 |   |   |   |   |-- Display/
@@ -794,7 +827,7 @@ Flourish/
 |   |   |-- appsettings.json
 |   |   |-- Gallery.Flourish.Blazor.csproj
 |   |   \-- Program.cs
-|   |-- Gallery.Flourish.WinUI3/
+|   |-- Gallery.Flourish.WINUI3/
 |   |   |-- App.xaml
 |   |   |-- App.xaml.cs
 |   |   |-- Gallery.Flourish.WinUI3.csproj
@@ -855,6 +888,7 @@ Flourish/
 |   |   |-- NavigationChoicesChecks.cs
 |   |   |-- NavigationControlsChecks.cs
 |   |   |-- NavigationGuardChecks.cs
+|   |   |-- NavigationTreeChecks.cs
 |   |   |-- NoCompatibilityApiChecks.cs
 |   |   |-- organization-access-presentation.test.mjs
 |   |   |-- page-body-actions.test.mjs

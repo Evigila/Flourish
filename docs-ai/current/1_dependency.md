@@ -1,5 +1,33 @@
 # Project dependency inventory
 
+## Stable 1.4.5 preparation, 2026-10-31
+
+Source VersionPrefix is now 1.4.5 with no prerelease suffix. The six Core/Blazor package identities and existing external dependency declarations are unchanged. This promotes the previously verified local dropdown result limit, CollectionView, StepIndicator and NavigationTree candidate. Historical preview archives remain immutable. Public publication is verified separately after the tagged Trusted Publishing workflow completes.
+
+## Local shared-navigation candidate, 2026-10-31
+
+The authorized **1.4.5-preview.4** local candidate extracts NavigationTree and its shared selection helper without adding any external dependency. It retains the preceding ReferenceDropdown, CollectionView and StepIndicator work. The **33 external package/version pairs** are identical to preview.3. No package identity, SDK, font, icon, browser dependency or service was added/upgraded. WPF/WinUI and human documentation remain outside this scoped change.
+
+Source VersionPrefix remains **1.4.4**. Explicit CLI overrides produced six aligned immutable archives in `artifacts/navigation-tree-20261031/nuget`. Parent provenance.json records baseline commit, **33 changed source/test/build hashes**, snapshots, six archive hashes, resolved closure and the unchanged eighteen archives from previews.1/.2/.3. Framework SHA-256 is `14d95baf3f0c10843e331c936897a15271dce45f519708bd56fdbc74b8343006`. Framework/Design packaged CSS match actual Release bundles byte for byte. Package identities/internal edges/assets and **155 fresh-cache consumer checks** passed, including direct NavigationTree rendering in all four consumption modes. See [verification and manual acceptance](1_bugreports/2026-10-31_shared-dynamic-navigation-tree.md). This is local only; no public version was published.
+
+## Previous local step-indicator candidate, 2026-10-30
+
+The authorized **1.4.5-preview.3** local candidate adds StepIndicator with its public StepIndicatorItem contract, Framework equal-track layout and optional Design semantic accent colors. It retains ReferenceDropdown.MaximumResults and CollectionView. No external package, SDK, font, icon, browser dependency or service is added or upgraded. The producer closure retains the same **33 external package/version pairs** as preview.2. All six aligned Core/Blazor archives were validated; WPF/WinUI source and publication scope remain unchanged.
+
+Source VersionPrefix remains **1.4.4**. Explicit CLI version overrides produced the immutable feed `artifacts/step-indicator-20261030/nuget`. Parent `provenance.json` records the baseline, **25 changed source/test/build file hashes**, source snapshots, all six archive hashes and closure. Framework SHA-256 is `a4c3670191c4f4a28fcfebfaf331092fc3b5be21e52acaefeb255b534e586532`. Package metadata/assets and **151 fresh-cache consumer checks** passed; the added fixture consumes the public StepIndicator API in FrameworkOnly, MetaNative, MetaDesign and MetaCulture modes. Verification results and manual checks are recorded in the [implementation report](1_bugreports/2026-10-30_equal-step-indicator.md). This candidate is local only and does not overwrite preview.1 or preview.2.
+
+## Previous local counted-collection candidate, 2026-10-30
+
+The authorized **1.4.5-preview.2** local candidate adds CollectionView<TItem> on the existing shared disclosure/popup controller and Framework layout rules. It retains the prior ReferenceDropdown.MaximumResults API. No package identity, external package, SDK, font, icon resource, browser dependency or service is added. The twelve Blazor project graphs retain the same **33 external package/version pairs** as preview.1. All six aligned Core/Blazor archives are present; WPF/WinUI source and publication scope remain unchanged.
+
+Source root version remains1.4.4; explicit CLI overrides produce1.4.5-preview.2. The frozen feed is `artifacts/collection-view-20261030/nuget`. Its parent provenance.json records baseline7c6f4e2f939ba73e4d67ee532b38256c306dc4be, seventeen changed source/test hashes and all six archive hashes; full modified source snapshots include the two new files. Framework archive SHA-256 is `42b31939e967c7c046a9e0bddd6674613baab9f249ddcb71a14054e16622ae7f`. Package identities/edges/assets and147 fresh-cache consumer checks passed; Framework507, Gallery8863, Node290, controlsDOM88, catalog25413 and changelog194 passed. This is a local candidate, not a public release. The preceding preview.1 archives were not overwritten. See [implementation and acceptance boundaries](1_bugreports/2026-10-30_counted-collection-popup.md).
+
+## Previous local reference-catalog candidate, 2026-10-30
+
+User-authorized candidate **1.4.5-preview.1**, based on clean `origin/master` **7c6f4e2**, adds only the configurable `ReferenceDropdown.MaximumResults` API and its tests/catalog documentation. Root source version remains **1.4.4**; explicit CLI `Version=1.4.5-preview.1`, `VersionPrefix=1.4.5`, and `VersionSuffix=preview.1` produce aligned candidate archives. All six Core/Blazor package identities and existing internal edges are retained. Essential.Culture remains **1.4.0**; twelve isolated producer assets graphs retain **33 external package/version pairs**. No external package, SDK, font, asset, service or WPF/WinUI publication scope is added or upgraded.
+
+The immutable local feed is `artifacts/reference-dropdown-20261030/nuget`; this is not a public NuGet release. `provenance.json` in the parent directory captures full baseline commit, SDK, exact source hashes, six archive hashes and the resolved external closure. `source.patch` preserves the seven-file source/test diff. `scripts/Verify-PackageSet.ps1` verified all six archive identities/internal edges/required assets; the existing four fresh-cache consumer variants passed **147 checks**. Framework archive SHA-256: `82D6FAA93AC7589F0E4DE7B2E7639AD2403C27B8FB147F1AED87FA283052B4EF`. Full hashes are also in `package-sha256.json`. No existing archive was overwritten; the stable public 1.4.4 record below remains applicable to that release. Colligere's local feed mapping and consumer verification belong to its own repository.
+
 ## Stable 1.4.4 publication, 2026-10-30
 
 Stable source **2edf8fd69c40f9c4d9c68205f52e14f888529627**, tagged **v1.4.4**, removes VersionSuffix from **1.4.4-preview.shell.20261027.16**. All six Core/Blazor identities and aligned internal edges remain: Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor umbrella. Essential.Culture stays **1.4.0**. No external package, SDK, module, font or service is introduced or upgraded; WPF/WinUI publication scope is unchanged.

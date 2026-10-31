@@ -1,0 +1,34 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+
+@if (Items.Count > 0)
+{
+    <ol id="@Id" class="f-step-indicator" aria-label="@Label" style="@ColumnStyle">
+        @foreach (var item in Items)
+        {
+            <li @key="item.Key" class="f-step-indicator-item" aria-current="@(item.Key == CurrentKey ? "step" : null)">@item.Label</li>
+        }
+    </ol>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<StepIndicatorItem> Items { get; set; } = [];
+    [Parameter, EditorRequired] public string Label { get; set; } = string.Empty;
+    [Parameter] public string? CurrentKey { get; set; }
+    [Parameter] public string? Id { get; set; }
+    private string ColumnStyle => FormattableString.Invariant($"--f-step-count:{Items.Count}");
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Items);
+        if (string.IsNullOrWhiteSpace(Label)) throw new ArgumentException("An indicator label is required.", nameof(Label));
+        var keys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var item in Items)
+        {
+            if (item is null || string.IsNullOrWhiteSpace(item.Key) || string.IsNullOrWhiteSpace(item.Label))
+                throw new ArgumentException("Every step requires a nonempty key and label.", nameof(Items));
+            if (!keys.Add(item.Key)) throw new ArgumentException("Step keys must be unique.", nameof(Items));
+        }
+        if (CurrentKey is not null && !keys.Contains(CurrentKey))
+            throw new ArgumentException("The current key must identify a supplied step or be null.", nameof(CurrentKey));
+    }
+}

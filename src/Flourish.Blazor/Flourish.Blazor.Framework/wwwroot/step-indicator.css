@@ -1,0 +1,3 @@
+.f-step-indicator { display:grid; grid-template-columns:repeat(var(--f-step-count),minmax(0,1fr)); width:100%; min-width:0; box-sizing:border-box; list-style:none; margin:0; padding:0; }
+.f-step-indicator-item { display:grid; place-items:center; min-width:0; padding:12px min(12px,10%); box-sizing:border-box; overflow-wrap:anywhere; text-align:center; border-block-end:3px solid GrayText; }
+.f-step-indicator-item[aria-current="step"] { border-block-end-color:Highlight; background:Highlight; color:HighlightText; font-weight:600; }

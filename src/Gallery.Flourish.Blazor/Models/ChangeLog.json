@@ -1,7 +1,16 @@
 [
   {
-    "version": "1.4.5-preview",
+    "version": "1.4.6-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.5",
+    "changeKeys": [
+      "Key.ChangeLog_ReferenceDropdownResultLimit",
+      "Key.ChangeLog_CollectionView",
+      "Key.ChangeLog_StepIndicator",
+      "Key.ChangeLog_NavigationTree"
+    ]
   },
   {
     "version": "1.4.4",

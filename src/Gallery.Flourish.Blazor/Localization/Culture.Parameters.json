@@ -1,8 +1,24 @@
 {
-  "Parameter_ServerData": { "en-US": "Items contains one server page. The host owns filtering, ordering, total count and page acceptance; local transforms and saved sort preferences are bypassed.", "pt-BR": "Items contém uma página do servidor. O host controla filtro, ordenação, total e página aceita; não há transformações locais nem preferências de ordenação.", "zh-CN": "Items仅包含服务器当前页。宿主管理筛选、排序、总数和已接受页；不再本地处理或恢复排序偏好。" },
-  "Parameter_QueryChanged": { "en-US": "Requests a complete server query with page, size, sort and search. Return accepted values through the controlled parameters; authorization and cancellation remain host-owned.", "pt-BR": "Solicita uma consulta completa com página, tamanho, ordem e busca. Retorne os valores aceitos pelos parâmetros controlados; autorização e cancelamento pertencem ao host.", "zh-CN": "请求包含页码、页大小、排序和搜索的完整服务器查询。宿主通过受控参数回传接受状态，并负责授权与取消请求。" },
-  "Parameter_SortColumnKey": { "en-US": "The accepted sortable column key in server mode; null uses the host's default order.", "pt-BR": "Chave da coluna ordenável aceita no modo servidor; null usa a ordem padrão do host.", "zh-CN": "服务器模式已接受的可排序列键；null使用宿主默认顺序。" },
-  "Parameter_SortDirection": { "en-US": "The accepted server sort direction. Header actions request changes without reordering the supplied page locally.", "pt-BR": "Direção de ordenação aceita pelo servidor. O cabeçalho solicita alterações sem reordenar localmente a página recebida.", "zh-CN": "服务器已接受的排序方向。列头请求变更，不会在本地重排收到的当前页。" },
+  "Parameter_ServerData": {
+    "en-US": "Items contains one server page. The host owns filtering, ordering, total count and page acceptance; local transforms and saved sort preferences are bypassed.",
+    "pt-BR": "Items contém uma página do servidor. O host controla filtro, ordenação, total e página aceita; não há transformações locais nem preferências de ordenação.",
+    "zh-CN": "Items仅包含服务器当前页。宿主管理筛选、排序、总数和已接受页；不再本地处理或恢复排序偏好。"
+  },
+  "Parameter_QueryChanged": {
+    "en-US": "Requests a complete server query with page, size, sort and search. Return accepted values through the controlled parameters; authorization and cancellation remain host-owned.",
+    "pt-BR": "Solicita uma consulta completa com página, tamanho, ordem e busca. Retorne os valores aceitos pelos parâmetros controlados; autorização e cancelamento pertencem ao host.",
+    "zh-CN": "请求包含页码、页大小、排序和搜索的完整服务器查询。宿主通过受控参数回传接受状态，并负责授权与取消请求。"
+  },
+  "Parameter_SortColumnKey": {
+    "en-US": "The accepted sortable column key in server mode; null uses the host's default order.",
+    "pt-BR": "Chave da coluna ordenável aceita no modo servidor; null usa a ordem padrão do host.",
+    "zh-CN": "服务器模式已接受的可排序列键；null使用宿主默认顺序。"
+  },
+  "Parameter_SortDirection": {
+    "en-US": "The accepted server sort direction. Header actions request changes without reordering the supplied page locally.",
+    "pt-BR": "Direção de ordenação aceita pelo servidor. O cabeçalho solicita alterações sem reordenar localmente a página recebida.",
+    "zh-CN": "服务器已接受的排序方向。列头请求变更，不会在本地重排收到的当前页。"
+  },
   "Parameter_HasChanges_SaveChangesBar": {
     "en-US": "The page compares its current draft with the saved snapshot. True keeps the bar visible and blocks navigation; the component never changes this value automatically.",
     "zh-CN": "页面将当前草稿与已保存快照比较。true 持续显示操作栏并阻止导航；组件不会自动修改此值。",
@@ -1392,5 +1408,60 @@
     "en-US": "Defaults false. Applies the semantic Danger foreground only to the existing accessible title; it does not change dismissal, confirmation, focus or result handling.",
     "zh-CN": "默认 false。仅给现有可访问标题使用语义 Danger 前景色，不改变关闭、确认、焦点或结果处理。",
     "pt-BR": "false por padrão. Aplica o primeiro plano semântico Danger apenas ao título acessível existente; não altera fechamento, confirmação, foco nem resultado."
+  },
+  "Parameter_MaximumResults_ReferenceDropdown": {
+    "en-US": "Limits matching options after filtering. Defaults to 50; null displays all matches. Positive values only.",
+    "zh-CN": "限制筛选后的选项数量，默认 50；null 显示全部匹配项。仅允许正数。",
+    "pt-BR": "Limita opções após a filtragem. O padrão é 50; null exibe todas as correspondências. Aceita apenas valores positivos."
+  },
+  "Parameter_Items_CollectionView": {
+    "en-US": "Complete typed collection; its length supplies the count. Search must index its underlying values rather than the displayed count.",
+    "zh-CN": "完整的类型化集合；集合长度作为按钮数量。搜索必须使用底层值，而不是显示的数量。",
+    "pt-BR": "Coleção tipada completa; seu tamanho fornece a contagem. A busca deve indexar os valores, não a contagem."
+  },
+  "Parameter_ItemText_CollectionView": {
+    "en-US": "Optional plain-text formatter; the default uses the item string representation.",
+    "zh-CN": "可选纯文本格式化函数；默认使用条目的字符串表示。",
+    "pt-BR": "Formatador de texto opcional; o padrão usa a representação textual do item."
+  },
+  "Parameter_ItemTemplate_CollectionView": {
+    "en-US": "Optional item content composed with standard controls or links; replaces the plain-text renderer.",
+    "zh-CN": "可选条目模板；使用标准控件或链接替换纯文本显示。",
+    "pt-BR": "Conteúdo opcional com controles ou links padrão; substitui o texto simples."
+  },
+  "Parameter_Items_StepIndicator": {
+    "en-US": "Ordered read-only steps. Every item requires a unique nonempty Key and a nonempty Label. Empty collections render nothing. No completed states are inferred.",
+    "zh-CN": "有序只读步骤。每项必须具有唯一非空 Key 和非空 Label。空集合不渲染，不推断完成状态。",
+    "pt-BR": "Etapas ordenadas e somente de leitura. Cada item exige Key única e não vazia e Label não vazio. Coleções vazias não renderizam conteúdo. Não infere etapas concluídas."
+  },
+  "Parameter_CurrentKey_StepIndicator": {
+    "en-US": "The key of the sole highlighted step. null leaves all steps neutral; an unknown key is rejected. Transitions and cancellation remain host-owned.",
+    "zh-CN": "唯一高亮步骤的键。null 表示全部中性显示，未知键会被拒绝。状态流转和取消由宿主控制。",
+    "pt-BR": "Chave da única etapa destacada. null mantém todas neutras; chaves desconhecidas são rejeitadas. Transições e cancelamento pertencem ao aplicativo."
+  },
+  "Parameter_Items_NavigationTree": {
+    "en-US": "Dynamic application-local NavigationItem hierarchy. Each Href must be nonempty and unique among siblings after identity normalization; a parent may share its destination with its landing child. Cycles are rejected. Rendered links retain the original Href, including trailing slashes, queries and fragments. Disabled ancestors disable descendants.",
+    "zh-CN": "动态的应用内 NavigationItem 层级。Href 必须非空，在身份规范化后于同层唯一；父项可与其落地子页共用目标地址。禁止循环引用。渲染链接保留原始 Href，包括尾斜线、查询和片段。禁用祖先会禁用全部后代。",
+    "pt-BR": "Hierarquia dinâmica de NavigationItem com caminhos locais. Href deve ser não vazio e único entre irmãos após a normalização de identidade; um pai pode compartilhar o destino com seu filho inicial. Ciclos são rejeitados. Links mantêm o Href original, inclusive barra final, consulta e fragmento. Ancestrais desativados desativam os descendentes."
+  },
+  "Parameter_CurrentPath_NavigationTree": {
+    "en-US": "Optional controlled selection path. null reads Navigation.Uri using its absolute-root path. Matching ignores query, fragment and trailing slash, selecting the most specific enabled route and ancestors. Supply a path in the same namespace as Items.",
+    "zh-CN": "可选的受控选择路径。null 使用 Navigation.Uri 的绝对根路径。匹配忽略查询、片段和尾斜线，选择最具体的可用路由及祖先。提供的路径应与 Items 使用相同路径空间。",
+    "pt-BR": "Caminho opcional para controlar a seleção. null lê o caminho absoluto desde a raiz de Navigation.Uri. A comparação ignora consulta, fragmento e barra final, selecionando a rota habilitada mais específica e seus ancestrais. Use o mesmo espaço de caminhos de Items."
+  },
+  "Parameter_ItemLabel_NavigationTree": {
+    "en-US": "Optional label resolver. null uses NavigationItem.Label. Resolve host-owned localization here without changing item identity or business access.",
+    "zh-CN": "可选的文案解析器。null 使用 NavigationItem.Label。在此解析宿主本地化文案，不改变节点身份或业务访问。",
+    "pt-BR": "Resolvedor opcional de rótulos. null usa NavigationItem.Label. Resolva textos do aplicativo sem alterar a identidade ou o acesso comercial."
+  },
+  "Parameter_Navigated_NavigationTree": {
+    "en-US": "Notifies an enabled parent or leaf link activation, for example to close a mobile rail. It does not replace native navigation and is never raised by a branch triangle.",
+    "zh-CN": "可用父项或叶子链接激活时通知，例如关闭移动导航栏。不会替代原生导航，分支三角也不会触发此事件。",
+    "pt-BR": "Notifica a ativação de um link habilitado, pai ou folha, por exemplo para fechar uma barra móvel. Não substitui a navegação nativa e o triângulo nunca dispara o evento."
+  },
+  "Parameter_ExpansionLabel_NavigationTree": {
+    "en-US": "Accessible disclosure verb. Defaults to the current text provider language; explicit values override that default. The item label is appended.",
+    "zh-CN": "无障碍展开或折叠动词。默认使用当前文本提供器语言，显式文案覆盖默认值，并附加对应节点文案。",
+    "pt-BR": "Verbo acessível para expandir ou recolher. Usa por padrão o idioma do provedor de textos; valores explícitos o substituem. O rótulo do item é acrescentado."
   }
 }

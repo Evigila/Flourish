@@ -1248,5 +1248,10 @@
     "en-US": "Use the #RRGGBB format.",
     "zh-CN": "使用 #RRGGBB 格式。",
     "pt-BR": "Use o formato #RRGGBB."
+  },
+  "Framework_DynamicNavigation": {
+    "en-US": "Use NavigationTree with dynamic NavigationItem data inside a named navigation landmark or NavigationSurface.SecondaryNavigation. ApplicationShell uses the same renderer. Parent links navigate; the independent triangle toggles the shared rounded child list without changing the route. CurrentPath can control selection; null follows the absolute-root browser path, so organization-prefixed data remains scoped. Ordinary rerenders preserve manual collapse; path changes reveal current ancestors.",
+    "zh-CN": "在有名称的导航地标或 NavigationSurface.SecondaryNavigation 中，以动态 NavigationItem 数据使用 NavigationTree。ApplicationShell 共用同一渲染器。父项链接执行导航，独立三角仅切换共用圆角背景的子列表，不改变路由。CurrentPath 可控制选择，null 跟随浏览器绝对根路径，支持包含组织前缀的数据。普通重渲染保留手动折叠，路径变化展开当前祖先。",
+    "pt-BR": "Use NavigationTree com dados NavigationItem dinâmicos em um nav nomeado ou NavigationSurface.SecondaryNavigation. ApplicationShell usa o mesmo renderizador. Links pais navegam; o triângulo independente alterna a lista filha com fundo arredondado compartilhado sem mudar a rota. CurrentPath controla a seleção; null segue o caminho absoluto desde a raiz, preservando prefixos de organização. Renderizações comuns mantêm o recolhimento manual; mudanças de caminho revelam os ancestrais atuais."
   }
 }

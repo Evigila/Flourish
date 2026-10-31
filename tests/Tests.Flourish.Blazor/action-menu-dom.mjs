@@ -800,8 +800,37 @@ if (browserPath) {
         assert.equal(measurements.restored.hidden, false); assert.equal(measurements.restored.position, 'fixed'); assert.equal(measurements.restored.current, 1);
         assert.equal(measurements.restored.sameLinks, true); assert.ok(Math.abs(measurements.restored.bandTop-measurements.restored.headerBottom)<=1);
     });
+    await check('Actual StepIndicator CSS keeps 1, 3, 5 and 17 wrapped segments equal at narrow and wide widths', async () => {
+        for (const width of [300,997]) {
+            const markup = [1,3,5,17].map(count => `<div style="width:${width}px"><ol id="steps-${count}" class="f-step-indicator" aria-label="Process ${count}" style="--f-step-count:${count}">${Array.from({length:count}, (_,index) => `<li class="f-step-indicator-item"${index===count-1?' aria-current="step"':''}>${index===0?'VeryLongUnbrokenLocalizedStepLabel'.repeat(3):'Step '+index}</li>`).join('')}</ol></div>`).join('');
+            const result = await browserFixture(markup, `return [1,3,5,17].map(count=>{const list=document.querySelector('#steps-'+count),items=[...list.children],current=items.at(-1),style=getComputedStyle(current);return {count,width:list.getBoundingClientRect().width,scroll:list.scrollWidth,tracks:getComputedStyle(list).gridTemplateColumns.split(' ').length,items:items.map(item=>({width:item.getBoundingClientRect().width,height:item.getBoundingClientRect().height,scroll:item.scrollWidth})),currentColor:style.color,currentBackground:style.backgroundColor,rootAccent:getComputedStyle(document.body).getPropertyValue('--f-accent').trim(),interactive:list.querySelectorAll('button,a,input,[tabindex]').length}});`, {width:1280,height:900});
+            process.stdout.write('MEASURE StepIndicator '+width+'px '+JSON.stringify(result)+'\n');
+            for (const row of result) {
+                assert.ok(Math.abs(row.width-width)<1,'The indicator does not span its available container.');
+                assert.equal(row.tracks,row.count);
+                assert.ok(row.items.every(item=>Math.abs(item.width-width/row.count)<1),'Long labels changed the equal track widths.');
+                assert.ok(row.items.every(item=>item.height===row.items[0].height),'Segments must share a row height.');
+                assert.ok(row.scroll<=Math.ceil(row.width),'The indicator introduced horizontal overflow.');
+                assert.notEqual(row.currentColor,row.currentBackground,'The active segment lost its readable foreground.');
+                assert.equal(row.interactive,0,'Read-only state gained an interactive element.');
+            }
+        }
+    });
+    await check('Shared NavigationTree stays vertical in NavigationSurface at wide and narrow widths with one unindented rounded child surface', async () => {
+        const markup = `<div class="navigation-surface" style="--f-primary-width:58px;--f-secondary-width:300px"><header>Navigation fixture</header><div class="app-body has-secondary-navigation"><div class="f-primary-preview-slot"><aside class="primary-rail"><nav><a class="primary-nav-item" href="/">Home</a></nav></aside></div><aside class="secondary-rail"><nav aria-label="Pages"><ul class="f-secondary-list f-navigation-tree f-navigation-tree-hierarchical"><li class="f-navigation-node"><div class="f-split-button f-secondary-row"><a class="f-split-button-primary f-secondary-item is-selected" href="/orders/" aria-current="true"><span class="f-navigation-label">Orders</span></a><button class="f-split-button-secondary f-secondary-toggle is-selected" aria-expanded="true" aria-controls="tree-group" aria-label="Collapse Orders"><span class="f-expansion-indicator" data-expanded="true"></span></button></div><ul id="tree-group" class="f-third-navigation"><li class="f-navigation-node"><div class="f-secondary-row"><a id="tree-list" class="f-secondary-item f-third-item" href="/orders/list/"><span class="f-navigation-label">List</span></a></div></li><li class="f-navigation-node"><div class="f-secondary-row"><a id="tree-create" class="f-secondary-item f-third-item is-selected" aria-current="page" href="/orders/create/"><span class="f-navigation-label">Create</span></a></div></li></ul></li><li class="f-navigation-node" id="tree-next"><div class="f-secondary-row"><a class="f-secondary-item" href="/settings/">Settings</a></div></li></ul></nav></aside><main class="application-stage">Content</main></div></div>`;
+        for (const width of [1280,600]) {
+            const result = await browserFixture(markup, `const list=document.querySelector('.f-navigation-tree'),nav=list.parentElement,group=document.querySelector('#tree-group'),first=document.querySelector('#tree-list'),second=document.querySelector('#tree-create'),next=document.querySelector('#tree-next');const rect=element=>{const r=element.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width}};return {list:rect(list),group:rect(group),first:rect(first),second:rect(second),next:rect(next),listDisplay:getComputedStyle(list).display,navDisplay:getComputedStyle(nav).display,groupBackground:getComputedStyle(group).backgroundColor,groupRadius:getComputedStyle(group).borderRadius,groupPadding:getComputedStyle(group).paddingLeft,shared:first.parentElement.parentElement.parentElement===second.parentElement.parentElement.parentElement,overflowY:getComputedStyle(nav.parentElement).overflowY};`, {width,height:900});
+            assert.equal(result.listDisplay,'block');
+            assert.ok(Math.abs(result.group.left-result.list.left)<1,'Children gained a separate indented column.');
+            assert.ok(Math.abs(result.group.width-result.list.width)<1,'The child group does not fill its existing rail.');
+            assert.ok(result.second.top>=result.first.bottom && result.next.top>=result.group.bottom,'The hierarchical list turned into a horizontal strip.');
+            assert.equal(result.groupPadding,'0px'); assert.ok(parseFloat(result.groupRadius)>0); assert.notEqual(result.groupBackground,'rgba(0, 0, 0, 0)'); assert.equal(result.shared,true);
+            if(width===600){assert.equal(result.navDisplay,'block');assert.equal(result.overflowY,'auto');}
+            process.stdout.write('MEASURE NavigationTree '+width+'px '+JSON.stringify(result)+'\n');
+        }
+    });
 } else {
-    browserChecksSkipped = 14;
+    browserChecksSkipped = 16;
     process.stdout.write(process.argv.includes('--dom-only') ? 'SKIP real-browser SSR geometry: explicitly requested DOM-only verification.\n' : 'SKIP real-browser SSR geometry: no installed Chromium browser found.\n');
 }
 process.stdout.write(`${checks}/${checks} ActionMenu current-controller DOM checks passed; ${browserChecksSkipped} real-browser checks skipped.\n`);

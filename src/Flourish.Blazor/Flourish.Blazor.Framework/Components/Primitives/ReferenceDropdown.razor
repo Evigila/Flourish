@@ -70,6 +70,8 @@
     [Parameter] public string EmptySelectionText { get; set; } = "None";
     [Parameter] public string SearchLabel { get; set; } = "Search or add";
     [Parameter] public int MaximumLength { get; set; } = 120;
+    /// <summary>Limits matching items after filtering; null displays every matching item.</summary>
+    [Parameter] public int? MaximumResults { get; set; } = 50;
     [Parameter] public bool AllowNone { get; set; } = true;
     [Parameter] public PopupStrength Strength { get; set; } = PopupStrength.Weak;
     [Parameter] public bool Disabled { get; set; }
@@ -90,7 +92,7 @@
     private IReadOnlyList<ReferenceItem<TValue>> Matches => Items
         .Where(item => string.IsNullOrWhiteSpace(Search)
             || item.Name.Contains(Search.Trim(), StringComparison.OrdinalIgnoreCase))
-        .Take(50).ToArray();
+        .Take(MaximumResults ?? int.MaxValue).ToArray();
     private bool CanCreate => CreateRequested is not null && !string.IsNullOrWhiteSpace(Search)
         && !Items.Any(item => string.Equals(item.Name.Trim(), Search.Trim(), StringComparison.OrdinalIgnoreCase));
     private bool ShowUnlisted => Value is null && !string.IsNullOrWhiteSpace(UnlistedName)
@@ -100,6 +102,7 @@
     protected override void OnParametersSet()
     {
         if (!Enum.IsDefined(Strength)) throw new ArgumentOutOfRangeException(nameof(Strength));
+        if (MaximumResults is <= 0) throw new ArgumentOutOfRangeException(nameof(MaximumResults));
         if (Disabled) IsOpen = false;
     }
 

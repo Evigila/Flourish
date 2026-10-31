@@ -64,6 +64,7 @@ $razor = @'
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 @using ArkheideSystem.Flourish.Blazor.Components
+@using ArkheideSystem.Flourish.Blazor.Abstract
 __CULTURE_RAZOR__
 <html>
 <head><HeadOutlet /></head>
@@ -114,6 +115,15 @@ __CULTURE_RAZOR__
             }));
             panel.CloseComponent();
         }));
+        builder.CloseComponent();
+        builder.OpenComponent<StepIndicator>(30);
+        builder.AddAttribute(31, "Items", new StepIndicatorItem[] { new("draft", "Draft"), new("complete", "Complete") });
+        builder.AddAttribute(32, "CurrentKey", "complete");
+        builder.AddAttribute(33, "Label", "Package process");
+        builder.CloseComponent();
+        builder.OpenComponent<NavigationTree>(40);
+        builder.AddAttribute(41, "Items", new NavigationItem[] { new("Package navigation", "/package-tree/", Children: [new("Package child", "/package-tree/child/", Exact: true)]) });
+        builder.AddAttribute(42, "CurrentPath", "/package-tree/child/?source=package#section");
         builder.CloseComponent();
 __CULTURE_CONTENT__
     };
@@ -284,6 +294,8 @@ foreach ($mode in $modes) {
         Require ($page.StatusCode -eq 200 -and $page.Content.Contains('Package consumer')) "$($mode.Name) failed SSR."
         Require ($page.Content.Contains('f-list-view') -and $page.Content.Contains('f-data-table') -and $page.Content.Contains('Read-only package rows')) "$($mode.Name) omitted the packaged static list."
         Require ([regex]::Matches($page.Content, '<th scope="row">').Count -eq 25 -and $page.Content.Contains('Row 025')) "$($mode.Name) paginated or omitted static list rows."
+        Require ($page.Content.Contains('aria-label="Package process"') -and $page.Content.Contains('aria-current="step"') -and $page.Content.Contains('--f-step-count:2')) "$($mode.Name) did not consume the public step indicator contract."
+        Require ($page.Content.Contains('f-navigation-tree-hierarchical') -and $page.Content.Contains('href="/package-tree/child/"') -and $page.Content.Contains('aria-expanded="true"')) "$($mode.Name) did not consume the dynamic navigation tree contract."
         Require (!$page.Content.Contains('data-f-table') -and !$page.Content.Contains('f-data-pager') -and !$page.Content.Contains('f-data-actions')) "$($mode.Name) introduced dynamic list behavior."
         Require ($page.Content.Contains('f-presentation-hero') -and $page.Content.Contains('Package display hero') -and $page.Content.Contains('f-content-container')) "$($mode.Name) omitted packaged display composition."
         Require ($page.Content.Contains('f-offer-stage') -and $page.Content.Contains('Readable before enhancement') -and !$page.Content.Contains('data-offer-ready')) "$($mode.Name) changed the readable pre-enhancement offer fallback."

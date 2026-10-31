@@ -3398,5 +3398,75 @@
     "en-US": "Use the semantic Danger title",
     "zh-CN": "使用语义 Danger 标题",
     "pt-BR": "Usar título semântico Danger"
+  },
+  "Sample_CollectionProducts": {
+    "en-US": "Order products",
+    "zh-CN": "订单产品",
+    "pt-BR": "Produtos do pedido"
+  },
+  "Sample_CollectionDocuments": {
+    "en-US": "Order attachments",
+    "zh-CN": "订单附件",
+    "pt-BR": "Anexos do pedido"
+  },
+  "Sample_CollectionEmpty": {
+    "en-US": "No values",
+    "zh-CN": "没有值",
+    "pt-BR": "Sem valores"
+  },
+  "Sample_StepIndicatorLabel": {
+    "en-US": "Process status",
+    "zh-CN": "流程状态",
+    "pt-BR": "Estado do processo"
+  },
+  "Sample_StepIndicatorInactive": {
+    "en-US": "Process with no active step",
+    "zh-CN": "无当前步骤的流程",
+    "pt-BR": "Processo sem etapa ativa"
+  },
+  "Sample_StepIndicatorDraft": {
+    "en-US": "Draft",
+    "zh-CN": "草稿",
+    "pt-BR": "Rascunho"
+  },
+  "Sample_StepIndicatorReview": {
+    "en-US": "Review",
+    "zh-CN": "审核",
+    "pt-BR": "Revisão"
+  },
+  "Sample_StepIndicatorComplete": {
+    "en-US": "Completed",
+    "zh-CN": "已完成",
+    "pt-BR": "Concluído"
+  },
+  "Sample_NavigationTreeLabel": {
+    "en-US": "Sample pages",
+    "zh-CN": "示例页面",
+    "pt-BR": "Páginas de exemplo"
+  },
+  "Sample_NavigationTreeOverview": {
+    "en-US": "Overview",
+    "zh-CN": "概览",
+    "pt-BR": "Visão geral"
+  },
+  "Sample_NavigationTreeOrders": {
+    "en-US": "Orders",
+    "zh-CN": "订单",
+    "pt-BR": "Pedidos"
+  },
+  "Sample_NavigationTreeList": {
+    "en-US": "Order list",
+    "zh-CN": "订单列表",
+    "pt-BR": "Lista de pedidos"
+  },
+  "Sample_NavigationTreeCreate": {
+    "en-US": "Create order",
+    "zh-CN": "新建订单",
+    "pt-BR": "Criar pedido"
+  },
+  "Sample_NavigationTreeUnavailable": {
+    "en-US": "Unavailable",
+    "zh-CN": "暂不可用",
+    "pt-BR": "Indisponível"
   }
 }

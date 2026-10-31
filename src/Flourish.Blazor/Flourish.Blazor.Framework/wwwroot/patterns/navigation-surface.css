@@ -188,6 +188,22 @@ position: absolute;
             white-space: nowrap;
     }
 
+    .navigation-surface .secondary-rail:has(.f-navigation-tree-hierarchical) {
+        max-height: 40dvh;
+        overflow: auto;
+    }
+
+    .navigation-surface .secondary-rail nav:has(> .f-navigation-tree-hierarchical) {
+        display: block;
+        width: auto;
+        min-width: 0;
+    }
+
+    .navigation-surface .secondary-rail .f-navigation-tree-hierarchical .f-secondary-item {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
     .navigation-surface .app-body.has-secondary-navigation > .application-stage {
     grid-column: 2;
             grid-row: 2;

@@ -1,0 +1,21 @@
+@inherits LocalizedComponentBase
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("CollectionView<TItem>")]
+
+<CollectionView TItem="string" Items="Products" Label="@Localization.Parse(TextKey.Sample_CollectionProducts)" />
+@if (!Preview)
+{
+    <CollectionView TItem="string" Items="Empty" Label="@Localization.Parse(TextKey.Sample_CollectionEmpty)" />
+    <CollectionView TItem="string" Items="Products" Label="@Localization.Parse(TextKey.Sample_CollectionProducts)" Disabled="true" />
+    <CollectionView TItem="Document" Items="Documents" Label="@Localization.Parse(TextKey.Sample_CollectionDocuments)" ItemText="item => item.Name">
+        <ItemTemplate Context="item"><Button Variant="ButtonVariant.Underline" Href="@item.Href" Text="@item.Name" /></ItemTemplate>
+    </CollectionView>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private static readonly string[] Products = ["CAB-01 · USB-C", "PAP-02 · A4"];
+    private static readonly string[] Empty = [];
+    private static readonly Document[] Documents = [new("NF-e 55", "#nfe"), new("Boleto", "#boleto")];
+    private sealed record Document(string Name, string Href);
+}

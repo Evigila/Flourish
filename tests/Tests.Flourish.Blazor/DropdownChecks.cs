@@ -102,6 +102,80 @@ internal static class DropdownChecks
             });
         }));
 
+        tests.Add(("reference dropdown retains the default fifty matches and filters before limiting", async () =>
+        {
+            var parameters = ManyOptions();
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                Require(Options(html()).Count == 50, "Default results must retain the existing fifty-item bound.");
+                await dropdown.ChangeSearchAsync("Last choice");
+                Require(Options(html()).Select(option => option.Text).SequenceEqual(["Last choice"]), "Filtering must find items beyond the initial fifty results.");
+            });
+        }));
+        tests.Add(("reference dropdown supports explicit positive result limits", async () =>
+        {
+            var parameters = ManyOptions();
+            parameters[nameof(ReferenceDropdown<Guid>.MaximumResults)] = 7;
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                Require(Options(html()).Count == 7, "A configured result bound must replace the default fifty.");
+                await dropdown.ChangeSearchAsync("Choice");
+                Require(Options(html()).Count == 7, "The configured bound must also apply after filtering.");
+            });
+        }));
+        tests.Add(("unlimited reference results expose and select the final typed item without searching", async () =>
+        {
+            var parameters = ManyOptions();
+            parameters[nameof(ReferenceDropdown<Guid>.MaximumResults)] = null;
+            var changes = new List<Guid?>();
+            parameters[nameof(ReferenceDropdown<Guid>.ValueChanged)] = EventCallback.Factory.Create<Guid?>(changes, value => changes.Add(value));
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                var options = Options(html());
+                Require(options.Count == 120 && options[^1].Text == "Last choice", "Unlimited results must render all supplied candidates in order.");
+                await dropdown.ClickOptionAsync(119);
+                Require(changes.SequenceEqual(new Guid?[] { SecondId }), "The final unlimited option must retain its typed selection callback.");
+                Require(Attribute(Trigger(html()), "aria-expanded") == "false", "Unlimited selection must close the popup.");
+            });
+        }));
+        tests.Add(("unlimited reference results retain text filtering and disabled behavior", async () =>
+        {
+            var parameters = ManyOptions();
+            parameters[nameof(ReferenceDropdown<Guid>.MaximumResults)] = null;
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                await dropdown.ChangeSearchAsync("Last choice");
+                Require(Options(html()).Select(option => option.Text).SequenceEqual(["Last choice"]), "Unlimited results must still filter matches.");
+            });
+            parameters[nameof(ReferenceDropdown<Guid>.Disabled)] = true;
+            await WithDropdown(parameters, async (dropdown, html, focusCalls) =>
+            {
+                await dropdown.ClickTriggerAsync();
+                Require(Options(html()).Count == 0 && Attribute(Trigger(html()), "aria-expanded") == "false", "Unlimited results must not open a disabled dropdown.");
+            });
+        }));
+        tests.Add(("reference dropdown rejects zero and negative result limits", async () =>
+        {
+            foreach (var invalid in new[] { 0, -1 })
+            {
+                var parameters = ManyOptions();
+                parameters[nameof(ReferenceDropdown<Guid>.MaximumResults)] = invalid;
+                try
+                {
+                    await WithDropdown(parameters, (_, _, _) => Task.CompletedTask);
+                }
+                catch (ArgumentOutOfRangeException error) when (error.ParamName == nameof(ReferenceDropdown<Guid>.MaximumResults))
+                {
+                    continue;
+                }
+                throw new InvalidOperationException("Nonpositive result limits must fail parameter validation.");
+            }
+        }));
+
         tests.Add(("strong reference popup rejects repeated trigger Escape and outside dismissal but accepts selection", async () =>
         {
             var parameters = Parameters();
@@ -145,6 +219,16 @@ internal static class DropdownChecks
         [nameof(ReferenceDropdown<Guid>.EmptySelectionText)] = "None",
         [nameof(ReferenceDropdown<Guid>.AllowNone)] = true
     };
+
+    private static Dictionary<string, object?> ManyOptions()
+    {
+        var parameters = Parameters();
+        parameters[nameof(ReferenceDropdown<Guid>.AllowNone)] = false;
+        parameters[nameof(ReferenceDropdown<Guid>.Items)] = Enumerable.Range(1, 119)
+            .Select(index => new ReferenceItem<Guid>(new Guid(index, 0, 0, new byte[8]), $"Choice {index:D3}"))
+            .Append(new ReferenceItem<Guid>(SecondId, "Last choice")).ToArray();
+        return parameters;
+    }
 
     private static async Task WithDropdown(Dictionary<string, object?> parameters, Func<DropdownProbe, Func<string>, IReadOnlyList<ElementReference>, Task> verify)
     {

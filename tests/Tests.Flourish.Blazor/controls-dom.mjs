@@ -782,4 +782,55 @@ check('Select validation and detached menu cleanup retain native fallback and re
     assert.equal(observed.find(observer=>observer.target===f.select).disconnected,true);
   }finally{globalThis.MutationObserver=original;}
 });
+
+function collectionFixture(unavailable=false) {
+  const root=new Node(),summary=new Node(),popup=new Node(),list=new Node(),link=new Node();
+  root.tagName='DETAILS';root.open=false;root.children=[summary,popup];popup.children=[list,link];
+  root.setAttribute('data-f-popup','menu');root.setAttribute('data-f-popup-hover','true');root.setAttribute('data-f-popup-strength','weak');
+  summary.setAttribute('aria-haspopup','dialog');summary.setAttribute('aria-disabled',String(unavailable));summary.setAttribute('aria-controls','collection-panel');
+  popup.setAttribute('role','dialog');popup.setAttribute('aria-label','Products');popup.id='collection-panel';
+  list.setAttribute('tabindex','0');link.setAttribute('href','/attachments/nfe');
+  summary.closest=selector=>selector==='[data-f-popup]'?root:selector==='[inert]'&&unavailable?root:null;
+  root.contains=node=>node===root||node===summary||node===popup||popup.contains(node);
+  api.attachDisclosureMenu(root,summary,popup,false,true);
+  return{root,summary,popup,list,link};
+}
+check('Collection hover opens its shared weak nonmodal popup without stealing focus',()=>{
+  const f=collectionFixture(),outside=new Node();document.activeElement=outside;
+  f.root.emit('pointerenter',{pointerType:'mouse'});
+  assert.equal(f.popup.popoverOpen,true);assert.equal(f.root.open,true);assert.equal(document.activeElement,outside);
+  assert.equal(f.summary.getAttribute('aria-expanded'),'true');assert.equal(f.popup.getAttribute('data-f-popup-strength'),'weak');
+  f.root.emit('pointerleave',{pointerType:'mouse',relatedTarget:f.list});assert.equal(f.popup.popoverOpen,true);
+  f.popup.emit('pointerleave',{pointerType:'mouse',relatedTarget:outside});assert.equal(f.popup.popoverOpen,false);
+  api.detachMenu(f.summary,f.popup);
+});
+check('Collection keyboard opens a readable list and navigates template links',()=>{
+  const f=collectionFixture();document.activeElement=f.summary;
+  f.summary.emit('keydown',event('ArrowDown'));
+  assert.equal(f.popup.popoverOpen,true);assert.equal(document.activeElement,f.list);
+  document.emit('keydown',event('ArrowDown'));assert.equal(document.activeElement,f.link);
+  document.emit('keydown',event('Escape'));assert.equal(f.popup.popoverOpen,false);assert.equal(document.activeElement,f.summary);
+  assert.equal(f.summary.getAttribute('aria-expanded'),'false');api.detachMenu(f.summary,f.popup);
+});
+check('Collection touch hover does not open and touch click does',()=>{
+  const f=collectionFixture();f.root.emit('pointerenter',{pointerType:'touch'});assert.notEqual(f.popup.popoverOpen,true);
+  const click={detail:1,preventDefault(){this.defaultPrevented=true;}};f.summary.emit('click',click);
+  assert.equal(click.defaultPrevented,true);assert.equal(f.popup.popoverOpen,true);
+  document.emit('pointerdown',{target:new Node()});assert.equal(f.popup.popoverOpen,false);api.detachMenu(f.summary,f.popup);
+});
+check('Collection focus leaving its weak popup dismisses without moving outside focus',()=>{
+  const f=collectionFixture(),outside=new Node();f.summary.emit('click',{detail:0,preventDefault(){}});
+  assert.equal(f.popup.popoverOpen,true);document.activeElement=outside;document.emit('focusin',{target:outside});
+  assert.equal(f.popup.popoverOpen,false);assert.equal(document.activeElement,outside);api.detachMenu(f.summary,f.popup);
+});
+check('Empty or disabled collection count triggers cannot open by hover or keyboard',()=>{
+  const f=collectionFixture(true);f.root.emit('pointerenter',{pointerType:'mouse'});f.summary.emit('keydown',event('ArrowDown'));
+  f.summary.emit('click',{detail:0,preventDefault(){}});assert.notEqual(f.popup.popoverOpen,true);api.detachMenu(f.summary,f.popup);
+});
+check('Collection removal detaches the same popup controller and listeners',()=>{
+  const f=collectionFixture();f.root.emit('pointerenter',{pointerType:'mouse'});api.detachMenu(f.summary,f.popup);
+  assert.equal(f.popup.popoverOpen,false);assert.equal(f.root.open,false);
+  assert.equal(f.summary.events.get('click').length,0);assert.equal(f.summary.events.get('keydown').length,0);assert.equal(f.popup.events.get('pointerleave').length,0);
+});
+
 process.stdout.write(`${count}/${count} mocked DOM checks passed.\n`);

@@ -1,4 +1,9 @@
 {
+  "ChangeLog_ReferenceDropdownResultLimit": {
+    "en-US": "Make ReferenceDropdown result limits configurable, retaining the default 50 matches and allowing complete bounded catalogs with MaximumResults=null.",
+    "zh-CN": "ReferenceDropdown 支持配置结果数量，保持默认显示 50 条匹配项，并允许通过 MaximumResults=null 完整显示有限目录。",
+    "pt-BR": "Permita configurar o limite do ReferenceDropdown, mantendo 50 correspondências por padrão e exibindo catálogos completos com MaximumResults=null."
+  },
   "ChangeLog_CompactHeaderBrand": {
     "en-US": "Fit the header brand into the standard 48px Quiet Button with a 24px logo and unchanged control padding. Restore the normal 68px single-row header minimum while preserving outer spacing and responsive row growth.",
     "zh-CN": "顶部品牌使用 24px Logo 与标准 48px Quiet 按钮，保持标准内边距，恢复单行顶部栏 68px 基准，同时保留外围留白和响应式换行。",
@@ -293,5 +298,20 @@
     "en-US": "DataTable supports controlled server paging, sorting and search while retaining native row actions.",
     "zh-CN": "DataTable 支持受控的服务端分页、排序和搜索，并保留原生行操作。",
     "pt-BR": "DataTable oferece paginação, ordenação e busca controladas pelo servidor, preservando ações nativas por linha."
+  },
+  "ChangeLog_CollectionView": {
+    "en-US": "Added CollectionView for counted multi-value table cells with weak hover/click/keyboard popups and typed item templates.",
+    "zh-CN": "新增 CollectionView：为表格多值单元格提供数量按钮、弱悬浮/点击/键盘弹窗和类型化条目模板。",
+    "pt-BR": "Adicionado CollectionView para células multivalor com contagem, popup fraco por hover/clique/teclado e templates tipados."
+  },
+  "ChangeLog_StepIndicator": {
+    "en-US": "Add StepIndicator: full-width, equal segments with one current step, semantic ordered-list accessibility, wrapped labels and no navigation or inferred completed states.",
+    "zh-CN": "新增 StepIndicator：全宽等分步骤、单个当前步骤、语义有序列表、长文案换行，不提供导航或推断完成状态。",
+    "pt-BR": "Adicione StepIndicator: segmentos iguais em toda a largura, uma etapa atual, lista ordenada acessível e rótulos com quebra, sem navegação nem inferência de etapas concluídas."
+  },
+  "ChangeLog_NavigationTree": {
+    "en-US": "Extract NavigationTree from ApplicationShell for dynamic secondary navigation. Share route selection, independent branch toggles, inherited disabled state and safe callbacks; support NavigationSurface without host styling.",
+    "zh-CN": "从 ApplicationShell 提取 NavigationTree，提供动态二级导航。共用路由选择、独立分支切换、继承禁用和安全回调，并支持 NavigationSurface，无需宿主样式。",
+    "pt-BR": "Extraia NavigationTree de ApplicationShell para navegação secundária dinâmica. Compartilhe seleção de rotas, triângulos independentes, desativação herdada e callbacks seguros; use NavigationSurface sem estilos no aplicativo."
   }
 }

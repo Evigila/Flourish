@@ -729,9 +729,7 @@ AsyncTest("branch collapse survives same-path rerenders while navigation reopens
         var configuredPrimaryNavigation = (IReadOnlyList<NavigationEntry>)typeof(ApplicationShell)
             .GetProperty("PrimaryEntries", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(shell)!;
         var branch = configuredPrimaryNavigation.Single().SecondaryItems.Single();
-        var toggleMethod = typeof(ApplicationShell).GetMethod("ToggleItem", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
-            ?? throw new InvalidOperationException("Navigation branch handler was not found.");
-        var toggle = EventCallback.Factory.Create(shell, (Action)(() => toggleMethod.Invoke(shell, [branch])));
+        var toggle = activator.Branches.Single(button => button.Href == branch.Href).OnSecondaryClick;
         var openNavigationMethod = typeof(ApplicationShell).GetMethod("ToggleNavigation", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("Mobile navigation handler was not found.");
         var openNavigation = EventCallback.Factory.Create(shell, (Action)(() => openNavigationMethod.Invoke(shell, null)));
@@ -845,6 +843,98 @@ AsyncTest("application layout owns document scroll while embedded shells opt out
 });
 GridChecks.Register(tests);
 DropdownChecks.Register(tests);
+
+AsyncTest("step indicator renders equal-segment ordered state without navigation", async () => {
+    var items = new StepIndicatorItem[] { new("draft", "Draft"), new("review", "Review"), new("done", "Done") };
+    var html = await Render<StepIndicator>(new() { ["Id"]="steps", ["Label"]="Order status", ["Items"]=items, ["CurrentKey"]="review" });
+    var list = OpeningTags(html,"ol").Single();
+    Equal("Order status",AttributeValue(list,"aria-label"));
+    Equal("--f-step-count:3",AttributeValue(list,"style"));
+    Equal("steps",AttributeValue(list,"id"));
+    var steps=OpeningTags(html,"li"); Equal(3,steps.Count);
+    Check(AttributeValue(steps[0],"aria-current") is null && AttributeValue(steps[1],"aria-current")=="step" && AttributeValue(steps[2],"aria-current") is null,"Only the current step may be marked current.");
+    Check(!html.Contains("<button",StringComparison.Ordinal) && !html.Contains("<a ",StringComparison.Ordinal) && !html.Contains("tabindex",StringComparison.Ordinal),"A read-only indicator must not imply navigation or keyboard actions.");
+});
+AsyncTest("step indicator retains arbitrary step counts and encoded labels", async () => {
+    foreach(var count in new[]{1,3,5,17}) {
+        var items=Enumerable.Range(1,count).Select(index=>new StepIndicatorItem(index.ToString(),index==1?"<unsafe> & label":$"Step {index}")).ToArray();
+        var html=await Render<StepIndicator>(new(){["Items"]=items,["Label"]="Process <state>",["CurrentKey"]=count.ToString()});
+        Equal(count,OpeningTags(html,"li").Count);Equal($"--f-step-count:{count}",AttributeValue(OpeningTags(html,"ol").Single(),"style"));
+        Check(html.Contains("&lt;unsafe&gt; &amp; label",StringComparison.Ordinal) && !html.Contains("<unsafe>",StringComparison.Ordinal),"Step captions must remain encoded text.");
+    }
+});
+AsyncTest("step indicator supports no active step and an empty collection", async () => {
+    var html=await Render<StepIndicator>(new(){["Items"]=new[]{new StepIndicatorItem("draft","Draft"),new("done","Done")},["Label"]="Cancelled order"});
+    Equal(2,OpeningTags(html,"li").Count);Check(!html.Contains("aria-current",StringComparison.Ordinal),"A null current key must not infer state.");
+    var empty=await Render<StepIndicator>(new(){["Items"]=Array.Empty<StepIndicatorItem>(),["Label"]="Empty process"});
+    Check(string.IsNullOrWhiteSpace(empty),"An empty process must not output an empty announced list or invalid zero-column grid.");
+});
+AsyncTest("step indicator rejects ambiguous malformed and unknown states", async () => {
+    var cases=new Dictionary<string,object?>[]{
+        new(){["Items"]=null,["Label"]="Status"},
+        new(){["Items"]=new[]{new StepIndicatorItem("a","A")},["Label"]=" "},
+        new(){["Items"]=new[]{new StepIndicatorItem("a","A"),new("a","B")},["Label"]="Status"},
+        new(){["Items"]=new[]{new StepIndicatorItem(" ","A")},["Label"]="Status"},
+        new(){["Items"]=new[]{new StepIndicatorItem("a"," ")},["Label"]="Status"},
+        new(){["Items"]=new[]{new StepIndicatorItem("a","A")},["Label"]="Status",["CurrentKey"]="missing"},
+        new(){["Items"]=new StepIndicatorItem[]{null!},["Label"]="Status"}
+    };
+    foreach(var parameters in cases){var rejected=false;try{await Render<StepIndicator>(parameters);}catch(ArgumentException){rejected=true;}Check(rejected,"Invalid state input was silently accepted.");}
+});
+Test("step indicator CSS defines full-width equal tracks and themed state without host styling", () => {
+    var root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../../"));
+    var css=File.ReadAllText(Path.Combine(root,"src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/step-indicator.css"));
+    Check(css.Contains("grid-template-columns:repeat(var(--f-step-count),minmax(0,1fr))",StringComparison.Ordinal) && css.Contains("width:100%",StringComparison.Ordinal),"Every step must receive one equal share of the full container.");
+    Check(css.Contains("min-width:0",StringComparison.Ordinal) && css.Contains("overflow-wrap:anywhere",StringComparison.Ordinal),"Long labels must not widen a segment.");
+    var design=File.ReadAllText(Path.Combine(root,"src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/controls.css"));
+    Check(design.Contains(".f-step-indicator-item[aria-current=\"step\"] { color:var(--f-accent-ink); background:var(--f-accent)",StringComparison.Ordinal),"The active step must use the existing semantic accent pair.");
+});
+
+AsyncTest("collection view shows its real item count with shared weak hover semantics", async () => {
+    var html = await Render<CollectionView<string>>(new() { ["Id"]="products", ["Label"]="Products", ["Items"]=new[]{"CAB-01 · Cable", "PAP-02 · Paper"} });
+    Check(html.Contains("data-f-popup-hover=\"true\"",StringComparison.Ordinal) && html.Contains("data-f-popup-strength=\"weak\"",StringComparison.Ordinal), "Collection popup must use the shared weak hover controller.");
+    var summary = OpeningTags(html,"summary").Single();
+    Equal("Products: 2",AttributeValue(summary,"aria-label"));
+    Equal("dialog",AttributeValue(summary,"aria-haspopup"));
+    Equal("products-panel",AttributeValue(summary,"aria-controls"));
+    Equal("false",AttributeValue(summary,"aria-disabled"));
+    Check(Regex.IsMatch(html,@"<summary\b[^>]*>\s*2\s*</summary>"), "The compact trigger must show the count only.");
+    Equal(2,OpeningTags(html,"li").Count);
+    Check(html.Contains("CAB-01",StringComparison.Ordinal) && html.Contains("PAP-02",StringComparison.Ordinal), "All underlying values must remain supplied to the popup.");
+    Check(html.Contains("role=\"dialog\"",StringComparison.Ordinal) && html.Contains("tabindex=\"0\"",StringComparison.Ordinal), "The nonmodal collection must expose a keyboard-readable list.");
+});
+AsyncTest("collection view encodes text and its accessible label", async () => {
+    var html=await Render<CollectionView<string>>(new(){["Label"]="Products <unsafe>",["Items"]=new[]{"<script>bad</script>"}});
+    Check(!html.Contains("<script>",StringComparison.Ordinal) && html.Contains("&lt;script&gt;",StringComparison.Ordinal),"Collection text must be encoded.");
+    Equal("Products <unsafe>: 1",AttributeValue(OpeningTags(html,"summary").Single(),"aria-label"));
+});
+AsyncTest("empty and disabled collections keep their count and cannot open", async () => {
+    foreach(var parameters in new[]{new Dictionary<string,object?>{["Items"]=Array.Empty<string>()},new Dictionary<string,object?>{["Items"]=new[]{"One"},["Disabled"]=true}}){
+        parameters["Label"]="Items";
+        var html=await Render<CollectionView<string>>(parameters);
+        Equal("true",AttributeValue(OpeningTags(html,"summary").Single(),"aria-disabled"));
+        Check(OpeningTags(html,"details").Single().Contains("inert",StringComparison.Ordinal),"Unavailable collections must be inert.");
+    }
+});
+AsyncTest("collection templates compose real links rather than fabricated collection actions", async () => {
+    RenderFragment<string> itemTemplate=item=>builder=>{builder.OpenComponent<Button>(0);builder.AddAttribute(1,"Href","/documents/"+item);builder.AddAttribute(2,"Text",item);builder.CloseComponent();};
+    var html=await Render<CollectionView<string>>(new(){["Label"]="Attachments",["Items"]=new[]{"nfe", "boleto"},["ItemTemplate"]=itemTemplate});
+    Check(html.Contains("href=\"/documents/nfe\"",StringComparison.Ordinal) && html.Contains("href=\"/documents/boleto\"",StringComparison.Ordinal),"Template links must preserve their host-supplied destinations.");
+});
+AsyncTest("collection view requires an accessible label and a real collection", async () => {
+    foreach(var parameters in new[]{new Dictionary<string,object?>{["Label"]=" ",["Items"]=new[]{"One"}},new Dictionary<string,object?>{["Label"]="Items",["Items"]=null}}){
+        var rejected=false;
+        try{await Render<CollectionView<string>>(parameters);}catch(ArgumentException){rejected=true;}
+        Check(rejected,"Missing collection inputs must fail parameter validation.");
+    }
+});
+Test("table search indexes every collection value independently of its visible count", () => {
+    string[][] rows=[["CAB-01 · Cable", "PAP-02 · Paper"],["BAT-03 · Battery"]];
+    TableColumn<string[]> column=new("products","Products",row=>row.Length,SearchValue:row=>string.Join(" ",row),UsesTemplate:true);
+    var filtered=TableData<string[]>.Filter(rows,[column],"Paper","products",CultureInfo.InvariantCulture);
+    Equal(1,filtered.Count);Check(ReferenceEquals(rows[0],filtered[0]),"A value hidden behind a count trigger must find its owning row.");
+});
+
 LifecycleChecks.Register(tests);
 DataTableChecks.Register(tests);
 MultiSelectBoxChecks.Register(tests);
@@ -855,6 +945,7 @@ DialogResultChecks.Register(tests);
 ValidationMessagesChecks.Register(tests);
 FieldActionsChecks.Register(tests);
 NavigationChoicesChecks.Register(tests);
+NavigationTreeChecks.Register(tests);
 PresentationIdentityChecks.Register(tests);
 DialogViewChecks.Register(tests);
 NavigationGuardChecks.Register(tests);
@@ -912,9 +1003,11 @@ internal sealed class FakeJs : IJSRuntime {
 }
 internal sealed class ShellActivator : IComponentActivator {
     internal List<ApplicationShell> Instances { get; } = [];
+    internal List<SplitButton> Branches { get; } = [];
     public IComponent CreateInstance(Type componentType) {
         var component = (IComponent)Activator.CreateInstance(componentType)!;
         if (component is ApplicationShell shell) Instances.Add(shell);
+        if (component is SplitButton branch) Branches.Add(branch);
         return component;
     }
 }

@@ -1,0 +1,157 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@using ArkheideSystem.Flourish.Blazor.Hosting
+@inject NavigationManager Navigation
+
+@if (Items.Count > 0)
+{
+    <ul class="f-secondary-list f-navigation-tree @(HasBranches ? "f-navigation-tree-hierarchical" : null)">
+        @foreach (var item in Items) { @RenderItem(item, NodeKey(string.Empty, item)) }
+    </ul>
+}
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<NavigationItem> Items { get; set; } = [];
+    [Parameter] public string? CurrentPath { get; set; }
+    [Parameter] public Func<NavigationItem, string>? ItemLabel { get; set; }
+    [Parameter] public string ExpandLabel { get; set; } = "Expand";
+    [Parameter] public string CollapseLabel { get; set; } = "Collapse";
+    [Parameter] public EventCallback Navigated { get; set; }
+
+    private Dictionary<string, NodeState> Nodes = new(StringComparer.OrdinalIgnoreCase);
+    private string? SelectionPath;
+    private string[] SelectionKeys = [];
+    private bool Disposed;
+    private bool HasBranches => Items.Any(item => item.ChildItems.Count > 0);
+    private string Path => NavigationSelection.NormalizePath(CurrentPath ?? Navigation.Uri);
+    private string EffectiveExpandLabel => DefaultText(nameof(ExpandLabel), ExpandLabel, "Shell_Expand", "Expand");
+    private string EffectiveCollapseLabel => DefaultText(nameof(CollapseLabel), CollapseLabel, "Shell_Collapse", "Collapse");
+    private static string NodeKey(string parent, NavigationItem item)
+    {
+        var href = ApplicationBuilder.NormalizeRoute(item.Href);
+        return parent + href.Length + ":" + href;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Navigation.LocationChanged += LocationChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        ArgumentNullException.ThrowIfNull(Items);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ExpandLabel);
+        ArgumentException.ThrowIfNullOrWhiteSpace(CollapseLabel);
+        var current = new Dictionary<string, NodeState>(StringComparer.OrdinalIgnoreCase);
+        var ancestors = new HashSet<NavigationItem>(ReferenceEqualityComparer.Instance);
+        void Register(IReadOnlyList<NavigationItem> items, bool parentDisabled, string parentKey)
+        {
+            foreach (var item in items)
+            {
+                if (item is null || string.IsNullOrWhiteSpace(item.Label)) throw new ArgumentException("Every navigation item requires a label.", nameof(Items));
+                if (!ancestors.Add(item)) throw new ArgumentException("Navigation items must not form a cycle.", nameof(Items));
+                var key = NodeKey(parentKey, item);
+                if (current.ContainsKey(key)) throw new ArgumentException("Sibling navigation item paths must be unique.", nameof(Items));
+                Nodes.TryGetValue(key, out var previous);
+                var disabled = parentDisabled || item.Disabled;
+                var identity = previous is not null && ReferenceEquals(previous.Item, item) && previous.Disabled == disabled ? previous.Identity : new object();
+                current.Add(key, new(key, item, disabled, previous?.PanelId ?? "nav-children-" + Guid.NewGuid().ToString("N"), !disabled && previous?.Expanded == true, identity));
+                Register(item.ChildItems, disabled, key);
+                ancestors.Remove(item);
+            }
+        }
+        Register(Items, false, string.Empty);
+        Nodes = current;
+        RefreshSelection();
+    }
+
+    private void RefreshSelection()
+    {
+        var path = Path;
+        var activeItems = NavigationSelection.FindActivePath(Items, path);
+        var parentKey = string.Empty;
+        var keys = activeItems.Select(item => parentKey = NodeKey(parentKey, item)).ToArray();
+        if (!string.Equals(SelectionPath, path, StringComparison.OrdinalIgnoreCase)
+            || !SelectionKeys.SequenceEqual(keys, StringComparer.OrdinalIgnoreCase))
+            foreach (var key in keys.Where(key => Nodes[key].Item.ChildItems.Count > 0)) Nodes[key].Expanded = true;
+        SelectionPath = path;
+        SelectionKeys = keys;
+    }
+
+    private bool IsCurrent(NodeState snapshot, out NodeState? state)
+    {
+        state = null;
+        return !Disposed && Nodes.TryGetValue(snapshot.Key, out state) && ReferenceEquals(state.Item, snapshot.Item)
+            && ReferenceEquals(state.Identity, snapshot.Identity) && !state.Disabled;
+    }
+
+    private void ToggleItem(NodeState snapshot)
+    {
+        if (IsCurrent(snapshot, out var state) && state!.Item.ChildItems.Count > 0) state.Expanded = !state.Expanded;
+    }
+
+    private Task NotifyNavigated(NodeState snapshot)
+        => IsCurrent(snapshot, out _) ? Navigated.InvokeAsync() : Task.CompletedTask;
+
+    private RenderFragment RenderItem(NavigationItem item, string key, bool nested = false)
+    {
+        var state = Nodes[key];
+        var selected = !state.Disabled && SelectionKeys.Contains(key, StringComparer.OrdinalIgnoreCase);
+        var label = ItemLabel?.Invoke(item) ?? item.Label;
+        var primaryAttributes = new Dictionary<string, object> { ["title"] = label };
+        if (selected) primaryAttributes["aria-current"] = string.Equals(key, SelectionKeys.LastOrDefault(), StringComparison.OrdinalIgnoreCase) ? "page" : "true";
+        return @<li class="f-navigation-node" @key="key">
+            @if (item.ChildItems.Count > 0)
+            {
+                <SplitButton Class="f-secondary-row" Href="@item.Href" Text="@label" Icon="@item.Icon"
+                             PrimaryClass="@($"f-secondary-item{(nested ? " f-third-item" : null)}")" SecondaryClass="f-secondary-toggle"
+                             Selected="selected" Disabled="state.Disabled" Expanded="state.Expanded" SecondaryControls="@state.PanelId"
+                             SecondaryLabel="@($"{(state.Expanded ? EffectiveCollapseLabel : EffectiveExpandLabel)} {label}")"
+                             PrimaryAttributes="primaryAttributes"
+                             SecondaryAttributes="@(new Dictionary<string, object> { ["title"] = label, ["data-navigation-target"] = item.Href })"
+                             OnClick="() => NotifyNavigated(state)" OnSecondaryClick="() => ToggleItem(state)" />
+            }
+            else
+            {
+                <div class="f-secondary-row">
+                    <a href="@(state.Disabled ? null : item.Href)" class="@($"f-secondary-item{(nested ? " f-third-item" : null)}{(selected ? " is-selected" : null)}")"
+                       aria-current="@(selected ? "page" : null)" aria-disabled="@(state.Disabled ? "true" : null)" title="@label"
+                       tabindex="@(state.Disabled ? -1 : 0)" @onclick="() => NotifyNavigated(state)"><Icon Name="@item.Icon" /><span class="f-navigation-label">@label</span></a>
+                </div>
+            }
+            @if (item.ChildItems.Count > 0)
+            {
+                <ul id="@state.PanelId" class="f-third-navigation" hidden="@(!state.Expanded)">
+                    @foreach (var child in item.ChildItems) { @RenderItem(child, NodeKey(state.Key, child), true) }
+                </ul>
+            }
+        </li>;
+    }
+
+    private void LocationChanged(object? sender, LocationChangedEventArgs args) => _ = InvokeAsync(() =>
+    {
+        if (Disposed) return;
+        RefreshSelection();
+        StateHasChanged();
+    });
+
+    public override void Dispose()
+    {
+        if (Disposed) return;
+        Disposed = true;
+        Navigation.LocationChanged -= LocationChanged;
+        Nodes.Clear();
+        base.Dispose();
+    }
+
+    private sealed class NodeState(string key, NavigationItem item, bool disabled, string panelId, bool expanded, object identity)
+    {
+        internal string Key { get; } = key;
+        internal NavigationItem Item { get; } = item;
+        internal bool Disabled { get; } = disabled;
+        internal string PanelId { get; } = panelId;
+        internal bool Expanded { get; set; } = expanded;
+        internal object Identity { get; } = identity;
+    }
+}

@@ -85,9 +85,8 @@
             @if (HasSecondary && ActiveEntry is { } active)
             {
                 <nav class="f-secondary-navigation" aria-label="@SecondaryNavigationLabelText">
-                    <ul class="f-secondary-list">
-                        @foreach (var item in active.SecondaryItems) { @RenderNavigationItem(item) }
-                    </ul>
+                    <NavigationTree Items="active.SecondaryItems" CurrentPath="@Path" ItemLabel="@(item => Label(item, item.Label))"
+                                    ExpandLabel="@ExpandNavigationLabelText" CollapseLabel="@CollapseNavigationLabelText" Navigated="CloseNavigation" />
                 </nav>
             }
         </aside>
@@ -142,105 +141,30 @@
     private string search = string.Empty;
     private IReadOnlyList<NavigationEntry>? previousPrimary;
     private NavigationEntry? activeEntry;
-    private string? selectionPath;
-    private IReadOnlyList<NavigationItem> activeItems = Array.Empty<NavigationItem>();
-    private readonly HashSet<string> expandedItems = new(StringComparer.OrdinalIgnoreCase);
-    private readonly Dictionary<string, string> panelIds = new(StringComparer.OrdinalIgnoreCase);
-
     private IReadOnlyList<NavigationEntry> PrimaryEntries => Options.PrimaryNavigation;
     private IReadOnlyList<NavigationEntry> FixedEntries => Options.FixedNavigation;
     private bool HasSecondary => ActiveEntry?.SecondaryItems.Count > 0;
     private bool HasNavigationTree => ActiveEntry?.SecondaryItems.Any(item => item.ChildItems.Count > 0) == true;
-    private NavigationItem? ActiveItem => activeItems.LastOrDefault();
-    private string Path => "/" + Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0].Trim('/');
+    private string Path => NavigationSelection.NormalizePath("/" + Navigation.ToBaseRelativePath(Navigation.Uri));
     private string RootStyle => $"--f-content-width:{Options.Layout.ContentWidth}px{(Theme is null ? null : ";" + Theme.CssVariables)}";
 
     private NavigationEntry? ActiveEntry => activeEntry;
 
-    private IReadOnlyList<NavigationItem> FindActivePath(IReadOnlyList<NavigationItem> items)
-    {
-        IReadOnlyList<NavigationItem> best = Array.Empty<NavigationItem>();
-        foreach (var item in items)
-        {
-            if (item.Disabled) continue;
-            var children = FindActivePath(item.ChildItems);
-            IReadOnlyList<NavigationItem> candidate = Matches(item) ? [item] : Array.Empty<NavigationItem>();
-            if (children.Count > 0 && (candidate.Count == 0 || children[^1].Href.Length >= item.Href.Length))
-                candidate = [item, .. children];
-            if (candidate.Count > 0 && (best.Count == 0 || candidate[^1].Href.Length > best[^1].Href.Length)) best = candidate;
-        }
-        return best;
-    }
-
     private void RefreshSelection()
     {
-        var previousPath = activeItems.Select(item => item.Href).ToArray();
         activeEntry = null;
-        activeItems = Array.Empty<NavigationItem>();
         var bestLength = -1;
-        var primary = PrimaryEntries;
-        foreach (var entry in primary.Concat(FixedEntries))
+        foreach (var entry in PrimaryEntries.Concat(FixedEntries))
         {
             if (entry.Kind != NavigationEntryKind.Route || entry.Disabled) continue;
-            var path = FindActivePath(entry.SecondaryItems);
-            var length = Math.Max(path.LastOrDefault()?.Href.Length ?? -1, Matches(entry) ? entry.Href?.Length ?? -1 : -1);
+            var path = NavigationSelection.FindActivePath(entry.SecondaryItems, Path);
+            var length = Math.Max(path.LastOrDefault() is { } item ? NavigationSelection.Specificity(item) : -1,
+                entry.Href is not null && NavigationSelection.Matches(Path, entry.Href, entry.Exact) ? NavigationSelection.NormalizePath(entry.Href).Length : -1);
             if (length <= bestLength) continue;
             activeEntry = entry;
-            activeItems = path;
             bestLength = length;
         }
-        activeEntry ??= primary.FirstOrDefault(entry => entry.Kind == NavigationEntryKind.Route && !entry.Disabled);
-        if (selectionPath != Path || !previousPath.SequenceEqual(activeItems.Select(item => item.Href), StringComparer.OrdinalIgnoreCase))
-            foreach (var item in activeItems.Where(item => item.ChildItems.Count > 0)) expandedItems.Add(item.Href);
-        selectionPath = Path;
-    }
-
-    private string PanelId(NavigationItem item)
-    {
-        if (!panelIds.TryGetValue(item.Href, out var id)) panelIds.Add(item.Href, id = "nav-children-" + Guid.NewGuid().ToString("N"));
-        return id;
-    }
-
-    private void ToggleItem(NavigationItem item)
-    {
-        if (!expandedItems.Remove(item.Href)) expandedItems.Add(item.Href);
-    }
-
-    private RenderFragment RenderNavigationItem(NavigationItem item, bool third = false, bool parentDisabled = false)
-    {
-        var disabled = parentDisabled || item.Disabled;
-        var expanded = expandedItems.Contains(item.Href);
-        var selected = !disabled && activeItems.Contains(item);
-        var label = Label(item, item.Label);
-        var primaryAttributes = new Dictionary<string, object> { ["title"] = label };
-        if (selected) primaryAttributes["aria-current"] = item == ActiveItem ? "page" : "true";
-        return @<li class="f-navigation-node" @key="item.Href">
-            @if (item.ChildItems.Count > 0)
-            {
-                <SplitButton Class="f-secondary-row" Href="@item.Href" Text="@label" Icon="@item.Icon"
-                             PrimaryClass="@($"f-secondary-item{(third ? " f-third-item" : null)}")" SecondaryClass="f-secondary-toggle"
-                             Selected="selected" Disabled="disabled" Expanded="expanded" SecondaryControls="@PanelId(item)"
-                             SecondaryLabel="@($"{(expanded ? CollapseNavigationLabelText : ExpandNavigationLabelText)} {label}")"
-                             PrimaryAttributes="primaryAttributes"
-                             SecondaryAttributes="@(new Dictionary<string, object> { ["title"] = label, ["data-navigation-target"] = item.Href })"
-                             OnClick="CloseNavigation" OnSecondaryClick="() => ToggleItem(item)">
-                </SplitButton>
-            }
-            else
-            {
-                <div class="f-secondary-row">
-                    <a href="@(disabled ? null : item.Href)" class="@($"f-secondary-item{(third ? " f-third-item" : null)}{(selected ? " is-selected" : null)}")"
-                       aria-current="@(selected ? "page" : null)" aria-disabled="@(disabled ? "true" : null)" title="@label"
-                       tabindex="@(disabled ? -1 : 0)" @onclick="() => { if (!disabled) CloseNavigation(); }"><Icon Name="@item.Icon" /><span class="f-navigation-label">@label</span></a>
-                </div>
-            }
-            @if (item.ChildItems.Count > 0)
-            {
-                <ul id="@PanelId(item)" class="f-third-navigation" hidden="@(!expanded)">
-                    @foreach (var child in item.ChildItems) { @RenderNavigationItem(child, true, disabled) }
-                </ul>
-            }
-        </li>;
+        activeEntry ??= PrimaryEntries.FirstOrDefault(entry => entry.Kind == NavigationEntryKind.Route && !entry.Disabled);
     }
 
     protected override void OnInitialized()
@@ -310,15 +234,6 @@
         builder.CloseElement();
         builder.CloseElement();
     };
-
-    private bool Matches(NavigationItem item) => !item.Disabled && Matches(item.Href, item.Exact);
-    private bool Matches(NavigationEntry entry) => !entry.Disabled && entry.Href is not null && Matches(entry.Href, entry.Exact);
-    private bool Matches(string href, bool exact)
-    {
-        var normalized = href.TrimEnd('/') is "" ? "/" : href.TrimEnd('/');
-        return string.Equals(Path, normalized, StringComparison.OrdinalIgnoreCase)
-            || (!exact && normalized != "/" && Path.StartsWith(normalized + "/", StringComparison.OrdinalIgnoreCase));
-    }
 
     private bool CanExecute(NavigationEntry entry) => entry.CommandKey is not null && Commands.CanExecute(entry.CommandKey, source: CommandSource.Navigation);
 

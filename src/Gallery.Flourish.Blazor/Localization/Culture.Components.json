@@ -1018,5 +1018,35 @@
     "en-US": "Deprecated · do not use for new code",
     "zh-CN": "已弃用 · 新代码请勿使用",
     "pt-BR": "Descontinuado · não usar em código novo"
+  },
+  "Catalog_CollectionView_Purpose": {
+    "en-US": "Compact count trigger for multiple values in one cell.",
+    "zh-CN": "用数量按钮展示同一单元格中的多个值。",
+    "pt-BR": "Botão de contagem compacto para vários valores na mesma célula."
+  },
+  "Catalog_CollectionView_Variants": {
+    "en-US": "Weak popup opens on hover, click or keyboard. Empty and disabled collections cannot open. Plain text or host-supplied item templates use the shared popup lifecycle; retrieval, permissions and search indexes remain host-owned.",
+    "zh-CN": "弱弹窗支持悬浮、点击和键盘展开；空集合或禁用状态不能打开。纯文本或条目模板共用弹窗生命周期；数据读取、权限和搜索索引由宿主管理。",
+    "pt-BR": "Popup fraco abre por hover, clique ou teclado. Coleções vazias ou desabilitadas não abrem. Texto ou templates usam o ciclo compartilhado; dados, permissões e índices pertencem ao aplicativo."
+  },
+  "Catalog_StepIndicator_Purpose": {
+    "en-US": "Read-only process steps with equal-width segments.",
+    "zh-CN": "只读流程步骤，各步骤等宽显示。",
+    "pt-BR": "Etapas de processo somente de leitura, com segmentos de mesma largura."
+  },
+  "Catalog_StepIndicator_Variants": {
+    "en-US": "Items supplies stable keys and labels. CurrentKey highlights one step; null highlights none. The indicator spans its container and does not navigate.",
+    "zh-CN": "Items 提供稳定键和文案。CurrentKey 高亮一个步骤，null 不高亮。控件占满容器且不提供导航操作。",
+    "pt-BR": "Items define chaves estáveis e rótulos. CurrentKey destaca uma etapa; null não destaca nenhuma. O indicador ocupa o contêiner e não navega."
+  },
+  "Catalog_NavigationTree_Purpose": {
+    "en-US": "Dynamic secondary and child navigation shared with ApplicationShell.",
+    "zh-CN": "与 ApplicationShell 共用的动态二级和子级导航。",
+    "pt-BR": "Navegação secundária e filha dinâmica, compartilhada com ApplicationShell."
+  },
+  "Catalog_NavigationTree_Variants": {
+    "en-US": "NavigationItem supplies local links, icons and children. A separate triangle expands each branch. CurrentPath is optional; ItemLabel can localize labels. Use a named nav landmark or NavigationSurface.SecondaryNavigation.",
+    "zh-CN": "NavigationItem 提供本地链接、图标和子项，独立三角展开分支。CurrentPath 可省略，ItemLabel 可本地化文案。放入有名称的 nav 地标或 NavigationSurface.SecondaryNavigation。",
+    "pt-BR": "NavigationItem fornece links locais, ícones e filhos. Um triângulo separado expande cada ramo. CurrentPath é opcional; ItemLabel pode traduzir rótulos. Use um nav nomeado ou NavigationSurface.SecondaryNavigation."
   }
 }

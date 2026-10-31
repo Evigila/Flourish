@@ -1,0 +1,20 @@
+@inherits LocalizedComponentBase
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("StepIndicator")]
+
+<StepIndicator Items="Steps" CurrentKey="review" Label="@Localization.Parse(TextKey.Sample_StepIndicatorLabel)" />
+@if (!Preview)
+{
+    <StepIndicator Items="Steps" CurrentKey="complete" Label="@Localization.Parse(TextKey.Sample_StepIndicatorLabel)" />
+    <StepIndicator Items="Steps" Label="@Localization.Parse(TextKey.Sample_StepIndicatorInactive)" />
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private IReadOnlyList<StepIndicatorItem> Steps =>
+    [
+        new("draft", Localization.Parse(TextKey.Sample_StepIndicatorDraft)),
+        new("review", Localization.Parse(TextKey.Sample_StepIndicatorReview)),
+        new("complete", Localization.Parse(TextKey.Sample_StepIndicatorComplete))
+    ];
+}

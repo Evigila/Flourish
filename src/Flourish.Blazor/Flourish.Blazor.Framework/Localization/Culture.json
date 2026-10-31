@@ -1468,5 +1468,35 @@
     "en-US": "Use directly in a bounded ContentSurface stage. Brand holds identity and stable return links; the body gets the remaining height. Wide selects 960px instead of 560px; Dotted uses theme roles. NavigationChoices.FillHeight scrolls the selected details without moving identity/navigation. No main, authentication or native protocol changes.",
     "zh-CN": "直接用于有界ContentSurface内容区。Brand承载身份与稳定返回链接，正文获得剩余高度。Wide从560px切换到960px，Dotted使用主题角色。NavigationChoices.FillHeight内部滚动当前详情而不移动身份与导航。不创建main、认证或原生协议变更。",
     "pt-BR": "Use diretamente na área limitada de ContentSurface. Brand contém identidade e retorno estáveis; o corpo recebe a altura restante. Wide seleciona 960px em vez de 560px; Dotted usa papéis do tema. NavigationChoices.FillHeight rola os detalhes sem mover identidade ou navegação. Sem main, autenticação ou alteração de protocolo."
+  },
+  "Usage_CollectionView_Scenario": {
+    "en-US": "Multiple values in one table cell",
+    "zh-CN": "表格单元格中的多个值",
+    "pt-BR": "Vários valores em uma célula"
+  },
+  "Usage_CollectionView_Guidance": {
+    "en-US": "Production use: supply the complete Items collection and an accessible Label. The trigger displays the count and opens a weak hover/click/keyboard popup; zero items and Disabled prevent opening. ItemText supplies plain text, or ItemTemplate composes standard links and controls. The host owns data retrieval, authorization and search indexing: table text selectors and server search must use the underlying values, not the visible count.",
+    "zh-CN": "生产用法：提供完整的 Items 集合和可访问的 Label。数量按钮通过悬浮、点击或键盘打开弱弹窗；空集合和 Disabled 会阻止打开。ItemText 提供纯文本，ItemTemplate 可组合标准链接或控件。宿主负责数据读取、授权和索引；表格文本选择器与服务端搜索必须使用底层值，而不是数量。",
+    "pt-BR": "Uso em produção: forneça Items completos e Label acessível. O botão mostra a contagem e abre popup fraco por hover, clique ou teclado; zero itens e Disabled impedem a abertura. ItemText fornece texto ou ItemTemplate compõe links e controles padrão. Dados, autorização e índices são do aplicativo; busca deve usar valores, não a contagem."
+  },
+  "Usage_StepIndicator_Scenario": {
+    "en-US": "Read-only process state",
+    "zh-CN": "只读流程状态",
+    "pt-BR": "Estado do processo somente de leitura"
+  },
+  "Usage_StepIndicator_Guidance": {
+    "en-US": "Production use: supply ordered Items with unique nonempty Key and Label and an accessible Label for the complete indicator. All segments share the available width equally; long labels wrap. CurrentKey identifies the only highlighted step, or null highlights none. Empty Items render nothing; invalid items or unknown keys are rejected. This control does not navigate or infer completed states. The host owns transitions and business state, including cancellation.",
+    "zh-CN": "生产使用：为 Items 提供有序步骤及唯一非空 Key 和非空 Label，并以 Label 命名整个控件。所有步骤等分可用宽度，长文案自动换行。CurrentKey 仅高亮对应步骤，null 不高亮。空集合不渲染，非法项和未知键会被拒绝。控件不提供导航、不推断已完成步骤；状态流转和取消等业务规则由宿主负责。",
+    "pt-BR": "Uso em produção: forneça Items ordenados com Key única e não vazia e Label não vazio, além de Label acessível para o indicador. Os segmentos dividem igualmente a largura e rótulos longos quebram linhas. CurrentKey identifica a única etapa destacada; null não destaca nenhuma. Items vazio não renderiza; itens inválidos e chaves desconhecidas são rejeitados. O controle não navega nem infere etapas concluídas. O aplicativo controla transições, estado comercial e cancelamento."
+  },
+  "Usage_NavigationTree_Scenario": {
+    "en-US": "Dynamic secondary and child navigation",
+    "zh-CN": "动态二级和子级导航",
+    "pt-BR": "Navegação secundária e filha dinâmica"
+  },
+  "Usage_NavigationTree_Guidance": {
+    "en-US": "Production use: supply local-path NavigationItem data to the same renderer used by ApplicationShell. Parent links navigate; separate SplitButton triangles toggle their semantic child lists. The most specific enabled destination and its ancestors are selected. CurrentPath defaults to the absolute-root path of Navigation.Uri; matching ignores query and fragment while Href is preserved. Route changes reveal current ancestors; ordinary rerenders preserve manual collapse by path identity. Disabled ancestors disable descendants; removed or replaced nodes reject stale callbacks. Optional ItemLabel resolves host-owned text and Navigated notifies navigation intent. Wrap in an appropriately named nav landmark; NavigationSurface accepts this component through SecondaryNavigation without host markup or CSS.",
+    "zh-CN": "生产使用：以本地路径 NavigationItem 数据调用与 ApplicationShell 共用的渲染器。父项链接导航，独立 SplitButton 三角切换语义子列表。选择最具体的可用目标及祖先。CurrentPath 默认取 Navigation.Uri 的绝对根路径，匹配忽略查询和片段但保留原始 Href。路径变化展开当前祖先，普通重渲染按路径身份保留手动折叠。禁用祖先会禁用后代，被移除或替换的节点拒绝旧回调。ItemLabel 可解析宿主文案，Navigated 通知导航意图。放在有名称的 nav 地标内，或经 SecondaryNavigation 接入 NavigationSurface，无需宿主 DOM 或 CSS。",
+    "pt-BR": "Uso em produção: forneça NavigationItem com caminhos locais ao mesmo renderizador de ApplicationShell. Links pais navegam; triângulos SplitButton separados alternam listas filhas semânticas. A rota habilitada mais específica e seus ancestrais são selecionados. CurrentPath usa por padrão o caminho absoluto desde a raiz de Navigation.Uri; ignora consulta e fragmento sem reescrever Href. Mudanças de caminho revelam ancestrais; renderizações comuns preservam o recolhimento por identidade do caminho. Ancestrais desativados desativam filhos; nós removidos ou substituídos rejeitam callbacks antigos. ItemLabel resolve textos do aplicativo e Navigated informa intenção de navegar. Use um nav nomeado; NavigationSurface recebe o componente em SecondaryNavigation sem DOM ou CSS do aplicativo."
   }
 }

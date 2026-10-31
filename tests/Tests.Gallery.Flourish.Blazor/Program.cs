@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using ArkheideSystem.Flourish.Blazor.Abstract;
@@ -81,7 +81,11 @@ internal static class Program
             await CheckPage(provider, scenario);
 
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 84, "Expected all 84 current component guides, including SaveChangesBar; update this guard with an intentional inventory change.");
+        Check(entries.Length == 87, "Expected all 87 current component guides, including NavigationTree; update this guard with an intentional inventory change.");
+        Check(entries.Count(entry => entry.ComponentType == typeof(NavigationTree)) == 1, "NavigationTree must have one explicit production guide.");
+        Check(entries.Count(entry => entry.ComponentType == typeof(StepIndicator)) == 1, "StepIndicator must have one explicit production guide.");
+        Check(entries.Count(entry => entry.ComponentType == typeof(CollectionView<>)) == 1,
+            "The counted collection popup must have one explicit production guide.");
         Check(entries.Count(entry => entry.Name == nameof(SaveChangesBar)) == 1
             && entries.Single(entry => entry.Name == nameof(SaveChangesBar)).Usage.Kind == ComponentUseKind.Scenario,
             "The persistent save bar must have one explicit production guide.");

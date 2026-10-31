@@ -1,0 +1,21 @@
+@inherits LocalizedComponentBase
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Data
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("NavigationTree")]
+
+<nav aria-label="@Localization.Parse(TextKey.Sample_NavigationTreeLabel)">
+    <NavigationTree Items="Items" CurrentPath="/sample/orders/create/" />
+</nav>
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private IReadOnlyList<NavigationItem> Items =>
+    [
+        new(Localization.Parse(TextKey.Sample_NavigationTreeOverview), "/sample/", "home", Exact: true),
+        new(Localization.Parse(TextKey.Sample_NavigationTreeOrders), "/sample/orders/", "shopping_cart", Children:
+        [
+            new(Localization.Parse(TextKey.Sample_NavigationTreeList), "/sample/orders/list/", "list", Exact: true),
+            new(Localization.Parse(TextKey.Sample_NavigationTreeCreate), "/sample/orders/create/", "add", Exact: true)
+        ]),
+        new(Localization.Parse(TextKey.Sample_NavigationTreeUnavailable), "/sample/unavailable/", "block", Disabled: true)
+    ];
+}
