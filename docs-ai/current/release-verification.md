@@ -1,5 +1,22 @@
 # Release verification
 
+## Flourish 1.4.6 uploaded, 2026-11-06
+
+Stable tag **v1.4.6** identifies **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**. [Run 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) completed both build verification and Trusted Publishing successfully. Its six uploads each returned Created and successful push at 18:41:59–18:42:04 UTC. NuGet validation/distribution completed afterward; all six indexes and downloads were verified by 18:56 UTC. No local archive substituted for a public package.
+
+The workflow artifact **13531246836**, named nuget-packages, has SHA-256 **79FC96B2455C690CD7773B99C9DAD2644BC1F1F76A22BD26DBFE767ADE615BA2**. Its downloaded ZIP matched that digest. Every nonsignature entry in all six public archives exactly matched the corresponding workflow artifact entry by SHA-256; NuGet's added repository signature is deliberately excluded from that payload comparison and independently passed `dotnet nuget verify --all`. Public nuspec repository commits all match the tag. Verify-PackageSet passed all identities, internal edges and required assets. Evidence is in `artifacts/ci-1.4.6`, `artifacts/public-1.4.6/sha256.json` and `artifacts/stable-1.4.6-public-signatures.log`.
+
+| Public package | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Core | 7F350D556F95F3086475A718C1CD723760989A457291FE1F8337EE31267A7632 |
+| Arkheide.Flourish.Blazor.Abstract | DB521B9AD9A200BFF9D3535B7DF0586EBDA71D6A82ED59ED3B6206D9457181A9 |
+| Arkheide.Flourish.Blazor.Framework | ECF114311921116F71C9C29EEC571FCBF34FEDD25B0F1044172E98F8F975BECA |
+| Arkheide.Flourish.Blazor.Design | BC2C12570D6A1BD65C096396FB78416A54FCFA1DCBE42FFA8866C052872A1F3E |
+| Arkheide.Flourish.Extensions.Culture.Blazor | E05E405B9D6C0E75AFC3EF2B5EDC649BD49F85652C5A103131C49B8694D7EBAD |
+| Arkheide.Flourish.Blazor | 3C6A5E8CAD7E8F48A1774D6C432EED6563FA9A61F52649132DFB7E850A474E86 |
+
+Fresh NuGet.org-only FrameworkOnly, MetaNative, MetaDesign and MetaCulture consumers passed **155/155 checks** for package graphs, registration, SSR and published assets. Fixture: `artifacts/package-consumers/efdf3c3e768b4bbb875e10f35389b144`; log: `artifacts/stable-1.4.6-public-consumers.log`. The full local and cloud gates passed; the cloud changelog gate counted 213 checks after the new tag became reachable. No WPF/WinUI package was published. The preparation section below is a historical snapshot; the tag is not moved by subsequent documentation commits.
+
 ## Flourish 1.4.6 preparation, 2026-11-06
 
 The unified `publish-helper.bat -Mode Prepare` completed successfully for source 1.4.6. Production and solution Release builds passed with zero warnings/errors; all six package identities, internal dependency edges and required assets passed verification. Core 367, Framework 524, Gallery 9175, Node 303, CSS bundle 21, CSS SDK 194, culture integrity 25916 and changelog 212 checks passed. Four fresh-cache package-consumer modes passed 155 checks. Evidence is `artifacts/stable-1.4.6-verification.log` and fixture `artifacts/package-consumers/70af16e7ed524ab69d58506755b63d9e`. Tag creation, workflow publication and public-download verification remain pending. WPF/WinUI are excluded.

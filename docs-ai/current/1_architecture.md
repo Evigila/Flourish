@@ -1,6 +1,10 @@
 # Project architecture and repository tree
 
-## Stable 1.4.6 preparation, 2026-11-06
+## Stable 1.4.6 published, 2026-11-06
+
+Tag **v1.4.6** remains fixed at **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**. [Run 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) passed build verification and NuGet Trusted Publishing for the six Core/Blazor packages. All six public downloads passed package-set, source-commit and repository-signature verification. Every nonsignature archive entry matches the workflow artifact; four fresh public-only consumer modes passed 155 checks. See [durable hashes and evidence](release-verification.md#flourish-146-uploaded-2026-11-06). Source remains stable 1.4.6, Gallery's next empty entry is 1.4.7-preview, and WPF/WinUI remain outside publication. No maintained source path changed during promotion.
+
+## Historical stable 1.4.6 preparation, 2026-11-06
 
 Source promotes the four locally verified previews to stable 1.4.6 without changing component ownership, project direction or maintained source paths. Gallery records the new feedback, access-spacing and menu-alignment behavior and opens 1.4.7-preview. The complete release gate passed; public publication remains pending. See [preparation](1_changelogs/2026-11-06_153410_prepare-flourish-1.4.6-stable.md).
 

@@ -1,6 +1,12 @@
 # Project dependency inventory
 
-## Stable 1.4.6 preparation, 2026-11-06
+## Stable 1.4.6 published, 2026-11-06
+
+Source `VersionPrefix` is **1.4.6** without a suffix. Public tag **v1.4.6** fixes **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**; [workflow 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) successfully built and published the six configured packages. All six NuGet.org indexes and downloads expose 1.4.6. Public archives passed Verify-PackageSet, source-commit checks, repository-signature verification and SHA-256 payload comparison against the workflow artifact. Fresh public-only consumer verification passed 155 checks across four modes. [Public archive hashes](release-verification.md#flourish-146-uploaded-2026-11-06) are retained as durable evidence.
+
+The external dependency declarations and closure are unchanged; Essential.Culture remains **1.4.0**. WPF/WinUI remain excluded. Earlier local previews are historical and immutable, superseded for stable consumption by NuGet.org 1.4.6.
+
+## Historical stable 1.4.6 preparation, 2026-11-06
 
 Source `VersionPrefix` is **1.4.6** with no prerelease suffix. The six Core/Blazor package identities and external dependency declarations are unchanged; Essential.Culture remains **1.4.0**, and WPF/WinUI remain excluded. This promotes the verified local preview.4 feedback lifetime together with preview.3 access spacing, preview.2 FloatingNotice and preview.1 menu alignment. The complete release gate passed: Core 367, Framework 524, Gallery 9175, Node 303 and package consumers 155, plus CSS/localization/changelog checks. Public publication remains pending; earlier preview archives remain immutable.
 
