@@ -313,5 +313,20 @@
     "en-US": "Extract NavigationTree from ApplicationShell for dynamic secondary navigation. Share route selection, independent branch toggles, inherited disabled state and safe callbacks; support NavigationSurface without host styling.",
     "zh-CN": "从 ApplicationShell 提取 NavigationTree，提供动态二级导航。共用路由选择、独立分支切换、继承禁用和安全回调，并支持 NavigationSurface，无需宿主样式。",
     "pt-BR": "Extraia NavigationTree de ApplicationShell para navegação secundária dinâmica. Compartilhe seleção de rotas, triângulos independentes, desativação herdada e callbacks seguros; use NavigationSurface sem estilos no aplicativo."
+  },
+  "ChangeLog_FloatingNotice": {
+    "en-US": "FloatingNotice presents feedback outside document flow, shares the save-action dock, and dismisses after a configurable visible lifetime with a reverse exit. Hover, focus and background tabs pause the timer; MessageKey identifies repeated messages.",
+    "zh-CN": "FloatingNotice 在文档流外显示反馈，与保存操作区共享停靠宽度，并在可配置的显示时长后反向退场。悬停、焦点及后台页面暂停计时，MessageKey 标识重复消息。",
+    "pt-BR": "FloatingNotice mostra feedback fora do fluxo, compartilha a área de ações e desaparece após um tempo visível configurável com saída inversa. Hover, foco e abas em segundo plano pausam o temporizador; MessageKey identifica mensagens repetidas."
+  },
+  "ChangeLog_RelaxedAccessSpacing": {
+    "en-US": "AccessLayout offers optional relaxed top spacing on large screens while preserving compact and short-viewport behavior.",
+    "zh-CN": "AccessLayout 可在大屏启用更宽松的顶部间距，并保留窄屏和短视口布局。",
+    "pt-BR": "AccessLayout oferece espaçamento superior ampliado opcional em telas grandes, preservando o comportamento em telas estreitas e baixas."
+  },
+  "ChangeLog_StructuredMenuAlignment": {
+    "en-US": "Structured dropdown titles and descriptions use consistent natural line boxes, preserving ordinary button text trimming. Header content alignment excludes floating feedback frames.",
+    "zh-CN": "结构化下拉菜单标题和描述统一使用自然行框，保留普通按钮文字裁边；顶栏内容对齐忽略浮入提示框。",
+    "pt-BR": "Títulos e descrições de menus estruturados usam caixas de linha naturais consistentes, preservando o recorte de texto dos botões comuns. O alinhamento do cabeçalho ignora quadros de feedback flutuantes."
   }
 }

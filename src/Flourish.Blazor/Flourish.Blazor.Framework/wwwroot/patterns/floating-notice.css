@@ -1,0 +1,24 @@
+/* Each zero-height frame measures the original fixed SaveChangesBar envelope. */
+.f-floating-notice.f-floating-notice-frame[data-f-notice-frame] {
+    position:fixed; z-index:61; left:max(16px,env(safe-area-inset-left,0px)); right:max(16px,env(safe-area-inset-right,0px));
+    bottom:max(16px,env(safe-area-inset-bottom,0px)); height:0; width:auto; max-width:64rem; margin:0 auto;
+    padding:0; border:0; pointer-events:none;
+}
+.f-page-body > .f-floating-notice.f-floating-notice-frame[data-f-notice-frame] { margin-inline:auto; }
+.f-floating-notice-frame > .f-notice {
+    position:absolute; left:var(--f-notice-left,0px); bottom:var(--f-notice-bottom,0px); width:var(--f-notice-width,100%);
+    max-height:var(--f-notice-limit,calc(100dvh - 32px)); min-height:0; box-sizing:border-box; margin:0; overflow:auto;
+    pointer-events:auto; overscroll-behavior:contain;
+}
+.f-floating-notice-frame > .f-notice[hidden],
+.f-floating-notice-frame[data-f-notice-phase="dismissed"] > .f-notice { display:none; }
+@media (prefers-reduced-motion:no-preference) {
+    .f-floating-notice-frame > .f-notice { animation:f-notice-enter .18s ease-out; }
+    .f-floating-notice-frame[data-f-notice-phase="closing"] > .f-notice { animation:f-notice-exit .18s ease-in both; }
+    @keyframes f-notice-enter { from { opacity:0; transform:translateY(.5rem); } to { opacity:1; transform:translateY(0); } }
+    @keyframes f-notice-exit { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(.5rem); } }
+}
+.f-save-changes-panel[data-f-notice-docked] {
+    max-width:var(--f-notice-width); translate:var(--f-notice-shift) 0;
+    bottom:calc(max(16px,env(safe-area-inset-bottom,0px)) + var(--f-notice-bottom)); max-height:var(--f-notice-limit);
+}

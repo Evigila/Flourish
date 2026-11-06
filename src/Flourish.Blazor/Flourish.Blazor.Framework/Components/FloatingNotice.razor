@@ -1,0 +1,40 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@using ArkheideSystem.Flourish.Abstract
+@inject IJSRuntime JS
+
+<div class="f-floating-notice f-floating-notice-frame" data-f-notice-frame data-f-notice-dismiss-ms="@AutoDismissMilliseconds" data-f-notice-key="@MessageKey" @ref="Frame">
+    <Notice Severity="@Severity" Title="@Title" Announce="@Announce" Role="@Role" Subtle="@Subtle"
+            Class="@Class" AdditionalAttributes="@AdditionalAttributes">@ChildContent</Notice>
+</div>
+
+@code {
+    [Parameter] public NotificationSeverity Severity { get; set; } = NotificationSeverity.Information;
+    [Parameter] public bool Announce { get; set; } = true;
+    [Parameter] public string? Role { get; set; }
+    [Parameter] public bool Subtle { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+    /// <summary>Visible milliseconds before dismissal. Zero keeps the message visible until the host removes it.</summary>
+    [Parameter] public int AutoDismissMilliseconds { get; set; } = 5000;
+    /// <summary>Change this key to display a new occurrence with otherwise identical content.</summary>
+    [Parameter] public string? MessageKey { get; set; }
+    private ElementReference Frame;
+
+    protected override void OnParametersSet()
+    {
+        if (AutoDismissMilliseconds < 0) throw new ArgumentOutOfRangeException(nameof(AutoDismissMilliseconds));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        try
+        {
+            await using var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Arkheide.Flourish.Blazor.Framework/patterns/floating-notice.js");
+            await module.InvokeVoidAsync("initializeFloatingNotices", Frame);
+        }
+        catch (Exception error) when (error is JSDisconnectedException or TaskCanceledException) { }
+    }
+}

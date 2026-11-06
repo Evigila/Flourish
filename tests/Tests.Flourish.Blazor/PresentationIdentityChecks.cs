@@ -93,14 +93,15 @@ internal static class PresentationIdentityChecks
             var plain = await Render<AccessLayout>(renderer, new() { [nameof(AccessLayout.ChildContent)] = form });
             Require(!plain.Contains("f-access-layout-wide", StringComparison.Ordinal)
                 && !plain.Contains("f-access-layout-dotted", StringComparison.Ordinal)
+                && !plain.Contains("f-access-layout-relaxed-top", StringComparison.Ordinal)
                 && !plain.Contains("f-access-layout-brand", StringComparison.Ordinal), "AccessLayout enabled optional branding, width or pattern by default.");
             var html = await Render<AccessLayout>(renderer, new()
             {
                 [nameof(AccessLayout.Brand)] = brand, [nameof(AccessLayout.ChildContent)] = form,
-                [nameof(AccessLayout.Wide)] = true, [nameof(AccessLayout.Dotted)] = true,
+                [nameof(AccessLayout.Wide)] = true, [nameof(AccessLayout.Dotted)] = true, [nameof(AccessLayout.RelaxedTopSpacing)] = true,
                 [nameof(AccessLayout.AdditionalAttributes)] = new Dictionary<string, object> { ["aria-labelledby"] = "bounded-title" }
             });
-            Require(html.Contains("f-access-layout-wide f-access-layout-dotted", StringComparison.Ordinal)
+            Require(html.Contains("f-access-layout-wide f-access-layout-dotted f-access-layout-relaxed-top", StringComparison.Ordinal)
                 && html.Contains("aria-labelledby=\"bounded-title\"", StringComparison.Ordinal), "Bounded operation variants or native attributes disappeared.");
             var body = html.IndexOf("class=\"f-access-layout-body\"", StringComparison.Ordinal);
             Require(body > html.IndexOf("class=\"f-access-layout-brand\"", StringComparison.Ordinal)

@@ -1,5 +1,32 @@
 # Project dependency inventory
 
+## Stable 1.4.6 preparation, 2026-11-06
+
+Source `VersionPrefix` is **1.4.6** with no prerelease suffix. The six Core/Blazor package identities and external dependency declarations are unchanged; Essential.Culture remains **1.4.0**, and WPF/WinUI remain excluded. This promotes the verified local preview.4 feedback lifetime together with preview.3 access spacing, preview.2 FloatingNotice and preview.1 menu alignment. The complete release gate passed: Core 367, Framework 524, Gallery 9175, Node 303 and package consumers 155, plus CSS/localization/changelog checks. Public publication remains pending; earlier preview archives remain immutable.
+
+## Local timed-feedback candidate, 2026-11-06
+
+The six-package **1.4.6-preview.4** candidate adds FloatingNotice's configurable lifetime, paused countdown and reverse-path exit, retaining the preview.3 access-layout option, preview.2 shared feedback dock and preview.1 structured-menu correction. Source `VersionPrefix` remains **1.4.5**; explicit local build/package overrides select preview.4. The external dependency closure is unchanged.
+
+The six archives in `../Colligere/artifacts/flourish-preview/1.4.6-preview.4` passed build and `Verify-PackageSet` identity, dependency and required-asset checks. Their consumer provenance is `../Colligere/docs-ai/current/flourish-local-preview-1.4.6-preview.4.json`. Colligere selected this candidate and its full Release solution build passed with zero warnings/errors; final consumer Web regressions are still running. Earlier previews remain immutable. Distribution is local only: no public NuGet publication, tag or push occurred.
+
+## Local access-layout candidate, 2026-11-05
+
+The six-package **1.4.6-preview.3** candidate adds the optional AccessLayout.RelaxedTopSpacing parameter and its desktop Design rule. It includes the preview.2 floating feedback and preview.1 structured-menu fixes. The source `VersionPrefix` is **1.4.5**. Local version overrides select preview.3 for the build and package output. The third-party dependency closure is identical to preview.2.
+
+The six archives in `../Colligere/artifacts/flourish-preview/1.4.6-preview.3` passed the producer build and `Verify-PackageSet` identity, dependency and required-asset checks. The consumer provenance record is `../Colligere/docs-ai/current/flourish-local-preview-1.4.6-preview.3.json`. Distribution is local only. No public NuGet release, tag or push occurred.
+
+## Local floating-feedback candidate, 2026-11-05
+
+Source VersionPrefix remains **1.4.5**. User-authorized build overrides produced six immutable **1.4.6-preview.2** archives for Colligere, adding FloatingNotice and the shared save-action dock while retaining preview.1's menu correction. No external package, SDK, font or service declaration changed. Verify-PackageSet validated all six package identities, internal edges and required assets, including floating-notice.js. The consumer verified all five consumed archive hashes and retained its 168-pair closure with 163 unchanged external pairs. Feed and provenance: `../Colligere/artifacts/flourish-preview/1.4.6-preview.2` and `../Colligere/docs-ai/current/flourish-local-preview-1.4.6-preview.2.json`.
+
+No public tag, push or NuGet publication occurred. Producer build and component/dock/Gallery regressions passed. The earlier additional menu socket probe was successfully repeated with its required local process permissions: 44/44 checks passed, with no source changes. Consumer full Release build passed; its Web run had 3,528 successes, 284 unconfigured PostgreSQL skips and one pre-existing source-syntax assertion failure. That assertion was updated to the current target-typed ServiceGrant construction and its five-check class then passed. See the consumer floating-notice integration record for exact evidence and manual checks. Earlier previews remain immutable.
+## Local structured-menu correction, 2026-11-05
+
+Source VersionPrefix remains **1.4.5**. At the Colligere user's explicit request, version overrides `Version=1.4.6-preview.1`, `VersionPrefix=1.4.6`, `VersionSuffix=preview.1` produce a local-only six-package candidate; no public version, tag or NuGet publication was made. Baseline `2c126d1dd774f7e2a967db6d195498185099cefd` adds only publication documentation over stable source `4a656bd`. The patch disables text-box trimming only for structured dropdown titles, keeping title and description line-box treatment consistent and ordinary buttons unchanged. The existing cascade regression records that boundary. No external dependency, font or SDK declaration changed.
+
+The six immutable archives are in sibling `../Colligere/artifacts/flourish-preview/1.4.6-preview.1`; source/archive hashes and build overrides are recorded in `../Colligere/docs-ai/current/flourish-local-preview-1.4.6-preview.1.json`. They passed Verify-PackageSet metadata/dependency/required-asset checks. Release Blazor compilation passed with zero warnings/errors; native-select-trigger cascade checks passed 33/33. These are local build/style results, not browser visual acceptance or public publication. See [diagnosis](1_bugreports/2026-11-05_structured-menu-title-trimming.md).
+
 ## Stable 1.4.5 preparation, 2026-10-31
 
 Source VersionPrefix is now 1.4.5 with no prerelease suffix. The six Core/Blazor package identities and existing external dependency declarations are unchanged. This promotes the previously verified local dropdown result limit, CollectionView, StepIndicator and NavigationTree candidate. Historical preview archives remain immutable. Public NuGet 1.4.5 publication is now verified: tagged workflow 41249499118 succeeded, all six canonical flatcontainer archives were downloaded and their version indices/metadata/internal dependencies/required assets passed Verify-PackageSet. Source commit is 4a656bda88eecbe7e497daa388df3ddc7b8fb3a1; tag v1.4.5 remains fixed at that release. Public archive hashes are in artifacts/public-1.4.5/sha256.json.

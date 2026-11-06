@@ -22,6 +22,7 @@
 @import url('./tutorial-board.css');
 @import url('./page-heading-loading.css');
 @import url('./patterns/save-changes-bar.css');
+@import url('./patterns/floating-notice.css');
 
 @import url('./presentation/layout.css');
 @import url('./presentation/progress.css');

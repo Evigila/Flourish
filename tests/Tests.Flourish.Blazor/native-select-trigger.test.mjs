@@ -278,10 +278,22 @@ test("popup completion Buttons share row alignment while ordinary page Buttons r
   }
 });
 
+test("floating feedback keeps its fixed zero-height envelope inside a centered PageBody", () => {
+  const styles = rules(frameworkCss + "\n" + designCss);
+  const root = element("div", ["f-root"], null);
+  const page = element("div", ["f-page-body", "f-page-centered", "f-page-centered-expanded"], root);
+  const frame = element("div", ["f-floating-notice", "f-floating-notice-frame"], page, [], [["data-f-notice-frame",""]]);
+  for (const [property, value] of [["position","fixed"],["height","0"],["pointer-events","none"],["margin-inline","auto"],
+    ["left","max(16px,env(safe-area-inset-left,0px))"],["right","max(16px,env(safe-area-inset-right,0px))"],["max-width","64rem"]])
+    assert.equal(cascade(styles,frame,property), value, property);
+});
+
 test("structured dropdown actions use two body-sized lines without enlarging ordinary Button descriptions", () => {
   const allStyles = rules(frameworkCss + "\n" + designCss), { rootElement, panel } = popupFixture("action", "left");
   const action = element("button", ["f-button", "f-button-quiet", "f-button-structured", "f-menu-item", "f-dropdown-item"], panel, [], [["role", "menuitem"]]);
   const label = element("span", ["f-button-label"], action), title = element("span", ["f-button-text"], label), description = element("span", ["f-button-description"], label);
+  assert.equal(cascade(allStyles, title, "text-box-trim"), "none");
+  assert.equal(cascade(allStyles, description, "text-box-trim") ?? "none", "none");
   for (const [property, expected] of [["padding", "10px 16px"], ["min-height", "72px"], ["gap", "16px"], ["box-sizing", "border-box"]])
     assert.equal(cascade(allStyles, action, property), expected, property);
   for (const states of [[], ["hover"], ["focus-visible"], ["active"]]) {
@@ -295,7 +307,9 @@ test("structured dropdown actions use two body-sized lines without enlarging ord
     }
   }
   const ordinary = element("button", ["f-button", "f-button-quiet", "f-button-structured"], rootElement);
-  const ordinaryDescription = element("span", ["f-button-description"], element("span", ["f-button-label"], ordinary));
+  const ordinaryLabel = element("span", ["f-button-label"], ordinary);
+  const ordinaryTitle = element("span", ["f-button-text"], ordinaryLabel), ordinaryDescription = element("span", ["f-button-description"], ordinaryLabel);
+  assert.equal(cascade(allStyles, ordinaryTitle, "text-box-trim"), "trim-both");
   assert.equal(cascade(allStyles, ordinaryDescription, "font-size"), ".875em");
   assert.equal(cascade(allStyles, ordinaryDescription, "font-weight"), "400");
 });

@@ -105,6 +105,44 @@ internal static class ApiFinalAuditChecks
                 });
             }
         }));
+        tests.Add(("FloatingNotice preserves a single standard Notice and its native SSR attributes", async () =>
+        {
+            await using var fixture = new Fixture();
+            var output = await fixture.Render<FloatingNotice>(new()
+            {
+                [nameof(FloatingNotice.Severity)] = ArkheideSystem.Flourish.Abstract.NotificationSeverity.Warning,
+                [nameof(FloatingNotice.Subtle)] = true, [nameof(FloatingNotice.Announce)] = false, [nameof(FloatingNotice.Role)] = "status",
+                [nameof(FloatingNotice.Title)] = "Validation", [nameof(FloatingNotice.Class)] = "test-result",
+                [nameof(FloatingNotice.ChildContent)] = (RenderFragment)(builder => builder.AddContent(0, "Try <again>")),
+                [nameof(FloatingNotice.AdditionalAttributes)] = new Dictionary<string, object> { ["id"] = "result", ["hidden"] = true }
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var html = output.ToHtmlString();
+                var tag = Regex.Match(html, @"<div\b[^>]*id=""result""[^>]*>").Value;
+                Require(html.Contains("data-f-notice-dismiss-ms=\"5000\"") && html.Contains("data-f-notice-frame") && html.Contains("Validation") && html.Contains("Try &lt;again&gt;")
+                    && tag.Contains("hidden") && tag.Contains("f-notice-warning") && tag.Contains("test-result")
+                    && tag.Contains("role=\"status\"") && fixture.Component<Notice>().Subtle,
+                    "Floating feedback lost the original notice's public or accessible DOM: " + html);
+            });
+        }));
+        tests.Add(("FloatingNotice exposes persistent lifetime and explicit occurrence without changing Notice attributes", async () =>
+        {
+            await using var fixture = new Fixture();
+            var output = await fixture.Render<FloatingNotice>(new()
+            {
+                [nameof(FloatingNotice.AutoDismissMilliseconds)] = 0,
+                [nameof(FloatingNotice.MessageKey)] = "saved<2>"
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var html = output.ToHtmlString();
+                Require(html.Contains("data-f-notice-dismiss-ms=\"0\"") && html.Contains("data-f-notice-key=\"saved&lt;2&gt;\""),
+                    "Persistent lifetime or escaped occurrence key was not rendered on the frame: " + html);
+                Require(!Regex.Match(html, @"<div\b[^>]*class=""f-notice [^>]*>").Value.Contains("data-f-notice-dismiss-ms"),
+                    "Framework lifetime attributes leaked onto the host-owned Notice.");
+            });
+        }));
         tests.Add(("Notice explicit role is authoritative and subtle warnings keep informational announcement", async () =>
         {
             await using var fixture = new Fixture();

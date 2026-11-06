@@ -34,6 +34,17 @@ test("bounded operation host uses available height without viewport recentering 
         assert.equal((await read(`Flourish.Blazor.${layer}/wwwroot/${name}`)).split("@import url('./access-layout.css');").length - 1, 1);
 });
 
+test("extra top spacing applies only to opted-in layouts in wide and tall viewports", () => {
+    const selector = ".f-access-layout-relaxed-top";
+    const matches = [...design.matchAll(/@media\(min-width:(\d+)px\) and \(min-height:(\d+)px\)\s*\{\s*(\.f-access-layout-relaxed-top)\s*\{([^}]*)\}/g)];
+    assert.equal(matches.length,1);
+    assert.equal(design.split(selector).length,2,"the opt-in must not add an unconditional rule");
+    const [,width,height,,ruleBody] = matches[0];
+    assert.equal(property(ruleBody,"padding-block-start"),"80px");
+    for (const [w,h,enabled] of [[761,640,true],[760,640,false],[761,639,false],[1366,768,true],[375,812,false],[844,390,false]])
+        assert.equal(w >= Number(width) && h >= Number(height),enabled,`${w}x${h}`);
+});
+
 test("height-filled details grow naturally up to the body limit and hidden alternatives reserve no height", () => {
     const host = rule(navigation, ".f-navigation-choices-fill-height");
     assert.equal(property(host, "height"), "100%");

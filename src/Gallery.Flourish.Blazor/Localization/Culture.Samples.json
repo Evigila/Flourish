@@ -3369,6 +3369,16 @@
     "zh-CN": "此自然高度页脚不参与板块进度。",
     "pt-BR": "Este rodapé de altura natural fica fora do progresso das faixas."
   },
+  "Sample_FloatingNotice_Show": {
+    "en-US": "Show message",
+    "zh-CN": "显示消息",
+    "pt-BR": "Mostrar mensagem"
+  },
+  "Sample_FloatingNotice_Keep": {
+    "en-US": "Keep message visible",
+    "zh-CN": "持续显示消息",
+    "pt-BR": "Manter mensagem visível"
+  },
   "Sample_AccessLayoutSample_Description": {
     "en-US": "A bounded access page keeps compact identity and return navigation fixed while native method details grow and scroll internally. The 540px wrapper is only the Gallery preview host.",
     "zh-CN": "有界访问页固定紧凑身份与返回导航，原生方式详情自然增长并在内部滚动。540px外框仅作为Gallery预览宿主。",

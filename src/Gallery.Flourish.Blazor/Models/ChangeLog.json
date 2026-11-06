@@ -1,7 +1,15 @@
 [
   {
-    "version": "1.4.6-preview",
+    "version": "1.4.7-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.6",
+    "changeKeys": [
+      "Key.ChangeLog_FloatingNotice",
+      "Key.ChangeLog_RelaxedAccessSpacing",
+      "Key.ChangeLog_StructuredMenuAlignment"
+    ]
   },
   {
     "version": "1.4.5",

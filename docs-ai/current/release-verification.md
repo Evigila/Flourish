@@ -1,5 +1,11 @@
 # Release verification
 
+## Flourish 1.4.6 preparation, 2026-11-06
+
+The unified `publish-helper.bat -Mode Prepare` completed successfully for source 1.4.6. Production and solution Release builds passed with zero warnings/errors; all six package identities, internal dependency edges and required assets passed verification. Core 367, Framework 524, Gallery 9175, Node 303, CSS bundle 21, CSS SDK 194, culture integrity 25916 and changelog 212 checks passed. Four fresh-cache package-consumer modes passed 155 checks. Evidence is `artifacts/stable-1.4.6-verification.log` and fixture `artifacts/package-consumers/70af16e7ed524ab69d58506755b63d9e`. Tag creation, workflow publication and public-download verification remain pending. WPF/WinUI are excluded.
+
+Manual acceptance remains the floating-feedback timing/pause/replay and dock restoration checklist, service-login top spacing, structured-menu alignment and header/footer alignment; automated results do not claim visual acceptance.
+
 ## Flourish 1.4.4 uploaded, 2026-10-30
 
 Stable tag **v1.4.4** identifies source **2edf8fd69c40f9c4d9c68205f52e14f888529627**. [Run 41139394523](https://github.com/Evigila/Flourish/actions/runs/41139394523) completed both build verification and NuGet Trusted Publishing successfully. Exactly six Core/Blazor packages were uploaded; Essential.Culture **1.4.0** and WPF/WinUI exclusion remain unchanged. Gallery promotes the .16 candidate notes into 1.4.4 and opens an empty **1.4.5-preview**.

@@ -1,5 +1,19 @@
 # Project architecture and repository tree
 
+## Stable 1.4.6 preparation, 2026-11-06
+
+Source promotes the four locally verified previews to stable 1.4.6 without changing component ownership, project direction or maintained source paths. Gallery records the new feedback, access-spacing and menu-alignment behavior and opens 1.4.7-preview. The complete release gate passed; public publication remains pending. See [preparation](1_changelogs/2026-11-06_153410_prepare-flourish-1.4.6-stable.md).
+
+## Optional access-page top spacing
+
+The existing AccessLayout has an opt-in `RelaxedTopSpacing` parameter. Design applies 80px top padding only on viewports at least 761px wide and 640px tall. Brand and content move together while the Framework body continues to scroll within its available height. Its implementation, Gallery sample, catalog and tests use existing files. See [change record](1_changelogs/2026-11-05_133726_relaxed-access-spacing.md).
+
+## Floating operation feedback
+
+Floating feedback now defaults to 5000 visible milliseconds before a separate reverse-path exit animation. `AutoDismissMilliseconds=0` keeps a message persistent; `MessageKey` distinguishes repeated identical occurrences. Hover, descendant focus and background tabs pause the remaining lifetime. Content/severity changes and host hidden/reveal restart it; equal-content rerenders do not. Framework-owned dismissal never changes host visibility or business state. Generation checks reject stale callbacks, and closing messages retain their dock allocation until the exit finishes. See [lifetime verification](1_changelogs/2026-11-06_150809_floating-feedback-lifetime.md). No maintained source path was added; the complete tree remains applicable.
+
+Framework `FloatingNotice` forwards its Notice contract to a single standard Notice in a fixed, zero-height frame. The bottom dock shares SaveChangesBar's original viewport width and safe-area envelope. The browser coordinates independent Blazor nodes, measures wrapping and dialog-body bounds, and releases placements and document observers when the last frame is removed. The existing document initializer discovers static markup while interactive components can also initialize the same document controller. Gallery includes an executable feedback example in its three-language catalog. See [implementation and verification](1_changelogs/2026-11-05_123824_floating-operation-feedback.md).
+
 ## Local shared-navigation candidate, 2026-10-31
 
 `NavigationTree` extracts ApplicationShell's existing secondary/child renderer into one dynamic public component. Shell and NavigationSurface hosts share native lists, parent route links and independent SplitButton disclosure triangles; no host clone or skin is needed. Internal NavigationSelection is shared by Shell primary selection and the tree. Standalone selection defaults to Navigation.Uri's absolute-root path, while Shell explicitly preserves its original base-relative path. Query/fragment are ignored for matching and original Href values are preserved. Hierarchical semantic node identity permits a parent and landing child to share a route, preserves manual collapse across equivalent fresh records, and rejects stale removed/replaced-node callbacks. Disabled ancestry is inherited. Surface narrow layouts retain the hierarchy vertically with existing shared rounded child backgrounds.
@@ -159,7 +173,7 @@ No maintained source file/public parameter is added: **714 files/121 directories
 
 ## Inventory scope
 
-The complete tree below includes every maintained file observed through 2026-10-30 outside the two documentation subtrees. The current physical scan contains **731 files and 121 directories below the root**, including **22 project files and 5 solution files**. The shared navigation selection helper, public renderer, Gallery sample and interaction checks add four files to the prior 727-file inventory. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
+The complete tree below includes the five maintained additions for floating feedback in the existing Framework, Gallery and test directories. The inventory now contains **736 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -361,6 +375,7 @@ Flourish/
 |   |   |   |   |-- ExpansionIndicator.razor
 |   |   |   |   |-- Field.razor
 |   |   |   |   |-- FilePicker.razor
+|   |   |   |   |-- FloatingNotice.razor
 |   |   |   |   |-- FormActions.razor
 |   |   |   |   |-- FormGroup.razor
 |   |   |   |   |-- FormLayout.razor
@@ -434,6 +449,8 @@ Flourish/
 |   |   |   |   |       \-- subsets.css
 |   |   |   |   |-- patterns/
 |   |   |   |   |   |-- content-surface.css
+|   |   |   |   |   |-- floating-notice.css
+|   |   |   |   |   |-- floating-notice.js
 |   |   |   |   |   |-- header-layout.js
 |   |   |   |   |   |-- navigation-surface.css
 |   |   |   |   |   |-- primary-navigation-preview.css
@@ -724,6 +741,7 @@ Flourish/
 |   |   |   |   |   |-- EditingGridSample.razor
 |   |   |   |   |   |-- EmptyStateSample.razor
 |   |   |   |   |   |-- ExpansionIndicatorSample.razor
+|   |   |   |   |   |-- FloatingNoticeSample.razor
 |   |   |   |   |   |-- LineChartSample.razor
 |   |   |   |   |   |-- ListViewSample.razor
 |   |   |   |   |   |-- LoadingStateSample.razor
@@ -827,7 +845,7 @@ Flourish/
 |   |   |-- appsettings.json
 |   |   |-- Gallery.Flourish.Blazor.csproj
 |   |   \-- Program.cs
-|   |-- Gallery.Flourish.WINUI3/
+|   |-- Gallery.Flourish.WinUI3/
 |   |   |-- App.xaml
 |   |   |-- App.xaml.cs
 |   |   |-- Gallery.Flourish.WinUI3.csproj
@@ -903,6 +921,7 @@ Flourish/
 |   |   |-- primary-navigation-preview.test.mjs
 |   |   |-- Program.cs
 |   |   |-- progress-rendering.test.mjs
+|   |   |-- floating-notice.test.mjs
 |   |   |-- save-changes-bar.test.mjs
 |   |   |-- SaveChangesBarChecks.cs
 |   |   |-- section-navigator-dom.mjs
@@ -1084,7 +1103,7 @@ The five solutions are `Flourish.slnx`, `src/Flourish.Blazor/Flourish.Blazor.sln
 | `src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj` | net10.0-windows WPF library; production controls, templates, interaction and icon resources | `Flourish.WPF.Abstract` |
 | `src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj` | net10.0-windows dependency-only convenience package; no packaged assembly | `Flourish.WPF.Abstract`, `Flourish.WPF.Framework`, `Flourish.WPF.Design` |
 | `src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj` | net10.0 ASP.NET Core executable; Interactive Server Gallery | `Flourish.Blazor.Framework`, `Flourish.Blazor.Design`, `Flourish.Extensions.Culture.Blazor` |
-| `src/Gallery.Flourish.WINUI3/Gallery.Flourish.WinUI3.csproj` | net10.0-windows10.0.26100.0 unpackaged WinExe; empty WinUI window placeholder | None |
+| `src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj` | net10.0-windows10.0.26100.0 unpackaged WinExe; empty WinUI window placeholder | None |
 | `src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj` | net10.0-windows WinExe; native Gallery | `Flourish.WPF`, `Flourish.Extensions.Culture.WPF` |
 | `tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj` | net10.0 ASP.NET Core diagnostic executable; Framework-only web sample without Design/Culture registration | `Flourish.Blazor.Framework` |
 | `tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj` | net10.0 executable checks; component APIs, render/event/lifecycle contracts; Node behavior fixtures | `Flourish.Blazor.Framework`, `Flourish.Blazor.Design`, `Flourish.Extensions.Culture.Blazor` |

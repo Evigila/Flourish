@@ -48,7 +48,7 @@ function contentBounds(target) {
     let left = bounds.left + pixels(style.borderLeftWidth) + pixels(style.paddingLeft);
     let right = bounds.right - pixels(style.borderRightWidth) - pixels(style.paddingRight);
     if (target.classList.contains('f-page-body')) {
-        const child = [...target.children].find(node => node.getBoundingClientRect().width > 0);
+        const child = [...target.children].find(node => !node.classList.contains('f-floating-notice-frame') && node.getBoundingClientRect().width > 0);
         if (child) {
             const childStyle = getComputedStyle(child);
             if (child.classList.contains('f-page-heading')) {

@@ -1,4 +1,14 @@
 {
+  "Catalog_FloatingNotice_Purpose": {
+    "en-US": "Show operation feedback at the bottom of the page or dialog.",
+    "zh-CN": "在页面或对话框底部显示操作结果。",
+    "pt-BR": "Mostra o resultado de uma operação na parte inferior da página ou do diálogo."
+  },
+  "Catalog_FloatingNotice_Variants": {
+    "en-US": "Uses standard Notice severity and announcements. Messages share the available space with save and discard actions and exit after five seconds. Hover or focus pauses the timer; zero AutoDismissMilliseconds keeps the message visible.",
+    "zh-CN": "沿用提示的严重程度和朗读规则，与保存和放弃按钮共享底部空间，默认五秒后退出。鼠标悬停或焦点停留暂停计时；AutoDismissMilliseconds 设为 0 可持续显示。",
+    "pt-BR": "Usa a gravidade e os anúncios de Notice. As mensagens dividem o espaço com salvar e descartar e saem após cinco segundos. Ponteiro ou foco pausa o tempo; AutoDismissMilliseconds igual a zero mantém a mensagem."
+  },
   "Catalog_SaveChangesBar_Purpose": {
     "en-US": "Persistent save and discard actions for a page-owned unsaved draft.",
     "zh-CN": "为页面维护的未保存草稿提供持续显示的保存与放弃操作。",

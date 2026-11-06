@@ -81,7 +81,8 @@ internal static class Program
             await CheckPage(provider, scenario);
 
         var entries = ComponentCatalog.Groups.SelectMany(group => group.Entries).ToArray();
-        Check(entries.Length == 87, "Expected all 87 current component guides, including NavigationTree; update this guard with an intentional inventory change.");
+        Check(entries.Length == 88, "Expected all 88 current component guides, including FloatingNotice; update this guard with an intentional inventory change.");
+        Check(entries.Count(entry => entry.ComponentType == typeof(FloatingNotice)) == 1, "FloatingNotice must have one production guide.");
         Check(entries.Count(entry => entry.ComponentType == typeof(NavigationTree)) == 1, "NavigationTree must have one explicit production guide.");
         Check(entries.Count(entry => entry.ComponentType == typeof(StepIndicator)) == 1, "StepIndicator must have one explicit production guide.");
         Check(entries.Count(entry => entry.ComponentType == typeof(CollectionView<>)) == 1,

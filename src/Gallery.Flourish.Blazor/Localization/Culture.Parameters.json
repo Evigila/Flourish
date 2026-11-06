@@ -1,4 +1,14 @@
 {
+  "Parameter_AutoDismissMilliseconds_FloatingNotice": {
+    "en-US": "Visible time before the reverse exit animation, in milliseconds. Defaults to 5000; zero keeps the notice visible. Hover, focus and background tabs pause the countdown.",
+    "zh-CN": "开始反向退出动画前的显示时长，单位毫秒，默认 5000；设为 0 持续显示。鼠标悬停、焦点停留和后台标签页会暂停倒计时。",
+    "pt-BR": "Tempo visível antes da animação de saída inversa, em milissegundos. O padrão é 5000; zero mantém o aviso. Ponteiro, foco e aba em segundo plano pausam a contagem."
+  },
+  "Parameter_MessageKey_FloatingNotice": {
+    "en-US": "Change the key to show a new occurrence with the same content. Content updates and a host-hidden notice becoming visible also restart the lifetime; unchanged renders preserve the countdown.",
+    "zh-CN": "修改此标识可再次显示相同内容的新消息。内容更新或宿主隐藏后重新显示也会重启计时；普通重渲染保留剩余时长。",
+    "pt-BR": "Altere a chave para exibir uma nova ocorrência com o mesmo conteúdo. Mudanças no conteúdo ou a exibição de um aviso oculto reiniciam a duração; renderizações iguais preservam a contagem."
+  },
   "Parameter_ServerData": {
     "en-US": "Items contains one server page. The host owns filtering, ordering, total count and page acceptance; local transforms and saved sort preferences are bypassed.",
     "pt-BR": "Items contém uma página do servidor. O host controla filtro, ordenação, total e página aceita; não há transformações locais nem preferências de ordenação.",
@@ -1378,6 +1388,11 @@
     "en-US": "False by default. Requires a bounded parent; fills its height, keeps navigation stable and allows only the active panel to grow up to the available body height and then scroll. Narrow Sidebar uses a compact navigation row above the panel.",
     "zh-CN": "默认false。需要高度受限的父容器；填满高度并固定导航位置，当前面板自然增长至正文可用高度后内部滚动。窄屏Sidebar以紧凑导航行位于面板上方。",
     "pt-BR": "False por padrão. Requer pai com altura limitada; preenche a altura, mantém navegação estável e deixa o painel ativo crescer até o limite antes de rolar. Sidebar estreito usa navegação compacta acima do painel."
+  },
+  "Parameter_RelaxedTopSpacing_AccessLayout": {
+    "en-US": "Adds space above the brand and form when the viewport is at least 761 px wide and 640 px tall.",
+    "zh-CN": "视口宽度至少 761 像素且高度至少 640 像素时，增大品牌与表单上方的留白。",
+    "pt-BR": "Aumenta o espaço acima da marca e do formulário em janelas com pelo menos 761 px de largura e 640 px de altura."
   },
   "Parameter_Brand_AccessLayout": {
     "en-US": "Optional stable identity and auxiliary navigation above the scrolling body. Use LogoDisplayer Compact and keep return links here rather than after a variable-height panel.",

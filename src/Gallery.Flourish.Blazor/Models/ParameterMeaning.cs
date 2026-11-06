@@ -8,6 +8,8 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "AutoDismissMilliseconds" when parameter.DeclaringType == typeof(Controls.FloatingNotice) => "Key.Parameter_AutoDismissMilliseconds_FloatingNotice",
+        "MessageKey" when parameter.DeclaringType == typeof(Controls.FloatingNotice) => "Key.Parameter_MessageKey_FloatingNotice",
         "Items" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_Items_NavigationTree",
         "CurrentPath" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_CurrentPath_NavigationTree",
         "ItemLabel" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_ItemLabel_NavigationTree",
@@ -37,6 +39,7 @@ internal static class ParameterMeaning
         "Compact" when parameter.DeclaringType == typeof(Controls.LogoDisplayer) => "Key.Parameter_Compact_LogoDisplayer",
         "ContextPrimary" when parameter.DeclaringType == typeof(Controls.LogoDisplayer) => "Key.Parameter_ContextPrimary_LogoDisplayer",
         "FillHeight" when parameter.DeclaringType == typeof(Controls.NavigationChoices) => "Key.Parameter_FillHeight_NavigationChoices",
+        "RelaxedTopSpacing" when parameter.DeclaringType == typeof(Controls.AccessLayout) => "Key.Parameter_RelaxedTopSpacing_AccessLayout",
         "Brand" when parameter.DeclaringType == typeof(Controls.AccessLayout) => "Key.Parameter_Brand_AccessLayout",
         "ChildContent" when parameter.DeclaringType == typeof(Controls.AccessLayout) => "Key.Parameter_ChildContent_AccessLayout",
         "Compact" when parameter.DeclaringType == typeof(Controls.ProgressRing) => "Key.Parameter_Compact_ProgressRing",

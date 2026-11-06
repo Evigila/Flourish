@@ -1,0 +1,24 @@
+@inherits LocalizedComponentBase
+@using ArkheideSystem.Flourish.Abstract
+@using ArkheideSystem.Flourish.Blazor.Components
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("FloatingNotice")]
+
+<InlineActions>
+    <Button Variant="ButtonVariant.Secondary" Disabled="@Preview" OnClick="() => Show(5000)">@Localization.Parse("Key.Sample_FloatingNotice_Show")</Button>
+    <Button Variant="ButtonVariant.Quiet" Disabled="@Preview" OnClick="() => Show(0)">@Localization.Parse("Key.Sample_FloatingNotice_Keep")</Button>
+</InlineActions>
+@if (Occurrence > 0 && !Preview)
+{
+    <FloatingNotice Severity="NotificationSeverity.Success" AutoDismissMilliseconds="@Delay" MessageKey="@Occurrence.ToString()">@Localization.Parse(TextKey.Sample_DemoDraftSavedSuccessfully)</FloatingNotice>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private int Occurrence;
+    private int Delay = 5000;
+    private void Show(int delay)
+    {
+        Delay = delay;
+        Occurrence++;
+    }
+}
