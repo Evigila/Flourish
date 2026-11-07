@@ -1,0 +1,69 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components
+@inherits TextComponentBase
+@using System.Globalization
+
+<span @attributes="AdditionalAttributes" class="f-avatar @Class" style="@AvatarStyle"
+      role="@(Decorative ? null : "img")" aria-label="@(Decorative ? null : AccessibleName)" aria-hidden="@(Decorative ? "true" : null)">
+    @if (ImageUrl is { } source && FailedUrl != source)
+    {
+        <img @key="source" src="@source" alt="" decoding="async" @onerror="() => ImageFailed(source)" />
+    }
+    else if (Initials.Length > 0)
+    {
+        <span class="f-avatar-initials" aria-hidden="true">@Initials</span>
+    }
+    else
+    {
+        <Icon Name="person" Class="f-avatar-placeholder" />
+    }
+</span>
+
+@code {
+    [Parameter] public string? Url { get; set; }
+    [Parameter] public string Name { get; set; } = string.Empty;
+    [Parameter] public int Size { get; set; } = 64;
+    [Parameter] public bool Decorative { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string? PreviousUrl;
+    private string? FailedUrl;
+    private string? ImageUrl => SafeImageUrl(Url);
+    private string AvatarStyle => FormattableString.Invariant($"--f-avatar-size:{Size}px");
+    private string AccessibleName => string.IsNullOrWhiteSpace(Name) ? Ui("Avatar_Account", "Account") : Name.Trim();
+    private string Initials
+    {
+        get
+        {
+            var words = (Name ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 0) return string.Empty;
+            var first = StringInfo.GetNextTextElement(words[0]);
+            return (words.Length > 1 ? first + StringInfo.GetNextTextElement(words[^1]) : first).ToUpperInvariant();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (Size is < 16 or > 512) throw new ArgumentOutOfRangeException(nameof(Size), "Avatar size must be between 16 and 512 pixels.");
+        if (!string.Equals(PreviousUrl, Url, StringComparison.Ordinal)) { PreviousUrl = Url; FailedUrl = null; }
+    }
+
+    private void ImageFailed(string source)
+    {
+        // An event from a removed image cannot hide a newer source.
+        if (string.Equals(source, ImageUrl, StringComparison.Ordinal)) FailedUrl = source;
+    }
+
+    private static string? SafeImageUrl(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        value = value.Trim();
+        if (value.Any(char.IsControl) || value.Contains('\\')) return null;
+        if (value.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+            return new[] { "data:image/png;base64,", "data:image/jpeg;base64,", "data:image/gif;base64,", "data:image/webp;base64," }
+                .Any(prefix => value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) ? value : null;
+        if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri)) return null;
+        return !uri.IsAbsoluteUri || uri.Scheme is "https" or "http" ? value : null;
+    }
+}

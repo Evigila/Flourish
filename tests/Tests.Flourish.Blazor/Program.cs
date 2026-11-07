@@ -954,6 +954,7 @@ NoCompatibilityApiChecks.Register(tests);
 DisplayBoardChecks.Register(tests);
 TutorialBoardChecks.Register(tests);
 UniformGridChecks.Register(tests);
+AvatarChecks.Register(tests);
 SectionNavigatorChecks.Register(tests);
 NavigationControlsChecks.Register(tests);
 CenteredContentChecks.Register(tests);

@@ -1,5 +1,9 @@
 # Project dependency inventory
 
+## Local account-avatar candidate, 2026-11-06
+
+The user authorized a new Flourish account-avatar control for Colligere. No external package, SDK, font, icon source or service is added. Source VersionPrefix remains 1.4.6. Six first-party packages are built as local-only **1.4.7-preview.1** using explicit VersionPrefix/VersionSuffix/PackageVersion overrides and frozen under `Colligere/artifacts/flourish-preview/1.4.7-preview.1`. Their `provenance.json` records source commit `369c4e7db4992fc4204914ab87c259fab5836d3a`, the modified working tree, runtime build-input hashes and archive hashes. This is not a public NuGet release; a consumer checkout needs the matching local feed. Six metadata/dependency/asset checks and 155 fresh-cache consumer checks passed. Other declared/resolved dependencies remain those inventoried below.
+
 ## Stable 1.4.6 published, 2026-11-06
 
 Source `VersionPrefix` is **1.4.6** without a suffix. Public tag **v1.4.6** fixes **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**; [workflow 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) successfully built and published the six configured packages. All six NuGet.org indexes and downloads expose 1.4.6. Public archives passed Verify-PackageSet, source-commit checks, repository-signature verification and SHA-256 payload comparison against the workflow artifact. Fresh public-only consumer verification passed 155 checks across four modes. [Public archive hashes](release-verification.md#flourish-146-uploaded-2026-11-06) are retained as durable evidence.

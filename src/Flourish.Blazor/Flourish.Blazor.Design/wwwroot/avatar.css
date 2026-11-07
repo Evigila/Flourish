@@ -1,0 +1,2 @@
+.f-avatar { background:var(--f-soft); color:var(--f-text); font-family:var(--f-font,sans-serif); }
+@media(forced-colors:active) { .f-avatar { border:1px solid CanvasText; } }

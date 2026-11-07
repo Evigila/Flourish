@@ -1,7 +1,7 @@
 [
   {
     "version": "1.4.7-preview",
-    "changeKeys": []
+    "changeKeys": ["Key.ChangeLog_Avatar"]
   },
   {
     "version": "1.4.6",

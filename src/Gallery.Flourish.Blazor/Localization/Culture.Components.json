@@ -1,4 +1,15 @@
 {
+"Catalog_Avatar_Purpose": {
+    "en-US": "An account portrait with accessible initials or icon fallback.",
+    "zh-CN": "带可访问名称及姓名首字母或图标回退的账户头像。",
+    "pt-BR": "Retrato de conta com nome acessível e alternativa de iniciais ou ícone."
+  },
+  "Catalog_Avatar_Variants": {
+    "en-US": "Use inside an information UniformGridItem. Size defaults to 64 pixels; missing or failed images show Unicode initials, and Decorative prevents a repeated announcement next to the same name.",
+    "zh-CN": "可放入 UniformGrid 信息格。默认尺寸为 64 像素；图片缺失或失败时显示 Unicode 姓名首字母，邻近已有相同姓名时可用 Decorative 避免重复朗读。",
+    "pt-BR": "Use em um UniformGridItem informativo. O tamanho padrão é 64 pixels; imagens ausentes ou com falha mostram iniciais Unicode, e Decorative evita anúncio repetido junto ao mesmo nome."
+  },
+
   "Catalog_FloatingNotice_Purpose": {
     "en-US": "Show operation feedback at the bottom of the page or dialog.",
     "zh-CN": "在页面或对话框底部显示操作结果。",

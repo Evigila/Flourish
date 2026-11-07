@@ -1,4 +1,10 @@
 {
+"ChangeLog_Avatar": {
+    "en-US": "Add the accessible Avatar portrait for account information grids, with Unicode initials, image-error fallback and optional decorative semantics.",
+    "zh-CN": "新增可用于账户信息网格的可访问头像 Avatar，支持 Unicode 姓名首字母、图片失败回退和可选装饰语义。",
+    "pt-BR": "Adicione Avatar acessível para grades de informações da conta, com iniciais Unicode, alternativa em falhas de imagem e semântica decorativa opcional."
+  },
+
   "ChangeLog_ReferenceDropdownResultLimit": {
     "en-US": "Make ReferenceDropdown result limits configurable, retaining the default 50 matches and allowing complete bounded catalogs with MaximumResults=null.",
     "zh-CN": "ReferenceDropdown 支持配置结果数量，保持默认显示 50 条匹配项，并允许通过 MaximumResults=null 完整显示有限目录。",

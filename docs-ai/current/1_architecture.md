@@ -1,5 +1,9 @@
 # Project architecture and repository tree
 
+## Local account-avatar candidate, 2026-11-06
+
+Framework now owns Avatar geometry, cropped images, accessible person naming and Unicode/image-failure fallbacks; Design supplies semantic colors. Gallery composes the control inside an information UniformGridItem and documents 89 components / 825 parameter rows / 389 defaults. The reviewed navigation prefix default, existing CellHeight and untitled Section contracts are unchanged; Colligere integration selects their appropriate options. Five new maintained paths are included in the regenerated complete tree. Release/Framework/Gallery/localization and local-package consumer checks passed; details and manual acceptance are in the [finding record](1_bugreports/2026-11-06_avatar-and-grid-integration.md). No public release or runtime deployment is implied.
+
 ## Stable 1.4.6 published, 2026-11-06
 
 Tag **v1.4.6** remains fixed at **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**. [Run 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) passed build verification and NuGet Trusted Publishing for the six Core/Blazor packages. All six public downloads passed package-set, source-commit and repository-signature verification. Every nonsignature archive entry matches the workflow artifact; four fresh public-only consumer modes passed 155 checks. See [durable hashes and evidence](release-verification.md#flourish-146-uploaded-2026-11-06). Source remains stable 1.4.6, Gallery's next empty entry is 1.4.7-preview, and WPF/WinUI remain outside publication. No maintained source path changed during promotion.
@@ -177,7 +181,7 @@ No maintained source file/public parameter is added: **714 files/121 directories
 
 ## Inventory scope
 
-The complete tree below includes the five maintained additions for floating feedback in the existing Framework, Gallery and test directories. The inventory now contains **736 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
+The complete tree below includes the account-avatar additions in Framework, Design, Gallery and tests. The inventory now contains **741 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -294,6 +298,7 @@ Flourish/
 |   |   |   |   |   |-- StandaloneMaskedInput.css
 |   |   |   |   |   \-- SystemNavigationMenu.css
 |   |   |   |   |-- access-layout.css
+|   |   |   |   |-- avatar.css
 |   |   |   |   |-- controls.css
 |   |   |   |   |-- data-search.css
 |   |   |   |   |-- data.css
@@ -358,6 +363,7 @@ Flourish/
 |   |   |   |   |-- ApplicationLayout.razor
 |   |   |   |   |-- ApplicationShell.razor
 |   |   |   |   |-- AttributionFooter.razor
+|   |   |   |   |-- Avatar.razor
 |   |   |   |   |-- BackToTop.razor
 |   |   |   |   |-- Button.razor
 |   |   |   |   |-- Card.razor
@@ -479,6 +485,7 @@ Flourish/
 |   |   |   |   |   |-- primary-navigation-item.js
 |   |   |   |   |   \-- reference-dropdown.js
 |   |   |   |   |-- access-layout.css
+|   |   |   |   |-- avatar.css
 |   |   |   |   |-- back-to-top.css
 |   |   |   |   |-- browse.svg
 |   |   |   |   |-- clipboard.js
@@ -722,6 +729,7 @@ Flourish/
 |   |   |   |   \-- WizardExample.razor
 |   |   |   |-- Samples/
 |   |   |   |   |-- Content/
+|   |   |   |   |   |-- AvatarSample.razor
 |   |   |   |   |   |-- CardSample.razor
 |   |   |   |   |   |-- CodeBlockSample.razor
 |   |   |   |   |   |-- CopyTextSample.razor
@@ -849,7 +857,7 @@ Flourish/
 |   |   |-- appsettings.json
 |   |   |-- Gallery.Flourish.Blazor.csproj
 |   |   \-- Program.cs
-|   |-- Gallery.Flourish.WinUI3/
+|   |-- Gallery.Flourish.WINUI3/
 |   |   |-- App.xaml
 |   |   |-- App.xaml.cs
 |   |   |-- Gallery.Flourish.WinUI3.csproj
@@ -873,6 +881,7 @@ Flourish/
 |   |   |-- AccessExampleChecks.cs
 |   |   |-- action-menu-dom.mjs
 |   |   |-- ApiFinalAuditChecks.cs
+|   |   |-- AvatarChecks.cs
 |   |   |-- BrandingChecks.cs
 |   |   |-- ButtonStructuredLabelChecks.cs
 |   |   |-- ButtonUnavailableChecks.cs
@@ -892,6 +901,7 @@ Flourish/
 |   |   |-- DropdownChecks.cs
 |   |   |-- EmptyStateChecks.cs
 |   |   |-- FieldActionsChecks.cs
+|   |   |-- floating-notice.test.mjs
 |   |   |-- FrameworkConfigurationChecks.cs
 |   |   |-- GridChecks.cs
 |   |   |-- header-layout.test.mjs
@@ -925,7 +935,6 @@ Flourish/
 |   |   |-- primary-navigation-preview.test.mjs
 |   |   |-- Program.cs
 |   |   |-- progress-rendering.test.mjs
-|   |   |-- floating-notice.test.mjs
 |   |   |-- save-changes-bar.test.mjs
 |   |   |-- SaveChangesBarChecks.cs
 |   |   |-- section-navigator-dom.mjs

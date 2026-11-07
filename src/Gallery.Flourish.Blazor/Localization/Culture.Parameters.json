@@ -1,4 +1,25 @@
 {
+"Parameter_Url_Avatar": {
+    "en-US": "Optional HTTP(S), relative image URL or PNG/JPEG/GIF/WebP base64 data URL. Missing, unsupported or failed images use the name fallback; changing the URL retries loading. Upload validation remains host-owned.",
+    "zh-CN": "可选的 HTTP(S)、相对图片网址或 PNG/JPEG/GIF/WebP base64 数据网址。缺失、不支持或加载失败时显示姓名回退；修改网址可重新加载。上传校验仍由宿主管理。",
+    "pt-BR": "URL HTTP(S), relativa ou de dados base64 PNG/JPEG/GIF/WebP opcional. Imagens ausentes, incompatíveis ou com falha usam as iniciais; mudar a URL tenta novamente. O host valida os uploads."
+  },
+  "Parameter_Name_Avatar": {
+    "en-US": "Full accessible person name. First and last word initials preserve Unicode text elements; an empty name uses the account icon and localized Account label.",
+    "zh-CN": "完整的可访问姓名。首尾单词的首字母保留 Unicode 字素；姓名为空时使用账户图标及本地化账户标签。",
+    "pt-BR": "Nome completo acessível. As iniciais da primeira e última palavra preservam elementos Unicode; sem nome, usa o ícone e o rótulo Conta localizado."
+  },
+  "Parameter_Size_Avatar": {
+    "en-US": "Portrait diameter in pixels, from 16 through 512. Defaults to 64; image and initials scale together.",
+    "zh-CN": "头像直径，单位像素，范围 16 至 512，默认为 64；图片与首字母同步缩放。",
+    "pt-BR": "Diâmetro do retrato em pixels, de 16 a 512. O padrão é 64; imagem e iniciais escalam juntas."
+  },
+  "Parameter_Decorative_Avatar": {
+    "en-US": "Set true when adjacent text already identifies the person, removing duplicate image announcements. Defaults to false.",
+    "zh-CN": "相邻文字已标识此人时设为 true，以免重复朗读头像；默认为 false。",
+    "pt-BR": "Ative quando o texto adjacente já identifica a pessoa, removendo anúncio duplicado da imagem. O padrão é false."
+  },
+
   "Parameter_AutoDismissMilliseconds_FloatingNotice": {
     "en-US": "Visible time before the reverse exit animation, in milliseconds. Defaults to 5000; zero keeps the notice visible. Hover, focus and background tabs pause the countdown.",
     "zh-CN": "开始反向退出动画前的显示时长，单位毫秒，默认 5000；设为 0 持续显示。鼠标悬停、焦点停留和后台标签页会暂停倒计时。",

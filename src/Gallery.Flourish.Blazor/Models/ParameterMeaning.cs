@@ -8,6 +8,10 @@ internal static class ParameterMeaning
 {
     public static string DescriptionKey(PropertyInfo parameter) => parameter.Name switch
     {
+        "Url" when parameter.DeclaringType == typeof(Controls.Avatar) => "Key.Parameter_Url_Avatar",
+        "Name" when parameter.DeclaringType == typeof(Controls.Avatar) => "Key.Parameter_Name_Avatar",
+        "Size" when parameter.DeclaringType == typeof(Controls.Avatar) => "Key.Parameter_Size_Avatar",
+        "Decorative" when parameter.DeclaringType == typeof(Controls.Avatar) => "Key.Parameter_Decorative_Avatar",
         "AutoDismissMilliseconds" when parameter.DeclaringType == typeof(Controls.FloatingNotice) => "Key.Parameter_AutoDismissMilliseconds_FloatingNotice",
         "MessageKey" when parameter.DeclaringType == typeof(Controls.FloatingNotice) => "Key.Parameter_MessageKey_FloatingNotice",
         "Items" when parameter.DeclaringType == typeof(Controls.NavigationTree) => "Key.Parameter_Items_NavigationTree",

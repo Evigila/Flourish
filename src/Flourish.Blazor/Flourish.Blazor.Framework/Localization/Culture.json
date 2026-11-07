@@ -1,4 +1,20 @@
 {
+"Avatar_Account": {
+    "en-US": "Account",
+    "zh-CN": "账户",
+    "pt-BR": "Conta"
+  },
+  "Usage_Avatar_Scenario": {
+    "en-US": "Account portrait",
+    "zh-CN": "账户头像",
+    "pt-BR": "Retrato de conta"
+  },
+  "Usage_Avatar_Guidance": {
+    "en-US": "Production use: show a circular portrait with Url and the person Name, including inside an information UniformGridItem. Name supplies the accessible label and Unicode first/last initials when no image is available. Image failure falls back to initials or the person icon; changing Url retries the image. Size defaults to 64 pixels and accepts 16 through 512. Decorative removes duplicate image semantics when adjacent text already identifies the person. Hosts own image retrieval, consent, profile data and upload validation; this component never changes account data.",
+    "zh-CN": "生产用途：通过 Url 和 Name 显示圆形头像，也可置于 UniformGrid 信息格内。Name 提供可访问名称，无图片时提供 Unicode 姓名首尾字素回退。加载失败时显示首字母或人物图标，修改 Url 后重新加载。Size 默认 64 像素，支持 16 至 512。相邻文字已标识此人时可用 Decorative 避免重复朗读。宿主管理图片检索、同意、资料及上传校验；组件不会修改账户数据。",
+    "pt-BR": "Uso em produção: mostre um retrato circular com Url e Name, inclusive em UniformGridItem informativo. Name fornece o rótulo acessível e iniciais Unicode quando não há imagem. Falhas mostram iniciais ou ícone; mudar Url tenta novamente. Size aceita 16 a 512 pixels e o padrão é 64. Decorative evita anúncio duplicado junto ao nome. O host controla imagens, consentimento, dados e validação de uploads; o componente não altera contas."
+  },
+
   "Usage_SaveChangesBar_Scenario": {
     "en-US": "Persistent unsaved form changes",
     "zh-CN": "持续提示未保存的表单更改",
