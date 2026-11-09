@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <VersionPrefix>1.4.6</VersionPrefix>
+    <VersionPrefix>1.4.7</VersionPrefix>
     <Authors>ArkheideSystem</Authors>
     <Company>ArkheideSystem</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

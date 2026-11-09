@@ -1,5 +1,9 @@
 # Release verification
 
+## Flourish 1.4.7 preparation, 2026-11-09
+
+`publish-helper.bat -Mode Prepare` completed with zero warnings and errors in the production and solution Release builds. The final gate passed all six package checks, Core 367, Framework 533, Gallery 9298, Node 312, CSS bundle 21, CSS SDK 194, launcher 95, culture integrity 26265, ChangeLog 217 and local package consumers 155. The first run reproduced the master palette violation in the Avatar edit overlay. The final rerun used shared Primary and Primary Ink and passed. See the [preparation record](1_changelogs/2026-11-09_100421_prepare-flourish-1.4.7-stable.md) and [diagnosis](1_bugreports/2026-11-09_avatar-overlay-palette.md).
+
 ## Flourish 1.4.6 uploaded, 2026-11-06
 
 Stable tag **v1.4.6** identifies **98ce61dd55a99c0722f0b7e49dff5cd512ef57a0**. [Run 42272355105](https://github.com/Evigila/Flourish/actions/runs/42272355105) completed both build verification and Trusted Publishing successfully. Its six uploads each returned Created and successful push at 18:41:59–18:42:04 UTC. NuGet validation/distribution completed afterward; all six indexes and downloads were verified by 18:56 UTC. No local archive substituted for a public package.

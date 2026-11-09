@@ -1,6 +1,10 @@
 [
   {
-    "version": "1.4.7-preview",
+    "version": "1.4.8-preview",
+    "changeKeys": []
+  },
+  {
+    "version": "1.4.7",
     "changeKeys": ["Key.ChangeLog_Avatar"]
   },
   {
