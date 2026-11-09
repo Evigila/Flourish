@@ -1,5 +1,9 @@
 # Project architecture and repository tree
 
+## Stable 1.4.7 published, 2026-11-09
+
+Flourish 1.4.7 publishes the account Avatar editor and uses the shared palette for its edit overlay. Tag `v1.4.7` fixes the release at `afe9a4c08af18330d01ea911eddf79242d3e1b7c`. Gallery records the Avatar release and opens `1.4.8-preview`. Public verification covers six Core and Blazor archives, their signatures and the fresh consumers. [Release evidence](release-verification.md#flourish-147-uploaded-2026-11-09)
+
 ## Local account-avatar editor candidate, 2026-11-07
 
 Avatar owns the full-width portrait row and optional file picker, crop Dialog, accessible adjustment controls and help text. Its browser module validates image headers, previews the crop and encodes the bounded JPEG. Blazor reads the compressed image as a stream. The host callback owns authorization and persistence. Gallery shows editable and read-only usage and documents 89 components, 829 parameter rows and 390 defaults. See the [implementation and manual checks](1_changelogs/2026-11-07_104113_edit-account-avatar.md).

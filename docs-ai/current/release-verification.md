@@ -1,5 +1,22 @@
 # Release verification
 
+## Flourish 1.4.7 uploaded, 2026-11-09
+
+Tag **v1.4.7** points to **afe9a4c08af18330d01ea911eddf79242d3e1b7c**. The first tag attempt stopped at the Core queue test after task completion and before the public task snapshot refreshed. The same tagged source passed the full gate on the second attempt. The publisher received Created for all six packages between 13:13:09 and 13:13:13 UTC. [GitHub Actions run 42622474387](https://github.com/Evigila/Flourish/actions/runs/42622474387)
+
+The six ordinary NuGet.org indexes contained 1.4.7 by 13:20:59 UTC. The downloaded GitHub artifact 13677163469 matched its published SHA-256 **A6B5FEFFE2060230CBD380853D92C7D086501BB60E56B9451CD734B256BD58C4**. The public archives passed Verify-PackageSet and NuGet.org repository signature verification. Every public nonsignature ZIP entry matched its GitHub counterpart by SHA-256. The nuspec repository commit was the tagged commit in all six archives. Verification evidence is in `artifacts/public-1.4.7/sha256.json` and `artifacts/public-1.4.7/signatures.log`.
+
+| Public package | SHA-256 |
+| --- | --- |
+| Arkheide.Flourish.Core | 0C4D5B5FD66D82B411C835769B464D4521E06B4A40FF11F8A72574DFA64727DF |
+| Arkheide.Flourish.Blazor.Abstract | 6676122194DCCD6E7901E70A246205F1746BB40E531D36BADA304D040A840BD2 |
+| Arkheide.Flourish.Blazor.Framework | 53F859B303A13A5FD1104AE8E44720B0C34E6FE6D35F8749623B5C7C47868ED7 |
+| Arkheide.Flourish.Blazor.Design | 8AEA6FC652FDEA34EF7EB08A069350A5F8EEDF5A47D3E1A00D16C8FF87ACE6DC |
+| Arkheide.Flourish.Extensions.Culture.Blazor | F0D2949A55EA84C6FE8B3E2EB8B3F0A5C712CC452C22BFA1D3420B7F879D837E |
+| Arkheide.Flourish.Blazor | DD12075656E2C5BD775E6DE5B9E0D5D2D7F81C4C45CCAA0730F263C41708C4A5 |
+
+Fresh NuGet.org-only FrameworkOnly, MetaNative, MetaDesign and MetaCulture consumers passed **155/155 checks**. The fixture is `artifacts/package-consumers/493fefff2f4b44ee965ea9547c267561` and its log is `artifacts/stable-1.4.7-public-consumers.log`. See the [publication record](1_changelogs/2026-11-09_102258_verify-flourish-1.4.7-publication.md).
+
 ## Flourish 1.4.7 preparation, 2026-11-09
 
 `publish-helper.bat -Mode Prepare` completed with zero warnings and errors in the production and solution Release builds. The final gate passed all six package checks, Core 367, Framework 533, Gallery 9298, Node 312, CSS bundle 21, CSS SDK 194, launcher 95, culture integrity 26265, ChangeLog 217 and local package consumers 155. The first run reproduced the master palette violation in the Avatar edit overlay. The final rerun used shared Primary and Primary Ink and passed. See the [preparation record](1_changelogs/2026-11-09_100421_prepare-flourish-1.4.7-stable.md) and [diagnosis](1_bugreports/2026-11-09_avatar-overlay-palette.md).

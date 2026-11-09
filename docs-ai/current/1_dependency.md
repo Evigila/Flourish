@@ -1,5 +1,9 @@
 # Project dependency inventory
 
+## Stable 1.4.7 published, 2026-11-09
+
+The six Flourish Core and Blazor identities resolve at **1.4.7** on NuGet.org. Their tagged source is `afe9a4c08af18330d01ea911eddf79242d3e1b7c`. The public archives passed the required package graph and asset checks and 155 fresh-cache consumer checks. Their repository signatures and nonsignature content matched the publication evidence. Essential.Culture resolves at 1.4.0. [Public archive hashes](release-verification.md#flourish-147-uploaded-2026-11-09)
+
 ## Local account-avatar editor candidate, 2026-11-07
 
 The 1.4.7-preview.2 local feed uses six existing Flourish package identities and the browser's native File, ImageBitmap and Canvas APIs. The build uses source VersionPrefix 1.4.6 with explicit preview version overrides. The feed under `Colligere/artifacts/flourish-preview/1.4.7-preview.2` contains the six frozen archives and their SHA256 manifest. It records the modified worktree on baseline `5e1a152`. Six package identity, dependency and asset checks passed, along with 155 fresh-cache consumer checks.
