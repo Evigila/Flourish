@@ -1,8 +1,8 @@
 {
-"ChangeLog_Avatar": {
-    "en-US": "Add the accessible Avatar portrait for account information grids, with Unicode initials, image-error fallback and optional decorative semantics.",
-    "zh-CN": "新增可用于账户信息网格的可访问头像 Avatar，支持 Unicode 姓名首字母、图片失败回退和可选装饰语义。",
-    "pt-BR": "Adicione Avatar acessível para grades de informações da conta, com iniciais Unicode, alternativa em falhas de imagem e semântica decorativa opcional."
+  "ChangeLog_Avatar": {
+    "en-US": "Display a full-width account portrait with name and description. Optionally choose, crop, and compress a photo locally before passing a JPEG to the host.",
+    "zh-CN": "头像支持整行居中显示姓名和描述，可在浏览器内选图、裁剪、压缩并把 JPEG 交给宿主。",
+    "pt-BR": "Exiba retrato, nome e descrição em largura total. Escolha, recorte e comprima a foto localmente antes de enviar o JPEG ao host."
   },
 
   "ChangeLog_ReferenceDropdownResultLimit": {

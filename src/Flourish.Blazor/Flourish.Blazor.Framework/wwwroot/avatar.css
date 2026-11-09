@@ -1,5 +1,28 @@
-/* Avatar geometry and image cropping remain available without the optional Design package. */
-.f-avatar { display:inline-flex; position:relative; box-sizing:border-box; flex:0 0 var(--f-avatar-size,64px); width:var(--f-avatar-size,64px); height:var(--f-avatar-size,64px); max-width:100%; aspect-ratio:1; align-items:center; justify-content:center; overflow:hidden; border-radius:50%; vertical-align:middle; }
-.f-avatar > img { display:block; width:100%; height:100%; object-fit:cover; }
+.f-avatar { display:flex; flex-direction:column; align-items:center; gap:8px; inline-size:100%; min-inline-size:0; text-align:center; overflow-wrap:anywhere; }
+.f-uniform-grid > .f-avatar { grid-column:1/-1; aspect-ratio:auto; }
+.f-avatar-portrait { position:relative; display:grid; place-items:center; inline-size:min(100%,var(--f-avatar-size,64px)); aspect-ratio:1; }
+.f-avatar-image,.f-avatar-edit { position:absolute; inset:0; display:grid; place-items:center; overflow:hidden; border-radius:50%; }
+.f-avatar-image > img { display:block; inline-size:100%; block-size:100%; object-fit:cover; }
 .f-avatar-initials { font-size:calc(var(--f-avatar-size,64px) * .36); font-weight:700; line-height:1; user-select:none; }
 .f-avatar .f-avatar-placeholder { --f-icon-size:calc(var(--f-avatar-size,64px) * .6); width:1em; height:1em; }
+.f-avatar-picker { position:absolute; z-index:1; inset:0; inline-size:100%; block-size:100%; margin:0; opacity:0; border-radius:50%; cursor:pointer; }
+.f-avatar-picker:disabled { pointer-events:none; }
+.f-avatar-edit { pointer-events:none; opacity:0; }
+.f-avatar-picker:enabled:is(:hover,:focus-visible) + .f-avatar-edit { opacity:1; }
+.f-avatar-edit > .f-icon { --f-icon-size:min(24px,calc(var(--f-avatar-size,64px) * .66)); }
+.f-avatar-portrait:has(.f-avatar-help) { inline-size:min(var(--f-avatar-size,64px),max(16px,calc(100% - 72px))); }
+.f-avatar-help { position:absolute; inset-inline-start:calc(100% + 4px); inset-block-end:0; }
+.f-avatar-help .f-avatar-help-trigger { box-sizing:border-box; inline-size:28px; block-size:28px; min-inline-size:28px; min-block-size:28px; padding:0; }
+.f-avatar-help-trigger .f-icon { --f-icon-size:17px; }
+.f-avatar-tooltip { position:absolute; z-index:2; inset-inline-start:50%; inset-block-start:100%; translate:-50% 0; visibility:hidden; inline-size:max-content; max-inline-size:min(16rem,calc(100vw - 32px)); text-align:start; }
+.f-avatar-portrait:dir(rtl) .f-avatar-tooltip { translate:50% 0; }
+.f-avatar-help:not([data-dismissed]):is(:hover,:focus-within,[data-expanded]) + .f-avatar-tooltip,.f-avatar-tooltip:hover { visibility:visible; }
+.f-avatar-crop { text-align:start; }
+.f-avatar-editor { display:grid; gap:16px; }
+.f-avatar-preview { inline-size:min(100%,256px); block-size:auto; aspect-ratio:1; display:block; justify-self:center; border-radius:50%; touch-action:none; }
+.f-avatar-preview { cursor:grab; }
+.f-avatar-preview:active { cursor:grabbing; }
+.f-avatar-editor:has(input:disabled) .f-avatar-preview { cursor:default; }
+.f-avatar-adjustments { display:grid; gap:10px; }
+.f-avatar-adjustments input[type=range] { box-sizing:border-box; inline-size:100%; margin:0; min-block-size:26px; }
+@media (hover:none) { .f-avatar-picker:enabled + .f-avatar-edit { opacity:1; } }

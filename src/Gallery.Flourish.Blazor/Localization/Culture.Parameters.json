@@ -1,4 +1,24 @@
 {
+  "Parameter_Description_Avatar": {
+    "en-US": "Optional profile description below the centered name.",
+    "zh-CN": "可选的资料描述，居中显示在姓名下方。",
+    "pt-BR": "Descrição opcional do perfil abaixo do nome centralizado."
+  },
+  "Parameter_HelpText_Avatar": {
+    "en-US": "Optional photo requirements beside the portrait. The help icon reveals the text on hover or focus.",
+    "zh-CN": "可选的头像说明，鼠标悬停或聚焦帮助图标时显示。",
+    "pt-BR": "Requisitos opcionais da foto. O ícone mostra o texto ao passar o ponteiro ou receber foco."
+  },
+  "Parameter_Disabled_Avatar": {
+    "en-US": "Disables choosing and saving a photo while leaving an open crop available to cancel.",
+    "zh-CN": "禁用选图和保存，仍可取消已打开的裁剪。",
+    "pt-BR": "Desabilita escolher e salvar fotos, com opção de cancelar o recorte aberto."
+  },
+  "Parameter_SaveAsync_Avatar": {
+    "en-US": "Enables editing and receives a JPEG data URL. Return true after saving and update Url. Return false to retry the same crop.",
+    "zh-CN": "启用编辑并接收 JPEG 数据网址。保存后返回 true 并更新 Url，返回 false 可重试同一裁剪。",
+    "pt-BR": "Ativa a edição e recebe uma URL de dados JPEG. Retorne true após salvar e atualize Url. Retorne false para repetir o salvamento."
+  },
 "Parameter_Url_Avatar": {
     "en-US": "Optional HTTP(S), relative image URL or PNG/JPEG/GIF/WebP base64 data URL. Missing, unsupported or failed images use the name fallback; changing the URL retries loading. Upload validation remains host-owned.",
     "zh-CN": "可选的 HTTP(S)、相对图片网址或 PNG/JPEG/GIF/WebP base64 数据网址。缺失、不支持或加载失败时显示姓名回退；修改网址可重新加载。上传校验仍由宿主管理。",

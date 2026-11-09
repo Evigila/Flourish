@@ -1,5 +1,9 @@
 # Project dependency inventory
 
+## Local account-avatar editor candidate, 2026-11-07
+
+The 1.4.7-preview.2 local feed uses six existing Flourish package identities and the browser's native File, ImageBitmap and Canvas APIs. The build uses source VersionPrefix 1.4.6 with explicit preview version overrides. The feed under `Colligere/artifacts/flourish-preview/1.4.7-preview.2` contains the six frozen archives and their SHA256 manifest. It records the modified worktree on baseline `5e1a152`. Six package identity, dependency and asset checks passed, along with 155 fresh-cache consumer checks.
+
 ## Local account-avatar candidate, 2026-11-06
 
 The user authorized a new Flourish account-avatar control for Colligere. No external package, SDK, font, icon source or service is added. Source VersionPrefix remains 1.4.6. Six first-party packages are built as local-only **1.4.7-preview.1** using explicit VersionPrefix/VersionSuffix/PackageVersion overrides and frozen under `Colligere/artifacts/flourish-preview/1.4.7-preview.1`. Their `provenance.json` records source commit `369c4e7db4992fc4204914ab87c259fab5836d3a`, the modified working tree, runtime build-input hashes and archive hashes. This is not a public NuGet release; a consumer checkout needs the matching local feed. Six metadata/dependency/asset checks and 155 fresh-cache consumer checks passed. Other declared/resolved dependencies remain those inventoried below.

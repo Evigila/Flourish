@@ -1,5 +1,9 @@
 # Project architecture and repository tree
 
+## Local account-avatar editor candidate, 2026-11-07
+
+Avatar owns the full-width portrait row and optional file picker, crop Dialog, accessible adjustment controls and help text. Its browser module validates image headers, previews the crop and encodes the bounded JPEG. Blazor reads the compressed image as a stream. The host callback owns authorization and persistence. Gallery shows editable and read-only usage and documents 89 components, 829 parameter rows and 390 defaults. See the [implementation and manual checks](1_changelogs/2026-11-07_104113_edit-account-avatar.md).
+
 ## Local account-avatar candidate, 2026-11-06
 
 Framework now owns Avatar geometry, cropped images, accessible person naming and Unicode/image-failure fallbacks; Design supplies semantic colors. Gallery composes the control inside an information UniformGridItem and documents 89 components / 825 parameter rows / 389 defaults. The reviewed navigation prefix default, existing CellHeight and untitled Section contracts are unchanged; Colligere integration selects their appropriate options. Five new maintained paths are included in the regenerated complete tree. Release/Framework/Gallery/localization and local-package consumer checks passed; details and manual acceptance are in the [finding record](1_bugreports/2026-11-06_avatar-and-grid-integration.md). No public release or runtime deployment is implied.
@@ -181,7 +185,7 @@ No maintained source file/public parameter is added: **714 files/121 directories
 
 ## Inventory scope
 
-The complete tree below includes the account-avatar additions in Framework, Design, Gallery and tests. The inventory now contains **741 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
+The complete tree below includes the account-avatar editor additions in Framework and tests. The inventory now contains **744 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -364,6 +368,7 @@ Flourish/
 |   |   |   |   |-- ApplicationShell.razor
 |   |   |   |   |-- AttributionFooter.razor
 |   |   |   |   |-- Avatar.razor
+|   |   |   |   |-- Avatar.razor.cs
 |   |   |   |   |-- BackToTop.razor
 |   |   |   |   |-- Button.razor
 |   |   |   |   |-- Card.razor
@@ -485,6 +490,7 @@ Flourish/
 |   |   |   |   |   |-- primary-navigation-item.js
 |   |   |   |   |   \-- reference-dropdown.js
 |   |   |   |   |-- access-layout.css
+|   |   |   |   |-- avatar-editor.js
 |   |   |   |   |-- avatar.css
 |   |   |   |   |-- back-to-top.css
 |   |   |   |   |-- browse.svg
@@ -881,6 +887,7 @@ Flourish/
 |   |   |-- AccessExampleChecks.cs
 |   |   |-- action-menu-dom.mjs
 |   |   |-- ApiFinalAuditChecks.cs
+|   |   |-- avatar-editor.test.mjs
 |   |   |-- AvatarChecks.cs
 |   |   |-- BrandingChecks.cs
 |   |   |-- ButtonStructuredLabelChecks.cs

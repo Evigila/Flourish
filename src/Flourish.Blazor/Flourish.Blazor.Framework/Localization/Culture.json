@@ -1,4 +1,69 @@
 {
+  "Avatar_Edit": {
+    "en-US": "Change profile photo",
+    "zh-CN": "更换头像",
+    "pt-BR": "Alterar foto de perfil"
+  },
+  "Avatar_PhotoHelp": {
+    "en-US": "Photo requirements",
+    "zh-CN": "头像要求",
+    "pt-BR": "Requisitos da foto"
+  },
+  "Avatar_Loading": {
+    "en-US": "Opening photo…",
+    "zh-CN": "正在打开图片…",
+    "pt-BR": "Abrindo foto…"
+  },
+  "Avatar_CropTitle": {
+    "en-US": "Adjust profile photo",
+    "zh-CN": "调整头像",
+    "pt-BR": "Ajustar foto de perfil"
+  },
+  "Avatar_Preview": {
+    "en-US": "Cropped photo preview",
+    "zh-CN": "裁剪后的头像预览",
+    "pt-BR": "Prévia da foto recortada"
+  },
+  "Avatar_Zoom": {
+    "en-US": "Zoom",
+    "zh-CN": "缩放",
+    "pt-BR": "Zoom"
+  },
+  "Avatar_Horizontal": {
+    "en-US": "Horizontal position",
+    "zh-CN": "水平位置",
+    "pt-BR": "Posição horizontal"
+  },
+  "Avatar_Vertical": {
+    "en-US": "Vertical position",
+    "zh-CN": "垂直位置",
+    "pt-BR": "Posição vertical"
+  },
+  "Avatar_TooLarge": {
+    "en-US": "Choose a photo up to 12 MiB, 8,192 pixels per side, and 24 megapixels.",
+    "zh-CN": "请选择不超过 12 MiB、每边不超过 8192 像素且总像素不超过 2400 万的图片。",
+    "pt-BR": "Escolha uma foto de até 12 MiB, 8.192 pixels por lado e 24 megapixels."
+  },
+  "Avatar_CropFailed": {
+    "en-US": "The photo could not be cropped. Try again or choose a different photo.",
+    "zh-CN": "无法裁剪图片。请重试或选择其他图片。",
+    "pt-BR": "Não foi possível recortar a foto. Tente novamente ou escolha outra."
+  },
+  "Avatar_SaveFailed": {
+    "en-US": "The photo could not be saved. Try again.",
+    "zh-CN": "无法保存头像，请重试。",
+    "pt-BR": "Não foi possível salvar a foto. Tente novamente."
+  },
+  "Avatar_InvalidImage": {
+    "en-US": "Choose a valid JPEG, PNG, or WebP photo.",
+    "zh-CN": "请选择有效的 JPEG、PNG 或 WebP 图片。",
+    "pt-BR": "Escolha uma foto JPEG, PNG ou WebP válida."
+  },
+  "Usage_Avatar_Guidance": {
+    "en-US": "Production use: display the portrait, Name and optional Description in a full-width row. The photo falls back to Unicode initials or a person icon. Supply SaveAsync to enable local crop editing and receive only the processed JPEG data URL. Return true when the host has saved it and update Url. Return false to keep the crop open. Hosts authorize and validate the resulting update.",
+    "zh-CN": "生产用途：在整行中显示圆形头像、Name 和可选的 Description。没有图片时显示 Unicode 姓名首字母或人物图标。设置 SaveAsync 后可在浏览器内裁剪，宿主只收到处理后的 JPEG 数据网址。保存成功后返回 true 并更新 Url，返回 false 保留裁剪。宿主负责授权及验证保存。",
+    "pt-BR": "Uso em produção: exiba o retrato, Name e Description opcional em uma linha inteira. Sem foto, são exibidas iniciais Unicode ou um ícone de pessoa. Forneça SaveAsync para recortar localmente e receber apenas a URL de dados JPEG. Retorne true após salvar e atualize Url. Retorne false para manter o recorte aberto. O host autoriza e valida a alteração."
+  },
 "Avatar_Account": {
     "en-US": "Account",
     "zh-CN": "账户",
@@ -8,11 +73,6 @@
     "en-US": "Account portrait",
     "zh-CN": "账户头像",
     "pt-BR": "Retrato de conta"
-  },
-  "Usage_Avatar_Guidance": {
-    "en-US": "Production use: show a circular portrait with Url and the person Name, including inside an information UniformGridItem. Name supplies the accessible label and Unicode first/last initials when no image is available. Image failure falls back to initials or the person icon; changing Url retries the image. Size defaults to 64 pixels and accepts 16 through 512. Decorative removes duplicate image semantics when adjacent text already identifies the person. Hosts own image retrieval, consent, profile data and upload validation; this component never changes account data.",
-    "zh-CN": "生产用途：通过 Url 和 Name 显示圆形头像，也可置于 UniformGrid 信息格内。Name 提供可访问名称，无图片时提供 Unicode 姓名首尾字素回退。加载失败时显示首字母或人物图标，修改 Url 后重新加载。Size 默认 64 像素，支持 16 至 512。相邻文字已标识此人时可用 Decorative 避免重复朗读。宿主管理图片检索、同意、资料及上传校验；组件不会修改账户数据。",
-    "pt-BR": "Uso em produção: mostre um retrato circular com Url e Name, inclusive em UniformGridItem informativo. Name fornece o rótulo acessível e iniciais Unicode quando não há imagem. Falhas mostram iniciais ou ícone; mudar Url tenta novamente. Size aceita 16 a 512 pixels e o padrão é 64. Decorative evita anúncio duplicado junto ao nome. O host controla imagens, consentimento, dados e validação de uploads; o componente não altera contas."
   },
 
   "Usage_SaveChangesBar_Scenario": {

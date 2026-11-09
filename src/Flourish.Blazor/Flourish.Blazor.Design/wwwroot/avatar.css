@@ -1,2 +1,12 @@
-.f-avatar { background:var(--f-soft); color:var(--f-text); font-family:var(--f-font,sans-serif); }
-@media(forced-colors:active) { .f-avatar { border:1px solid CanvasText; } }
+.f-avatar { color:var(--f-text); font-family:var(--f-font,sans-serif); }
+.f-avatar-image { background:var(--f-soft); }
+.f-avatar-name { font-size:var(--f-type-h2,28px); font-weight:760; line-height:1.2; }
+.f-avatar-description,.f-avatar-status { color:var(--f-muted); font-size:var(--f-type-body,17px); font-weight:400; line-height:1.55; }
+.f-avatar-edit { background:rgb(0 0 0 / .56); color:#fff; }
+.f-avatar-picker:focus-visible + .f-avatar-edit { outline:var(--f-focus-width,3px) solid var(--f-accent); outline-offset:3px; }
+.f-avatar-tooltip { padding:8px 12px; border:1px solid var(--f-border); border-radius:var(--f-radius-control,12px); background:var(--f-surface); color:var(--f-text); box-shadow:var(--f-shadow-popup); font-size:var(--f-type-body,17px); font-weight:400; line-height:1.4; }
+.f-avatar-adjustments input[type=range] { accent-color:var(--f-primary); }
+@media(forced-colors:active) {
+    .f-avatar-image,.f-avatar-preview { border:1px solid CanvasText; }
+    .f-avatar-edit { color:HighlightText; background:Highlight; forced-color-adjust:none; }
+}

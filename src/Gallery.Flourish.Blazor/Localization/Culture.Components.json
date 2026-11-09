@@ -1,13 +1,23 @@
 {
-"Catalog_Avatar_Purpose": {
-    "en-US": "An account portrait with accessible initials or icon fallback.",
-    "zh-CN": "带可访问名称及姓名首字母或图标回退的账户头像。",
-    "pt-BR": "Retrato de conta com nome acessível e alternativa de iniciais ou ícone."
+  "Catalog_Avatar_Purpose": {
+    "en-US": "A centered profile photo, name and description with optional local photo editing.",
+    "zh-CN": "居中显示头像、姓名和描述，可在浏览器内编辑照片。",
+    "pt-BR": "Foto, nome e descrição centralizados, com edição local opcional."
   },
   "Catalog_Avatar_Variants": {
-    "en-US": "Use inside an information UniformGridItem. Size defaults to 64 pixels; missing or failed images show Unicode initials, and Decorative prevents a repeated announcement next to the same name.",
-    "zh-CN": "可放入 UniformGrid 信息格。默认尺寸为 64 像素；图片缺失或失败时显示 Unicode 姓名首字母，邻近已有相同姓名时可用 Decorative 避免重复朗读。",
-    "pt-BR": "Use em um UniformGridItem informativo. O tamanho padrão é 64 pixels; imagens ausentes ou com falha mostram iniciais Unicode, e Decorative evita anúncio repetido junto ao mesmo nome."
+    "en-US": "Avatar spans a full UniformGrid row. Provide SaveAsync for native file selection, circular crop preview and JPEG compression. HelpText appears beside the portrait.",
+    "zh-CN": "Avatar 占据 UniformGrid 整行。设置 SaveAsync 启用原生选图、圆形裁剪预览和 JPEG 压缩。HelpText 显示在头像旁。",
+    "pt-BR": "Avatar ocupa uma linha inteira da UniformGrid. Forneça SaveAsync para seleção nativa, prévia circular e compressão JPEG. HelpText aparece ao lado do retrato."
+  },
+  "Catalog_Avatar_SampleDescription": {
+    "en-US": "Design team",
+    "zh-CN": "设计团队",
+    "pt-BR": "Equipe de design"
+  },
+  "Catalog_Avatar_SampleHelp": {
+    "en-US": "Select a JPEG, PNG, or WebP photo. The saved JPEG is limited to 256 KiB.",
+    "zh-CN": "请选择 JPEG、PNG 或 WebP 图片。保存后的 JPEG 不超过 256 KiB。",
+    "pt-BR": "Selecione uma foto JPEG, PNG ou WebP. O JPEG salvo tem limite de 256 KiB."
   },
 
   "Catalog_FloatingNotice_Purpose": {

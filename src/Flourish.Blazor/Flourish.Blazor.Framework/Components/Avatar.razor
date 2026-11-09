@@ -1,69 +1,90 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
 @inherits TextComponentBase
-@using System.Globalization
 
-<span @attributes="AdditionalAttributes" class="f-avatar @Class" style="@AvatarStyle"
-      role="@(Decorative ? null : "img")" aria-label="@(Decorative ? null : AccessibleName)" aria-hidden="@(Decorative ? "true" : null)">
-    @if (ImageUrl is { } source && FailedUrl != source)
-    {
-        <img @key="source" src="@source" alt="" decoding="async" @onerror="() => ImageFailed(source)" />
-    }
-    else if (Initials.Length > 0)
-    {
-        <span class="f-avatar-initials" aria-hidden="true">@Initials</span>
-    }
-    else
-    {
-        <Icon Name="person" Class="f-avatar-placeholder" />
-    }
-</span>
-
-@code {
-    [Parameter] public string? Url { get; set; }
-    [Parameter] public string Name { get; set; } = string.Empty;
-    [Parameter] public int Size { get; set; } = 64;
-    [Parameter] public bool Decorative { get; set; }
-    [Parameter] public string? Class { get; set; }
-    [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-
-    private string? PreviousUrl;
-    private string? FailedUrl;
-    private string? ImageUrl => SafeImageUrl(Url);
-    private string AvatarStyle => FormattableString.Invariant($"--f-avatar-size:{Size}px");
-    private string AccessibleName => string.IsNullOrWhiteSpace(Name) ? Ui("Avatar_Account", "Account") : Name.Trim();
-    private string Initials
-    {
-        get
+<div @attributes="AdditionalAttributes" @ref="Owner" class="f-avatar @Class" style="@AvatarStyle">
+    <div class="f-avatar-portrait">
+        <span class="f-avatar-image" role="@(Decorative ? null : "img")"
+              aria-label="@(Decorative ? null : AccessibleName)" aria-hidden="@(Decorative ? "true" : null)">
+            @if (ImageUrl is { } source && FailedUrl != source)
+            {
+                <img @key="source" src="@source" alt="" decoding="async" @onerror="() => ImageFailed(source)" />
+            }
+            else if (Initials.Length > 0)
+            {
+                <span class="f-avatar-initials" aria-hidden="true">@Initials</span>
+            }
+            else
+            {
+                <Icon Name="person" Class="f-avatar-placeholder" />
+            }
+        </span>
+        @if (SaveAsync is not null)
         {
-            var words = (Name ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-            if (words.Length == 0) return string.Empty;
-            var first = StringInfo.GetNextTextElement(words[0]);
-            return (words.Length > 1 ? first + StringInfo.GetNextTextElement(words[^1]) : first).ToUpperInvariant();
+            <input @ref="Picker" class="f-avatar-picker" type="file" accept="image/jpeg,image/png,image/webp"
+                   aria-label="@Ui("Avatar_Edit", "Change profile photo")" aria-describedby="@(HasHelp ? HelpId : null)"
+                   disabled="@(Disabled || Loading || CropOpen || Saving)" @onchange="ChoosePhotoAsync" />
+            <span class="f-avatar-edit" aria-hidden="true"><Icon Name="edit" /></span>
         }
-    }
-
-    protected override void OnParametersSet()
+        @if (HasHelp)
+        {
+            <span class="f-avatar-help" data-expanded="@(HelpExpanded ? "true" : null)" data-dismissed="@(HelpDismissed ? "true" : null)"
+                  @onkeydown="HandleHelpKey" @onmouseleave="ResetHelp" @onfocusout="ResetHelp">
+                <Button Variant="ButtonVariant.Quiet" Class="f-avatar-help-trigger" Icon="help"
+                        aria-label="@Ui("Avatar_PhotoHelp", "Photo requirements")" aria-describedby="@HelpId" OnClick="ToggleHelp" />
+            </span>
+            <span class="f-avatar-tooltip" id="@HelpId" role="tooltip">@HelpText!.Trim()</span>
+        }
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Name))
     {
-        base.OnParametersSet();
-        if (Size is < 16 or > 512) throw new ArgumentOutOfRangeException(nameof(Size), "Avatar size must be between 16 and 512 pixels.");
-        if (!string.Equals(PreviousUrl, Url, StringComparison.Ordinal)) { PreviousUrl = Url; FailedUrl = null; }
+        <strong class="f-avatar-name" aria-hidden="@(Decorative ? null : "true")">@Name.Trim()</strong>
     }
-
-    private void ImageFailed(string source)
+    @if (!string.IsNullOrWhiteSpace(Description))
     {
-        // An event from a removed image cannot hide a newer source.
-        if (string.Equals(source, ImageUrl, StringComparison.Ordinal)) FailedUrl = source;
+        <span class="f-avatar-description">@Description.Trim()</span>
     }
-
-    private static string? SafeImageUrl(string? value)
+    @if (Loading)
     {
-        if (string.IsNullOrWhiteSpace(value)) return null;
-        value = value.Trim();
-        if (value.Any(char.IsControl) || value.Contains('\\')) return null;
-        if (value.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-            return new[] { "data:image/png;base64,", "data:image/jpeg;base64,", "data:image/gif;base64,", "data:image/webp;base64," }
-                .Any(prefix => value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) ? value : null;
-        if (!Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri)) return null;
-        return !uri.IsAbsoluteUri || uri.Scheme is "https" or "http" ? value : null;
+        <span class="f-avatar-status" role="status">@Ui("Avatar_Loading", "Opening photo…")</span>
     }
-}
+    @if (PickerError is { } error)
+    {
+        <Notice Severity="NotificationSeverity.Error">@ErrorText(error)</Notice>
+    }
+    @if (SaveAsync is not null || CropOpen)
+    {
+        <Dialog Title="@Ui("Avatar_CropTitle", "Adjust profile photo")" Class="f-avatar-crop"
+                IsOpen="@CropOpen" IsOpenChanged="@CropVisibilityChangedAsync" Busy="@Saving">
+            <ChildContent>
+                <div @ref="Editor" class="f-avatar-editor">
+                    <canvas width="256" height="256" class="f-avatar-preview" role="img"
+                            aria-label="@Ui("Avatar_Preview", "Cropped photo preview")"></canvas>
+                    <div class="f-avatar-adjustments">
+                        <Field Id="@(ControlId + "-zoom")" Label="@Ui("Avatar_Zoom", "Zoom")">
+                            <input id="@(ControlId + "-zoom")" data-avatar-range="zoom" type="range" min="100" max="300" value="100"
+                                   disabled="@(Disabled || Saving || !CropReady)" />
+                        </Field>
+                        <Field Id="@(ControlId + "-horizontal")" Label="@Ui("Avatar_Horizontal", "Horizontal position")">
+                            <input id="@(ControlId + "-horizontal")" data-avatar-range="horizontal" type="range" min="-100" max="100" value="0"
+                                   disabled="@(Disabled || Saving || !CropReady)" />
+                        </Field>
+                        <Field Id="@(ControlId + "-vertical")" Label="@Ui("Avatar_Vertical", "Vertical position")">
+                            <input id="@(ControlId + "-vertical")" data-avatar-range="vertical" type="range" min="-100" max="100" value="0"
+                                   disabled="@(Disabled || Saving || !CropReady)" />
+                        </Field>
+                    </div>
+                    @if (CropError is { } cropError)
+                    {
+                        <Notice Severity="NotificationSeverity.Error">@ErrorText(cropError)</Notice>
+                    }
+                </div>
+            </ChildContent>
+            <Actions>
+                <Button Variant="ButtonVariant.Quiet" Text="@Ui("Confirmation_Cancel", "Cancel")" Disabled="@Saving"
+                        OnClick="CloseCropAsync" />
+                <Button Text="@Ui("SaveChanges_Save", "Save")" Disabled="@(Disabled || !CropReady || SaveAsync is null)"
+                        Busy="@Saving" OnClick="SaveCropAsync" />
+            </Actions>
+        </Dialog>
+    }
+</div>

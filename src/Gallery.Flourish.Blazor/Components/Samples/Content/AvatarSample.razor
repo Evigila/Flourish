@@ -3,23 +3,21 @@
 @attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Avatar")]
 
 <UniformGrid Columns="2" NarrowColumns="1">
-    <UniformGridItem Information="true" Title="@Localization.Parse(TextKey.Catalog_Avatar_Purpose)">
-        <Avatar Name="Alex Morgan" Size="96" />
-    </UniformGridItem>
-    <UniformGridItem Information="true" Title="@Localization.Parse(TextKey.Catalog_Avatar_Purpose)">
-        <Avatar Url="@Photo" Name="王 小明" Size="96" />
-    </UniformGridItem>
+    <Avatar Url="@Photo" Name="Alex Morgan" Size="96" SaveAsync="SavePhoto"
+            Description="@Localization.Parse(TextKey.Catalog_Avatar_SampleDescription)"
+            HelpText="@(!Preview ? Localization.Parse(TextKey.Catalog_Avatar_SampleHelp) : null)" />
 </UniformGrid>
-@if (!Preview)
-{
-    <InlineActions>
-        <Avatar Name="Renée Évora" Size="32" />
-        <Avatar Size="48" />
-        <Avatar Name="Alex Morgan" Size="64" Decorative="true" /><span>Alex Morgan</span>
-    </InlineActions>
-}
 
 @code {
     [Parameter] public bool Preview { get; set; }
-    private const string Photo = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aP1sAAAAASUVORK5CYII=";
+
+    private string? Photo;
+    private Func<string, Task<bool>>? SavePhoto => Preview ? null : SavePhotoAsync;
+
+    private Task<bool> SavePhotoAsync(string dataUrl)
+    {
+        Photo = dataUrl;
+        StateHasChanged();
+        return Task.FromResult(true);
+    }
 }
