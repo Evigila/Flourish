@@ -541,6 +541,21 @@ test("embedded markers preserve native checked semantics and never acquire stand
   assert.match(frameworkCss, /@media\s*\(forced-colors:active\)\s*\{\s*\.f-selection-indicator\s*\{\s*color:CanvasText/);
 });
 
+test("embedded marker typography is inherited natively and supplied only by optional Design", () => {
+  const native = rules(frameworkCss), skinned = rules(frameworkCss + "\n" + designCss);
+  const expectedFont = '800 17px/1 var(--f-font,"Segoe UI",sans-serif)';
+  const pickerMark = new Map(rules(designCss).filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
+  assert.equal(pickerMark.get("font"), expectedFont);
+  assert.doesNotMatch(strip(frameworkCss), /Segoe UI/);
+  for (const tag of ["input", "span"]) {
+    const {item:label} = popupFixture("multi", "left");
+    const marker = element(tag, ["f-selection-indicator"], label);
+    assert.equal(cascade(native, marker, "font"), "inherit");
+    assert.equal(cascade(native, marker, "line-height"), "1");
+    assert.equal(cascade(skinned, marker, "font"), pickerMark.get("font"));
+  }
+});
+
 test("multiselect labels keep text left and the stable compact native input on the right", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left","right"]) {
     const allStyles=rules(css), {item:label}=popupFixture("multi",alignment);

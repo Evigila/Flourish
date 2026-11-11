@@ -3,7 +3,7 @@
     box-sizing:border-box; display:inline-grid; place-content:center;
     width:var(--f-choice-size,28px); height:var(--f-choice-size,28px); flex:0 0 var(--f-choice-size,28px);
     padding:0; margin:0; border:0; border-radius:0; appearance:none; background:transparent; color:inherit;
-    font:800 17px/1 var(--f-font,"Segoe UI",sans-serif); cursor:inherit;
+    font:inherit; line-height:1; cursor:inherit;
 }
 span.f-selection-indicator { visibility:hidden; }
 span.f-selection-indicator[data-selected=true],
