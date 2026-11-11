@@ -9,7 +9,7 @@ function pixels(node, name, number) {
     if (node.style.getPropertyValue(property(name)) !== value) node.style.setProperty(property(name), value);
 }
 function release(node) {
-    for (const name of ['left','width','bottom','limit','shift']) node.style.removeProperty(property(name));
+    for (const name of ['left','width','bottom','limit','right','height']) node.style.removeProperty(property(name));
     node.removeAttribute('data-f-notice-docked');
 }
 function visible(node) {
@@ -28,6 +28,20 @@ function own(state, node) {
 
 // A separate fixed frame preserves Blazor's original DOM and the full unshrunk bar width.
 // The actual message remains an ordinary Notice, including its hidden, ID and live attributes.
+function naturalHeight(node) {
+    const win = node.ownerDocument.defaultView, style = win.getComputedStyle(node);
+    const number = value => Number.parseFloat(value) || 0;
+    const children = [...(node.children ?? [])].filter(child => child.getClientRects().length);
+    if (!children.length) return node.getBoundingClientRect().height;
+    const heights = children.map(child => {
+        const childStyle = win.getComputedStyle(child);
+        return child.getBoundingClientRect().height + number(childStyle.marginTop) + number(childStyle.marginBottom);
+    });
+    const stacked = style.display !== 'flex' || style.flexDirection.startsWith('column');
+    const content = stacked ? heights.reduce((sum,value) => sum + value,0) + number(style.rowGap) * (heights.length - 1) : Math.max(...heights);
+    return content + number(style.paddingTop) + number(style.paddingBottom) + number(style.borderTopWidth) + number(style.borderBottomWidth);
+}
+function clearHeight(node) { node.style.removeProperty(property('height')); }
 function arrange(state, dialog, group, view) {
     const frame = group.notices[0].parentElement.getBoundingClientRect();
     const body = dialog?.querySelector(':scope > .f-dialog-body');
@@ -40,42 +54,55 @@ function arrange(state, dialog, group, view) {
     const split = group.bars.length > 0 && width >= 720;
     const noticeWidth = split ? Math.floor((width - gap) * .42) : width;
     const barWidth = split ? width - gap - noticeWidth : width;
-    const barHeightBudget = split ? height : height * .6;
-    const barLimit = Math.max(0,(barHeightBudget - (group.bars.length - 1) * gap) / Math.max(1,group.bars.length));
-    const barCenter = split ? right - barWidth / 2 : (left + right) / 2;
-    let barStack = 0;
+    const barLimit = Math.max(0,((split ? height : height * .6) - (group.bars.length - 1) * gap) / Math.max(1,group.bars.length));
     for (const bar of group.bars) {
         own(state,bar);
         pixels(bar,'width',barWidth);
-        pixels(bar,'shift',barCenter - (frame.left + frame.right) / 2);
-        pixels(bar,'bottom',frame.bottom - bottom + barStack);
+        // Relative to the original fixed envelope, never to a transitioning panel.
+        pixels(bar,'right',frame.right - right);
         pixels(bar,'limit',barLimit);
-        barStack += bar.getBoundingClientRect().height + gap;
+    }
+    for (const notice of group.notices) {
+        const root = notice.parentElement;
+        own(state,root);
+        pixels(root,'width',noticeWidth);
+        pixels(root,'left',left - root.getBoundingClientRect().left);
+    }
+    // Direct content stays naturally sized inside the imposed outer height; measuring
+    // the shell here would feed its previous equalized height back into the next pass.
+    const barHeights = group.bars.map(naturalHeight), noticeHeights = group.notices.map(naturalHeight);
+    const sharedHeight = split ? Math.min(height,Math.max(
+        Math.max(...barHeights) * group.bars.length + (group.bars.length - 1) * gap,
+        Math.max(...noticeHeights) * group.notices.length + (group.notices.length - 1) * gap)) : 0;
+    let barStack = 0;
+    for (let index = 0; index < group.bars.length; index++) {
+        const bar = group.bars[index];
+        const outerHeight = split ? Math.max(0,(sharedHeight - (group.bars.length - 1) * gap) / group.bars.length) : Math.min(barLimit,barHeights[index]);
+        if (split) pixels(bar,'height',outerHeight); else clearHeight(bar);
+        pixels(bar,'bottom',frame.bottom - bottom + barStack);
+        barStack += outerHeight + gap;
     }
     let noticeStack = split ? 0 : barStack;
     const count = group.notices.length;
-    const spacing = Math.min(gap, Math.max(0,height - noticeStack) / (count * 2));
+    const spacing = Math.min(gap,Math.max(0,height - noticeStack) / (count * 2));
     const limit = Math.max(0,(height - noticeStack - (count - 1) * spacing) / count);
-    // DOM order also defines reading order, with later results nearest the bottom.
-    for (const notice of [...group.notices].reverse()) {
-        const root = notice.parentElement;
-        own(state,root);
-        const rect = root.getBoundingClientRect();
-        pixels(root,'width',noticeWidth);
-        pixels(root,'left',left - rect.left);
-        pixels(root,'bottom',rect.bottom - bottom + noticeStack);
+    // DOM order remains reading order, with later results nearest the bottom.
+    for (let index = count - 1; index >= 0; index--) {
+        const root = group.notices[index].parentElement;
+        const outerHeight = split ? Math.max(0,(sharedHeight - (count - 1) * spacing) / count) : Math.min(limit,noticeHeights[index]);
+        if (split) pixels(root,'height',outerHeight); else clearHeight(root);
+        pixels(root,'bottom',root.getBoundingClientRect().bottom - bottom + noticeStack);
         pixels(root,'limit',limit);
-        noticeStack += notice.getBoundingClientRect().height + spacing;
+        noticeStack += outerHeight + spacing;
     }
-
 }
 function signature(entry) {
     const notice = entry.notice;
     return [notice.innerHTML,notice.className,notice.getAttribute('role'),entry.root.getAttribute('data-f-notice-key')].join('\u0000');
 }
 function dismissalDelay(root) {
-    const value = Number(root.getAttribute('data-f-notice-dismiss-ms') ?? 5000);
-    return Number.isFinite(value) && value >= 0 ? value : 5000;
+    const value = Number(root.getAttribute('data-f-notice-dismiss-ms') ?? 3500);
+    return Number.isFinite(value) && value >= 0 ? value : 3500;
 }
 function phase(entry, value) {
     entry.phase = value;
@@ -91,11 +118,30 @@ function cancelExit(entry) {
     if (entry.exitTimer !== null) entry.state.doc.defaultView.clearTimeout(entry.exitTimer);
     entry.exitTimer = null;
 }
+function progress(entry, running = false) {
+    const root = entry.root;
+    const timed = entry.delay > 0 && entry.hostVisible;
+    if (timed && !root.hasAttribute('data-f-notice-timed')) root.setAttribute('data-f-notice-timed','');
+    else if (!timed) root.removeAttribute('data-f-notice-timed');
+    const fraction = entry.delay > 0 ? Math.max(0,Math.min(1,entry.remaining / entry.delay)) : 0;
+    for (const [name,value] of [['progress',String(fraction)],['duration',entry.remaining + 'ms'],['steps',String(Math.max(1,Math.ceil(entry.remaining / 1000)))]]) {
+        const key = property(name);
+        if (root.style.getPropertyValue(key) !== value) root.style.setProperty(key,value);
+    }
+    if (running) {
+        entry.progressTurn = !entry.progressTurn;
+        root.setAttribute('data-f-notice-progress',entry.progressTurn ? 'a' : 'b');
+    } else root.removeAttribute('data-f-notice-progress');
+}
 function releaseNotice(entry) {
     cancelCountdown(entry);
     cancelExit(entry);
     for (const remove of entry.removers) remove();
     entry.root.removeAttribute('data-f-notice-phase');
+    entry.root.removeAttribute('data-f-notice-enter');
+    entry.root.removeAttribute('data-f-notice-progress');
+    entry.root.removeAttribute('data-f-notice-timed');
+    for (const name of ['progress','duration','steps']) entry.root.style.removeProperty(property(name));
 }
 function current(entry, generation) {
     if (!entry.root.isConnected || entry.state.entries.get(entry.root) !== entry) return false;
@@ -104,13 +150,15 @@ function current(entry, generation) {
     reconcileNotice(entry.state,entry.root);
     return entry.state.entries.get(entry.root) === entry && entry.generation === generation && entry.hostVisible && !entry.paused;
 }
-function finishExit(entry, generation) {
-    if (!current(entry,generation) || entry.phase !== 'closing') return;
+function finishExit(entry, generation, timer = entry.exitTimer) {
+    if (entry.exitTimer !== timer || !current(entry,generation) || entry.exitTimer !== timer || entry.phase !== 'closing') return;
     entry.exitTimer = null;
     phase(entry,'dismissed');
     entry.state.schedule();
 }
 function beginExit(entry) {
+    entry.remaining = 0;
+    progress(entry);
     phase(entry,'closing');
     const win = entry.state.doc.defaultView;
     const duration = win.getComputedStyle(entry.notice).animationDuration ?? '0s';
@@ -121,19 +169,23 @@ function beginExit(entry) {
     }
     const generation = entry.generation;
     // One frame of slack keeps the slot reserved through the final animation paint.
-    entry.exitTimer = win.setTimeout(() => finishExit(entry,generation),milliseconds + 16);
+    const timer = win.setTimeout(() => finishExit(entry,generation,timer),milliseconds + 16);
+    entry.exitTimer = timer;
 }
 function arm(entry) {
     if (entry.timer !== null || entry.paused || entry.phase !== 'shown' || entry.delay === 0) return;
     const win = entry.state.doc.defaultView, generation = entry.generation;
     entry.deadline = win.performance.now() + entry.remaining;
-    entry.timer = win.setTimeout(() => {
+    progress(entry,true);
+    const timer = win.setTimeout(() => {
+        if (entry.timer !== timer) return;
         const accepted = current(entry,generation);
-        if (entry.generation !== generation) return;
+        if (entry.generation !== generation || entry.timer !== timer || !accepted || entry.phase !== 'shown') return;
         entry.timer = null;
         entry.remaining = 0;
-        if (accepted && entry.phase === 'shown') beginExit(entry);
+        beginExit(entry);
     },entry.remaining);
+    entry.timer = timer;
 }
 function createNotice(state, root, notice) {
     const entry = { state,root,notice,phase:null,generation:0,delay:null,signature:null,hostVisible:false,
@@ -160,8 +212,8 @@ function reconcileNotice(state, root) {
     const nextSignature = signature(entry), delay = dismissalDelay(root);
     const hostVisible = visible(root) && !notice.hidden
         && state.doc.defaultView.getComputedStyle(notice).visibility === 'visible';
-    const restart = entry.signature !== nextSignature || entry.delay !== delay
-        || hostVisible && (!entry.hostVisible || entry.hiddenChanged);
+    const replay = entry.signature !== nextSignature || hostVisible && (!entry.hostVisible || entry.hiddenChanged);
+    const restart = replay || entry.delay !== delay;
     entry.hiddenChanged = false;
     entry.signature = nextSignature;
     entry.delay = delay;
@@ -173,16 +225,25 @@ function reconcileNotice(state, root) {
         entry.generation++;
         entry.remaining = delay;
         phase(entry,hostVisible ? 'shown' : 'suspended');
+        if (hostVisible && replay) {
+            entry.enterTurn = !entry.enterTurn;
+            root.setAttribute('data-f-notice-enter',entry.enterTurn ? 'a' : 'b');
+        }
     }
     if (!hostVisible) {
         cancelCountdown(entry);
         cancelExit(entry);
         phase(entry,'suspended');
+        progress(entry);
     } else if (entry.paused) {
         cancelCountdown(entry);
         cancelExit(entry);
         if (entry.phase === 'closing') phase(entry,'shown');
-    } else arm(entry);
+        progress(entry);
+    } else {
+        if (entry.delay === 0) progress(entry);
+        arm(entry);
+    }
     return entry;
 }
 
@@ -194,7 +255,10 @@ function synchronize(state) {
     for (const root of roots) {
         const notice = root.firstElementChild;
         observed.add(root);
-        if (notice) observed.add(notice);
+        if (notice) {
+            observed.add(notice);
+            for (const child of notice.children ?? []) observed.add(child);
+        }
         const entry = reconcileNotice(state,root);
         if (!entry?.hostVisible || entry.phase === 'dismissed' || !visible(notice)) continue;
         const dialog = root.closest('dialog');
@@ -208,7 +272,10 @@ function synchronize(state) {
     }
     for (const panel of doc.querySelectorAll(panels)) {
         const group = groups.get(panel.closest('dialog'));
-        if (group && visible(panel)) { group.bars.push(panel); observed.add(panel); }
+        if (group && visible(panel)) {
+            group.bars.push(panel); observed.add(panel);
+            for (const child of panel.children ?? []) observed.add(child);
+        }
     }
     const viewport = win.visualViewport;
     const left = viewport?.offsetLeft ?? 0, top = viewport?.offsetTop ?? 0;

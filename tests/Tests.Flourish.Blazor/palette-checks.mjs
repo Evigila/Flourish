@@ -719,8 +719,8 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-hover"), "var(--f-preview-danger)");
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-click"), "var(--f-click-danger)");
   assert.equal(dangerGrid.declarations.get("--f-uniform-cell-interaction-foreground"), "var(--f-surface-light)");
-  const gridHover = one("uniform-grid", "Uniform-grid hover", rule => rule.selector.includes(".f-uniform-grid-button:hover"));
-  const gridPress = one("uniform-grid", "Uniform-grid press", rule => rule.selector.includes(".f-uniform-grid-button:active"));
+  const gridHover = one("uniform-grid", "Uniform-grid hover", rule => rule.selector.includes(".f-uniform-grid-button:hover") && !rule.selector.includes(">"));
+  const gridPress = one("uniform-grid", "Uniform-grid press", rule => rule.selector.includes(".f-uniform-grid-button:active") && !rule.selector.includes(">"));
   assert.equal(property(gridHover.body, "background"), "var(--f-uniform-cell-hover,var(--f-target-preview))");
   assert.equal(property(gridPress.body, "background"), "var(--f-uniform-cell-click,var(--f-target-click))");
 });
@@ -861,6 +861,10 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
       const selectors = selectorArms(rule.selector);
       const compact = selector => /\[data-(?:compact-heading|heading-mode\s*=\s*["']?compact["']?)\]/.test(selector);
       const isTitle = selector => /\.(?:f-)?page-heading\b/.test(selector) && /\bh1\s*$/.test(selector);
+      if (selectors.every(selector => selector === '.f-heading-overlay-panel')) {
+        assert.equal(size.replaceAll(/\s/g,''),'var(--f-type-page-compact,38px)');
+        continue;
+      }
       const normalized = size.replaceAll(/\s/g, "");
       if (selectors.every(selector => isTitle(selector) && compact(selector))) {
         assert.match(normalized, /^var\(--f-type-page-compact(?:,38px)?\)$/, `${relative(repositoryRoot, path)} compact title size`);

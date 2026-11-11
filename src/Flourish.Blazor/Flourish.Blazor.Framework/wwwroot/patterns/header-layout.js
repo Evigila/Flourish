@@ -127,10 +127,13 @@ function update(state) {
     if (state.surface !== context.surface) {
         state.mutation?.disconnect();
         state.surface = context.surface;
-        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden','data-f-native-select-ready'], childList:true, subtree:true });
+        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden','data-f-native-select-ready','data-shell-header-follow-content'], childList:true, subtree:true });
     }
     const bounds = contentBounds(target);
-    const layout = resolveHeaderLayout(header.getBoundingClientRect(), bounds,
+    const headerBounds = header.getBoundingClientRect();
+    const followsContent = header.getAttribute('data-shell-header-follow-content') === 'true';
+    const menuBounds = followsContent ? bounds : headerBounds;
+    const layout = resolveHeaderLayout(headerBounds, menuBounds,
         intrinsicWidth(start), intrinsicWidth(end), getComputedStyle(header).direction, intrinsicWidth(center));
     if (!layout) return;
     setProperty(header, '--f-shell-content-start', layout.start);
@@ -164,7 +167,7 @@ export function initializeShellHeaders(scope = document) {
             state = { header, observed:new Set(), footers:new Set(), footerStyles:new Map(), frame:0, surface:null };
             state.resize = new ResizeObserver(() => schedule(state));
             state.mutation = new MutationObserver(records => {
-                if (records.some(record => record.target !== header && !(record.attributeName === 'style'
+                if (records.some(record => record.attributeName === 'data-shell-header-follow-content' || record.target !== header && !(record.attributeName === 'style'
                     && state.footers.has(record.target)
                     && state.footerStyles.get(record.target) === record.target.getAttribute('style')))) schedule(state);
             });

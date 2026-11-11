@@ -1,5 +1,82 @@
 # Project dependency inventory
 
+## Local shell and navigation candidate, 2026-11-10
+
+The six immutable **1.4.8-preview.10** archives use the existing package identities and dependency declarations. The source default remains **1.4.7** with Essential.Culture **1.4.0**. The candidate adds brand-adjacent menu placement by default, optional FollowContentWidth alignment, standard header action spacing and regular menu/action text, plus optional secondary/tertiary icons. It remains local only; no public release, tag or push occurred.
+
+The coordinating build passed Release with zero warnings/errors; Verify-PackageSet passed identity, dependency and required-asset verification for all six packages. Before additional cascade assertions were added, the focused header/native-select/tutorial JavaScript run passed 45 checks. Later cascade assertions and final consumer tests are not claimed as passed by this record. Provenance: ../Colligere/docs-ai/current/flourish-local-preview-1.4.8-preview.10.json (SHA-256 a7a939e1036db6ea7422836ef7a311e86b6bd5b65d259f4f21a5199ce81b31b2). See [change and manual acceptance](1_changelogs/2026-11-10_115900_refine-shell-and-navigation-defaults.md).
+
+## Current audited dependencies, 2026-11-10
+
+Source Directory.Build.props declares **VersionPrefix=1.4.7**, no suffix, and **EssentialCultureVersion=1.4.0**. Project/package declarations, tool pins, CI action refs and vendored-resource boundaries are unchanged by this audit. The latest completed local candidate evidenced in the collaborating workspace is **1.4.8-preview.10**, at ../Colligere/artifacts/flourish-preview/1.4.8-preview.10, with provenance ../Colligere/docs-ai/current/flourish-local-preview-1.4.8-preview.10.json. The Release build passed with zero warnings/errors, and Verify-PackageSet verified all six package identities, dependencies and required assets. Colligere selects this local feed; its final regressions are still in progress. These explicit build overrides do not change the default source version or constitute a public release. Older dated sections below preserve historical snapshots.
+
+All 22 project declarations and 22 matching existing obj/project.assets.json files were read without restoring. Their mixed-age caches contain **51 distinct external package/version pairs**. Core/Blazor snapshots are dated 2026-11-06; native WPF snapshots 2026-10-07 and WinUI snapshots 2026-10-05. WPF caches still resolve Essential Culture/Wpf/Generator **1.3.0**, while current declarations require **1.4.0**: these are stale observations, not verification that the current native graph restores. Blazor caches resolve Essential **1.4.0**. A current native build needs a normal authorized restore; no dependency changed for inspection.
+
+[Machine-readable evidence](dependency-evidence-2026-11-10.json) records every declaration/reference, asset timestamp/hash, package consumer set, immediate dependency parent, cached source/license and runtime download pack. P01–P22 use the project aliases below. Package purposes and declared constraints remain in the direct/transitive tables; this table supersedes their older observed-cache versions. Cached acquisition metadata is distinct from declared repository metadata. A license filename is vendor metadata, not an inferred SPDX expression.
+
+| Package | Observed version | Relationship | Consumer projects | Cached license metadata | Source metadata |
+| --- | --- | --- | --- | --- | --- |
+| Arkheide.Essential.Culture.Blazor | 1.4.0 | Direct P06 | P04, P06, P13, P17, P19, P22 | MIT | [declared source](https://github.com/Evigila/Essential) |
+| Arkheide.Essential.Culture.Generator | 1.3.0 | Transitive | P07, P15, P20, P21 | MIT | [declared source](https://github.com/Evigila/Arkheide.Essential.Culture.git) |
+| Arkheide.Essential.Culture.Generator | 1.4.0 | Transitive | P04, P06, P13, P17, P19, P22 | MIT | [declared source](https://github.com/Evigila/Essential) |
+| Arkheide.Essential.Culture.Wpf | 1.3.0 | Direct P07 | P07, P15, P20, P21 | MIT | [declared source](https://github.com/Evigila/Arkheide.Essential.Culture.git) |
+| Arkheide.Essential.Culture | 1.3.0 | Transitive | P07, P15, P20, P21 | MIT | [declared source](https://github.com/Evigila/Arkheide.Essential.Culture.git) |
+| Arkheide.Essential.Culture | 1.4.0 | Transitive | P04, P06, P13, P17, P19, P22 | MIT | [declared source](https://github.com/Evigila/Essential) |
+| Castle.Core | 5.1.1 | Transitive | P18 | Apache-2.0 | [declared source](https://github.com/castleproject/Core) |
+| Microsoft.AspNetCore.App.Internal.Assets | 10.0.11 | Web SDK injected | P13, P16 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.CodeCoverage | 17.14.1 | Transitive | P18, P20, P21 | MIT | [declared source](https://github.com/microsoft/vstest) |
+| Microsoft.Extensions.Configuration.Abstractions | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Configuration.FileExtensions | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Configuration.Json | 10.0.8 | Direct P05 | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Configuration | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.DependencyInjection.Abstractions | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Diagnostics.Abstractions | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.FileProviders.Abstractions | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.FileProviders.Physical | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.FileSystemGlobbing | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Hosting.Abstractions | 10.0.8 | Direct P05 | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Logging.Abstractions | 10.0.8 | Direct P05 | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Options | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.Extensions.Primitives | 10.0.8 | Transitive | P04, P05, P18, P19 | MIT | [declared source](https://github.com/dotnet/dotnet) |
+| Microsoft.NET.Test.Sdk | 17.14.1 | Direct P18, P20, P21 | P18, P20, P21 | MIT | [declared source](https://github.com/microsoft/vstest) |
+| Microsoft.TestPlatform.ObjectModel | 17.14.1 | Transitive | P18, P20, P21 | MIT | [declared source](https://github.com/microsoft/vstest) |
+| Microsoft.TestPlatform.TestHost | 17.14.1 | Transitive | P18, P20, P21 | MIT | [declared source](https://github.com/microsoft/vstest) |
+| Microsoft.Web.WebView2 | 1.0.3719.77 | Transitive | P08, P14 | LICENSE.txt | [declared source](https://aka.ms/webview) |
+| Microsoft.Windows.AI.MachineLearning | 2.1.74 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.Windows.SDK.BuildTools.MSIX | 1.7.251221100 | Transitive | P08, P14 | sdk_license.txt | [declared source](https://aka.ms/WinSDKProjectURL) |
+| Microsoft.Windows.SDK.BuildTools | 10.0.26100.4654 | Transitive | P08, P14 | https://aka.ms/WinSDKLicenseURL | [declared source](https://aka.ms/WinSDKProjectURL) |
+| Microsoft.WindowsAppSDK.AI | 2.3.4 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK.Base | 2.0.4 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK.DWrite | 2.1.0 | Transitive | P08, P14 | license.txt | [declared source](https://aka.ms/WindowsAppSDK) |
+| Microsoft.WindowsAppSDK.Foundation | 2.3.5 | Transitive | P08, P14 | license.txt | [declared source](https://aka.ms/windowsappsdk) |
+| Microsoft.WindowsAppSDK.InteractiveExperiences | 2.1.3 | Transitive | P08, P14 | license.txt | [declared source](https://aka.ms/windowsappsdk) |
+| Microsoft.WindowsAppSDK.ML | 2.1.74 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK.Runtime | 2.3.1 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK.Widgets | 2.0.5 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK.WinUI | 2.3.0 | Transitive | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Microsoft.WindowsAppSDK | 2.3.1 | Direct P08, P14 | P08, P14 | license.txt | [declared source](https://github.com/microsoft/windowsappsdk) |
+| Moq | 4.20.72 | Direct P18 | P18 | BSD-3-Clause | [declared source](https://github.com/moq/moq) |
+| Newtonsoft.Json | 13.0.3 | Transitive | P18, P20, P21 | MIT | [declared source](https://github.com/JamesNK/Newtonsoft.Json) |
+| System.Diagnostics.EventLog | 6.0.0 | Transitive | P18 | MIT | [declared source](https://github.com/dotnet/runtime) |
+| System.Numerics.Tensors | 9.0.0 | Transitive | P08, P14 | MIT | [declared source](https://github.com/dotnet/runtime) |
+| xunit.abstractions | 2.0.3 | Transitive | P18, P20, P21 | https://raw.githubusercontent.com/xunit/xunit/master/license.txt | [declared source](https://github.com/xunit/xunit) |
+| xunit.analyzers | 1.18.0 | Transitive | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit.analyzers) |
+| xunit.assert | 2.9.3 | Transitive | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit) |
+| xunit.core | 2.9.3 | Transitive | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit) |
+| xunit.extensibility.core | 2.9.3 | Transitive | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit) |
+| xunit.extensibility.execution | 2.9.3 | Transitive | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit) |
+| xunit.runner.visualstudio | 3.1.4 | Direct P18, P20, P21 | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/visualstudio.xunit) |
+| xunit | 2.9.3 | Direct P18, P20, P21 | P18, P20, P21 | Apache-2.0 | [declared source](https://github.com/xunit/xunit) |
+
+The three cached net10 DocFX/CSharpier manifests still contain exactly the **68 bundled external package pairs** listed in the development-tool table. No tool was installed. The SDK constraint remains 10.0.400/latestPatch; this audit observed SDK **10.0.400**, Node **24.21.0**, and shared .NET/ASP.NET/WindowsDesktop runtime versions **10.0.9 and 10.0.11**. CI requests Node major 24 and .NET 10.0.x. Older environment tables remain historical observations, not the current machine inventory.
+
+
+## Local selection-indicator candidate, 2026-11-09
+
+Source VersionPrefix remains **1.4.7**. Explicit MSBuild Version, PackageVersion, VersionPrefix and VersionSuffix overrides produced six local **1.4.8-preview.1** archives in `../Colligere/artifacts/flourish-preview/1.4.8-preview.1`. The candidate includes the current standalone-checkbox and embedded-selection refinement on baseline `2bfb1fe9a838cb25b58b5f2bca26cf4a6f981aeb`; `provenance.json` records 581 build-input hashes, six archive hashes and the production external dependency closure. Its SHA-256 is `B6C118ACD00294E5B32446345155256081B86D53F192B10BB20E277BB4EEA585`.
+
+The Release production build and six-package identity/dependency/required-asset verification passed. Packaged framework.css, controls.js and design.css match the corresponding build/source bytes; `asset-verification.json` records their hashes. Dependencies and SDK declarations are unchanged. This feed is local and immutable; no public version, tag, commit or push was created.
+
 ## Stable 1.4.7 published, 2026-11-09
 
 The six Flourish Core and Blazor identities resolve at **1.4.7** on NuGet.org. Their tagged source is `afe9a4c08af18330d01ea911eddf79242d3e1b7c`. The public archives passed the required package graph and asset checks and 155 fresh-cache consumer checks. Their repository signatures and nonsignature content matched the publication evidence. Essential.Culture resolves at 1.4.0. [Public archive hashes](release-verification.md#flourish-147-uploaded-2026-11-09)
@@ -899,7 +976,7 @@ These audit project snapshots contain **49 distinct package ID/version pairs**: 
 
 | Evidence | What it establishes |
 | --- | --- |
-| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish `VersionPrefix=1.4.4`, `VersionSuffix=preview.shell.20261027.10`, Essential property `1.4.0`, inherited version/license defaults; extension props import the root props. The selected six-package candidate is local; dated public 1.4.3 evidence remains separate. |
+| Current `Directory.Build.props`; `src/Flourish.Extensions/Directory.Build.props` | Flourish VersionPrefix=1.4.7, no suffix, Essential property 1.4.0, inherited version/license defaults; extension props import the root props. Current cache and candidate evidence is recorded above. |
 | Audited `.csproj` declarations and their dated matching `obj/project.assets.json` | Direct package requirements, project edges, target frameworks, exact observed package versions/parents and SDK download requests at the audit baseline. |
 | `artifacts/release-1.4.0/obj/Gallery.Flourish.Blazor/project.assets.json`, written `2026-10-10T04:10:14.3513983Z` | Fresh release restore identifies five referenced Flourish libraries as source projects at 1.4.0 and Essential Core/Blazor/Generator as packages at 1.4.0. It does not establish build/test completion or publication. |
 | Fresh public consumer `artifacts/package-consumers/9f393f06c97c43efb834ffe4b84510d1`; `artifacts/release-1.4.0/public-consumer-provenance.json` | Four independent package-only consumer modes passed 143 checks. All six Flourish and three Essential 1.4.0 package metadata entries identify NuGet.org; no local feed or source project is used. |
@@ -941,7 +1018,7 @@ Project aliases below abbreviate complete consumer sets without omitting project
 | P21 | `tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`)<br>P15 (`Gallery.Flourish.WPF`) |
 | P22 | `tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj` | `net10.0` | P13 (`Gallery.Flourish.Blazor`) |
 
-Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their shared inherited source version is now 1.4.4-preview.shell.20261027.10 for this local candidate; the selected package manifest still contains only the six Core/Blazor IDs above. The dated audit snapshots observed 1.1.3 and later 1.4.1 before subsequent release changes. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
+Each edge above is a `ProjectReference` declared in the consuming project. These are repository source dependencies, not externally restored Flourish packages. Their shared inherited source version is 1.4.7; the selected package manifest still contains only the six Core/Blazor IDs above. The dated audit snapshots observed 1.1.3 and later 1.4.1 before subsequent release changes. The Blazor Abstract -> Core edge supplies platform-neutral services/contracts; Framework -> Abstract supplies production controls; Design -> Framework/Abstract supplies optional visual resources; Culture bridges -> their Framework preserve optional localization. Metapackages compose these entries. Gallery/test edges consume the actual entries. WPF's native Abstract/Framework/Design graph is independent of Core/Blazor. Neither WinUI placeholder project currently references a Flourish source project. Core has no source project dependency.
 
 ## Direct and SDK-injected NuGet packages
 
@@ -1174,10 +1251,10 @@ No database, cloud storage, cache server, telemetry endpoint, authentication pro
 ## Active constraints and unresolved facts
 
 - Essential.Culture 1.4.0 is the current authorized dependency. Runtime adapters and generator are external NuGet packages even though Essential is maintained by the same organization. No sibling Essential source reference is present. Modular resources are selected through Essential CultureModule generation/deployment; no additional JSON merge or filesystem discovery dependency was introduced.
-- Current source is the local **1.4.4-preview.shell.20261027.15** candidate based on **aaac88c** with the retained .13/.14 refinements, after the verified public **stable 1.4.3** release, for the same six Core/Blazor package IDs and Essential.Culture 1.4.0. Current artifact evidence belongs to the explicitly labeled current-candidate section; .14 and older preview hashes remain historical. No new remote publication has occurred. Native WPF and its Culture bridge remain outside this candidate package manifest. The dated audit and public-release records do not certify consumption or verification of this local candidate.
+- Current source defaults to **1.4.7** with Essential.Culture **1.4.0**. The latest completed local preview evidence is **1.4.8-preview.10**; the six-package Release build and package-set verification passed. Consumer regression checks are still in progress. The six-package release manifest excludes WPF/WinUI. Dated releases and older candidates are separate from this current inventory.
 - No dependency adoption or upgrade was performed for this documentation audit. Unknown licenses, source commits, runner/browser/OS versions and unpinned optional tools remain explicitly unknown. The scope is the resolved project/tool distributions above; it does not enumerate every component internal to an OS, browser, SDK or CI runner image.
 - The human-maintained `docs/docfx.en-us.json` and `docs/docfx.zh-cn.json` currently name missing `src/Flourish.WPF/Flourish.WPF.csproj` and `src/Flourish.WPF/Assets/favicon.ico`. The actual meta project is P12. Successful documentation API/resource generation against those stale paths is unverified; ownership rules prevent silently editing the configs during this audit.
 - Root `LICENSE.txt` contains MIT terms but still has `[year] [fullname]` attribution placeholders. Package MIT/Apache declarations and the retained third-party icon licenses are recorded as actual evidence; this inventory does not invent ownership attribution or repair the root license.
 - Optional `build/Test-CultureIntegration.cjs` requires separately available JS Playwright and Edge/Chromium and has no maintained lock/installation manifest. This audit did not install or invoke them. Other Node regressions use built-in modules and do not need npm dependencies.
-- Local Node 26.4.0 differs from CI major 24; the currently installed local SDK 10.0.400 satisfies global.json, while CI's floating 10.0.x install alone does not guarantee it chooses the same feature band required by latestPatch. No compatibility failure is claimed without an actual build evidence change.
+- This audit observes Node **24.21.0**, SDK **10.0.400**, and installed shared runtimes **10.0.9/10.0.11**. Node matches CI major 24. CI floating .NET 10.0.x does not guarantee the same SDK patch; no compatibility test result is implied.
 - Licenses for cached Microsoft.Windows SDK/App SDK payloads use their actual file/URL metadata, including Microsoft vendor terms; they must not be uniformly relabeled MIT. Unknown bundled tool dependency metadata is not a reason to guess or add packages.

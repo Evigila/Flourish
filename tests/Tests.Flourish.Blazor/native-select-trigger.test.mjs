@@ -324,8 +324,9 @@ test("hover language and native select choices retain body weight including the 
     assert.equal(cascade(allStyles, choice, "padding"), "6px 10px");
     assert.equal(cascade(allStyles, choice, "min-height"), "40px");
     assert.equal(cascade(allStyles, choice, "gap"), "12px");
-    const marker = element("span", ["f-select-checkmark"], choice);
-    assert.equal(cascade(allStyles, marker, "background"), checked ? "var(--f-primary)" : "var(--f-surface)");
+    const marker = element("span", ["f-selection-indicator"], choice);
+    assert.equal(cascade(allStyles, marker, "background"), "transparent");
+    assert.equal(cascade(allStyles, marker, "visibility"), checked ? "visible" : "hidden");
     const native = element("select", ["f-select"], null), option = element("option", [], native, checked ? ["checked"] : []);
     assert.equal(cascade(allStyles, option, "font-weight"), "400");
   }
@@ -364,6 +365,17 @@ test("business identity language and native POST controls retain their own targe
     const nativeActions = element("span", ["f-native-select-actions"], popup), menu = element("details", ["f-action-menu"], nativeActions);
     const language = element("summary", ["f-disclosure-button-trigger", "f-button", "f-button-icon", "f-button-quiet"], menu);
     const form = element("form", [], group), logout = element("button", ["f-button", "f-button-icon", "f-button-quiet"], form);
+    const title = element("span", ["shell-header-title"], header);
+    const brand = element("strong", [], title), identityText = element("strong", [], identity);
+    const services = element("div", ["shell-header-center"], header);
+    const menuTrigger = element("summary", ["f-button", "f-button-quiet"], services);
+    const portal = element("a", ["f-button", "f-menu-item", "f-dropdown-item"], services);
+    for (const text of [identityText, language, logout, menuTrigger, portal])
+      assert.equal(cascade(allStyles, text, "font-weight"), "400");
+    assert.equal(cascade(allStyles, brand, "font-weight"), "760");
+    assert.equal(cascade(allStyles, slot, "display"), "flex");
+    assert.equal(cascade(allStyles, slot, "column-gap"), "var(--f-shell-action-gap, 12px)");
+    assert.equal(cascade(allStyles, wing, "column-gap"), cascade(allStyles, slot, "column-gap"));
     for (const control of [language, logout]) {
       const glyph = element("span", ["f-icon"], control);
       assert.equal(cascade(allStyles, control, "width"), "48px");
@@ -492,89 +504,80 @@ test("native picker sizing uses the pre-opening measurement in Framework with op
   }
 });
 
-test("native options reserve the same square choice column for every label and selection", () => {
+test("native options reserve a compact trailing slot without a box or fill", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left", "right"]) {
-    const allStyles = rules(css);
-    const owner = element("select", ["f-select", "f-select-customized"], null, [], [["data-f-popup-align", alignment]]);
+    const allStyles = rules(css), owner = element("select", ["f-select", "f-select-customized"], null, [], [["data-f-popup-align", alignment]]);
     const option = element("option", [], owner);
-    for (const [property, expected] of [["width", "auto"], ["max-width", "none"], ["min-width", "0"], ["display", "grid"], ["grid-template-columns", "var(--f-choice-size,28px) minmax(0,1fr)"], ["column-gap", "10px"], ["white-space", "normal"], ["overflow-wrap", "anywhere"]])
-      assert.equal(cascade(allStyles, option, property), expected, alignment + "/" + property);
-    assert.equal(cascade(allStyles, option, "padding-left"), undefined, "The marker column replaces extra padding rather than adding a second reservation.");
-    assert.equal(cascade(allStyles, option, "text-align"), "left");
+    assert.equal(cascade(allStyles, option, "grid-template-columns"), "minmax(0,1fr) var(--f-choice-size,28px)");
     assert.equal(cascade(allStyles, option, "min-height"), "calc(var(--f-choice-size,28px) + 12px)");
-    assert.equal(cascade(allStyles, option, "padding"), "6px 10px");
+    assert.equal(cascade(allStyles, option, "text-align"), "left");
+    assert.equal(cascade(allStyles, option, "overflow-wrap"), "anywhere");
     const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
-    for (const [property, expected] of [["box-sizing", "border-box"], ["display", "grid"], ["grid-column", "1"], ["grid-row", "1"], ["place-content", "center"], ["width", "var(--f-choice-size,28px)"], ["height", "var(--f-choice-size,28px)"], ["padding", "0"], ["margin", "0"], ["text-align", "center"], ["visibility", "visible"], ["content", '""']])
+    for (const [property, expected] of [["width","var(--f-choice-size,28px)"],["height","var(--f-choice-size,28px)"],["grid-column","2"],["grid-row","1"],["border","0"],["background","transparent"],["content",'""']])
       assert.equal(marker.get(property), expected, property);
-    for (const property of ["position", "left", "top", "transform"]) assert.equal(marker.get(property), undefined, property + " must not remove the native marker from its grid column.");
     const selected = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
     assert.equal(selected.get("content"), '"✓"');
-    for (const property of ["width", "height", "display", "grid-column", "grid-row"]) assert.equal(selected.get(property), undefined, "Selecting a row must preserve " + property + ".");
+    for (const property of ["width","height","border","background","grid-column"])
+      assert.equal(selected.get(property), undefined, "selection must not change geometry or paint: " + property);
   }
 });
 
-test("native choice markers reuse Checkbox geometry, paint and check glyph", () => {
-  const allStyles = rules(frameworkCss + "\n" + designCss);
-  const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
-  const selectedMarker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
-  const checkbox = element("input", ["f-checkbox"], null);
-  for (const property of ["box-sizing", "display", "width", "height", "padding", "margin", "place-content", "border", "border-radius", "color", "background"])
-    assert.equal(marker.get(property), cascade(allStyles, checkbox, property), property);
-  checkbox.states.add("checked");
-  for (const property of ["background", "border-color"]) assert.equal(selectedMarker.get(property), cascade(allStyles, checkbox, property), property);
-  const standardCheck = new Map(allStyles.filter(rule => rule.selectors.includes(".f-checkbox:checked::before")).flatMap(rule => [...rule.declarations]));
-  assert.equal(selectedMarker.get("content"), standardCheck.get("content"));
-  assert.equal(marker.get("font"), standardCheck.get("font"));
+test("embedded markers preserve native checked semantics and never acquire standalone checkbox paint", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles = rules(css), {item:label} = popupFixture("multi","left");
+    const input = element("input",["f-selection-indicator"],label,[],[["type","checkbox"]]);
+    for (const states of [[],["checked"],["checked","hover"],["checked","active"],["disabled"]]) {
+      input.states = new Set(states);
+      for (const [property,expected] of [["width","var(--f-choice-size,28px)"],["height","var(--f-choice-size,28px)"],["border","0"],["background","transparent"]])
+        assert.equal(cascade(allStyles,input,property),expected,states + "/" + property);
+    }
+    for (const selected of [false,true]) {
+      const reference = element("button",["reference-option","selection-option"],element("div",["selection-dropdown-surface"],null),[],[["aria-selected",String(selected)]]);
+      const mark = element("span",["f-selection-indicator"],reference,[],selected ? [["data-selected","true"]] : []);
+      assert.equal(cascade(allStyles,mark,"visibility"),selected ? "visible" : "hidden");
+      assert.equal(cascade(allStyles,reference,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
+    }
+  }
+  assert.match(frameworkCss, /@media\s*\(forced-colors:active\)\s*\{\s*\.f-selection-indicator\s*\{\s*color:CanvasText/);
 });
 
-test("checkbox choice labels have separate marker and longest-label tracks in both physical alignments", () => {
-  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const kind of ["multi"]) for (const alignment of ["left", "right"]) {
-    const allStyles = rules(css), { panel, item } = popupFixture(kind, alignment);
-    const label = item;
-    const checkbox = element("input", [], label, [], [["type", "checkbox"]]);
-    const text = element("span", [], label);
-    assert.equal(cascade(allStyles, label, "display"), "grid", kind);
-    assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-choice-size,28px) minmax(0,1fr)");
-    assert.equal(cascade(allStyles, label, "column-gap"), "10px");
-    assert.equal(cascade(allStyles, label, "justify-content"), "stretch");
-    assert.equal(cascade(allStyles, label, "width"), "auto");
-    assert.equal(cascade(allStyles, checkbox, "grid-column"), "1");
-    assert.equal(cascade(allStyles, checkbox, "grid-row"), "1");
-    assert.equal(cascade(allStyles, checkbox, "justify-self"), "center");
-    assert.equal(cascade(allStyles, text, "grid-column"), "2");
-    assert.equal(cascade(allStyles, text, "grid-row"), "1");
-    assert.equal(cascade(allStyles, text, "min-width"), "0");
-    assert.equal(cascade(allStyles, text, "text-align"), "left");
-    for (const selected of [false, true]) {
-      checkbox.states = new Set(selected ? ["checked"] : []);
-      assert.equal(cascade(allStyles, checkbox, "grid-column"), "1", kind + "/" + selected);
-      assert.equal(cascade(allStyles, label, "grid-template-columns"), "var(--f-choice-size,28px) minmax(0,1fr)");
+test("multiselect labels keep text left and the stable compact native input on the right", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left","right"]) {
+    const allStyles=rules(css), {item:label}=popupFixture("multi",alignment);
+    const checkbox=element("input",["f-selection-indicator"],label,[],[["type","checkbox"]]), text=element("span",[],label);
+    assert.equal(cascade(allStyles,label,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
+    assert.equal(cascade(allStyles,text,"grid-column"),"1");
+    assert.equal(cascade(allStyles,text,"text-align"),"left");
+    for (const selected of [false,true]) {
+      checkbox.states=new Set(selected ? ["checked"] : []);
+      assert.equal(cascade(allStyles,checkbox,"grid-column"),"2");
+      assert.equal(cascade(allStyles,checkbox,"grid-row"),"1");
     }
   }
 });
 
-test("compact choice markers are independent of form heights while labelled checkboxes retain their hit area", () => {
-  const allStyles = rules(frameworkCss + "\n" + designCss), surface = element("div", ["f-root"], null);
-  assert.equal(cascade(allStyles, surface, "--f-choice-size"), "28px");
-  assert.equal(cascade(allStyles, surface, "--f-choice-radius"), "9px");
-  assert.equal(cascade(allStyles, surface, "--f-control-height"), "48px");
-  const label = element("label", ["f-checkbox-label"], surface), checkbox = element("input", ["f-checkbox"], label);
-  assert.equal(cascade(allStyles, label, "min-height"), "var(--f-control-height,48px)");
-  for (const property of ["width", "height"]) assert.equal(cascade(allStyles, checkbox, property), "var(--f-choice-size,28px)");
-  assert.equal(cascade(allStyles, checkbox, "border-radius"), "var(--f-choice-radius,9px)");
-  const nativeLabel = element("label", ["form-check"], surface), nativeCheckbox = element("input", [], nativeLabel, [], [["type", "checkbox"]]);
-  for (const property of ["width", "height"]) assert.equal(cascade(allStyles, nativeCheckbox, property), "var(--f-choice-size,28px)");
-  assert.equal(cascade(allStyles, nativeCheckbox, "border-radius"), "var(--f-choice-radius,9px)");
-  assert.equal(cascade(allStyles, nativeLabel, "min-height"), "var(--f-control-height)");
-  const field = element("input", ["f-input"], surface), button = element("button", ["f-button", "f-button-primary"], surface);
-  assert.equal(cascade(allStyles, field, "height"), "var(--f-control-height,48px)");
-  assert.equal(cascade(allStyles, button, "min-height"), "48px");
-  checkbox.states.add("disabled");
-  assert.equal(cascade(allStyles, checkbox, "cursor"), "not-allowed");
-  checkbox.states.add("focus-visible");
-  assert.equal(cascade(allStyles, checkbox, "outline"), "3px solid var(--f-accent)");
-  checkbox.attributes.set("required", ""); checkbox.attributes.set("aria-invalid", "true");
-  assert.equal(cascade(allStyles, checkbox, "border-color"), "var(--f-danger)");
+test("reference intrinsic width includes the same trailing slot without changing visible wrapping", () => {
+  const allStyles=rules(frameworkCss + "\n" + designCss), root=element("div",["selection-dropdown-surface"],null);
+  const measurement=element("div",["selection-panel-width"],root), row=element("span",["selection-option"],measurement);
+  assert.equal(cascade(allStyles,row,"display"),"grid");
+  assert.equal(cascade(allStyles,row,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
+  assert.equal(cascade(allStyles,row,"white-space"),"nowrap");
+  const visible=element("button",["reference-option","selection-option"],root), text=element("span",[],visible,["first-child"]);
+  assert.equal(cascade(allStyles,text,"min-width"),"0");
+  assert.equal(cascade(allStyles,text,"overflow-wrap"),"anywhere");
+});
+
+test("standalone checkboxes match standard input height while compact choices remain independent", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
+    const allStyles=rules(css), surface=element("div",["f-root"],null);
+    const checkbox=element("input",["f-checkbox"],surface), native=element("input",[],element("label",["form-check"],surface),[],[["type","checkbox"]]);
+    for (const control of [checkbox,native]) for (const property of ["width","height","flex"])
+      assert.equal(cascade(allStyles,control,property),property === "flex" ? "0 0 var(--f-control-height,48px)" : "var(--f-control-height,48px)");
+  }
+  const allStyles=rules(frameworkCss + "\n" + designCss), checkbox=element("input",["f-checkbox"],null,["disabled","focus-visible"],[["aria-invalid","true"]]);
+  assert.equal(cascade(allStyles,checkbox,"cursor"),"not-allowed");
+  assert.equal(cascade(allStyles,checkbox,"outline"),"3px solid var(--f-accent)");
+  assert.equal(cascade(allStyles,checkbox,"border-color"),"var(--f-danger)");
 });
 
 test("compact popup rows retain wrapping and intrinsic growth across text, checkbox and action choices", () => {

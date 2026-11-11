@@ -9,13 +9,11 @@ export function synchronize(root, stage) {
     if (state?.stage !== stage) {
         dispose(root);
         state = {stage, observer: null};
-        state.update = () => updateCompactHeading(root, stage);
-        stage.addEventListener('scroll', state.update, {passive:true});
         state.observer = new MutationObserver(() => { if (!root.isConnected) dispose(root); });
         state.observer.observe(document.body, {childList:true, subtree:true});
         surfaces.set(root, state);
     }
-    state.update();
+    resetCompactHeading(root);
     initializeShellHeaders(root);
     initializePrimaryNavigationPreviews(root);
 }
@@ -76,7 +74,6 @@ export function dispose(root) {
     disposePrimaryNavigationPreviews(root);
     const state = surfaces.get(root);
     if (!state) return;
-    state.stage.removeEventListener('scroll', state.update);
     state.observer?.disconnect();
     for (const header of root.querySelectorAll('.shell-header')) {
         if (header.closest('.content-surface,.navigation-surface') === root) disposeShellHeader(header);

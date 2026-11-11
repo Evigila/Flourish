@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components
+@using EmbeddedSelection = ArkheideSystem.Flourish.Blazor.Components.Internal.SelectionIndicator
 @inherits TextComponentBase
 @implements IAsyncDisposable
 @inject IJSRuntime JS
@@ -32,8 +33,9 @@
                  draggable="@reorderable.ToString().ToLowerInvariant()" tabindex="@(reorderable ? "0" : "-1")"
                  aria-disabled="@((Locked || option.Disabled).ToString().ToLowerInvariant())" aria-label="@Texts.Get(new TextReference("Flourish", "Selection_Reorder", "Reorder {0}"), option.Label)">
                 <label class="f-dropdown-item @(option.Selected ? "is-selected" : null)">
-                    <input type="checkbox" checked="@option.Selected" data-f-selection-key="@option.Key" data-f-fixed="@(!option.CanDeselect ? "true" : null)"
-                           disabled="@(Locked || option.Disabled || !option.CanDeselect || (option.Selected && SelectedCount <= MinimumSelected) || (!option.Selected && SelectedCount >= MaximumSelections))" />
+                    @EmbeddedSelection.Input(option.Selected,
+                        Locked || option.Disabled || !option.CanDeselect || (option.Selected && SelectedCount <= MinimumSelected) || (!option.Selected && SelectedCount >= MaximumSelections),
+                        option.Key, !option.CanDeselect)
                     <span>@option.Label</span>
                 </label>
             </div>

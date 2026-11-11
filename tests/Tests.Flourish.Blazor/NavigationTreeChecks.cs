@@ -13,6 +13,51 @@ internal static class NavigationTreeChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("secondary and tertiary navigation omit decorative icons by default and retain explicit icons", async () =>
+        {
+            NavigationItem[] items =
+            [
+                new("Orders", "/orders/", Children: [new("Create", "/orders/create/", Exact: true), new("Blank", "/blank/", " ")]),
+                new("Empty", "/empty/", ""),
+                new("Catalog", "/catalog/", "shopping_cart", Children: [new("Add", "/catalog/add/", "add")])
+            ];
+            await using var fixture = new Fixture("/orders/create/");
+            await fixture.Run<NavigationTree>(new() { ["Items"] = items }, (_, html) =>
+            {
+                var links = Regex.Matches(html(), @"<a\b[^>]*>.*?</a>", RegexOptions.Singleline).Select(match => match.Value).ToArray();
+                foreach (var href in new[] { "/orders/", "/orders/create/", "/blank/", "/empty/" })
+                    Require(!links.Single(link => Attribute(link, "href") == href).Contains("data-icon=", StringComparison.Ordinal), "A default or blank secondary/tertiary icon rendered a fallback glyph.");
+                Require(links.Single(link => Attribute(link, "href") == "/catalog/").Contains("data-icon=\"shopping_cart\"", StringComparison.Ordinal), "An explicit secondary icon was lost.");
+                Require(links.Single(link => Attribute(link, "href") == "/catalog/add/").Contains("data-icon=\"add\"", StringComparison.Ordinal), "An explicit tertiary icon was lost.");
+                Require(Attribute(Tags(html(), "a").Single(tag => Attribute(tag, "aria-current") == "page"), "href") == "/orders/create/" && Expanded(html()), "Text-only navigation lost selection or ancestor expansion.");
+                Require(html().Contains(">Create</span>", StringComparison.Ordinal), "The text-only destination lost its label.");
+                return Task.CompletedTask;
+            });
+        }));
+
+        tests.Add(("configured text-only navigation keeps primary icons expanded labels and explicit legacy icons", async () =>
+        {
+            await using var fixture = new Fixture("/orders/create", configure: framework => framework.ConfigureNavigation(navigation => navigation
+                .AddNav("Orders", "list", "/orders", secondary => secondary
+                    .AddSubNav("Commercial", "/orders", configure: children => children
+                        .AddSubNav(new TextReference("Navigation", "Create", "Create"), "/orders/create", exact: true)
+                        .AddSubNav("Legacy", "add", "/orders/legacy"))
+                    .AddSubNav(new TextReference("Navigation", "More", "More"), "/more", configure: children => children.AddSubNav("Details", "/more/details"))
+                    .AddSubNav("Optional", null, "/optional"))));
+            await fixture.Run<ApplicationShell>(new() { ["PrimaryNavigationPreview"] = true }, (_, html) =>
+            {
+                var output = html();
+                var links = Regex.Matches(output, @"<a\b[^>]*>.*?</a>", RegexOptions.Singleline).Select(match => match.Value).ToArray();
+                var primary = links.Single(link => Attribute(link, "class")?.Split(' ').Contains("f-primary-item") == true);
+                Require(primary.Contains("data-icon=\"list\"", StringComparison.Ordinal) && primary.Contains("class=\"f-primary-preview-label\">Orders</span>", StringComparison.Ordinal), "Primary navigation lost its icon or expanded label.");
+                var tree = fixture.Capture.Instances.OfType<NavigationTree>().Single();
+                Require(tree.Items[0].Icon is null && tree.Items[0].ChildItems[0].Icon is null && tree.Items[1].Icon is null && tree.Items[2].Icon is null, "The string, localized or explicit-null builder overload supplied an implicit icon.");
+                Require(links.Single(link => Attribute(link, "href") == "/orders/legacy").Contains("data-icon=\"add\"", StringComparison.Ordinal), "The existing explicit-icon overload changed behavior.");
+                Require(Attribute(Tags(output, "a").Single(tag => Attribute(tag, "aria-current") == "page"), "href") == "/orders/create", "Configured text-only navigation lost its current destination.");
+                return Task.CompletedTask;
+            });
+        }));
+
         tests.Add(("dynamic tree follows absolute organization paths and preserves original href query fragment and slash", async () =>
         {
             const string branch = "/organizations/alpha/orders/";

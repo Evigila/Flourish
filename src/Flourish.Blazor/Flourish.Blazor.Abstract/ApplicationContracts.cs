@@ -63,11 +63,16 @@ public interface INavigationBuilder
 
 public interface ISubNavigationBuilder
 {
-    ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, bool exact = false, bool disabled = false);
-    ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, bool exact = false, bool disabled = false);
+    /// <summary>Adds a text-only destination, optionally with children in the same navigation tree.</summary>
+    ISubNavigationBuilder AddSubNav(string label, string navTarget, bool exact = false, bool disabled = false, Action<ISubNavigationBuilder>? configure = null)
+        => configure is null ? AddSubNav(label, null, navTarget, exact, disabled) : AddSubNav(label, null, navTarget, configure, exact, disabled);
+    ISubNavigationBuilder AddSubNav(TextReference label, string navTarget, bool exact = false, bool disabled = false, Action<ISubNavigationBuilder>? configure = null)
+        => configure is null ? AddSubNav(label, null, navTarget, exact, disabled) : AddSubNav(label, null, navTarget, configure, exact, disabled);
+    ISubNavigationBuilder AddSubNav(string label, string? icon, string navTarget, bool exact = false, bool disabled = false);
+    ISubNavigationBuilder AddSubNav(TextReference label, string? icon, string navTarget, bool exact = false, bool disabled = false);
     /// <summary>Adds a destination with children displayed in the same navigation tree.</summary>
-    ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
-    ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
+    ISubNavigationBuilder AddSubNav(string label, string? icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
+    ISubNavigationBuilder AddSubNav(TextReference label, string? icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false);
 }
 
 public interface IAppearanceBuilder

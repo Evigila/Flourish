@@ -75,6 +75,9 @@ internal static class CatalogChecks
         Equal("280", typeof(Controls.UniformGrid), "MaxCellSize");
         Equal("260", typeof(Controls.UniformGrid), "MaxCellHeight");
         Equal(string.Empty, typeof(Controls.UniformGrid), "CellHeight");
+        Equal("false", typeof(Controls.UniformGrid), "ContentHeight");
+        Check(Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == "ContentHeight")
+            .DescriptionKey == "Key.Parameter_ContentHeight", "Content height must describe its rectangular layout and fixed-height exclusion.");
         Equal("false", typeof(Controls.PageBody), "FillHeight");
         Equal("CenteredContainer.Standard", typeof(Controls.PageBody), "CenteredContainer");
         Equal("false", typeof(Controls.UniformGrid), "Centered");
@@ -114,7 +117,7 @@ internal static class CatalogChecks
         {
             var entry = Entry(type);
             Check(entry.ApiParameters.All(parameter => parameter.Name != "Shape"), "Shape is not a child component parameter.");
-            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "CellHeight", "IconSupport", "Variant", "Centered" })
+            foreach (var name in new[] { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "CellHeight", "ContentHeight", "IconSupport", "Variant", "Centered" })
             {
                 var contextual = entry.ApiParameters.Single(parameter => parameter.Name == $"UniformGrid.{name}");
                 var actual = Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == name);

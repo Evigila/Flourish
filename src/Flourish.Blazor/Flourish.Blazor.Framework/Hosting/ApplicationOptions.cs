@@ -399,24 +399,24 @@ internal sealed class SubNavigationBuilder(Func<string, string> addRoute, Action
     private readonly List<NavigationItem> items = [];
     private readonly HashSet<string> routes = new(StringComparer.OrdinalIgnoreCase);
 
-    public ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, bool exact = false, bool disabled = false)
+    public ISubNavigationBuilder AddSubNav(string label, string? icon, string navTarget, bool exact = false, bool disabled = false)
     {
-        var route = AddItemRoute(label, icon, navTarget);
+        var route = AddItemRoute(label, navTarget);
         items.Add(new(label, route, icon, exact, disabled));
         return this;
     }
 
-    public ISubNavigationBuilder AddSubNav(string label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
+    public ISubNavigationBuilder AddSubNav(string label, string? icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
     {
         ArgumentNullException.ThrowIfNull(configure);
-        var route = AddItemRoute(label, icon, navTarget);
+        var route = AddItemRoute(label, navTarget);
         var children = new SubNavigationBuilder(addRoute, attachText, route);
         configure(children);
         items.Add(new(label, route, icon, exact, disabled, children.Complete()));
         return this;
     }
 
-    public ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, bool exact = false, bool disabled = false)
+    public ISubNavigationBuilder AddSubNav(TextReference label, string? icon, string navTarget, bool exact = false, bool disabled = false)
     {
         ArgumentNullException.ThrowIfNull(label);
         AddSubNav(label.FallbackText ?? label.Token, icon, navTarget, exact, disabled);
@@ -424,7 +424,7 @@ internal sealed class SubNavigationBuilder(Func<string, string> addRoute, Action
         return this;
     }
 
-    public ISubNavigationBuilder AddSubNav(TextReference label, string icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
+    public ISubNavigationBuilder AddSubNav(TextReference label, string? icon, string navTarget, Action<ISubNavigationBuilder> configure, bool exact = false, bool disabled = false)
     {
         ArgumentNullException.ThrowIfNull(label);
         AddSubNav(label.FallbackText ?? label.Token, icon, navTarget, configure, exact, disabled);
@@ -432,11 +432,10 @@ internal sealed class SubNavigationBuilder(Func<string, string> addRoute, Action
         return this;
     }
 
-    private string AddItemRoute(string label, string icon, string navTarget)
+    private string AddItemRoute(string label, string navTarget)
     {
         if (completed) throw new InvalidOperationException("Sub-navigation configuration has already been completed.");
         ArgumentException.ThrowIfNullOrWhiteSpace(label);
-        ArgumentException.ThrowIfNullOrWhiteSpace(icon);
         var route = ApplicationBuilder.NormalizeRoute(navTarget);
         if (!routes.Add(route)) throw new ArgumentException($"Sub-navigation route '{route}' is already configured.", nameof(navTarget));
         // A destination may also be its own first child, as with a primary landing page.

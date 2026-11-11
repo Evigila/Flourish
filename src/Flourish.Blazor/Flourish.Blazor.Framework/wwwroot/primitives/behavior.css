@@ -239,6 +239,9 @@
     margin-inline-start: var(--f-shell-content-start, var(--f-page-gutter, 0px));
     margin-inline-end: var(--f-shell-content-end, var(--f-page-gutter, 0px));
 }
+.shell-header:not([data-shell-header-follow-content]) > .shell-header-center {
+    margin-inline: var(--f-shell-inline-padding, 10px);
+}
 .shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) {
     grid-template-columns: var(--f-shell-content-start) minmax(0, 1fr) var(--f-shell-content-end);
 }
@@ -285,6 +288,7 @@
     justify-self: end;
     justify-content: flex-end;
     flex-wrap: wrap;
+    column-gap: var(--f-shell-action-gap, 12px);
     box-sizing: border-box;
     width: max-content;
     max-width: 100%;
@@ -292,10 +296,14 @@
 }
 /* Document InlineActions fills its row; chrome slots reserve only their controls. */
 .shell-header-actions > .f-topbar-slot {
+    flex-wrap: inherit;
+    column-gap: var(--f-shell-action-gap, 12px);
+    row-gap: inherit;
     flex: 0 1 auto;
     width: max-content;
     max-width: 100%;
 }
+.shell-header-actions > .f-topbar-slot:empty { display: none; }
 .shell-header-actions > .f-topbar-slot > .f-inline-actions[data-alignment],
 .shell-header-actions > .f-topbar-slot > form > .f-inline-actions[data-alignment] {
     width: max-content;

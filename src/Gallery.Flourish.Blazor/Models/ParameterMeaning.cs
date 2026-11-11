@@ -163,6 +163,7 @@ internal static class ParameterMeaning
         "MaxCellSize" => "Key.Parameter_MaxCellSize",
         "MaxCellHeight" => "Key.Parameter_MaxCellHeight",
         "CellHeight" => "Key.Parameter_CellHeight",
+        "ContentHeight" => "Key.Parameter_ContentHeight",
         "IconSupport" => "Key.Parameter_IconSupport",
         "Variant" when (Nullable.GetUnderlyingType(parameter.PropertyType) ?? parameter.PropertyType) == typeof(Controls.UniformGridVariant)
             => parameter.PropertyType == typeof(Controls.UniformGridVariant)

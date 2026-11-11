@@ -209,6 +209,12 @@ test('footer foreground follows the same real content edges through resize routi
         initializeShellHeaders({ querySelectorAll:() => [header] });
         flush();
         assert.deepEqual(physicalFooterEdges(firstFooter), [442, 1478]);
+        assert.equal(header.getAttribute('data-shell-header-layout'), 'fitted');
+        assert.equal(header.style.getPropertyValue('--f-shell-content-start'), '220px', 'default layout places services after the brand');
+        assert.equal(header.style.getPropertyValue('--f-shell-content-end'), '318px', 'default actions keep their own width');
+        header.setAttribute('data-shell-header-follow-content', 'true');
+        mutation([{ target:header, attributeName:'data-shell-header-follow-content' }]);
+        flush();
         assert.ok(observed.has(center) && menus.every(menu => observed.has(menu)), 'menu controls must be observed even when their containing slot stays page-wide');
         assert.ok(observed.has(identity.children[1]) && observed.has(languageTrigger) && observed.has(logout), 'right-side controls and identity text must refresh fit even when the constrained wing stays the same width');
         assert.ok(mutationSettings.attributeFilter.includes('data-f-native-select-ready'), 'native language enhancement must refresh the control set even without a class/style change');

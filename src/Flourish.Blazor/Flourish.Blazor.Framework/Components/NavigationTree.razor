@@ -117,7 +117,10 @@
                 <div class="f-secondary-row">
                     <a href="@(state.Disabled ? null : item.Href)" class="@($"f-secondary-item{(nested ? " f-third-item" : null)}{(selected ? " is-selected" : null)}")"
                        aria-current="@(selected ? "page" : null)" aria-disabled="@(state.Disabled ? "true" : null)" title="@label"
-                       tabindex="@(state.Disabled ? -1 : 0)" @onclick="() => NotifyNavigated(state)"><Icon Name="@item.Icon" /><span class="f-navigation-label">@label</span></a>
+                       tabindex="@(state.Disabled ? -1 : 0)" @onclick="() => NotifyNavigated(state)">
+                        @if (!string.IsNullOrWhiteSpace(item.Icon)) { <Icon Name="@item.Icon" /> }
+                        <span class="f-navigation-label">@label</span>
+                    </a>
                 </div>
             }
             @if (item.ChildItems.Count > 0)

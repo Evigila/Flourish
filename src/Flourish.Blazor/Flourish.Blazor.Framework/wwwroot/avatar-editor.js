@@ -165,6 +165,14 @@ export function attach(owner, editor, version) {
     for (const control of [zoom, horizontal, vertical]) control.addEventListener("input", redraw, options);
 
     let drag;
+    draft.reset = () => {
+        const pointer = drag?.id;
+        drag = undefined;
+        if (pointer !== undefined && canvas.hasPointerCapture?.(pointer)) canvas.releasePointerCapture(pointer);
+        zoom.value = "100";
+        horizontal.value = vertical.value = "0";
+        redraw();
+    };
     canvas.addEventListener("pointerdown", event => {
         if (event.button !== 0 || horizontal.disabled || drag) return;
         const area = crop(draft);
@@ -191,6 +199,13 @@ export function attach(owner, editor, version) {
     return true;
 }
 
+export function reset(owner, version) {
+    const draft = drafts.get(owner);
+    if (!draft?.reset || draft.version !== version || !current(owner, draft)
+        || draft.zoom.disabled || draft.horizontal.disabled || draft.vertical.disabled) return false;
+    draft.reset();
+    return true;
+}
 export async function encode(owner, version) {
     const draft = drafts.get(owner);
     if (!draft?.canvas || draft.version !== version || !current(owner, draft)) throw new Error("The crop is unavailable.");
@@ -205,7 +220,7 @@ export async function encode(owner, version) {
             const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", jpegQuality));
             if (!current(owner, draft)) throw new Error("The crop was closed.");
             if (blob?.type !== "image/jpeg" || blob.size === 0) throw new Error("JPEG encoding failed.");
-            if (blob.size <= maxJpegBytes) return DotNet.createJSStreamReference(blob);
+            if (blob.size <= maxJpegBytes) return blob;
             if (side === 1) throw new Error("The compressed photo is too large.");
             side = Math.max(1, Math.floor(side * 0.75));
         }

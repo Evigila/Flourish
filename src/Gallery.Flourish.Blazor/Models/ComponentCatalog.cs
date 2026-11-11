@@ -154,7 +154,7 @@ public sealed class ComponentEntry(Type componentType, string purposeKey, string
         {
             // Layout belongs to the container, not to a separate shape on each child.
             var names = new HashSet<string>(StringComparer.Ordinal)
-                { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "CellHeight", "IconSupport", "Variant", "Centered" };
+                { "Shape", "Columns", "Rows", "NarrowColumns", "MaxCellSize", "MaxCellHeight", "CellHeight", "ContentHeight", "IconSupport", "Variant", "Centered" };
             parameters.AddRange(OwnParameters(typeof(Controls.UniformGrid)).Where(parameter => names.Contains(parameter.Name))
                 .Select(parameter => parameter with
                 {

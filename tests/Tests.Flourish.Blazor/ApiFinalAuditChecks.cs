@@ -18,6 +18,47 @@ internal static class ApiFinalAuditChecks
 {
     internal static void Register(List<(string Name, Func<Task> Run)> tests)
     {
+        tests.Add(("embedded multiselect retains native keys checked and disabled semantics without public checkbox paint", async () =>
+        {
+            await using var fixture = new Fixture();
+            var output = await fixture.Render<MultiSelectBox>(new()
+            {
+                [nameof(MultiSelectBox.Label)] = "Selection",
+                [nameof(MultiSelectBox.Items)] = new[] { new MultiSelectOption("yes", "Chosen", true), new MultiSelectOption("no", "Unavailable", Disabled: true) }
+            });
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                var html = output.ToHtmlString();
+                var inputs = Regex.Matches(html, @"<input\b[^>]*type=""checkbox""[^>]*>").Select(match => match.Value).ToArray();
+                Require(inputs.Length == 2 && inputs.All(tag => tag.Contains("f-selection-indicator") && !tag.Contains("f-checkbox")),
+                    "Embedded options did not use the compact native input.");
+                Require(inputs[0].Contains("data-f-selection-key=\"yes\"") && Regex.IsMatch(inputs[0], @"\schecked(?:=|\s|>)")
+                    && inputs[1].Contains("data-f-selection-key=\"no\"") && Regex.IsMatch(inputs[1], @"\sdisabled(?:=|\s|>)"),
+                    "Compact rendering lost selection controller identity or native state.");
+            });
+        }));
+        tests.Add(("reference selection markers remain decorative and include the hidden width measurement rows", async () =>
+        {
+            await using var fixture = new Fixture();
+            var output = await fixture.Render<Primitives.ReferenceDropdown<int>>(new()
+            {
+                ["Id"] = "reference", ["LabelledBy"] = "reference-label",
+                ["Items"] = new[] { new Primitives.ReferenceItem<int>(1, "First"), new Primitives.ReferenceItem<int>(2, "Long option label") },
+                ["Value"] = (int?)1
+            });
+            var component = fixture.Component<Primitives.ReferenceDropdown<int>>();
+            await fixture.Renderer.Dispatcher.InvokeAsync(() =>
+            {
+                Method(component, "Toggle").Invoke(component, null); Rerender(component);
+                var html = output.ToHtmlString();
+                var markers = Regex.Matches(html, @"<span\b[^>]*class=""f-selection-indicator""[^>]*>").Select(match => match.Value).ToArray();
+                Require(markers.Length == 5 && markers.All(tag => tag.Contains("aria-hidden=\"true\""))
+                    && markers.Count(tag => tag.Contains("data-selected=\"true\"")) == 1,
+                    "Reference option or intrinsic-width marker changed its decorative/selected semantics.");
+                Require(!typeof(MultiSelectBox).Assembly.GetExportedTypes().Any(type => type.Name == "SelectionIndicator"),
+                    "The embedded implementation became a standalone public control.");
+            });
+        }));
         tests.Add(("form layout full-width geometry and columns remain library-owned with native attributes", async () =>
         {
             await using var fixture = new Fixture();
@@ -120,7 +161,7 @@ internal static class ApiFinalAuditChecks
             {
                 var html = output.ToHtmlString();
                 var tag = Regex.Match(html, @"<div\b[^>]*id=""result""[^>]*>").Value;
-                Require(html.Contains("data-f-notice-dismiss-ms=\"5000\"") && html.Contains("data-f-notice-frame") && html.Contains("Validation") && html.Contains("Try &lt;again&gt;")
+                Require(html.Contains("data-f-notice-dismiss-ms=\"3500\"") && html.Contains("data-f-notice-frame") && html.Contains("Validation") && html.Contains("Try &lt;again&gt;")
                     && tag.Contains("hidden") && tag.Contains("f-notice-warning") && tag.Contains("test-result")
                     && tag.Contains("role=\"status\"") && fixture.Component<Notice>().Subtle,
                     "Floating feedback lost the original notice's public or accessible DOM: " + html);

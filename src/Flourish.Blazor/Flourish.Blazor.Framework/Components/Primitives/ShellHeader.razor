@@ -1,5 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<header class="shell-header @Class">
+<header class="shell-header @Class" data-shell-header-follow-content="@(FollowContentWidth ? "true" : null)">
     <div class="shell-header-start">
         <ArkheideSystem.Flourish.Blazor.Components.Button Class="shell-header-brand" Href="@HomeHref" Variant="ButtonVariant.Quiet" aria-label="@HomeAriaLabel">
             <span class="shell-header-logo" aria-hidden="true">
@@ -58,8 +58,11 @@
     [Parameter] public string? IdentityHref { get; set; }
     [Parameter] public string? IdentityAriaLabel { get; set; }
     [Parameter] public string? Class { get; set; }
-    /// <summary>Navigation follows the page content when space permits, fits between the wings on wide pages, and wraps only when the controls cannot share a row.</summary>
+    /// <summary>Aligns the menu to the page content when the header controls have room.</summary>
+    [Parameter] public bool FollowContentWidth { get; set; }
+    /// <summary>Navigation beside the brand. Wraps below the first row when the controls cannot fit.</summary>
     [Parameter] public RenderFragment? Services { get; set; }
     [Parameter] public RenderFragment? LeadingActions { get; set; }
+    /// <summary>Right-side controls. Direct children receive standard header spacing.</summary>
     [Parameter] public RenderFragment? EndActions { get; set; }
 }

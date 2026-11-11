@@ -51,11 +51,9 @@
 .shell-header-context {
     text-overflow: ellipsis;
 }
-.shell-header-title strong {
-    font-weight: 760;
-}
+.shell-header-title strong,
 .shell-header-context {
-    font-weight: 650;
+    font-weight: 760;
 }
 .shell-header-actions {
     padding-right: 10px;
@@ -80,6 +78,12 @@
     max-width: 190px;
     font-size: 17px;
     text-overflow: ellipsis;
+}
+.shell-header-center :is(.f-button, .f-button-text),
+.shell-header-actions :is(.f-button, .f-select):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)),
+.shell-header-actions .shell-header-text-action,
+.shell-header-identity strong {
+    font-weight: 400;
 }
 a.shell-header-identity:hover {
     background: var(--f-preview-dark);
@@ -128,7 +132,6 @@ a.shell-header-identity:focus-visible {
     border: 0;
     border-radius: 14px;
     font-size: 17px;
-    font-weight: 650;
     text-decoration: none;
 }
 .shell-header-actions .shell-header-text-action:hover {

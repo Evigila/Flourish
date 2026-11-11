@@ -24,6 +24,11 @@
     "zh-CN": "裁剪后的头像预览",
     "pt-BR": "Prévia da foto recortada"
   },
+  "Avatar_Reset": {
+    "en-US": "Reset",
+    "zh-CN": "还原",
+    "pt-BR": "Restaurar"
+  },
   "Avatar_Zoom": {
     "en-US": "Zoom",
     "zh-CN": "缩放",

@@ -125,6 +125,63 @@ check('Sticky heading compaction settles with one content-only correction and up
     for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) assert.equal(document.events.get(type).length, 0);
     api.detach(local.nav);
 });
+function addHeadingOverlay(local, { visible = true, bottom = 164 } = {}) {
+    const overlay = new Node('div'); overlay.setAttribute('data-f-heading-overlay', '');
+    if (visible) overlay.setAttribute('data-f-heading-visible', '');
+    overlay.rect = { left:100, right:900, top:100, bottom:100, height:0 };
+    const panel = new Node('div', ['f-heading-overlay-panel']);
+    panel.rect = { left:100, right:900, top:100, bottom, height:bottom - 100 };
+    overlay.append(panel); local.pageHeading.append(overlay);
+    api.synchronize(local.nav, local.content.id, true, referenceFor(local.nav));
+    return { overlay, panel };
+}
+check('Fixed heading panels keep section targets and the navigator below visible chrome', () => {
+    const local = fixture(); const { panel } = addHeadingOverlay(local);
+    local.nav.emit('click', click(local.links()[1]));
+    assert.deepEqual(local.content.scrolled, { top:284, behavior:'smooth' });
+    assert.equal(local.links()[1].getAttribute('aria-current'), 'location');
+    assert.equal(local.nav.style.values.get('--f-section-nav-top'), '382px');
+    assert.equal(local.nav.style.values.get('--f-section-nav-height'), '412px');
+    assert.ok(Observer.all.some(observer => observer.observed.includes(panel)), 'The visual panel must be observed, not its zero-height outer frame');
+    advance(120); assert.equal(local.content.scrollCalls.length, 1); api.detach(local.nav);
+});
+check('A heading overlay appearing during anchor navigation settles once without changing document height', () => {
+    const local = fixture(); const { overlay } = addHeadingOverlay(local, { visible:false });
+    const height = local.content.scrollHeight;
+    local.nav.emit('click', click(local.links()[1])); assert.equal(local.content.scrolled.top, 348);
+    overlay.setAttribute('data-f-heading-visible', '');
+    advance(120); assert.deepEqual(local.content.scrolled, { top:284, behavior:'auto' });
+    assert.equal(local.content.scrollHeight, height); assert.equal(local.content.scrollCalls.length, 2);
+    advance(2000); assert.equal(local.content.scrollCalls.length, 2); assert.equal(timers.size, 0);
+    overlay.removeAttribute('data-f-heading-visible');
+    local.nav.emit('click', click(local.links()[1])); assert.equal(local.content.scrolled.top, 348);
+    api.detach(local.nav);
+});
+check('Panel resizing updates anchor alignment and hidden panels do not obscure the outline', () => {
+    const local = fixture(); const { overlay, panel } = addHeadingOverlay(local);
+    local.nav.emit('click', click(local.links()[1]));
+    panel.rect.bottom = 196; panel.rect.height = 96;
+    Observer.all.find(observer => observer.observed.includes(panel)).notify(); flush(); advance(120);
+    assert.equal(local.content.scrolled.top, 252); assert.equal(local.nav.style.values.get('--f-section-nav-top'), '398px');
+    overlay.hidden = true;
+    local.nav.emit('click', click(local.links()[1])); assert.equal(local.content.scrolled.top, 348);
+    api.detach(local.nav);
+});
+check('Nested scrolling previews and another page cannot contribute heading overlay offsets', () => {
+    const local = fixture(), other = fixture(); addHeadingOverlay(other, { bottom:250 });
+    const nestedRoot = new Node('div', ['content-stage']), nestedHeading = new Node('header', ['f-page-heading']);
+    nestedRoot.append(nestedHeading); local.content.children.unshift(nestedRoot); nestedRoot.parentElement = local.content;
+    addHeadingOverlay({ ...local, pageHeading:nestedHeading }, { bottom:280 });
+    local.nav.emit('click', click(local.links()[1])); assert.equal(local.content.scrolled.top, 348);
+    api.detach(local.nav); api.detach(other.nav);
+});
+check('A heading panel covering a short viewport hides indicators until usable content returns', () => {
+    const local = fixture(); const { panel } = addHeadingOverlay(local, { bottom:650 });
+    assert.equal(local.nav.hidden, true);
+    panel.rect.bottom = 164; panel.rect.height = 64;
+    Observer.all.find(observer => observer.observed.includes(panel)).notify(); flush();
+    assert.equal(local.nav.hidden, false); api.detach(local.nav);
+});
 check('Every user interruption cancels delayed alignment without another scroll', () => {
     for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
         const local = fixture({ sticky:true }); local.nav.emit('click', click(local.links()[1]));

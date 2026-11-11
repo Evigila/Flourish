@@ -25,7 +25,7 @@ function fixture() {
         matchMedia() { return {matches:this.reduced}; },
         setTimeout(fn,ms) { const id = ++sequence; timers.set(id,{fn,at:now+ms}); return id; },
         clearTimeout(id) { timers.delete(id); },
-        getComputedStyle:() => ({visibility:'visible',animationDuration:'0.18s'}),requestAnimationFrame(fn) { raf.set(++sequence,fn); return sequence; } };
+        getComputedStyle:node => ({visibility:'visible',animationDuration:'0.18s',...node.computed}),requestAnimationFrame(fn) { raf.set(++sequence,fn); return sequence; } };
     const doc = { ...events,defaultView:view,documentElement:{ clientWidth:1200 },
         querySelector:() => frames[0],querySelectorAll:selector => selector === '[data-f-notice-frame]' ? frames : selector.includes('.f-save-changes-panel') ? bars : [] };
     function node(rect,dialog = null) {
@@ -45,8 +45,10 @@ function fixture() {
             hasAttribute:name => attributes.has(name),setAttribute(name,value = '') { attributes.set(name,value); mutations++; },
             removeAttribute(name) { if (attributes.delete(name)) mutations++; } };
     }
-    function notice(height = 90,dialog = null) {
+    function notice(height = 90,dialog = null,delay = 5000) {
         const frame = node({left:88,right:1112,bottom:784},dialog), message = node({height},dialog);
+        // Lifecycle cases use an explicit duration; default/fallback cases remove this attribute.
+        frame.setAttribute('data-f-notice-dismiss-ms',String(delay));
         frame.firstElementChild = message; message.parentElement = frame; frames.push(frame);
         return frame;
     }
@@ -68,15 +70,16 @@ function fixture() {
         }
         assert.fail('timer callbacks did not settle');
     }
-    return { doc, frames, bars, bar, notice, flush, advance, timers, observers, listeners, mutations:() => mutations };
+    return { doc, frames, bars, bar, notice, node, flush, advance, timers, observers, listeners, mutations:() => mutations };
 }
 const value = (node,key) => parseFloat(node.style.getPropertyValue('--f-notice-' + key));
 
 
 test('default timeout retains the dock during reverse exit and then restores the save bar', () => {
     const f = fixture(), root = f.notice(), bar = f.bar();
+    root.removeAttribute('data-f-notice-dismiss-ms');
     initializeFloatingNotices(f.doc);
-    f.advance(4999); f.flush();
+    f.advance(3499); f.flush();
     assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
     f.advance(1); f.flush();
     assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
@@ -89,6 +92,28 @@ test('default timeout retains the dock during reverse exit and then restores the
     assert.equal(bar.hasAttribute('data-f-notice-docked'),false);
     f.flush(); f.advance(10000);
     assert.equal(root.getAttribute('data-f-notice-phase'),'dismissed');
+});
+
+test('default and malformed SSR durations use 3500ms while explicit durations remain exact', async () => {
+    const component = await readFile(new URL('../Components/FloatingNotice.razor',location),'utf8');
+    assert.match(component,/AutoDismissMilliseconds\s*\{[^}]+\}\s*=\s*3500;/);
+    for (const input of [null,'invalid','-1','Infinity','5000','0']) {
+        const f=fixture(), root=f.notice();
+        if(input === null) root.removeAttribute('data-f-notice-dismiss-ms');
+        else root.setAttribute('data-f-notice-dismiss-ms',input);
+        initializeFloatingNotices(f.doc);
+        if(input === '0') {
+            assert.equal(f.timers.size,0);
+            assert.equal(root.hasAttribute('data-f-notice-timed'),false);
+            continue;
+        }
+        const delay=input === '5000' ? 5000 : 3500;
+        assert.equal(root.style.getPropertyValue('--f-notice-duration'),delay+'ms');
+        f.advance(delay-1);
+        assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
+        f.advance(1);
+        assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+    }
 });
 
 test('hover, nested focus and background tabs suspend remaining visible time', () => {
@@ -200,6 +225,138 @@ test('exit reverses the same entrance path only when motion is permitted', async
     assert.match(css, /@keyframes f-notice-exit\s*\{\s*from\s*\{\s*opacity:1;\s*transform:translateY\(0\);\s*\}\s*to\s*\{\s*opacity:0;\s*transform:translateY\(\.5rem\)/s);
 });
 
+test('wide visible shells share content height and shrink without reading their previously imposed height', () => {
+    const f = fixture(), root = f.notice(), message = root.firstElementChild, bar = f.bar();
+    message.computed = {display:'grid',rowGap:'6px',paddingTop:'13px',paddingBottom:'13px'};
+    message.children = [f.node({height:20}),f.node({height:40})];
+    bar.computed = {display:'flex',flexDirection:'row',paddingTop:'16px',paddingBottom:'16px',borderTopWidth:'1px',borderBottomWidth:'1px'};
+    bar.children = [f.node({height:48}),f.node({height:30})];
+    initializeFloatingNotices(f.doc);
+    assert.equal(value(root,'height'),92);
+    assert.equal(value(bar,'height'),92);
+    assert.equal(value(root,'bottom'),value(bar,'bottom'));
+    assert.equal(value(bar,'right'),0);
+    message.rect.height = 500; bar.rect.height = 500;
+    message.children[1].rect.height = 20; f.flush();
+    assert.equal(value(root,'height'),82);
+    assert.equal(value(bar,'height'),82);
+    const count=f.mutations(); f.flush();
+    assert.equal(f.mutations(),count,'equalization must settle without an observer feedback loop');
+    assert.ok(f.observers.some(observer => observer.targets.has(message.children[1])),'font/content resizing is observed even when the shell is fixed');
+    root.rect={left:16,right:344,bottom:784};
+    f.doc.documentElement.clientWidth=360; f.flush();
+    assert.equal(root.style.getPropertyValue('--f-notice-height'),'');
+    assert.equal(bar.style.getPropertyValue('--f-notice-height'),'');
+    assert.ok(value(root,'bottom') > value(bar,'bottom'));
+});
+
+test('replacement replays only the vertical entry and progress follows the actual paused deadline', () => {
+    const f=fixture(), root=f.notice(), message=root.firstElementChild;
+    initializeFloatingNotices(f.doc);
+    const entry=root.getAttribute('data-f-notice-enter'), running=root.getAttribute('data-f-notice-progress');
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'1');
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'5000ms');
+    f.advance(2000); message.dispatch('pointerenter');
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'0.6');
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'3000ms');
+    assert.equal(root.getAttribute('data-f-notice-progress'),null);
+    f.advance(10000); message.dispatch('pointerleave');
+    assert.notEqual(root.getAttribute('data-f-notice-progress'),running);
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'3000ms');
+    const resumed=root.getAttribute('data-f-notice-progress'); f.flush();
+    assert.equal(root.getAttribute('data-f-notice-progress'),resumed,'ordinary rendering must not restart the progress');
+    f.advance(500); message.innerHTML='replacement'; f.flush();
+    assert.notEqual(root.getAttribute('data-f-notice-enter'),entry);
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'1');
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'5000ms');
+    f.advance(5000);
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'0');
+    assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+});
+
+test('persistent or host-hidden notices do not expose a countdown and background tabs freeze the fraction', () => {
+    const f=fixture(), root=f.notice();
+    root.setAttribute('data-f-notice-dismiss-ms','0'); initializeFloatingNotices(f.doc);
+    assert.equal(root.hasAttribute('data-f-notice-timed'),false);
+    root.setAttribute('data-f-notice-dismiss-ms','5000'); f.flush(); f.advance(1000);
+    f.doc.hidden=true; f.listeners.get('visibilitychange')();
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'0.8');
+    assert.equal(root.getAttribute('data-f-notice-progress'),null);
+    f.advance(9000); f.doc.hidden=false; f.listeners.get('visibilitychange')();
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'4000ms');
+    root.firstElementChild.hidden=true; f.flush();
+    assert.equal(root.hasAttribute('data-f-notice-timed'),false);
+    root.firstElementChild.hidden=false; f.flush();
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'1');
+    f.frames.length=0; root.isConnected=false; f.flush();
+    for(const name of ['progress','duration','steps']) assert.equal(root.style.getPropertyValue('--f-notice-'+name),'');
+});
+
+test('dock transitions keep the action right edge fixed while notice motion and the decorative clock stay separate', async () => {
+    const noticeCss=await readFile(new URL('patterns/floating-notice.css',location),'utf8');
+    const barCss=await readFile(new URL('patterns/save-changes-bar.css',location),'utf8');
+    assert.match(barCss,/left:auto; right:var\(--f-save-panel-right\)/);
+    assert.match(barCss,/transition:width \.18s ease-out/);
+    assert.doesNotMatch(noticeCss,/translate:|transition:/);
+    assert.match(noticeCss,/align-content:start/);
+    assert.equal((barCss.match(/transition:width/g) ?? []).length,1);
+    assert.match(noticeCss,/data-f-notice-enter="b"[^}]+f-notice-enter-again/s);
+    assert.match(noticeCss,/data-f-notice-timed[^}]+position:absolute[^}]+height:3px/s);
+    assert.match(noticeCss,/prefers-reduced-motion:reduce[^}]+animation-timing-function:steps\(var\(--f-notice-steps,5\),end\)/s);
+    // The right inset formula is the same centered envelope for every viewport and safe area.
+    for (const [viewport,left,right] of [[1200,16,16],[390,16,16],[1200,50,20]]) {
+        const originalRight=viewport-right-Math.max(0,(viewport-left-right-1024)/2);
+        const inset=right+Math.max(0,(viewport-left-right-1024)/2);
+        for(const width of [Math.min(1024,viewport-left-right),580]) assert.equal(viewport-inset,originalRight);
+    }
+});
+
+test('reduced motion replacements reset the real countdown while obsolete callbacks cannot hide the new message', () => {
+    const f=fixture(), root=f.notice();
+    f.doc.defaultView.reduced=true; initializeFloatingNotices(f.doc);
+    const previous=[...f.timers.values()][0].fn;
+    f.advance(4000); root.firstElementChild.innerHTML='new reduced message'; f.flush();
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'1');
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'5000ms');
+    previous();
+    assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
+    f.advance(4999);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
+    f.advance(1); f.flush();
+    assert.equal(root.getAttribute('data-f-notice-phase'),'dismissed');
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'0');
+});
+
+test('a cleared queued timeout cannot consume paused time or end a resumed occurrence', () => {
+    const f=fixture(), root=f.notice(), message=root.firstElementChild;
+    initializeFloatingNotices(f.doc);
+    const obsolete=[...f.timers.values()][0].fn;
+    f.advance(2000); message.dispatch('pointerenter');
+    obsolete();
+    assert.equal(root.style.getPropertyValue('--f-notice-progress'),'0.6');
+    message.dispatch('pointerleave'); obsolete();
+    assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
+    assert.equal(root.style.getPropertyValue('--f-notice-duration'),'3000ms');
+    f.advance(2999);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'shown');
+    f.advance(1);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+});
+
+test('a cancelled exit callback cannot finish a later exit of the same message', () => {
+    const f=fixture(), root=f.notice(), message=root.firstElementChild;
+    initializeFloatingNotices(f.doc); f.advance(5000);
+    const oldExit=[...f.timers.values()][0].fn;
+    f.advance(50); message.dispatch('pointerenter'); message.dispatch('pointerleave'); f.advance(0);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+    oldExit();
+    assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+    f.advance(195);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'closing');
+    f.advance(1);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'dismissed');
+});
+
 test('static hidden feedback participates on reveal and releases the original bar on hide and removal', async () => {
     const entry = await readFile(new URL('primitives/input-behaviors.js',location),'utf8');
     const f = fixture(), bar = f.bar(), root = f.notice();
@@ -283,7 +440,7 @@ test('dialog feedback is bounded by the scrollable dialog body and only shares i
     inside.rect = {left:296,right:904,bottom:550};
     f.listeners.get('animationend')(); f.flush();
     assert.equal(value(inside,'width'),608);
-    assert.equal(value(dialogBar,'shift'),0);
+    assert.equal(value(dialogBar,'right'),0);
     inside.firstElementChild.hidden = true; f.flush();
     assert.equal(dialogBar.hasAttribute('data-f-notice-docked'),false);
 });

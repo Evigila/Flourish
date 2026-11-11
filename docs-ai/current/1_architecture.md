@@ -1,5 +1,34 @@
 # Project architecture and repository tree
 
+## Current audit baseline, 2026-11-10
+
+The complete tree and project graph were re-enumerated from maintained physical files. The stale Design wwwroot/patterns/page-heading.js entry is removed: that controller belongs only to Framework. Gallery WinUI3 spelling now matches its physical directory. Source VersionPrefix remains **1.4.7**. The latest completed local package evidence is **1.4.8-preview.10**: the Release build and six-package verification passed; final consumer regressions remain in progress. Dated release and candidate sections preserve historical evidence rather than overriding this baseline.
+
+The audit verified required instruction/document paths, both skill manifests, all 22 projects, 5 solutions, 33 local references, package declarations and available resolution evidence. No build, browser test or publication was performed. See [audit findings](1_bugreports/2026-11-10_project-documentation-audit.md) and [dependency evidence](dependency-evidence-2026-11-10.json).
+
+
+## Continuous occupied UniformGrid silhouette, 2026-11-09
+
+Design joins occupied UniformGrid/FormActions cells with zero gap. Cell borders reserve transparent geometry; Framework patterns/uniform-grid-dividers.js measures only real direct-cell shared edges, and a pointer-transparent group pseudo-element paints their exact intersection lengths using the existing border role. This removes right/bottom exterior lines across automatic, explicit, column-first, narrow and incomplete layouts. Forced-colors resolves CanvasText at the group while adjusting only the decorative layer. Grouped cells have no blurred box-shadow; existing elevated group filters remain outside the continuous opaque silhouette. Transparent group backgrounds leave unused tracks unpainted. Grouped unavailable content fades inside an opaque semantic fill, while standalone UniformGridButton retains its prior shadow/opacity contract. The module and its focused Node test are included in the complete tree and release checks; Gallery explicitly loads the existing document initializer. No external dependency changed. See [latest separator verification](1_changelogs/2026-11-09_150226_draw-only-shared-grid-separators.md) and [earlier shadow verification](1_changelogs/2026-11-09_140940_remove-inner-uniform-grid-shadows.md).
+
+## Independent page-heading overlay, 2026-11-09
+
+Default PageHeading remains at its natural size in document flow. A separately rendered inert, aria-hidden text panel becomes fixed only after the entire heading crosses its scroll region's visible upper edge; the original parent link, actions and sole h1 are never duplicated. Measured normal-flow slots now retain the original parent/action geometry while CSS positions those same control instances into the compact bar; the parent is icon-only at 48px and narrow actions can wrap. Shared popup relocation preserves open menus after visual movement. Focused offscreen-origin controls stay pinned until their original slot returns or focus leaves. See [control identity and interaction verification](1_changelogs/2026-11-09_142542_reuse-page-heading-controls-in-compact-bar.md). The panel slides down/up independently and does not alter scroll range. Explicit Compact retains its compact styling and sticky behavior only outside DocumentFlow; DocumentFlow retains relative placement and opts out of automatic overlays. Framework patterns/page-heading.js enhances both static SSR and interactive markup through input-behaviors, intersects nested clipping/visual viewports and releases retired measurements/listeners. Shell and surface controllers no longer subscribe to scroll to shrink titles. SectionNavigator incorporates the visible panel into anchor and viewport calculations. See [implementation and verification](1_changelogs/2026-11-09_134549_independent-page-heading-overlay.md). The new controller is included in the complete tree and required package assets.
+
+Avatar crop Dialogs expose a localized Reset action that returns the current unsaved image to the initial centered crop (zoom 100, positions zero), ends active panning and preserves the source bitmap and open Dialog. Disabled/saving/ready/generation checks retain the existing ownership boundary; Reset never invokes host persistence. See [behavior and verification](1_changelogs/2026-11-11_175809_avatar-crop-reset.md).
+
+## Editable-avatar spacing and feedback lifetime, 2026-11-09
+
+Avatar rows followed by another Section child reserve 36px below the row, including read-only portraits. Avatar encoding returns the JPEG Blob for Blazor to create the stream reference. See the [crop and layout follow-up](1_changelogs/2026-11-09_150635_fix-avatar-crop-stream-and-spacing.md). FloatingNotice defaults and SSR fallback use 3500ms, with explicit durations unscaled and zero persistent; entry/exit motion remains 180ms. Gallery and localization describe the same contract. No maintained source path changed. See [verification and manual acceptance](1_changelogs/2026-11-09_131249_avatar-spacing-and-shorter-feedback.md).
+
+## Local floating-feedback alignment and clock, 2026-11-09
+
+The existing floating dock now measures natural direct content to align wide notification and action-column outer heights without feeding imposed shell height back into resize measurements. SaveChangesBar anchors its original right envelope and transitions width only; notifications retain separate vertical entry/exit motion and replay on a new occurrence. A decorative bottom line uses the actual remaining visible lifetime, pauses with hover/focus/background state and disappears for persistent messages. Reduced motion removes shell movement and steps the clock. The existing controller owns timer-handle identity and teardown. No maintained source path or public parameter was added. See [verification and manual acceptance](1_changelogs/2026-11-09_125352_align-floating-feedback-and-countdown.md).
+
+## Local selection-control refinement, 2026-11-09
+
+Standalone CheckBox, StandaloneCheckBox and native form-check geometry follows the standard control height. Internal SelectionIndicator Render/Input fragments share a compact, borderless and unfilled trailing mark across MultiSelectBox, ReferenceDropdown and the enhanced native-select menu; the native picker uses the same geometry through its checkmark pseudo-element. Popup slots retain their existing 28px default and native input/ARIA owners. Two maintained files are added below. Source and dependency declarations are unchanged. The selection refinement is now frozen in the local-only 1.4.8-preview.1 feed; it has not been publicly published. See [verification and manual checks](1_changelogs/2026-11-09_111836_separate-checkbox-and-menu-indicators.md).
+
 ## Stable 1.4.7 published, 2026-11-09
 
 Flourish 1.4.7 publishes the account Avatar editor and uses the shared palette for its edit overlay. Tag `v1.4.7` fixes the release at `afe9a4c08af18330d01ea911eddf79242d3e1b7c`. Gallery records the Avatar release and opens `1.4.8-preview`. Public verification covers six Core and Blazor archives, their signatures and the fresh consumers. [Release evidence](release-verification.md#flourish-147-uploaded-2026-11-09)
@@ -26,7 +55,7 @@ The existing AccessLayout has an opt-in `RelaxedTopSpacing` parameter. Design ap
 
 ## Floating operation feedback
 
-Floating feedback now defaults to 5000 visible milliseconds before a separate reverse-path exit animation. `AutoDismissMilliseconds=0` keeps a message persistent; `MessageKey` distinguishes repeated identical occurrences. Hover, descendant focus and background tabs pause the remaining lifetime. Content/severity changes and host hidden/reveal restart it; equal-content rerenders do not. Framework-owned dismissal never changes host visibility or business state. Generation checks reject stale callbacks, and closing messages retain their dock allocation until the exit finishes. See [lifetime verification](1_changelogs/2026-11-06_150809_floating-feedback-lifetime.md). No maintained source path was added; the complete tree remains applicable.
+Floating feedback now defaults to 3500 visible milliseconds before a separate reverse-path exit animation. `AutoDismissMilliseconds=0` keeps a message persistent; `MessageKey` distinguishes repeated identical occurrences. Hover, descendant focus and background tabs pause the remaining lifetime. Content/severity changes and host hidden/reveal restart it; equal-content rerenders do not. Framework-owned dismissal never changes host visibility or business state. Generation checks reject stale callbacks, and closing messages retain their dock allocation until the exit finishes. See [lifetime verification](1_changelogs/2026-11-06_150809_floating-feedback-lifetime.md). No maintained source path was added; the complete tree remains applicable.
 
 Framework `FloatingNotice` forwards its Notice contract to a single standard Notice in a fixed, zero-height frame. The bottom dock shares SaveChangesBar's original viewport width and safe-area envelope. The browser coordinates independent Blazor nodes, measures wrapping and dialog-body bounds, and releases placements and document observers when the last frame is removed. The existing document initializer discovers static markup while interactive components can also initialize the same document controller. Gallery includes an executable feedback example in its three-language catalog. See [implementation and verification](1_changelogs/2026-11-05_123824_floating-operation-feedback.md).
 
@@ -86,7 +115,7 @@ Browser Icon still renders the single Unicode character selected by the complete
 
 The checked-in common font is regenerated with scripts/Subset-MaterialIcons.py and common-icons.json. It uses installed Python 3.12 standard-library zlib/struct plus existing Windows DirectWrite and Windows PowerShell/WPF; no downloaded converter, fontTools, Brotli module or new package is used. Windows computes the outline/cmap subset without changing glyph IDs; the generator retains each included glyph's original gvar bytes and fvar/avar/STAT/HVAR tables, then packages the result as WOFF. The original font, complete name map, license and WPF assets remain unchanged. Normal builds consume checked-in assets and need no Python/WPF regeneration step. Source subsets.css is inlined and URL-rebased by the existing CSS bundler, rather than shipped as an extra stylesheet request.
 
-ShellHeader retains its existing public slots and three independent tracks: brand/logo at the inline start, Services in the center, and leading/identity/end actions at the inline end. ContentSurface and NavigationSurface share ApplicationOptions.Layout.ContentWidth. The library measures the actual outer PageBody content edges, including Standard/Expanded/Fluid/FullWidth geometry, navigation rails and scrollbars, or the padded Presentation ContentContainer. It does not shorten a business page to fit chrome. When the intrinsic brand, menu and action widths fit the page-aligned tracks, `aligned` preserves the exact content edges. Wide business pages often leave insufficient outside gutters even though their actual controls fit a single header row. In that case `fitted` reserves each wing's actual width and clamps only the header's menu track between them, giving back excess alignment space as needed. Neither the page width nor the footer edge changes. Only when the combined intrinsic control widths exceed the header does `stacked` place Services on a content-aligned second row. The controller ignores stretched center slots/InlineActions and popup/fixed/absolute layers when measuring requirements, while retaining real control boxes. A control also retains its nonshrinking fixed-pixel flex basis in a row parent and its minimum width even when its measured box was already constrained. This preserves a standard 48px icon Button independently of its 26px glyph; language and POST/logout targets therefore receive their full 96px plus gap instead of a combined 44px shortfall. It observes the real menu controls so changing labels can update fit even if the stretched slot stays the same size. Surface rows and ShellHeader remain naturally growable with a 68px minimum. CSS alone retains the existing usable two-row fallback; the single-row enhancement also initializes on static SSR pages.
+ShellHeader retains its public slots. By default Services follows the brand with the standard header gap, while identity and actions occupy the inline end. FollowContentWidth is an explicit opt-in, default false, enabling the page-aligned menu behavior described below. Direct EndActions controls receive library-owned spacing; menu/action typography is regular while the title remains bold. ContentSurface and NavigationSurface share ApplicationOptions.Layout.ContentWidth. The library measures the actual outer PageBody content edges, including Standard/Expanded/Fluid/FullWidth geometry, navigation rails and scrollbars, or the padded Presentation ContentContainer. It does not shorten a business page to fit chrome. When FollowContentWidth is enabled and the intrinsic brand, menu and action widths fit the page-aligned tracks, `aligned` preserves the exact content edges. Wide business pages often leave insufficient outside gutters even though their actual controls fit a single header row. In that case `fitted` reserves each wing's actual width and clamps only the header's menu track between them, giving back excess alignment space as needed. Neither the page width nor the footer edge changes. Only when the combined intrinsic control widths exceed the header does `stacked` place Services on a content-aligned second row. The controller ignores stretched center slots/InlineActions and popup/fixed/absolute layers when measuring requirements, while retaining real control boxes. A control also retains its nonshrinking fixed-pixel flex basis in a row parent and its minimum width even when its measured box was already constrained. This preserves a standard 48px icon Button independently of its 26px glyph; language and POST/logout targets therefore receive their full 96px plus gap instead of a combined 44px shortfall. It observes the real menu controls so changing labels can update fit even if the stretched slot stays the same size. Surface rows and ShellHeader remain naturally growable with a 68px minimum. CSS alone retains the existing usable two-row fallback; the single-row enhancement also initializes on static SSR pages.
 
 The brand entry composes the real standard Button with Href, Variant=Quiet and ChildContent containing the decorative logo and encoded title/context. Its logo is 24px at every width, consistently expressed by native image attributes, Design image sizing and Framework flex basis. The standard Button retains its 48px minimum target, 10px block/13px inline padding, 1px border and 10px gap; 17px title/context text uses its normal line height. The noninteractive, border-box start wing retains 8px block/10px inline outer padding (8px inline on narrow screens). The single-row size chain fits the 68px baseline: max(48px, 24px + 20px + 2px) + 16px + 1px = 65px, below the explicit 68px ShellHeader minimum. Both Framework and Design declare that growable minimum directly because the owning surfaces intentionally set the shared top-bar variable to auto. No fixed height or maximum prevents a second row or growing actions. Fallback minimum wing widths are 82px/78px, and required-width measurement continues to use the actual logo/text, Button and outer insets rather than the stretched wing track. Hover, focus and active feedback remain standard Quiet behavior; the empty wing is not interactive, and identity behavior is unchanged.
 
@@ -189,7 +218,7 @@ No maintained source file/public parameter is added: **714 files/121 directories
 
 ## Inventory scope
 
-The complete tree below includes the account-avatar editor additions in Framework and tests. The inventory now contains **744 files and 121 directories below the root**, including **22 project files and 5 solution files**. Hidden and intentionally untracked project files are included. The explicit generated/temporary exclusions below are applied to physical paths; Git ignore rules do not discard maintained source, assets, configuration or deployment definitions. This scoped maintenance does not renew the full audit.
+The complete tree was verified by the 2026-11-10 full documentation audit. It contains **749 files and 121 directories below the root**, including **22 project files and 5 solution files**. All 33 source project-reference targets and all solution paths exist; the project graph has no cycle. Hidden and intentionally untracked maintained files are included. Generated/temporary exclusions below are applied to physical paths independently of Git ignore rules.
 
 | Concrete excluded path or pattern | Reason |
 | --- | --- |
@@ -339,6 +368,7 @@ Flourish/
 |   |   |   |-- Components/
 |   |   |   |   |-- Internal/
 |   |   |   |   |   |-- NativeSelectPopup.cs
+|   |   |   |   |   |-- SelectionIndicator.cs
 |   |   |   |   |   |-- SelectValueConversion.cs
 |   |   |   |   |   |-- TableData.cs
 |   |   |   |   |   \-- UniformGridContent.cs
@@ -472,11 +502,13 @@ Flourish/
 |   |   |   |   |   |-- floating-notice.js
 |   |   |   |   |   |-- header-layout.js
 |   |   |   |   |   |-- navigation-surface.css
+|   |   |   |   |   |-- page-heading.js
 |   |   |   |   |   |-- primary-navigation-preview.css
 |   |   |   |   |   |-- primary-navigation-preview.js
 |   |   |   |   |   |-- save-changes-bar.css
 |   |   |   |   |   |-- save-changes-bar.js
-|   |   |   |   |   \-- surfaces.js
+|   |   |   |   |   |-- surfaces.js
+|   |   |   |   |   \-- uniform-grid-dividers.js
 |   |   |   |   |-- presentation/
 |   |   |   |   |   |-- layout.css
 |   |   |   |   |   |-- offers.js
@@ -515,6 +547,7 @@ Flourish/
 |   |   |   |   |-- page-heading-loading.css
 |   |   |   |   |-- section-navigator.css
 |   |   |   |   |-- section-navigator.js
+|   |   |   |   |-- selection-indicator.css
 |   |   |   |   |-- shell.js
 |   |   |   |   |-- split-button.css
 |   |   |   |   |-- step-indicator.css
@@ -867,7 +900,7 @@ Flourish/
 |   |   |-- appsettings.json
 |   |   |-- Gallery.Flourish.Blazor.csproj
 |   |   \-- Program.cs
-|   |-- Gallery.Flourish.WINUI3/
+|   |-- Gallery.Flourish.WinUI3/
 |   |   |-- App.xaml
 |   |   |-- App.xaml.cs
 |   |   |-- Gallery.Flourish.WinUI3.csproj
@@ -959,6 +992,7 @@ Flourish/
 |   |   |-- TextChecks.cs
 |   |   |-- tutorial-board-dom.mjs
 |   |   |-- TutorialBoardChecks.cs
+|   |   |-- uniform-grid-dividers.test.mjs
 |   |   |-- UniformGridChecks.cs
 |   |   \-- ValidationMessagesChecks.cs
 |   |-- Tests.Flourish.Blazor.Native/
@@ -1161,6 +1195,9 @@ The WPF Framework's shared translation JSON and WPF Gallery's shared SVG are **s
 No production database connection, remote application API client, message broker, distributed cache, or microservice orchestration was found in the inspected source/configuration. That is an observation about this repository, not a prohibition on consumers supplying such services. External links shown in Gallery samples are navigation/documentation links rather than application backend dependencies.
 
 ## Current public API and interaction ownership
+
+Secondary and tertiary NavigationTree leaves now default to no icon: NavigationItem.Icon is nullable and initialized to null, and the renderer emits an icon only for an explicitly nonblank value. ISubNavigationBuilder supports iconless string/TextReference AddSubNav overloads, preserving existing nullable-icon signatures and their route/exact/disabled/configuration behavior. Primary navigation icons, expanded primary labels and hierarchy disclosure remain unchanged. This is a presentation default, not permission or navigation-target behavior.
+
 
 PageHeading owns its loading strip. Optional `Loading` defaults false and is ORed through CSS with observable active sources across the document and embedded PageBody/shell/content/navigation scopes, including dialogs beside PageBody or outside Routes. Shared document aggregation may activate multiple headings together; it does not claim per-Gallery-example isolation. LoadingState publishes an active marker; completed ProgressBar/ProgressRing and stopped rings stop publishing it. Button automatically exposes pending asynchronous OnClick through its existing Busy semantics, prevents duplicates and releases its internal state in finally even on failure. The title does not publish a source marker, avoiding feedback loops. The absolute 4px strip occupies no document-flow space, follows centered/expanded/fluid gutters and bounds FullWidth titles to ContentContainer geometry. Compact title/action behavior remains; DocumentFlow uses relative positioning without making page titles sticky. Framework `wwwroot/page-heading-loading.css` owns state/geometry/animation; Design's same-named file owns theme/forced-color paint. The two Node files join the existing palette/page-body-actions entry points. No arbitrary fetch, native navigation or DOM-invisible Task is intercepted. See the [loading/progress report](1_bugreports/2026-10-23_page-heading-loading-and-progress-rendering.md) for confirmed source behavior and unconfirmed physical rendering diagnosis.
 

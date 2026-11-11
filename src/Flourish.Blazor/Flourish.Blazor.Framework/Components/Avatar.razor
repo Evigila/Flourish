@@ -80,9 +80,11 @@
                 </div>
             </ChildContent>
             <Actions>
+                <Button Variant="ButtonVariant.Quiet" Text="@Ui("Avatar_Reset", "Reset")" Disabled="@(Disabled || Saving || Resetting || !CropReady)"
+                        OnClick="ResetCropAsync" />
                 <Button Variant="ButtonVariant.Quiet" Text="@Ui("Confirmation_Cancel", "Cancel")" Disabled="@Saving"
                         OnClick="CloseCropAsync" />
-                <Button Text="@Ui("SaveChanges_Save", "Save")" Disabled="@(Disabled || !CropReady || SaveAsync is null)"
+                <Button Text="@Ui("SaveChanges_Save", "Save")" Disabled="@(Disabled || Resetting || !CropReady || SaveAsync is null)"
                         Busy="@Saving" OnClick="SaveCropAsync" />
             </Actions>
         </Dialog>

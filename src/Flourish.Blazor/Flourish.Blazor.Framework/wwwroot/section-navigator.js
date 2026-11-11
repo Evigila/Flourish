@@ -26,9 +26,30 @@ function discover(state) {
     });
 }
 
+function pageHeading(state) {
+    return [...state.content.querySelectorAll('.f-page-heading')].find(heading => {
+        if (heading.closest('main') !== state.content.closest('main')) return false;
+        for (let node = heading.parentElement; node && node !== state.content; node = node.parentElement)
+            if (node.matches('.f-content-scroll,.content-stage,.application-stage')) return false;
+        return true;
+    });
+}
+function headingOverlay(state) {
+    return pageHeading(state)?.querySelector('[data-f-heading-overlay]');
+}
 function headingOffset(state) {
-    const heading = state.content.querySelector('.f-page-heading');
-    return heading && getComputedStyle(heading).position === 'sticky' ? heading.getBoundingClientRect().height + 12 : 12;
+    const heading = pageHeading(state);
+    let offset = heading && getComputedStyle(heading).position === 'sticky' ? heading.getBoundingClientRect().height + 12 : 12;
+    const overlay = headingOverlay(state);
+    const panel = overlay?.querySelector('.f-heading-overlay-panel');
+    if (panel && overlay.hasAttribute('data-f-heading-visible') && !overlay.closest('[hidden]')) {
+        const bounds = state.content.getBoundingClientRect(), rect = panel.getBoundingClientRect();
+        // The fixed overlay's outer frame has zero height; only its visible panel obscures sections.
+        if (rect.left < bounds.right && rect.right > bounds.left && rect.top <= Math.max(0, bounds.top) + 1
+            && rect.bottom > Math.max(0, bounds.top))
+            offset = Math.max(offset, Math.min(rect.bottom, window.innerHeight, bounds.bottom) - bounds.top + 12);
+    }
+    return offset;
 }
 
 function cancelNavigation(state) {
@@ -82,8 +103,9 @@ function refresh(state) {
     state.targets = links(state.root).map(link => ({ link, heading: document.getElementById(idFromLink(link)) }))
         .filter(item => item.heading && state.content.contains(item.heading));
     state.root.hidden = state.targets.length === 0;
-    const pageHeading = state.content.querySelector('.f-page-heading');
-    const observed = [state.content, ...(pageHeading ? [pageHeading] : []), ...state.targets.map(item => item.heading)];
+    const heading = pageHeading(state), overlay = headingOverlay(state);
+    const panel = overlay?.querySelector('.f-heading-overlay-panel');
+    const observed = [state.content, ...[heading, panel].filter(Boolean), ...state.targets.map(item => item.heading)];
     if (!state.observed || observed.length !== state.observed.length || observed.some((node, index) => node !== state.observed[index])) {
         state.resize.disconnect();
         observed.forEach(node => state.resize.observe(node));
@@ -107,8 +129,9 @@ function position(state) {
     state.root.hidden = bounds.bottom <= 0 || bounds.top >= window.innerHeight || bounds.right <= 0 || bounds.left >= window.innerWidth;
     const track = state.targets[0].heading.closest('section') ?? state.targets[0].heading;
     const gutter = Math.max(20, bounds.right - track.getBoundingClientRect().right);
-    const top = Math.max(bounds.top, 0);
+    const top = Math.max(bounds.top, 0, bounds.top + headingOffset(state) - 12);
     const bottom = Math.min(bounds.bottom, window.innerHeight);
+    if (bottom <= top) { state.root.hidden = true; return; }
     state.root.style.setProperty('--f-section-nav-left', `${Math.max(bounds.left, bounds.right - gutter / 2 - 10)}px`);
     state.root.style.setProperty('--f-section-nav-top', `${top + Math.max(0, bottom - top) / 2}px`);
     state.root.style.setProperty('--f-section-nav-height', `${Math.max(24, bottom - top - 24)}px`);
@@ -178,7 +201,7 @@ export function synchronize(root, contentId, autoDiscover, reference) {
         window.addEventListener('resize', state.position);
         document.addEventListener('scroll', state.position, { capture:true, passive:true });
         state.mutation = new MutationObserver(schedule);
-        state.mutation.observe(content, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['id','hidden'] });
+        state.mutation.observe(content, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['id','hidden','data-f-heading-visible'] });
         state.resize = new ResizeObserver(schedule);
         instances.set(root, state);
     }

@@ -70,6 +70,7 @@ internal static class UniformGridChecks
             Require(!Attribute(grid, "style").Contains("--f-grid-columns", StringComparison.Ordinal), "Automatic layout still emits a fixed column count.");
             Require(!Attribute(grid, "style").Contains("aspect-ratio", StringComparison.Ordinal), "The container itself was shaped as a cell.");
             Require(!HasClass(grid, "f-uniform-grid-fixed-height") && !Attribute(grid, "style").Contains("--f-grid-cell-height:", StringComparison.Ordinal), "Default rectangles unexpectedly have a fixed height.");
+            Require(!HasClass(grid, "f-uniform-grid-content-height"), "Default rectangles unexpectedly opt into content height.");
             Require(Tags(html, "f-uniform-grid-item").Count == 3, "The container lost its supplied cells.");
         }));
         tests.Add(("rectangular and square action grids retain one shape-aware layout across all dimension modes", async () =>
@@ -135,6 +136,52 @@ internal static class UniformGridChecks
                     Require(Attribute(grid, "style").Contains("--f-grid-cell-max-height:80px", StringComparison.Ordinal)
                         && Attribute(grid, "style").Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal), "Fixed height rewrote the independent cap or narrow-screen dimensions.");
                 }
+        }));
+        tests.Add(("content-height grids retain encoded labels and icons without selecting a fixed-height layout", async () =>
+        {
+            foreach (var iconSupport in new[] { false, true })
+            {
+                const string title = "Long translated <service> name";
+                RenderFragment content = builder =>
+                {
+                    builder.OpenComponent<UniformGridButton>(0);
+                    builder.AddAttribute(1, nameof(UniformGridButton.Title), title);
+                    builder.AddAttribute(2, nameof(UniformGridButton.Icon), "apps");
+                    builder.AddAttribute(3, nameof(UniformGridButton.Text), "A description that must remain visible below the title.");
+                    builder.CloseComponent();
+                };
+                var html = await Render<UniformGrid>(new()
+                {
+                    [nameof(UniformGrid.ContentHeight)] = true, [nameof(UniformGrid.IconSupport)] = iconSupport,
+                    [nameof(UniformGrid.Columns)] = 3, [nameof(UniformGrid.Rows)] = 2,
+                    [nameof(UniformGrid.NarrowColumns)] = 1, [nameof(UniformGrid.ChildContent)] = content
+                });
+                var grid = Tag(html, "div", "f-uniform-grid");
+                var cell = Tag(html, "button", "f-uniform-grid-button");
+                Require(HasClass(grid, "f-uniform-grid-content-height") && HasClass(grid, "f-uniform-grid-rectangle")
+                    && !HasClass(grid, "f-uniform-grid-fixed-height"), "Content height selected the wrong sizing mode.");
+                Require(Attribute(grid, "data-grid-layout") == "explicit" && Attribute(grid, "style").Contains("--f-grid-narrow-columns:1", StringComparison.Ordinal)
+                    && !Attribute(grid, "style").Contains("--f-grid-cell-height:", StringComparison.Ordinal), "Content height replaced independent grid dimensions or imposed a fixed height.");
+                Require(HasClass(cell, "f-uniform-icon-support") == iconSupport && Tags(html, "f-uniform-cell-icon").Count == (iconSupport ? 1 : 0)
+                    && Attribute(Tags(html, "f-icon").Single(), "data-icon") == "apps",
+                    "Content height hid the supplied icon or changed its configured layout.");
+                Require(html.Contains(WebUtility.HtmlEncode(title), StringComparison.Ordinal)
+                    && html.Contains("A description that must remain visible below the title.", StringComparison.Ordinal), "Content height lost or failed to encode the complete label and description.");
+            }
+        }));
+        tests.Add(("content height rejects fixed heights and square shapes", async () =>
+        {
+            foreach (var incompatible in new Dictionary<string, object?>[]
+            {
+                new() { [nameof(UniformGrid.ContentHeight)] = true, [nameof(UniformGrid.CellHeight)] = 100d },
+                new() { [nameof(UniformGrid.ContentHeight)] = true, [nameof(UniformGrid.Shape)] = UniformGridShape.Square }
+            })
+            {
+                var rejected = false;
+                try { await Render<UniformGrid>(incompatible); }
+                catch (InvalidOperationException) { rejected = true; }
+                Require(rejected, "An incompatible content-height configuration was accepted.");
+            }
         }));
         tests.Add(("fixed rectangular height rejects nonfinite nonpositive and square shape values", async () =>
         {

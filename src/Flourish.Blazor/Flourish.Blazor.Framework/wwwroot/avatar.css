@@ -1,5 +1,6 @@
 .f-avatar { display:flex; flex-direction:column; align-items:center; gap:8px; inline-size:100%; min-inline-size:0; text-align:center; overflow-wrap:anywhere; }
 .f-uniform-grid > .f-avatar { grid-column:1/-1; aspect-ratio:auto; }
+.f-section > .f-avatar:not(:last-child) { margin-block-end:36px; }
 .f-avatar-portrait { position:relative; display:grid; place-items:center; inline-size:min(100%,var(--f-avatar-size,64px)); aspect-ratio:1; }
 .f-avatar-image,.f-avatar-edit { position:absolute; inset:0; display:grid; place-items:center; overflow:hidden; border-radius:50%; }
 .f-avatar-image > img { display:block; inline-size:100%; block-size:100%; object-fit:cover; }

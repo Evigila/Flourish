@@ -148,6 +148,44 @@ internal static class AvatarChecks
             });
         }));
 
+        tests.Add(("avatar reset retains the open unsaved photo and respects edit guards", async () =>
+        {
+            var saves = 0;
+            var activator = new AvatarActivator();
+            var services = Services(); services.AddSingleton<IComponentActivator>(activator);
+            using var provider = services.BuildServiceProvider();
+            await using var renderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
+            await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                await renderer.RenderComponentAsync<Avatar>(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    [nameof(Avatar.SaveAsync)] = (Func<string, Task<bool>>)(_ => { saves++; return Task.FromResult(true); })
+                }));
+                var avatar = activator.Instance!;
+                var module = new CropModule([]);
+                const BindingFlags members = BindingFlags.Instance | BindingFlags.NonPublic;
+                var type = typeof(Avatar);
+                type.GetField("CropOpen", members)!.SetValue(avatar, true);
+                type.GetField("CropReady", members)!.SetValue(avatar, true);
+                type.GetField("CropError", members)!.SetValue(avatar, "save");
+                type.GetField("Module", members)!.SetValue(avatar, module);
+                var reset = type.GetMethod("ResetCropAsync", members)!;
+                await (Task)reset.Invoke(avatar, null)!;
+                Require(module.Resets == 1 && module.Releases == 0 && saves == 0 && module.Streams.Count == 0,
+                    "Reset saved, encoded or discarded the source photo.");
+                Require((bool)type.GetField("CropOpen", members)!.GetValue(avatar)! && type.GetField("CropError", members)!.GetValue(avatar) is null,
+                    "Reset closed the editor or retained a previous crop error.");
+                await avatar.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(Avatar.Disabled)] = true }));
+                await (Task)reset.Invoke(avatar, null)!;
+                await avatar.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(Avatar.Disabled)] = false }));
+                type.GetField("Saving", members)!.SetValue(avatar, true);
+                await (Task)reset.Invoke(avatar, null)!;
+                type.GetField("Saving", members)!.SetValue(avatar, false);
+                type.GetField("CropReady", members)!.SetValue(avatar, false);
+                await (Task)reset.Invoke(avatar, null)!;
+                Require(module.Resets == 1, "Reset bypassed disabled, saving or unready state.");
+            });
+        }));
         tests.Add(("avatar composes inside a read only information grid value", async () =>
         {
             RenderFragment portrait = builder => { builder.OpenComponent<Avatar>(0); builder.AddAttribute(1, nameof(Avatar.Name), "Alex Morgan"); builder.CloseComponent(); };
@@ -174,11 +212,13 @@ internal static class AvatarChecks
     private sealed class CropModule(byte[] jpeg) : IJSObjectReference
     {
         internal int Releases { get; private set; }
+        internal int Resets { get; private set; }
         internal List<CropStream> Streams { get; } = [];
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
             InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
+            if (identifier == "reset") { Resets++; return ValueTask.FromResult((TValue)(object)true); }
             if (identifier == "release")
             {
                 Releases++;

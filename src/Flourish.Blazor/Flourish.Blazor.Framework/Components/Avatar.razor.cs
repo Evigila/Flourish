@@ -40,6 +40,7 @@ public partial class Avatar : IAsyncDisposable
     private bool AttachCrop;
     private bool CropReady;
     private bool Saving;
+    private bool Resetting;
     private bool Disposed;
     private bool HelpExpanded;
     private bool HelpDismissed;
@@ -159,9 +160,25 @@ public partial class Avatar : IAsyncDisposable
         StateHasChanged();
     }
 
+    private async Task ResetCropAsync()
+    {
+        if (Disposed || Disabled || Saving || Resetting || !CropReady || !CropOpen || Module is not { } module) return;
+        var version = CropVersion;
+        Resetting = true;
+        try
+        {
+            var reset = await module.InvokeAsync<bool>("reset", Lifetime.Token, Owner, version);
+            if (!Disposed && CropOpen && version == CropVersion) CropError = reset ? null : "crop";
+        }
+        catch (Exception error) when (error is JSException or OperationCanceledException or ObjectDisposedException)
+        {
+            if (!Disposed && CropOpen && version == CropVersion) CropError = "crop";
+        }
+        finally { Resetting = false; }
+    }
     private async Task SaveCropAsync()
     {
-        if (Disposed || Disabled || Saving || !CropReady || !CropOpen || Module is not { } module || SaveAsync is not { } save)
+        if (Disposed || Disabled || Saving || Resetting || !CropReady || !CropOpen || Module is not { } module || SaveAsync is not { } save)
             return;
         Saving = true;
         CropError = null;

@@ -5,11 +5,15 @@ import { initializePrimaryNavigationPreviews } from '../patterns/primary-navigat
 
 const selectableInputTypes = new Set(["text", "email", "tel", "url", "number"]);
 const accessFormRoots = new Set();
-let noticeModule;
+let noticeModule, headingModule, gridDividerModule;
 function synchronizeAccessForms() {
     // Static SSR controls have no component after-render callback.
     if (document.querySelectorAll('[data-f-notice-frame]').length)
         (noticeModule ??= import('../patterns/floating-notice.js')).then(module => module.initializeFloatingNotices(document));
+    if (document.querySelectorAll('[data-f-heading-overlay]').length)
+        (headingModule ??= import('../patterns/page-heading.js')).then(module => module.initializePageHeadings(document));
+    if (document.querySelectorAll('.f-uniform-grid,.f-form-actions').length)
+        (gridDividerModule ??= import('../patterns/uniform-grid-dividers.js')).then(module => module.initializeGridDividers(document));
     initializePopups(document);
     initializePresentationProgress(document);
     initializeShellHeaders(document);

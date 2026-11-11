@@ -1,4 +1,5 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+@using EmbeddedSelection = ArkheideSystem.Flourish.Blazor.Components.Internal.SelectionIndicator
 @inherits TextComponentBase
 @typeparam TValue where TValue : struct
 @implements IAsyncDisposable
@@ -15,7 +16,7 @@
     {
         <div class="reference-panel selection-panel" popover="manual">
             <div class="selection-panel-width" aria-hidden="true">
-                @foreach (var item in Items) { <span class="selection-option">@item.Name</span> }
+                @foreach (var item in Items) { <span class="selection-option"><span>@item.Name</span>@EmbeddedSelection.Render()</span> }
             </div>
             <input @ref="SearchInput" class="reference-search selection-search" type="search"
                    form="@(Id + "-popup-search")" value="@Search" maxlength="@MaximumLength"
@@ -25,16 +26,16 @@
                 @if (AllowNone)
                 {
                     <button type="button" role="option" aria-selected="@((Value is null && string.IsNullOrWhiteSpace(UnlistedName)) ? "true" : "false")"
-                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)">@EffectiveEmptySelectionText</button>
+                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(null)"><span>@EffectiveEmptySelectionText</span>@EmbeddedSelection.Render(Value is null && string.IsNullOrWhiteSpace(UnlistedName))</button>
                 }
                 @if (ShowUnlisted)
                 {
-                    <span class="selection-option reference-option reference-unlisted" role="option" aria-selected="true">@UnlistedName</span>
+                    <span class="selection-option reference-option reference-unlisted" role="option" aria-selected="true"><span>@UnlistedName</span>@EmbeddedSelection.Render(true)</span>
                 }
                 @foreach (var item in Matches)
                 {
                     <button type="button" role="option" aria-selected="@(EqualityComparer<TValue?>.Default.Equals(Value, item.Id) ? "true" : "false")"
-                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(item.Id)">@item.Name</button>
+                            class="selection-option reference-option" disabled="@Creating" @onclick="() => SelectAsync(item.Id)"><span>@item.Name</span>@EmbeddedSelection.Render(EqualityComparer<TValue?>.Default.Equals(Value, item.Id))</button>
                 }
                 @if (Matches.Count == 0 && !ShowUnlisted && !AllowNone)
                 {

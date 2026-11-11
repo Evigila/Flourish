@@ -755,7 +755,9 @@ check('Hover select retains its actual carrier and native change transport witho
   const f=nativeSelectPopupFixture();let saves=0;f.select.addEventListener('change',()=>saves++);
   assert.equal(f.owner.getAttribute('data-f-native-select-ready'),'true');assert.equal(f.select.getAttribute('data-culture-picker'),'true');
   assert.equal(f.select.getAttribute('name'),'culture');assert.equal(f.options.children[1].getAttribute('aria-checked'),'true');
-  assert.equal(f.options.children[1].children[0].textContent,'✓');assert.equal(f.options.children[0].children[0].textContent,'');
+  assert.equal(f.options.children[1].children[1].textContent,'✓');assert.equal(f.options.children[0].children[1].textContent,'');
+  assert.equal(f.options.children[1].children[1].className,'f-selection-indicator');
+  assert.equal(f.options.children[1].children[1].attrs.get('aria-hidden'),'true');
   f.menu.emit('pointerenter',{pointerType:'mouse'});assert.equal(f.popup.popoverOpen,true);
   f.options.emit('click',{target:f.options.children[0],preventDefault(){}});
   assert.equal(f.select.value,'en-US');assert.equal(saves,1);assert.equal(f.caption.textContent,'English');assert.equal(f.popup.popoverOpen,false);

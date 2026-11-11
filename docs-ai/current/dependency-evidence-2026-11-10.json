@@ -1,0 +1,2765 @@
+{
+  "observedUtc": "2026-11-10T14:52:42.524Z",
+  "sourceVersionPrefix": "1.4.7",
+  "files": [
+    ".agents/skills/audit-project-docs/SKILL.md",
+    ".agents/skills/audit-project-docs/agents/openai.yaml",
+    ".agents/skills/sync-agents-framework/SKILL.md",
+    ".agents/skills/sync-agents-framework/agents/openai.yaml",
+    ".config/dotnet-tools.json",
+    ".gitattributes",
+    ".github/workflows/build.yml",
+    ".github/workflows/docs.yml",
+    ".gitignore",
+    "AGENTS.ensure.json",
+    "AGENTS.framework.json",
+    "AGENTS.lock.json",
+    "AGENTS.md",
+    "Directory.Build.props",
+    "Directory.Build.targets",
+    "Flourish.slnx",
+    "LICENSE.txt",
+    "build/BundleCss.cs",
+    "build/CssBundle.targets",
+    "build/Test-BlazorPackageConsumers.ps1",
+    "build/Test-ChangeLog.ps1",
+    "build/Test-CssAssets.ps1",
+    "build/Test-CssBundle.ps1",
+    "build/Test-CultureCatalogs.ps1",
+    "build/Test-CultureIntegration.cjs",
+    "build/Test-CulturePreferences.ps1",
+    "build/Test-GalleryCulture.ps1",
+    "build/Test-GalleryNavigation.ps1",
+    "build/Test-PreviewVersion.ps1",
+    "build/Test-WpfPackageConsumers.ps1",
+    "fetch-agents.bat",
+    "global.json",
+    "publish-helper.bat",
+    "scripts/Convert-MaterialIcons.ps1",
+    "scripts/Publish-Helper.ps1",
+    "scripts/Release-Common.ps1",
+    "scripts/ReleaseSettings.psd1",
+    "scripts/Start-Common.ps1",
+    "scripts/Start-Project.ps1",
+    "scripts/StartSettings.json",
+    "scripts/Subset-MaterialIcons.py",
+    "scripts/Test-Release.ps1",
+    "scripts/Test-StartProject.ps1",
+    "scripts/Verify-PackageSet.ps1",
+    "scripts/fetch-agents.ps1",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/ApplicationContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/ApplicationData.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/CenteredContainer.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/ControlContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/NavigationChoiceItem.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/NavigationChoicesLayout.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/PopupStrength.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/PresentationTone.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/StepIndicatorItem.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/TableContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/TutorialStep.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/UniformGridShape.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Components/UniformGridVariant.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/ITablePreferences.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Primitives/GridContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/Primitives/SelectionContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Abstract/TextContracts.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/AppearancePalette.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/AssemblyInfo.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/DesignServiceCollectionExtensions.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/Hosting/AppearanceService.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/Hosting/DesignOptions.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/_Imports.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/access-layout.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/avatar.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/controls.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/data-search.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/data.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/design.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/display-board.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/dropdown.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/expansion-indicator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/form-inputs.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/foundation.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/layout.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/line-chart.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/multi-select-box.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/native-overrides.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/navigation-choices.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/page-heading-loading.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/patterns/content-surface.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/patterns/navigation-surface.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/patterns/primary-navigation-preview.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/patterns/save-changes-bar.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation-progress.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/presentation.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/AccessBrand.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/DataPager.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/EditingGrid.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/FieldControl.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/InteractionBoundary.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/MaskedInput.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/NoticeTrigger.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/PrimaryNavigationItem.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ReferenceDropdown.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/SearchAutocomplete.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ServiceMenu.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/StandaloneMaskedInput.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/SystemNavigationMenu.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/primitives.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/scrollbars.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/section-navigator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/split-button.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/static-surfaces.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/tutorial-board.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/uniform-grid.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/AssemblyInfo.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/ComponentUsageCatalog.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/AccessActions.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/AccessFormSurface.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/AccessLayout.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/AccessPanel.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ActionMenu.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ApplicationLayout.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ApplicationShell.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/AttributionFooter.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Avatar.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Avatar.razor.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/BackToTop.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Button.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Card.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Card.razor.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/CheckBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/CodeBlock.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/CollectionView.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ContentContainer.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/CopyText.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DataSearch.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DataTable.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DateBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Dialog.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DialogView.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Disclosure.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DisplayBoard.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/DropdownSurface.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/EmptyState.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ExpansionIndicator.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Field.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/FilePicker.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/FloatingNotice.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/FormActions.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/FormGroup.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/FormLayout.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Icon.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ImagePreview.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/InlineActions.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/InputSemantics.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Internal/NativeSelectPopup.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Internal/SelectValueConversion.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Internal/SelectionIndicator.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Internal/TableData.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Internal/UniformGridContent.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/LineChart.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ListView.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/LoadingState.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/LogoDisplayer.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/MultiSelectBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/MultiSelectOption.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/NavigationChoices.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/NavigationSelection.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/NavigationTree.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Notice.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/NumberBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/OfferCard.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/OfferStage.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PageBody.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PageHeading.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Patterns/ContentSurface.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Patterns/NavigationSurface.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PresentationBand.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PresentationFooter.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PresentationHero.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/PresentationProgress.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/AccessBrand.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/DataPager.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/EditingGrid.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/GridInteractions.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/InputBehaviorBinding.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/InteractionBoundary.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/MaskedInput.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/NavigationGuard.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/NoticeTrigger.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/PrimaryNavigationItem.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/ReferenceDropdown.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/SearchAutocomplete.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/SecondaryNavigationItem.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/ServiceMenu.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/ShellHeader.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/StandaloneMaskedInput.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Primitives/_Imports.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ProgressBar.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ProgressRing.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/SaveChangesBar.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/SearchBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/Section.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/SectionNavigator.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/SelectBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/SplitButton.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/StandaloneCheckBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/StandaloneSelectBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/StandaloneTextBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/StepIndicator.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/TablePreferences.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/TextBox.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/TextComponentBase.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/TextInputBase.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ToggleSection.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ToggleSwitch.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/TutorialBoard.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/UniformGrid.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/UniformGridButton.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/UniformGridItem.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Components/ValidationMessages.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Hosting/ApplicationOptions.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Hosting/CommandRuntime.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Hosting/LiteralTextProvider.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Icons/IconCatalog.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Icons/MaterialSymbolsOutlined.codepoints",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Localization/Culture.json",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Primitives/DataPagination.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Primitives/InputMaskFormatter.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/Primitives/NoticePresentation.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/ServiceCollectionExtensions.cs",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/_Imports.razor",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/access-layout.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/avatar-editor.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/avatar.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/back-to-top.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/browse.svg",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/clipboard.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/controls.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data-search.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data-table.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/data.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/display-board.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/expansion-indicator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/form-inputs.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/framework.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/LICENSE.txt",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/MaterialSymbolsOutlined.common.woff",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/MaterialSymbolsOutlined.woff2",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/common-icons.json",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/source.json",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/icons/material/subsets.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/layout.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/line-chart.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/multi-select-box.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/multi-select-box.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/navigation-choices.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/page-heading-loading.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/content-surface.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/floating-notice.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/floating-notice.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/header-layout.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/navigation-surface.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/page-heading.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/primary-navigation-preview.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/primary-navigation-preview.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/save-changes-bar.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/save-changes-bar.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/surfaces.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/patterns/uniform-grid-dividers.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/offers.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/progress.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/progress.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/EditingGrid.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/behavior.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/editing-grid-columns.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/editing-grid.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/input-behaviors.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/interaction-origin.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/native.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/navigation-guard.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/primary-navigation-item.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/primitives/reference-dropdown.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/section-navigator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/section-navigator.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/selection-indicator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/shell.js",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/split-button.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/step-indicator.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/tutorial-board.css",
+    "src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/uniform-grid.css",
+    "src/Flourish.Blazor/Flourish.Blazor.slnx",
+    "src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj",
+    "src/Flourish.Core/Abstract/ApplicationTheme.cs",
+    "src/Flourish.Core/Abstract/BackgroundTaskContracts.cs",
+    "src/Flourish.Core/Abstract/CommandContracts.cs",
+    "src/Flourish.Core/Abstract/ContentLayoutContracts.cs",
+    "src/Flourish.Core/Abstract/IDataBuilder.cs",
+    "src/Flourish.Core/Abstract/ISettingsEditor.cs",
+    "src/Flourish.Core/Abstract/ISettingsStore.cs",
+    "src/Flourish.Core/Abstract/IThemeService.cs",
+    "src/Flourish.Core/Abstract/LocalizationContracts.cs",
+    "src/Flourish.Core/Abstract/MotionContracts.cs",
+    "src/Flourish.Core/Abstract/NavigationMenuContracts.cs",
+    "src/Flourish.Core/Abstract/NavigationPanelDirection.cs",
+    "src/Flourish.Core/Abstract/NavigationPanelState.cs",
+    "src/Flourish.Core/Abstract/NotificationContracts.cs",
+    "src/Flourish.Core/Abstract/PageCacheMode.cs",
+    "src/Flourish.Core/Abstract/ProfileContracts.cs",
+    "src/Flourish.Core/Abstract/ProjectContracts.cs",
+    "src/Flourish.Core/Abstract/SettingsUpdateResult.cs",
+    "src/Flourish.Core/Abstract/ShellRegion.cs",
+    "src/Flourish.Core/Abstract/ShortcutConflictPolicy.cs",
+    "src/Flourish.Core/Abstract/ShortcutScope.cs",
+    "src/Flourish.Core/Abstract/StateContracts.cs",
+    "src/Flourish.Core/Abstract/StatusBarContracts.cs",
+    "src/Flourish.Core/Abstract/TitleBarContracts.cs",
+    "src/Flourish.Core/Abstract/ToolTipContracts.cs",
+    "src/Flourish.Core/Abstract/ToolbarStateContracts.cs",
+    "src/Flourish.Core/Abstract/WindowCloseContracts.cs",
+    "src/Flourish.Core/AssemblyInfo.cs",
+    "src/Flourish.Core/Assets/FlourishCulture.Json",
+    "src/Flourish.Core/BackgroundTasks/BackgroundTaskService.cs",
+    "src/Flourish.Core/Commands/CommandDispatcher.cs",
+    "src/Flourish.Core/Commands/CommandParserHostedService.cs",
+    "src/Flourish.Core/Configuration/AppPreferenceService.cs",
+    "src/Flourish.Core/Configuration/AppSettingsConfigurationSource.cs",
+    "src/Flourish.Core/Configuration/ApplicationConfigurationPath.cs",
+    "src/Flourish.Core/Configuration/ApplicationDataOptions.cs",
+    "src/Flourish.Core/Configuration/BuilderMutationGuard.cs",
+    "src/Flourish.Core/Configuration/DataBuilder.cs",
+    "src/Flourish.Core/Configuration/PreferenceConfigurationKeys.cs",
+    "src/Flourish.Core/Configuration/ValueValidation.cs",
+    "src/Flourish.Core/Flourish.Core.csproj",
+    "src/Flourish.Core/Hosting/CoreServiceCollectionExtensions.cs",
+    "src/Flourish.Core/Hosting/CoreServiceOptions.cs",
+    "src/Flourish.Core/Layout/ContentLayoutService.cs",
+    "src/Flourish.Core/Layout/LayoutBuilder.cs",
+    "src/Flourish.Core/Layout/LayoutOptions.cs",
+    "src/Flourish.Core/Localization/LocaleKeys.cs",
+    "src/Flourish.Core/Localization/LocalizationService.cs",
+    "src/Flourish.Core/Messaging/NotificationService.cs",
+    "src/Flourish.Core/Motion/MotionBuilder.cs",
+    "src/Flourish.Core/Motion/MotionOptions.cs",
+    "src/Flourish.Core/Navigation/NavigationMenuStateService.cs",
+    "src/Flourish.Core/Navigation/NavigationStackEntry.cs",
+    "src/Flourish.Core/Navigation/PageHistoryService.cs",
+    "src/Flourish.Core/Profile/IProfileCredentialStore.cs",
+    "src/Flourish.Core/Profile/ProfileOptions.cs",
+    "src/Flourish.Core/Profile/ProfileService.cs",
+    "src/Flourish.Core/Profile/SimpleProfileAuthService.cs",
+    "src/Flourish.Core/Profile/StoredProfileCredentials.cs",
+    "src/Flourish.Core/Projects/ProjectBuilder.cs",
+    "src/Flourish.Core/Projects/ProjectCatalogStore.cs",
+    "src/Flourish.Core/Projects/ProjectOptions.cs",
+    "src/Flourish.Core/Projects/ProjectService.cs",
+    "src/Flourish.Core/Shell/StatusBar/StatusBarBuilder.cs",
+    "src/Flourish.Core/Shell/StatusBar/StatusBarOptions.cs",
+    "src/Flourish.Core/Shell/StatusBar/StatusBarService.cs",
+    "src/Flourish.Core/Shell/TitleBar/TitleBarOptions.cs",
+    "src/Flourish.Core/Shell/TitleBar/TitleBarRuntimeFacade.cs",
+    "src/Flourish.Core/Shell/TitleBar/TitleBarSearchService.cs",
+    "src/Flourish.Core/Shell/TitleBar/TitleBarSearchState.cs",
+    "src/Flourish.Core/Shell/TitleBar/TitleBarService.cs",
+    "src/Flourish.Core/Shell/Toolbar/ToolbarStateOptions.cs",
+    "src/Flourish.Core/Shell/Toolbar/ToolbarStateService.cs",
+    "src/Flourish.Core/ToolTips/ToolTipBuilder.cs",
+    "src/Flourish.Core/ToolTips/ToolTipOptions.cs",
+    "src/Flourish.Core/Windowing/WindowCloseService.cs",
+    "src/Flourish.Extensions/Directory.Build.props",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/ComponentUsageCatalog.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/CultureBuilder.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/CultureFrameworkExtensions.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/CultureSession.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/LanguagePicker.razor",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Localization/Culture.json",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/LocalizedComponentBase.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/_Imports.razor",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/wwwroot/browser-preferences.js",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/EssentialCultureBuilderExtensions.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/EssentialTextProvider.cs",
+    "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+    "src/Flourish.Extensions/Flourish.Extensions.slnx",
+    "src/Flourish.WPF/Flourish.WPF.Abstract/ApplicationContracts.cs",
+    "src/Flourish.WPF/Flourish.WPF.Abstract/ControlContracts.cs",
+    "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+    "src/Flourish.WPF/Flourish.WPF.Abstract/TableContracts.cs",
+    "src/Flourish.WPF/Flourish.WPF.Abstract/TextContracts.cs",
+    "src/Flourish.WPF/Flourish.WPF.Design/AppearancePalette.cs",
+    "src/Flourish.WPF/Flourish.WPF.Design/DesignResources.cs",
+    "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+    "src/Flourish.WPF/Flourish.WPF.Design/ThemeSession.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/AssemblyInfo.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/ComponentUsageCatalog.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/ApplicationShell.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Button.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Content.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/DataPager.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/DataPresentation.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/DataSearch.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/DataTable.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/DataText.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/EditingGrid.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/LineChart.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/ListView.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Data/TableData.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Dialog.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Forms.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Icon.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/InputMaskFormatter.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Inputs.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Menus.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/OfferStage.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/PopupTrigger.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/Progress.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Controls/UniformGrid.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Converters.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+    "src/Flourish.WPF/Flourish.WPF.Framework/FrameworkBuilder.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/FrameworkResources.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/IconCatalog.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/LICENSE.txt",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/MaterialSymbolsFilled.json.br",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/MaterialSymbolsOutlined.codepoints",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/MaterialSymbolsOutlined.ttf",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Icons/source.json",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Motion.cs",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Actions.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Content.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Data.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Generic.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Inputs.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Resources.xaml",
+    "src/Flourish.WPF/Flourish.WPF.Framework/Themes/Shell.xaml",
+    "src/Flourish.WPF/Flourish.WPF.slnx",
+    "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+    "src/Flourish.WinUI3/Flourish.WinUI3.csproj",
+    "src/Flourish.WinUI3/Flourish.WinUI3.slnx",
+    "src/Gallery.Flourish.Blazor/Commands/GalleryCommandParser.cs",
+    "src/Gallery.Flourish.Blazor/Components/AccessExampleLayout.razor",
+    "src/Gallery.Flourish.Blazor/Components/App.razor",
+    "src/Gallery.Flourish.Blazor/Components/Catalog/ComponentGuide.razor",
+    "src/Gallery.Flourish.Blazor/Components/Catalog/ComponentGuide.razor.css",
+    "src/Gallery.Flourish.Blazor/Components/Pages/AccessExamples.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/AccessMethodExample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Appearance.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/AppearanceRedirect.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/ChangeLog.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Controls.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/DisplayExamples.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Error.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Examples.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Forms.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Framework.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Icons.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Localization.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/NotFound.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Overview.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/ReconnectExample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/RecordDetails.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/Records.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/ShellExample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/SurfacePatterns.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/TutorialExample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Pages/WizardExample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Routes.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/AvatarSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/CardSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/CodeBlockSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/CopyTextSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/DisclosureSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/DisplayBoardSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/IconSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/ImagePreviewSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/InlineActionsSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/SectionSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/UniformGridItemSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Content/UniformGridSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ActionMenuSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ButtonSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/CanonicalDataSearchSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/CollectionViewSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/DataPagerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/DataTableSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/DialogSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/DropdownSurfaceSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/EditingGridSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/EmptyStateSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ExpansionIndicatorSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/FloatingNoticeSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/LineChartSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ListViewSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/LoadingStateSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/NavigationTreeSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/NoticeSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/NoticeTriggerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ProgressBarSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/ProgressRingSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/SplitButtonSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/StepIndicatorSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/TutorialBoardSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Data/UniformGridButtonSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/AccessActionsSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/AccessFormSurfaceSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/AccessLayoutSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/AccessPanelSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/ContentContainerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/LogoDisplayerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/NavigationChoicesSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/OfferCardSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/OfferStageSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/PresentationBandSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/PresentationFooterSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/PresentationHeroSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Display/PresentationProgressSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/CheckBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/DateBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/FieldSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/FilePickerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/FormActionsSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/FormGroupSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/FormLayoutSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/LanguagePickerSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/MaskedInputSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/MultiSelectBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/NumberBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/ReferenceDropdownSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/SearchAutocompleteSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/SearchBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/SelectBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/StandaloneCheckBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/StandaloneMaskedInputSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/StandaloneSelectBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/StandaloneTextBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/TextBoxSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/ToggleSectionSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/ToggleSwitchSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Inputs/ValidationMessagesSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/AccessBrandSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/ApplicationLayoutSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/ApplicationShellSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/AttributionFooterSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/BackToTopSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/ContentSurfaceSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/InteractionBoundarySample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/NavigationGuardSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/NavigationSurfaceSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/PageBodySample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/PageHeadingSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/PrimaryNavigationItemSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/SaveChangesBarSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/SecondaryNavigationItemSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/SectionNavigatorSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/ServiceMenuSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/Samples/Layout/ShellHeaderSample.razor",
+    "src/Gallery.Flourish.Blazor/Components/_Imports.razor",
+    "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Access.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.ChangeLog.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Components.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Pages.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Parameters.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Samples.json",
+    "src/Gallery.Flourish.Blazor/Localization/Culture.Shell.json",
+    "src/Gallery.Flourish.Blazor/Models/AccessExampleState.cs",
+    "src/Gallery.Flourish.Blazor/Models/BusinessRecord.cs",
+    "src/Gallery.Flourish.Blazor/Models/CatalogSections.cs",
+    "src/Gallery.Flourish.Blazor/Models/ChangeLog.json",
+    "src/Gallery.Flourish.Blazor/Models/ChangeLogCatalog.cs",
+    "src/Gallery.Flourish.Blazor/Models/ComponentCatalog.cs",
+    "src/Gallery.Flourish.Blazor/Models/PaletteDraft.cs",
+    "src/Gallery.Flourish.Blazor/Models/ParameterMeaning.cs",
+    "src/Gallery.Flourish.Blazor/Models/SampleCatalog.cs",
+    "src/Gallery.Flourish.Blazor/Models/SampleFor.cs",
+    "src/Gallery.Flourish.Blazor/Program.cs",
+    "src/Gallery.Flourish.Blazor/Properties/launchSettings.json",
+    "src/Gallery.Flourish.Blazor/Services/RecordStore.cs",
+    "src/Gallery.Flourish.Blazor/appsettings.Flourish.json",
+    "src/Gallery.Flourish.Blazor/appsettings.json",
+    "src/Gallery.Flourish.Blazor/wwwroot/gallery-favicon.svg",
+    "src/Gallery.Flourish.Blazor/wwwroot/gallery.svg",
+    "src/Gallery.Flourish.Blazor/wwwroot/reconnect-example.js",
+    "src/Gallery.Flourish.WPF/App.xaml",
+    "src/Gallery.Flourish.WPF/App.xaml.cs",
+    "src/Gallery.Flourish.WPF/Artwork.cs",
+    "src/Gallery.Flourish.WPF/Culture.json",
+    "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+    "src/Gallery.Flourish.WPF/GalleryCatalog.cs",
+    "src/Gallery.Flourish.WPF/MainWindow.cs",
+    "src/Gallery.Flourish.WPF/Samples.Scenarios.cs",
+    "src/Gallery.Flourish.WPF/Samples.cs",
+    "src/Gallery.Flourish.WPF/SimpleSamples.cs",
+    "src/Gallery.Flourish.WinUI3/App.xaml",
+    "src/Gallery.Flourish.WinUI3/App.xaml.cs",
+    "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj",
+    "src/Gallery.Flourish.WinUI3/MainWindow.xaml",
+    "src/Gallery.Flourish.WinUI3/MainWindow.xaml.cs",
+    "start.bat",
+    "tests/Tests.Flourish.Blazor.Native/Components/App.razor",
+    "tests/Tests.Flourish.Blazor.Native/Components/Pages/Controls.razor",
+    "tests/Tests.Flourish.Blazor.Native/Components/Routes.razor",
+    "tests/Tests.Flourish.Blazor.Native/Components/_Imports.razor",
+    "tests/Tests.Flourish.Blazor.Native/Program.cs",
+    "tests/Tests.Flourish.Blazor.Native/Properties/launchSettings.json",
+    "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+    "tests/Tests.Flourish.Blazor.Native/appsettings.json",
+    "tests/Tests.Flourish.Blazor/AccessExampleChecks.cs",
+    "tests/Tests.Flourish.Blazor/ApiFinalAuditChecks.cs",
+    "tests/Tests.Flourish.Blazor/AvatarChecks.cs",
+    "tests/Tests.Flourish.Blazor/BrandingChecks.cs",
+    "tests/Tests.Flourish.Blazor/ButtonStructuredLabelChecks.cs",
+    "tests/Tests.Flourish.Blazor/ButtonUnavailableChecks.cs",
+    "tests/Tests.Flourish.Blazor/CatalogChecks.cs",
+    "tests/Tests.Flourish.Blazor/CenteredContentChecks.cs",
+    "tests/Tests.Flourish.Blazor/ChartToolbarChecks.cs",
+    "tests/Tests.Flourish.Blazor/ComponentInventoryChecks.cs",
+    "tests/Tests.Flourish.Blazor/ControlTextChecks.cs",
+    "tests/Tests.Flourish.Blazor/DataSearchChecks.cs",
+    "tests/Tests.Flourish.Blazor/DataTableChecks.cs",
+    "tests/Tests.Flourish.Blazor/DialogFixture.cs",
+    "tests/Tests.Flourish.Blazor/DialogResultChecks.cs",
+    "tests/Tests.Flourish.Blazor/DialogViewChecks.cs",
+    "tests/Tests.Flourish.Blazor/DisplayBoardChecks.cs",
+    "tests/Tests.Flourish.Blazor/DropdownChecks.cs",
+    "tests/Tests.Flourish.Blazor/EmptyStateChecks.cs",
+    "tests/Tests.Flourish.Blazor/FieldActionsChecks.cs",
+    "tests/Tests.Flourish.Blazor/FrameworkConfigurationChecks.cs",
+    "tests/Tests.Flourish.Blazor/GridChecks.cs",
+    "tests/Tests.Flourish.Blazor/InlineActionsChecks.cs",
+    "tests/Tests.Flourish.Blazor/InputMigrationChecks.cs",
+    "tests/Tests.Flourish.Blazor/InteropFinalAuditChecks.cs",
+    "tests/Tests.Flourish.Blazor/LifecycleChecks.cs",
+    "tests/Tests.Flourish.Blazor/ListViewChecks.cs",
+    "tests/Tests.Flourish.Blazor/MultiSelectBoxChecks.cs",
+    "tests/Tests.Flourish.Blazor/NavigationChoicesChecks.cs",
+    "tests/Tests.Flourish.Blazor/NavigationControlsChecks.cs",
+    "tests/Tests.Flourish.Blazor/NavigationGuardChecks.cs",
+    "tests/Tests.Flourish.Blazor/NavigationTreeChecks.cs",
+    "tests/Tests.Flourish.Blazor/NoCompatibilityApiChecks.cs",
+    "tests/Tests.Flourish.Blazor/PresentationChecks.cs",
+    "tests/Tests.Flourish.Blazor/PresentationIdentityChecks.cs",
+    "tests/Tests.Flourish.Blazor/PresentationProgressChecks.cs",
+    "tests/Tests.Flourish.Blazor/Program.cs",
+    "tests/Tests.Flourish.Blazor/SaveChangesBarChecks.cs",
+    "tests/Tests.Flourish.Blazor/SectionNavigatorChecks.cs",
+    "tests/Tests.Flourish.Blazor/SelectValueConversionChecks.cs",
+    "tests/Tests.Flourish.Blazor/SplitButtonChecks.cs",
+    "tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj",
+    "tests/Tests.Flourish.Blazor/TextChecks.cs",
+    "tests/Tests.Flourish.Blazor/TutorialBoardChecks.cs",
+    "tests/Tests.Flourish.Blazor/UniformGridChecks.cs",
+    "tests/Tests.Flourish.Blazor/ValidationMessagesChecks.cs",
+    "tests/Tests.Flourish.Blazor/access-form-spacing-dom.mjs",
+    "tests/Tests.Flourish.Blazor/access-layout.test.mjs",
+    "tests/Tests.Flourish.Blazor/action-menu-dom.mjs",
+    "tests/Tests.Flourish.Blazor/avatar-editor.test.mjs",
+    "tests/Tests.Flourish.Blazor/clipboard-dom.mjs",
+    "tests/Tests.Flourish.Blazor/controls-dom.mjs",
+    "tests/Tests.Flourish.Blazor/floating-notice.test.mjs",
+    "tests/Tests.Flourish.Blazor/header-layout.test.mjs",
+    "tests/Tests.Flourish.Blazor/heading-dom.mjs",
+    "tests/Tests.Flourish.Blazor/icon-subsets.test.mjs",
+    "tests/Tests.Flourish.Blazor/inline-toolbar-layout.test.mjs",
+    "tests/Tests.Flourish.Blazor/interaction-origin-dom.mjs",
+    "tests/Tests.Flourish.Blazor/measurement-lifecycle.test.mjs",
+    "tests/Tests.Flourish.Blazor/native-select-trigger.test.mjs",
+    "tests/Tests.Flourish.Blazor/organization-access-presentation.test.mjs",
+    "tests/Tests.Flourish.Blazor/page-body-actions.test.mjs",
+    "tests/Tests.Flourish.Blazor/page-heading-loading.test.mjs",
+    "tests/Tests.Flourish.Blazor/palette-checks.mjs",
+    "tests/Tests.Flourish.Blazor/popup-placement.test.mjs",
+    "tests/Tests.Flourish.Blazor/presentation-offers-dom.mjs",
+    "tests/Tests.Flourish.Blazor/presentation-progress-dom.mjs",
+    "tests/Tests.Flourish.Blazor/primary-navigation-preview.test.mjs",
+    "tests/Tests.Flourish.Blazor/progress-rendering.test.mjs",
+    "tests/Tests.Flourish.Blazor/save-changes-bar.test.mjs",
+    "tests/Tests.Flourish.Blazor/section-navigator-dom.mjs",
+    "tests/Tests.Flourish.Blazor/split-menu-checks.mjs",
+    "tests/Tests.Flourish.Blazor/surface-form-layout.test.mjs",
+    "tests/Tests.Flourish.Blazor/tests.js",
+    "tests/Tests.Flourish.Blazor/tutorial-board-dom.mjs",
+    "tests/Tests.Flourish.Blazor/uniform-grid-dividers.test.mjs",
+    "tests/Tests.Flourish.Core/Abstract/PlatformNeutralContractTests.cs",
+    "tests/Tests.Flourish.Core/Architecture/CoreBoundaryTests.cs",
+    "tests/Tests.Flourish.Core/BackgroundTasks/BackgroundTaskServiceTests.cs",
+    "tests/Tests.Flourish.Core/Commands/CommandDispatcherRegressionTests.cs",
+    "tests/Tests.Flourish.Core/Commands/CommandDispatcherTests.cs",
+    "tests/Tests.Flourish.Core/Commands/CommandParserHostedServiceTests.cs",
+    "tests/Tests.Flourish.Core/Configuration/AppPreferenceServiceTests.cs",
+    "tests/Tests.Flourish.Core/Configuration/ApplicationDataOptionsTests.cs",
+    "tests/Tests.Flourish.Core/Configuration/ValueValidationTests.cs",
+    "tests/Tests.Flourish.Core/Hosting/CoreServiceCollectionExtensionsTests.cs",
+    "tests/Tests.Flourish.Core/Infrastructure/TemporaryDirectory.cs",
+    "tests/Tests.Flourish.Core/Layout/ContentLayoutServiceTests.cs",
+    "tests/Tests.Flourish.Core/Layout/LayoutBuilderTests.cs",
+    "tests/Tests.Flourish.Core/Localization/LocalizationServiceTests.cs",
+    "tests/Tests.Flourish.Core/Localization/TemporaryDirectory.cs",
+    "tests/Tests.Flourish.Core/Messaging/NotificationServiceTests.cs",
+    "tests/Tests.Flourish.Core/Motion/MotionBuilderTests.cs",
+    "tests/Tests.Flourish.Core/Navigation/NavigationMenuModelTests.cs",
+    "tests/Tests.Flourish.Core/Navigation/NavigationMenuStateServiceTests.cs",
+    "tests/Tests.Flourish.Core/Navigation/PageHistoryServiceBackStackTests.cs",
+    "tests/Tests.Flourish.Core/Navigation/PageHistoryServiceTests.cs",
+    "tests/Tests.Flourish.Core/Profile/ProfileModelTests.cs",
+    "tests/Tests.Flourish.Core/Profile/ProfileServiceTests.cs",
+    "tests/Tests.Flourish.Core/Profile/StoredProfileCredentialsTests.cs",
+    "tests/Tests.Flourish.Core/Projects/ProjectCatalogPersistenceTests.cs",
+    "tests/Tests.Flourish.Core/Projects/ProjectServiceTests.cs",
+    "tests/Tests.Flourish.Core/Projects/ProjectTransactionTests.cs",
+    "tests/Tests.Flourish.Core/Projects/TemporaryDirectory.cs",
+    "tests/Tests.Flourish.Core/Shell/StatusBar/StatusBarBuilderTests.cs",
+    "tests/Tests.Flourish.Core/Shell/StatusBar/StatusBarServiceTests.cs",
+    "tests/Tests.Flourish.Core/Shell/TitleBar/TitleBarStateServiceTests.cs",
+    "tests/Tests.Flourish.Core/Shell/Toolbar/ToolbarItemTests.cs",
+    "tests/Tests.Flourish.Core/Shell/Toolbar/ToolbarStateServiceTests.cs",
+    "tests/Tests.Flourish.Core/Shell/Toolbar/ToolbarStateTransactionTests.cs",
+    "tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj",
+    "tests/Tests.Flourish.Core/ToolTips/ToolTipBuilderTests.cs",
+    "tests/Tests.Flourish.Core/Windowing/WindowCloseServiceTests.cs",
+    "tests/Tests.Flourish.Extensions.Culture.Blazor/BrowserPreferenceChecks.cs",
+    "tests/Tests.Flourish.Extensions.Culture.Blazor/CatalogModuleChecks.cs",
+    "tests/Tests.Flourish.Extensions.Culture.Blazor/Program.cs",
+    "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj",
+    "tests/Tests.Flourish.Extensions.Culture.Blazor/browser-preferences.test.mjs",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/Culture.Records.json",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/Culture.json",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/EssentialTextProviderTests.cs",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/ModuleCatalogTests.cs",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/TestAssembly.cs",
+    "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj",
+    "tests/Tests.Flourish.WPF/AppearanceTests.cs",
+    "tests/Tests.Flourish.WPF/CatalogTests.cs",
+    "tests/Tests.Flourish.WPF/ContentTests.cs",
+    "tests/Tests.Flourish.WPF/ControlTests.cs",
+    "tests/Tests.Flourish.WPF/DataTests.cs",
+    "tests/Tests.Flourish.WPF/NativeTest.cs",
+    "tests/Tests.Flourish.WPF/PopupTests.cs",
+    "tests/Tests.Flourish.WPF/RenderTests.cs",
+    "tests/Tests.Flourish.WPF/ShellTests.cs",
+    "tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj",
+    "tests/Tests.Flourish.WPF/Usings.cs",
+    "tests/Tests.Gallery.Flourish.Blazor/ChangeLogChecks.cs",
+    "tests/Tests.Gallery.Flourish.Blazor/DynamicSampleChecks.cs",
+    "tests/Tests.Gallery.Flourish.Blazor/LocalizedValidationHarness.cs",
+    "tests/Tests.Gallery.Flourish.Blazor/Program.cs",
+    "tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj"
+  ],
+  "maintainedDirectoryCount": 121,
+  "emptyDirectories": [],
+  "projects": [
+    {
+      "alias": "P01",
+      "path": "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+      "sha256": "be558fcf4866def543240f1ad265314a29fd9dd128eb2d201984a3b8498cdc01",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Core/Flourish.Core.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "src/Flourish.Blazor/Flourish.Blazor.Abstract/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.846Z",
+        "sha256": "31b79dd2d6eb10eec3ab9a6bafb2e6a7454512a08f9ab43e83f336c0a40df1d9",
+        "sourceProject": "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P02",
+      "path": "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+      "sha256": "d6e792d5c9dfa47e2d4e7b59fe039b357d19456b45f91af21deb3f572af8cf29",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk.Razor",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "src/Flourish.Blazor/Flourish.Blazor.Design/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.846Z",
+        "sha256": "f7d22eb9b3c282d4d4d3725a56790739ad97031738571fbfd48c679d5d04ce4e",
+        "sourceProject": "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P03",
+      "path": "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+      "sha256": "19f8f32300768b6f1067132304cb22c4a1aa3a4ddc8aba7b436ec1f5d7d7ce46",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk.Razor",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "src/Flourish.Blazor/Flourish.Blazor.Framework/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.835Z",
+        "sha256": "6bc2756339b311e98830599003f4c27971f9a28195762cfec058d7e063e16865",
+        "sourceProject": "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P04",
+      "path": "src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj",
+      "sha256": "920b0fdcc80b59b194590b7982ad36415b944f0f3f592f014f009930b621791b",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.Blazor/Flourish.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.832Z",
+        "sha256": "c0671d479de75b299c2f0255f5b983fe12de9ce2c5d68a949315bdf08279dccd",
+        "sourceProject": "src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P05",
+      "path": "src/Flourish.Core/Flourish.Core.csproj",
+      "sha256": "282933442f8917b013beba7ffa399e8e723fd80ca6e31360974d53290f1d254f",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.Extensions.Configuration.Json",
+          "Version": "10.0.8"
+        },
+        {
+          "Include": "Microsoft.Extensions.Hosting.Abstractions",
+          "Version": "10.0.8"
+        },
+        {
+          "Include": "Microsoft.Extensions.Logging.Abstractions",
+          "Version": "10.0.8"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.Core/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.821Z",
+        "sha256": "51a11271948753abc6ed1878a1b45332b5ebce7362eb761632d3a8a4adfcdef6",
+        "sourceProject": "src/Flourish.Core/Flourish.Core.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {
+              "Microsoft.Extensions.Configuration.Json": {
+                "target": "Package",
+                "version": "[10.0.8, )"
+              },
+              "Microsoft.Extensions.Hosting.Abstractions": {
+                "target": "Package",
+                "version": "[10.0.8, )"
+              },
+              "Microsoft.Extensions.Logging.Abstractions": {
+                "target": "Package",
+                "version": "[10.0.8, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P06",
+      "path": "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+      "sha256": "2993dfa245f96eafc895dfa8bca4d847c6d5d3c03ddba81d86afbf96b43f3483",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk.Razor",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj"
+      ],
+      "packageDeclarations": [
+        {
+          "Include": "Arkheide.Essential.Culture.Blazor",
+          "Version": "$(EssentialCultureVersion)"
+        }
+      ],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.812Z",
+        "sha256": "c9590d959c883131fb1bc14edc809b61741bcf2f86eca0aecb593de4b5d10f1a",
+        "sourceProject": "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {
+              "Arkheide.Essential.Culture.Blazor": {
+                "target": "Package",
+                "version": "[1.4.0, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P07",
+      "path": "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+      "sha256": "561de829600cbadf538f7d03039096b4bb13e4fa779d18e56c6fb69fbac9bdfb",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj"
+      ],
+      "packageDeclarations": [
+        {
+          "Include": "Arkheide.Essential.Culture.Wpf",
+          "Version": "$(EssentialCultureVersion)"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.150Z",
+        "sha256": "a6b09e555cc481dbdb619d51b3916b4ae0a1cc363c5f7f7326ebc2ede2830936",
+        "sourceProject": "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {
+              "Arkheide.Essential.Culture.Wpf": {
+                "target": "Package",
+                "version": "[1.3.0, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P09",
+      "path": "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+      "sha256": "71715bfd7dd20091ed8b3e09687dc97b1c737700c329539b8e923eabf6cf2f26",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.WPF/Flourish.WPF.Abstract/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.119Z",
+        "sha256": "8a2c8607657456107986769d15d639320ad2e2f7e963ff0c39fca99e0644d250",
+        "sourceProject": "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P10",
+      "path": "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+      "sha256": "f949f0e1ebe1e64c49a28a11e0f805a65aad15c61b53a10335f8a527d4a40ffc",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.WPF/Flourish.WPF.Design/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.121Z",
+        "sha256": "77d78ca401bf7f62181b6764c7ccf63d1404c7df58f3fae2b283cfb1627f3024",
+        "sourceProject": "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P11",
+      "path": "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+      "sha256": "914f8eb42ebee45c123c77be7291a1f0ea734d481ac4d7ef27218e7e5c433c20",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.WPF/Flourish.WPF.Framework/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.120Z",
+        "sha256": "65081da3133612017dbbf93ad23b738d443f80650d1cb22feca6bb8367a29142",
+        "sourceProject": "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P12",
+      "path": "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+      "sha256": "a94a745abfff0dcb8d90152c6228a435578cb193b8393c2d6f686860513643f3",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.WPF/Flourish.WPF/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.121Z",
+        "sha256": "f3f5ee9da680c20f9856a822388ff28f2965921620b0d5166ab29da67b751ca1",
+        "sourceProject": "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P08",
+      "path": "src/Flourish.WinUI3/Flourish.WinUI3.csproj",
+      "sha256": "0cb498dd63e3305c69dcdb6689fe8ce9f11cf69e73ecdc76c29ab7fac59dc328",
+      "targetFrameworks": [
+        "net10.0-windows10.0.26100.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.WindowsAppSDK",
+          "Version": "2.3.1"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Flourish.WinUI3/obj/project.assets.json",
+        "modifiedUtc": "2026-10-05T17:05:57.669Z",
+        "sha256": "5a30477789311c800316a73b8aa1ae61b96aa144b42db38cbc95685a7b4c5e11",
+        "sourceProject": "src/Flourish.WinUI3/Flourish.WinUI3.csproj",
+        "frameworks": {
+          "net10.0-windows10.0.26100.0": {
+            "dependencies": {
+              "Microsoft.WindowsAppSDK": {
+                "target": "Package",
+                "version": "[2.3.1, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.Windows.SDK.NET.Ref.Windows": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": [
+              {
+                "name": "Microsoft.Windows.SDK.NET.Ref",
+                "version": "[10.0.26100.57, 10.0.26100.57]"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alias": "P13",
+      "path": "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+      "sha256": "13b48a18dd0c024b600e98daee11c12c3925609c8ecced76897d153e1a5a9fee",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk.Web",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Gallery.Flourish.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.802Z",
+        "sha256": "fdc902528ca905bf3a7ffb38dee13b557f25e747a8d7b6bb658356fb55a15474",
+        "sourceProject": "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {
+              "Microsoft.AspNetCore.App.Internal.Assets": {
+                "suppressParent": "All",
+                "target": "Package",
+                "version": "[10.0.11, )",
+                "autoReferenced": true
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P15",
+      "path": "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+      "sha256": "b3398c729a4065fdc9b891934b0a539296804dd3fc34f26c8475c829e29edb46",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "WinExe",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Gallery.Flourish.WPF/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.150Z",
+        "sha256": "2ec33d98496b74bb471b1b1506c6654c3b2163f7cf399eae515a776f45bca3e3",
+        "sourceProject": "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P14",
+      "path": "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj",
+      "sha256": "36d0eb7f1783f971d27d8a0460358de9766661fb5bf7cfd7584fb0e631865afa",
+      "targetFrameworks": [
+        "net10.0-windows10.0.26100.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "WinExe",
+      "projectReferences": [],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.WindowsAppSDK",
+          "Version": "2.3.1"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "src/Gallery.Flourish.WinUI3/obj/project.assets.json",
+        "modifiedUtc": "2026-10-05T17:06:13.798Z",
+        "sha256": "1314047ce88a5431f107361d395788e07dfdef81812242276bd92ea2f9ff65b5",
+        "sourceProject": "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj",
+        "frameworks": {
+          "net10.0-windows10.0.26100.0": {
+            "dependencies": {
+              "Microsoft.WindowsAppSDK": {
+                "target": "Package",
+                "version": "[2.3.1, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.Windows.SDK.NET.Ref.Windows": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": [
+              {
+                "name": "Microsoft.AspNetCore.App.Runtime.win-arm64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.AspNetCore.App.Runtime.win-x86",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.NETCore.App.Runtime.win-arm64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.NETCore.App.Runtime.win-x64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.NETCore.App.Runtime.win-x86",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.Windows.SDK.NET.Ref",
+                "version": "[10.0.26100.57, 10.0.26100.57]"
+              },
+              {
+                "name": "Microsoft.WindowsDesktop.App.Runtime.win-arm64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+                "version": "[10.0.11, 10.0.11]"
+              },
+              {
+                "name": "Microsoft.WindowsDesktop.App.Runtime.win-x86",
+                "version": "[10.0.11, 10.0.11]"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "alias": "P16",
+      "path": "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+      "sha256": "f0d90dbc511643ece7da158e4800c8d20f2d550041432152801e51fb5d4377ae",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk.Web",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "tests/Tests.Flourish.Blazor.Native/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.787Z",
+        "sha256": "939a8dbedb8111569cd1a57850d8b2b2507b0214159c7724a149cb18330809da",
+        "sourceProject": "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {
+              "Microsoft.AspNetCore.App.Internal.Assets": {
+                "suppressParent": "All",
+                "target": "Package",
+                "version": "[10.0.11, )",
+                "autoReferenced": true
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P17",
+      "path": "tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj",
+      "sha256": "e33bb6190673be47d2fca7dd478d8f5f8da3f3448ea29d6926720406c40157b6",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Exe",
+      "projectReferences": [
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "tests/Tests.Flourish.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.770Z",
+        "sha256": "e51ce1893f4fa113e99ad39537fbb528ec308fed4d1cfd889099708e9dd29dfb",
+        "sourceProject": "tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P18",
+      "path": "tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj",
+      "sha256": "ca5a593db68e7ce4a12187801a45f204b0c007ec98bfbbc4f33d40a58dc2ca50",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Core/Flourish.Core.csproj"
+      ],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.NET.Test.Sdk",
+          "Version": "17.14.1"
+        },
+        {
+          "Include": "Moq",
+          "Version": "4.20.72"
+        },
+        {
+          "Include": "xunit",
+          "Version": "2.9.3"
+        },
+        {
+          "Include": "xunit.runner.visualstudio",
+          "Version": "3.1.4"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "tests/Tests.Flourish.Core/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.798Z",
+        "sha256": "a60aad65343e874ef7868a98f6ece335a82054e58b1e1a9dcea86222e0c332f2",
+        "sourceProject": "tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {
+              "Microsoft.NET.Test.Sdk": {
+                "target": "Package",
+                "version": "[17.14.1, )"
+              },
+              "Moq": {
+                "target": "Package",
+                "version": "[4.20.72, )"
+              },
+              "xunit": {
+                "target": "Package",
+                "version": "[2.9.3, )"
+              },
+              "xunit.runner.visualstudio": {
+                "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+                "suppressParent": "All",
+                "target": "Package",
+                "version": "[3.1.4, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P19",
+      "path": "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj",
+      "sha256": "33e4066089ca2278ed750b840da170429e77bc45dd8ad04d5caa627f570b2a53",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Exe",
+      "projectReferences": [
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "tests/Tests.Flourish.Extensions.Culture.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.743Z",
+        "sha256": "11cdcfe4d7d899ba71516ea5b4b4d3014f58d6a4a2cb233e8cad32521f29a71a",
+        "sourceProject": "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P20",
+      "path": "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj",
+      "sha256": "3acbae9a767c8d6d34ffacc18b37daae7add0f45229c58d1373f0f6e61f48b39",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj"
+      ],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.NET.Test.Sdk",
+          "Version": "17.14.1"
+        },
+        {
+          "Include": "xunit",
+          "Version": "2.9.3"
+        },
+        {
+          "Include": "xunit.runner.visualstudio",
+          "Version": "3.1.4"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "tests/Tests.Flourish.Extensions.Culture.WPF/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T13:04:23.818Z",
+        "sha256": "dfb295426e7f0ad543c5be528042e50907e4e84b46c24400a741178cb13cb457",
+        "sourceProject": "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {
+              "Microsoft.NET.Test.Sdk": {
+                "target": "Package",
+                "version": "[17.14.1, )"
+              },
+              "xunit": {
+                "target": "Package",
+                "version": "[2.9.3, )"
+              },
+              "xunit.runner.visualstudio": {
+                "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+                "suppressParent": "All",
+                "target": "Package",
+                "version": "[3.1.4, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P21",
+      "path": "tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj",
+      "sha256": "281ed9ec5c2553fa3ffd8e07d22682b90d438eb36999ea0cd08cfff54d92a956",
+      "targetFrameworks": [
+        "net10.0-windows"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Library",
+      "projectReferences": [
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+        "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj"
+      ],
+      "packageDeclarations": [
+        {
+          "Include": "Microsoft.NET.Test.Sdk",
+          "Version": "17.14.1"
+        },
+        {
+          "Include": "xunit",
+          "Version": "2.9.3"
+        },
+        {
+          "Include": "xunit.runner.visualstudio",
+          "Version": "3.1.4",
+          "PrivateAssets": "all"
+        }
+      ],
+      "frameworkReferences": [],
+      "assets": {
+        "path": "tests/Tests.Flourish.WPF/obj/project.assets.json",
+        "modifiedUtc": "2026-10-07T14:03:24.165Z",
+        "sha256": "8597e4d450b60969e79e5462e4db96712b6adbacc1870b7eb2a3a8637a197be9",
+        "sourceProject": "tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj",
+        "frameworks": {
+          "net10.0-windows": {
+            "dependencies": {
+              "Microsoft.NET.Test.Sdk": {
+                "target": "Package",
+                "version": "[17.14.1, )"
+              },
+              "xunit": {
+                "target": "Package",
+                "version": "[2.9.3, )"
+              },
+              "xunit.runner.visualstudio": {
+                "suppressParent": "All",
+                "target": "Package",
+                "version": "[3.1.4, )"
+              }
+            },
+            "frameworkReferences": {
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              },
+              "Microsoft.WindowsDesktop.App.WPF": {
+                "privateAssets": "none"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    },
+    {
+      "alias": "P22",
+      "path": "tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj",
+      "sha256": "5f2d125e10f9bf9a706e2c1d35d5ddc3af55d6be0b865c31577fb98d4cb37715",
+      "targetFrameworks": [
+        "net10.0"
+      ],
+      "sdk": "Microsoft.NET.Sdk",
+      "outputType": "Exe",
+      "projectReferences": [
+        "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj"
+      ],
+      "packageDeclarations": [],
+      "frameworkReferences": [
+        "Microsoft.AspNetCore.App"
+      ],
+      "assets": {
+        "path": "tests/Tests.Gallery.Flourish.Blazor/obj/project.assets.json",
+        "modifiedUtc": "2026-11-06T18:10:52.743Z",
+        "sha256": "ebd04232992fb66383760ceb06dba13b6dbf715e0852ed44f426007a01d23f7d",
+        "sourceProject": "tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj",
+        "frameworks": {
+          "net10.0": {
+            "dependencies": {},
+            "frameworkReferences": {
+              "Microsoft.AspNetCore.App": {
+                "privateAssets": "none"
+              },
+              "Microsoft.NETCore.App": {
+                "privateAssets": "all"
+              }
+            },
+            "downloadDependencies": []
+          }
+        }
+      }
+    }
+  ],
+  "solutions": [
+    {
+      "path": "Flourish.slnx",
+      "projects": [
+        "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj",
+        "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+        "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+        "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+        "src/Flourish.WinUI3/Flourish.WinUI3.csproj",
+        "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj",
+        "src/Flourish.Core/Flourish.Core.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+        "tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj",
+        "tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj",
+        "tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj",
+        "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj",
+        "tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj"
+      ]
+    },
+    {
+      "path": "src/Flourish.Blazor/Flourish.Blazor.slnx",
+      "projects": [
+        "src/Flourish.Blazor/Flourish.Blazor/Flourish.Blazor.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Abstract/Flourish.Blazor.Abstract.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Framework/Flourish.Blazor.Framework.csproj",
+        "src/Flourish.Blazor/Flourish.Blazor.Design/Flourish.Blazor.Design.csproj",
+        "src/Flourish.Core/Flourish.Core.csproj",
+        "src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj",
+        "tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj",
+        "tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj",
+        "tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj",
+        "tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj"
+      ]
+    },
+    {
+      "path": "src/Flourish.Extensions/Flourish.Extensions.slnx",
+      "projects": [
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj"
+      ]
+    },
+    {
+      "path": "src/Flourish.WPF/Flourish.WPF.slnx",
+      "projects": [
+        "src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj",
+        "src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj",
+        "src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj",
+        "src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj",
+        "src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj",
+        "tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj",
+        "tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj"
+      ]
+    },
+    {
+      "path": "src/Flourish.WinUI3/Flourish.WinUI3.slnx",
+      "projects": [
+        "src/Flourish.WinUI3/Flourish.WinUI3.csproj",
+        "src/Flourish.Core/Flourish.Core.csproj",
+        "src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj"
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "identity": "Arkheide.Essential.Culture.Blazor/1.4.0",
+      "consumers": [
+        "P04",
+        "P06",
+        "P13",
+        "P17",
+        "P19",
+        "P22"
+      ],
+      "parents": [
+        "Arkheide.Flourish.Extensions.Culture.Blazor/1.4.6-preview.4"
+      ],
+      "directConsumers": [
+        "P06"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Essential",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Arkheide.Essential.Culture.Generator/1.3.0",
+      "consumers": [
+        "P07",
+        "P15",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Arkheide.Essential.Culture/1.3.0"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Arkheide.Essential.Culture.git",
+      "source": "C:\\Users\\RC_Auditoria\\source\\Repos\\Essential\\artifacts\\packages"
+    },
+    {
+      "identity": "Arkheide.Essential.Culture.Generator/1.4.0",
+      "consumers": [
+        "P04",
+        "P06",
+        "P13",
+        "P17",
+        "P19",
+        "P22"
+      ],
+      "parents": [
+        "Arkheide.Essential.Culture/1.4.0"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Essential",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Arkheide.Essential.Culture.Wpf/1.3.0",
+      "consumers": [
+        "P07",
+        "P15",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Arkheide.Flourish.Extensions.Culture.WPF/1.1.2"
+      ],
+      "directConsumers": [
+        "P07"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Arkheide.Essential.Culture.git",
+      "source": "C:\\Users\\RC_Auditoria\\source\\Repos\\Essential\\artifacts\\packages"
+    },
+    {
+      "identity": "Arkheide.Essential.Culture/1.3.0",
+      "consumers": [
+        "P07",
+        "P15",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Arkheide.Essential.Culture.Wpf/1.3.0"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Arkheide.Essential.Culture.git",
+      "source": "C:\\Users\\RC_Auditoria\\source\\Repos\\Essential\\artifacts\\packages"
+    },
+    {
+      "identity": "Arkheide.Essential.Culture/1.4.0",
+      "consumers": [
+        "P04",
+        "P06",
+        "P13",
+        "P17",
+        "P19",
+        "P22"
+      ],
+      "parents": [
+        "Arkheide.Essential.Culture.Blazor/1.4.0"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/Evigila/Essential",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Castle.Core/5.1.1",
+      "consumers": [
+        "P18"
+      ],
+      "parents": [
+        "Moq/4.20.72"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/castleproject/Core",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.AspNetCore.App.Internal.Assets/10.0.11",
+      "consumers": [
+        "P13",
+        "P16"
+      ],
+      "parents": [],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.CodeCoverage/17.14.1",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Microsoft.NET.Test.Sdk/17.14.1"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/microsoft/vstest",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Configuration.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.FileExtensions/10.0.8",
+        "Microsoft.Extensions.Configuration.Json/10.0.8",
+        "Microsoft.Extensions.Configuration/10.0.8",
+        "Microsoft.Extensions.Hosting.Abstractions/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Configuration.FileExtensions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.Json/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Configuration.Json/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Arkheide.Flourish.Core/1.4.6-preview.4"
+      ],
+      "directConsumers": [
+        "P05"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Configuration/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.FileExtensions/10.0.8",
+        "Microsoft.Extensions.Configuration.Json/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Diagnostics.Abstractions/10.0.8",
+        "Microsoft.Extensions.Hosting.Abstractions/10.0.8",
+        "Microsoft.Extensions.Logging.Abstractions/10.0.8",
+        "Microsoft.Extensions.Options/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Diagnostics.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Hosting.Abstractions/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.FileProviders.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.FileExtensions/10.0.8",
+        "Microsoft.Extensions.Configuration.Json/10.0.8",
+        "Microsoft.Extensions.FileProviders.Physical/10.0.8",
+        "Microsoft.Extensions.Hosting.Abstractions/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.FileProviders.Physical/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.FileExtensions/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.FileSystemGlobbing/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.FileProviders.Physical/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Hosting.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Arkheide.Flourish.Core/1.4.6-preview.4"
+      ],
+      "directConsumers": [
+        "P05"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Logging.Abstractions/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Arkheide.Flourish.Core/1.4.6-preview.4",
+        "Microsoft.Extensions.Hosting.Abstractions/10.0.8"
+      ],
+      "directConsumers": [
+        "P05"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Options/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Diagnostics.Abstractions/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Extensions.Primitives/10.0.8",
+      "consumers": [
+        "P04",
+        "P05",
+        "P18",
+        "P19"
+      ],
+      "parents": [
+        "Microsoft.Extensions.Configuration.Abstractions/10.0.8",
+        "Microsoft.Extensions.Configuration.FileExtensions/10.0.8",
+        "Microsoft.Extensions.Configuration/10.0.8",
+        "Microsoft.Extensions.FileProviders.Abstractions/10.0.8",
+        "Microsoft.Extensions.FileProviders.Physical/10.0.8",
+        "Microsoft.Extensions.Options/10.0.8"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/dotnet",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.NET.Test.Sdk/17.14.1",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [],
+      "directConsumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/microsoft/vstest",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.TestPlatform.ObjectModel/17.14.1",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Microsoft.TestPlatform.TestHost/17.14.1"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/microsoft/vstest",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.TestPlatform.TestHost/17.14.1",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Microsoft.NET.Test.Sdk/17.14.1"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/microsoft/vstest",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Web.WebView2/1.0.3719.77",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.WinUI/2.3.0"
+      ],
+      "directConsumers": [],
+      "license": "LICENSE.txt",
+      "repository": "https://aka.ms/webview",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Windows.AI.MachineLearning/2.1.74",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.ML/2.1.74"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Windows.SDK.BuildTools.MSIX/1.7.251221100",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.Base/2.0.4"
+      ],
+      "directConsumers": [],
+      "license": "sdk_license.txt",
+      "repository": "https://aka.ms/WinSDKProjectURL",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.Windows.SDK.BuildTools/10.0.26100.4654",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.Base/2.0.4"
+      ],
+      "directConsumers": [],
+      "license": "https://aka.ms/WinSDKLicenseURL",
+      "repository": "https://aka.ms/WinSDKProjectURL",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.AI/2.3.4",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.Base/2.0.4",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.AI/2.3.4",
+        "Microsoft.WindowsAppSDK.DWrite/2.1.0",
+        "Microsoft.WindowsAppSDK.Foundation/2.3.5",
+        "Microsoft.WindowsAppSDK.InteractiveExperiences/2.1.3",
+        "Microsoft.WindowsAppSDK.ML/2.1.74",
+        "Microsoft.WindowsAppSDK.Runtime/2.3.1",
+        "Microsoft.WindowsAppSDK.Widgets/2.0.5",
+        "Microsoft.WindowsAppSDK.WinUI/2.3.0",
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.DWrite/2.1.0",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://aka.ms/WindowsAppSDK",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.Foundation/2.3.5",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.AI/2.3.4",
+        "Microsoft.WindowsAppSDK.ML/2.1.74",
+        "Microsoft.WindowsAppSDK.WinUI/2.3.0",
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://aka.ms/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.InteractiveExperiences/2.1.3",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK.Foundation/2.3.5",
+        "Microsoft.WindowsAppSDK.WinUI/2.3.0",
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://aka.ms/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.ML/2.1.74",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.Runtime/2.3.1",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.Widgets/2.0.5",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK.WinUI/2.3.0",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.WindowsAppSDK/2.3.1"
+      ],
+      "directConsumers": [],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Microsoft.WindowsAppSDK/2.3.1",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [],
+      "directConsumers": [
+        "P08",
+        "P14"
+      ],
+      "license": "license.txt",
+      "repository": "https://github.com/microsoft/windowsappsdk",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Moq/4.20.72",
+      "consumers": [
+        "P18"
+      ],
+      "parents": [],
+      "directConsumers": [
+        "P18"
+      ],
+      "license": "BSD-3-Clause",
+      "repository": "https://github.com/moq/moq",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "Newtonsoft.Json/13.0.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "Microsoft.TestPlatform.TestHost/17.14.1"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/JamesNK/Newtonsoft.Json",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "System.Diagnostics.EventLog/6.0.0",
+      "consumers": [
+        "P18"
+      ],
+      "parents": [
+        "Castle.Core/5.1.1"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/runtime",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "System.Numerics.Tensors/9.0.0",
+      "consumers": [
+        "P08",
+        "P14"
+      ],
+      "parents": [
+        "Microsoft.Windows.AI.MachineLearning/2.1.74"
+      ],
+      "directConsumers": [],
+      "license": "MIT",
+      "repository": "https://github.com/dotnet/runtime",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.abstractions/2.0.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit.extensibility.core/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "https://raw.githubusercontent.com/xunit/xunit/master/license.txt",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.analyzers/1.18.0",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit.analyzers",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.assert/2.9.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.core/2.9.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.extensibility.core/2.9.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit.core/2.9.3",
+        "xunit.extensibility.execution/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.extensibility.execution/2.9.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [
+        "xunit.core/2.9.3"
+      ],
+      "directConsumers": [],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit.runner.visualstudio/3.1.4",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [],
+      "directConsumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/visualstudio.xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    },
+    {
+      "identity": "xunit/2.9.3",
+      "consumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "parents": [],
+      "directConsumers": [
+        "P18",
+        "P20",
+        "P21"
+      ],
+      "license": "Apache-2.0",
+      "repository": "https://github.com/xunit/xunit",
+      "source": "https://api.nuget.org/v3/index.json"
+    }
+  ],
+  "toolGraphs": [
+    {
+      "path": "NuGetCache/docfx/2.78.5/tools/net10.0/any/BuildHost-netcore/Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.deps.json",
+      "sha256": "b9393e7aa080dac70e46e26ee03250ceb1a38b7db378513bc52ff361e0fd9145",
+      "packages": [
+        "Microsoft.Build.Locator/1.10.2",
+        "Newtonsoft.Json/13.0.3",
+        "System.Collections.Immutable/9.0.0",
+        "System.CommandLine/2.0.0-rtm.25509.106"
+      ]
+    },
+    {
+      "path": "NuGetCache/docfx/2.78.5/tools/net10.0/any/docfx.deps.json",
+      "sha256": "86baeceb1bf7d7a33a68a5889b96ea4c8a3332e7581f9adceed243f4961b8da7",
+      "packages": [
+        "Acornima/1.2.0",
+        "HtmlAgilityPack/1.12.4",
+        "Humanizer.Core/2.14.1",
+        "ICSharpCode.Decompiler/9.1.0.7988",
+        "Jint/4.6.0",
+        "Json.More.Net/2.1.1",
+        "JsonPointer.Net/5.3.1",
+        "JsonSchema.Net/7.4.0",
+        "Markdig/1.0.0",
+        "Microsoft.Bcl.AsyncInterfaces/9.0.0",
+        "Microsoft.Build.Framework/18.0.2",
+        "Microsoft.Build/18.0.2",
+        "Microsoft.CodeAnalysis.CSharp.Workspaces/5.0.0",
+        "Microsoft.CodeAnalysis.CSharp/5.0.0",
+        "Microsoft.CodeAnalysis.Common/5.0.0",
+        "Microsoft.CodeAnalysis.VisualBasic.Workspaces/5.0.0",
+        "Microsoft.CodeAnalysis.VisualBasic/5.0.0",
+        "Microsoft.CodeAnalysis.Workspaces.Common/5.0.0",
+        "Microsoft.CodeAnalysis.Workspaces.MSBuild/5.0.0",
+        "Microsoft.NET.StringTools/18.0.2",
+        "Microsoft.Playwright/1.58.0",
+        "Microsoft.VisualStudio.SolutionPersistence/1.0.52",
+        "Newtonsoft.Json/13.0.4",
+        "OneOf/3.0.271",
+        "PdfPig/0.1.13",
+        "PlantUml.Net/1.4.80",
+        "Spectre.Console.Cli/0.53.1",
+        "Spectre.Console/0.54.0",
+        "Stubble.Core/1.10.8",
+        "System.Composition.AttributedModel/10.0.3",
+        "System.Composition.Convention/10.0.3",
+        "System.Composition.Hosting/10.0.3",
+        "System.Composition.Runtime/10.0.3",
+        "System.Composition.TypedParts/10.0.3",
+        "System.Composition/10.0.3",
+        "System.Configuration.ConfigurationManager/9.0.0",
+        "System.Diagnostics.EventLog/9.0.0",
+        "System.Reflection.MetadataLoadContext/9.0.0",
+        "System.Security.Cryptography.ProtectedData/9.0.6",
+        "YamlDotNet/16.3.0"
+      ]
+    },
+    {
+      "path": "NuGetCache/csharpier/1.3.0/tools/net10.0/any/CSharpier.deps.json",
+      "sha256": "27aa859cb746516dad76f5ee66be48f047c89916f3692f066992b285af1927d1",
+      "packages": [
+        "LovettSoftware.XmlDiff/1.1.0",
+        "Microsoft.CodeAnalysis.CSharp/5.3.0",
+        "Microsoft.CodeAnalysis.Common/5.3.0",
+        "Microsoft.Extensions.Configuration.Abstractions/8.0.0",
+        "Microsoft.Extensions.Configuration.Binder/8.0.2",
+        "Microsoft.Extensions.Configuration/8.0.0",
+        "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.10",
+        "Microsoft.Extensions.DependencyInjection/9.0.10",
+        "Microsoft.Extensions.Logging.Abstractions/9.0.10",
+        "Microsoft.Extensions.Logging.Configuration/8.0.1",
+        "Microsoft.Extensions.Logging/9.0.10",
+        "Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0",
+        "Microsoft.Extensions.Options/9.0.10",
+        "Microsoft.Extensions.Primitives/9.0.10",
+        "NReco.Logging.File/1.2.2",
+        "System.CommandLine/2.0.0-beta4.22272.1",
+        "System.IO.Abstractions.TestingHelpers/22.0.16",
+        "System.IO.Abstractions/22.1.1",
+        "System.IO.Hashing/9.0.10",
+        "TestableIO.System.IO.Abstractions.TestingHelpers/22.0.16",
+        "TestableIO.System.IO.Abstractions.Wrappers/22.1.1",
+        "TestableIO.System.IO.Abstractions/22.1.1",
+        "Testably.Abstractions.FileSystem.Interface/10.1.0",
+        "YamlDotNet/16.3.0",
+        "ini-parser-netstandard/2.5.3"
+      ]
+    }
+  ],
+  "requiredPathsChecked": [
+    "AGENTS.md",
+    "AGENTS.ensure.json",
+    "AGENTS.framework.json",
+    "AGENTS.lock.json",
+    "fetch-agents.bat",
+    "scripts/fetch-agents.ps1",
+    "docs",
+    "docs/.gitkeep",
+    "docs-ai/common/codedesign.md",
+    "docs-ai/common/rules.md",
+    "docs-ai/common/UIUX.md",
+    ".agents/skills",
+    "docs-ai/current/1_architecture.md",
+    "docs-ai/current/1_dependency.md",
+    "docs-ai/current/1_changelogs",
+    "docs-ai/current/1_bugreports",
+    "docs-ai/current/1_archived"
+  ],
+  "skillManifestsChecked": [
+    ".agents/skills/audit-project-docs/SKILL.md",
+    ".agents/skills/sync-agents-framework/SKILL.md"
+  ],
+  "environment": {
+    "sdkConstraint": "10.0.400; latestPatch; allowPrerelease=false",
+    "observedSdk": "10.0.400",
+    "observedNode": "24.21.0",
+    "installedSharedRuntimeVersions": [
+      "10.0.9",
+      "10.0.11"
+    ],
+    "essentialCultureDeclaration": "1.4.0",
+    "restorePerformed": false
+  }
+}

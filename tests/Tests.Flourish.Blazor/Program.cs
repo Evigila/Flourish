@@ -242,7 +242,7 @@ Test("navigation children remain optional and record copies expose their current
 });
 AsyncTest("the bundled icon catalog renders only official names", async () => {
     Equal("description", new Icon().Name);
-    Equal("description", new NavigationItem("Default", "/default").Icon);
+    Equal<string?>(null, new NavigationItem("Default", "/default").Icon);
     var defaultHtml = await Render<Icon>(new());
     Check(defaultHtml.Contains("data-icon=\"description\""), "The default icon retained a deleted alias.");
     Equal(4299, IconCatalog.Names.Count, "The pinned Material Symbols name map did not load.");
@@ -466,6 +466,11 @@ AsyncTest("page heading parent navigation uses the standard underline button abo
     Equal(1, TagsWithClass(html, "f-icon").Count);
     Check(html.IndexOf(parent, StringComparison.Ordinal) < html.IndexOf("<h1", StringComparison.Ordinal), "Parent navigation was rendered after the title.");
     Check(html.Contains("Records"), "The parent button lost its text.");
+    Equal(1, OpeningTags(html, "h1").Count);
+    var overlay = TagsWithClass(html, "f-heading-overlay").Single();
+    Equal("true", AttributeValue(overlay, "aria-hidden"));
+    Check(overlay.Contains("inert") && html.Contains("f-heading-overlay-panel"), "The decorative overlay must be inert and owned by the heading.");
+    Check(!loading.Contains("data-f-heading-overlay"), "Explicit Compact must not create an automatic title overlay.");
 });
 AsyncTest("uniform grid button forwards native and busy semantics without a wrapping element", async () => {
     var html = await Render<UniformGridButton>(new() {

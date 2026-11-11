@@ -7,18 +7,34 @@
 .f-page-body > .f-floating-notice.f-floating-notice-frame[data-f-notice-frame] { margin-inline:auto; }
 .f-floating-notice-frame > .f-notice {
     position:absolute; left:var(--f-notice-left,0px); bottom:var(--f-notice-bottom,0px); width:var(--f-notice-width,100%);
-    max-height:var(--f-notice-limit,calc(100dvh - 32px)); min-height:0; box-sizing:border-box; margin:0; overflow:auto;
-    pointer-events:auto; overscroll-behavior:contain;
+    height:var(--f-notice-height,auto); max-height:var(--f-notice-limit,calc(100dvh - 32px)); min-height:0;
+    align-content:start; box-sizing:border-box; margin:0; overflow:auto; pointer-events:auto; overscroll-behavior:contain;
 }
 .f-floating-notice-frame > .f-notice[hidden],
 .f-floating-notice-frame[data-f-notice-phase="dismissed"] > .f-notice { display:none; }
+/* Decorative only: no live-region text, extra node, focus target or layout height. */
+.f-floating-notice-frame[data-f-notice-timed] > .f-notice::after {
+    content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
+    background:currentColor; opacity:.65; pointer-events:none;
+    transform-origin:left; transform:scaleX(var(--f-notice-progress,1));
+}
+.f-floating-notice-frame[data-f-notice-progress="a"] > .f-notice::after { animation:f-notice-countdown var(--f-notice-duration) linear forwards; }
+.f-floating-notice-frame[data-f-notice-progress="b"] > .f-notice::after { animation:f-notice-countdown-again var(--f-notice-duration) linear forwards; }
+@keyframes f-notice-countdown { from { transform:scaleX(var(--f-notice-progress,1)); } to { transform:scaleX(0); } }
+@keyframes f-notice-countdown-again { from { transform:scaleX(var(--f-notice-progress,1)); } to { transform:scaleX(0); } }
 @media (prefers-reduced-motion:no-preference) {
     .f-floating-notice-frame > .f-notice { animation:f-notice-enter .18s ease-out; }
+    .f-floating-notice-frame[data-f-notice-enter="b"] > .f-notice { animation-name:f-notice-enter-again; }
     .f-floating-notice-frame[data-f-notice-phase="closing"] > .f-notice { animation:f-notice-exit .18s ease-in both; }
     @keyframes f-notice-enter { from { opacity:0; transform:translateY(.5rem); } to { opacity:1; transform:translateY(0); } }
+    @keyframes f-notice-enter-again { from { opacity:0; transform:translateY(.5rem); } to { opacity:1; transform:translateY(0); } }
     @keyframes f-notice-exit { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(.5rem); } }
 }
+@media (prefers-reduced-motion:reduce) {
+    .f-floating-notice-frame[data-f-notice-progress] > .f-notice::after { animation-timing-function:steps(var(--f-notice-steps,5),end); }
+}
 .f-save-changes-panel[data-f-notice-docked] {
-    max-width:var(--f-notice-width); translate:var(--f-notice-shift) 0;
-    bottom:calc(max(16px,env(safe-area-inset-bottom,0px)) + var(--f-notice-bottom)); max-height:var(--f-notice-limit);
+    width:var(--f-notice-width); right:calc(var(--f-save-panel-right) + var(--f-notice-right));
+    height:var(--f-notice-height,auto); bottom:calc(max(16px,env(safe-area-inset-bottom,0px)) + var(--f-notice-bottom));
+    max-height:var(--f-notice-limit);
 }

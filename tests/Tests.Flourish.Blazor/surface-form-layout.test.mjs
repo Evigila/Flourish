@@ -92,69 +92,20 @@ function unbind(kind, root) {
 }
 
 for (const kind of kinds) {
-    test(`${kind}: production scroll controller preserves collapse/expand hysteresis`, () => {
-        const env = environment(), f = fixture(kind);
+    test(`${kind}: shell lifecycle no longer changes normal heading dimensions on scroll`, () => {
+        const env=environment(),f=fixture(kind,110);
         try {
-            bind(kind, f.root, f.stage);
-            assert.equal(f.stage.listenerCount(), 1);
-            for (const [top, compact] of [[96, false], [97, true], [24, true], [23, false]]) {
-                f.stage.scrollTop = top; f.stage.emitScroll(); env.flush();
-                assert.equal(f.compact(), compact, `scrollTop=${top}`);
+            bind(kind,f.root,f.stage);
+            for(const top of [0,97,100,23]){
+                f.stage.scrollTop=top;f.stage.emitScroll();env.flush();
+                assert.equal(f.compact(),false);assert.equal(f.stage.scrollTop,top);
+                assert.equal(f.stage.scrollHeight,710);
             }
-        } finally { unbind(kind, f.root); env.restore(); }
-    });
-
-    test(`${kind}: production short-page guard restores position and avoids repeated compaction`, () => {
-        const env = environment(), f = fixture(kind, 110);
-        try {
-            bind(kind, f.root, f.stage);
-            f.stage.scrollTop = 100; f.stage.emitScroll(); env.flush();
-            assert.equal(f.compact(), false);
-            assert.equal(f.stage.scrollTop, 100);
-            assert.equal(f.changes(), 2);
-            for (let index = 0; index < 10; index++) { f.stage.emitScroll(); env.flush(); }
-            assert.equal(f.changes(), 2);
-            f.stage.range = 500; f.stage.emitScroll(); env.flush();
-            assert.equal(f.compact(), true, 'Changed geometry permits a new compact attempt.');
-        } finally { unbind(kind, f.root); env.restore(); }
-    });
-
-    test(`${kind}: document-stage replacement removes the old listener and resets compact state`, () => {
-        const env = environment(), f = fixture(kind);
-        try {
-            bind(kind, f.root, f.stage);
-            f.stage.scrollTop = 120; f.stage.emitScroll(); env.flush();
-            assert.equal(f.compact(), true);
-            const next = f.makeStage(); bind(kind, f.root, next);
-            assert.equal(f.stage.listenerCount(), 0);
-            assert.equal(next.listenerCount(), 1);
-            assert.equal(f.compact(), false);
-            f.stage.scrollTop = 180; f.stage.emitScroll(); env.flush();
-            assert.equal(f.compact(), false, 'Retired stage cannot mutate the new document.');
-            next.scrollTop = 120; next.emitScroll(); env.flush(); assert.equal(f.compact(), true);
-            unbind(kind, f.root); assert.equal(next.listenerCount(), 0); assert.equal(f.compact(), false);
-        } finally { unbind(kind, f.root); env.restore(); }
-    });
-
-    test(`${kind}: controller disposal releases listeners, observers and queued work`, () => {
-        const env = environment(), f = fixture(kind);
-        try {
-            bind(kind, f.root, f.stage);
-            f.stage.scrollTop = 120; f.stage.emitScroll(); env.flush();
-            if (kind === 'f-shell') {
-                f.stage.emitScroll(); assert.equal(env.frames.size, 1);
-                unbind(kind, f.root);
-                assert.equal(env.frames.size, 0);
-                assert.ok(env.resizes.every(observer => observer.disconnected));
-            } else {
-                bind(kind, f.root, f.stage);
-                assert.equal(env.mutations.length, 1, 'Synchronizing the same stage must reuse its observer.');
-                f.root.isConnected = false; env.mutations[0].callback();
-                assert.equal(env.mutations[0].disconnected, true);
-            }
-            assert.equal(f.stage.listenerCount(), 0); assert.equal(f.compact(), false);
-            f.stage.emitScroll(); env.flush(); assert.equal(f.compact(), false);
-        } finally { unbind(kind, f.root); env.restore(); }
+            const next=f.makeStage();bind(kind,f.root,next);
+            assert.equal(f.stage.listenerCount(),0);
+            unbind(kind,f.root);assert.equal(next.listenerCount(),0);
+            assert.ok(env.resizes.every(observer=>observer.disconnected));
+        } finally { unbind(kind,f.root);env.restore(); }
     });
 }
 
@@ -170,15 +121,29 @@ function property(body, name) {
 
 test('all three scroll roots share complete compact heading structure and explicit Compact mode', async () => {
     const css = await source('wwwroot/framework.css');
-    const compact = ':is(:is(.f-shell,.content-surface,.navigation-surface)[data-compact-heading] .f-page-heading,.f-page-heading[data-heading-mode=compact])';
+    const compact = '.f-page-heading[data-heading-mode=compact]';
     assert.equal(property(rule(css, compact), 'min-height'), '72px');
     assert.equal(property(rule(css, `${compact} .f-heading-title`), 'flex-direction'), 'row');
     assert.equal(property(rule(css, `${compact} h1`), 'flex'), '1');
-    const back = rule(css, `${compact} .f-parent-link`);
+    const back = rule(css, `${compact} .f-parent-link,.f-heading-control-anchor[data-f-heading-fixed] > .f-parent-link`);
     for (const name of ['width', 'height', 'min-height']) assert.equal(property(back, name), '48px');
     assert.equal(property(back, 'flex'), '0 0 48px');
-    assert.equal(property(rule(css, `${compact} .f-parent-link .f-button-text`), 'display'), 'none');
+    assert.equal(property(rule(css, `${compact} .f-parent-link .f-button-text,.f-heading-control-anchor[data-f-heading-fixed] > .f-parent-link .f-button-text`), 'display'), 'none');
     assert.doesNotMatch(css, /\.f-shell\[data-compact-heading\] \.f-page-heading/);
+});
+
+test('later Design CSS keeps explicit Compact headings in DocumentFlow relative', async () => {
+    const layout = await source('wwwroot/presentation/layout.css');
+    const design = await readFile(new URL('../Flourish.Blazor.Design/wwwroot/foundation.css',framework),'utf8');
+    assert.equal(property(rule(layout,'.f-document-surface .f-page-heading'),'position'),'relative');
+    assert.equal(property(rule(design,'.f-page-heading[data-heading-mode=compact]'),'position'),undefined);
+    const outsideDocument = '.f-page-heading[data-heading-mode=compact]:not(.f-document-surface *)';
+    assert.equal(property(rule(design,outsideDocument),'position'),'sticky');
+    assert.equal(property(rule(design,outsideDocument),'top'),'0');
+    for(const match of design.matchAll(/([^{}]+)\{([^{}]*)\}/g)){
+        if(match[1].includes('.f-page-heading') && property(match[2],'position')==='sticky')
+            assert.equal(match[1].trim(),outsideDocument,'No later breakpoint may reintroduce DocumentFlow stickiness.');
+    }
 });
 
 test('field-owned reference dropdown fills its field while standalone selection retains its 240px contract', async () => {

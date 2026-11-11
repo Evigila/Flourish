@@ -75,7 +75,7 @@ test("Native and generated ActionMenu triggers share hover press expanded and un
   }
 });
 
-test("UniformGrid actions share only Danger Elevated and FilledElevated paint without interaction borders", () => {
+test("UniformGrid actions retain semantic fills with flat grouped separators and standalone elevation", () => {
   const uniformCss = design.find(css => css.includes(".f-uniform-grid-variant-filled-elevated"));
   assert.ok(uniformCss, "The production stylesheet did not import FilledElevated");
   assert.doesNotMatch(uniformCss, /\.f-uniform-(?:grid-)?variant-(?:filled|outlined)(?![\w-])/,
@@ -113,19 +113,22 @@ test("UniformGrid actions share only Danger Elevated and FilledElevated paint wi
           ...(variant ? [`f-uniform-variant-${variant}`] : [])], parent, states, attributes);
         const label = `${theme}/${tag}/${[...parent.classes]}/${variant ?? "inherited"}/${states}/${attributes["aria-busy"]}`;
         const contract = variants[expected];
+        const grouped = parent.classes.has('f-uniform-grid') || parent.classes.has('f-form-actions');
         const interaction = !unavailable && (states.includes("active") ? "active" : states.includes("hover") ? "hover" : null);
-        assert.equal(resolvedProperty(action, "background"), resolvedProperty(root, interaction ? contract[interaction] : contract.background), `${label}: fill`);
+        const background = resolvedProperty(root, interaction ? contract[interaction] : contract.background);
+        assert.equal(resolvedProperty(action, "background"), background, `${label}: fill`);
         assert.equal(resolvedProperty(action, "color"), resolvedProperty(root, interaction ? contract.interactionInk : contract.ink), `${label}: foreground`);
-        assert.equal(resolvedProperty(action, "border"), "1px solid transparent", `${label}: border geometry`);
-        assert.equal(resolvedProperty(action, "border-color") ?? "transparent", "transparent", `${label}: visible border`);
-        assert.equal(resolvedProperty(action, "box-shadow"), !unavailable && interaction !== "active" && contract.shadow
+        assert.equal(resolvedProperty(action, "border"), grouped ? "0 solid transparent" : "1px solid transparent", `${label}: border geometry`);
+        assert.equal(resolvedProperty(action, "border-color") ?? "transparent", "transparent", `${label}: flat separator`);
+        assert.equal(resolvedProperty(action, "box-shadow"), !grouped && !unavailable && interaction !== "active" && contract.shadow
           ? resolvedProperty(root, "--f-shadow-control") : "none", `${label}: elevation`);
         if (states.includes("focus-visible")) {
           assert.equal(cascade(action, "outline"), "3px solid var(--f-accent)", `${label}: keyboard focus`);
           assert.equal(cascade(action, "outline-offset"), parent.classes.has("f-uniform-grid") || parent.classes.has("f-form-actions") ? "-5px" : "3px", `${label}: focus placement`);
         }
         if (unavailable) {
-          assert.equal(cascade(action, "opacity"), ".55", `${label}: unavailable feedback`);
+          assert.equal(cascade(action, "opacity"), grouped ? "1" : ".55", `${label}: unavailable feedback`);
+          if(grouped) assert.equal(cascade(element("span",["f-button-text"],action),"opacity"),".55");
           const spinner = element("span", ["f-spinner"], action);
           assert.equal(cascade(spinner, "border"), "2px solid currentColor", `${label}: busy spinner still follows action ink`);
           assert.equal(cascade(spinner, "position"), "absolute", `${label}: spinner changes cell geometry`);
@@ -135,7 +138,7 @@ test("UniformGrid actions share only Danger Elevated and FilledElevated paint wi
   }
 });
 
-test("FormActions keeps shared Elevated defaults and visible group elevation without divider borders or clipped focus", () => {
+test("FormActions keeps shared Elevated fills and only outer group elevation with flat dividers and inset focus", () => {
   for (const theme of ["light", "dark"]) {
     const root = element("div", ["f-root", `f-theme-${theme}`]);
     const actions = element("div", ["f-form-actions"], root);
@@ -143,25 +146,51 @@ test("FormActions keeps shared Elevated defaults and visible group elevation wit
     assert.equal(cascade(actions, "filter"), "drop-shadow(var(--f-shadow-control))", `${theme}: clipped child shadows lost group elevation`);
     assert.equal(cascade(actions, "overflow"), "hidden", `${theme}: group rounding changed`);
     assert.equal(cascade(actions, "border-radius"), "16px");
-    assert.equal(cascade(actions, "gap"), "1px");
+    assert.equal(cascade(actions, "gap"), "0");
     assert.equal(cascade(actions, "display"), "grid");
     assert.equal(cascade(actions, "grid-template-columns"), "repeat(var(--f-action-columns,2),minmax(0,1fr))");
     assert.equal(cascade(actions, "grid-template-columns", 600), "repeat(var(--f-action-narrow-columns,2),minmax(0,1fr))");
     const standalone = element("button", ["f-button", "f-button-primary", "f-uniform-cell", "f-uniform-grid-button"], root);
     const defaultAction = element("button", [...standalone.classes], actions);
-    for (const property of ["background", "color", "box-shadow", "border"])
+    for (const property of ["background", "color"])
       assert.equal(resolvedProperty(defaultAction, property), resolvedProperty(standalone, property), `${theme}: FormActions changes default UGB ${property}`);
     for (const variant of [null, "elevated", "filled-elevated", "danger"]) {
       const action = element("button", [...standalone.classes, ...(variant ? [`f-uniform-variant-${variant}`] : [])], actions, ["hover", "focus-visible"]);
       assert.equal(cascade(action, "min-height"), "96px", `${variant}: form height changed`);
       assert.equal(cascade(action, "max-width"), "none");
       assert.equal(cascade(action, "border-radius"), "0");
-      assert.equal(cascade(action, "border-color"), "transparent", `${variant}: hover paints a border`);
+      assert.equal(cascade(action, "border-color"), "transparent", `${variant}: only the shared-edge layer paints separators`);
       assert.equal(cascade(action, "outline"), "3px solid var(--f-accent)");
       assert.equal(cascade(action, "outline-offset"), "-5px", `${variant}: group clips the focus indicator`);
-      assert.equal(cascade(action, "box-shadow"), "var(--f-uniform-cell-shadow,var(--f-shadow-control))");
-      assert.equal(resolvedProperty(action, "box-shadow"), variant === "danger" ? "none" : resolvedProperty(root, "--f-shadow-control"));
+      assert.equal(cascade(action, "box-shadow"), "none");
+      assert.equal(resolvedProperty(action, "box-shadow"), "none");
     }
+  }
+});
+
+test("only occupied opaque cells define the grid silhouette; seams have no transparent gap or blur", () => {
+  const root=element("div",["f-root"]);
+  for(const kind of ["f-uniform-grid","f-form-actions"]) {
+    const group=element("div",[kind,...(kind==="f-uniform-grid"?["f-uniform-grid-variant-elevated"]:[])],root);
+    assert.equal(resolvedProperty(group,"gap"),"0");
+    assert.equal(cascade(group,"background"),"transparent");
+    assert.equal(cascade(group,"box-shadow")??"none","none");
+    assert.equal(cascade(group,"filter"),"drop-shadow(var(--f-shadow-control))");
+    for(const disabled of [false,true]) {
+      const cell=element("button",["f-button","f-button-primary","f-uniform-cell","f-uniform-grid-button"],group,disabled?["disabled"]:[],disabled?{disabled:""}:{});
+      assert.equal(cascade(cell,"border-inline-end-width"),"1px");
+      assert.equal(cascade(cell,"border-block-end-width"),"1px");
+      assert.equal(cascade(cell,"box-shadow"),"none");
+      assert.equal(cascade(cell,"opacity")??"1","1");
+      assert.notEqual(resolvedProperty(cell,"background"),"transparent");
+    }
+    // The real gap is zero and only existing cell boxes paint: shared edges are
+    // continuous, while an unoccupied last-row track has no source alpha to shadow.
+    const gap=parseFloat(resolvedProperty(group,"gap")), width=100,height=80;
+    const boxes=[[0,0],[width+gap,0],[0,height+gap]];
+    const occupied=(x,y)=>boxes.some(([left,top])=>x>=left&&x<left+width&&y>=top&&y<top+height);
+    assert.equal(occupied(width-.01,40),true);assert.equal(occupied(width+.01,40),true);
+    assert.equal(occupied(50,height+.01),true);assert.equal(occupied(150,120),false);
   }
 });
 

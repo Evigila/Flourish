@@ -1,4 +1,15 @@
 /* Layout belongs to the framework. The optional Design package supplies the cell skin. */
+.f-uniform-grid,.f-form-actions { position:relative; }
+:is(.f-uniform-grid,.f-form-actions)[data-f-grid-dividers]::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background-image:var(--f-grid-divider-images,none);
+    background-position:var(--f-grid-divider-positions,0 0);
+    background-size:var(--f-grid-divider-sizes,0 0);
+    background-repeat:no-repeat;
+}
 .f-uniform-grid {
     display:grid;
     --f-grid-cell-width:1fr;
@@ -71,6 +82,12 @@
 }
 .f-uniform-cell-icon { overflow:hidden; justify-content:flex-end; padding-block-end:4px; }
 .f-uniform-cell-copy { overflow:auto; justify-content:flex-start; padding-block-start:4px; }
+/* Let translated labels and descriptions determine the size of a content-height row. */
+.f-uniform-grid-content-height { grid-auto-rows:minmax(min-content,auto); }
+.f-uniform-grid-content-height.f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),minmax(min-content,auto)); }
+.f-uniform-grid.f-uniform-grid-content-height > .f-uniform-cell { aspect-ratio:auto; min-height:min-content; max-height:none; overflow:visible; }
+.f-uniform-grid-content-height > .f-uniform-cell.f-uniform-icon-support { grid-template-rows:auto auto; }
+
 /* Information is a natural-height field layout, independently of action-cell shape/caps. */
 .f-uniform-grid:has(> .f-uniform-information) { grid-auto-rows:minmax(min-content,auto); }
 .f-uniform-grid.f-uniform-grid-rows:has(> .f-uniform-information) { grid-template-rows:repeat(var(--f-grid-rows),minmax(min-content,auto)); }

@@ -147,6 +147,20 @@ test('popup chooses physical left/right edges from the actual trigger center', (
         assert.equal(state.hoverRoot.measurements, 0, 'A full-width hover region must not become the geometric anchor.');
     }
 }));
+test('a heading layout owner refreshes its already open popup after visual pinning without reopening or focusing', () => run(env => {
+    const state=popup({left:100,top:100});api.positionPopup(state);
+    const original=state.trigger,focus={};env.document.activeElement=focus;
+    const root={querySelectorAll:()=>[state.panel],contains:node=>node===state.trigger};
+    state.trigger.rect.left=300;state.trigger.rect.top=200;
+    api.refreshAnchoredPopups(root);
+    assert.equal(left(state),300);assert.equal(top(state),254);
+    assert.equal(state.trigger,original);assert.equal(state.open,true);assert.equal(env.document.activeElement,focus);
+    state.trigger.rect.left=450;
+    api.refreshAnchoredPopups({querySelectorAll:()=>[state.panel],contains:()=>false});
+    assert.equal(left(state),300,'A foreign header cannot reposition the popup.');
+    state.open=false;api.refreshAnchoredPopups(root);assert.equal(left(state),300);
+}));
+
 test('popup clamps horizontal placement to both viewport gutters', () => run(() => {
     for (const [rect, expected] of [[{ left: -20 }, 12], [{ left: 790 }, 668]]) {
         const state = popup(rect); api.positionPopup(state); assert.equal(left(state), expected);

@@ -3,7 +3,12 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const source = await readFile(new URL("../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/avatar-editor.js", import.meta.url));
-const { load, attach, encode, release } = await import("data:text/javascript;base64," + source.toString("base64"));
+const { load, attach, reset, encode, release } = await import("data:text/javascript;base64," + source.toString("base64"));
+
+test('Section avatars leave 36px before following content, including read-only portraits', async () => {
+    const css = await readFile(new URL("../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/avatar.css",import.meta.url),'utf8');
+    assert.match(css,/\.f-section\s*>\s*\.f-avatar:not\(:last-child\)\s*\{\s*margin-block-end:36px;\s*\}/);
+});
 
 function png(width, height) {
     const bytes = Buffer.alloc(33);
@@ -190,17 +195,17 @@ test("pointer drag pans the circular preview and leaves keyboard ranges synchron
     release(owner, 1);
 });
 
-test("encoding keeps JPEG quality .75, lowers dimensions to meet size budget and returns a stream", async () => {
+test("encoding keeps JPEG quality .75, lowers dimensions to meet size budget and returns the JPEG Blob for Blazor streaming", async () => {
     const image = bitmap(1100, 850);
     globalThis.createImageBitmap = async () => image;
-    globalThis.DotNet = { createJSStreamReference: blob => ({ streamedBlob: blob }) };
     const output = new Canvas([256 * 1024 + 1, 64 * 1024]);
     const { owner, picker, editor } = fixture(png(1100, 850), output);
     await load(owner, picker, 1);
     attach(owner, editor, 1);
     const result = await encode(owner, 1);
-    assert.equal(result.streamedBlob.type, "image/jpeg");
-    assert.equal(result.streamedBlob.size, 64 * 1024);
+    assert.ok(result instanceof Blob);
+    assert.equal(result.type, "image/jpeg");
+    assert.equal(result.size, 64 * 1024);
     assert.deepEqual(output.encodes, [
         { width: 512, height: 512, type: "image/jpeg", quality: 0.75 },
         { width: 384, height: 384, type: "image/jpeg", quality: 0.75 }
@@ -211,11 +216,9 @@ test("encoding keeps JPEG quality .75, lowers dimensions to meet size budget and
     await assert.rejects(encode(owner, 1), /crop is unavailable/);
 });
 
-test("a crop closed during canvas encoding does not expose a completed stream", async () => {
+test("a crop closed during canvas encoding does not expose a completed Blob", async () => {
     const image = bitmap(40, 30);
     globalThis.createImageBitmap = async () => image;
-    let streamCalls = 0;
-    globalThis.DotNet = { createJSStreamReference() { streamCalls++; } };
     const output = new Canvas();
     let finish;
     output.toBlob = callback => { finish = callback; };
@@ -227,6 +230,50 @@ test("a crop closed during canvas encoding does not expose a completed stream", 
     release(owner, 1);
     finish(new Blob(["jpeg"], { type: "image/jpeg" }));
     await assert.rejects(pending, /crop was closed/);
-    assert.equal(streamCalls, 0);
     assert.equal(output.width, 0);
+});
+
+test("reset restores the original centered crop without decoding or saving again", async () => {
+    const image = bitmap(600, 400);
+    let decodes = 0;
+    globalThis.createImageBitmap = async () => { decodes++; return image; };
+    const state = fixture(png(600, 400));
+    assert.equal(await load(state.owner, state.picker, 7), "ready");
+    assert.equal(attach(state.owner, state.editor, 7), true);
+    const initial = state.canvas.draws.at(-1);
+    state.zoom.value = "240";
+    state.horizontal.value = "80";
+    state.vertical.value = "-60";
+    state.zoom.dispatchEvent(new Event("input"));
+    assert.notDeepEqual(state.canvas.draws.at(-1), initial);
+    state.canvas.dispatchEvent(Object.assign(new Event("pointerdown"), { button: 0, pointerId: 1, clientX: 100, clientY: 100 }));
+    assert.equal(reset(state.owner, 7), true);
+    assert.equal(state.zoom.value, "100");
+    assert.equal(state.horizontal.value, "0");
+    assert.equal(state.vertical.value, "0");
+    assert.deepEqual(state.canvas.draws.at(-1), initial);
+    state.canvas.dispatchEvent(Object.assign(new Event("pointermove"), { pointerId: 1, clientX: 200, clientY: 200 }));
+    assert.equal(state.horizontal.value, "0");
+    assert.equal(decodes, 1);
+    assert.equal(image.closed, 0);
+    assert.equal(state.output.encodes.length, 0);
+    release(state.owner);
+});
+
+test("reset cannot modify disabled, replaced, closed or disconnected crops", async () => {
+    globalThis.createImageBitmap = async () => bitmap(600, 400);
+    const state = fixture(png(600, 400));
+    assert.equal(await load(state.owner, state.picker, 8), "ready");
+    assert.equal(attach(state.owner, state.editor, 8), true);
+    state.zoom.value = "200";
+    state.zoom.disabled = true;
+    assert.equal(reset(state.owner, 8), false);
+    state.zoom.disabled = false;
+    assert.equal(reset(state.owner, 7), false);
+    state.owner.isConnected = false;
+    assert.equal(reset(state.owner, 8), false);
+    state.owner.isConnected = true;
+    assert.equal(state.zoom.value, "200");
+    release(state.owner, 8);
+    assert.equal(reset(state.owner, 8), false);
 });

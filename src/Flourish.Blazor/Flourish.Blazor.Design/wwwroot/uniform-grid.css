@@ -1,4 +1,5 @@
 .f-uniform-grid,.f-form-actions {
+    --f-grid-divider-color:var(--f-border);
     --f-uniform-cell-background:var(--f-surface);
     --f-uniform-cell-foreground:var(--f-text);
     --f-uniform-cell-interaction-foreground:var(--f-text);
@@ -8,7 +9,7 @@
     --f-uniform-cell-shadow:var(--f-shadow-control);
 }
 .f-uniform-grid {
-    --f-grid-gap:1px;
+    --f-grid-gap:0;
     margin-block:24px;
     gap:var(--f-grid-gap);
     overflow:hidden;
@@ -106,7 +107,29 @@
 }
 .f-uniform-grid > .f-uniform-cell.f-uniform-grid-button:focus-visible,.f-form-actions > .f-uniform-cell.f-uniform-grid-button:focus-visible { outline-offset:-5px; }
 .f-form-actions {
-    gap:1px;
+    gap:0;
     background:transparent;
 }
 .f-form-actions > .f-uniform-cell { max-width:none; min-height:96px; border-radius:0; }
+@media(forced-colors:active) {
+    .f-uniform-grid,.f-form-actions { --f-grid-divider-color:CanvasText; }
+    :is(.f-uniform-grid,.f-form-actions)[data-f-grid-dividers]::after { forced-color-adjust:none; }
+}
+/* Retain opaque occupied-cell geometry; the shared-edge layer alone paints separators. */
+:is(.f-uniform-grid,.f-form-actions) > .f-uniform-cell {
+    border:0 solid transparent;
+    border-inline-end-width:1px;
+    border-block-end-width:1px;
+    box-shadow:none;
+}
+:is(.f-uniform-grid,.f-form-actions) > .f-uniform-cell.f-uniform-grid-button:hover:not(:disabled):not([aria-disabled=true]),
+:is(.f-uniform-grid,.f-form-actions) > .f-uniform-cell.f-uniform-grid-button:active:not(:disabled):not([aria-disabled=true]) {
+    border-color:transparent;
+    box-shadow:none;
+}
+/* Fade disabled content while the existing semantic fill keeps the group opaque. */
+:is(.f-uniform-grid,.f-form-actions) > .f-uniform-cell.f-uniform-grid-button:is(:disabled,[aria-disabled=true]) {
+    border-color:transparent;
+    opacity:1;
+}
+:is(.f-uniform-grid,.f-form-actions) > .f-uniform-cell.f-uniform-grid-button:is(:disabled,[aria-disabled=true]) > * { opacity:.55; }

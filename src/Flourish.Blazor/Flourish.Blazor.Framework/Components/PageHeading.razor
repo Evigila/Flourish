@@ -1,13 +1,25 @@
 @inherits TextComponentBase
 <header class="f-page-heading" data-page-heading data-heading-mode="@(Compact ? "compact" : null)" data-heading-loading="@(Loading ? "true" : null)">
     <div class="f-heading-title">
-        @if (!string.IsNullOrEmpty(ParentHref)) { <ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref" Class="f-parent-link" Icon="arrow_back" Text="@(ParentLabel ?? string.Empty)" aria-label="@(string.IsNullOrWhiteSpace(ParentLabel) ? Texts.Get(new TextReference("Flourish", "Heading_Back", "Back")) : ParentLabel)" /> }
+        @if (!string.IsNullOrEmpty(ParentHref)) { <div class="f-heading-parent-slot" data-f-heading-control-slot="parent"><div class="f-heading-control-anchor" data-f-heading-control-anchor><ArkheideSystem.Flourish.Blazor.Components.Button Variant="ButtonVariant.Underline" Href="@ParentHref" Class="f-parent-link" Icon="arrow_back" Text="@(ParentLabel ?? string.Empty)" aria-label="@(string.IsNullOrWhiteSpace(ParentLabel) ? Texts.Get(new TextReference("Flourish", "Heading_Back", "Back")) : ParentLabel)" /></div></div> }
         <h1>@Title</h1>
     </div>
-    @if (Actions is not null) { <div class="f-heading-actions">@Actions</div> }
+    @if (Actions is not null) { <div class="f-heading-actions-slot" data-f-heading-control-slot="actions"><div class="f-heading-control-anchor" data-f-heading-control-anchor><div class="f-heading-actions">@Actions</div></div></div> }
     <div class="f-heading-loading" data-f-heading-progress role="progressbar" aria-label="@Ui("Progress_Label", "Progress")" aria-valuemin="0" aria-valuemax="100">
         <span class="f-heading-loading-fill" aria-hidden="true"></span>
     </div>
+    @if (!Compact)
+    {
+        <div class="f-heading-overlay" data-f-heading-overlay aria-hidden="true" inert>
+            <div class="f-heading-overlay-clip">
+                <div class="f-heading-overlay-panel">
+                    <span data-f-heading-parent-space hidden="@string.IsNullOrEmpty(ParentHref)"></span>
+                    <span class="f-heading-overlay-title">@Title</span>
+                    <span data-f-heading-actions-space hidden="@(Actions is null)"></span>
+                </div>
+            </div>
+        </div>
+    }
 </header>
 @code {
     [Parameter, EditorRequired] public string Title { get; set; } = string.Empty;

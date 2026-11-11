@@ -1,0 +1,21 @@
+/* Embedded choices preserve the existing compact slot; standalone fields use control height. */
+.f-selection-indicator {
+    box-sizing:border-box; display:inline-grid; place-content:center;
+    width:var(--f-choice-size,28px); height:var(--f-choice-size,28px); flex:0 0 var(--f-choice-size,28px);
+    padding:0; margin:0; border:0; border-radius:0; appearance:none; background:transparent; color:inherit;
+    font:800 17px/1 var(--f-font,"Segoe UI",sans-serif); cursor:inherit;
+}
+span.f-selection-indicator { visibility:hidden; }
+span.f-selection-indicator[data-selected=true],
+[aria-checked=true] > span.f-selection-indicator { visibility:visible; }
+input.f-selection-indicator:checked::before { content:"✓"; }
+input.f-selection-indicator:disabled { opacity:.55; cursor:not-allowed; }
+.f-native-select-option > .f-selection-indicator { margin-left:auto; }
+.selection-dropdown-surface .reference-option,
+.selection-dropdown-surface .selection-panel-width > .selection-option {
+    display:grid; grid-template-columns:minmax(0,1fr) var(--f-choice-size,28px); align-items:center; gap:10px;
+}
+.selection-dropdown-surface .reference-option > span:first-child { min-width:0; overflow-wrap:anywhere; }
+@media (forced-colors:active) {
+    .f-selection-indicator { color:CanvasText; }
+}

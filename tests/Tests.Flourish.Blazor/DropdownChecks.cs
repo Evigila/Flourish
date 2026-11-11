@@ -260,7 +260,7 @@ internal static class DropdownChecks
 
     private static List<(string Tag, string Text)> Options(string html) =>
         Regex.Matches(html, @"(<button\b[^>]*\brole=""option""[^>]*>)([\s\S]*?)</button>")
-            .Select(match => (match.Groups[1].Value, WebUtility.HtmlDecode(match.Groups[2].Value))).ToList();
+            .Select(match => (match.Groups[1].Value, WebUtility.HtmlDecode(Regex.Match(match.Groups[2].Value, @"^<span>([\s\S]*?)</span>").Groups[1].Value))).ToList();
 
     private static string Attribute(string tag, string name)
     {

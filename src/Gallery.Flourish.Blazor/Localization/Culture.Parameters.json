@@ -41,9 +41,9 @@
   },
 
   "Parameter_AutoDismissMilliseconds_FloatingNotice": {
-    "en-US": "Visible time before the reverse exit animation, in milliseconds. Defaults to 5000; zero keeps the notice visible. Hover, focus and background tabs pause the countdown.",
-    "zh-CN": "开始反向退出动画前的显示时长，单位毫秒，默认 5000；设为 0 持续显示。鼠标悬停、焦点停留和后台标签页会暂停倒计时。",
-    "pt-BR": "Tempo visível antes da animação de saída inversa, em milissegundos. O padrão é 5000; zero mantém o aviso. Ponteiro, foco e aba em segundo plano pausam a contagem."
+    "en-US": "Visible time before the reverse exit animation, in milliseconds. Defaults to 3500; zero keeps the notice visible. Hover, focus and background tabs pause the countdown.",
+    "zh-CN": "开始反向退出动画前的显示时长，单位毫秒，默认 3500；设为 0 持续显示。鼠标悬停、焦点停留和后台标签页会暂停倒计时。",
+    "pt-BR": "Tempo visível antes da animação de saída inversa, em milissegundos. O padrão é 3500; zero mantém o aviso. Ponteiro, foco e aba em segundo plano pausam a contagem."
   },
   "Parameter_MessageKey_FloatingNotice": {
     "en-US": "Change the key to show a new occurrence with the same content. Content updates and a host-hidden notice becoming visible also restart the lifetime; unchanged renders preserve the countdown.",
@@ -641,14 +641,19 @@
     "pt-BR": "Lado máximo da célula quadrada, padrão 280px. Não limita células retangulares; deve ser positivo."
   },
   "Parameter_MaxCellHeight": {
-    "en-US": "Maximum rectangular cell height, default 260px; no width limit. Rectangles fill and divide each row; automatic columns use twice this height as their threshold. CellHeight overrides this maximum when supplied. Does not affect squares. Must be positive; configure on UniformGrid.",
-    "zh-CN": "长方形单元格的最大高度，默认 260px；不限制宽度。矩形先铺满行再均分，自动列数使用两倍此高度作为换列阈值。设置 CellHeight 时覆盖该上限。正方形不受此值影响；必须为正数，在外层 UniformGrid 上配置。",
-    "pt-BR": "Altura máxima da célula retangular, padrão 260px; sem limite de largura. Retângulos preenchem e dividem a linha; colunas automáticas usam duas vezes essa altura como limite. CellHeight substitui o máximo quando informado. Não afeta quadrados. Deve ser positiva; configure em UniformGrid."
+    "en-US": "Maximum rectangular cell height, default 260px; no width limit. Rectangles fill and divide each row; automatic columns use twice this height as their threshold. CellHeight overrides this maximum when supplied. ContentHeight removes this height cap but retains the automatic column threshold. Does not affect squares. Must be positive; configure on UniformGrid.",
+    "zh-CN": "长方形单元格的最大高度，默认 260px；不限制宽度。矩形先铺满行再均分，自动列数使用两倍此高度作为换列阈值。设置 CellHeight 时覆盖该上限。ContentHeight 移除此高度上限，但保留自动列数阈值。正方形不受此值影响；必须为正数，在外层 UniformGrid 上配置。",
+    "pt-BR": "Altura máxima da célula retangular, padrão 260px; sem limite de largura. Retângulos preenchem e dividem a linha; colunas automáticas usam duas vezes essa altura como limite. CellHeight substitui o máximo quando informado. ContentHeight remove esse limite de altura, mas mantém o limite das colunas automáticas. Não afeta quadrados. Deve ser positiva; configure em UniformGrid."
   },
   "Parameter_CellHeight": {
-    "en-US": "Optional fixed rectangular cell height in pixels. Must be positive and finite; overrides MaxCellHeight and the 2:1 aspect ratio at all widths. Omit to retain automatic bounded height. Square rejects this parameter; configure on UniformGrid.",
-    "zh-CN": "可选长方形单元格固定高度，单位像素；必须为有限正数，在所有宽度下覆盖 MaxCellHeight 与 2:1 宽高比。省略时保留有上限的自动高度。Square 拒绝此参数，在外层 UniformGrid 上配置。",
-    "pt-BR": "Altura fixa opcional da célula retangular em pixels. Deve ser positiva e finita; substitui MaxCellHeight e a proporção 2:1 em todas as larguras. Omita para manter altura automática limitada. Square rejeita esse parâmetro; configure em UniformGrid."
+    "en-US": "Optional fixed rectangular cell height in pixels. Must be positive and finite; overrides MaxCellHeight and the 2:1 aspect ratio at all widths. Omit to retain automatic bounded height. Square rejects this parameter; configure on UniformGrid. Cannot be combined with ContentHeight.",
+    "zh-CN": "可选长方形单元格固定高度，单位像素；必须为有限正数，在所有宽度下覆盖 MaxCellHeight 与 2:1 宽高比。省略时保留有上限的自动高度。Square 拒绝此参数，在外层 UniformGrid 上配置。不能与 ContentHeight 同时使用。",
+    "pt-BR": "Altura fixa opcional da célula retangular em pixels. Deve ser positiva e finita; substitui MaxCellHeight e a proporção 2:1 em todas as larguras. Omita para manter altura automática limitada. Square rejeita esse parâmetro; configure em UniformGrid. Não pode ser combinado com ContentHeight."
+  },
+  "Parameter_ContentHeight": {
+    "en-US": "Sizes rectangular rows to their content without an aspect ratio or height cap. Default false retains bounded automatic height. Requires Rectangle and cannot be combined with CellHeight. Columns, Rows and NarrowColumns still control the grid; icon tracks also use their natural content height.",
+    "zh-CN": "根据内容确定长方形行高，不施加宽高比或高度上限。默认 false 保留有上限的自动高度。仅支持 Rectangle，不能与 CellHeight 同时使用。Columns、Rows 和 NarrowColumns 仍控制网格；图标分区也按内容自然撑高。",
+    "pt-BR": "Ajusta as linhas retangulares ao conteúdo, sem proporção ou limite de altura. false mantém a altura automática limitada. Exige Rectangle e não pode ser combinado com CellHeight. Columns, Rows e NarrowColumns continuam controlando a grade; as áreas de ícone também usam a altura natural do conteúdo."
   },
   "Parameter_FillHeight": {
     "en-US": "Fill the fixed shell content stage, keep a direct PageHeading and give the remaining height to direct content. Removes document bottom spacing. Use a direct EditingGrid for one internally scrolling editor; default false keeps document flow.",
@@ -656,9 +661,9 @@
     "pt-BR": "Preenche a área fixa de conteúdo do shell, preserva PageHeading direto e entrega a altura restante ao conteúdo direto. Remove o espaço inferior do documento. Use EditingGrid direto para rolagem interna; false padrão preserva o fluxo do documento."
   },
   "Parameter_IconSupport": {
-    "en-US": "null automatically enables equal vertical halves when Icon exists. true centers the icon above and text below; false keeps continuous layout. Cell values override UniformGrid.",
-    "zh-CN": "null 时有 Icon 自动启用上下等分布局；true 将图标置于上半区中央，文案置于下半区中央；false 保留连续布局。单格配置优先于 UniformGrid 配置。",
-    "pt-BR": "null ativa metades verticais iguais quando há Icon. true centraliza ícone acima e texto abaixo; false mantém layout contínuo. Valores da célula têm prioridade sobre UniformGrid."
+    "en-US": "null automatically enables equal vertical halves when Icon exists. true centers the icon above and text below; false keeps continuous layout. Cell values override UniformGrid. With ContentHeight, icon and text areas grow naturally instead of taking equal halves.",
+    "zh-CN": "null 时有 Icon 自动启用上下等分布局；true 将图标置于上半区中央，文案置于下半区中央；false 保留连续布局。单格配置优先于 UniformGrid 配置。启用 ContentHeight 时图标和文本区域自然撑高，不再上下等分。",
+    "pt-BR": "null ativa metades verticais iguais quando há Icon. true centraliza ícone acima e texto abaixo; false mantém layout contínuo. Valores da célula têm prioridade sobre UniformGrid. Com ContentHeight, as áreas de ícone e texto crescem naturalmente em vez de usar metades iguais."
   },
   "Parameter_Variant_UniformGrid": {
     "en-US": "FilledElevated, Danger or default Elevated appearance; independent of Shape.",

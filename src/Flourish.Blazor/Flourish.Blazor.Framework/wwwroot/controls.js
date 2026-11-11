@@ -1,6 +1,7 @@
 // Scoped DOM lifetimes adapted from the source tooltip, menu, modal and input behaviors.
 import { rememberInvoker, resolveInvoker } from './primitives/interaction-origin.js';
 const menus = new WeakMap();
+const positionedPopups = new WeakMap();
 const dialogs = new WeakMap();
 const inputs = new WeakMap();
 const accessForms = new WeakMap();
@@ -136,6 +137,7 @@ function copyTheme(trigger, panel) {
 }
 export function positionPopup(state) {
     if (!state.open) return;
+    positionedPopups.set(state.panel,state);
     // Hover regions can fill an entire top-bar slot; both modes anchor to the actual control.
     const trigger = state.trigger.getBoundingClientRect();
     const panel = state.panel;
@@ -165,6 +167,13 @@ export function positionPopup(state) {
     panel.style.top = `${Math.max(12,Math.min(top,height - panelHeight - 12))}px`;
 }
 
+// A layout owner can move a trigger after the scroll event without replacing or focusing it.
+export function refreshAnchoredPopups(root) {
+    for (const panel of root.querySelectorAll('[popover],.f-menu-panel,.selection-panel,.search-autocomplete-options')) {
+        const state = positionedPopups.get(panel);
+        if (state?.open && root.contains(state.trigger)) positionPopup(state);
+    }
+}
 function positionMenu(state) { positionPopup(state); }
 function popupAlignment(trigger, viewportWidth) { return (trigger.left + trigger.right) / 2 <= viewportWidth / 2 ? 'left' : 'right'; }
 
@@ -327,9 +336,9 @@ export function initializeNativeSelectPopups(root = document) {
                 choice.setAttribute('data-f-native-select-text',option.label);
                 choice.disabled = !!disabled(option);
                 const marker = select.ownerDocument.createElement('span');
-                marker.className = 'f-select-checkmark'; marker.setAttribute('aria-hidden','true'); marker.textContent = option.selected ? '✓' : '';
+                marker.className = 'f-selection-indicator'; marker.setAttribute('aria-hidden','true'); marker.textContent = option.selected ? '✓' : '';
                 const text = select.ownerDocument.createElement('span'); text.textContent = option.label;
-                choice.append(marker,text); fragment.appendChild(choice);
+                choice.append(text,marker); fragment.appendChild(choice);
             }
             options.replaceChildren(fragment);
             if (caption) caption.textContent = select.selectedOptions[0]?.label ?? '';

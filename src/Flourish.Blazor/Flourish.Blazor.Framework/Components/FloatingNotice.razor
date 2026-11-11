@@ -17,7 +17,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
     /// <summary>Visible milliseconds before dismissal. Zero keeps the message visible until the host removes it.</summary>
-    [Parameter] public int AutoDismissMilliseconds { get; set; } = 5000;
+    [Parameter] public int AutoDismissMilliseconds { get; set; } = 3500;
     /// <summary>Change this key to display a new occurrence with otherwise identical content.</summary>
     [Parameter] public string? MessageKey { get; set; }
     private ElementReference Frame;
