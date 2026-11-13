@@ -21,8 +21,14 @@
 /* Language choices retain body typography independently of the browser's button default or selected state. */
 .f-dropdown-panel .f-native-select-option { font-family:var(--f-font,"Segoe UI",sans-serif); font-size:17px; font-weight:400; line-height:1.55; }
 .f-dropdown-panel .f-dropdown-item:hover:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:focus-visible:not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)),.f-dropdown-panel .f-dropdown-item:has(:focus-visible):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
-.f-dropdown-panel .f-dropdown-item.is-selected { color:var(--f-text); background:transparent; }
-.f-dropdown-panel .f-dropdown-item.is-selected:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) { background:var(--f-target-preview); }
+/* Native and enhanced choices share one selected surface; the compact marker stays icon-only. */
+:is(.f-dropdown-panel .f-dropdown-item:is([aria-checked="true"],[aria-selected="true"],.is-selected,:has(input:checked)),.selection-dropdown-surface .selection-option:is([aria-selected="true"],:has(input:checked))) {
+    color:var(--f-surface); background:var(--f-text); box-shadow:inset 0 0 0 1px var(--f-text);
+}
+:is(.f-dropdown-panel .f-dropdown-item:is([aria-checked="true"],[aria-selected="true"],.is-selected,:has(input:checked)),.selection-dropdown-surface .selection-option:is([aria-selected="true"],:has(input:checked))):is(:hover,:focus-visible,:focus-within,:active,:has(:focus-visible)):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) {
+    color:var(--f-surface); background:var(--f-text); box-shadow:inset 0 0 0 1px var(--f-text);
+}
+:is(.f-dropdown-panel .f-dropdown-item:is([aria-checked="true"],[aria-selected="true"],.is-selected,:has(input:checked)),.selection-dropdown-surface .selection-option:is([aria-selected="true"],:has(input:checked))) > .f-selection-indicator { color:inherit; }
 .f-dropdown-panel .f-menu-danger { color:var(--f-danger); }
 .f-dropdown-panel .f-dropdown-item:disabled,.f-dropdown-panel .f-dropdown-item[aria-disabled="true"],.f-dropdown-panel .f-dropdown-item:has(input:disabled) { opacity:.5; cursor:not-allowed; }
 
@@ -44,6 +50,9 @@
     /* Native options share the compact, unfilled embedded indicator. */
     .f-select option::checkmark { color:inherit; background:transparent; border:0; border-radius:0; font:800 17px/1 var(--f-font,"Segoe UI",sans-serif); }
     .f-select option:is(:hover,:focus-visible):not(:disabled) { background:var(--f-surface-preview); }
+    .f-select option:checked,.f-select option:checked:is(:hover,:focus-visible,:active):not(:disabled) {
+        color:var(--f-surface); background:var(--f-text); box-shadow:inset 0 0 0 1px var(--f-text);
+    }
     .f-select option:active:not(:disabled) { color:var(--f-text); background:var(--f-surface-click); }
     .f-select option:disabled { opacity:.5; cursor:not-allowed; }
 }
@@ -56,3 +65,18 @@
 
 /* Floating action tiles own their own surfaces; the menu still owns viewport bounds and scrolling. */
 .f-menu-panel.f-menu-panel-unframed { padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+
+/* System selection colors retain the same contrast when author shadows are suppressed. */
+@media(forced-colors:active) {
+    :is(.f-dropdown-panel .f-dropdown-item:is([aria-checked="true"],[aria-selected="true"],.is-selected,:has(input:checked)),.selection-dropdown-surface .selection-option:is([aria-selected="true"],:has(input:checked))) {
+        forced-color-adjust:none; color:HighlightText; background:Highlight; outline:1px solid Highlight; outline-offset:-1px;
+    }
+    :is(.f-dropdown-panel .f-dropdown-item:is([aria-checked="true"],[aria-selected="true"],.is-selected,:has(input:checked)),.selection-dropdown-surface .selection-option:is([aria-selected="true"],:has(input:checked))):is(:hover,:focus-visible,:focus-within,:active,:has(:focus-visible)):not(:disabled):not([aria-disabled="true"]):not(:has(input:disabled)) {
+        color:HighlightText; background:Highlight;
+    }
+    @supports(appearance:base-select) {
+        .f-select option:checked,.f-select option:checked:is(:hover,:focus-visible,:active):not(:disabled) {
+            forced-color-adjust:none; color:HighlightText; background:Highlight; outline:1px solid Highlight; outline-offset:-1px;
+        }
+    }
+}

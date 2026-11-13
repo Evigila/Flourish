@@ -1,5 +1,17 @@
 # Project dependency inventory
 
+## Local solid-progress candidate, 2026-11-13
+
+Local-only **1.4.8-preview.14** preserves preview.13 and removes the standard ProgressBar shimmer. The six aligned archives are in ../Colligere/artifacts/flourish-preview/1.4.8-preview.14 with producer provenance and CSS evidence. Default source VersionPrefix remains **1.4.7** and Essential.Culture remains **1.4.0**. Explicit build properties select the preview without modifying the stable source default or publishing it.
+
+The producer rehashed **583** runtime inputs; only Design controls.css differs from preview.13. The **32** external package/consumer closure entries match preview.13 exactly. The targeted **47/47** checks passed, Release producer build had zero warnings/errors, all six package contracts passed and both packaged CSS bundles match compiled bytes. No external dependency declaration or API changed.
+
+## Local selected-choice candidate, 2026-11-13
+
+The six immutable **1.4.8-preview.13** archives use the existing package identities and dependency declarations. Default source VersionPrefix remains **1.4.7** and Essential.Culture remains **1.4.0**. Explicit CLI version overrides produced the local feed ../Colligere/artifacts/flourish-preview/1.4.8-preview.13; its producer provenance records source commit **84bf6406f2750365e7b51fd7f707e355c9195ff4**, reviewed dirty runtime files, **583** current input hashes, six archive hashes and the resolved producer closure. All **32** external package/consumer entries exactly match preview.12; this is fresh producer evidence rather than a claim based on old caches.
+
+The selected-choice cascade passed **40/40**. Isolated producer Release build passed with zero warnings/errors; Verify-PackageSet passed all six packages, aligned internal dependencies and required assets; Framework and Design packaged CSS match the actual compiled bundles byte for byte. This candidate changes optional Design selected-row paint only. No public release, tag, push, new dependency or default source-version change occurred.
+
 ## Local shell and navigation candidate, 2026-11-10
 
 The six immutable **1.4.8-preview.10** archives use the existing package identities and dependency declarations. The source default remains **1.4.7** with Essential.Culture **1.4.0**. The candidate adds brand-adjacent menu placement by default, optional FollowContentWidth alignment, standard header action spacing and regular menu/action text, plus optional secondary/tertiary icons. It remains local only; no public release, tag or push occurred.

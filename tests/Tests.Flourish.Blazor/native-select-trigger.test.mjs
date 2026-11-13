@@ -682,3 +682,83 @@ test("native hidden correction preserves legacy toggle/dialog hiding and stays o
     assert.equal(cascade(allStyles, host, "display"), undefined, "No new global HTML display policy.");
   }
 });
+
+function withoutForcedColors(css) {
+  let result = "", offset = 0;
+  const pattern = /@media\s*\(\s*forced-colors\s*:\s*active\s*\)\s*\{/g;
+  for (let match; (match = pattern.exec(css));) {
+    let end = pattern.lastIndex, depth = 1;
+    for (; end < css.length && depth; end++) {
+      if (css[end] === "{") depth++;
+      else if (css[end] === "}") depth--;
+    }
+    result += css.slice(offset, match.index);
+    offset = pattern.lastIndex = end;
+  }
+  return result + css.slice(offset);
+}
+function selectedChoice(kind, selected, states = []) {
+  if (kind === "native") {
+    const owner = element("select", ["f-select"], element("div", ["f-root"], null));
+    return { item: element("option", [], owner, [...states, ...(selected ? ["checked"] : [])]) };
+  }
+  const fixture = popupFixture(kind === "reference" ? "reference" : kind === "multi" ? "multi" : "action", "left");
+  fixture.item.states = new Set(states);
+  if (kind === "multi") {
+    fixture.marker = element("input", ["f-selection-indicator"], fixture.item, selected ? ["checked"] : [], [["type", "checkbox"]]);
+  } else {
+    fixture.item.attributes.set(kind === "reference" ? "aria-selected" : "aria-checked", String(selected));
+    fixture.marker = element("span", ["f-selection-indicator"], fixture.item, [], selected ? [["data-selected", "true"]] : []);
+    if (kind === "enhanced") fixture.item.classes.add("f-native-select-option");
+  }
+  return fixture;
+}
+test("every native and enhanced selected choice keeps its inverse surface and inset border across pointer and keyboard states", () => {
+  const styles = rules(withoutForcedColors(frameworkCss + "\n" + designCss));
+  for (const kind of ["native", "enhanced", "reference", "multi"]) {
+    for (const states of [[], ["hover"], ["active"], ["hover", "active"], ["focus-visible"], ["focus-within"], ["disabled"]]) {
+      const { item, marker } = selectedChoice(kind, true, states);
+      assert.equal(cascade(styles, item, "background"), "var(--f-text)", kind + "/" + states);
+      assert.equal(cascade(styles, item, "color"), "var(--f-surface)", kind + "/" + states);
+      assert.equal(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-text)", kind + "/" + states);
+      assert.equal(cascade(styles, item, "border"), "0", "selected paint must not shift option geometry");
+      if (marker) {
+        assert.equal(cascade(styles, marker, "background"), "transparent", kind + " marker remains icon-only");
+        assert.equal(cascade(styles, marker, "border"), "0");
+        assert.equal(cascade(styles, marker, "color"), "inherit");
+      }
+    }
+  }
+});
+test("ordinary unselected and hover choices do not acquire the selected surface or border", () => {
+  const styles = rules(withoutForcedColors(frameworkCss + "\n" + designCss));
+  for (const kind of ["native", "enhanced", "reference", "multi"]) for (const states of [[], ["hover"], ["active"]]) {
+    const { item } = selectedChoice(kind, false, states);
+    assert.notEqual(cascade(styles, item, "background"), "var(--f-text)", kind + "/" + states);
+    assert.notEqual(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-text)", kind + "/" + states);
+  }
+});
+test("explicit selected menu classes and ARIA attributes share the same default option paint", () => {
+  const styles = rules(withoutForcedColors(frameworkCss + "\n" + designCss));
+  for (const selection of ["is-selected", "aria-selected"]) {
+    const { item } = popupFixture("action", "right");
+    if (selection === "is-selected") item.classes.add("is-selected");
+    else item.attributes.set("aria-selected", "true");
+    for (const state of ["hover", "active", "focus-visible"]) {
+      item.states = new Set([state]);
+      assert.equal(cascade(styles, item, "background"), "var(--f-text)");
+      assert.equal(cascade(styles, item, "color"), "var(--f-surface)");
+    }
+  }
+});
+test("system high contrast preserves selected contrast without depending on box shadows", () => {
+  const styles = rules(frameworkCss + "\n" + designCss);
+  for (const kind of ["native", "enhanced", "reference", "multi"]) for (const states of [[], ["hover"], ["active"]]) {
+    const { item, marker } = selectedChoice(kind, true, states);
+    assert.equal(cascade(styles, item, "color"), "HighlightText", kind + "/" + states);
+    assert.equal(cascade(styles, item, "background"), "Highlight", kind + "/" + states);
+    assert.equal(cascade(styles, item, "outline"), "1px solid Highlight");
+    assert.equal(cascade(styles, item, "forced-color-adjust"), "none");
+    if (marker) assert.equal(cascade(styles, marker, "color"), "inherit");
+  }
+});

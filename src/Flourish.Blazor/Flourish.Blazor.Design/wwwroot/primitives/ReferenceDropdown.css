@@ -63,11 +63,7 @@
     color: var(--f-text);
     background: var(--f-target-preview, var(--f-preview-light));
 }
-.selection-dropdown-surface .selection-option[aria-selected="true"],
-.selection-dropdown-surface .selection-option:has(input:checked) {
-    color: var(--f-surface);
-    background: var(--f-primary);
-}
+
 .selection-dropdown-surface .selection-create {
     color: var(--f-accent);
     font-weight: 700;
@@ -76,10 +72,12 @@
 }
 .selection-dropdown-surface .selection-create:disabled {
     color: var(--f-muted);
+    opacity: .5;
     cursor: not-allowed;
 }
 .selection-dropdown-surface :is(.selection-option:disabled, .selection-option:has(input:disabled)) {
     color: var(--f-muted);
+    opacity: .5;
     cursor: not-allowed;
 }
 .selection-dropdown-surface label.selection-option {
@@ -103,12 +101,4 @@
 }
 .selection-dropdown-surface .selection-trigger:active:not(:disabled) {
     background: var(--f-target-click);
-}
-.selection-dropdown-surface .selection-option:is([aria-selected="true"], :has(input:checked)):not(:active):not(:disabled):not(:has(input:disabled)) {
-    color: var(--f-surface);
-    background: var(--f-primary);
-}
-.selection-dropdown-surface .selection-option:is([aria-selected="true"], :has(input:checked)):active:not(:disabled):not(:has(input:disabled)) {
-    color: var(--f-surface);
-    background: var(--f-primary-click);
 }

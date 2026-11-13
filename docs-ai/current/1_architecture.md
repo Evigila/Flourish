@@ -1,5 +1,13 @@
 # Project architecture and repository tree
 
+## Solid standard progress paint
+
+Blazor Design controls.css paints standard ProgressBar with a single primary-color fill in both determinate and indeterminate modes. The former shared highlight pseudo-element and f-progress-flow keyframes are absent. Width transitions, bounded f-progress-search movement and reduced-motion fallback retain their previous responsibilities. Framework native fallback/ARIA markup and the independent PageHeading thin-loading controller are unchanged. Existing progress-rendering tests verify these boundaries; no maintained source path or architecture dependency was added.
+
+## Shared selected-choice paint
+
+The optional Blazor Design owns one inverse selected-row contract for native SelectBox, enhanced language/native menus, selected menu items, ReferenceDropdown and MultiSelectBox. The existing wwwroot/dropdown.css supplies shared semantic fill/ink and inset boundaries; the ReferenceDropdown stylesheet no longer defines competing selected fills. Framework compact markers remain icon-only, and native/ARIA selection and keyboard controllers are unchanged. Existing cascade tests cover normal/pressed/focused/disabled selection and forced-colors. No maintained source path or architecture boundary was added by this change.
+
 ## Current audit baseline, 2026-11-10
 
 The complete tree and project graph were re-enumerated from maintained physical files. The stale Design wwwroot/patterns/page-heading.js entry is removed: that controller belongs only to Framework. Gallery WinUI3 spelling now matches its physical directory. Source VersionPrefix remains **1.4.7**. The latest completed local package evidence is **1.4.8-preview.10**: the Release build and six-package verification passed; final consumer regressions remain in progress. Dated release and candidate sections preserve historical evidence rather than overriding this baseline.
