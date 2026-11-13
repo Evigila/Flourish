@@ -6,7 +6,7 @@
 
 **Reason:** Migration evidence was mixed with obsolete package versions and former bridge contracts.
 
-**Replacement:** [Current guidance](../solution-organization.md).
+**Replacement:** [Current guidance](solution-organization.md).
 
 **Provenance:** SHA-256 of original bytes `aadfd8817c40aa1043c4cf261fcc8566a688f4ca16c1cc0b86ef5a418e939d46`. The original prose below is retained; relative Markdown links are rebased to preserve their destinations.
 

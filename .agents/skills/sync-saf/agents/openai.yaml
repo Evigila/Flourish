@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync SAF"
+  short_description: "Check or synchronize the repository SAF framework"
+  default_prompt: "Use $sync-saf to check SAF and apply an already authorized update."

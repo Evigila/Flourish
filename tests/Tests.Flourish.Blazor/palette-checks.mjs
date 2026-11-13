@@ -702,11 +702,15 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
     && rule.selector.includes(".f-menu-trigger-label:active") && property(rule.body, "background") === "var(--f-click-dark)");
   assert.ok(guardedHover || strongerPress, "The higher-specificity menu-parent hover selector masks the trigger's deep-click color.");
 
-  const dropdownSelected = one("dropdown", "Dropdown selection", rule => rule.selector.trim() === ".f-dropdown-panel .f-dropdown-item.is-selected");
+  const dropdownSelected = one("dropdown", "Shared persistent dropdown selection", rule =>
+    rule.selector.includes(".f-dropdown-item:is(") && rule.selector.includes(".is-selected")
+      && rule.selector.includes(".selection-dropdown-surface .selection-option:is(")
+      && !rule.selector.includes(":hover") && property(rule.body, "background") === "var(--f-text)");
   const dropdownHover = one("dropdown", "Dropdown hover", rule => rule.selector.includes(".f-dropdown-item:hover") && !rule.selector.includes(".is-selected"));
   const dropdownPress = one("dropdown", "Dropdown press", rule => rule.selector.includes(".f-dropdown-item:active") && !rule.selector.includes(".is-selected"));
-  assert.equal(property(dropdownSelected.body, "color"), "var(--f-text)");
-  assert.equal(property(dropdownSelected.body, "background"), "transparent");
+  assert.equal(property(dropdownSelected.body, "color"), "var(--f-surface)");
+  assert.equal(property(dropdownSelected.body, "background"), "var(--f-text)");
+  assert.equal(property(dropdownSelected.body, "box-shadow"), "inset 0 0 0 1px var(--f-text)");
   assert.equal(property(dropdownHover.body, "background"), "var(--f-target-preview)");
   assert.equal(property(dropdownPress.body, "background"), "var(--f-target-click)");
   const filledMultiSelectOptionRows = rules(await readFile(join(designCssRoot,"multi-select-box.css"),"utf8")).filter(rule => rule.selector.includes(".f-multi-select-panel")

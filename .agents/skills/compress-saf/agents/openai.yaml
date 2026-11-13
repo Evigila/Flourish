@@ -1,0 +1,4 @@
+interface:
+  display_name: "Compress SAF Memory"
+  short_description: "Consolidate active AI memory and archive old reports"
+  default_prompt: "Use $compress-saf to consolidate this project's AI memory while preserving effective facts and unfinished work."

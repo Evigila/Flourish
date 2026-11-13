@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "frameworkVersion": "2.0.0",
+  "handlerProtocolVersion": 3,
+  "repository": "Evigila/AGENTS.md",
+  "bootstrapFiles": [
+    "origin.bat",
+    "local.bat",
+    "scripts/origin.ps1",
+    "scripts/local.ps1",
+    "scripts/saf-core.ps1"
+  ],
+  "files": [
+    {
+      "source": "AGENTS.md",
+      "target": "AGENTS.md",
+      "mode": "managed",
+      "sha256": "92f5c80cb65e2248b3daef62aed0c8dcca95560e9d5ed09fd833c7df6bca7de9"
+    },
+    {
+      "source": "debug.bat",
+      "target": "debug.bat",
+      "mode": "seed",
+      "sha256": "e38267454c6bff1c1e6d2c3f0417b54b7ebac0addbdd9cedf12c7caffa211c9d"
+    },
+    {
+      "source": "docs-ai/common/rules.md",
+      "target": "docs-ai/common/rules.md",
+      "mode": "managed",
+      "sha256": "71bcd255b9af81ca6564babbc554d836706914531cced9249351325708186650"
+    },
+    {
+      "source": "docs-ai/common/codedesign.md",
+      "target": "docs-ai/common/codedesign.md",
+      "mode": "managed",
+      "sha256": "e1a54f838bacd0d5a0bf4b752411284279b14c7b9050082456565fdfdf32356a"
+    },
+    {
+      "source": "docs-ai/common/UIUX.md",
+      "target": "docs-ai/common/UIUX.md",
+      "mode": "managed",
+      "sha256": "b4d8b137acc561261bea61efdc7052e71f4f5ff81882c544346fdc022ff4a47d"
+    },
+    {
+      "source": ".agents/skills/audit-project-docs/SKILL.md",
+      "target": ".agents/skills/audit-project-docs/SKILL.md",
+      "mode": "managed",
+      "sha256": "ac61483db53bdb583347ded901955315f41614281286dbc15a74b61ffd04e4a3"
+    },
+    {
+      "source": ".agents/skills/audit-project-docs/agents/openai.yaml",
+      "target": ".agents/skills/audit-project-docs/agents/openai.yaml",
+      "mode": "managed",
+      "sha256": "57e5ff761c69932438b095ec2171683226c3932b4a90d95422e68f625dab785d"
+    },
+    {
+      "source": "templates/1_architecture.md",
+      "target": "docs-ai/current/1_architecture.md",
+      "mode": "seed",
+      "sha256": "6c9cd5ca46cfac02e64cf623e365c1b44d7cf6849921dc23793be6c2aa919e5a"
+    },
+    {
+      "source": "templates/1_dependency.md",
+      "target": "docs-ai/current/1_dependency.md",
+      "mode": "seed",
+      "sha256": "c4106e4879651a2fbd1d9e5a190147ed9bd76b7a09a42decd04c9ddf8fbc5800"
+    },
+    {
+      "source": "templates/empty.gitkeep",
+      "target": "docs/.gitkeep",
+      "mode": "seed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "templates/empty.gitkeep",
+      "target": "docs-ai/current/1_changelogs/.gitkeep",
+      "mode": "seed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "templates/empty.gitkeep",
+      "target": "docs-ai/current/1_bugreports/.gitkeep",
+      "mode": "seed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "templates/empty.gitkeep",
+      "target": "docs-ai/current/1_archived/.gitkeep",
+      "mode": "seed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "origin.bat",
+      "target": "origin.bat",
+      "mode": "managed",
+      "sha256": "a7a0a8fe70af0dba0e329bb6a532abc746950ee6a666f87821ec1073a5515d37"
+    },
+    {
+      "source": "local.bat",
+      "target": "local.bat",
+      "mode": "managed",
+      "sha256": "0e19354e64a05d5be729b65c5de0cd2ceb3959f9651afe92964c6c2f336fb9fc"
+    },
+    {
+      "source": "scripts/origin.ps1",
+      "target": "scripts/origin.ps1",
+      "mode": "managed",
+      "sha256": "7059b278e8037e7021b9e48920ba07ae94cfd567560ed2c98dec917e9a736fbe"
+    },
+    {
+      "source": "scripts/local.ps1",
+      "target": "scripts/local.ps1",
+      "mode": "managed",
+      "sha256": "237338208791a785ef4ab68b44874b41fa79979235b6ff91929532ad3e627949"
+    },
+    {
+      "source": "scripts/saf-core.ps1",
+      "target": "scripts/saf-core.ps1",
+      "mode": "managed",
+      "sha256": "84726fc1af94191f3a6d7b7237e83fa4705aa8b091041c5b9ad2a2f2db6bffa7"
+    },
+    {
+      "source": ".agents/skills/sync-saf/SKILL.md",
+      "target": ".agents/skills/sync-saf/SKILL.md",
+      "mode": "managed",
+      "sha256": "8022261ffe5e42c1dff0c294f9d9b40e64739324f8bd4a6575bea4f14612bffc"
+    },
+    {
+      "source": ".agents/skills/sync-saf/agents/openai.yaml",
+      "target": ".agents/skills/sync-saf/agents/openai.yaml",
+      "mode": "managed",
+      "sha256": "9eef4ccbb994eb8eb6a70cafa52e2bf1852d37c8b9d74b1052e84fa17b7af560"
+    },
+    {
+      "source": ".agents/skills/compress-saf/SKILL.md",
+      "target": ".agents/skills/compress-saf/SKILL.md",
+      "mode": "managed",
+      "sha256": "717b449e91607f66746ca63d231efde6e48a19caa40c172b72216d117f4d00da"
+    },
+    {
+      "source": ".agents/skills/compress-saf/agents/openai.yaml",
+      "target": ".agents/skills/compress-saf/agents/openai.yaml",
+      "mode": "managed",
+      "sha256": "a55afde8773ce9c9b05ca0727eb990d789de0b8c7d20099acf626223cb3acfb5"
+    },
+    {
+      "source": "templates/SAF.config.json",
+      "target": "SAF.config.json",
+      "mode": "seed",
+      "sha256": "8e8f7734731552374e7a08d17b3d932ebceb2a5e959865bd02d5936dedf09b80"
+    }
+  ],
+  "configSupportVersion": 2
+}

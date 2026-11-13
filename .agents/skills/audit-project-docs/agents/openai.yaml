@@ -1,4 +1,4 @@
 interface:
-  display_name: "Audit Project Documentation"
-  short_description: "Verify project documentation and audit state"
-  default_prompt: "Use $audit-project-docs to audit this repository and report unresolved facts."
+  display_name: "Audit SAF Structure"
+  short_description: "Check SAF files, folders, and structural formats"
+  default_prompt: "Use $audit-project-docs to check this repository's SAF framework and required structure without auditing business code or project facts."

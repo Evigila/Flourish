@@ -32,7 +32,7 @@ Evidence: `artifacts/localization-example-review-41241f20ed6941489d71393b0c37906
 - Eighteen maintained PowerShell scripts parse without errors; this is syntax verification, not script execution.
 - The actual copied Culture snippets compile independently with zero warnings/errors; `git diff --check` passes.
 
-Artifacts under `artifacts/agents-audit/` retain verification reports. Previous solution/runtime tests in the [Essential module report](../bugfix-reports/2026-10-10_essential-modules-bridge.md) remain earlier-task evidence; they were not all rerun for this audit. Static code review found no substantiated new Culture module bridge regression.
+Artifacts under `artifacts/agents-audit/` retain verification reports. Previous solution/runtime tests in the [Essential module report](2026-10-10_essential-modules-bridge.md) remain earlier-task evidence; they were not all rerun for this audit. Static code review found no substantiated new Culture module bridge regression.
 
 ## Existing limitations and outstanding ownership
 

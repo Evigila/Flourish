@@ -97,4 +97,4 @@ Gallery now resolves H2 headings, paragraphs, actions, accessibility labels, exa
 
 Field and ValidationMessages expose an optional MessageFormatter. Gallery stores annotation errors as access keys and maps their displayed text through the scoped service. Existing errors change language without rerunning validation or changing EditContext messages, field identity or rules. An omitted formatter preserves ordinary host messages; explicit Error also passes through a supplied formatter. ValidationMessages observes provider changes and releases both language and EditContext subscriptions.
 
-See [the implementation and regression report](../bugfix-reports/2026-10-06_gallery-prose-localization.md). Code syntax, API identities, brand/font names, language autonyms and actual record/input data remain unchanged.
+See [the implementation and regression report](../1_bugreports/2026-10-06_gallery-prose-localization.md). Code syntax, API identities, brand/font names, language autonyms and actual record/input data remain unchanged.

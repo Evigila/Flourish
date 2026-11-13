@@ -1,9 +1,0 @@
-items:
-- name: Guide
-  href: articles/
-- name: API
-  href: api/
-- name: Controls
-  href: controls/
-- name: Design principles
-  href: conception/

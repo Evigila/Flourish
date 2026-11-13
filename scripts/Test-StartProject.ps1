@@ -134,10 +134,10 @@ try {
             }
             finally { $process.Dispose() }
         }
-        $batchOutput = Invoke-StartBatchCheck (Join-Path $taskRoot 'start.bat') '-List'
+        $batchOutput = Invoke-StartBatchCheck (Join-Path $taskRoot 'debug.bat') '-List'
         Assert-StartCheck ($batchOutput.ExitCode -eq 0) 'The root batch must list projects correctly from another working directory.'
         Assert-StartCheck ($batchOutput.Output -like '*Gallery.Flourish.Blazor*') 'The root batch did not call its own repository script.'
-        $batchFailure = Invoke-StartBatchCheck (Join-Path $taskRoot 'start.bat') '-Project invalid'
+        $batchFailure = Invoke-StartBatchCheck (Join-Path $taskRoot 'debug.bat') '-Project invalid'
         Assert-StartCheck ($batchFailure.ExitCode -ne 0) 'The root batch must preserve a failed selection exit code.'
 
         # Copy only launcher/project metadata into a disposable spaced-path fixture, never a build output.
@@ -145,7 +145,7 @@ try {
         $fixtureRoot = [System.IO.Path]::GetFullPath((Join-Path ([System.IO.Path]::GetTempPath()) $fixtureName))
         [void](New-Item -ItemType Directory -Path $fixtureRoot)
         try {
-            $fixtureFiles = @('start.bat', 'scripts/Start-Project.ps1', 'scripts/Start-Common.ps1', 'scripts/StartSettings.json')
+            $fixtureFiles = @('debug.bat', 'scripts/Start-Project.ps1', 'scripts/Start-Common.ps1', 'scripts/StartSettings.json')
             foreach ($entry in $catalog.projects) {
                 $fixtureFiles += [string]$entry.path
                 if ($entry.launchProfile) {
@@ -157,7 +157,7 @@ try {
                 [void](New-Item -ItemType Directory -Path ([System.IO.Path]::GetDirectoryName($destination)) -Force)
                 Copy-Item -LiteralPath (Join-Path $taskRoot $relativePath) -Destination $destination
             }
-            $spacedBatch = Invoke-StartBatchCheck (Join-Path $fixtureRoot 'start.bat') '-List'
+            $spacedBatch = Invoke-StartBatchCheck (Join-Path $fixtureRoot 'debug.bat') '-List'
             Assert-StartCheck ($spacedBatch.ExitCode -eq 0) "A spaced repository path failed: $($spacedBatch.Output)"
             Assert-StartCheck ($spacedBatch.Output -like '*Gallery.Flourish.WPF*') 'Spaced-path batch must resolve its own project metadata.'
         }

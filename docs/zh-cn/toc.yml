@@ -1,9 +1,0 @@
-items:
-- name: 指南
-  href: articles/
-- name: API
-  href: api/
-- name: 控件
-  href: controls/
-- name: 设计理念
-  href: conception/

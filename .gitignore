@@ -366,14 +366,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# DocFX generated files
-docs/api/
-docs/en-us/api/
-docs/zh-cn/api/
-docs/_site/
-
 # Flourish runtime project catalog
 projects.json
 
 # Restored local package cache
 .packages/
+/.agents/backup/
+/.agents/saf_log/
+/.agents/operation.lock

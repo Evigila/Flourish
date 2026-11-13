@@ -629,7 +629,8 @@ if (browserPath) {
                 return {headerColor:getComputedStyle(header).color,headerBackground:getComputedStyle(header).backgroundColor,ordinaryColor:getComputedStyle(ordinary).color,
                     selectColor:getComputedStyle(select).color,triggerColor:getComputedStyle(trigger).color,iconColor:getComputedStyle(icon).color,appearance:getComputedStyle(select).appearance};})()`);
             const picker = await evaluate(`(async()=>{const select=document.querySelector('select');select.showPicker();await new Promise(resolve=>setTimeout(resolve,50));const style=getComputedStyle(select,'::picker(select)');
-                return {open:select.matches(':open'),color:style.color,background:style.backgroundColor,optionColors:[...select.options].map(option=>getComputedStyle(option).color)};})()`,true);
+                return {open:select.matches(':open'),color:style.color,background:style.backgroundColor,options:[...select.options].map(option=>{const value=getComputedStyle(option);
+                    return {selected:option.selected,color:value.color,background:value.backgroundColor,shadow:value.boxShadow,checkmarkColor:getComputedStyle(option,'::checkmark').color};})};})()`,true);
             return {initial,picker};
         });
         process.stdout.write('MEASURE chrome native select colors ' + JSON.stringify(result) + '\n');
@@ -641,7 +642,20 @@ if (browserPath) {
         assert.equal(result.picker.open,true);
         assert.equal(result.picker.color,'rgb(17, 41, 36)','Header picker restores the root theme text rather than trigger wrapper overrides.');
         assert.equal(result.picker.background,'rgb(255, 255, 255)');
-        assert.ok(result.picker.optionColors.every(color=>color==='rgb(17, 41, 36)'));
+        assert.equal(result.picker.options.filter(option=>option.selected).length,1);
+        for (const option of result.picker.options) {
+            assert.equal(option.checkmarkColor,option.color,'The native marker must inherit its own option foreground.');
+            if (option.selected) {
+                assert.equal(option.color,result.picker.background,'Selected options use inverse root-theme text, not trigger chrome.');
+                assert.equal(option.background,result.picker.color,'Selected options keep the common dark row surface.');
+                assert.match(option.shadow,/\binset\b/,'The selected border must be inset so it cannot change option geometry.');
+                assert.ok(option.shadow.includes(result.picker.color),'The selected inset border uses the same root-theme text role.');
+            } else {
+                assert.equal(option.color,result.picker.color,'Unselected options retain the root-theme foreground.');
+                assert.notEqual(option.background,result.picker.color,'Unselected options must not acquire the selected fill.');
+                assert.equal(option.shadow,'none','Unselected options must not acquire the selected inset border.');
+            }
+        }
     });
     await check('Real browser native login picker opens beneath floating preferences and closes without changing the viewport', async () => {
         const result = await browserSessionFixture(floatingSurface(), async ({evaluate,send}) => {

@@ -2,47 +2,40 @@
 
 ## Entry points and prerequisites
 
-Run `start.bat` from the repository root on Windows and select a project. Enter selects the Blazor Gallery; `0` cancels. The batch file locates its own scripts directory, so calling it by an absolute path from another directory also works.
+Run debug.bat from the repository root on Windows. It preserves the former start launcher contract: select a runnable project, Enter chooses the Blazor Gallery and 0 cancels. The launcher resolves its own scripts directory and restores the caller's location.
 
-The launcher needs Windows PowerShell 5.1 or later and the existing .NET SDK selected by `global.json`: 10.0.400, with `latestPatch` roll-forward and no prerelease SDK selection. It does not use the Visual Studio UI or install SDKs, workloads or build tools. Normal restore may download the projects' already-declared NuGet dependencies. Windows is required for desktop entries. The Blazor workflow is verified through the CLI; the existing WinUI3 placeholder has additional Windows/XAML toolchain requirements and is not a certified desktop workflow.
+Use the SDK declared by global.json: 10.0.400, latestPatch roll-forward, no prerelease SDK selection. Existing .NET/Windows tooling and normal restore access are prerequisites; the launcher does not install SDKs, workloads or Visual Studio. Normal restore may download already declared packages. Desktop choices require Windows and their declared toolchain; WinUI is a placeholder, not a certified desktop workflow.
 
-```powershell
-.\start.bat
-.\start.bat -List
-.\start.bat -Project blazor -NonInteractive
-.\start.bat -Project Gallery.Flourish.WPF
-.\start.bat -Project native
-.\start.bat -Project winui -Platform x64
-```
+    .\debug.bat
+    .\debug.bat -List
+    .\debug.bat -Project blazor -NonInteractive
+    .\debug.bat -Project Gallery.Flourish.WPF
+    .\debug.bat -Project native
+    .\debug.bat -Project winui -Platform x64
 
-Outside Windows, use PowerShell 7 directly for Web projects: `./scripts/Start-Project.ps1 -Project blazor`. Desktop selections fail on non-Windows hosts. This portable path is source/plan covered, not a claim of live cross-platform acceptance.
+PowerShell 7 may invoke scripts/Start-Project.ps1 for Web projects outside Windows; this is source/plan covered rather than new cross-platform acceptance. Non-Windows desktop selection fails.
 
-## Runnable-project allowlist
+## Runnable allowlist
 
-| Selection | Project | Scope |
+| Choice | Project | Scope |
 | --- | --- | --- |
-| `1`, `blazor` | Gallery.Flourish.Blazor | Default interactive Gallery; existing HTTP profile at `http://localhost:5188`. |
-| `2`, `wpf` | Gallery.Flourish.WPF | Reconstructed native WPF Gallery using the current Blazor control standard; see wpf-native-integration.md. |
-| `3`, `winui` | Gallery.Flourish.WinUI3 | Existing unpackaged WinUI3 placeholder, not the Blazor release scope. |
-| `4`, `native` | Tests.Flourish.Blazor.Native | Framework-only diagnostic Web host at `http://localhost:5189`, not a complete Gallery. |
+| 1 / blazor | Gallery.Flourish.Blazor | Default Interactive Server Gallery, existing HTTP profile localhost:5188 |
+| 2 / wpf | Gallery.Flourish.WPF | Native Gallery using current production controls, optional Design/Culture |
+| 3 / winui | Gallery.Flourish.WinUI3 | Existing unpackaged empty-window placeholder |
+| 4 / native | Tests.Flourish.Blazor.Native | Maintained Framework-only diagnostic host at localhost:5189, not a complete Gallery |
 
-Aliases, full project names and valid menu numbers are case-insensitive selections. Arbitrary paths, library projects and generated command strings are rejected. `-List` and `-Help` work without an SDK. Non-interactive use requires `-Project` rather than hanging on a prompt.
+Aliases, full names and menu numbers are case-insensitive. Arbitrary paths, library projects and generated commands are rejected. List/Help work without the SDK; unattended operation requires Project rather than hanging for a prompt.
 
-## Execution and failure boundaries
+## Execution and failures
 
-The launcher restores the selected project, builds `Release` with `--no-restore`, then runs the same build with `--no-build --no-restore`. An explicit `-Configuration Debug` is available, but task verification remains Release-only. Web entries retain their existing `http` profile and Development environment; build configuration and runtime environment are distinct. The caller's working directory is restored on exit.
+The launcher restores the selected project, builds Release with no restore, then runs that build without build/restore. Configuration Debug is explicit; runtime Development and build configuration are distinct. Web entries retain the HTTP launch profile.
 
-`-Platform Auto/x86/x64/ARM64` applies only to WinUI3; Auto resolves the Windows machine architecture. Its Platform and runtime identifier are identical in all three steps. The launcher never changes project files or installs missing XAML/Windows tooling. A missing SDK or failed native command stops later steps and returns a nonzero exit code.
+Platform Auto/x86/x64/ARM64 applies to WinUI; Auto uses Windows machine architecture and preserves the same platform/RID across all stages. Missing SDK/native tooling or a failed command stops later stages with a nonzero exit. Ctrl+C stops the console-owned application; occupied ports do not trigger unrelated process termination. No browser is opened automatically.
 
-Ctrl+C stops the application launched in that console. Port conflicts are reported rather than resolved by killing another instance. The script does not open a browser, stop unrelated processes, clear shared caches, publish packages, create Git changes or invoke database workflows.
+Release preparation and explicitly authorized stable tag publication use scripts/release.bat. SAF check/sync/backup use origin/local. None of these are aliases for starting a Gallery, resetting consumer data or publishing a NuGet version.
 
 ## Verification and manual acceptance
 
-`scripts/Test-StartProject.ps1` uses command-plan fixtures and mock runners; it does not build projects or open windows. It covers validation, failure short-circuiting, process exit codes, SDK-free discovery, invocation from another directory and a real batch fixture with spaces in its repository path. The existing Release gate runs it alongside CSS checks. Run both supported Windows engines when changing the launcher:
+Test-StartProject uses command-plan fixtures, mock runners and a real isolated batch fixture with a spaced path. It remains maintained automation and does not open windows. Current test entry names should follow the new Debug BAT while implementation filenames remain Start-Project/Start-Common.
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/Test-StartProject.ps1
-pwsh -NoProfile -File scripts/Test-StartProject.ps1
-```
-
-Manually verify the interactive menu, the selected browser URL, language/theme changes, Ctrl+C and occupied-port behavior. WPF/WinUI3 window rendering and installed desktop prerequisites require separate Windows acceptance; no Computer Use or desktop-window startup is part of automated verification.
+After an intended normal restore/build/start, manually verify the menu, selected URL, culture/theme, Ctrl+C and occupied-port response. WPF/WinUI rendering, OS dialogs and desktop tooling require separate Windows acceptance. No Computer Use testing is permitted. Cleaned bin/obj, package consumers and verification output are recreated when their relevant build/tests next run; their removal does not upgrade dependencies or verify a new runtime state.

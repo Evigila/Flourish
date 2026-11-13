@@ -1,52 +1,19 @@
 # Shared UI and UX integration standards
 
-## Authority
+## Authority and reading order
 
-Flourish repository source, styles, and component implementations are the sole authority for component visuals and interaction behavior. Use the actual implementation and its public contracts to determine supported behavior.
+Respect the affected project's effective design constraints, actual component source, styles, public contracts, and explicit product requirements. Read `SAF.config.json.project.ui.framework` through the shared config resolver for otherwise open design choices; its default is `Material Design 3`. This is design guidance, not automatic installation or adoption of a component library, visual token package, brand, or UI runtime. A configured preference does not override established project constraints or explicit user requirements.
 
-This document defines integration and ownership rules. It does not define a separate visual system, duplicate visual tokens, or replace Flourish source with Markdown specifications. Runtime, localization, and package documentation govern their technical subjects without becoming a competing visual authority.
+Inspect existing components and host usage, supported configuration/states, interaction/accessibility contracts, and relevant requirements. Distinguish documented requirements from inferred behavior. When required evidence is unavailable, identify the gap and continue independent work.
 
-## Reading order
+## Component reuse and host responsibilities
 
-For each affected UI area, inspect:
+Reuse established components and supported extension points when they meet the requirement. Avoid cloning controls, competing styles/token systems, or duplicating validation, state, interaction, and localization behavior without a concrete reason. Do not migrate or reskin existing components solely to impose the default design preference; dependency adoption still requires the authorization in [rules.md](rules.md#external-dependencies).
 
-1. The actual Flourish components that provide the required capability.
-2. Their styles and supported configuration.
-3. Their public APIs and interaction contracts.
-4. The host's existing usage and relevant product requirements.
+Hosts compose interfaces and own the business/backend logic and approved configuration assigned by the actual architecture. Keep behavior, permission, and session changes within scope. Follow the project's separation of concerns rather than assuming a particular framework.
 
-When Flourish source is unavailable, identify the gap and obtain the necessary source or direction. Do not guess unsupported public APIs or invent a substitute component system.
-
-## Component reuse
-
-Use Flourish controls, styles, and supported extension points for applicable interfaces. Do not:
-
-- Copy or clone Flourish controls into a host project.
-- Create host skins or parallel component styling that replaces Flourish.
-- Implement an independent control in place of an available Flourish component.
-- Hard-code a competing set of visual standards in host markup or styles.
-
-Use the component's existing mechanisms for state, validation, interaction, and localization where available. Follow its actual contract rather than duplicating behavior in the host.
-
-## Host responsibilities
-
-Hosts own business and backend logic, domain behavior, access control, and approved brand and semantic color-role configuration. Compose supported Flourish components according to product requirements and pass data through their public interfaces.
-
-Do not take over visuals or interaction behavior that Flourish owns. Keep changes to business, permission, or session behavior within the authorized task scope under [rules.md](rules.md).
-
-Semantic HTML and native GET/POST handling may be used at a host protocol boundary. They must not serve as replacements for Flourish UI controls.
-
-## Missing capabilities
-
-If Flourish does not provide a required capability:
-
-1. Identify the missing control or behavior and affected requirement.
-2. Continue supported work that does not depend on the missing capability.
-3. Leave the unsupported portion unimplemented and report its impact.
-4. Obtain explicit direction before introducing a custom implementation or expanding Flourish.
-
-Record a durable project-specific gap in `docs-ai/current/` when it affects the implementation or a continuing decision. Do not present skipped work as completed.
+When a capability is missing, explain the gap, available approaches, compatibility, and impact. Implement an approach already covered by the task; obtain direction when it expands scope or needs an unapproved dependency. Record durable project-specific constraints in `docs-ai/current/` rather than turn them into universal SAF rules.
 
 ## Verification
 
-Verify component usage, supported configuration, and affected behavior through code inspection and appropriate builds or tests. Provide manual steps for user-visible interactions that require human verification. Apply the testing boundaries in [rules.md](rules.md); UI work does not create an exception to them.
+Inspect component usage and supported configuration, and run tests appropriate to changed behavior under [rules.md](rules.md#implementation-and-verification). Computer Use testing defaults to deny and follows effective `project.verification.computerUse`, subject to explicit applicable user exceptions and tool permissions. Honor explicit manual/static-only limits, report unavailable checks, and provide manual steps for human acceptance. Do not present unperformed interaction checks as passed or use configuration to skip required testing.

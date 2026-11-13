@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 2,
+  "origin": {
+    "repository": "https://github.com/Evigila/SAF.git",
+    "ref": "main"
+  },
+  "project": {
+    "verification": {
+      "computerUse": "deny"
+    },
+    "ui": {
+      "framework": "Flourish; preserve library and host ownership in docs-ai/current/project-constraints.md"
+    },
+    "commit": {
+      "style": "follow-history",
+      "initialStyle": "english-imperative"
+    }
+  }
+}

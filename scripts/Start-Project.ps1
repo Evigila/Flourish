@@ -16,13 +16,13 @@ try {
     if ($Help) {
         Write-Host @'
 Flourish startup (no Visual Studio needed by the launcher)
-  start.bat                                  Select a project; Enter selects the Blazor Gallery.
-  start.bat -List                            List the fixed startup-project allowlist.
-  start.bat -Project blazor                  Restore, build Release and run the Blazor Gallery.
-  start.bat -Project Gallery.Flourish.WPF     Run the WPF Gallery on Windows.
-  start.bat -Project native                  Run the Framework-only diagnostic Web sample.
-  start.bat -Project winui -Platform x64      Run the existing WinUI3 placeholder on Windows.
-  start.bat -Project blazor -Configuration Release -NonInteractive
+  debug.bat                                  Select a project; Enter selects the Blazor Gallery.
+  debug.bat -List                            List the fixed startup-project allowlist.
+  debug.bat -Project blazor                  Restore, build Release and run the Blazor Gallery.
+  debug.bat -Project Gallery.Flourish.WPF     Run the WPF Gallery on Windows.
+  debug.bat -Project native                  Run the Framework-only diagnostic Web sample.
+  debug.bat -Project winui -Platform x64      Run the existing WinUI3 placeholder on Windows.
+  debug.bat -Project blazor -Configuration Release -NonInteractive
 
 PowerShell 5.1+ and the .NET SDK selected by global.json are required.
 Only these aliases, project names or menu numbers are accepted, never arbitrary paths or commands.

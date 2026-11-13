@@ -2,59 +2,26 @@
 
 ## Existing conventions
 
-Use the repository's existing architecture, `.editorconfig`, compiler settings, central package management, and established implementation patterns. Read the affected source before selecting an implementation.
+Use the affected repository's architecture, language conventions, formatter/compiler settings, dependency management, and established patterns. Read affected source before choosing an implementation.
 
-Keep changes within the task's purpose. Prefer clear responsibilities, existing abstractions, and direct implementations. Do not introduce an abstraction, design pattern, or broad refactoring without a concrete requirement.
+Keep responsibilities clear and changes within the task. Prefer existing abstractions and direct implementations. Introduce an abstraction, pattern, or broad refactoring only for a concrete requirement.
 
-Name classes, types, members, and data structures by their responsibilities. Do not prepend a product or brand name to individual types solely for branding. Follow the affected project's naming and formatting conventions where this document does not prescribe a rule.
+Name types, members, and files by their responsibilities. Follow the project's naming and namespace conventions; SAF imposes no organization prefix, product name, language, package ecosystem, or runtime dependency. Apply configured protected paths and the fixed testing/commit requirements under [rules.md](rules.md). Configured commit styles affect authorized new commit messages, not public identifiers, task scope, or existing history.
 
-Comments should explain intent, constraints, or non-obvious behavior. Keep comments accurate and avoid restating obvious code. Do not place task history, approval narratives, or change ledgers in source comments.
+Comments explain intent, constraints, and non-obvious behavior. Keep them accurate. Task history, approval narratives, and change ledgers belong in project records, not source comments.
 
-## Solution and project names
+## Names and public identities
 
-Ordinary solution and project names begin with the product or project name, without an organization prefix. Apply the same convention to their display names and file basenames.
+Keep solution/project names, file basenames, namespaces, assembly identities, package IDs, and published API identifiers distinct. Renaming one does not authorize changing the others.
 
-| Project role | Naming pattern | Example |
-| --- | --- | --- |
-| Ordinary project | `<ProductName>.<Purpose>` | `Flourish.Blazor.Framework` |
-| Ordinary project | `<ProductName>.<Purpose>` | `Colligere.Web` |
-| Ordinary project | `<ProductName>.<Purpose>` | `Essential.Culture.Blazor` |
-| Test project | `Tests.<ProjectName>` | `Tests.Flourish.Blazor.Framework` |
-| Gallery project | `Gallery.<ProjectName>` | `Gallery.Flourish.Blazor` |
-| Extension or bridge | `<ProjectName>.Extensions.<Integration>` | `Flourish.Extensions.Culture.Blazor` |
-| Extension test project | `Tests.<ProjectName>.Extensions.<Integration>` | `Tests.Flourish.Extensions.Culture.Blazor` |
-| Extension Gallery project | `Gallery.<ProjectName>.Extensions.<Integration>` | `Gallery.Flourish.Extensions.Culture.Blazor` |
-
-`Tests.` and `Gallery.` are role-prefix exceptions to the product-first convention. Place the product or project name immediately after the role prefix.
-
-## Namespaces and identities
-
-Project-owned namespaces must begin with `ArkheideSystem.` or `Arkheide.`. Prefer `ArkheideSystem.`, for example `ArkheideSystem.Flourish.Blazor`.
-
-Organization-free solution and project names do not remove the organization prefix from namespaces. Do not infer namespace rules from a test or Gallery project prefix.
-
-Keep these identities distinct:
-
-- Solution name and solution file basename.
-- Project name and project file basename.
-- Namespace and `RootNamespace`.
-- `AssemblyName`.
-- NuGet `PackageId`.
-
-A project-name change does not automatically authorize changes to its namespace, assembly identity, or package ID. Existing `Arkheide.*` NuGet package IDs must remain unchanged unless a package-specific migration is authorized.
-
-New or explicitly renamed solutions and projects must follow these naming rules. Treat nonconforming existing names as migration work to assess; do not silently accept them as general exceptions or rename them as a side effect. Explain compatibility implications and obtain authorization before migration.
-
-Third-party source retains its original ownership and naming. Do not rename it merely to satisfy project-owned naming rules.
+For a requested rename, inspect references, consumers, serialization/configuration, build/publication identity, and migration implications. Preserve third-party ownership and naming. Report conflicting project standards rather than silently renaming existing code to match a new preference.
 
 ## Behavior and compatibility
 
-Preserve established identifiers and public contracts unless the task authorizes their change. Assess affected callers, serialization, package consumers, and configuration before a compatibility-sensitive change.
+Preserve established identifiers, public contracts, access control, domain behavior, and session behavior unless modification is authorized. A UI request does not authorize unrelated business-rule changes.
 
-Preserve existing access control, domain behavior, and session behavior unless the task requests or approves a change. A UI request does not authorize unrelated business-rule changes.
-
-Follow existing async, cancellation, resource-lifetime, and error-handling conventions where applicable. Keep user-facing behavior consistent with the current product contract; report conflicts rather than inventing a replacement contract.
+Assess affected callers and persistence before compatibility-sensitive changes. Follow existing async, cancellation, resource-lifetime, and error-handling conventions. Keep user-facing behavior consistent with the product contract and report conflicts rather than inventing a replacement contract.
 
 ## Supporting rules
 
-Apply [rules.md](rules.md) for dependency authorization, validation, records, and delivery. For UI work, apply [UIUX.md](UIUX.md) and the actual Flourish implementation.
+Apply [rules.md](rules.md) for dependency authorization, verification, records, and delivery. For UI work, apply [UIUX.md](UIUX.md) and the project's actual design system and components.
