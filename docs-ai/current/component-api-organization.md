@@ -44,6 +44,8 @@ Weak/Strong popup behavior follows the actual supported PopupStrength contract. 
 
 FloatingNotice preserves ordinary Notice severity/content/live-region semantics in a zero-flow surface. It coordinates height/envelope with SaveChangesBar, moves vertically, replays new occurrences and returns on reverse exit; the save area changes horizontally. The lifetime pauses for interaction/background state and shows remaining progress. Persistent explanations stay inline and explicit zero duration remains persistent. Dismissal never rewrites host business/hidden state.
 
+Notice and FloatingNotice expose an optional `Actions` RenderFragment. Providing it places the title/body in a flexible message column beside a separate action column; long text wraps within that row. Title-only messages omit an empty body. Omitted actions preserve the existing stacked markup. Standard controls retain their callbacks, link targets and disabled states. Floating notices include both columns in natural-height docking and existing hover/focus timeout suspension. At narrow widths the whole notice stacks above SaveChangesBar while its own message/action columns remain side by side. Gallery's FloatingNotice sample demonstrates this with a fictional dirty draft.
+
 Avatar's crop editor includes Reset, restores the source's initial centered crop without saving, and keeps the dialog open. Host persistence remains separately authorized/version-bound. Selector forms preserve native input/ARIA semantics, compact trailing selected markers and standalone input-height geometry. Group elevation/separators and standard single-color progress are library behavior rather than host CSS fixes.
 
 ## Gallery, localization and manual acceptance

@@ -2,7 +2,7 @@
 
 ## Evidence and interpretation
 
-Source declarations remain Flourish VersionPrefix 1.4.7, no suffix, and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. This consolidation changes no application package version or project reference. SAF 2.0.0 replaces instruction tooling; DocFX and its documentation-only assets/workflow are removed under explicit authorization.
+Source declarations use Flourish VersionPrefix 1.4.8, no suffix, and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. This consolidation changes no application package version or project reference. SAF 2.0.0 replaces instruction tooling; DocFX and its documentation-only assets/workflow are removed under explicit authorization.
 
 The recorded local 1.4.8-preview.14 candidate is an explicit build override, independently consumed in Colligere. It does not promote the source version or establish a new public release. Last recorded stable publication is v1.4.7; detailed prior candidates and exact release receipts remain in archived source documents.
 

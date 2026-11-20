@@ -1,4 +1,14 @@
 {
+  "ChangeLog_SharedControlRefinements": {
+    "en-US": "Refine selection indicators and dropdown highlights, keep progress bars solid, and add a reset control to the avatar crop editor.",
+    "zh-CN": "优化选择标记和下拉选项高亮，使用纯色进度条，并为头像裁剪编辑器添加重置按钮。",
+    "pt-BR": "Melhore os indicadores de seleção e o destaque das opções, use barras de progresso de cor sólida e redefina o recorte no editor de avatar."
+  },
+  "ChangeLog_NoticeActions": {
+    "en-US": "Place actions beside the message in inline and floating notices, with stacking on narrow screens.",
+    "zh-CN": "行内和浮动通知支持在消息旁放置操作按钮，窄屏下自动堆叠。",
+    "pt-BR": "Coloque ações ao lado da mensagem em avisos em linha e flutuantes, com empilhamento em telas estreitas."
+  },
   "ChangeLog_Avatar": {
     "en-US": "Display a full-width account portrait with name and description. Optionally choose, crop, and compress a photo locally before passing a JPEG to the host.",
     "zh-CN": "头像支持整行居中显示姓名和描述，可在浏览器内选图、裁剪、压缩并把 JPEG 交给宿主。",

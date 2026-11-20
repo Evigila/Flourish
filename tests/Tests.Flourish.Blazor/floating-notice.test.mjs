@@ -74,6 +74,41 @@ function fixture() {
 }
 const value = (node,key) => parseFloat(node.style.getPropertyValue('--f-notice-' + key));
 
+test('inline message and actions measure one row and share the save bar height through resize and removal', () => {
+    const f=fixture(), root=f.notice(), notice=root.firstElementChild, bar=f.bar();
+    notice.computed={display:'flex',flexDirection:'row',columnGap:'12px',paddingTop:'13px',paddingBottom:'13px'};
+    const message=f.node({height:26}), actions=f.node({height:40});
+    notice.children=[message,actions];
+    bar.computed={display:'flex',flexDirection:'row',paddingTop:'16px',paddingBottom:'16px'};
+    bar.children=[f.node({height:30}),f.node({height:40})];
+    initializeFloatingNotices(f.doc);
+    assert.equal(value(root,'height'),72,'inline message and actions must not be added as stacked rows');
+    assert.equal(value(root,'height'),value(bar,'height'));
+    assert.equal(value(root,'bottom'),value(bar,'bottom'));
+    message.rect.height=104; f.flush();
+    assert.equal(value(root,'height'),130,'wrapped text must expand both visible shells');
+    assert.equal(value(root,'height'),value(bar,'height'));
+    message.rect.height=26; f.flush();
+    assert.equal(value(root,'height'),72,'the previous imposed height must not prevent shrinkage');
+    assert.ok(f.observers.some(observer => observer.targets.has(actions)));
+    root.rect={left:16,right:344,bottom:784}; f.doc.documentElement.clientWidth=360; f.flush();
+    assert.equal(root.style.getPropertyValue('--f-notice-height'),'');
+    assert.equal(bar.style.getPropertyValue('--f-notice-height'),'');
+    assert.ok(value(root,'bottom') > value(bar,'bottom'),'narrow viewports must stack the notice above the operation bar');
+    notice.dispatch('focusin'); f.advance(10000);
+    assert.equal(root.getAttribute('data-f-notice-phase'),'shown','focusing an action must suspend the notice timeout');
+    f.frames.length=0; root.isConnected=false; f.flush();
+    assert.equal(bar.hasAttribute('data-f-notice-docked'),false);
+    assert.equal(bar.style.getPropertyValue('--f-notice-height'),'');
+});
+
+test('action notices keep text and controls in one row with wrapping inside the message column', async () => {
+    const css=await readFile(new URL('patterns/floating-notice.css',location),'utf8');
+    assert.match(css,/\.f-notice\.f-notice-with-actions\s*\{[^}]*display:flex;[^}]*flex-direction:row;[^}]*align-items:center;/);
+    assert.match(css,/\.f-notice-with-actions > \.f-notice-content\s*\{[^}]*flex:1 1 0;[^}]*min-width:0;[^}]*overflow-wrap:anywhere;/);
+    assert.match(css,/\.f-notice-with-actions > \.f-notice-actions\s*\{[^}]*max-width:50%;/);
+});
+
 
 test('default timeout retains the dock during reverse exit and then restores the save bar', () => {
     const f = fixture(), root = f.notice(), bar = f.bar();

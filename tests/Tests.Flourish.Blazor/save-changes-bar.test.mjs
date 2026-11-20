@@ -87,6 +87,26 @@ function fixture() {
         } };
 }
 
+test('floating notice link actions respect the dirty guard while local callbacks and save actions remain available', () => {
+    const f=fixture();
+    try {
+        const notice=new Element('div',{class:'f-notice f-notice-with-actions'});
+        const actions=new Element('div',{class:'f-notice-actions'});
+        const register=new Element('a',{href:'/companies/new/',class:'f-button','aria-disabled':'false'});
+        const callback=new Element('button',{type:'button',class:'f-button'});
+        actions.append(register,callback); notice.append(actions); f.body.append(notice);
+        f.activate();
+        assert.equal(register.getAttribute('aria-disabled'),'true');
+        assert.equal(f.document.emit('click',register).defaultPrevented,true);
+        assert.equal(f.document.emit('keydown',register,{key:'Enter'}).defaultPrevented,true);
+        for(const button of [callback,f.save,f.discard]) assert.equal(f.document.emit('click',button).defaultPrevented,false);
+        api.updateSaveChangesBar(f.bar,false);
+        assert.equal(register.getAttribute('aria-disabled'),'false');
+        assert.equal(register.hasAttribute('data-f-edit-blocked'),false);
+        assert.equal(f.document.emit('click',register).defaultPrevented,false);
+    } finally { f.cleanup(); }
+});
+
 test('dirty/busy updates block links in capture without interfering with save/discard or typing', () => {
     const f = fixture();
     try {

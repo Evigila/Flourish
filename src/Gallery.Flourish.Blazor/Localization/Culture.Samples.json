@@ -1,4 +1,19 @@
 {
+  "Sample_FloatingNotice_WithActions": {
+    "en-US": "Show actions with save bar",
+    "zh-CN": "显示操作通知与统一操作区",
+    "pt-BR": "Mostrar ações com barra de alterações"
+  },
+  "Sample_FloatingNotice_ReviewDraft": {
+    "en-US": "This fictional draft needs review.",
+    "zh-CN": "此演示草稿需要检查。",
+    "pt-BR": "Este rascunho fictício precisa de revisão."
+  },
+  "Sample_FloatingNotice_Review": {
+    "en-US": "Review",
+    "zh-CN": "现在检查",
+    "pt-BR": "Revisar"
+  },
   "Sample_SaveChangesBar_Description": {
     "en-US": "Edit this fictional draft to show a persistent save bar. Saving updates the demo snapshot; discarding restores it. Leaving stays blocked until the draft is saved or discarded.",
     "zh-CN": "编辑虚构草稿即可显示持续保存栏。保存更新演示快照，放弃恢复快照；保存或放弃前不能离开。",

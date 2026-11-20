@@ -1,3 +1,8 @@
+/* Action content uses its own column so a title-only message has no empty body row. */
+.f-notice.f-notice-with-actions { display:flex; flex-direction:row; align-items:center; gap:12px; }
+.f-notice-with-actions > .f-notice-content { display:grid; gap:6px; flex:1 1 0; min-width:0; overflow-wrap:anywhere; }
+.f-notice-with-actions > .f-notice-actions { display:flex; align-items:center; flex:0 1 auto; min-width:0; max-width:50%; gap:8px; flex-wrap:wrap; }
+.f-notice-actions > * { min-width:0; max-width:100%; }
 /* Each zero-height frame measures the original fixed SaveChangesBar envelope. */
 .f-floating-notice.f-floating-notice-frame[data-f-notice-frame] {
     position:fixed; z-index:61; left:max(16px,env(safe-area-inset-left,0px)); right:max(16px,env(safe-area-inset-right,0px));

@@ -4,7 +4,7 @@
 
 Read [project constraints](project-constraints.md) alongside the root router and typed SAF configuration. SAF.json is the release manifest; SAF.lock.json separates bootstrap, installation and structural-audit evidence. Origin/local use the shared saf-core helper; their runtime backups/logs/leases are separate from discoverable skills. The project operation launchers are debug.bat and scripts/release.bat.
 
-This is a responsibility/dependency map, not an exhaustive file tree or a fresh runtime acceptance claim. The complete pre-cleanup architecture and prior candidate narratives are archived. Source defaults remain VersionPrefix 1.4.7 and EssentialCultureVersion 1.4.0; the recorded 1.4.8-preview.14 consumer candidate is an explicit local override, not a public release.
+This is a responsibility/dependency map, not an exhaustive file tree or a fresh runtime acceptance claim. The complete pre-cleanup architecture and prior candidate narratives are archived. Source defaults remain VersionPrefix 1.4.8 and EssentialCultureVersion 1.4.0; the recorded 1.4.8-preview.14 consumer candidate is an explicit local override, not a public release.
 
 ## Source and package layers
 
@@ -44,7 +44,7 @@ ShellHeader defaults to the ordinary title/menu/action arrangement. Presentation
 
 Blazor PageHeading retains the full heading in document flow. An independent compact overlay enters after it leaves view, with original back/action controls retained rather than duplicated. Scroll range does not collapse. PageHeading loading observes existing active sources without intercepting arbitrary host tasks. Native WPF retains its own scroll/template contract and manual display-scaling acceptance.
 
-Notice is durable inline explanation; FloatingNotice supplies transient zero-flow feedback with repeated-message generations, lifetime progress/pause/reverse exit and shared SaveChangesBar docking. The default timed feedback lifetime is 3,500ms, explicit zero is persistent and host business/hidden state is not overwritten by dismissal. UniformGrid elevation belongs to its occupied silhouette; internal separators do not create outside bottom/right borders or per-cell shadows.
+Notice is durable inline explanation; FloatingNotice supplies transient zero-flow feedback with repeated-message generations, lifetime progress/pause/reverse exit and shared SaveChangesBar docking. Both expose an optional Actions fragment for a separate control column beside the message, with Framework-owned geometry; absent actions preserve existing stacked markup. The dock measures the resulting natural row height and shares it with SaveChangesBar on wide screens; narrow viewports stack complete surfaces. The default timed feedback lifetime is 3,500ms, explicit zero is persistent and host business/hidden state is not overwritten by dismissal. UniformGrid elevation belongs to its occupied silhouette; internal separators do not create outside bottom/right borders or per-cell shadows.
 
 Standalone selection geometry follows standard input height. Embedded choice indicators remain compact trailing marks with selected-row contrast. Avatar owns decode/crop/zoom/reset/encode/lifecycle, while the host owns authorized persistence; stale callbacks cannot save another identity's image. Standard ProgressBar paint is single-color while indeterminate movement and reduced-motion behavior remain library-owned.
 
@@ -62,6 +62,6 @@ Generic Dialog handles controlled/awaited and browser-controlled pre-rendered vi
 | scripts/Convert-MaterialIcons.ps1 and Subset-MaterialIcons.py | Explicit development regeneration of existing licensed assets; not normal consumer build dependencies |
 | origin.bat/local.bat and SAF skills | Framework sync, scoped backup/archive maintenance and independent structural audit/memory workflows |
 
-Use [startup](local-startup.md) and [release procedure](nuget-release-integration.md). Default source remains 1.4.7; old tags/packages and archived release receipts are immutable. WPF/WinUI are outside the six-package publishing manifest. Rebuild/restore can recreate deleted outputs but do not establish manual appearance, desktop prerequisites, real consumers or publication success.
+Use [startup](local-startup.md) and [release procedure](nuget-release-integration.md). Default source is 1.4.8; old tags/packages and archived release receipts are immutable. WPF/WinUI are outside the six-package publishing manifest. Rebuild/restore can recreate deleted outputs but do not establish manual appearance, desktop prerequisites, real consumers or publication success.
 
 Remaining acceptance includes actual browser/native geometry, keyboard/focus/OS dialogs, high contrast/reduced motion, desktop architecture/XAML tooling, WASM/Interactive Auto and deployment-specific consumers. Unknown resource/license/runner metadata stays unknown. This consolidation does not run a full application audit, publish a package, certify an environment or update SAF audit completion.

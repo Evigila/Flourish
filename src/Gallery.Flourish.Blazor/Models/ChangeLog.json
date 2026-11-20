@@ -1,7 +1,14 @@
 [
   {
-    "version": "1.4.8-preview",
+    "version": "1.4.9-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.8",
+    "changeKeys": [
+      "Key.ChangeLog_SharedControlRefinements",
+      "Key.ChangeLog_NoticeActions"
+    ]
   },
   {
     "version": "1.4.7",

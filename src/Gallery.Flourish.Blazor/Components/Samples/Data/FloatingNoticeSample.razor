@@ -6,19 +6,39 @@
 <InlineActions>
     <Button Variant="ButtonVariant.Secondary" Disabled="@Preview" OnClick="() => Show(3500)">@Localization.Parse("Key.Sample_FloatingNotice_Show")</Button>
     <Button Variant="ButtonVariant.Quiet" Disabled="@Preview" OnClick="() => Show(0)">@Localization.Parse("Key.Sample_FloatingNotice_Keep")</Button>
+    <Button Variant="ButtonVariant.Secondary" Disabled="@Preview" OnClick="ShowActions">@Localization.Parse("Key.Sample_FloatingNotice_WithActions")</Button>
 </InlineActions>
 @if (Occurrence > 0 && !Preview)
 {
-    <FloatingNotice Severity="NotificationSeverity.Success" AutoDismissMilliseconds="@Delay" MessageKey="@Occurrence.ToString()">@Localization.Parse(TextKey.Sample_DemoDraftSavedSuccessfully)</FloatingNotice>
+    @if (WithActions)
+    {
+        <FloatingNotice Severity="NotificationSeverity.Warning" Title="@Localization.Parse("Key.Sample_FloatingNotice_ReviewDraft")" AutoDismissMilliseconds="@Delay" MessageKey="@Occurrence.ToString()">
+            <Actions>
+                <Button OnClick="() => Occurrence = 0">@Localization.Parse("Key.Sample_FloatingNotice_Review")</Button>
+            </Actions>
+        </FloatingNotice>
+    }
+    else
+    {
+        <FloatingNotice Severity="NotificationSeverity.Success" AutoDismissMilliseconds="@Delay" MessageKey="@Occurrence.ToString()">@Localization.Parse(TextKey.Sample_DemoDraftSavedSuccessfully)</FloatingNotice>
+    }
 }
+<SaveChangesBar HasChanges="@(!Preview && DraftChanged)" OnSave="() => DraftChanged = false" OnDiscard="() => DraftChanged = false" />
 
 @code {
     [Parameter] public bool Preview { get; set; }
     private int Occurrence;
     private int Delay = 3500;
+    private bool WithActions, DraftChanged;
     private void Show(int delay)
     {
         Delay = delay;
+        WithActions = false;
         Occurrence++;
+    }
+    private void ShowActions()
+    {
+        Show(0);
+        WithActions = DraftChanged = true;
     }
 }
