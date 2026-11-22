@@ -625,6 +625,7 @@ if (browserPath) {
             + '<div data-f-native-select-options></div></div></details></span></span>';
         await browserSessionFixture(markup, async ({evaluate, send}) => {
             await send('Page.bringToFront');
+            await send('Emulation.setFocusEmulationEnabled',{enabled:true});
             await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:1000,y:700});
             const focused = await evaluate("(async()=>{" + controller + ";initializePopups();"
                 + "window.languageChanges=[]; const select=document.querySelector('#language');"
@@ -638,7 +639,14 @@ if (browserPath) {
                 + "const boxes=Array.from(picker.children,option=>option.getBoundingClientRect());"
                 + "return {open:picker.parentElement.matches(':popover-open'),gaps:[boxes[1].top-boxes[0].bottom,boxes[2].top-boxes[1].bottom],"
                 + "active:document.activeElement.getAttribute('data-f-native-select-value')};})()");
-            assert.deepEqual(hoverPicker, {open:true,gaps:[4,4],active:'en'});
+            const focusDetails = hoverPicker.active === 'en' ? '' : await evaluate("(() => {"
+                + "const panel=document.querySelector('[data-f-popup-panel]'), item=panel.querySelector('button'), active=document.activeElement;"
+                + "const style=getComputedStyle(item), before={ browser:navigator.userAgent, documentFocus:document.hasFocus(),"
+                + "active:active.tagName+'.'+active.className, disabled:item.disabled, tabIndex:item.tabIndex, itemVisibility:style.visibility,"
+                + "display:style.display, selectorCount:panel.querySelectorAll('button:not([disabled])').length, rects:item.getClientRects().length,"
+                + "detailsOpen:panel.closest('details').open,panelVisibility:getComputedStyle(panel).visibility };"
+                + "item.focus(); return JSON.stringify({...before, acceptsDirectFocus:document.activeElement===item});})()");
+            assert.deepEqual(hoverPicker, {open:true,gaps:[4,4],active:'en'}, focusDetails);
             await pressKey(send,'Home',36);
             await pressKey(send,'ArrowDown',40);
             assert.equal(await evaluate("document.activeElement.getAttribute('data-f-native-select-value')"),'pt');
