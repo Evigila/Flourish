@@ -2,7 +2,7 @@
 
 ## Authority and reading order
 
-Respect the affected project's effective design constraints, actual component source, styles, public contracts, and explicit product requirements. Read `SAF.config.json.project.ui.framework` through the shared config resolver for otherwise open design choices; its default is `Material Design 3`. This is design guidance, not automatic installation or adoption of a component library, visual token package, brand, or UI runtime. A configured preference does not override established project constraints or explicit user requirements.
+Respect the affected project's effective design constraints, actual component source, styles, public contracts, and explicit product requirements. Read `.agents/saf/SAF.config.json.project.ui.framework` through the shared config resolver for otherwise open design choices; its default is `Material Design 3`. This is design guidance, not automatic installation or adoption of a component library, visual token package, brand, or UI runtime. A configured preference does not override established project constraints or explicit user requirements.
 
 Inspect existing components and host usage, supported configuration/states, interaction/accessibility contracts, and relevant requirements. Distinguish documented requirements from inferred behavior. When required evidence is unavailable, identify the gap and continue independent work.
 

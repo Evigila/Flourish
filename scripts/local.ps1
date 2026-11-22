@@ -76,7 +76,7 @@ function Update-LocalIgnore([string]$Root, $Config, [switch]$IgnoreArchive) {
 }
 
 function Get-LocalBackupPaths([string]$Root) {
-    $paths = @('AGENTS.md', 'SAF.json', 'SAF.config.json', 'SAF.lock.json', 'origin.bat', 'local.bat', 'debug.bat', '.gitignore',
+    $paths = @('AGENTS.md', '.agents/saf/SAF.json', '.agents/saf/SAF.config.json', '.agents/saf/SAF.lock.json', 'scripts/origin.bat', 'scripts/local.bat', 'debug.bat', '.gitignore',
         'scripts/saf-core.ps1', 'scripts/origin.ps1', 'scripts/local.ps1')
     foreach ($relative in $paths) { Get-LocalFiles -Root $Root -Relative $relative }
     foreach ($relative in @('docs-ai', '.agents/skills')) { Get-LocalFiles -Root $Root -Relative $relative }

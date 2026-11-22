@@ -1,6 +1,6 @@
 # Project instruction router
 
-This file is the project instruction entry point. Read the project-owned `SAF.config.json` under the [configuration contract](docs-ai/common/rules.md#project-configuration), inspect `SAF.lock.json` and the effective release in `SAF.json`, then follow the [audit gate](docs-ai/common/rules.md#audit-gate). The periodic audit checks SAF framework files and required structure, not application code or project facts. `SKIP_AUDIT` skips only that audit; it never skips this router, configuration restrictions, or applicable task rules.
+This file is the project instruction entry point. Read the project-owned `.agents/saf/SAF.config.json` under the [configuration contract](docs-ai/common/rules.md#project-configuration), inspect `.agents/saf/SAF.lock.json` and the effective release in `.agents/saf/SAF.json`, then follow the [audit gate](docs-ai/common/rules.md#audit-gate). The periodic audit checks SAF framework files and required structure, not application code or project facts. `SKIP_AUDIT` skips only that audit; it never skips this router, configuration restrictions, or applicable task rules.
 
 ## Read for the task
 
@@ -10,6 +10,7 @@ This file is the project instruction entry point. Read the project-owned `SAF.co
 | Code, project, namespace, or public API changes | Relevant [code standards](docs-ai/common/codedesign.md), affected source, and repository configuration |
 | UI or UX work | [UIUX.md](docs-ai/common/UIUX.md), then the project's actual components, styles, contracts, and host usage |
 | Repository structure or architecture | [1_architecture.md](docs-ai/current/1_architecture.md), then affected source/configuration |
+| Selecting a project version, preparing release copy, tagging, or publishing | [Release versioning and approvals](docs-ai/common/rules.md#release-versioning-and-approvals) and [prepare-release](.agents/skills/prepare-release/SKILL.md) |
 | Project scripts, debugging, data resets, or publication | [Project scripts and entry points](docs-ai/common/rules.md#project-scripts-and-entry-points), then affected scripts and configuration |
 | Dependencies, assets, build, or deployment | [External dependencies](docs-ai/common/rules.md#external-dependencies), [1_dependency.md](docs-ai/current/1_dependency.md), declarations, and resolved evidence |
 | Documentation creation, restructuring, or SAF audit | [Documentation contract](docs-ai/common/rules.md#documentation-contract) and [SAF structural audit](docs-ai/common/rules.md#saf-structural-audit) |
@@ -34,9 +35,9 @@ Add reading when scope changes. Read relevant sections and affected subtrees; do
 | `docs-ai/current/1_changelogs/` | Append-only change records |
 | `docs-ai/current/1_bugreports/` | Diagnosis, fixes, and regression evidence |
 | `docs-ai/current/1_archived/` | Superseded or abandoned designs; no authority over new work |
-| `SAF.json` | Release-owned version and payload inventory |
-| `SAF.config.json` | Project-owned typed values and restrictions; data consumed through the existing entry point, not another instruction authority |
-| `SAF.lock.json` | Project-owned bootstrap/installation provenance and independent audit state |
+| `.agents/saf/SAF.json` | Release-owned version and payload inventory |
+| `.agents/saf/SAF.config.json` | Project-owned typed values and restrictions; data consumed through the existing entry point, not another instruction authority |
+| `.agents/saf/SAF.lock.json` | Project-owned bootstrap/installation provenance and independent audit state |
 | `.agents/backup/`, `.agents/saf_log/`, `.agents/operation.lock` | Local recovery, logs, and coordination; distinct from `.agents/skills/` discovery |
 
 Keep this router and `docs-ai/` under version control. Preserve project facts and audit evidence during updates. New consumers start with an unaudited SAF structure; never import the source repository's completed audit. Project facts are maintained from actual evidence during relevant project work, separately from the SAF structural audit. Active standards contain no dated approval history or superseded policy.

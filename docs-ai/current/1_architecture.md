@@ -2,9 +2,9 @@
 
 ## Project constraints and SAF
 
-Read [project constraints](project-constraints.md) alongside the root router and typed SAF configuration. SAF.json is the release manifest; SAF.lock.json separates bootstrap, installation and structural-audit evidence. Origin/local use the shared saf-core helper; their runtime backups/logs/leases are separate from discoverable skills. The project operation launchers are debug.bat and scripts/release.bat.
+Read [project constraints](project-constraints.md) alongside the root router and typed SAF configuration. `.agents/saf/SAF.json` is the framework release manifest. `.agents/saf/SAF.lock.json` separates bootstrap, installation and structural audit evidence. The synchronization and maintenance launchers use the shared `scripts/saf-core.ps1` helper. The project operation launchers are `debug.bat` and `scripts/release.bat`.
 
-This is a responsibility/dependency map, not an exhaustive file tree or a fresh runtime acceptance claim. The complete pre-cleanup architecture and prior candidate narratives are archived. Source defaults remain VersionPrefix 1.4.8 and EssentialCultureVersion 1.4.0; the recorded 1.4.8-preview.14 consumer candidate is an explicit local override, not a public release.
+This is a responsibility/dependency map, not an exhaustive file tree or a fresh runtime acceptance claim. The complete pre-cleanup architecture and prior candidate narratives are archived. Source version defaults are declared in Directory.Build.props. Local preview overrides are recorded with their respective consumer checks.
 
 ## Source and package layers
 
@@ -60,8 +60,8 @@ Generic Dialog handles controlled/awaited and browser-controlled pre-rendered vi
 | ReleaseSettings, Test-Release, Verify-PackageSet and build checks | Six dependency-ordered Core/Blazor packages, required assets, source/Gallery/JS/script/CSS/catalog/changelog and isolated consumer checks |
 | .github/workflows/build.yml | Build/test gate and tag-only NuGet Trusted Publishing; source push is not package publication |
 | scripts/Convert-MaterialIcons.ps1 and Subset-MaterialIcons.py | Explicit development regeneration of existing licensed assets; not normal consumer build dependencies |
-| origin.bat/local.bat and SAF skills | Framework sync, scoped backup/archive maintenance and independent structural audit/memory workflows |
+| scripts/origin.bat, scripts/local.bat and SAF skills | Framework sync, scoped backup/archive maintenance and independent structural audit/memory workflows. SAF metadata lives in .agents/saf/. |
 
-Use [startup](local-startup.md) and [release procedure](nuget-release-integration.md). Default source is 1.4.8; old tags/packages and archived release receipts are immutable. WPF/WinUI are outside the six-package publishing manifest. Rebuild/restore can recreate deleted outputs but do not establish manual appearance, desktop prerequisites, real consumers or publication success.
+Use [startup](local-startup.md) and [release procedure](nuget-release-integration.md). Existing tags, packages and archived release receipts are immutable. WPF/WinUI are outside the six-package publishing manifest. Rebuild/restore can recreate deleted outputs but do not establish manual appearance, desktop prerequisites, real consumers or publication success.
 
 Remaining acceptance includes actual browser/native geometry, keyboard/focus/OS dialogs, high contrast/reduced motion, desktop architecture/XAML tooling, WASM/Interactive Auto and deployment-specific consumers. Unknown resource/license/runner metadata stays unknown. This consolidation does not run a full application audit, publish a package, certify an environment or update SAF audit completion.

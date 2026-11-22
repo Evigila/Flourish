@@ -9,15 +9,15 @@ if errorlevel 1 (
     if "%~1"=="" pause
     exit /b 1
 )
-if not exist "%~dp0scripts\local.ps1" (
+if not exist "%~dp0local.ps1" (
     echo [SAF] Local controller is missing. Repair the SAF installation.
     if "%~1"=="" pause
     exit /b 1
 )
-if not exist "%~dp0scripts\saf-core.ps1" (
+if not exist "%~dp0saf-core.ps1" (
     echo [SAF] Shared helper is missing. Rerun trusted remote scripts/init.ps1 to repair the handlers.
     if "%~1"=="" pause
     exit /b 4
 )
-"%SAF_LOCAL_SHELL%" -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\local.ps1" %*
+"%SAF_LOCAL_SHELL%" -NoProfile -ExecutionPolicy Bypass -File "%~dp0local.ps1" %*
 exit /b %ERRORLEVEL%

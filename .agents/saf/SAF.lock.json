@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "bootstrap": {
+    "handlerProtocolVersion": 4,
+    "configSupportVersion": 2,
+    "repository": "https://github.com/Evigila/SAF.git",
+    "ref": "main",
+    "commit": "2b2de22487fd36c2953d77a90911ecdf9f7f85fe",
+    "managedFiles": {
+      "scripts/origin.bat": "8f132f0c2aab5168a0832af192e1bafe5a1ae6cc620a7a9fd7c79298cc22bf54",
+      "scripts/local.bat": "1a9cf1a15cda05a9582e48b537cea345399041bae3719a345ada74f501f8cef5",
+      "scripts/origin.ps1": "d7ed518181982d06529c8f8de09fad82ee55496671709df9aeb9d84d013b1a18",
+      "scripts/local.ps1": "7b17e8d2d7829457b54c1bee05dfeb5f07bc998f55f34902bbe5709ee9e282de",
+      "scripts/saf-core.ps1": "287648c536a023f15b68d51b5c5873dc59ad7374ab8457839c3659a65b4175f2"
+    }
+  },
+  "installation": {
+    "frameworkVersion": "2.1.0-release",
+    "repository": "https://github.com/Evigila/SAF.git",
+    "ref": "main",
+    "commit": "2b2de22487fd36c2953d77a90911ecdf9f7f85fe",
+    "manifestSha256": "99acbb482b7fca0ccbc8a519e289ddff2792d66ac6983d1094a2d63f05012887",
+    "managedFiles": {
+      ".agents/saf/SAF.json": "99acbb482b7fca0ccbc8a519e289ddff2792d66ac6983d1094a2d63f05012887",
+      ".agents/skills/audit-project-docs/agents/openai.yaml": "57e5ff761c69932438b095ec2171683226c3932b4a90d95422e68f625dab785d",
+      ".agents/skills/audit-project-docs/SKILL.md": "dd4977b6eb300e93ce7bb2f1f66cc4a62ba3fb5a41ca49c5059b452dd24af907",
+      ".agents/skills/compress-saf/agents/openai.yaml": "a55afde8773ce9c9b05ca0727eb990d789de0b8c7d20099acf626223cb3acfb5",
+      ".agents/skills/compress-saf/SKILL.md": "5932bef0c6d9d338b4bcb623773dc36c74009d4c60cc5baa08e1d585f3e181a4",
+      ".agents/skills/prepare-release/SKILL.md": "6a32e5eff65b68192c412f6e8172d98519d3a53a26bb16f98f8e8e59c168acab",
+      ".agents/skills/sync-saf/agents/openai.yaml": "9eef4ccbb994eb8eb6a70cafa52e2bf1852d37c8b9d74b1052e84fa17b7af560",
+      ".agents/skills/sync-saf/SKILL.md": "0036177bbcfa3ec9da0085cddb914b1481f4ae313caa9598d6e7d792f5fa02d7",
+      "AGENTS.md": "4bc8df30b9891e673fd3cac5ed08589dbe37ffa494e8a61dcb8a65d42f1692eb",
+      "docs-ai/common/codedesign.md": "e1a54f838bacd0d5a0bf4b752411284279b14c7b9050082456565fdfdf32356a",
+      "docs-ai/common/rules.md": "e3c5615a787af8ce59a8c52335f49d874fe824ba08856dc6eec306f710e36ce0",
+      "docs-ai/common/UIUX.md": "36a9cd12fec0b660d9dd809e097b13619106f623f3f8d1cee8ee85e15ba6a584",
+      "scripts/local.bat": "1a9cf1a15cda05a9582e48b537cea345399041bae3719a345ada74f501f8cef5",
+      "scripts/local.ps1": "7b17e8d2d7829457b54c1bee05dfeb5f07bc998f55f34902bbe5709ee9e282de",
+      "scripts/origin.bat": "8f132f0c2aab5168a0832af192e1bafe5a1ae6cc620a7a9fd7c79298cc22bf54",
+      "scripts/origin.ps1": "d7ed518181982d06529c8f8de09fad82ee55496671709df9aeb9d84d013b1a18",
+      "scripts/saf-core.ps1": "287648c536a023f15b68d51b5c5873dc59ad7374ab8457839c3659a65b4175f2"
+    },
+    "synchronizedAtUtc": "2026-11-22T22:36:43.6951473Z"
+  },
+  "audit": {
+    "auditedFrameworkVersion": "2.1.0-release",
+    "lastCompletedAtUtc": "2026-11-22T22:40:27.6119881Z",
+    "lastMissingMaterialAskedAtUtc": "2026-10-04T01:05:06Z"
+  }
+}

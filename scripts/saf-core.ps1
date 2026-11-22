@@ -5,7 +5,34 @@ $script:SafUtf8 = New-Object Text.UTF8Encoding($false, $true)
 $script:SafOperationLocks = @{}
 $script:SafStartedAtUtc = [DateTime]::UtcNow.ToString('o')
 $script:SafOperationId = [Guid]::NewGuid().ToString('N')
-$script:SafHandlers = @('origin.bat', 'local.bat', 'scripts/origin.ps1', 'scripts/local.ps1', 'scripts/saf-core.ps1')
+$script:SafHandlers = @('scripts/origin.bat', 'scripts/local.bat', 'scripts/origin.ps1', 'scripts/local.ps1', 'scripts/saf-core.ps1')
+
+function ConvertTo-SafReleaseVersion([string]$Value, [switch]$AllowLegacy) {
+    $pattern = '\A(?<number>(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))(?:-(?:(?<channel>alpha|beta)(?:\.(?<iteration>[1-9][0-9]*))?|(?<channel>release)))?\z'
+    $match = [regex]::Match($Value, $pattern)
+    $number = $null
+    if (-not $match.Success -or (-not $AllowLegacy -and -not $match.Groups['channel'].Success) -or
+        -not [version]::TryParse($match.Groups['number'].Value, [ref]$number)) {
+        throw "Invalid SAF release version '$Value'. Use major.minor.patch with an alpha, beta, or release suffix."
+    }
+    $channel = $match.Groups['channel'].Value
+    $rank = switch ($channel) {
+        'alpha' { 0 }
+        'beta' { 1 }
+        default { 2 } # A historical bare version has stable precedence.
+    }
+    return [pscustomobject]@{ Number = $number; Channel = $channel; Rank = $rank; Iteration = $match.Groups['iteration'].Value }
+}
+
+function Compare-SafReleaseVersion($Left, $Right) {
+    $comparison = $Left.Number.CompareTo($Right.Number)
+    if ($comparison -ne 0) { return $comparison }
+    $comparison = $Left.Rank.CompareTo($Right.Rank)
+    if ($comparison -ne 0) { return $comparison }
+    $comparison = $Left.Iteration.Length.CompareTo($Right.Iteration.Length)
+    if ($comparison -ne 0) { return $comparison }
+    return [string]::CompareOrdinal($Left.Iteration, $Right.Iteration)
+}
 
 function Get-SafByteHash([byte[]]$Bytes) {
     $algorithm = [Security.Cryptography.SHA256]::Create()
@@ -89,7 +116,7 @@ function Get-SafRoot([string]$ProjectRoot) {
     if (-not [IO.Directory]::Exists($root)) { throw 'ProjectRoot must be an existing directory.' }
     $gitRoot = Invoke-SafGit -Arguments @('-C', $root, 'rev-parse', '--show-toplevel') -Text
     if (-not $root.Equals([IO.Path]::GetFullPath($gitRoot).TrimEnd([char]92, [char]47), [StringComparison]::OrdinalIgnoreCase)) { throw 'Use the target Git repository root.' }
-    [void](Get-SafTarget -Root $root -Relative 'SAF.lock.json')
+    [void](Get-SafTarget -Root $root -Relative '.agents/saf/SAF.lock.json')
     return $root
 }
 
@@ -114,10 +141,11 @@ function Get-SafFiles([string]$Root, [string]$Relative) {
 
 function Assert-SafManaged([string]$Relative, [switch]$Legacy) {
     Assert-SafRelative $Relative
-    if ($Relative -in (@('AGENTS.md', 'SAF.json') + $script:SafHandlers) -or
+    if ($Relative -in (@('AGENTS.md', '.agents/saf/SAF.json') + $script:SafHandlers) -or
         $Relative.StartsWith('docs-ai/common/', [StringComparison]::Ordinal) -or
         $Relative.StartsWith('.agents/skills/', [StringComparison]::Ordinal)) { return }
-    if ($Legacy -and $Relative -in @('AGENTS.framework.json', 'fetch-agents.bat', 'scripts/fetch-agents.ps1')) { return }
+    if ($Legacy -and $Relative -in @('AGENTS.framework.json', 'fetch-agents.bat', 'scripts/fetch-agents.ps1',
+        'SAF.json', 'origin.bat', 'local.bat')) { return }
     throw "Path is outside SAF ownership: $Relative"
 }
 
@@ -141,7 +169,10 @@ function Assert-SafConfigString($Value, [string]$Location) {
 }
 
 function Resolve-SafConfig([string]$Root) {
-    $path = Get-SafTarget -Root $Root -Relative 'SAF.config.json'
+    if (Test-Path -LiteralPath (Join-Path $Root 'SAF.config.json')) {
+        throw 'Root SAF.config.json is still present. Back it up and move it to .agents/saf/SAF.config.json before running SAF 2.1.'
+    }
+    $path = Get-SafTarget -Root $Root -Relative '.agents/saf/SAF.config.json'
     $bytes = $null; $hash = $null
     if (Test-Path -LiteralPath $path) {
         if (-not [IO.File]::Exists($path)) { throw "Expected a regular file: $path" }
@@ -159,7 +190,7 @@ function Resolve-SafConfig([string]$Root) {
     if ($null -eq $hash) { return $effective }
     $config = Read-SafJson $bytes
     Assert-SafConfigObject $config @('schemaVersion', 'origin', 'project') 'config'
-    if (-not $config.PSObject.Properties['schemaVersion'] -or ($config.schemaVersion -isnot [int] -and $config.schemaVersion -isnot [long]) -or $config.schemaVersion -ne 2) { throw 'Unsupported SAF.config.json schema. Migrate project configuration to schema 2 before initializing SAF 2.' }
+    if (-not $config.PSObject.Properties['schemaVersion'] -or ($config.schemaVersion -isnot [int] -and $config.schemaVersion -isnot [long]) -or $config.schemaVersion -ne 2) { throw 'Unsupported .agents/saf/SAF.config.json schema. Migrate project configuration to schema 2 before initializing SAF 2.' }
     if ($config.PSObject.Properties['origin']) {
         Assert-SafConfigObject $config.origin @('repository', 'ref') 'origin'
         foreach ($key in @('repository', 'ref')) {
@@ -215,7 +246,7 @@ function Resolve-SafConfig([string]$Root) {
 }
 
 function Assert-SafConfigUnchanged([string]$Root, $Config) {
-    if ((Get-SafExistingHash (Get-SafTarget $Root 'SAF.config.json') -Raw) -ne $Config.sourceHash) { throw 'SAF.config.json changed during the operation. Retry with the new configuration.' }
+    if ((Get-SafExistingHash (Get-SafTarget $Root '.agents/saf/SAF.config.json') -Raw) -ne $Config.sourceHash) { throw '.agents/saf/SAF.config.json changed during the operation. Retry with the new configuration.' }
 }
 
 function Assert-SafWritable([string]$Root, [string]$Relative, $Config) {
@@ -357,12 +388,15 @@ function Move-SafLegacyStorage([string]$Root) {
 }
 
 function Read-SafState([string]$Root) {
-    $statePath = Get-SafTarget -Root $Root -Relative 'SAF.lock.json'
+    if (Test-Path -LiteralPath (Join-Path $Root 'SAF.lock.json')) {
+        throw 'Root SAF.lock.json is still present. Back it up and move it to .agents/saf/SAF.lock.json before running SAF 2.1.'
+    }
+    $statePath = Get-SafTarget -Root $Root -Relative '.agents/saf/SAF.lock.json'
     $legacyPaths = @('AGENTS.lock.json', 'AGENTS.ensure.json')
     if ([IO.File]::Exists($statePath)) {
         $state = Read-SafJson ([IO.File]::ReadAllBytes($statePath))
         if ($state.schemaVersion -ne 1 -or -not $state.PSObject.Properties['bootstrap'] -or
-            -not $state.PSObject.Properties['installation'] -or -not $state.PSObject.Properties['audit']) { throw 'Invalid SAF.lock.json schema.' }
+            -not $state.PSObject.Properties['installation'] -or -not $state.PSObject.Properties['audit']) { throw 'Invalid .agents/saf/SAF.lock.json schema.' }
         if ($state.PSObject.Properties['migration'] -and $state.migration) {
             if (-not $state.migration.PSObject.Properties['legacyHashes']) { throw 'Invalid migration state.' }
             foreach ($property in $state.migration.legacyHashes.PSObject.Properties) {
@@ -464,7 +498,7 @@ function Invoke-SafTransaction([string]$Root, [object[]]$Operations) {
                 finally { $plan.committed = $committed }
             }
             if ((Get-SafExistingHash $path -Raw) -ne $plan.afterHash) { throw "File changed after transaction write: $($plan.relative)" }
-            if ($plan.relative -eq 'SAF.config.json') {
+            if ($plan.relative -eq '.agents/saf/SAF.config.json') {
                 $config.sourceHash = $plan.afterHash
             }
         }
@@ -510,10 +544,10 @@ function Set-SafState([string]$Root, [ValidateSet('bootstrap', 'installation', '
     if (-not $script:SafOperationLocks.ContainsKey($Root) -or -not $script:SafOperationLocks[$Root].CanWrite) { $lease = Enter-SafOperation -Root $Root }
     try {
         $config = Resolve-SafConfig -Root $Root
-        Assert-SafWritable -Root $Root -Relative 'SAF.lock.json' -Config $config
+        Assert-SafWritable -Root $Root -Relative '.agents/saf/SAF.lock.json' -Config $config
         $state = Read-SafState -Root $Root; $state.$Section = $Value
-        $path = Get-SafTarget -Root $Root -Relative 'SAF.lock.json'
-        Invoke-SafTransaction -Root $Root -Operations @([pscustomobject]@{ relative = 'SAF.lock.json'; bytes = ConvertTo-SafBytes $state
+        $path = Get-SafTarget -Root $Root -Relative '.agents/saf/SAF.lock.json'
+        Invoke-SafTransaction -Root $Root -Operations @([pscustomobject]@{ relative = '.agents/saf/SAF.lock.json'; bytes = ConvertTo-SafBytes $state
             delete = $false; expected = Get-SafExistingHash $path -Raw })
     } finally { if ($lease) { $lease.Dispose() } }
 }
@@ -595,20 +629,26 @@ function Get-SafRelease([string]$Root, [string]$Repository, [string]$Ref, [strin
             $source = $temporary; $commit = Invoke-SafGit -Arguments @('-C', $source, 'rev-parse', 'FETCH_HEAD^{commit}') -Text
         }
         if ($commit -notmatch '^[0-9a-f]{40}$') { throw 'Source must resolve to one Git commit.' }
-        $manifestBytes = Read-SafBlob -Source $source -Commit $commit -Relative 'SAF.json'
+        $manifestPath = '.agents/saf/SAF.json'
+        $manifestTree = Invoke-SafGit -Arguments @('-C', $source, 'ls-tree', $commit, '--', $manifestPath, 'SAF.json') -Text
+        if ($manifestTree -notmatch '(?m)\t\.agents/saf/SAF\.json$' -and $manifestTree -match '(?m)\tSAF\.json$') {
+            throw '[SAF_REFRESH] This source uses the old SAF layout. Choose a source with protocol 4 or use the trusted bootstrap for the older release.'
+        }
+        $manifestBytes = Read-SafBlob -Source $source -Commit $commit -Relative $manifestPath
         $manifest = Read-SafJson $manifestBytes
         if (($manifest.schemaVersion -isnot [int] -and $manifest.schemaVersion -isnot [long]) -or $manifest.schemaVersion -ne 1 -or
-            ($manifest.handlerProtocolVersion -isnot [int] -and $manifest.handlerProtocolVersion -isnot [long]) -or $manifest.handlerProtocolVersion -ne 3 -or
+            ($manifest.handlerProtocolVersion -isnot [int] -and $manifest.handlerProtocolVersion -isnot [long]) -or $manifest.handlerProtocolVersion -ne 4 -or
             -not $manifest.PSObject.Properties['configSupportVersion'] -or
-            ($manifest.configSupportVersion -isnot [int] -and $manifest.configSupportVersion -isnot [long]) -or $manifest.configSupportVersion -ne 2) { throw '[SAF_REFRESH] Unsupported SAF configuration contract. Migrate project config to schema 2 and rerun the trusted remote scripts/init.ps1 bootstrap.' }
-        if ($manifest.frameworkVersion -notmatch '^\d+\.\d+\.\d+$' -or [version]$manifest.frameworkVersion -lt [version]'2.0.0') { throw 'Expected a SAF 2 release >= 2.0.0.' }
+            ($manifest.configSupportVersion -isnot [int] -and $manifest.configSupportVersion -isnot [long]) -or $manifest.configSupportVersion -ne 2) { throw '[SAF_REFRESH] Unsupported SAF handler or configuration contract. Use a compatible source and rerun the trusted remote scripts/init.ps1 bootstrap.' }
+        $frameworkVersion = ConvertTo-SafReleaseVersion $manifest.frameworkVersion -AllowLegacy
+        if ($frameworkVersion.Number -lt [version]'2.0.0') { throw 'Expected a SAF 2 release with numeric base >= 2.0.0.' }
         $payload = @{}
         foreach ($entry in @($manifest.files)) {
             Assert-SafRelative $entry.source; Assert-SafRelative $entry.target
-            if ($payload.ContainsKey($entry.target) -or $entry.target -in @('SAF.json', 'SAF.lock.json')) { throw 'Duplicate or reserved SAF target.' }
+            if ($payload.ContainsKey($entry.target) -or $entry.target -in @('.agents/saf/SAF.json', '.agents/saf/SAF.lock.json')) { throw 'Duplicate or reserved SAF target.' }
             if ($entry.mode -eq 'managed') { Assert-SafManaged $entry.target }
             elseif ($entry.mode -eq 'seed') {
-                if ($entry.target -notin @('SAF.config.json', 'debug.bat', 'docs/.gitkeep') -and -not $entry.target.StartsWith('docs-ai/current/', [StringComparison]::Ordinal)) { throw 'Invalid seed target.' }
+                if ($entry.target -notin @('.agents/saf/SAF.config.json', 'debug.bat', 'docs/.gitkeep') -and -not $entry.target.StartsWith('docs-ai/current/', [StringComparison]::Ordinal)) { throw 'Invalid seed target.' }
             } else { throw 'Unknown SAF file mode.' }
             if ($entry.sha256 -notmatch '^[0-9a-f]{64}$') { throw 'Invalid SAF payload hash.' }
             $bytes = Read-SafBlob -Source $source -Commit $commit -Relative $entry.source
@@ -620,12 +660,12 @@ function Get-SafRelease([string]$Root, [string]$Repository, [string]$Ref, [strin
         foreach ($required in ($script:SafHandlers + @('AGENTS.md', 'docs-ai/common/rules.md', 'docs-ai/common/codedesign.md', 'docs-ai/common/UIUX.md'))) {
             if (-not $payload.ContainsKey($required) -or $payload[$required].mode -ne 'managed') { throw "Missing managed payload: $required" }
         }
-        foreach ($required in @('SAF.config.json', 'debug.bat', 'docs/.gitkeep', 'docs-ai/current/1_architecture.md', 'docs-ai/current/1_dependency.md',
+        foreach ($required in @('.agents/saf/SAF.config.json', 'debug.bat', 'docs/.gitkeep', 'docs-ai/current/1_architecture.md', 'docs-ai/current/1_dependency.md',
             'docs-ai/current/1_changelogs/.gitkeep', 'docs-ai/current/1_bugreports/.gitkeep', 'docs-ai/current/1_archived/.gitkeep')) {
             if (-not $payload.ContainsKey($required) -or $payload[$required].mode -ne 'seed') { throw "Missing project seed: $required" }
         }
-        $seedEntry = @($manifest.files | Where-Object target -eq 'SAF.config.json')[0]
-        $seed = Read-SafJson $payload['SAF.config.json'].bytes
+        $seedEntry = @($manifest.files | Where-Object target -eq '.agents/saf/SAF.config.json')[0]
+        $seed = Read-SafJson $payload['.agents/saf/SAF.config.json'].bytes
         Assert-SafConfigObject $seed @('schemaVersion') 'config seed'
         if ($seedEntry.source -cne 'templates/SAF.config.json' -or
             ($seed.schemaVersion -isnot [int] -and $seed.schemaVersion -isnot [long]) -or $seed.schemaVersion -ne 2) { throw 'Invalid neutral configuration seed.' }

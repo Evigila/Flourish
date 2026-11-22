@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "frameworkVersion": "2.0.0",
-  "handlerProtocolVersion": 3,
-  "repository": "Evigila/AGENTS.md",
+  "frameworkVersion": "2.1.0-release",
+  "handlerProtocolVersion": 4,
+  "repository": "Evigila/SAF",
   "bootstrapFiles": [
-    "origin.bat",
-    "local.bat",
+    "scripts/origin.bat",
+    "scripts/local.bat",
     "scripts/origin.ps1",
     "scripts/local.ps1",
     "scripts/saf-core.ps1"
@@ -15,7 +15,7 @@
       "source": "AGENTS.md",
       "target": "AGENTS.md",
       "mode": "managed",
-      "sha256": "92f5c80cb65e2248b3daef62aed0c8dcca95560e9d5ed09fd833c7df6bca7de9"
+      "sha256": "4bc8df30b9891e673fd3cac5ed08589dbe37ffa494e8a61dcb8a65d42f1692eb"
     },
     {
       "source": "debug.bat",
@@ -27,7 +27,7 @@
       "source": "docs-ai/common/rules.md",
       "target": "docs-ai/common/rules.md",
       "mode": "managed",
-      "sha256": "71bcd255b9af81ca6564babbc554d836706914531cced9249351325708186650"
+      "sha256": "e3c5615a787af8ce59a8c52335f49d874fe824ba08856dc6eec306f710e36ce0"
     },
     {
       "source": "docs-ai/common/codedesign.md",
@@ -39,13 +39,13 @@
       "source": "docs-ai/common/UIUX.md",
       "target": "docs-ai/common/UIUX.md",
       "mode": "managed",
-      "sha256": "b4d8b137acc561261bea61efdc7052e71f4f5ff81882c544346fdc022ff4a47d"
+      "sha256": "36a9cd12fec0b660d9dd809e097b13619106f623f3f8d1cee8ee85e15ba6a584"
     },
     {
       "source": ".agents/skills/audit-project-docs/SKILL.md",
       "target": ".agents/skills/audit-project-docs/SKILL.md",
       "mode": "managed",
-      "sha256": "ac61483db53bdb583347ded901955315f41614281286dbc15a74b61ffd04e4a3"
+      "sha256": "dd4977b6eb300e93ce7bb2f1f66cc4a62ba3fb5a41ca49c5059b452dd24af907"
     },
     {
       "source": ".agents/skills/audit-project-docs/agents/openai.yaml",
@@ -90,40 +90,40 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
-      "source": "origin.bat",
-      "target": "origin.bat",
+      "source": "scripts/origin.bat",
+      "target": "scripts/origin.bat",
       "mode": "managed",
-      "sha256": "a7a0a8fe70af0dba0e329bb6a532abc746950ee6a666f87821ec1073a5515d37"
+      "sha256": "8f132f0c2aab5168a0832af192e1bafe5a1ae6cc620a7a9fd7c79298cc22bf54"
     },
     {
-      "source": "local.bat",
-      "target": "local.bat",
+      "source": "scripts/local.bat",
+      "target": "scripts/local.bat",
       "mode": "managed",
-      "sha256": "0e19354e64a05d5be729b65c5de0cd2ceb3959f9651afe92964c6c2f336fb9fc"
+      "sha256": "1a9cf1a15cda05a9582e48b537cea345399041bae3719a345ada74f501f8cef5"
     },
     {
       "source": "scripts/origin.ps1",
       "target": "scripts/origin.ps1",
       "mode": "managed",
-      "sha256": "7059b278e8037e7021b9e48920ba07ae94cfd567560ed2c98dec917e9a736fbe"
+      "sha256": "d7ed518181982d06529c8f8de09fad82ee55496671709df9aeb9d84d013b1a18"
     },
     {
       "source": "scripts/local.ps1",
       "target": "scripts/local.ps1",
       "mode": "managed",
-      "sha256": "237338208791a785ef4ab68b44874b41fa79979235b6ff91929532ad3e627949"
+      "sha256": "7b17e8d2d7829457b54c1bee05dfeb5f07bc998f55f34902bbe5709ee9e282de"
     },
     {
       "source": "scripts/saf-core.ps1",
       "target": "scripts/saf-core.ps1",
       "mode": "managed",
-      "sha256": "84726fc1af94191f3a6d7b7237e83fa4705aa8b091041c5b9ad2a2f2db6bffa7"
+      "sha256": "287648c536a023f15b68d51b5c5873dc59ad7374ab8457839c3659a65b4175f2"
     },
     {
       "source": ".agents/skills/sync-saf/SKILL.md",
       "target": ".agents/skills/sync-saf/SKILL.md",
       "mode": "managed",
-      "sha256": "8022261ffe5e42c1dff0c294f9d9b40e64739324f8bd4a6575bea4f14612bffc"
+      "sha256": "0036177bbcfa3ec9da0085cddb914b1481f4ae313caa9598d6e7d792f5fa02d7"
     },
     {
       "source": ".agents/skills/sync-saf/agents/openai.yaml",
@@ -135,7 +135,7 @@
       "source": ".agents/skills/compress-saf/SKILL.md",
       "target": ".agents/skills/compress-saf/SKILL.md",
       "mode": "managed",
-      "sha256": "717b449e91607f66746ca63d231efde6e48a19caa40c172b72216d117f4d00da"
+      "sha256": "5932bef0c6d9d338b4bcb623773dc36c74009d4c60cc5baa08e1d585f3e181a4"
     },
     {
       "source": ".agents/skills/compress-saf/agents/openai.yaml",
@@ -144,8 +144,14 @@
       "sha256": "a55afde8773ce9c9b05ca0727eb990d789de0b8c7d20099acf626223cb3acfb5"
     },
     {
+      "source": ".agents/skills/prepare-release/SKILL.md",
+      "target": ".agents/skills/prepare-release/SKILL.md",
+      "mode": "managed",
+      "sha256": "6a32e5eff65b68192c412f6e8172d98519d3a53a26bb16f98f8e8e59c168acab"
+    },
+    {
       "source": "templates/SAF.config.json",
-      "target": "SAF.config.json",
+      "target": ".agents/saf/SAF.config.json",
       "mode": "seed",
       "sha256": "8e8f7734731552374e7a08d17b3d932ebceb2a5e959865bd02d5936dedf09b80"
     }

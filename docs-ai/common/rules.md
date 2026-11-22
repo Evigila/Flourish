@@ -16,13 +16,13 @@ Use bounded subagents for separable work when the runtime permits delegation. Ke
 
 `docs-ai/` contains AI-maintained standards, facts, decisions, and records. Reusable workflows belong in `.agents/skills/`; skill packaging does not bypass ownership or task authorization. Do not infer AI ownership from writing style.
 
-Do not create documentation outside `docs-ai/` without explicit authorization. Root `AGENTS.md`, `SAF.json`, `SAF.config.json`, and `SAF.lock.json` are role-specific exceptions. SAF source maintenance may maintain its authorized README pair, bootstrap, scripts, release metadata, templates, tests, and CI; source-only material is not imported into consumers. `.agents/backup/` and `.agents/saf_log/` contain local operational data, not an alternative documentation area. Skill packages remain under `.agents/skills/`; do not treat the entire `.agents/` tree as disposable runtime data. An empty `.gitkeep` is a directory marker, not a requirement that the directory remain empty.
+Do not create documentation outside `docs-ai/` without explicit authorization. `AGENTS.md` and the three SAF JSON files under `.agents/saf/` are role-specific exceptions. SAF source maintenance may maintain its authorized README pair, bootstrap, scripts, release metadata, templates, tests, and CI; source-only material is not imported into consumers. `.agents/backup/` and `.agents/saf_log/` contain local operational data, not an alternative documentation area. Skill packages remain under `.agents/skills/`; do not treat the entire `.agents/` tree as disposable runtime data. An empty `.gitkeep` is a directory marker, not a requirement that the directory remain empty.
 
 Write SAF instructions, AI-maintained project documents, templates, and records in English. This is a shared standard rather than a project-configurable language preference; preserve human-authored content and quoted identifiers as supplied. Store prose as `.md` and machine-readable documentation configuration as `.json`; operational logs use JSONL below. Keep toolchain-native formats. Active `AGENTS.md` and `common/` contain only effective policy. Keep dated decisions, approval history, uncertain project-specific guidance, and superseded material in `current/` with clear status.
 
 ## Project configuration
 
-`SAF.config.json` is project-owned, schema-versioned data read through `AGENTS.md` and existing handlers/skills. It is not a second policy entry point, a release manifest, or observed installation/audit state. The neutral consumer seed contains only the supported `schemaVersion`; never copy source-project protected paths, verification/UI/commit preferences, or source defaults into another project.
+`.agents/saf/SAF.config.json` is project-owned, schema-versioned data read through `AGENTS.md` and existing handlers/skills. It is not a second policy entry point, a release manifest, or observed installation/audit state. The neutral consumer seed contains only the supported `schemaVersion`; never copy source-project protected paths, verification/UI/commit preferences, or source defaults into another project.
 
 Use `Resolve-SafConfig -Root <root>` from `scripts/saf-core.ps1` for shared defaults and strict validation. Unsupported schemas, removed/unknown fields, invalid types/enums, and unsafe relative paths are errors; do not silently drop fields, reset config, or ignore it. Read configuration before selecting work or changing protected paths. Existing explicit instructions, effective project constraints, and task authorization take precedence. Configuration supplies supported preferences and restrictions, never authorization to commit, change protected content, install dependencies, or bypass integrity checks.
 
@@ -41,15 +41,15 @@ SAF write helpers used by bootstrap, origin, local maintenance, and state writer
 
 Read configuration bytes once to derive both the parsed policy and its raw-byte snapshot hash. SAF JSON readers require an object root before parser output can enumerate an array, then validate the parsed object/schema. Apply this to bootstrap metadata, config, state, release manifests, and neutral seeds; do not accept arrays, primitives, or null roots as objects. Keep the implementation compatible with Windows PowerShell 5.1.
 
-Configuration is seed-only and never replaced by synchronization or Force. Preserve consumer bytes and include config in scoped recovery. A source must declare the supported handler/config-support contract in `SAF.json`; bootstrap rejects an incompatible source rather than load code that may ignore project restrictions. When a project has an unsupported config schema or removed fields, have the user migrate that config explicitly, then run the new trusted `scripts/init.ps1`. Do not use old controllers to reinterpret it, silently delete fields, or use Force as configuration-migration permission.
+Configuration is seed-only and never replaced by synchronization or Force. Preserve consumer bytes and include config in scoped recovery. A source must declare the supported handler/config-support contract in `.agents/saf/SAF.json`; bootstrap rejects an incompatible source rather than load code that may ignore project restrictions. When a project has an unsupported config schema or removed fields, have the user migrate that config explicitly, then run the new trusted `scripts/init.ps1`. Do not use old controllers to reinterpret it, silently delete fields, or use Force as configuration-migration permission.
 
 ## Audit gate
 
-Inspect `SAF.lock.json` and its `audit` section at task entry. The periodic audit is a full check of SAF framework integrity and required file/directory structure. It does not audit the host application's source, business behavior, architecture facts, package graph, or documentation accuracy. Do not scale this check with the application's file count. Perform this SAF structural audit when:
+Inspect `.agents/saf/SAF.lock.json` and its `audit` section at task entry. The periodic audit is a full check of SAF framework integrity and required file/directory structure. It does not audit the host application's source, business behavior, architecture facts, package graph, or documentation accuracy. Do not scale this check with the application's file count. Perform this SAF structural audit when:
 
 - The user requests a SAF audit or framework-structure initialization.
 - The lock/audit state is missing, invalid, or uses an unsupported schema.
-- `audit.auditedFrameworkVersion` is missing, null, or differs from `SAF.json.frameworkVersion`.
+- `audit.auditedFrameworkVersion` is missing, null, or differs from `.agents/saf/SAF.json.frameworkVersion`.
 - `audit.lastCompletedAtUtc` is null, invalid, or later than current UTC time.
 - Current UTC time is at least one calendar month after completion.
 - Ordinary task work reveals an obviously missing, invalid, or empty required path/document.
@@ -63,10 +63,10 @@ Add one calendar month in UTC, preserving time of day and clamping the day to th
 | Required path | Responsibility |
 | --- | --- |
 | `AGENTS.md` | Compact instruction router |
-| `SAF.json` | Release version, handler compatibility, and payload manifest |
-| `SAF.config.json` | Project-owned schema-versioned values and restrictions; seed-only |
-| `SAF.lock.json` | Project-owned bootstrap/installation/audit state |
-| `origin.bat`, `local.bat` | Remote management and local maintenance interfaces |
+| `.agents/saf/SAF.json` | Release version, handler compatibility, and payload manifest |
+| `.agents/saf/SAF.config.json` | Project-owned schema-versioned values and restrictions; seed-only |
+| `.agents/saf/SAF.lock.json` | Project-owned bootstrap/installation/audit state |
+| `scripts/origin.bat`, `scripts/local.bat` | Remote management and local maintenance interfaces |
 | `debug.bat` | Seeded project-owned operation dispatcher |
 | `scripts/` | Handler implementations and project operations |
 | `docs/`, `docs/.gitkeep` | Human documentation area and empty marker |
@@ -108,7 +108,7 @@ Archive superseded/abandoned designs in `1_archived/`, with status, reason, scop
 
 ### SAF state
 
-`SAF.lock.json` uses its supported state schema and separate `bootstrap`, `installation`, and `audit` sections. Bootstrap describes deployed handlers; installation describes synchronized payload, exact source repository/ref/commit, manifest digest, normalized managed-file baselines, and synchronization time. They may differ after handler recovery. Either may be null before its operation succeeds; the source repository may have both null.
+`.agents/saf/SAF.lock.json` uses its supported state schema and separate `bootstrap`, `installation`, and `audit` sections. Bootstrap describes deployed handlers; installation describes synchronized payload, exact source repository/ref/commit, manifest digest, normalized managed-file baselines, and synchronization time. They may differ after handler recovery. Either may be null before its operation succeeds; the source repository may have both null.
 
 Audit contains `auditedFrameworkVersion`, `lastMissingMaterialAskedAtUtc`, and `lastCompletedAtUtc`. UTC timestamps use ISO 8601 ending in `Z`. Initialize audit values to null for a new consumer; preserve genuine prior evidence during migration. State is neither instructions nor authorization.
 
@@ -126,19 +126,21 @@ Create authorized missing SAF structural directories, empty markers, and project
 
 Use existing Git, Windows CMD, Windows PowerShell 5.1, or already available PowerShell 7. Do not install an application, global CLI, package, service, or runtime, modify PATH/global Git configuration, or permanently change execution policy. Windows BAT interfaces do not imply cross-platform entry points.
 
-`SAF.json` defines a stable `major.minor.patch` release, handler contract, and exact source/target/mode/normalized SHA-256 inventory. SAF source maintainers bump the release when the distributed payload/manifest changes. Consumer-local customization preserves the installed release identity and conflict baselines; it does not authorize preparing a framework release or rewriting installation evidence. The manifest does not hash itself; installation state records its digest and source commit. Source-only documentation commits are not automatically framework payload updates.
+`.agents/saf/SAF.json` defines a `major.minor.patch-suffix` release, handler contract, and exact source/target/mode/normalized SHA-256 inventory. SAF source maintainers bump the release when the distributed payload/manifest changes. Consumer-local customization preserves the installed release identity and conflict baselines; it does not authorize preparing a framework release or rewriting installation evidence. The manifest does not hash itself; installation state records its digest and source commit. Source-only documentation commits are not automatically framework payload updates.
 
 Source-only `scripts/init.ps1` provides remote bootstrap/recovery from a trusted configuration-aware source. Capture the caller's filesystem directory and require the target Git root; do not derive an `irm | iex` target from script-file variables. Resolve one commit, verify configuration support and validate all handlers before writes, back up replacements, preserve project config/facts and existing audit/installation sections, and deploy both BAT handlers and required PowerShell helpers. Initialize missing config only from the supported neutral seed; do not replace existing config. Bootstrap does not silently synchronize full payload or exit the caller's shell. Payload hashes establish consistency, not independent authentication of bootstrap code already executed.
 
-Daily `origin.bat` uses its deployed local implementation to read one validated remote snapshot. Do not execute a second independently moving remote controller or fall back to unverified code. Incompatible handler/schema results require bootstrap refresh before payload writes. Recover through trusted init rather than delete state. SAF does not promise historical pre-SAF installer handoff/rollback support.
+Daily `scripts/origin.bat` uses its deployed local implementation to read one validated remote snapshot. Do not execute a second independently moving remote controller or fall back to unverified code. Incompatible handler/schema results require bootstrap refresh before payload writes. Recover through trusted init rather than delete state. SAF does not promise historical pre-SAF installer handoff/rollback support.
+
+The protocol 4 layout places the manifest, config, and lock under `.agents/saf/` and the origin/local launchers under `scripts/`. For an existing protocol 3 installation, back up its project config and lock and move those two files into `.agents/saf/` before running the new trusted bootstrap. This preserves project preferences and managed-file baselines. After bootstrap, run `scripts/origin.bat -sync`. Sync retires the old root manifest and launchers only when the preserved installation records them and their content still matches the managed baseline. Conflicting files require review.
 
 | Command | Contract |
 | --- | --- |
-| `origin.bat -check` | Report validated availability, compatibility, and conflicts. No framework/config/manifest/lock changes or runtime migration; only `.agents/saf_log/` command logging may write locally. |
-| `origin.bat -update` | Apply the selected release or report current/no-op. Stop on managed conflicts. |
-| `origin.bat -sync` | Check, then update when available, using one resolved commit/change plan. |
-| `origin.bat -update -force` | Back up/replace conflicting managed files; may allow requested downgrade. |
-| `origin.bat` | Select sync automatically, then wait after completion to show results. |
+| `scripts/origin.bat -check` | Report validated availability, compatibility, and conflicts. No framework/config/manifest/lock changes or runtime migration; only `.agents/saf_log/` command logging may write locally. |
+| `scripts/origin.bat -update` | Apply the selected release or report current/no-op. Stop on managed conflicts. |
+| `scripts/origin.bat -sync` | Check, then update when available, using one resolved commit/change plan. |
+| `scripts/origin.bat -update -force` | Back up/replace conflicting managed files; may allow requested downgrade. |
+| `scripts/origin.bat` | Select sync automatically, then wait after completion to show results. |
 
 Explicit action parameters have no initial confirmation or final wait. Reject conflicting actions and isolated `-force`; Force applies only to Update. Exit codes: `0` successful/current, `1` error, `2` update available from Check, `3` conflict, `4` bootstrap refresh required. Version-only requests do not authorize update/Force. Do not check the network during unrelated tasks.
 
@@ -146,7 +148,7 @@ Read regular Git blobs from one resolved commit and validate the entire payload 
 
 Detect committed/uncommitted customization against imported baselines. Force never bypasses path/payload checks or project ownership. Seed missing project facts/directories/debug entry points without overwriting current documents or nonempty project customizations. Preserve user-created skills and unrelated files. Update state after successful synchronization; retain recovery evidence and report partial failures accurately.
 
-Origin recovery snapshots must include an existing `SAF.config.json` even when the seed is not a planned write. Include its exact bytes and hash rather than infer recovery completeness from preservation of the live file.
+Origin recovery snapshots must include an existing `.agents/saf/SAF.config.json` even when the seed is not a planned write. Include its exact bytes and hash rather than infer recovery completeness from preservation of the live file.
 
 ### Transaction recovery
 
@@ -158,7 +160,7 @@ For legacy migration, preserve old baselines and real audit evidence before conv
 
 ## Local maintenance
 
-`local.bat` performs offline mechanical operations. Audit/compression are Agent skills, not local commands; do not add model dispatchers, engine adapters, or task-request files. Skill discovery remains `.agents/skills/`; runtime data uses only `.agents/backup/`, `.agents/saf_log/`, and `.agents/operation.lock`.
+`scripts/local.bat` performs offline mechanical operations. Audit/compression are Agent skills, not local commands; do not add model dispatchers, engine adapters, or task-request files. Skill discovery remains `.agents/skills/`; runtime data uses only `.agents/backup/`, `.agents/saf_log/`, and `.agents/operation.lock`.
 
 Bootstrap and non-Check origin/local writes preserve and migrate legacy `.agent/` runtime data under the shared migration contract. Verify copied bytes before deleting old sources; identical destination bytes may be reused. A differing backup collision stops with both copies retained, while differing old logs receive a content-hash-suffixed path under `.agents/saf_log/legacy/`. Coordinate against old/new operation locks rather than discard an active legacy lease. Report incomplete/conflicting migration and preserve evidence. Check never migrates. Exclude old/new runtime from recursive backups while retaining skill packages.
 
@@ -166,11 +168,11 @@ No-argument local invocation shows a menu: Backup first/default, archive export/
 
 ### Backup
 
-`local.bat -backup` creates `.agents/backup/<UTC-time>-<unique-id>/` with exact scoped bytes, inventory, and hashes of SAF handlers/state/config, AI project documents, and skills. State its SAF recovery scope; it is not a full source backup. Exclude previous backups, logs, operation locks, legacy runtime, Git internals, temporary/build caches, and unrelated source. Automatic backups use the same conventions and record the triggering action. An incomplete snapshot is not a successful recovery point.
+`scripts/local.bat -backup` creates `.agents/backup/<UTC-time>-<unique-id>/` with exact scoped bytes, inventory, and hashes of SAF handlers/state/config, AI project documents, and skills. State its SAF recovery scope; it is not a full source backup. Exclude previous backups, logs, operation locks, legacy runtime, Git internals, temporary/build caches, and unrelated source. Automatic backups use the same conventions and record the triggering action. An incomplete snapshot is not a successful recovery point.
 
 ### Archive export and cleanup
 
-`local.bat -clean-arquived` exports only `docs-ai/current/1_archived/` to a unique ZIP in the user's real Windows Downloads folder obtained from the Windows User Shell Folders Downloads GUID. Do not assume a literal profile directory. Reject linked/traversing paths or output inside source.
+`scripts/local.bat -clean-arquived` exports only `docs-ai/current/1_archived/` to a unique ZIP in the user's real Windows Downloads folder obtained from the Windows User Shell Folders Downloads GUID. Do not assume a literal profile directory. Reject linked/traversing paths or output inside source.
 
 Include hidden scoped files. Reopen the ZIP and verify relative paths, entry counts, and content hashes before deleting anything. Recheck source files and delete only unchanged exported content; preserve/report new or modified files. Retain/recreate the archive directory and empty marker. Export/verification failure preserves source; partial cleanup reports remaining content and recovery ZIP. A local ZIP is not a permanent external-retention guarantee.
 
@@ -178,7 +180,7 @@ Cleaning tracked archives creates local Git deletions; later user commits may re
 
 ### Archive ignore
 
-`local.bat -no-arquived` idempotently adds root-scoped archive-child ignore rules while preserving `1_archived/.gitkeep` and existing `.gitignore` content. It does not modify index, commit, push, or remove remote files. Already tracked archives remain tracked; report that limitation. Never automatically run `git rm --cached`.
+`scripts/local.bat -no-arquived` idempotently adds root-scoped archive-child ignore rules while preserving `1_archived/.gitkeep` and existing `.gitignore` content. It does not modify index, commit, push, or remove remote files. Already tracked archives remain tracked; report that limitation. Never automatically run `git rm --cached`.
 
 ### Command logs
 
@@ -198,7 +200,7 @@ Apply approved changes through existing dependency management, verify affected b
 
 ## Project scripts and entry points
 
-Implement operations under root `scripts/`. AI-created root scripts are limited to exactly `origin.bat`, `local.bat`, and `debug.bat`, including in the SAF source repository. The source-only bootstrap is `scripts/init.ps1`; there is no root PowerShell-script exception.
+Implement operations under root `scripts/`. `debug.bat` is the only SAF launcher at the root. Keep the synchronization and maintenance launchers under `scripts/`, including in the SAF source repository. The source-only bootstrap is `scripts/init.ps1`; there is no root PowerShell-script exception.
 
 Project debugging, data resets, and publication use project-owned `debug.bat`. The seed offers Debug, Clear database, Publish tag, Publish package, and Exit; projects may adapt authorized operations without adopting a mandatory ecosystem. Dispatch under `scripts/` and report missing implementations. Preserve nonempty project customizations, including under Force.
 
@@ -211,6 +213,16 @@ Use [codedesign.md](codedesign.md) and [UIUX.md](UIUX.md) as applicable. Running
 Computer Use project testing defaults to `deny`. Read effective `project.verification.computerUse`: `inherit` follows applicable instructions/tool permissions, and a user's explicit applicable exception takes precedence over the configured default. Neither value grants tool permission or allows skipped required tests. Keep verification proportional to risk and provide recommended manual steps for behavior needing human acceptance.
 
 Distinguish passed, failed, and unperformed checks with reasons. Structural inspection does not prove runtime behavior. Follow task-specific testing limits, including static-only verification when requested.
+
+## Release versioning and approvals
+
+New release versions use `major.minor.patch-alpha`, `major.minor.patch-beta`, or `major.minor.patch-release`. Alpha and beta may add a positive numeric iteration, for example `1.5.0-alpha.1`. Use lowercase suffixes. Never create a new release with a bare numeric version. Preserve previously published versions, tags, and artifacts.
+
+For every release, first ask the user to choose the version increment and release channel. Offer patch as the default increment, with minor and major as alternatives. Offer alpha, beta, and release as the channel choices. Restate any version or channel already requested and ask for confirmation. Wait for the answer before selecting or preparing the release version. A release request alone authorizes neither a version increment nor a channel.
+
+Before any release commit, tag, push, or publication, show the proposed version and the actual public release copy and wait for the user's confirmation. If the user provides replacement release copy, use it verbatim. A replacement supplied as a revision is not authorization to publish unless the user also confirms proceeding. Ask for copy confirmation after the user chooses the version increment and channel. After approval, use the confirmed copy in the public release and follow the repository's commit-message style.
+
+Use [prepare-release](../../.agents/skills/prepare-release/SKILL.md) for the workflow. Follow the distribution platform's own classification: for example, NuGet treats every suffix, including `-release`, as a prerelease. Keep the required version string and explain any channel distinction in the release copy.
 
 ## Delivery and records
 

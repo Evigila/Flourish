@@ -26,7 +26,7 @@ The six-package Core/Blazor release set is defined by ReleaseSettings. Native WP
 
 ## Operations and verification
 
-Root launchers are SAF's origin/local and project-owned debug. Debug retains the Gallery/diagnostic launcher contract; production preparation/publication uses scripts/release.bat and its existing PowerShell implementations. Numbered discovery, the runnable allowlist, parameter validation, correct working directory and exit codes remain owned by the launcher. No operation may silently kill unrelated processes, install global tools or expand a missing desktop prerequisite.
+SAF launchers live under scripts/. The project-owned debug.bat stays at the root and retains the Gallery and diagnostic launcher contract. Production preparation and publication use scripts/release.bat and its existing PowerShell implementations. Numbered discovery, the runnable allowlist, parameter validation, correct working directory and exit codes remain owned by the launcher. No operation may silently kill unrelated processes, install global tools or expand a missing desktop prerequisite.
 
 Do not use Computer Use to test this repository. Use appropriate source/static/build/automated checks and supply manual browser/native-window acceptance steps. Preserve all maintained automated tests and necessary assets; generated builds, transient consumers, snapshots and one-off verification outputs are disposable.
 
