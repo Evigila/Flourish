@@ -686,15 +686,31 @@ if (browserPath) {
             const colors = () => evaluate("Object.fromEntries(['interaction','top','primary','selected','secondary','stage','heading','page','preview','applicationSecondary','dropdown']"
                 + ".map(id=>[id,getComputedStyle(document.getElementById(id)).backgroundColor]))");
             const light = await colors();
-            // Inspect the theme's pseudo-class colors without depending on hosted pointer event delivery.
+            // Inspect the theme's pseudo-class colors independently of the hosted OS pointer.
+            await send('Page.bringToFront');
+            await send('Emulation.setFocusEmulationEnabled',{enabled:true});
             await send('DOM.enable');
             await send('CSS.enable');
             const {root} = await send('DOM.getDocument');
             const {nodeId} = await send('DOM.querySelector',{nodeId:root.nodeId,selector:'#interaction'});
-            await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['hover']});
-            const hover = (await colors()).interaction;
-            await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['hover','active']});
-            const press = (await colors()).interaction;
+            const interactionColor = async (forcedPseudoClasses, expected) => {
+                await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses});
+                await evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
+                const color = (await colors()).interaction;
+                if (color !== expected) {
+                    const details = await evaluate("(() => {const node=document.querySelector('#interaction'),style=getComputedStyle(node);"
+                        + "return {browser:navigator.userAgent, focus:document.hasFocus(), hover:node.matches(':hover'),"
+                        + "active:node.matches(':active'), enabled:!node.matches(':disabled'),"
+                        + "preview:style.getPropertyValue('--f-target-preview'), click:style.getPropertyValue('--f-target-click')};})()");
+                    const styles = await send('CSS.getMatchedStylesForNode',{nodeId});
+                    const matched = styles.matchedCSSRules.flatMap(({rule,matchingSelectors}) => matchingSelectors
+                        .map(index=>rule.selectorList.selectors[index].text)).filter(selector=>selector.includes('.f-button'));
+                    console.log('Interaction color details',JSON.stringify({forcedPseudoClasses, color, expected, details, matched}));
+                }
+                return color;
+            };
+            const hover = await interactionColor(['hover'],'rgb(234, 225, 213)');
+            const press = await interactionColor(['hover','active'],'rgb(211, 203, 192)');
             await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:[]});
             await evaluate("document.body.className='f-root f-theme-dark'");
             const dark = await colors();
