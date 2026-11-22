@@ -42,7 +42,7 @@ public static class CatalogSections
             or "Patterns.ContentSurface" or "Patterns.NavigationSurface"
             or "ContentContainer" or "PresentationBand" or "PresentationHero" or "PresentationFooter" or "LogoDisplayer" or "AccessPanel" or "NavigationChoices"
             or "Primitives.AccessBrand" or "Primitives.ShellHeader"
-            or "Primitives.ServiceMenu" or "Primitives.PrimaryNavigationItem" or "Primitives.SecondaryNavigationItem"
+            or "Primitives.ServiceMenu" or "Primitives.AppLauncher" or "Primitives.PrimaryNavigationItem" or "Primitives.SecondaryNavigationItem"
             or "Primitives.NavigationGuard" or "Primitives.InteractionBoundary" or "AttributionFooter" => "layout",
         _ => "content"
     };

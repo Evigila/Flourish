@@ -26,7 +26,7 @@ test("Button content grows with vertical padding while short labels and icon-onl
     const action = element(tag, ["f-button", `f-button-${variant}`, ...(structured ? ["f-button-structured"] : [])], root, [], attributes);
     const [blockPadding] = cascade(action, "padding").split(/\s+/).map(parseFloat);
     const minimum = parseFloat(cascade(action, "min-height"));
-    const fontSize = parseFloat(cascade(action, "font-size"));
+    const fontSize = parseFloat(resolvedProperty(action, "font-size"));
     const lineHeight = parseFloat(cascade(action, "line-height"));
     assert.ok(blockPadding > 0, `${variant}/${structured}/${state}: content lost its vertical breathing room`);
     assert.ok([undefined, "auto"].includes(cascade(action, "height")) && [undefined, "none"].includes(cascade(action, "max-height")),
@@ -156,7 +156,7 @@ test("FormActions keeps shared Elevated fills and only outer group elevation wit
       assert.equal(resolvedProperty(defaultAction, property), resolvedProperty(standalone, property), `${theme}: FormActions changes default UGB ${property}`);
     for (const variant of [null, "elevated", "filled-elevated", "danger"]) {
       const action = element("button", [...standalone.classes, ...(variant ? [`f-uniform-variant-${variant}`] : [])], actions, ["hover", "focus-visible"]);
-      assert.equal(cascade(action, "min-height"), "96px", `${variant}: form height changed`);
+      assert.equal(cascade(action, "min-height"), "67.2px", `${variant}: form height changed`);
       assert.equal(cascade(action, "max-width"), "none");
       assert.equal(cascade(action, "border-radius"), "0");
       assert.equal(cascade(action, "border-color"), "transparent", `${variant}: only the shared-edge layer paints separators`);

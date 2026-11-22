@@ -201,7 +201,7 @@ test("direct accessible menu tiles retain standalone size, centering, rounding a
   const allStyles = rules(frameworkCss + "\n" + designCss), { panel } = popupFixture("action", "left");
   panel.classes.add("f-menu-panel-columns"); panel.classes.add("f-menu-panel-unframed");
   const tile = element("a", ["f-button", "f-button-primary", "f-menu-item", "f-dropdown-item", "f-uniform-cell", "f-uniform-grid-button", "f-uniform-variant-elevated"], panel, [], [["role", "menuitem"]]);
-  for (const [property, expected] of [["min-height", "110px"], ["padding", "16px"], ["border-radius", "var(--f-radius-control,12px)"], ["box-shadow", "var(--f-uniform-cell-shadow,var(--f-shadow-control))"], ["text-align", "center"], ["justify-content", "center"], ["width", "100%"]])
+  for (const [property, expected] of [["min-height", "77px"], ["padding", "12px"], ["border-radius", "var(--f-radius-control,12px)"], ["box-shadow", "var(--f-uniform-cell-shadow,var(--f-shadow-control))"], ["text-align", "center"], ["justify-content", "center"], ["width", "100%"]])
     assert.equal(cascade(allStyles, tile, property), expected, property);
   assert.equal(cascade(allStyles, tile, "max-height"), undefined, "Long tile labels can grow instead of inheriting a grouped grid cap.");
   tile.states.add("focus-visible");
@@ -223,10 +223,10 @@ test("information grid fields grow naturally beyond shape and fixed-height caps 
     if (css.includes("--f-uniform-cell-background")) {
       assert.equal(cascade(allStyles, info, "padding"), "24px", `${shape}/${fixed}/information inset`);
       assert.equal(cascade(allStyles, info, "min-height"), "0", 'information grows from padded label/value content rather than an action-cell cap');
-      assert.equal(cascade(allStyles, action, "padding"), "16px", 'information spacing must not enlarge ordinary actions');
+      assert.equal(cascade(allStyles, action, "padding"), "12px", 'information spacing must not enlarge ordinary actions');
     }
-    assert.equal(cascade(allStyles, action, "aspect-ratio"), fixed ? "auto" : shape === "square" ? "1" : "2/1");
-    assert.equal(cascade(allStyles, action, "max-height"), fixed ? "var(--f-grid-cell-height)" : shape === "square" ? "var(--f-grid-cell-max,280px)" : "var(--f-grid-cell-max-height,260px)");
+    assert.equal(cascade(allStyles, action, "aspect-ratio"), fixed ? "auto" : shape === "square" ? "1" : "var(--f-grid-rectangle-ratio,20/7)");
+    assert.equal(cascade(allStyles, action, "max-height"), fixed ? "var(--f-grid-cell-height)" : shape === "square" ? "var(--f-grid-cell-max,196px)" : "var(--f-grid-cell-max-height,182px)");
   }
 });
 
@@ -235,9 +235,9 @@ test("information labels use body type and selectable values use H1 size without
   const cell = element("div", ["f-uniform-cell", "f-uniform-information"], grid), pair = element("dl", ["f-uniform-information-pair"], cell);
   const label = element("dt", ["f-uniform-information-label"], pair), value = element("dd", ["f-uniform-information-value"], pair);
   const copy = element("code", ["f-copy-text"], value);
-  assert.equal(cascade(allStyles, label, "font-size"), "var(--f-type-body,17px)");
+  assert.equal(cascade(allStyles, label, "font-size"), "var(--f-type-body,14px)");
   assert.equal(cascade(allStyles, label, "font-weight"), "400");
-  assert.equal(cascade(allStyles, value, "font-size"), "var(--f-type-h1,34px)");
+  assert.equal(cascade(allStyles, value, "font-size"), "var(--f-type-h1,36px)");
   assert.equal(cascade(allStyles, value, "overflow-wrap"), "anywhere");
   assert.equal(cascade(allStyles, copy, "font"), "inherit");
   const dialog = element("dialog", ["f-dialog"], null), header = element("header", ["f-dialog-header"], dialog);
@@ -300,7 +300,7 @@ test("structured dropdown actions use two body-sized lines without enlarging ord
     action.states = new Set(states);
     assert.equal(cascade(allStyles, action, "color"), "var(--f-text)", states.join("/"));
     for (const [line, weight] of [[title, "700"], [description, "400"]]) {
-      assert.equal(cascade(allStyles, line, "font-size"), "17px");
+      assert.equal(cascade(allStyles, line, "font-size"), "var(--f-type-body,14px)");
       assert.equal(cascade(allStyles, line, "font-weight"), weight);
       assert.equal(cascade(allStyles, line, "line-height"), "1.55");
       assert.equal(cascade(allStyles, line, "color"), "inherit");
@@ -318,7 +318,7 @@ test("hover language and native select choices retain body weight including the 
   const allStyles = rules(frameworkCss + "\n" + designCss), { panel } = popupFixture("action", "left");
   for (const checked of [false, true]) {
     const choice = element("button", ["f-native-select-option", "f-dropdown-item"], panel, [], [["role", "menuitemradio"], ["aria-checked", String(checked)]]);
-    assert.equal(cascade(allStyles, choice, "font-size"), "17px");
+    assert.equal(cascade(allStyles, choice, "font-size"), "var(--f-type-body,14px)");
     assert.equal(cascade(allStyles, choice, "font-weight"), "400");
     assert.equal(cascade(allStyles, choice, "line-height"), "1.55");
     assert.equal(cascade(allStyles, choice, "padding"), "6px 10px");
@@ -543,7 +543,7 @@ test("embedded markers preserve native checked semantics and never acquire stand
 
 test("embedded marker typography is inherited natively and supplied only by optional Design", () => {
   const native = rules(frameworkCss), skinned = rules(frameworkCss + "\n" + designCss);
-  const expectedFont = '800 17px/1 var(--f-font,"Segoe UI",sans-serif)';
+  const expectedFont = '800 17px/1 var(--f-font,sans-serif)';
   const pickerMark = new Map(rules(designCss).filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
   assert.equal(pickerMark.get("font"), expectedFont);
   assert.doesNotMatch(strip(frameworkCss), /Segoe UI/);

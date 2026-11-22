@@ -8,7 +8,7 @@ internal sealed record DesignOptions(AppearanceState Appearance);
 internal sealed class AppearanceBuilder : IAppearanceBuilder
 {
     private bool completed;
-    private AppearanceState appearance = new("#153A32", "#16745F", "'Segoe UI', system-ui, sans-serif", ApplicationTheme.Light);
+    private AppearanceState appearance = new(AppearancePalette.DefaultPrimary, AppearancePalette.DefaultAccent, "'Noto Sans','Noto Sans SC',sans-serif", ApplicationTheme.Light);
 
     private void Check()
     {

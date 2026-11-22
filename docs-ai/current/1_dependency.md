@@ -2,13 +2,13 @@
 
 ## Evidence and interpretation
 
-Source declarations use Flourish VersionPrefix 1.4.8, no suffix, and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. This consolidation changes no application package version or project reference. SAF 2.0.0 replaces instruction tooling; DocFX and its documentation-only assets/workflow are removed under explicit authorization.
-
-The recorded local 1.4.8-preview.14 candidate is an explicit build override, independently consumed in Colligere. It does not promote the source version or establish a new public release. Last recorded stable publication is v1.4.7; detailed prior candidates and exact release receipts remain in archived source documents.
+Source declares stable Flourish 1.4.9 and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. The release includes the packaged Noto assets verified by the package gate. The preview builds and their checks remain historical evidence.
 
 The complete 2026-11-10 machine-readable capture is [archived evidence](1_archived/dependency-evidence-2026-11-10.json). It records declarations/references, matching asset timestamps/hashes, immediate dependency parents, full consumer sets, cache metadata and SDK download requests. Its 22 mixed-age asset captures contain 51 external package/version pairs. Blazor resolves Essential 1.4.0, while older native caches still show 1.3.0 despite current 1.4.0 declarations; the stale native results do not verify the current restore. The following captured table is retained without changing its package/version/consumer/source/license values.
 
 Generated bin/obj, output feeds, test consumers and verification directories are removed by cleanup. Paths/timestamps/hashes to those outputs describe historical acquisition only; this document does not claim those files remain or that a fresh restore/build ran. The full original inventory, older 49-pair captures and all former DocFX tool provenance remain in the complete pre-cleanup snapshot. NuGet lower-bound declarations are distinct from observed exact versions; unknown license/source metadata remains unknown.
+
+The optional Blazor Design package redistributes the original Google Fonts WOFF2 web subsets of Noto Sans (normal and italic) and Noto Sans SC (normal). It includes each SIL Open Font License 1.1 notice and declares MIT AND OFL-1.1. The source manifest records the official asset URLs, byte lengths and SHA-256 digests. Loading is same-origin and Unicode-range-driven. Build verification does not fetch upstream fonts. See the [appearance change record](1_changelogs/2026-11-21_094041_refresh-blazor-appearance-defaults.md).
 
 ## Captured complete external package closure
 

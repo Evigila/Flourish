@@ -19,6 +19,12 @@
         <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@Localization.Parse(TextKey.Sample_ApplicationName)" />
     }
     <ArkheideSystem.Flourish.Blazor.Components.Primitives.ShellHeader HomeHref="@($"#{Id}")" HomeAriaLabel="@Localization.Parse(TextKey.Sample_BackToExampleHome)" LogoPath="@Logo" BrandName="@(Preview ? Localization.Parse(TextKey.Sample_ApplicationName) : Localization.Parse(TextKey.Sample_ResourceCenterFictional))" ContextName="@(Preview ? null : Localization.Parse(TextKey.Sample_SharedResources))" IdentityName="@(Preview || !Identity ? null : Localization.Parse(TextKey.Sample_ExampleVisitor))" IdentityAriaLabel="@Localization.Parse(TextKey.Sample_FictionalDemoIdentity)">
+        <ServiceLauncher>
+            @if (!Preview)
+            {
+                <ArkheideSystem.Flourish.Blazor.Components.Primitives.AppLauncher Label="@Localization.Parse(TextKey.Sample_OpenServices)" Items="Links" />
+            }
+        </ServiceLauncher>
         <Services>@if (!Preview) { <ArkheideSystem.Flourish.Blazor.Components.Primitives.ServiceMenu Label="@Localization.Parse(TextKey.Sample_Resources)" Items="Links" /> }</Services>
         <EndActions>
             @if (Identity && !Preview)

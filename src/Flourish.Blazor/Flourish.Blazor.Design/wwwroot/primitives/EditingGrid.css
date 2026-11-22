@@ -5,7 +5,7 @@ background: var(--f-surface);
 }
 
 .editing-grid-table {
-font-size: 17px;
+font-size: var(--f-type-body,14px);
     line-height: 24px;
 }
 
@@ -188,7 +188,7 @@ line-height: 24px;
 .editing-grid-table .cell-error {
 padding: 6px 10px;
     color: var(--f-danger);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
 }
 
 .editing-grid-table .empty-grid {

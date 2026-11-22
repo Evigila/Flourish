@@ -7,7 +7,7 @@
 .reference-empty {
     padding: 10px;
     color: var(--f-muted);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
 }
 
 .selection-dropdown-surface .selection-trigger {
@@ -19,7 +19,7 @@
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-control);
     font: inherit;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     font-weight: 400;
     text-align: left;
     cursor: pointer;
@@ -44,7 +44,7 @@
     border: 1px solid var(--f-border);
     border-radius: var(--f-radius-control);
     font: inherit;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
 }
 .selection-dropdown-surface :is(.selection-option, .selection-create) {
     width: 100%;
@@ -54,7 +54,7 @@
     border: 0;
     border-radius: 12px;
     font: inherit;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     text-align: left;
     justify-content: left;
     cursor: pointer;

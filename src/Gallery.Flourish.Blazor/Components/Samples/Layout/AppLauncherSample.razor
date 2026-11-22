@@ -1,0 +1,24 @@
+@inherits LocalizedComponentBase
+@using ArkheideSystem.Flourish.Blazor
+@using Primitives = ArkheideSystem.Flourish.Blazor.Components.Primitives
+@namespace ArkheideSystem.Gallery.Flourish.Blazor.Components.Samples.Layout
+@attribute [ArkheideSystem.Gallery.Flourish.Blazor.Models.SampleFor("Primitives.AppLauncher", DescriptionKey = "Key.Sample_AppLauncherSample_Description")]
+
+<ArkheideSystem.Flourish.Blazor.Components.Primitives.AppLauncher Label="@Localization.Parse(TextKey.Sample_OpenServices)" Items="Links" />
+@if (!Preview)
+{
+    <h3 id="@(Id + "-documentation")">@Localization.Parse(TextKey.Sample_Documentation)</h3>
+    <h3 id="@(Id + "-resources")">@Localization.Parse(TextKey.Sample_ReferenceResources)</h3>
+    <h3 id="@(Id + "-sharing")">@Localization.Parse(TextKey.Sample_SharedResources)</h3>
+}
+
+@code {
+    [Parameter] public bool Preview { get; set; }
+    private readonly string Id = $"app-launcher-sample-{Guid.NewGuid():N}";
+    private IReadOnlyList<Primitives.ServiceLink> Links =>
+    [
+        new(Localization.Parse(TextKey.Sample_Documentation), $"#{Id}-documentation") { Icon = "article" },
+        new(Localization.Parse(TextKey.Sample_ReferenceResources), $"#{Id}-resources") { Icon = "inventory_2" },
+        new(Localization.Parse(TextKey.Sample_SharedResources), $"#{Id}-sharing") { Icon = "group" }
+    ];
+}

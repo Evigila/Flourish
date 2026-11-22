@@ -3344,6 +3344,16 @@
     "zh-CN": "只适用于自定义导航宿主；常规应用使用 Program ConfigureNavigation，由 ApplicationShell 统一生成导航。",
     "pt-BR": "Apenas para hosts personalizados. Aplicações padrão usam Program.ConfigureNavigation e navegação gerada por ApplicationShell."
   },
+  "Sample_OpenServices": {
+    "en-US": "Open services",
+    "zh-CN": "打开服务",
+    "pt-BR": "Abrir serviços"
+  },
+  "Sample_AppLauncherSample_Description": {
+    "en-US": "Open the launcher to visit fictional service sections. Use the arrow keys to move through links and Escape to return to the launcher.",
+    "zh-CN": "打开启动器可进入示例服务。按方向键选择链接，按 Esc 返回启动器。",
+    "pt-BR": "Abra o seletor para visitar seções de serviços fictícios. Use as setas para percorrer os links e Escape para voltar ao seletor."
+  },
   "Sample_ServiceMenuSample_Description": {
     "en-US": "Fictional help center; the menu links to actual example sections.",
     "zh-CN": "虚构帮助中心。菜单提供指向实际示例段落的导航链接。",

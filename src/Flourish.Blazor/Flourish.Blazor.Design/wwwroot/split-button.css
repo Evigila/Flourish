@@ -2,7 +2,7 @@
 .f-split-button:not(.f-secondary-row) > .f-split-button-menu > .f-split-button-secondary {
     min-height:48px; padding:0 14px; border:1px solid var(--f-border);
     border-radius:var(--f-radius-control,12px); background:var(--f-surface); color:var(--f-text);
-    font:650 var(--f-type-body,17px)/1.55 var(--f-font,"Segoe UI",sans-serif); text-decoration:none; cursor:pointer;
+    font:650 var(--f-type-body,14px)/1.55 var(--f-font,sans-serif); text-decoration:none; cursor:pointer;
 }
 .f-split-button:not(.f-secondary-row) > .f-split-button-secondary,
 .f-split-button:not(.f-secondary-row) > .f-split-button-menu > .f-split-button-secondary { padding:0 10px; }

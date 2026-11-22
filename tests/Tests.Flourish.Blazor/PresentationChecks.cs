@@ -111,6 +111,48 @@ internal static class PresentationChecks
                 "Header layout replaced native link behavior.");
         }));
 
+        tests.Add(("shell header launcher keeps its icon, service links and center navigation independent", async () =>
+        {
+            Primitives.ServiceLink[] links = [new("Finance <safe>", "https://finance.example/") { Icon = "account_balance" }, new("People", "/people/")];
+            RenderFragment launcher = builder =>
+            {
+                builder.OpenComponent<Primitives.AppLauncher>(0);
+                builder.AddAttribute(1, nameof(Primitives.AppLauncher.Id), "portal-apps-menu");
+                builder.AddAttribute(2, nameof(Primitives.AppLauncher.Label), "Open services");
+                builder.AddAttribute(3, nameof(Primitives.AppLauncher.Items), links);
+                builder.CloseComponent();
+            };
+            var html = await Render<Primitives.ShellHeader>(new()
+            {
+                [nameof(Primitives.ShellHeader.HomeHref)] = "/",
+                [nameof(Primitives.ShellHeader.HomeAriaLabel)] = "Home",
+                [nameof(Primitives.ShellHeader.LogoPath)] = "/logo.svg",
+                [nameof(Primitives.ShellHeader.BrandName)] = "Project",
+                [nameof(Primitives.ShellHeader.ServiceLauncher)] = launcher,
+                [nameof(Primitives.ShellHeader.Services)] = ButtonFragment(ButtonVariant.Quiet, "About", "/about/")
+            });
+            Check(html.IndexOf("shell-header-launcher", StringComparison.Ordinal) < html.IndexOf("shell-header-brand", StringComparison.Ordinal)
+                && html.IndexOf("shell-header-brand", StringComparison.Ordinal) < html.IndexOf("shell-header-center", StringComparison.Ordinal),
+                "The launcher, brand and center navigation do not follow the declared order.");
+            var trigger = Regex.Match(html, @"<button\b[^>]*class=""f-app-launcher-trigger""[^>]*>[\s\S]*?</button>").Value;
+            Check(trigger.Contains("aria-label=\"Open services\"") && trigger.Contains("aria-expanded=\"false\"")
+                && trigger.Contains("aria-controls=\"portal-apps-menu\"") && trigger.Contains("aria-haspopup=\"menu\"")
+                && Regex.Matches(trigger, "<span></span>").Count == 9 && !trigger.Contains("Open services</"),
+                "The button must expose its name, state and controlled panel without adding visible text.");
+            var panel = Regex.Match(html, @"<div\b[^>]*class=""[^""]*f-app-launcher-panel[^""]*""[^>]*>[\s\S]*?</div>").Value;
+            Check(panel.Contains("id=\"portal-apps-menu\"") && panel.Contains("role=\"menu\"")
+                && Regex.Matches(panel, "data-enhance-nav=\"false\"").Count == 2
+                && panel.Contains("https://finance.example/") && panel.Contains("/people/")
+                && panel.Contains("Finance &lt;safe&gt;") && !panel.Contains("/about/"),
+                "The launcher must contain only service links using native navigation.");
+            Check(Regex.IsMatch(panel, @"data-icon=""account_balance""[\s\S]*?f-app-launcher-label"">Finance")
+                && Regex.IsMatch(panel, @"data-icon=""apps""[\s\S]*?f-app-launcher-label"">People")
+                && Regex.Matches(panel, "aria-hidden=\"true\"").Count == 2,
+                "Decorative service icons must precede each visible label, with a fallback for older callers.");
+            var empty = await Render<Primitives.AppLauncher>(new() { [nameof(Primitives.AppLauncher.Label)] = "Open services" });
+            Check(!empty.Contains("f-app-launcher"), "A launcher with no services must not add an empty trigger.");
+        }));
+
         tests.Add(("shell header brand is one standard Quiet link button with a bounded logo and encoded title", async () =>
         {
             var html = await Render<Primitives.ShellHeader>(new()
@@ -165,7 +207,10 @@ internal static class PresentationChecks
             var buttonMinimum = Number(button, @"(?:^|;)\s*min-height\s*:\s*([\d.]+)px");
             var buttonPadding = Number(button, @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
             var buttonBorder = Number(button, @"(?:^|;)\s*border\s*:\s*([\d.]+)px");
-            var textLine = Number(Rule(paint, ".shell-header-title"), @"(?:^|;)\s*font-size\s*:\s*([\d.]+)px")
+            Check(Rule(paint, ".shell-header-title").Contains("font-size: var(--f-type-body,14px)", StringComparison.Ordinal),
+                "The header title bypasses the designated body size.");
+            var type = Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/foundation.css"), ":root, .f-root");
+            var textLine = Number(type, @"(?:^|;)\s*--f-type-body\s*:\s*([\d.]+)px")
                 * Number(button, @"(?:^|;)\s*line-height\s*:\s*([\d.]+)");
             var logoSize = Number(Rule(paint, ".shell-header-logo img"), @"(?:^|;)\s*height\s*:\s*([\d.]+)px");
             var wingPadding = Number(Rule(paint, ".shell-header-start"), @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
@@ -244,7 +289,7 @@ internal static class PresentationChecks
             var paint = Rule(design, ".f-card.f-card-prominent");
             Check(!Regex.IsMatch(paint, @"\b(?:background|color|border-color)\s*:"), "Prominent Card created an independent skin.");
             var text = Rule(design, ".f-card-prominent-copy > .f-card-prominent-text");
-            Check(text.Contains("font-size:var(--f-type-h1,34px)", StringComparison.Ordinal) && text.Contains("margin:0", StringComparison.Ordinal), "Prominent body copy no longer follows H1 type tokens.");
+            Check(text.Contains("font-size:var(--f-type-h1,36px)", StringComparison.Ordinal) && text.Contains("margin:0", StringComparison.Ordinal), "Prominent body copy no longer follows H1 type tokens.");
             return Task.CompletedTask;
         }));
 

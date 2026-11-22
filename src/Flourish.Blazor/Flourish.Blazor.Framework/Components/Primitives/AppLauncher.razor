@@ -1,0 +1,38 @@
+@namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
+
+@if (Items.Count > 0)
+{
+    <div class="f-app-launcher" data-f-popup="menu" data-f-popup-dismiss-action="true">
+        <button class="f-app-launcher-trigger" type="button" aria-label="@Label" aria-haspopup="menu"
+                aria-expanded="false" aria-controls="@PanelId">
+            <span class="f-app-launcher-icon" aria-hidden="true">
+                @for (var dot = 0; dot < 9; dot++)
+                {
+                    <span></span>
+                }
+            </span>
+        </button>
+        <div class="f-menu-panel f-app-launcher-panel" id="@PanelId" data-f-popup-panel popover="manual"
+             role="menu" aria-label="@Label">
+            @foreach (var item in Items)
+            {
+                <a class="f-menu-item f-app-launcher-item" href="@item.Href" role="menuitem" tabindex="-1" data-enhance-nav="false">
+                    <Icon Name="@(string.IsNullOrWhiteSpace(item.Icon) ? "apps" : item.Icon)" />
+                    <span class="f-app-launcher-label">@item.Label</span>
+                </a>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private readonly string GeneratedId = $"app-launcher-{Guid.NewGuid():N}";
+    private string PanelId => Id ?? GeneratedId;
+
+    /// <summary>Optional stable ID for the controlled menu panel.</summary>
+    [Parameter] public string? Id { get; set; }
+    /// <summary>Accessible name of the icon button and its service menu.</summary>
+    [Parameter, EditorRequired] public string Label { get; set; } = "Services";
+    /// <summary>Service destinations supplied by the host.</summary>
+    [Parameter] public IReadOnlyList<ServiceLink> Items { get; set; } = [];
+}

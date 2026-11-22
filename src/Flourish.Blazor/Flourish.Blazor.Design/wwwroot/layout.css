@@ -1,7 +1,7 @@
 :root {
 color-scheme:light;
 
-    font-family:"Segoe UI", sans-serif;
+    font-family:var(--f-font,sans-serif);
 }
 
 label {
@@ -19,7 +19,7 @@ object-fit:contain;
 
 .access-brand h1 {
 margin:0;
-    font-size:var(--f-type-h1, 34px);
+    font-size:var(--f-type-h1, 36px);
     font-weight:600;
 }
 
@@ -31,8 +31,8 @@ body {
 margin:0;
     color:var(--f-text);
     background:var(--f-canvas);
-    font-family:"Segoe UI", sans-serif;
-    font-size:17px;
+    font-family:var(--f-font,sans-serif);
+    font-size:var(--f-type-body,14px);
     line-height:1.45;
 }
 
@@ -96,7 +96,7 @@ margin-bottom:0;
 
 .section-heading > span {
 color:var(--f-muted);
-    font-size:17px;
+    font-size:var(--f-type-body,14px);
 }
 
 [data-resizable-table] .data-column-resizer::after {
@@ -118,13 +118,13 @@ outline:2px solid var(--f-accent);
 .validation-errors {
 color:var(--f-surface);
     background:var(--f-danger);
-    font-size:17px;
+    font-size:var(--f-type-body,14px);
 }
 
 .form-check {
 gap:12px;
     color:var(--f-text);
-    font-size:17px;
+    font-size:var(--f-type-body,14px);
     font-weight:var(--f-label-weight);
 }
 
@@ -144,7 +144,7 @@ gap:12px;
 
 .form-check > input[type="checkbox"]::before {
 color:transparent;
-    font-size:17px;
+    font-size:var(--f-type-body,14px);
     font-weight:800;
     line-height:1;
 }
@@ -176,7 +176,7 @@ background:var(--f-surface-alternate);
 :is(.navigation-surface, .content-surface) select:not(.f-select) optgroup {
 color:var(--f-text);
     background:var(--f-surface);
-    font-size:17px;
+    font-size:var(--f-type-body,14px);
 }
 
 .required-field::after,

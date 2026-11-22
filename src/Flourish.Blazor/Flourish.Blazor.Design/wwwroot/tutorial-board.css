@@ -9,9 +9,9 @@
 .f-tutorial-canvas { color:var(--f-text); background-color:var(--f-canvas); --f-tutorial-dot:var(--f-border); }
 .f-tutorial-dotted { background-image:radial-gradient(circle,var(--f-tutorial-dot) 1px,transparent 1.2px); background-size:18px 18px; }
 .f-tutorial-content { padding-block:40px; }
-.f-tutorial-content h1 { margin:0; font-size:var(--f-type-h1,34px); font-weight:780; line-height:1.2; }
-.f-tutorial-content p { margin:0; max-width:700px; font-size:var(--f-type-body,17px); line-height:1.6; }
-.f-tutorial-header > span { font-size:var(--f-type-body,17px); font-weight:650; }
+.f-tutorial-content h1 { margin:0; font-size:var(--f-type-h1,36px); font-weight:780; line-height:1.2; }
+.f-tutorial-content p { margin:0; max-width:700px; font-size:var(--f-type-body,14px); line-height:1.6; }
+.f-tutorial-header > span { font-size:var(--f-type-body,14px); font-weight:650; }
 .f-tutorial-primary .f-tutorial-header .f-button-quiet,.f-tutorial-primary .f-tutorial-skip .f-button-underline { color:inherit; }
 .f-tutorial-primary .f-tutorial-header .f-button-quiet:hover:not(:disabled) { background:var(--f-primary-preview); }
 .f-tutorial-segment { color:inherit; border:0; border-radius:0; background:transparent; }

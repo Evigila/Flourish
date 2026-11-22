@@ -1,7 +1,11 @@
 [
   {
-    "version": "1.4.9-preview",
+    "version": "1.4.10-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.9",
+    "changeKeys": ["Key.ChangeLog_BlazorAppearance149", "Key.ChangeLog_BlazorNavigation149"]
   },
   {
     "version": "1.4.8",

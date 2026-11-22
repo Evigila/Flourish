@@ -18,7 +18,7 @@ public static class DesignServiceCollectionExtensions
         {
             var section = configuration.GetSection("Flourish:Appearance");
             if (section["Primary"] is not null || section["Accent"] is not null)
-                appearance.SetColors(section["Primary"] ?? "#153A32", section["Accent"] ?? "#16745F");
+                appearance.SetColors(section["Primary"] ?? AppearancePalette.DefaultPrimary, section["Accent"] ?? AppearancePalette.DefaultAccent);
             if (section["Theme"] is not null)
                 appearance.SetTheme(section.GetValue<ApplicationTheme>("Theme"));
             if (section["FontFamily"] is { } font) appearance.SetFont(font);

@@ -911,9 +911,19 @@
     "pt-BR": "Marca, menu de serviços e ações superiores."
   },
   "Catalog_Primitives_ShellHeader_Variants": {
-    "en-US": "Services/LeadingActions/EndActions provide slots; IdentityName/Href supply the identity link.",
-    "zh-CN": "Services / LeadingActions / EndActions 提供插槽；IdentityName / Href 提供身份链接。",
-    "pt-BR": "Services/LeadingActions/EndActions fornecem slots; IdentityName/Href fornecem link de identidade."
+    "en-US": "ServiceLauncher/Services/LeadingActions/EndActions provide slots; IdentityName/Href supply the identity link.",
+    "zh-CN": "ServiceLauncher / Services / LeadingActions / EndActions 提供插槽；IdentityName / Href 提供身份链接。",
+    "pt-BR": "ServiceLauncher/Services/LeadingActions/EndActions fornecem slots; IdentityName/Href fornecem link de identidade."
+  },
+  "Catalog_Primitives_AppLauncher_Purpose": {
+    "en-US": "Opens service navigation from a nine-dot button.",
+    "zh-CN": "通过九点按钮打开服务导航。",
+    "pt-BR": "Abre a navegação de serviços com um botão de nove pontos."
+  },
+  "Catalog_Primitives_AppLauncher_Variants": {
+    "en-US": "Provide an accessible Label and service links in Items. The ShellHeader ServiceLauncher slot places it before branding.",
+    "zh-CN": "通过 Label 提供无障碍名称，并通过 Items 提供服务链接。ShellHeader 的 ServiceLauncher 插槽把它放在品牌之前。",
+    "pt-BR": "Forneça um Label acessível e os links de serviço em Items. O slot ServiceLauncher de ShellHeader o coloca antes da marca."
   },
   "Catalog_Primitives_ServiceMenu_Purpose": {
     "en-US": "Navigation targets in a top dropdown menu.",

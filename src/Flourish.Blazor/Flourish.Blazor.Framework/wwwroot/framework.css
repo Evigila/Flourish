@@ -224,6 +224,9 @@
 .f-image-preview > figcaption { display:grid; gap:var(--f-field-label-gap,12px); }
 .f-attribution-footer { padding:var(--f-page-gutter,24px); text-align:center; }
 .f-data { width:100%; min-width:0; }
+/* Standalone search retains its document spacing outside a table. */
+.f-data > .f-data-search,.f-data > .f-data-toolbar { margin-block-end:var(--f-data-section-gap,14px); }
+.f-data > .f-data-footer { margin-block-start:var(--f-data-section-gap,14px); }
 .f-data-toolbar,.f-data-page-group,.f-data-tools,.f-data-pager-row { display:flex; align-items:center; flex-wrap:wrap; min-width:0; }
 .f-data-tools { margin-inline-start:auto; }
 .f-data-scroll { width:100%; min-width:0; overflow:auto; overscroll-behavior-inline:contain; }

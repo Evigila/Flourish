@@ -248,6 +248,52 @@ await check('Native hover stays open across both regions and pointer clicks do n
     const click = event(summary); click.detail = 1; summary.emit('click', click);
     assert.equal(click.defaultPrevented, true); assert.equal(disclosure.open, true); assert.equal(nativePanel.popoverOpen, true);
 });
+await check('Click-only app launcher preserves native service links and supports keyboard selection', async () => {
+    const owner = new Node('div'), button = new Node(), panel = new Node('div');
+    const links = [new Node('a'), new Node('a'), new Node('a')];
+    owner.setAttribute('data-f-popup','menu');
+    owner.setAttribute('data-f-popup-dismiss-action','true');
+    panel.setAttribute('data-f-popup-panel','');
+    panel.setAttribute('role','menu');
+    for (const [index, link] of links.entries()) {
+        link.setAttribute('role','menuitem');
+        link.setAttribute('tabindex','-1');
+        link.setAttribute('href','/service/' + index);
+    }
+    panel.append(...links);
+    owner.append(button,panel);
+    const root = new Node('div');
+    root.append(owner);
+    api.initializePopups(root);
+    owner.emit('pointerenter',{pointerType:'mouse'});
+    button.emit('focus',event(button));
+    assert.equal(panel.popoverOpen,false);
+    button.focus();
+    const keyboardClick = event(button);
+    keyboardClick.detail = 0;
+    button.emit('click',keyboardClick);
+    assert.equal(document.activeElement,links[0]);
+    assert.equal(button.getAttribute('aria-expanded'),'true');
+    document.emit('keydown',event(links[0],'ArrowDown'));
+    assert.equal(document.activeElement,links[1]);
+    document.emit('keydown',event(links[1],'End'));
+    assert.equal(document.activeElement,links[2]);
+    document.emit('keydown',event(links[2],'Escape'));
+    assert.equal(document.activeElement,button);
+    assert.equal(button.getAttribute('aria-expanded'),'false');
+    button.emit('click',keyboardClick);
+    const linkClick = dispatchClick(links[0]);
+    assert.equal(linkClick.defaultPrevented,false);
+    await Promise.resolve();
+    assert.equal(panel.popoverOpen,false);
+    const pointerClick = event(button);
+    pointerClick.detail = 1;
+    button.emit('click',pointerClick);
+    document.emit('pointerdown',event(new Node()));
+    assert.equal(button.getAttribute('aria-expanded'),'false');
+    api.detachMenu(button,panel);
+});
+
 await check('Native hover closes on leave and restores only focus owned by the menu', () => {
     const outside = document.activeElement;
     nativePanel.emit('pointerleave', { pointerType: 'mouse', relatedTarget: null });
@@ -482,6 +528,232 @@ if (browserPath) {
             await fs.rm(fixtureRoot, { recursive:true, force:true, maxRetries:5, retryDelay:200 });
         }
     }
+    await check('Framework-only app launcher paints nine visible dots', async () => {
+        const markup = '<button type="button" class="f-app-launcher-trigger" aria-label="Open services">'
+            + '<span class="f-app-launcher-icon" aria-hidden="true">' + '<span></span>'.repeat(9) + '</span></button>';
+        const dots = await browserSessionFixture(markup, ({evaluate}) => evaluate("Array.from(document.querySelectorAll('.f-app-launcher-icon > span'), dot => {"
+            + "const bounds = dot.getBoundingClientRect(), rules = getComputedStyle(dot);"
+            + "return { x:bounds.x, y:bounds.y, width:bounds.width, height:bounds.height, stroke:rules.borderTopWidth, "
+            + "paint:rules.borderTopStyle, color:rules.borderTopColor, ink:rules.color, radius:rules.borderTopLeftRadius }; })"), { styles:frameworkCss });
+        assert.equal(dots.length, 9);
+        assert.equal(new Set(dots.map(dot => dot.x)).size, 3);
+        assert.equal(new Set(dots.map(dot => dot.y)).size, 3);
+        assert.ok(dots.every(dot => dot.width === 4 && dot.height === 4 && dot.stroke === '2px'
+            && dot.paint === 'solid' && dot.color === dot.ink && dot.radius === '50%'));
+    });
+    await check('Compact grid dimensions retain explicit sizing and leave space for body labels and icons', async () => {
+        const button = (id, label='Services') => '<button id="' + id
+            + '" class="f-button f-uniform-cell f-uniform-grid-button f-uniform-icon-support">'
+            + '<span class="f-uniform-cell-icon"><span class="f-icon" aria-hidden="true">●</span></span>'
+            + '<span class="f-uniform-cell-copy"><span class="f-uniform-cell-heading"><strong class="f-uniform-cell-title">'
+            + label + '</strong></span></span></button>';
+        const markup = '<div class="f-uniform-grid f-uniform-grid-rectangle" style="width:420px">' + button('rect') + '</div>'
+            + '<div class="f-uniform-grid f-uniform-grid-square">' + button('square') + '</div>'
+            + '<div style="width:150px"><div class="f-uniform-grid f-uniform-grid-square">' + button('narrow') + '</div></div>'
+            + '<div class="f-uniform-grid f-uniform-grid-square" style="--f-grid-cell-max:180px">' + button('customSquare') + '</div>'
+            + '<div class="f-uniform-grid f-uniform-grid-rectangle" style="width:300px;--f-grid-cell-max-height:160px;--f-grid-rectangle-ratio:2/1">' + button('custom') + '</div>'
+            + '<div class="f-uniform-grid f-uniform-grid-rectangle f-uniform-grid-fixed-height" style="width:360px;--f-grid-cell-height:110px">' + button('fixed') + '</div>'
+            + '<div class="f-uniform-grid f-uniform-grid-rectangle f-uniform-grid-content-height" style="width:170px">' + button('content',
+                'Long translated content with line breaks using a narrow but usable action button') + '</div>'
+            + button('standalone') + '<div class="f-form-actions">' + button('form') + '</div>';
+        const result = await browserSessionFixture(markup, ({evaluate}) => evaluate("Object.fromEntries(Array.from(document.querySelectorAll('button'), tile => {"
+            + "const bounds=tile.getBoundingClientRect(), title=tile.querySelector('strong'), icon=tile.querySelector('.f-icon'), tb=title.getBoundingClientRect(), ib=icon.getBoundingClientRect();"
+            + "return [tile.id,{width:bounds.width,height:bounds.height, titleSize:getComputedStyle(title).fontSize,"
+            + "titleHeight:tb.height,titleBelow:tb.top>=ib.bottom, titleVisible:tb.bottom<=bounds.bottom+1,iconSize:ib.height}];}))"));
+        for (const tile of Object.values(result)) {
+            assert.equal(tile.titleSize,'14px');
+            assert.equal(tile.iconSize,24);
+            assert.equal(tile.titleBelow,true);
+            assert.equal(tile.titleVisible,true);
+        }
+        assert.deepEqual([result.rect.width,result.rect.height],[420,147]);
+        assert.deepEqual([result.square.width,result.square.height],[196,196]);
+        assert.deepEqual([result.narrow.width,result.narrow.height],[150,150]);
+        assert.deepEqual([result.customSquare.width,result.customSquare.height],[180,180]);
+        assert.deepEqual([result.custom.width,result.custom.height],[300,150]);
+        assert.equal(result.fixed.height,110);
+        assert.equal(result.standalone.height,77);
+        assert.ok(Math.abs(result.form.height - 67.2) < .03);
+        assert.ok(result.content.titleHeight > result.rect.titleHeight);
+    });
+    await check('Launcher service icon and label are stacked in the same menu link', async () => {
+        const markup = '<div class="f-menu-panel f-app-launcher-panel" data-f-open>'
+            + '<a class="f-menu-item f-app-launcher-item" href="/service/" role="menuitem">'
+            + '<span class="f-icon" aria-hidden="true">●</span><span class="f-app-launcher-label">Foundation</span></a></div>';
+        const layout = await browserSessionFixture(markup, ({evaluate}) => evaluate("(() => {"
+            + "const link=document.querySelector('a'), first=link.firstElementChild.getBoundingClientRect(), second=link.lastElementChild.getBoundingClientRect();"
+            + "return {column:getComputedStyle(link).flexDirection, ordered:first.bottom<second.top,"
+            + "centered:Math.abs(first.x+first.width/2-second.x-second.width/2)<1,height:link.getBoundingClientRect().height};})()"));
+        assert.equal(layout.column,'column');
+        assert.equal(layout.ordered,true);
+        assert.equal(layout.centered,true);
+        assert.ok(layout.height>=64);
+    });
+    await check('Native and hover selectors space adjacent options equally and keep keyboard selection', async () => {
+        const markup = '<select class="f-input f-select" id="search-column" aria-label="Search by">'
+            + '<option value="" selected>All fields</option><option value="company">Company</option>'
+            + '<optgroup label="Internal"><option value="account">Account</option><option value="department">Department</option></optgroup>'
+            + '</select>'
+            + '<span class="f-native-select-popup f-native-select-button" data-f-native-select-popup>'
+            + '<select class="f-input f-select" id="language" aria-label="Language"><option value="en">English</option>'
+            + '<option value="pt">Português</option><option value="zh">中文</option></select>'
+            + '<span class="f-native-select-actions"><details class="f-action-menu f-dropdown-surface" data-f-native-menu'
+            + ' data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-hover="true">'
+            + '<summary class="f-button f-button-quiet">Language</summary><div class="f-menu-panel f-dropdown-panel" data-f-popup-panel role="menu">'
+            + '<div data-f-native-select-options></div></div></details></span></span>';
+        const result = await browserSessionFixture(markup, async ({evaluate, send}) => {
+            const press = async (key, windowsVirtualKeyCode) => {
+                const event = { key, code:key, windowsVirtualKeyCode };
+                await send('Input.dispatchKeyEvent',{ ...event,type:'keyDown' });
+                await send('Input.dispatchKeyEvent',{ ...event,type:'keyUp' });
+            };
+            await evaluate("window.fieldChanges=[]; window.column=document.querySelector('#search-column');"
+                + "column.addEventListener('change',()=>fieldChanges.push(column.value)); column.focus(); column.showPicker();", true);
+            const nativePicker = await evaluate("(() => {const boxes=Array.from(column.options,option=>option.getBoundingClientRect());"
+                + "return {open:column.matches(':open'),"
+                + "gaps:[boxes[1].top-boxes[0].bottom,boxes[3].top-boxes[2].bottom],"
+                + "margins:Array.from(column.options,option=>getComputedStyle(option).marginBlockStart)};})()");
+            await press('ArrowDown',40);
+            await press('Enter',13);
+            const field = await evaluate("({value:column.value,changes:fieldChanges,open:column.matches(':open')})");
+            await evaluate("(async()=>{" + controller + ";initializePopups();const trigger=document.querySelector('.f-native-select-actions summary');"
+                + "trigger.focus();trigger.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true}));})()");
+            const hoverPicker = await evaluate("(() => {const picker=document.querySelector('[data-f-native-select-options]');"
+                + "const boxes=Array.from(picker.children,option=>option.getBoundingClientRect());"
+                + "return {open:picker.parentElement.matches(':popover-open'),gaps:[boxes[1].top-boxes[0].bottom,boxes[2].top-boxes[1].bottom]};})()");
+            await press('Home',36);
+            await press('ArrowDown',40);
+            const languageFocus = await evaluate("document.activeElement.getAttribute('data-f-native-select-value')");
+            const language = await evaluate("document.activeElement.click(); document.querySelector('#language').value");
+            return {nativePicker,field,hoverPicker,languageFocus,language};
+        });
+        assert.deepEqual(result.nativePicker, {open:true,gaps:[4,4],margins:['0px','4px','0px','4px']});
+        assert.deepEqual(result.field, {value:'company',changes:['company'],open:false});
+        assert.deepEqual(result.hoverPicker, {open:true,gaps:[4,4]});
+        assert.equal(result.languageFocus,'pt');
+        assert.equal(result.language,'pt');
+    });
+    await check('Table search, toolbar, records and footer use fourteen-pixel gaps at wide and narrow widths', async () => {
+        const search = '<div class="f-data-search"><div class="f-field"><select class="f-input f-select"><option>Search by</option></select></div>'
+            + '<div class="f-field f-data-search-value"><input class="f-input" type="search" aria-label="Search query"></div></div>';
+        const markup = '<div class="f-data f-data-fixture">' + search + '<div class="f-data-toolbar"><button type="button">Records</button></div>'
+            + '<div class="f-data-scroll"><table class="f-data-table"><tbody><tr><td>Company</td></tr></tbody></table></div>'
+            + '<div class="f-data-footer"><button type="button">More</button></div></div>'
+            + '<section class="standalone-search">' + search + '</section>';
+        const result = await browserSessionFixture(markup, async ({evaluate, send}) => {
+            const measure = () => evaluate("(() => {const boxes=Array.from(document.querySelector('.f-data-fixture').children,box=>box.getBoundingClientRect());"
+                + "return {gaps:boxes.slice(1).map((box,index)=>box.top-boxes[index].bottom),"
+                + "standalone:getComputedStyle(document.querySelector('.standalone-search .f-data-search')).marginBlockEnd};})()");
+            const wide = await measure();
+            await send('Emulation.setDeviceMetricsOverride',{width:600,height:720,deviceScaleFactor:1,mobile:false});
+            const narrow = await measure();
+            return {wide,narrow};
+        });
+        assert.deepEqual(result,{wide:{gaps:[14,14,14],standalone:'36px'},narrow:{gaps:[14,14,14],standalone:'36px'}});
+    });
+    await check('Light shell paints white content, silver rails and beige secondary navigation and interactions', async () => {
+        const markup = '<button id="interaction" class="f-button f-button-secondary" type="button">Details</button>'
+            + '<header id="top" class="shell-header">Header</header>'
+            + '<div class="navigation-surface"><aside id="primary" class="primary-rail"><a id="selected" class="primary-nav-item is-active" href="/">Home</a></aside>'
+            + '<aside id="secondary" class="secondary-rail">Secondary</aside><main id="stage" class="application-stage">'
+            + '<header id="heading" class="f-page-heading">Page title</header><div id="page" class="page-root">Main page</div></main>'
+            + '<div class="f-primary-preview-slot"><div id="preview" data-f-primary-preview-open>Primary label</div></div></div>'
+            + '<div class="f-shell"><div id="applicationSecondary" class="f-secondary-navigation">Secondary navigation</div></div>'
+            + '<div id="dropdown" class="f-menu-panel f-dropdown-panel" data-f-open style="top:240px;left:400px">Options</div>';
+        const result = await browserSessionFixture(markup, async ({evaluate,send}) => {
+            const colors = () => evaluate("Object.fromEntries(['interaction','top','primary','selected','secondary','stage','heading','page','preview','applicationSecondary','dropdown']"
+                + ".map(id=>[id,getComputedStyle(document.getElementById(id)).backgroundColor]))");
+            const light = await colors();
+            const point = await evaluate("(() => {const rect=document.getElementById('interaction').getBoundingClientRect();return {x:rect.left+rect.width/2,y:rect.top+rect.height/2};})()");
+            await send('Input.dispatchMouseEvent',{...point,type:'mouseMoved'});
+            const hover = (await colors()).interaction;
+            await send('Input.dispatchMouseEvent',{...point,type:'mousePressed',button:'left',buttons:1,clickCount:1});
+            const press = (await colors()).interaction;
+            await send('Input.dispatchMouseEvent',{...point,type:'mouseReleased',button:'left',clickCount:1});
+            await evaluate("document.body.className='f-root f-theme-dark'");
+            const dark = await colors();
+            await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'dark'}]});
+            await evaluate("document.body.className='f-root f-theme-system'");
+            const systemDark = await colors();
+            return {light,dark,systemDark,hover,press};
+        });
+        const white='rgb(255, 255, 255)', silver='rgb(235, 235, 230)', beige='rgb(245, 241, 234)';
+        assert.equal(result.light.stage,white);
+        assert.equal(result.light.page,white);
+        assert.equal(result.light.heading,white);
+        assert.equal(result.light.dropdown,white);
+        assert.equal(result.light.top,silver);
+        assert.equal(result.light.primary,silver);
+        assert.equal(result.light.preview,silver);
+        assert.equal(result.light.secondary,beige);
+        assert.equal(result.light.applicationSecondary,beige);
+        assert.equal(result.light.selected,'rgb(112, 84, 20)');
+        assert.equal(result.hover,'rgb(234, 225, 213)');
+        assert.equal(result.press,'rgb(211, 203, 192)');
+        assert.equal(result.dark.top,'rgb(24, 35, 29)');
+        assert.equal(result.dark.secondary,'rgb(49, 72, 59)');
+        assert.equal(result.dark.applicationSecondary,'rgb(24, 35, 29)');
+        assert.deepEqual(result.systemDark,result.dark);
+    });
+    await check('Plain Button text and child content share centered Noto line boxes for native buttons and links', async () => {
+        const samples = ['Export XML','Configuração geral','中文搜索字段','Ág 中文输入'];
+        const codePoints = new Set(Array.from(samples.join(''),character=>character.codePointAt(0)));
+        const fontRoot = new URL('../../Flourish.Blazor.Design/wwwroot/',sourcePath);
+        const sourceFonts = await fs.readFile(new URL('fonts.css',fontRoot),'utf8');
+        const faces = [...sourceFonts.matchAll(/@font-face\s*\{[^{}]+\}/g)].map(match=>match[0])
+            .filter(face=>face.includes('font-style: normal;') && [...face.matchAll(/U\+([a-f0-9]+)(?:-([a-f0-9]+))?/ig)]
+                .some(([,from,to])=>[...codePoints].some(point=>point>=parseInt(from,16) && point<=parseInt(to??from,16))));
+        const localFaces = (await Promise.all(faces.map(async face=>{
+            const uri = /url\(([^)]+)\)/.exec(face)[1], bytes = await fs.readFile(new URL(uri,fontRoot));
+            return face.replace(uri,'data:font/woff2;base64,'+bytes.toString('base64'));
+        }))).join('\n');
+        const variants = [['button',true],['button',false],['a',true],['a',false]];
+        const controls = samples.map((label,index)=>'<div class="button-row" data-sample="'+index+'">'
+            + variants.map(([tag,wrapped])=>'<'+tag+' class="f-button f-button-secondary"'
+                + (tag==='a'?' href="/"':' type="button"')+'>'+ (wrapped?'<span class="f-button-text">'+label+'</span>':label)+'</'+tag+'>').join('')
+            + '</div>').join('');
+        const markup = controls
+            + '<div class="f-dropdown-panel"><a id="menu" href="/" role="menuitem" class="f-button f-menu-item f-dropdown-item"><span class="f-button-text">Export XML</span></a></div>'
+            + '<a id="structured" class="f-button f-button-structured" href="/"><span class="f-button-label"><span class="f-button-text">Export XML</span><span class="f-button-description">Details</span></span></a>'
+            + '<a id="brand" class="f-button shell-header-brand" href="/"><span class="shell-header-title"><strong>Long brand title</strong></span></a>'
+            + '<button id="sort" class="f-data-sort f-button" type="button">Name</button>';
+        const styles = css.replace(/@font-face\s*\{[^{}]+\}/g,'') + localFaces;
+        const result = await browserSessionFixture(markup,async ({evaluate})=>{
+            const sampleText = JSON.stringify(samples.join(''));
+            const loaded = await evaluate("(async()=>{const sample="+sampleText+";"
+                + "return (await Promise.all([document.fonts.load('650 14px Noto Sans',sample),document.fonts.load('650 14px Noto Sans SC',sample)])).map(faces=>faces.length>0);})()");
+            async function measure(size) {
+                await evaluate("document.body.style.setProperty('--f-type-body',"+JSON.stringify(size+'px')+")");
+                return evaluate("Array.from(document.querySelectorAll('.button-row'),row=>Array.from(row.children,control=>{"
+                    + "const label=control.firstElementChild??control,box=control.getBoundingClientRect(),range=document.createRange();range.selectNodeContents(label);"
+                    + "const lines=Array.from(range.getClientRects(),line=>line.x+line.width/2-(box.x+box.width/2));"
+                    + "const style=getComputedStyle(label),labelBox=label.getBoundingClientRect();"
+                    + "return {height:box.height,labelHeight:labelBox.height,lines,trim:style.textBoxTrim,alignment:style.textAlign};}))");
+            }
+            const size14=await measure(14), size17=await measure(17);
+            const contextual = await evaluate("Object.fromEntries(['menu','structured','brand','sort'].map(id=>{const control=document.getElementById(id),label=control.querySelector('.f-button-text')??control;"
+                + "return [id,{alignment:getComputedStyle(label).textAlign,trim:getComputedStyle(label).textBoxTrim}];}))");
+            return {loaded,size14,size17,contextual};
+        },{styles,style:'.button-row{display:flex;align-items:start;gap:10px}.button-row .f-button{width:85px;}'});
+        assert.deepEqual(result.loaded,[true,true]);
+        for (const measurements of [result.size14,result.size17]) {
+            assert.ok(measurements[0][0].lines.length>1,'Wrapping did not exercise the center alignment');
+            for (const row of measurements) {
+                const native = row[0];
+                for (const sample of row) {
+                    assert.equal(sample.alignment,'center');
+                    assert.equal(sample.trim,'none');
+                    assert.ok(Math.abs(sample.height-native.height)<.05,'Text and ChildContent must reserve the same height');
+                    assert.ok(sample.lines.every(offset=>Math.abs(offset)<.25),'Each wrapped line must center inside its button or link');
+                }
+            }
+        }
+        assert.equal(result.contextual.menu.alignment,'left');
+        assert.equal(result.contextual.structured.alignment,'start');
+        assert.equal(result.contextual.structured.trim,'trim-both');
+        assert.equal(result.contextual.brand.alignment,'start');
+        assert.equal(result.contextual.sort.alignment,'left');
+    });
     function withoutBaseSelect(styles) {
         const pattern = /@supports\s*\(\s*appearance\s*:\s*base-select\s*\)\s*\{/g;
         let output = '', cursor = 0, match;
@@ -640,7 +912,7 @@ if (browserPath) {
         assert.equal(result.initial.triggerColor,result.initial.ordinaryColor);
         assert.equal(result.initial.selectColor,result.initial.ordinaryColor);
         assert.equal(result.picker.open,true);
-        assert.equal(result.picker.color,'rgb(17, 41, 36)','Header picker restores the root theme text rather than trigger wrapper overrides.');
+        assert.equal(result.picker.color,'rgb(41, 39, 33)','Header picker restores the root theme text rather than trigger wrapper overrides.');
         assert.equal(result.picker.background,'rgb(255, 255, 255)');
         assert.equal(result.picker.options.filter(option=>option.selected).length,1);
         for (const option of result.picker.options) {

@@ -23,7 +23,7 @@ background: var(--f-canvas);
 .content-surface  .page-root {
 color: var(--f-text);
     background: var(--f-canvas);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     line-height: 1.55;
 }
 
@@ -56,12 +56,12 @@ margin: 0;
 .content-surface  .section-heading > span,
 .content-surface  .page-module > p {
 color: var(--f-muted);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
 }
 
 .content-surface  .validation-message,
 .content-surface  .validation-errors {
-font-size: 17px;
+font-size: var(--f-type-body,14px);
     border-radius: 10px;
 }
 

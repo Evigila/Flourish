@@ -2,7 +2,7 @@
 
 ## Source, packages and scope
 
-Directory.Build.props currently declares stable source VersionPrefix 1.4.8 without a suffix and EssentialCultureVersion 1.4.0. The last recorded published stable release is v1.4.7; immutable hashes, workflow results and consumer evidence remain in the archived release-verification report. The locally recorded 1.4.8-preview.14 build is an explicit candidate override consumed in Colligere, not a source promotion or public publication.
+Directory.Build.props declares stable source VersionPrefix 1.4.9 without a suffix and EssentialCultureVersion 1.4.0. The release promotes the Blazor changes verified in Colligere with 1.4.9-preview.10. Earlier candidate hashes and consumer evidence remain in their original release records.
 
 ReleaseSettings defines six ordered IDs: Arkheide.Flourish.Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor aggregate. Verification checks identities, exact local dependencies, Essential versions, architecture-neutral managed assemblies and required static/icon/license resources. WPF and WinUI are excluded. Do not infer package API ownership from the convenience aggregate.
 

@@ -120,7 +120,7 @@ await check('Tutorial geometry and skin are bundled separately and remain nonmod
     assert.match(framework,/tutorial-board\.css/); assert.match(design,/tutorial-board\.css/);
     assert.match(geometry,/\.f-tutorial-board::backdrop\s*\{[^}]*pointer-events:none[^}]*background:transparent/);
     assert.match(geometry,/grid-template-columns:minmax\(0,1fr\) minmax\(0,auto\) minmax\(0,1fr\)/);
-    assert.match(skin,/font-size:var\(--f-type-h1,34px\)/); assert.match(skin,/\.f-tutorial-primary\s*\{[^}]*var\(--f-primary-ink\)[^}]*var\(--f-primary\)/);
+    assert.match(skin,/font-size:var\(--f-type-h1,36px\)/); assert.match(skin,/\.f-tutorial-primary\s*\{[^}]*var\(--f-primary-ink\)[^}]*var\(--f-primary\)/);
 });
 
 await check('Strong tutorial uses manual dismissal and never publishes an implicit native close', async () => {

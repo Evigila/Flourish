@@ -510,6 +510,12 @@ builder.Services.AddFlourishFramework(
                                                 exact: true
                                             )
                                             .AddSubNav(
+                                                "Primitives.AppLauncher",
+                                                "apps",
+                                                "/controls/layout/applaunchersample",
+                                                exact: true
+                                            )
+                                            .AddSubNav(
                                                 "Primitives.ServiceMenu",
                                                 "view_quilt",
                                                 "/controls/layout/servicemenusample",

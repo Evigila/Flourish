@@ -1,4 +1,4 @@
-﻿@page "/foundations"
+@page "/foundations"
 @page "/foundations/{Topic}"
 @inherits LocalizedComponentBase
 @inject IAppearanceService AppearanceService
@@ -193,6 +193,6 @@
         builder.Services.AddFlourishDesign(design => design
             .SetColors("#153A32", "#16745F")
             .SetTheme(ApplicationTheme.System)
-            .SetFont("'Noto Sans', 'Noto Sans CJK SC', system-ui, sans-serif"));
+            .SetFont("'Noto Sans', 'Noto Sans SC', sans-serif"));
         """;
 }

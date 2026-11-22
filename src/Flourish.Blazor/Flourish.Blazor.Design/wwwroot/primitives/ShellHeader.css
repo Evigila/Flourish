@@ -1,5 +1,5 @@
 .shell-header {
-    --f-shell-header-ink: var(--f-surface-light);
+    --f-shell-header-ink: var(--f-chrome-quiet-ink, var(--f-chrome-ink, var(--f-surface)));
     --f-shell-header-button-surface: var(--f-surface-light);
     --f-shell-header-button-ink: var(--f-primary-light, var(--f-primary));
     --f-shell-brand-min: 82px;
@@ -13,8 +13,8 @@
 .shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
     --f-accent-text: var(--f-shell-header-ink);
     --f-text: var(--f-shell-header-ink);
-    --f-target-preview: var(--f-primary-preview);
-    --f-target-click: var(--f-primary-click);
+    --f-target-preview: var(--f-chrome-preview);
+    --f-target-click: var(--f-chrome-click);
 }
 .shell-header-start {
     padding: 8px 10px;
@@ -31,6 +31,7 @@
     }
 }
 .shell-header-brand {
+    text-align: start;
     max-width: 100%;
 }
 .shell-header-logo {
@@ -43,7 +44,7 @@
 }
 .shell-header-title {
     gap: 7px;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     letter-spacing: -.01em;
     text-overflow: ellipsis;
 }
@@ -76,7 +77,7 @@
 }
 .shell-header-identity strong {
     max-width: 190px;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     text-overflow: ellipsis;
 }
 .shell-header-center :is(.f-button, .f-button-text),
@@ -86,7 +87,7 @@
     font-weight: 400;
 }
 a.shell-header-identity:hover {
-    background: var(--f-preview-dark);
+    background: var(--f-chrome-preview);
 }
 a.shell-header-identity:focus-visible {
     outline: 3px solid var(--f-accent);
@@ -104,7 +105,7 @@ a.shell-header-identity:focus-visible {
     text-decoration: none;
 }
 .shell-header-actions .shell-header-action:hover {
-    background: var(--f-preview-dark);
+    background: var(--f-chrome-preview);
 }
 .shell-header-actions .shell-header-action:focus-visible {
     outline: 3px solid var(--f-accent);
@@ -116,7 +117,7 @@ a.shell-header-identity:focus-visible {
     background: var(--f-surface);
     border: 1px solid var(--f-border);
     border-radius: 10px;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     font-weight: 400;
     opacity: 0;
 }
@@ -131,11 +132,11 @@ a.shell-header-identity:focus-visible {
     background: transparent;
     border: 0;
     border-radius: 14px;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     text-decoration: none;
 }
 .shell-header-actions .shell-header-text-action:hover {
-    background: var(--f-preview-dark);
+    background: var(--f-chrome-preview);
 }
 .shell-header-actions .shell-header-text-action:focus-visible {
     outline: 3px solid var(--f-accent);
@@ -169,13 +170,13 @@ a.shell-header-identity:focus-visible {
 }
 
 a.shell-header-identity:active {
-    background: var(--f-click-dark);
+    background: var(--f-chrome-click);
 }
 
 .shell-header-actions .shell-header-action:active {
-    background: var(--f-click-dark);
+    background: var(--f-chrome-click);
 }
 
 .shell-header-actions .shell-header-text-action:active {
-    background: var(--f-click-dark);
+    background: var(--f-chrome-click);
 }

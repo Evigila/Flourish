@@ -119,6 +119,7 @@ public static class ComponentCatalog
         [
             new(typeof(Primitives.AccessBrand), "Key.Catalog_Primitives_AccessBrand_Purpose", "Key.Catalog_Primitives_AccessBrand_Variants", "<Primitives.AccessBrand LogoPath=\"logo.svg\" BrandName=\"应用\" TitleId=\"access-title\" />"),
             new(typeof(Primitives.ShellHeader), "Key.Catalog_Primitives_ShellHeader_Purpose", "Key.Catalog_Primitives_ShellHeader_Variants", "<Primitives.ShellHeader HomeHref=\"/\" HomeAriaLabel=\"返回主页\" LogoPath=\"logo.svg\" BrandName=\"应用\" />"),
+            new(typeof(Primitives.AppLauncher), "Key.Catalog_Primitives_AppLauncher_Purpose", "Key.Catalog_Primitives_AppLauncher_Variants", "<Primitives.AppLauncher Label=\"服务入口\" Items=\"ServiceLinks\" />"),
             new(typeof(Primitives.ServiceMenu), "Key.Catalog_Primitives_ServiceMenu_Purpose", "Key.Catalog_Primitives_ServiceMenu_Variants", "<Primitives.ServiceMenu Label=\"页面\" Items=\"ServiceLinks\" />"),
             new(typeof(Primitives.PrimaryNavigationItem), "Key.Catalog_Primitives_PrimaryNavigationItem_Purpose", "Key.Catalog_Primitives_PrimaryNavigationItem_Variants", "<Primitives.PrimaryNavigationItem Id=\"home\" Label=\"主页\" Icon=\"home\" Href=\"/\" Match=\"NavLinkMatch.All\" />"),
             new(typeof(Primitives.NoticeTrigger), "Key.Catalog_Primitives_NoticeTrigger_Purpose", "Key.Catalog_Primitives_NoticeTrigger_Variants", "<Primitives.NoticeTrigger Severity=\"NotificationSeverity.Warning\">此字段需要检查。</Primitives.NoticeTrigger>"),

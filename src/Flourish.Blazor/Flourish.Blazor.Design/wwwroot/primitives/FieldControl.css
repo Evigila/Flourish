@@ -6,7 +6,7 @@
     background: var(--f-danger);
     border-radius: 10px;
     box-shadow: 0 12px 28px rgb(from var(--f-primary) r g b / 22%);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     font-weight: 650;
 }
 @media (max-width: 760px) {

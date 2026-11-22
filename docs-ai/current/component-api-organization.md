@@ -34,9 +34,17 @@ ReferenceDropdown uses Value/ValueChanged for a nullable scalar reference. Multi
 
 Supported Class/AdditionalAttributes and semantic/named slots are composition contracts, not authorization for host geometry or skin substitutes. Field.Actions holds associated ordinary actions separately from the input context. Native input names, ValueExpression, disabled/busy behavior, caret/masks and progressive form semantics remain explicit.
 
-Button structured Text/Description/TrailingText remains one encoded action rather than several independently interactive elements. Native and interactive menu owners retain their own focus/disclosure behavior. A native details fallback is not a promise of enhanced arrow navigation before JavaScript.
+Plain Button Text and ChildContent keep natural line boxes, and native buttons and links both center wrapped labels by default. Contextual styles retain their own label alignment. Button structured Text/Description/TrailingText remains one encoded action rather than several independently interactive elements. Native and interactive menu owners retain their own focus/disclosure behavior. A native details fallback is not a promise of enhanced arrow navigation before JavaScript.
 
 ## Layout, interaction and lifetime
+
+ShellHeader exposes independent ServiceLauncher and Services slots. ServiceLauncher places an AppLauncher before the brand while Services renders center navigation. AppLauncher displays a named nine-dot button and host-supplied service links. Each entry places its decorative ServiceLink.Icon above the visible label, with an Apps icon fallback for callers that omit it. The panel uses the shared popup keyboard, focus, dismissal and placement behavior. Links use ordinary document navigation for service handoffs. Empty launchers do not consume header space.
+
+UniformGrid defaults to 182px maximum Rectangle height and a 20:7 aspect ratio, with the original automatic horizontal wrapping threshold. Square defaults to a 196px maximum side. Explicit caps, fixed heights and ContentHeight preserve their sizing contract. UniformGridButton defaults to body-sized text with supplied icons and compact natural tracks. IconSupport can still reserve an aligned icon track. Information cells retain natural-height field layout and their label/value hierarchy.
+
+The shared selectable-option gap is 4px. Customizable native select options use it between adjacent options, including within a group. Enhanced hover selection menus use the same gap through their option container. DataTable uses a 14px gap between search, toolbar, records and footer. DataSearch used outside a table keeps its independent document spacing.
+
+The default Light palette gives the page canvas and surfaces a white base, silver top and primary navigation chrome, and beige secondary navigation and interaction states. NavigationSurface and ApplicationShell share the Light secondary navigation role. Dark and System-dark retain their original per-shell navigation backgrounds. Standard popup panels retain the Surface background and pick up beige interaction states.
 
 Framework owns bounded centered/expanded/fluid content, header action spacing, popup measurement/placement/clipping, width growth, focus and disposal. Design supplies canonical theme/contrast paint. PageHeading's full Blazor heading stays in flow while the independent compact strip slides; original contextual controls remain available. A scroll/title refactor cannot change route, focus or unsaved-draft ownership.
 

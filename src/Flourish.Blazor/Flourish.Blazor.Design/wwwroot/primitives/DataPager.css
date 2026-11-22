@@ -1,6 +1,6 @@
 .data-pagination {
     gap: 12px;
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     font-weight: 700;
 }
 .data-pagination-range {

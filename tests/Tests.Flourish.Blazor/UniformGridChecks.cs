@@ -66,7 +66,7 @@ internal static class UniformGridChecks
             Require(HasClass(grid, "f-uniform-grid-rectangle"), "The default cell shape is not Rectangle.");
             Require(HasClass(grid, "f-uniform-grid-variant-elevated"), "The default appearance is not Elevated.");
             Require(!Attribute(grid, "style").Contains("--f-grid-cell-max:", StringComparison.Ordinal), "Rectangle cells inherited the Square size cap.");
-            Require(Attribute(grid, "style").Contains("--f-grid-cell-max-height:260px", StringComparison.Ordinal), "Rectangle cells lost their default 260px height cap.");
+            Require(Attribute(grid, "style").Contains("--f-grid-cell-max-height:182px", StringComparison.Ordinal), "Rectangle cells lost their default 182px height cap.");
             Require(!Attribute(grid, "style").Contains("--f-grid-columns", StringComparison.Ordinal), "Automatic layout still emits a fixed column count.");
             Require(!Attribute(grid, "style").Contains("aspect-ratio", StringComparison.Ordinal), "The container itself was shaped as a cell.");
             Require(!HasClass(grid, "f-uniform-grid-fixed-height") && !Attribute(grid, "style").Contains("--f-grid-cell-height:", StringComparison.Ordinal), "Default rectangles unexpectedly have a fixed height.");
@@ -104,10 +104,10 @@ internal static class UniformGridChecks
                             "The renderer introduced a second inline layout instead of using the shared shape-aware stylesheet.");
                     }
         }));
-        tests.Add(("only square grids emit the default 280px maximum side", async () =>
+        tests.Add(("only square grids emit the default 196px maximum side", async () =>
         {
             var square = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.Shape)] = UniformGridShape.Square }), "div", "f-uniform-grid");
-            Require(Attribute(square, "style").Contains("--f-grid-cell-max:280px", StringComparison.Ordinal), "The default Square maximum side is not 280px.");
+            Require(Attribute(square, "style").Contains("--f-grid-cell-max:196px", StringComparison.Ordinal), "The default Square maximum side is not 196px.");
             var rectangle = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.MaxCellSize)] = 180 }), "div", "f-uniform-grid");
             Require(!Attribute(rectangle, "style").Contains("--f-grid-cell-max:", StringComparison.Ordinal), "A Square size setting constrained Rectangle cells.");
             Require(!Attribute(square, "style").Contains("--f-grid-cell-max-height:", StringComparison.Ordinal), "A Rectangle height setting constrained Square cells.");
@@ -116,6 +116,8 @@ internal static class UniformGridChecks
         {
             var rectangle = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.MaxCellHeight)] = 160 }), "div", "f-uniform-grid");
             Require(Attribute(rectangle, "style").Contains("--f-grid-cell-max-height:160px", StringComparison.Ordinal), "The configured Rectangle height was not emitted.");
+            Require(Attribute(rectangle, "style").Contains("--f-grid-cell-wrap-height:160px;--f-grid-rectangle-ratio:2/1", StringComparison.Ordinal),
+                "An explicit rectangle cap must retain the original width and ratio contract.");
             var square = Tag(await Render<UniformGrid>(new() { [nameof(UniformGrid.Shape)] = UniformGridShape.Square,
                 [nameof(UniformGrid.MaxCellHeight)] = 160 }), "div", "f-uniform-grid");
             Require(!Attribute(square, "style").Contains("--f-grid-cell-max-height:", StringComparison.Ordinal), "The Rectangle cap affected Square cells.");

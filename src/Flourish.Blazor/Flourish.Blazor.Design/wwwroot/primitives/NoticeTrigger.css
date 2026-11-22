@@ -2,7 +2,7 @@
     width: max-content;
     max-width: 100%;
     margin: 0;
-    font-size: var(--f-body-size, 17px);
+    font-size: var(--f-body-size, 14px);
     --trigger-ink: var(--f-info-text);
     --trigger-fill: var(--f-surface);
     --trigger-border: var(--f-border);

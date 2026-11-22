@@ -38,6 +38,24 @@ foreach ($package in $ReleaseSettings.Packages) {
         foreach ($path in $package.Assets) {
             if (!$archive.GetEntry($path)) { throw "$($package.Id) is missing packaged asset '$path'." }
         }
+        if ($package.Id -ceq 'Arkheide.Flourish.Blazor.Design') {
+            if ($metadata.license.InnerText -cne 'MIT AND OFL-1.1') { throw 'Design package must declare the bundled font licenses.' }
+            $prefix = 'staticwebassets/fonts/noto/'
+            $manifest = $archive.GetEntry($prefix + 'sources.json')
+            if (!$manifest) { throw 'Design package is missing the Noto source manifest.' }
+            $reader = [IO.StreamReader]::new($manifest.Open())
+            try { $fontFiles = ($reader.ReadToEnd() | ConvertFrom-Json).files } finally { $reader.Dispose() }
+            $expectedFonts = @($fontFiles | ForEach-Object { $prefix + $_.name } | Sort-Object)
+            $actualFonts = @($archive.Entries | Where-Object { $_.FullName.StartsWith($prefix) -and $_.Name -ne 'sources.json' } | ForEach-Object FullName | Sort-Object)
+            if (Compare-Object $expectedFonts $actualFonts) { throw 'Design package does not match the pinned Noto assets.' }
+            foreach ($file in $fontFiles) {
+                $entry = $archive.GetEntry($prefix + $file.name)
+                $stream = $entry.Open()
+                try { $hash = (Get-FileHash -InputStream $stream).Hash } finally { $stream.Dispose() }
+                if ($entry.Length -ne $file.bytes -or $hash -ne $file.sha256) { throw "Packaged Noto asset differs from its pinned source: $($file.name)." }
+            }
+            Write-Host "Verified $($fontFiles.Count) Noto fonts and license notices in Design."
+        }
         if ($package.Managed) {
             $assemblies = @($archive.Entries | Where-Object { $_.FullName -like 'lib/*.dll' })
             if (!$assemblies.Count) { throw "$($package.Id) contains no managed library." }

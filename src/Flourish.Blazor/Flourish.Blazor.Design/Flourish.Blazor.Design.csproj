@@ -7,7 +7,7 @@
     <PackageId>Arkheide.Flourish.Blazor.Design</PackageId>
     <Authors>ArkheideSystem</Authors>
     <Description>Explicit optional visual foundations and theme runtime for Blazor components.</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT AND OFL-1.1</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/Evigila/Flourish.git</RepositoryUrl>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

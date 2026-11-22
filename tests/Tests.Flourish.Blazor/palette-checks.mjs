@@ -74,7 +74,7 @@ test("presentation and access scenes consume existing theme roles without reskin
   assert.equal(property(blockFor(presentation, ".f-presentation-primary"), "background-color"), "var(--f-primary)");
   assert.equal(property(blockFor(presentation, ".f-presentation-band-heading :is(h1,h2,h3,h4,h5,h6)"), "font-size"), "var(--f-type-h2,28px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > h1"), "font-size"), "clamp(72px,11vw,128px)");
-  assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > .f-presentation-hero-description"), "font-size"), "var(--f-type-body,17px)");
+  assert.equal(property(blockFor(presentation, ".f-presentation-hero-content > .f-presentation-hero-description"), "font-size"), "var(--f-type-body,14px)");
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "color"), "var(--f-primary-ink)");
   assert.equal(property(blockFor(presentation, ".f-presentation-footer"), "background"), "var(--f-primary)");
 });
@@ -84,8 +84,8 @@ test("shell chrome scopes Quiet and Elevated tokens to triggers and excludes pop
   const quiet = rules(css).filter(rule => rule.selector.includes(".f-button-quiet") && rule.declarations.has("--f-accent-text"));
   assert.equal(quiet.length, 1);
   assert.equal(quiet[0].declarations.get("--f-accent-text"), "var(--f-shell-header-ink)");
-  assert.equal(quiet[0].declarations.get("--f-target-preview"), "var(--f-primary-preview)");
-  assert.equal(quiet[0].declarations.get("--f-target-click"), "var(--f-primary-click)");
+  assert.equal(quiet[0].declarations.get("--f-target-preview"), "var(--f-chrome-preview)");
+  assert.equal(quiet[0].declarations.get("--f-target-click"), "var(--f-chrome-click)");
   const elevated = rules(css).filter(rule => rule.selector.includes(".f-button-elevated"));
   assert.equal(elevated.length, 1);
   assert.equal(elevated[0].declarations.get("--f-surface"), "var(--f-shell-header-button-surface)");
@@ -207,14 +207,14 @@ test("UniformGrid fills rectangular rows while centered square grids retain thei
   assert.equal(property(grid, "max-width"), "100%");
   assert.equal(property(grid, "--f-grid-cell-width"), "1fr");
   assert.equal(property(grid, "grid-template-columns"),
-    "repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-max-height,260px)))),1fr))");
+    "repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-wrap-height,260px)))),1fr))");
   const square = blockFor(css, ".f-uniform-grid-square");
   assert.equal(property(square, "width"), "fit-content");
-  assert.equal(property(square, "--f-grid-cell-width"), "var(--f-grid-cell-max,280px)");
+  assert.equal(property(square, "--f-grid-cell-width"), "var(--f-grid-cell-max,196px)");
   assert.equal(property(square, "grid-template-columns"), "repeat(auto-fit,minmax(0,var(--f-grid-cell-width)))");
   assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "aspect-ratio"), "1");
-  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-width"), "var(--f-grid-cell-max,280px)");
-  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-height"), "var(--f-grid-cell-max,280px)");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-width"), "var(--f-grid-cell-max,196px)");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-square > *"), "max-height"), "var(--f-grid-cell-max,196px)");
 });
 
 test("UniformGrid explicit rows columns and narrow overrides share uncapped rectangle tracks and capped square tracks", async () => {
@@ -233,10 +233,10 @@ test("UniformGrid explicit rows columns and narrow overrides share uncapped rect
   assert.equal(property(narrow, "grid-auto-flow"), "row");
   assert.equal(property(narrow, "grid-auto-columns"), "auto");
   const rectangle = blockFor(css, ".f-uniform-grid-rectangle > .f-uniform-cell");
-  assert.equal(property(rectangle, "max-height"), "var(--f-grid-cell-max-height,260px)");
+  assert.equal(property(rectangle, "max-height"), "var(--f-grid-cell-max-height,182px)");
   assert.equal(property(rectangle, "overflow"), "auto");
   assert.equal(property(rectangle, "max-width"), undefined);
-  assert.equal(property(blockFor(css, ".f-uniform-grid-rectangle > *"), "aspect-ratio"), "2/1");
+  assert.equal(property(blockFor(css, ".f-uniform-grid-rectangle > *"), "aspect-ratio"), "var(--f-grid-rectangle-ratio,20/7)");
 });
 
 test("UniformGrid fixed rectangular heights override the aspect ratio and cap in every responsive row", async () => {
@@ -276,19 +276,19 @@ const roles = [
 const light = {
   "--f-primary": "var(--f-primary-light)",
   "--f-accent": "var(--f-accent-light)",
-  "--f-canvas": "#F3F5F5",
+  "--f-canvas": "#FFFFFF",
   "--f-surface": "var(--f-surface-light)",
   "--f-text": "var(--f-text-light)",
-  "--f-muted": "#4F645D",
-  "--f-display-board": "#E5E8EB",
-  "--f-preview-light": "#C9DFDA",
-  "--f-preview-dark": "#2F5049",
-  "--f-border": "#9FAEA9",
+  "--f-muted": "#5E5A50",
+  "--f-display-board": "#ECECE8",
+  "--f-preview-light": "#EAE1D5",
+  "--f-preview-dark": "#514C41",
+  "--f-border": "#949082",
   "--f-danger": "var(--f-danger-light)",
   "--f-preview-danger": "#7E2824",
   "--f-click-danger": "#712420",
-  "--f-click-light": "#B5C9C4",
-  "--f-click-dark": "#2A4842",
+  "--f-click-light": "#D3CBC0",
+  "--f-click-dark": "#49443B",
   "--f-info-text": "var(--f-info-text-light)",
   "--f-warning-background": "#F2A33A",
 };
@@ -314,11 +314,11 @@ const dark = {
 };
 
 const approvedLiterals = new Set([
-  "#153A32", "#16745F", "#F3F5F5", "#FFFFFF", "#112924",
-  "#4F645D", "#E5E8EB", "#C9DFDA", "#2F5049", "#9FAEA9",
+  "#3C3932", "#705414", "#EBEBE6", "#16745F", "#F5F1EA", "#FFFFFF", "#292721",
+  "#5E5A50", "#ECECE8", "#EAE1D5", "#514C41", "#949082",
   "#BBD7C9", "#75CBB2", "#18231D", "#263A30", "#E7EFEA",
   "#B8C9BF", "#31483B", "#D5E5DE", "#395A48", "#526F60",
-  "#9D322D", "#FFB4AB", "#B5C9C4", "#C0CEC8", "#2A4842", "#335141",
+  "#9D322D", "#FFB4AB", "#D3CBC0", "#C0CEC8", "#49443B", "#335141",
   "#1565C0", "#8CB8FF", "#F2A33A", "#E5A047",
   "#7E2824", "#712420", "#8C3430", "#7E2F2B", "#B45309",
 ]);
@@ -487,8 +487,8 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
   assertMode(base, light, "Light mode");
   assertMode(darkMode, dark, "Dark mode");
   assertMode(systemMode, dark, "System dark mode");
-  assert.equal(base.get("--f-primary-light"), "#153A32");
-  assert.equal(base.get("--f-accent-light"), "#16745F");
+  assert.equal(base.get("--f-primary-light"), "#3C3932");
+  assert.equal(base.get("--f-accent-light"), "#705414");
   assert.equal(base.get("--f-primary-dark"), "#BBD7C9");
   assert.equal(base.get("--f-accent-dark"), "#75CBB2");
   assert.equal(base.get("--f-surface-light"), "#FFFFFF");
@@ -521,8 +521,20 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
     assert.equal(mode.get("--f-chrome"), "var(--f-canvas)", `${name} chrome must use Canvas.`);
     assert.equal(mode.get("--f-chrome-ink"), "var(--f-text)", `${name} chrome ink must use Text.`);
   }
-  assert.equal(base.get("--f-chrome"), "var(--f-primary)");
-  assert.equal(base.get("--f-chrome-ink"), "var(--f-surface)");
+  assert.equal(base.get("--f-secondary-navigation-surface"), "#F5F1EA");
+  assert.equal(darkMode.get("--f-secondary-navigation-surface"), "initial");
+  assert.equal(systemMode.get("--f-secondary-navigation-surface"), "initial");
+  const rail = blockFor(withoutComments(await readFile(join(designCssRoot, "patterns/navigation-surface.css"), "utf8")), ".navigation-surface .secondary-rail");
+  assert.equal(property(rail, "background"), "var(--f-secondary-navigation-surface, var(--f-display-board))");
+  assert.equal(property(blockFor(css, ".f-secondary-navigation"), "background"), "var(--f-secondary-navigation-surface,var(--f-surface-alternate))");
+  assert.equal(base.get("--f-chrome-light"), "#EBEBE6");
+  assert.equal(base.get("--f-chrome"), "var(--f-chrome-light)");
+  assert.equal(base.get("--f-chrome-preview"), "var(--f-chrome-preview-light)");
+  assert.equal(base.get("--f-chrome-preview-light"), "var(--f-preview-light)");
+  assert.equal(base.get("--f-chrome-click"), "var(--f-chrome-click-light)");
+  assert.equal(base.get("--f-chrome-click-light"), "var(--f-click-light)");
+  assert.equal(base.get("--f-chrome-ink"), "var(--f-chrome-ink-light)");
+  assert.equal(base.get("--f-chrome-ink-light"), "var(--f-text)");
 });
 
 test("click roles are exact ninety-percent preview channels", async () => {
@@ -670,8 +682,8 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   assert.equal(property(primarySelected.body, "color"), "var(--f-surface)!important");
   assert.equal(property(primarySelectedPress.body, "background"), "var(--f-accent-click)");
   assert.equal(property(primarySelectedPress.body, "color"), "var(--f-surface)!important");
-  assert.equal(property(primaryNavigationHover.body, "background"), "var(--f-preview-dark)");
-  assert.equal(property(primaryNavigationPress.body, "background"), "var(--f-click-dark)");
+  assert.equal(property(primaryNavigationHover.body, "background"), "var(--f-chrome-preview)");
+  assert.equal(property(primaryNavigationPress.body, "background"), "var(--f-chrome-click)");
   const foundationRules = rules(source.foundation);
   assert.ok(foundationRules.findIndex(rule => rule.selector === primarySelected.selector) > foundationRules.findIndex(rule => rule.selector === primaryNavigationHover.selector),
     "Primary selection does not win over its generic hover rule.");
@@ -695,11 +707,11 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
 
   const chromeMenuHover = one("foundation", "Title-bar menu hover", rule => rule.selector.includes(".f-action-menu:hover") && rule.selector.includes(".f-menu-trigger-label"));
   const chromeMenuPress = one("foundation", "Title-bar menu press", rule => rule.selector.includes(".f-menu-trigger-label:active"));
-  assert.equal(property(chromeMenuPress.body, "background"), "var(--f-click-dark)");
+  assert.equal(property(chromeMenuPress.body, "background"), "var(--f-chrome-click)");
   const hoverArm = chromeMenuHover.selector.split(",").find(selector => selector.includes(".f-action-menu:hover"));
   const guardedHover = hoverArm?.includes(".f-menu-trigger-label:not(:active)");
   const strongerPress = foundationRules.some(rule => rule.selector.includes(".f-action-menu:hover")
-    && rule.selector.includes(".f-menu-trigger-label:active") && property(rule.body, "background") === "var(--f-click-dark)");
+    && rule.selector.includes(".f-menu-trigger-label:active") && property(rule.body, "background") === "var(--f-chrome-click)");
   assert.ok(guardedHover || strongerPress, "The higher-specificity menu-parent hover selector masks the trigger's deep-click color.");
 
   const dropdownSelected = one("dropdown", "Shared persistent dropdown selection", rule =>
@@ -746,7 +758,7 @@ test("Notice uses one four-severity title/body palette and no alternate subtle s
   const notice = matchingRule(source, "Notice base", rule => rule.selector === ".f-notice");
   assert.equal(property(notice.body, "color"), "var(--f-notice-text,var(--f-text-light))");
   assert.equal(property(notice.body, "background"), "var(--f-notice-background,var(--f-surface-light))");
-  assert.equal(property(notice.body, "font"), '400 var(--f-body-size,17px)/1.55 var(--f-font,"Segoe UI",sans-serif)');
+  assert.equal(property(notice.body, "font"), '400 var(--f-body-size,14px)/1.55 var(--f-font,sans-serif)');
   assert.equal(property(notice.body, "box-shadow"), "var(--f-shadow-control)");
   assert.equal(property(notice.body, "color-scheme"), "light");
   assert.equal(property(notice.body, "grid-template-columns"), "minmax(0,1fr)");
@@ -791,11 +803,11 @@ test("Notice title and body retain their status colors and readable contrast acr
   const styles = rules(controls), seeds = declarations(blockFor(foundation, ":root, .f-root"));
   const darkMode = declarations(blockFor(foundation, ".f-root.f-theme-dark"));
   const systemDarkMode = declarations(blockFor(foundation, ".f-root.f-theme-system"));
-  for (const [token, value] of [["surface-light", "#FFFFFF"], ["text-light", "#112924"], ["info-text-light", "#1565C0"],
+  for (const [token, value] of [["surface-light", "#FFFFFF"], ["text-light", "#292721"], ["info-text-light", "#1565C0"],
     ["danger-light", "#9D322D"], ["success-background", "#16745F"], ["warning-strong", "#B45309"]])
     assert.equal(seeds.get(`--f-${token}`), value, `Incorrect fixed status role ${token}.`);
   const expected = new Map([
-    ["information", ["#112924", "#FFFFFF", "#1565C0"]],
+    ["information", ["#292721", "#FFFFFF", "#1565C0"]],
     ["success", ["#FFFFFF", "#16745F", "#FFFFFF"]],
     ["warning", ["#FFFFFF", "#B45309", "#FFFFFF"]],
     ["error", ["#FFFFFF", "#9D322D", "#FFFFFF"]],
@@ -851,10 +863,10 @@ test("components do not restore per-subtree themes", async () => {
   assert.deepEqual(violations, [], `Local theme mechanisms remain:\n${violations.join("\n")}`);
 });
 
-test("page titles use 50px expanded and reserve 38px for actual compact headings", async () => {
+test("page titles use 42px expanded and reserve 38px for actual compact headings", async () => {
   const foundation = await readFile(foundationPath, "utf8");
   const tokens = declarations(blockFor(withoutComments(foundation), ":root, .f-root"));
-  assert.equal(tokens.get("--f-type-page"), "50px");
+  assert.equal(tokens.get("--f-type-page"), "42px");
   assert.equal(tokens.get("--f-type-page-compact"), "38px");
   const paths = await filesUnder(designCssRoot, new Set([".css"]));
   const compactFiles = new Set();
@@ -874,7 +886,7 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
         assert.match(normalized, /^var\(--f-type-page-compact(?:,38px)?\)$/, `${relative(repositoryRoot, path)} compact title size`);
         compactFiles.add(relative(designCssRoot, path).replaceAll("\\", "/"));
       } else if (selectors.every(isTitle)) {
-        assert.match(normalized, /^var\(--f-type-page(?:,50px)?\)$/, `${relative(repositoryRoot, path)} expanded title size`);
+        assert.match(normalized, /^var\(--f-type-page(?:,42px)?\)$/, `${relative(repositoryRoot, path)} expanded title size`);
       }
       if (/38px|--f-type-page-compact/.test(size)) {
         assert.ok(selectors.every(selector => isTitle(selector) && compact(selector)),
@@ -883,6 +895,40 @@ test("page titles use 50px expanded and reserve 38px for actual compact headings
     }
   }
   assert.deepEqual([...compactFiles].sort(), ["foundation.css"]);
+});
+
+test("Noto resources and the 14/42/38/36/28/20/12 typography map are source-owned", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const tokens = declarations(blockFor(foundation, ":root, .f-root"));
+  assert.equal(tokens.get("--f-font"), "'Noto Sans','Noto Sans SC',sans-serif");
+  assert.equal(tokens.get("--f-body-size"), "var(--f-type-body)");
+  for (const [type, size] of Object.entries({body:14, page:42, "page-compact":38, h1:36, h2:28, h3:20, "table-card-label":12})) {
+    assert.equal(tokens.get("--f-type-" + type), size + "px");
+  }
+
+  const data = withoutComments(await readFile(join(designCssRoot, "data.css"), "utf8"));
+  const cardLabel = blockFor(data, ".f-data-progressive-cards .f-data-table td[data-f-column]::before");
+  assert.equal(property(cardLabel, "font-size"), "var(--f-type-table-card-label,12px)");
+
+  const fontCss = withoutComments(await readFile(join(designCssRoot, "fonts.css"), "utf8"));
+  const faces = [...fontCss.matchAll(/@font-face\s*{([^{}]+)}/g)].map(match => match[1]);
+  const files = new Set();
+  assert.equal(faces.length, 117);
+  for (const face of faces) {
+    assert.match(property(face, "font-family"), /^'Noto Sans(?: SC)?'$/);
+    assert.equal(property(face, "font-weight"), "100 900");
+    assert.equal(property(face, "font-display"), "swap");
+    assert.match(property(face, "unicode-range"), /^U\+/i);
+    const uri = /^url\(\.\/fonts\/noto\/([\w-]+\.woff2)\) format\('woff2'\)$/.exec(property(face, "src"));
+    assert.ok(uri, "Font src must be a same-origin WOFF2 asset");
+    files.add(uri[1]);
+  }
+  const manifest = JSON.parse(await readFile(join(designCssRoot, "fonts/noto/sources.json"), "utf8"));
+  assert.equal(manifest.license, "OFL-1.1");
+  assert.deepEqual(new Set(manifest.files.filter(file => file.name.endsWith(".woff2")).map(file => file.name)), files);
+  for (const name of ["OFL-NotoSans.txt", "OFL-NotoSansSC.txt"]) {
+    assert.ok(manifest.files.some(file => file.name === name), "Each family has its own notice");
+  }
 });
 
 test("static SVG assets only embed the approved Primary and Surface paints", async () => {
@@ -925,9 +971,10 @@ test("default reading, selected and preview foregrounds stay readable in both mo
     const pairs = [["text", "canvas"], ["text", "surface"], ["text", "display-board"], ["muted", "canvas"],
       ["surface", "primary"], ["surface", "accent"], ["surface", "danger"], ["text", "surface-preview"],
       ["text", "surface-click"], ["surface", "primary-preview"], ["surface", "primary-click"],
-      ["surface", "accent-click"], ["chrome-ink", "click-dark"],
+      ["surface", "accent-click"], ["chrome-ink", "chrome-click"], ["chrome-ink", "chrome-preview"], ["chrome-ink", "chrome"],
       ["info-text", "surface"], ["warning-ink", "warning-background"],
       ["surface-light", "preview-danger"], ["surface-light", "click-danger"]];
+    if (index === 0) pairs.push(["text", "secondary-navigation-surface"], ["muted", "secondary-navigation-surface"]);
     for (const [foreground, background] of pairs) {
       const values = [luminance(color(foreground)), luminance(color(background))];
       const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
@@ -1062,7 +1109,7 @@ function isChromeRoleBoundary(rule) {
     [":is(.shell-header,.f-titlebar) .f-dropdown-panel", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-text":"var(--f-popup-accent-text)"}],
     [".shell-header .f-select::picker(select),.f-titlebar .f-select::picker(select)", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-text":"var(--f-popup-accent-text)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
     [".shell-header .f-select option,.f-titlebar .f-select option", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
-    [".shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-accent-text":"var(--f-shell-header-ink)","--f-text":"var(--f-shell-header-ink)","--f-target-preview":"var(--f-primary-preview)","--f-target-click":"var(--f-primary-click)"}],
+    [".shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-accent-text":"var(--f-shell-header-ink)","--f-text":"var(--f-shell-header-ink)","--f-target-preview":"var(--f-chrome-preview)","--f-target-click":"var(--f-chrome-click)"}],
     [".shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-text":"var(--f-shell-header-button-ink)","--f-surface":"var(--f-shell-header-button-surface)","--f-surface-preview":"var(--f-preview-light)","--f-surface-click":"var(--f-click-light)"}]
   ]);
   const expected = allowed.get(rule.selector);

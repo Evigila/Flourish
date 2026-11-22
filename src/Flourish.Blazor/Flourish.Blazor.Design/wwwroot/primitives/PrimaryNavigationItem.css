@@ -8,7 +8,7 @@
     color: var(--f-text);
     background: var(--f-surface);
     box-shadow: var(--f-shadow-card);
-    font: 400 17px/1.4 "Segoe UI", sans-serif;
+    font: 400 var(--f-type-body,14px)/1.4 var(--f-font,sans-serif);
     text-align: left;
 }
 .primary-navigation-tooltip::before {

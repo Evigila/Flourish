@@ -1,4 +1,14 @@
 {
+  "ChangeLog_BlazorAppearance149": {
+    "en-US": "Use Noto Sans and Noto Sans SC, a 14px body, and a white, silver, and beige light theme with dark brown accents.",
+    "zh-CN": "采用 Noto Sans 和 Noto Sans SC、14px 正文，以及白色、银色、米色和深棕点缀的浅色主题。",
+    "pt-BR": "Use Noto Sans e Noto Sans SC, corpo de 14px e um tema claro em branco, prata e bege com detalhes em marrom escuro."
+  },
+  "ChangeLog_BlazorNavigation149": {
+    "en-US": "Add a nine-dot service launcher, make action tiles more compact, unify dropdown and table spacing, and center plain button labels.",
+    "zh-CN": "加入九点式服务入口，缩小操作卡片，统一下拉菜单和表格间距，并居中普通按钮文字。",
+    "pt-BR": "Adicione um menu de serviços de nove pontos, compacte os blocos de ação, uniformize o espaçamento de menus e tabelas e centralize os rótulos simples dos botões."
+  },
   "ChangeLog_SharedControlRefinements": {
     "en-US": "Refine selection indicators and dropdown highlights, keep progress bars solid, and add a reset control to the avatar crop editor.",
     "zh-CN": "优化选择标记和下拉选项高亮，使用纯色进度条，并为头像裁剪编辑器添加重置按钮。",

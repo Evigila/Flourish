@@ -72,8 +72,8 @@ internal static class CatalogChecks
         Equal("true", typeof(Controls.DisplayBoard), "Dotted");
         Equal("UniformGridShape.Rectangle", typeof(Controls.UniformGrid), "Shape");
         Equal("UniformGridVariant.Elevated", typeof(Controls.UniformGrid), "Variant");
-        Equal("280", typeof(Controls.UniformGrid), "MaxCellSize");
-        Equal("260", typeof(Controls.UniformGrid), "MaxCellHeight");
+        Equal("196", typeof(Controls.UniformGrid), "MaxCellSize");
+        Equal("182", typeof(Controls.UniformGrid), "MaxCellHeight");
         Equal(string.Empty, typeof(Controls.UniformGrid), "CellHeight");
         Equal("false", typeof(Controls.UniformGrid), "ContentHeight");
         Check(Entry(typeof(Controls.UniformGrid)).ApiParameters.Single(parameter => parameter.Name == "ContentHeight")

@@ -35,7 +35,7 @@ color: var(--f-chrome-ink, var(--f-surface));
 
 .navigation-surface .primary-rail  .primary-nav-item:hover {
 color: var(--f-chrome-ink, var(--f-surface));
-    background: var(--f-preview-dark);
+    background: var(--f-chrome-preview);
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-active {
@@ -65,7 +65,7 @@ color: var(--f-muted);
 
 .navigation-surface .secondary-rail {
 color: var(--f-text);
-    background: var(--f-display-board);
+    background: var(--f-secondary-navigation-surface, var(--f-display-board));
     border-right: 1px solid var(--f-border);
     scrollbar-width: none;
 }
@@ -83,7 +83,7 @@ background: var(--f-canvas);
 .navigation-surface  .page-root {
 color: var(--f-text);
     background: var(--f-canvas);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     line-height: 1.55;
 }
 
@@ -121,7 +121,7 @@ margin: 0;
 .navigation-surface  .section-heading > span {
 margin: 10px 0 0;
     color: var(--f-muted);
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
 }
 
 @supports (appearance: base-select) {.navigation-surface  select:not(.f-select)::picker(select) {
@@ -135,7 +135,7 @@ margin: 10px 0 0;
 
     .navigation-surface  select:not(.f-select) option {
     padding: 10px 13px;
-            font-size: 17px;
+            font-size: var(--f-type-body,14px);
     }
 }
 
@@ -184,7 +184,7 @@ color: var(--f-surface);
     }
 
     .navigation-surface  .page-root {
-    font-size: 17px;
+    font-size: var(--f-type-body,14px);
     }
 
     .navigation-surface  .page-module {
@@ -243,7 +243,7 @@ width: 4px;
 
 .navigation-surface .primary-rail  .primary-nav-item:active {
     color: var(--f-chrome-ink, var(--f-surface));
-    background: var(--f-click-dark);
+    background: var(--f-chrome-click);
 }
 
 .navigation-surface .primary-rail  .primary-nav-item.is-disabled:active {

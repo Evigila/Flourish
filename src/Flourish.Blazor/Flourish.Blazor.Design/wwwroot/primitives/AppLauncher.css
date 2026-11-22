@@ -1,0 +1,33 @@
+.f-app-launcher-trigger {
+    padding: 0;
+    color: var(--f-text);
+    background: transparent;
+    border: 0;
+    border-radius: var(--f-radius-control);
+    cursor: pointer;
+}
+.shell-header .f-app-launcher-trigger {
+    color: var(--f-chrome-ink, var(--f-surface));
+}
+.f-app-launcher-trigger:hover,
+.f-app-launcher-trigger[aria-expanded=true] {
+    background: var(--f-target-preview);
+}
+.shell-header .f-app-launcher-trigger:hover,
+.shell-header .f-app-launcher-trigger[aria-expanded=true] {
+    background: var(--f-chrome-preview);
+}
+.f-app-launcher-trigger:active {
+    background: var(--f-target-click);
+}
+.shell-header .f-app-launcher-trigger:active {
+    background: var(--f-chrome-click);
+}
+.f-app-launcher-trigger:focus-visible,
+.f-app-launcher-panel .f-menu-item:focus-visible {
+    outline: 2px solid var(--f-accent);
+    outline-offset: -2px;
+}
+.f-app-launcher-panel .f-menu-item {
+    text-decoration: none;
+}

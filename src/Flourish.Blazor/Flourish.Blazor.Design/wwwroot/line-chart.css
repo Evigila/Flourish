@@ -1,5 +1,5 @@
 .f-line-chart { color:var(--f-text); }
-.f-line-chart-legend { font-size:var(--f-type-body,17px); }
+.f-line-chart-legend { font-size:var(--f-type-body,14px); }
 .f-line-chart-legend strong { font-weight:650; }
 .f-line-chart-grid { stroke:var(--f-border); opacity:1; }
 .f-line-chart [data-series="0"] { color:var(--f-primary); }

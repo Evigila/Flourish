@@ -13,8 +13,8 @@
 .f-uniform-grid {
     display:grid;
     --f-grid-cell-width:1fr;
-    /* Rectangle height sets a wrapping threshold, never a maximum track width. */
-    grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-max-height,260px)))),1fr));
+    /* Keep the default horizontal wrapping threshold independent of vertical density. */
+    grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(2 * var(--f-grid-cell-height,var(--f-grid-cell-wrap-height,260px)))),1fr));
     grid-auto-flow:row;
     grid-auto-rows:minmax(0,1fr);
     justify-content:start;
@@ -25,7 +25,7 @@
     max-width:100%;
 }
 .f-uniform-grid-square {
-    --f-grid-cell-width:var(--f-grid-cell-max,280px);
+    --f-grid-cell-width:var(--f-grid-cell-max,196px);
     grid-template-columns:repeat(auto-fit,minmax(0,var(--f-grid-cell-width)));
     width:fit-content;
 }
@@ -38,8 +38,8 @@
     grid-auto-columns:minmax(0,var(--f-grid-cell-width));
 }
 .f-uniform-grid > * { min-width:0; }
-.f-uniform-grid-square > * { aspect-ratio:1; min-height:0; max-width:var(--f-grid-cell-max,280px); max-height:var(--f-grid-cell-max,280px); }
-.f-uniform-grid-rectangle > * { aspect-ratio:2/1; }
+.f-uniform-grid-square > * { aspect-ratio:1; min-height:0; max-width:var(--f-grid-cell-max,196px); max-height:var(--f-grid-cell-max,196px); }
+.f-uniform-grid-rectangle > * { aspect-ratio:var(--f-grid-rectangle-ratio,20/7); }
 .f-uniform-cell {
     box-sizing:border-box;
     position:relative;
@@ -53,7 +53,7 @@
     text-align:center;
     overflow-wrap:anywhere;
 }
-.f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; max-height:var(--f-grid-cell-max-height,260px); overflow:auto; justify-content:safe center; }
+.f-uniform-grid-rectangle > .f-uniform-cell { min-height:0; max-height:var(--f-grid-cell-max-height,182px); overflow:auto; justify-content:safe center; }
 .f-uniform-grid-fixed-height { grid-auto-rows:var(--f-grid-cell-height); }
 .f-uniform-grid-fixed-height.f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),var(--f-grid-cell-height)); }
 .f-uniform-grid-rectangle.f-uniform-grid-fixed-height > .f-uniform-cell { aspect-ratio:auto; height:var(--f-grid-cell-height); min-height:var(--f-grid-cell-height); max-height:var(--f-grid-cell-height); }
@@ -65,9 +65,10 @@
 .f-uniform-cell.f-uniform-icon-support,
 .f-uniform-cell.f-uniform-grid-button.f-uniform-icon-support {
     display:grid;
-    grid-template-rows:minmax(0,1fr) minmax(0,1fr);
-    gap:0;
-    overflow:hidden;
+    grid-template-rows:auto auto;
+    align-content:safe center;
+    gap:4px;
+    overflow:auto;
 }
 .f-uniform-cell-icon,.f-uniform-cell-copy {
     box-sizing:border-box;
@@ -76,17 +77,14 @@
     align-items:center;
     gap:12px;
     min-width:0;
-    min-height:0;
     width:100%;
-    height:100%;
 }
-.f-uniform-cell-icon { overflow:hidden; justify-content:flex-end; padding-block-end:4px; }
-.f-uniform-cell-copy { overflow:auto; justify-content:flex-start; padding-block-start:4px; }
+.f-uniform-cell-icon { min-height:var(--f-icon-primary-size,24px); }
 /* Let translated labels and descriptions determine the size of a content-height row. */
 .f-uniform-grid-content-height { grid-auto-rows:minmax(min-content,auto); }
 .f-uniform-grid-content-height.f-uniform-grid-rows { grid-template-rows:repeat(var(--f-grid-rows),minmax(min-content,auto)); }
 .f-uniform-grid.f-uniform-grid-content-height > .f-uniform-cell { aspect-ratio:auto; min-height:min-content; max-height:none; overflow:visible; }
-.f-uniform-grid-content-height > .f-uniform-cell.f-uniform-icon-support { grid-template-rows:auto auto; }
+
 
 /* Information is a natural-height field layout, independently of action-cell shape/caps. */
 .f-uniform-grid:has(> .f-uniform-information) { grid-auto-rows:minmax(min-content,auto); }

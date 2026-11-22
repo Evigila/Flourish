@@ -5,8 +5,8 @@ namespace ArkheideSystem.Flourish.Blazor;
 /// <summary>Validates configurable light seeds and selects fixed dark defaults without deriving colors.</summary>
 public sealed record AppearancePalette(string Primary, string Accent, string DarkPrimary, string DarkAccent)
 {
-    public const string DefaultPrimary = "#153A32";
-    public const string DefaultAccent = "#16745F";
+    public const string DefaultPrimary = "#3C3932";
+    public const string DefaultAccent = "#705414";
     public const string DefaultDarkPrimary = "#BBD7C9";
     public const string DefaultDarkAccent = "#75CBB2";
 
@@ -45,5 +45,7 @@ public sealed record AppearancePalette(string Primary, string Accent, string Dar
     }
 
     public string CssVariables =>
-        $"--f-primary-light:{Primary};--f-accent-light:{Accent};--f-primary-dark:{DarkPrimary};--f-accent-dark:{DarkAccent}";
+        $"--f-primary-light:{Primary};--f-accent-light:{Accent};--f-primary-dark:{DarkPrimary};--f-accent-dark:{DarkAccent}"
+        + (Primary == DefaultPrimary ? "" : ";--f-chrome-light:var(--f-primary-light);--f-chrome-ink-light:var(--f-surface-light)"
+            + ";--f-chrome-preview-light:var(--f-preview-dark);--f-chrome-click-light:var(--f-click-dark)");
 }

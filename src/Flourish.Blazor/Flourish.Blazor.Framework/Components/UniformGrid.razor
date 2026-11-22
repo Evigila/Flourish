@@ -11,8 +11,10 @@
     [Parameter] public int? NarrowColumns { get; set; }
     [Parameter] public UniformGridShape Shape { get; set; } = UniformGridShape.Rectangle;
     [Parameter] public UniformGridVariant Variant { get; set; } = UniformGridVariant.Elevated;
-    [Parameter] public int MaxCellSize { get; set; } = 280;
-    [Parameter] public int MaxCellHeight { get; set; } = 260;
+    [Parameter] public int MaxCellSize { get; set; } = 196;
+    private const int DefaultMaxCellHeight = 182;
+    private bool hasExplicitMaxCellHeight;
+    [Parameter] public int MaxCellHeight { get; set; } = DefaultMaxCellHeight;
     [Parameter] public double? CellHeight { get; set; }
     /// <summary>Sizes rectangle rows to their content rather than enforcing an aspect ratio or height cap.</summary>
     [Parameter] public bool ContentHeight { get; set; }
@@ -43,8 +45,17 @@
         NarrowColumns.HasValue ? FormattableString.Invariant($"--f-grid-narrow-columns:{NarrowColumns.Value}") : null,
         Shape == UniformGridShape.Square ? FormattableString.Invariant($"--f-grid-cell-max:{MaxCellSize}px") : null,
         Shape == UniformGridShape.Rectangle ? FormattableString.Invariant($"--f-grid-cell-max-height:{MaxCellHeight}px") : null,
+        Shape == UniformGridShape.Rectangle && hasExplicitMaxCellHeight
+            ? FormattableString.Invariant($"--f-grid-cell-wrap-height:{MaxCellHeight}px;--f-grid-rectangle-ratio:2/1") : null,
         CellHeight.HasValue ? FormattableString.Invariant($"--f-grid-cell-height:{CellHeight.Value}px") : null
     }.Where(value => value is not null));
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        hasExplicitMaxCellHeight = parameters.TryGetValue<int>(nameof(MaxCellHeight), out _);
+        if (!hasExplicitMaxCellHeight) MaxCellHeight = DefaultMaxCellHeight;
+        return base.SetParametersAsync(parameters);
+    }
+
     protected override void OnParametersSet()
     {
         if (Columns is <= 0) throw new ArgumentOutOfRangeException(nameof(Columns));

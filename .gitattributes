@@ -61,3 +61,4 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/fonts/noto/OFL-*.txt -text -whitespace

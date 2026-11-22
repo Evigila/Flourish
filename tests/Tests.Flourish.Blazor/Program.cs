@@ -103,13 +103,29 @@ Test("runtime appearance is scoped to the user circuit", () => {
     var a = first.ServiceProvider.GetRequiredService<IAppearanceService>(); var b = second.ServiceProvider.GetRequiredService<IAppearanceService>();
     a.SetColors("#ffffff", "#ffeebb"); a.SetTheme(ApplicationTheme.Dark);
     Equal("#FFFFFF", a.Current.Primary); Equal(ApplicationTheme.Dark, a.Current.Theme);
-    Equal("#153A32", b.Current.Primary); Equal(ApplicationTheme.Light, b.Current.Theme);
+    Equal("#3C3932", b.Current.Primary); Equal("#705414", b.Current.Accent); Equal(ApplicationTheme.Light, b.Current.Theme);
+    Equal("'Noto Sans','Noto Sans SC',sans-serif", b.Current.FontFamily);
+});
+Test("partial appearance configuration uses the current default for the missing seed", () => {
+    foreach (var entry in new[] { (Key: "Primary", Primary: "#123456", Accent: AppearancePalette.DefaultAccent),
+        (Key: "Accent", Primary: AppearancePalette.DefaultPrimary, Accent: "#123456") })
+    {
+        var settings = new ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string, string?> { ["Flourish:Appearance:" + entry.Key] = "#123456" }).Build();
+        var services = new ServiceCollection();
+        services.AddFlourishDesign(settings);
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+        var state = scope.ServiceProvider.GetRequiredService<IAppearanceService>().Current;
+        Equal(entry.Primary, state.Primary);
+        Equal(entry.Accent, state.Accent);
+    }
 });
 Test("unchanged appearance does not emit duplicate state notifications", () => {
     var services = new ServiceCollection(); services.AddFlourishFramework(); services.AddFlourishDesign(); using var provider = services.BuildServiceProvider(); using var scope = provider.CreateScope();
     var appearance = scope.ServiceProvider.GetRequiredService<IAppearanceService>(); var count = 0;
     appearance.Changed += (_, _) => count++;
-    appearance.SetColors("#153a32", "#16745f"); appearance.SetTheme(ApplicationTheme.Light); Equal(0, count);
+    appearance.SetColors("#3c3932", "#705414"); appearance.SetTheme(ApplicationTheme.Light); Equal(0, count);
     appearance.SetTheme(ApplicationTheme.Dark); appearance.SetTheme(ApplicationTheme.Dark); Equal(1, count);
 });
 Test("duplicate framework registration is rejected", () => { var services = new ServiceCollection(); services.AddFlourishFramework(); services.AddFlourishDesign(); Throws<InvalidOperationException>(() => services.AddFlourishFramework()); });
@@ -280,18 +296,22 @@ AsyncTest("program configuration renders top bar menus, explicit navigation and 
     Check(html.Contains("f-primary-navigation-fixed") && html.Contains("aria-label=\"Run fixed\""), "Fixed command navigation was not rendered.");
 });
 Test("palette configuration emits mode seeds without deriving extra colors", () => {
-    var defaults = AppearancePalette.Create("#153a32", "#16745f");
-    Equal("#153A32", defaults.Primary); Equal("#16745F", defaults.Accent);
+    var defaults = AppearancePalette.Create("#3c3932", "#705414");
+    Equal("#3C3932", defaults.Primary); Equal("#705414", defaults.Accent);
     Equal("#BBD7C9", defaults.DarkPrimary); Equal("#75CBB2", defaults.DarkAccent);
     var custom = AppearancePalette.Create("#55aaee", "#ffee99");
     Equal("#55AAEE", custom.Primary); Equal(custom.Primary, custom.DarkPrimary);
     Equal("#FFEE99", custom.Accent); Equal(custom.Accent, custom.DarkAccent);
-    Check(defaults.CssVariables.Contains("--f-primary-light:#153A32", StringComparison.Ordinal)
-        && defaults.CssVariables.Contains("--f-accent-light:#16745F", StringComparison.Ordinal)
+    Check(defaults.CssVariables.Contains("--f-primary-light:#3C3932", StringComparison.Ordinal)
+        && defaults.CssVariables.Contains("--f-accent-light:#705414", StringComparison.Ordinal)
         && defaults.CssVariables.Contains("--f-primary-dark:#BBD7C9", StringComparison.Ordinal)
         && defaults.CssVariables.Contains("--f-accent-dark:#75CBB2", StringComparison.Ordinal)
         && !defaults.CssVariables.Contains("--f-primary:", StringComparison.Ordinal),
         "Palette output bypassed mode-specific role selection.");
+    Check(!defaults.CssVariables.Contains("--f-chrome-light:", StringComparison.Ordinal)
+        && custom.CssVariables.Contains("--f-chrome-light:var(--f-primary-light);--f-chrome-ink-light:var(--f-surface-light)", StringComparison.Ordinal)
+        && custom.CssVariables.Contains("--f-chrome-preview-light:var(--f-preview-dark);--f-chrome-click-light:var(--f-click-dark)", StringComparison.Ordinal),
+        "Custom seeds must retain their branded chrome while default seeds inherit silver.");
     Check(AppearancePalette.Contrast("#000000", "#FFFFFF") > 20
         && AppearancePalette.Contrast("#153A32", "#153A32") == 1,
         "The retained contrast utility no longer reports standard ratios.");
