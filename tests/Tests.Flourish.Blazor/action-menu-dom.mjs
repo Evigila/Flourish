@@ -683,8 +683,9 @@ if (browserPath) {
             + '<div class="f-shell"><div id="applicationSecondary" class="f-secondary-navigation">Secondary navigation</div></div>'
             + '<div id="dropdown" class="f-menu-panel f-dropdown-panel" data-f-open style="top:240px;left:400px">Options</div>';
         const result = await browserSessionFixture(markup, async ({evaluate,send}) => {
-            const colors = () => evaluate("Object.fromEntries(['interaction','top','primary','selected','secondary','stage','heading','page','preview','applicationSecondary','dropdown']"
-                + ".map(id=>[id,getComputedStyle(document.getElementById(id)).backgroundColor]))");
+            const colors = () => evaluate("(async()=>{await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));"
+                + "return Object.fromEntries(['interaction','top','primary','selected','secondary','stage','heading','page','preview','applicationSecondary','dropdown']"
+                + ".map(id=>[id,getComputedStyle(document.getElementById(id)).backgroundColor]));})()");
             const light = await colors();
             // Inspect the theme's pseudo-class colors independently of the hosted OS pointer.
             await send('Page.bringToFront');
@@ -695,7 +696,6 @@ if (browserPath) {
             const {nodeId} = await send('DOM.querySelector',{nodeId:root.nodeId,selector:'#interaction'});
             const interactionColor = async (forcedPseudoClasses, expected) => {
                 await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses});
-                await evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
                 const color = (await colors()).interaction;
                 if (color !== expected) {
                     const details = await evaluate("(() => {const node=document.querySelector('#interaction'),style=getComputedStyle(node);"
