@@ -686,12 +686,16 @@ if (browserPath) {
             const colors = () => evaluate("Object.fromEntries(['interaction','top','primary','selected','secondary','stage','heading','page','preview','applicationSecondary','dropdown']"
                 + ".map(id=>[id,getComputedStyle(document.getElementById(id)).backgroundColor]))");
             const light = await colors();
-            const point = await evaluate("(() => {const rect=document.getElementById('interaction').getBoundingClientRect();return {x:rect.left+rect.width/2,y:rect.top+rect.height/2};})()");
-            await send('Input.dispatchMouseEvent',{...point,type:'mouseMoved'});
+            // Inspect the theme's pseudo-class colors without depending on hosted pointer event delivery.
+            await send('DOM.enable');
+            await send('CSS.enable');
+            const {root} = await send('DOM.getDocument');
+            const {nodeId} = await send('DOM.querySelector',{nodeId:root.nodeId,selector:'#interaction'});
+            await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['hover']});
             const hover = (await colors()).interaction;
-            await send('Input.dispatchMouseEvent',{...point,type:'mousePressed',button:'left',buttons:1,clickCount:1});
+            await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['hover','active']});
             const press = (await colors()).interaction;
-            await send('Input.dispatchMouseEvent',{...point,type:'mouseReleased',button:'left',clickCount:1});
+            await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:[]});
             await evaluate("document.body.className='f-root f-theme-dark'");
             const dark = await colors();
             await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:'dark'}]});
