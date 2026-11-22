@@ -589,49 +589,63 @@ if (browserPath) {
         assert.equal(layout.centered,true);
         assert.ok(layout.height>=64);
     });
-    await check('Native and hover selectors space adjacent options equally and keep keyboard selection', async () => {
+    const pressKey = async (send, key, windowsVirtualKeyCode) => {
+        const event = { key, code:key, windowsVirtualKeyCode };
+        await send('Input.dispatchKeyEvent',{ ...event,type:'keyDown', ...(key === 'Enter' ? {text:'\r'} : {}) });
+        await send('Input.dispatchKeyEvent',{ ...event,type:'keyUp' });
+    };
+    await check('Native selector spaces adjacent options and keeps keyboard selection', async () => {
         const markup = '<select class="f-input f-select" id="search-column" aria-label="Search by">'
             + '<option value="" selected>All fields</option><option value="company">Company</option>'
             + '<optgroup label="Internal"><option value="account">Account</option><option value="department">Department</option></optgroup>'
-            + '</select>'
-            + '<span class="f-native-select-popup f-native-select-button" data-f-native-select-popup>'
-            + '<select class="f-input f-select" id="language" aria-label="Language"><option value="en">English</option>'
-            + '<option value="pt">Português</option><option value="zh">中文</option></select>'
-            + '<span class="f-native-select-actions"><details class="f-action-menu f-dropdown-surface" data-f-native-menu'
-            + ' data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-hover="true">'
-            + '<summary class="f-button f-button-quiet">Language</summary><div class="f-menu-panel f-dropdown-panel" data-f-popup-panel role="menu">'
-            + '<div data-f-native-select-options></div></div></details></span></span>';
+            + '</select>';
         const result = await browserSessionFixture(markup, async ({evaluate, send}) => {
-            const press = async (key, windowsVirtualKeyCode) => {
-                const event = { key, code:key, windowsVirtualKeyCode };
-                await send('Input.dispatchKeyEvent',{ ...event,type:'keyDown' });
-                await send('Input.dispatchKeyEvent',{ ...event,type:'keyUp' });
-            };
             await evaluate("window.fieldChanges=[]; window.column=document.querySelector('#search-column');"
                 + "column.addEventListener('change',()=>fieldChanges.push(column.value)); column.focus(); column.showPicker();", true);
             const nativePicker = await evaluate("(() => {const boxes=Array.from(column.options,option=>option.getBoundingClientRect());"
                 + "return {open:column.matches(':open'),"
                 + "gaps:[boxes[1].top-boxes[0].bottom,boxes[3].top-boxes[2].bottom],"
                 + "margins:Array.from(column.options,option=>getComputedStyle(option).marginBlockStart)};})()");
-            await press('ArrowDown',40);
-            await press('Enter',13);
+            await pressKey(send,'ArrowDown',40);
+            await pressKey(send,'Enter',13);
             const field = await evaluate("({value:column.value,changes:fieldChanges,open:column.matches(':open')})");
-            await evaluate("(async()=>{" + controller + ";initializePopups();const trigger=document.querySelector('.f-native-select-actions summary');"
-                + "trigger.focus();trigger.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true,cancelable:true}));})()");
-            const hoverPicker = await evaluate("(() => {const picker=document.querySelector('[data-f-native-select-options]');"
-                + "const boxes=Array.from(picker.children,option=>option.getBoundingClientRect());"
-                + "return {open:picker.parentElement.matches(':popover-open'),gaps:[boxes[1].top-boxes[0].bottom,boxes[2].top-boxes[1].bottom]};})()");
-            await press('Home',36);
-            await press('ArrowDown',40);
-            const languageFocus = await evaluate("document.activeElement.getAttribute('data-f-native-select-value')");
-            const language = await evaluate("document.activeElement.click(); document.querySelector('#language').value");
-            return {nativePicker,field,hoverPicker,languageFocus,language};
+            return {nativePicker,field};
         });
         assert.deepEqual(result.nativePicker, {open:true,gaps:[4,4],margins:['0px','4px','0px','4px']});
         assert.deepEqual(result.field, {value:'company',changes:['company'],open:false});
-        assert.deepEqual(result.hoverPicker, {open:true,gaps:[4,4]});
-        assert.equal(result.languageFocus,'pt');
-        assert.equal(result.language,'pt');
+    });
+    await check('Hover selector spaces adjacent options and keeps keyboard focus and selection', async () => {
+        // Closing the platform picker may restore focus asynchronously. Run this menu in its own document.
+        const markup = '<span class="f-native-select-popup f-native-select-button" data-f-native-select-popup>'
+            + '<select class="f-input f-select" id="language" aria-label="Language"><option value="en">English</option>'
+            + '<option value="pt">Português</option><option value="zh">中文</option></select>'
+            + '<span class="f-native-select-actions"><details class="f-action-menu f-dropdown-surface" data-f-native-menu'
+            + ' data-f-popup="menu" data-f-popup-dismiss-action="true" data-f-popup-hover="true">'
+            + '<summary class="f-button f-button-quiet">Language</summary><div class="f-menu-panel f-dropdown-panel" data-f-popup-panel role="menu">'
+            + '<div data-f-native-select-options></div></div></details></span></span>';
+        await browserSessionFixture(markup, async ({evaluate, send}) => {
+            await send('Page.bringToFront');
+            await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:1000,y:700});
+            const focused = await evaluate("(async()=>{" + controller + ";initializePopups();"
+                + "window.languageChanges=[]; const select=document.querySelector('#language');"
+                + "select.addEventListener('change',()=>languageChanges.push(select.value));"
+                + "const trigger=document.querySelector('.f-native-select-actions summary');"
+                + "trigger.focus();return document.activeElement===trigger;})()");
+            assert.equal(focused,true,'Language summary receives focus before keyboard input.');
+            await pressKey(send,'ArrowDown',40);
+            const hoverPicker = await evaluate("(() => {const picker=document.querySelector('[data-f-native-select-options]');"
+                + "const boxes=Array.from(picker.children,option=>option.getBoundingClientRect());"
+                + "return {open:picker.parentElement.matches(':popover-open'),gaps:[boxes[1].top-boxes[0].bottom,boxes[2].top-boxes[1].bottom],"
+                + "active:document.activeElement.getAttribute('data-f-native-select-value')};})()");
+            assert.deepEqual(hoverPicker, {open:true,gaps:[4,4],active:'en'});
+            await pressKey(send,'Home',36);
+            await pressKey(send,'ArrowDown',40);
+            assert.equal(await evaluate("document.activeElement.getAttribute('data-f-native-select-value')"),'pt');
+            await pressKey(send,'Enter',13);
+            const language = await evaluate("({value:document.querySelector('#language').value,changes:languageChanges,"
+                + "open:document.querySelector('[data-f-popup-panel]').matches(':popover-open')})");
+            assert.deepEqual(language, {value:'pt',changes:['pt'],open:false});
+        });
     });
     await check('Table search, toolbar, records and footer use fourteen-pixel gaps at wide and narrow widths', async () => {
         const search = '<div class="f-data-search"><div class="f-field"><select class="f-input f-select"><option>Search by</option></select></div>'
