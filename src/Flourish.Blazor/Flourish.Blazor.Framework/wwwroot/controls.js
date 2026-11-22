@@ -95,22 +95,6 @@ function menuUnavailable(element) {
         || element.closest('[disabled],[aria-disabled="true"],[hidden],[inert]') !== null;
 }
 function menuItems(state) { return [...state.panel.querySelectorAll(state.itemSelector)].filter(element => visible(element) && !menuUnavailable(element)); }
-function focusMenuEdge(state, last = false) {
-    const focus = () => {
-        const items = menuItems(state);
-        (last ? items.at(-1) : items[0])?.focus({preventScroll:true});
-    };
-    focus();
-    // Some browsers finish making opened disclosure contents focusable at the next frame.
-    // Keep the synchronous path and never reclaim focus from another control.
-    if (typeof window.requestAnimationFrame !== 'function') return;
-    if (state.focusFrame != null) window.cancelAnimationFrame(state.focusFrame);
-    state.focusFrame = window.requestAnimationFrame(() => {
-        state.focusFrame = null;
-        if (state.open && (document.activeElement === state.trigger || document.activeElement === document.body))
-            focus();
-    });
-}
 const popupTriggerWidthProperty = '--f-popup-trigger-width';
 function setPopupTriggerWidth(element, width, maximumWidth = 'none') {
     if (!Number.isFinite(width) || width < 0) return;
@@ -535,8 +519,8 @@ export function attachMenu(trigger, panel, openOnHover=false) {
         if (!['ArrowDown','ArrowUp'].includes(event.key) || menuUnavailable(trigger)) return;
         event.preventDefault();
         event.stopPropagation();
-        if (!state.open) openMenu(state,false);
-        focusMenuEdge(state,event.key === 'ArrowUp');
+        if (!state.open) openMenu(state,true);
+        const items = menuItems(state); (event.key === 'ArrowUp' ? items.at(-1) : items[0])?.focus();
     });
     listen(state.hoverRoot, 'pointerenter', event => {
         if (state.openOnHover && event.pointerType !== 'touch' && !menuUnavailable(trigger)) openMenu(state,false);
@@ -642,17 +626,18 @@ function openMenu(state, focusMenu) {
     activeMenu = state;
     if (state.disclosure) state.disclosure.open = true;
     panel.setAttribute('data-f-open','');
-    const visibility = panel.style.getPropertyValue('visibility'), priority = panel.style.getPropertyPriority('visibility');
-    panel.style.setProperty('visibility','hidden');
+    // Measure without inheriting visibility:hidden into focusable popover descendants.
+    const opacity = panel.style.getPropertyValue('opacity'), priority = panel.style.getPropertyPriority('opacity');
+    panel.style.setProperty('opacity','0');
     try {
         panel.showPopover();
         trigger.setAttribute('aria-expanded','true');
         positionMenu(state);
     } finally {
-        if (visibility) panel.style.setProperty('visibility',visibility,priority);
-        else panel.style.removeProperty('visibility');
+        if (opacity) panel.style.setProperty('opacity',opacity,priority);
+        else panel.style.removeProperty('opacity');
     }
-    if (focusMenu) focusMenuEdge(state);
+    if (focusMenu) menuItems(state)[0]?.focus({preventScroll:true});
 }
 export function toggleMenu(trigger, panel, focusMenu=true) {
     if (!menus.has(panel)) attachMenu(trigger,panel);
@@ -668,8 +653,6 @@ export function toggleMenu(trigger, panel, focusMenu=true) {
 export function closeMenu(trigger,panel,restoreFocus=false) {
     const state = menus.get(panel); if (!state) return;
     const wasOpen = state.open;
-    if (state.focusFrame != null) window.cancelAnimationFrame(state.focusFrame);
-    state.focusFrame = null;
     if (state.open && panel.isConnected && panel.matches(':popover-open')) panel.hidePopover();
     panel.removeAttribute('data-f-open');
     state.open = false;
