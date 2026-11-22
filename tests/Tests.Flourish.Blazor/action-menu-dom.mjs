@@ -633,6 +633,7 @@ if (browserPath) {
                 + "trigger.focus();return document.activeElement===trigger;})()");
             assert.equal(focused,true,'Language summary receives focus before keyboard input.');
             await pressKey(send,'ArrowDown',40);
+            await evaluate("new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))");
             const hoverPicker = await evaluate("(() => {const picker=document.querySelector('[data-f-native-select-options]');"
                 + "const boxes=Array.from(picker.children,option=>option.getBoundingClientRect());"
                 + "return {open:picker.parentElement.matches(':popover-open'),gaps:[boxes[1].top-boxes[0].bottom,boxes[2].top-boxes[1].bottom],"
