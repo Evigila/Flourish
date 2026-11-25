@@ -2,7 +2,7 @@
 
 ## Source, packages and scope
 
-Directory.Build.props declares stable source VersionPrefix 1.4.10 without a suffix and EssentialCultureVersion 1.4.0. The release promotes the Blazor changes verified in Colligere with 1.4.9-preview.10. The earlier v1.4.9 tag remains part of source history. Its workflow failed before NuGet publication. Earlier candidate hashes and consumer evidence remain in their original release records.
+Directory.Build.props declares stable source VersionPrefix 1.4.11 and EssentialCultureVersion 1.4.0. The release promotes the Blazor changes verified in Colligere with 1.4.11-preview.8. Earlier releases and their candidate hashes and consumer evidence remain in their original release records.
 
 ReleaseSettings defines six ordered IDs: Arkheide.Flourish.Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor aggregate. Verification checks identities, exact local dependencies, Essential versions, architecture-neutral managed assemblies and required static/icon/license resources. WPF and WinUI are excluded. Do not infer package API ownership from the convenience aggregate.
 

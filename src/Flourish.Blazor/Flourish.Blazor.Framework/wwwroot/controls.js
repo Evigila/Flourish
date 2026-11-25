@@ -226,15 +226,9 @@ function measureNativePicker(select) {
                 heading.textContent = child.label;
                 row.appendChild(heading); appendOptions(child,row);
             } else {
-                row.style.display = 'grid';
-                const marker = owner.createElement('span'), label = owner.createElement('span');
-                copyPickerMetrics(styles(child,'::checkmark'),marker,[...pickerMeasureProperties,'width','height']);
-                row.style.gridTemplateColumns = styles(child,'::checkmark').getPropertyValue('width') + ' max-content';
-                marker.style.gridColumn = '1'; marker.style.gridRow = '1';
-                label.style.gridColumn = '2'; label.style.gridRow = '1'; label.style.minWidth = '0';
-                if (child.getAttribute('label')) label.textContent = child.label;
-                else for (const content of child.childNodes) label.appendChild(cloneContent(content));
-                row.appendChild(marker); row.appendChild(label);
+                row.style.display = computed.display;
+                if (child.getAttribute('label')) row.textContent = child.label;
+                else for (const content of child.childNodes) row.appendChild(cloneContent(content));
             }
             target.appendChild(row);
         }
@@ -335,10 +329,8 @@ export function initializeNativeSelectPopups(root = document) {
                 choice.setAttribute('data-f-native-select-value',option.value);
                 choice.setAttribute('data-f-native-select-text',option.label);
                 choice.disabled = !!disabled(option);
-                const marker = select.ownerDocument.createElement('span');
-                marker.className = 'f-selection-indicator'; marker.setAttribute('aria-hidden','true'); marker.textContent = option.selected ? '✓' : '';
                 const text = select.ownerDocument.createElement('span'); text.textContent = option.label;
-                choice.append(text,marker); fragment.appendChild(choice);
+                choice.appendChild(text); fragment.appendChild(choice);
             }
             options.replaceChildren(fragment);
             if (caption) caption.textContent = select.selectedOptions[0]?.label ?? '';

@@ -60,6 +60,40 @@ test('compact desktop and narrow brand reservations fit without changing the mea
     assert.equal(resolveHeaderLayout(header, { left:81, right:1285 }, widths[1], 81).mode, 'aligned');
 });
 
+test('the dock reserves the same logical inline inset as the visible brand', async () => {
+    const root = '../../src/Flourish.Blazor/';
+    const paint = await readFile(new URL(root + 'Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css', import.meta.url), 'utf8');
+    const behavior = await readFile(new URL(root + 'Flourish.Blazor.Framework/wwwroot/primitives/behavior.css', import.meta.url), 'utf8');
+    const rule = (css, selector) => css.slice(css.indexOf(selector + ' {')).split('}')[0];
+    const brand = rule(paint, '.shell-header .shell-header-brand');
+    const dock = rule(paint, '.shell-header[data-f-shell-heading-active] > .shell-header-start');
+    assert.match(brand, /padding-inline: var\(--f-shell-brand-padding\)/);
+    assert.match(brand, /border-inline-width: var\(--f-shell-brand-border\)/);
+    assert.match(dock, /padding-inline-end: calc\(var\(--f-shell-brand-padding\) \+ var\(--f-shell-brand-border\) \+ var\(--f-shell-launcher-gap, 0px\)\)/);
+    assert.match(behavior, /\.shell-header-start:has\(> \.shell-header-launcher:not\(:empty\)\) \{\s*--f-shell-launcher-gap: var\(--f-shell-action-gap, 12px\)/);
+    assert.match(paint, /\.shell-header\[data-f-shell-heading-active\]:has\([^\n]+\) > \.shell-header-start \{\s*padding-inline-end: var\(--f-shell-launcher-gap, 0px\)/);
+    assert.match(rule(paint, '.shell-header-actions'), /padding-inline-start: var\(--f-shell-action-gap, 12px\)/);
+    assert.doesNotMatch(behavior, /\[data-f-shell-heading-active\][^{]*> \.shell-header-start:not\(/,
+        'the dock keeps the same inset even when the launcher is disabled');
+});
+
+test('only opted-in brand and context names use the header accent', async () => {
+    const paint = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css', import.meta.url), 'utf8');
+    const accent = [...paint.matchAll(/([^{}]+)\{[^{}]*\bcolor:\s*var\(--f-accent, var\(--f-chrome-ink\)\)[^{}]*\}/g)];
+    assert.deepEqual(accent.flatMap(match => match[1].split(',').map(selector => selector.trim())), [
+        '.shell-header[data-shell-header-accent-brand] .shell-header-title > strong',
+        '.shell-header[data-shell-header-accent-context] .shell-header-context',
+    ]);
+});
+
+test('document presentation bands use the remaining viewport and eighty percent of the previous gutters', async () => {
+    const css = await readFile(new URL('../../src/Flourish.Blazor/Flourish.Blazor.Framework/wwwroot/presentation/layout.css', import.meta.url), 'utf8');
+    assert.match(css, /\.f-document-surface > \.content-stage\s*\{[^}]*--f-presentation-gutter-scale:\.8/);
+    assert.match(css, /max-width:calc\(100% \* \(1 - var\(--f-presentation-gutter-scale\)\) \+ var\(--f-content-width,1180px\) \* var\(--f-presentation-gutter-scale\)\)/);
+    for (const width of [24, 18]) assert.ok(css.includes(`padding-inline:calc(${width}px * var(--f-presentation-gutter-scale))`));
+    assert.match(css, /min-height:max\(calc\(100dvh - var\(--f-document-header-height\)\),var\(--f-band-min-height,0px\)\)/);
+});
+
 test('a dynamic expanded page and changed navigation rails are reflected by actual content bounds', () => {
     const header = { left:40, right:2440, width:2400 };
     const standard = resolveHeaderLayout(header, { left:778, right:1958 }, 220, 260);
@@ -109,7 +143,7 @@ test('removed headers release every subscription and pending animation frame', (
     }
 });
 
-test('footer foreground follows the same real content edges through resize routing RTL and disposal', () => {
+test('header fit survives docking and the footer tracks real content edges through routing and resize', () => {
     const keys = ['ResizeObserver', 'MutationObserver', 'window', 'requestAnimationFrame', 'cancelAnimationFrame', 'getComputedStyle'];
     const previous = Object.fromEntries(keys.map(key => [key, globalThis[key]]));
     const frames = new Map();
@@ -126,15 +160,20 @@ test('footer foreground follows the same real content edges through resize routi
                 removeProperty:name => properties.delete(name)
             },
             getAttribute:name => name === 'style' ? [...properties].map(([key, value]) => `${key}:${value}`).join(';') || null : attributes.get(name) ?? null,
+            hasAttribute:name => attributes.has(name),
             setAttribute:(name, value) => attributes.set(name, value),
             removeAttribute:name => attributes.delete(name),
             getBoundingClientRect() { return this.rect; },
+            getClientRects() { return this.rendered ?? this.rect.width > 0 ? [this.rect] : []; },
             closest:selector => selector.includes('.f-menu-panel') ? null : surface,
             matches:selector => selector.split(',').some(part => classes.includes(part.slice(1)))
         };
     }
     const surface = {};
     const header = element(['shell-header'], { left:0, right:1920, width:1920 });
+    const documentHeader = element(['f-document-surface-header'], { height:68 });
+    documentHeader.parentElement = surface;
+    header.closest = selector => selector === '.f-document-surface-header' ? documentHeader : surface;
     const brandWing = element(['shell-header-start'], { left:0, right:442, width:442 }, { paddingLeft:'10px', paddingRight:'10px' });
     brandWing.children = [element(['shell-header-brand'], { left:10, right:210, width:200 })];
     const center = element(['shell-header-center'], { left:442, right:1478, width:1036 });
@@ -208,10 +247,36 @@ test('footer foreground follows the same real content edges through resize routi
     try {
         initializeShellHeaders({ querySelectorAll:() => [header] });
         flush();
+        assert.ok(observed.has(documentHeader));
+        assert.equal(stage.style.getPropertyValue('--f-document-header-height'), '68px');
+        documentHeader.rect.height = 112;
+        resize(); flush();
+        assert.equal(stage.style.getPropertyValue('--f-document-header-height'), '112px', 'wrapped header height must reduce the presentation viewport again');
         assert.deepEqual(physicalFooterEdges(firstFooter), [442, 1478]);
         assert.equal(header.getAttribute('data-shell-header-layout'), 'fitted');
         assert.equal(header.style.getPropertyValue('--f-shell-content-start'), '220px', 'default layout places services after the brand');
         assert.equal(header.style.getPropertyValue('--f-shell-content-end'), '318px', 'default actions keep their own width');
+        const brand = brandWing.children[0];
+        const brandRect = brand.rect;
+        header.setAttribute('data-f-shell-heading-active', '');
+        brand.rect = { width:0 };
+        resize(); flush();
+        assert.equal(header.style.getPropertyValue('--f-shell-content-start'), '220px', 'docking must retain the expanded brand reservation');
+        const label = element(['shell-header-title'], { width:0 });
+        const brandName = element(['strong'], { width:0 });
+        label.rendered = brandName.rendered = true;
+        brandName.scrollWidth = 170;
+        label.children = [brandName];
+        brand.children = [element(['shell-header-logo'], { width:24 }), label];
+        brand.computed.columnGap = '10px';
+        brand.rect = { width:24 };
+        header.removeAttribute('data-f-shell-heading-active');
+        assert.ok(mutationSettings.attributeFilter.includes('data-f-shell-heading-active'));
+        mutation([{ target:header, attributeName:'data-f-shell-heading-active' }]);
+        flush();
+        assert.equal(header.style.getPropertyValue('--f-shell-content-start'), '224px', 'returning from docking must measure brand text even when clipped');
+        brand.rect = brandRect;
+        brand.children = [];
         header.setAttribute('data-shell-header-follow-content', 'true');
         mutation([{ target:header, attributeName:'data-shell-header-follow-content' }]);
         flush();
@@ -300,6 +365,7 @@ test('footer foreground follows the same real content edges through resize routi
         disposeShellHeader(header);
         assert.equal(frames.size, 0);
         assert.equal(observed.size, 0);
+        assert.equal(stage.style.getPropertyValue('--f-document-header-height'), '');
         assert.equal(replacement.getAttribute('data-presentation-footer-layout'), null);
         assert.equal(replacement.style.getPropertyValue('--f-presentation-footer-content-end'), '');
     } finally {

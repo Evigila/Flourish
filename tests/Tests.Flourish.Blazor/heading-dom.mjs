@@ -33,11 +33,14 @@ function fixture() {
             getAttribute:key=>attrs.get(key)??null,hasAttribute:key=>attrs.has(key),
             setAttribute(key,value=''){if(attrs.get(key)!==value){attrs.set(key,value);writes++;}},
             removeAttribute(key){if(attrs.delete(key))writes++;},
+            toggleAttribute(key,enabled){if(enabled)this.setAttribute(key,'');else this.removeAttribute(key);},
+            matches(selector){return selector===':popover-open'?Boolean(this.open):this.selector===selector;},
             getClientRects(){return this.hidden?[]:[this.getBoundingClientRect()];},
             closest(selector){
                 for(let item=this;item;item=item.parentElement){
                     if(selector==='.f-page-body'&&item.page)return item;
                     if(selector==='.f-document-surface'&&item.documentFlow)return item;
+                    if(selector==='.navigation-surface,.content-surface'&&selector.split(',').includes(item.selector))return item;
                     if(selector.startsWith('[hidden]')&&item.hidden)return item;
                 }return null;
             }};
@@ -63,6 +66,8 @@ function fixture() {
         const values=[];
         for(const [kind,width] of [['parent',130],['actions',240]]) {
             const slot=node(x.heading),anchor=node(slot),content=node(anchor),space=node(x.overlay);
+            anchor.showPopover=()=>{anchor.open=true;};
+            anchor.hidePopover=()=>{anchor.open=false;};
             slot.setAttribute('data-f-heading-control-slot',kind);
             anchor.firstElementChild=content;slot.querySelector=()=>anchor;
             content.naturalWidth=width;content.naturalHeight=48;content.id=kind+'-unique';
@@ -90,12 +95,38 @@ function fixture() {
         x.overlay.querySelector=selector=>values.find(item=>selector==='[data-f-heading-'+item.kind+'-space]')?.space??null;
         return values;
     }
+    function shell(x,selector='.navigation-surface') {
+        const surface=node(doc.documentElement),header=node(surface),dock=node(header),title=node(dock);
+        x.stage.parentElement=surface;
+        x.stage.selector='.application-stage';
+        surface.selector=selector;
+        dock.hidden=true;
+        dock.computed.columnGap='12px';
+        surface.querySelector=()=>header;
+        header.getBoundingClientRect=()=>({width:x.stage.clientWidth});
+        const widths={'.shell-header-start':68,'.shell-header-actions':186};
+        header.querySelector=selector=>selector==='[data-f-shell-heading]'?dock:{
+            getBoundingClientRect:()=>({width:widths[selector.slice(9)]})};
+        const parent=node(dock),actions=node(dock);
+        parent.hidden=actions.hidden=true;
+        title.getAnimations=()=>[];
+        parent.getBoundingClientRect=()=>({left:x.stage.left+68,top:10});
+        title.getBoundingClientRect=()=>({left:parent.getBoundingClientRect().left+(parent.hidden?0:60),top:10});
+        actions.getBoundingClientRect=()=>{
+            const stacked=header.hasAttribute('data-f-shell-heading-stacked');
+            const width=Number.parseFloat(actions.style.getPropertyValue('width'));
+            return {left:x.stage.left+x.stage.clientWidth-(stacked?10:widths['.shell-header-actions'])-width,top:stacked?70:10};
+        };
+        dock.querySelector=selector=>selector==='.shell-header-heading-title'?title:
+            selector==='[data-f-heading-parent-space]'?parent:actions;
+        return {header,dock,title,parent,actions};
+    }
     function flush(){
         let count=0;
         while(frames.size){const tasks=[...frames.values()];frames.clear();tasks.forEach(fn=>fn());assert.ok(++count<5,'observer did not settle');}
     }
     const changed=()=>{observers.filter(x=>!x.closed).forEach(x=>x.callback());flush();};
-    return {doc,win,headings,observers,events,frames,add,region,controls,flush,changed,writes:()=>writes,
+    return {doc,win,headings,observers,events,frames,add,region,controls,shell,flush,changed,writes:()=>writes,
         scroll(){events.get('documentscroll')?.();flush();}};
 }
 const visible=overlay=>overlay.hasAttribute('data-f-heading-visible');
@@ -210,6 +241,108 @@ test('asynchronous action changes remeasure reserved slots, hidden controls rele
     f.headings.length=0;f.changed();
     assert.equal(parent.anchor.hasAttribute('data-f-heading-fixed'),false);
     assert.equal(actions.slot.hasAttribute('data-f-heading-reserved'),false);
+});
+test('workspace title and original controls dock only after scrolling past the full heading',()=>{
+    const f=fixture(),x=f.add(),[parent,actions]=f.controls(x),shell=f.shell(x);
+    initializePageHeadings(f.doc);
+    x.stage.scrollTop=173;f.scroll();
+    assert.equal(shell.dock.hidden,true);
+    x.stage.scrollTop=174;f.scroll();
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-active'),true);
+    assert.equal(shell.dock.hidden,false);
+    assert.equal(shell.title.textContent,'Page title');
+    assert.equal(visible(x.overlay),false);
+    assert.equal(actions.anchor.open,true);
+    assert.equal(actions.anchor.parentElement,actions.slot);
+    assert.equal(actions.content.parentElement,actions.anchor);
+    assert.equal(parent.anchor.style.getPropertyValue('--f-heading-control-left'),'168px');
+    assert.equal(shell.title.getBoundingClientRect().left,228);
+    assert.equal(actions.anchor.style.getPropertyValue('--f-heading-control-left'),'574px');
+    assert.equal(parent.anchor.style.getPropertyValue('--f-heading-control-width'),'48px');
+    assert.equal(parent.slot.style.getPropertyValue('--f-heading-slot-height'),'56px');
+    const writes=f.writes(),refresh=x.heading.popupRefreshes;
+    f.changed();assert.equal(f.writes(),writes);assert.equal(x.heading.popupRefreshes,refresh);
+    f.doc.activeElement=actions.content;
+    x.stage.scrollTop=120;f.scroll();assert.equal(actions.anchor.open,true);
+    x.stage.scrollTop=0;f.scroll();
+    assert.equal(f.doc.activeElement,actions.content);
+    assert.equal(shell.dock.hidden,true);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-active'),false);
+    assert.equal(actions.anchor.open,false);
+    assert.equal(actions.anchor.hasAttribute('popover'),false);
+    assert.equal(actions.slot.hasAttribute('data-f-heading-reserved'),false);
+});
+test('the action row fits only when it can keep the shared header gaps',()=>{
+    const f=fixture(),x=f.add(f.region(10,100,698,600));
+    f.controls(x);
+    const shell=f.shell(x);
+    x.stage.scrollTop=300;initializePageHeadings(f.doc);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-stacked'),false);
+    x.stage.clientWidth--;
+    f.changed();
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-stacked'),true);
+});
+test('a narrow workspace keeps Back by the title and moves only actions to the end of the second row',()=>{
+    const f=fixture(),x=f.add(f.region(10,100,360,600)),[parent,actions]=f.controls(x),shell=f.shell(x);
+    x.stage.scrollTop=300;initializePageHeadings(f.doc);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-stacked'),true);
+    assert.equal(parent.anchor.style.getPropertyValue('--f-heading-control-top'),'10px');
+    assert.equal(actions.anchor.style.getPropertyValue('--f-heading-control-top'),'70px');
+    assert.equal(actions.anchor.style.getPropertyValue('--f-heading-control-left'),'120px');
+    actions.content.hidden=true;f.changed();
+    assert.equal(actions.anchor.open,false);
+    assert.equal(shell.actions.hidden,true);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-stacked'),false);
+    assert.equal(parent.anchor.open,true);
+    actions.content.hidden=false;f.changed();
+    assert.equal(actions.anchor.open,true);
+    f.headings.length=0;f.changed();
+    assert.equal(shell.dock.hidden,true);
+    assert.equal(actions.anchor.open,false);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-stacked'),false);
+});
+test('returning to the page starts a reversible exit and restores the original controls immediately',async()=>{
+    const f=fixture(),x=f.add(),[parent,actions]=f.controls(x),shell=f.shell(x);
+    const exit=()=> {
+        const completion=Promise.withResolvers();
+        shell.title.getAnimations=()=>[{transitionProperty:'transform',finished:completion.promise}];
+        x.stage.scrollTop=0;f.scroll();
+        return completion;
+    };
+    x.stage.scrollTop=300;initializePageHeadings(f.doc);
+    const interrupted=exit();
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-exiting'),true);
+    assert.equal(shell.dock.hidden,false);
+    assert.equal(parent.anchor.open,false);
+    assert.equal(actions.anchor.open,false);
+    assert.equal(shell.parent.hidden,false,'the Back slot keeps the title in place during exit');
+    x.stage.scrollTop=300;f.scroll();
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-exiting'),false);
+    assert.equal(parent.anchor.open,true);
+    interrupted.reject(new Error('The CSS transition reversed'));
+    await Promise.resolve();
+    assert.equal(shell.dock.hidden,false);
+    const completed=exit();
+    completed.resolve();
+    await Promise.resolve();
+    assert.equal(shell.dock.hidden,true);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-active'),false);
+    assert.equal(shell.header.hasAttribute('data-f-shell-heading-exiting'),false);
+});
+test('the dock places Back before the title, reserves the right edge for actions and gates both motion directions',async()=>{
+    const markup=await readFile(new URL('../Components/Primitives/ShellHeader.razor',assets),'utf8');
+    assert.match(markup,/shell-header-heading-main">\s*<span data-f-heading-parent-space hidden><\/span>\s*<span class="shell-header-heading-title"><\/span>\s*<\/div>\s*<span class="shell-header-heading-actions"/);
+    const layout=await readFile(new URL('primitives/behavior.css',assets),'utf8');
+    assert.match(layout,/\.shell-header-heading-main \{[^}]*flex: 1 1 0/);
+    assert.match(layout,/data-f-shell-heading-stacked\] \.shell-header-heading-actions \{[^}]*grid-row: 2;[^}]*justify-self: end/);
+    const paint=await readFile(new URL('../../Flourish.Blazor.Design/wwwroot/primitives/ShellHeader.css',assets),'utf8');
+    assert.match(paint,/@media \(prefers-reduced-motion: no-preference\)[\s\S]*transition: transform \.18s[^}]*\}[\s\S]*data-f-shell-heading-exiting[^}]*translateY\(-150%\)[\s\S]*@starting-style[\s\S]*translateY\(-150%\)/);
+});
+test('a content surface keeps the established standalone collapse',()=>{
+    const f=fixture(),x=f.add(),shell=f.shell(x,'.content-surface');
+    x.stage.scrollTop=300;initializePageHeadings(f.doc);
+    assert.equal(shell.dock.hidden,true);
+    assert.equal(visible(x.overlay),true);
 });
 test('SSR owns one inert text-only overlay; enhanced motion never changes original heading dimensions',async()=>{
     const razor=await readFile(new URL('../Components/PageHeading.razor',assets),'utf8');

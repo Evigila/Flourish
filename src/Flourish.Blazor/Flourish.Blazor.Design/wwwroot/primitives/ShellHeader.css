@@ -2,12 +2,15 @@
     --f-shell-header-ink: var(--f-chrome-quiet-ink, var(--f-chrome-ink, var(--f-surface)));
     --f-shell-header-button-surface: var(--f-surface-light);
     --f-shell-header-button-ink: var(--f-primary-light, var(--f-primary));
+    --f-shell-title-size: calc(var(--f-type-body, 14px) + 4px);
     --f-shell-brand-min: 82px;
+    --f-shell-brand-padding: 13px;
+    --f-shell-brand-border: 1px;
     width: 100%;
     min-height: 68px;
     color: var(--f-chrome-ink, var(--f-surface));
     background: var(--f-chrome, var(--f-primary));
-    border-bottom: 1px solid var(--f-border);
+    box-shadow: var(--f-shadow-bottom);
 }
 /* Tokens belong to the actual chrome control, never to a menu's panel subtree. */
 .shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
@@ -22,7 +25,7 @@
 .shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)) {
     --f-text: var(--f-shell-header-button-ink);
     --f-surface: var(--f-shell-header-button-surface);
-    --f-surface-preview: var(--f-preview-light);
+    --f-surface-preview: var(--f-secondary-navigation-surface, var(--f-preview-light));
     --f-surface-click: var(--f-click-light);
 }
 @supports (appearance: base-select) {
@@ -34,6 +37,18 @@
     text-align: start;
     max-width: 100%;
 }
+.shell-header .shell-header-brand {
+    justify-content: flex-start;
+    padding-inline: var(--f-shell-brand-padding);
+    border-inline-width: var(--f-shell-brand-border);
+}
+.shell-header[data-f-shell-heading-active] > .shell-header-start {
+    /* Start the docked title where the expanded brand's logo starts. */
+    padding-inline-end: calc(var(--f-shell-brand-padding) + var(--f-shell-brand-border) + var(--f-shell-launcher-gap, 0px));
+}
+.shell-header[data-f-shell-heading-active]:has(> .shell-header-heading [data-f-heading-parent-space]:not([hidden])) > .shell-header-start {
+    padding-inline-end: var(--f-shell-launcher-gap, 0px);
+}
 .shell-header-logo {
     width: 24px;
 }
@@ -44,20 +59,44 @@
 }
 .shell-header-title {
     gap: 7px;
-    font-size: var(--f-type-body,14px);
+    font-size: var(--f-shell-title-size);
     letter-spacing: -.01em;
     text-overflow: ellipsis;
 }
+.shell-header-heading-title {
+    font-size: var(--f-shell-title-size);
+    font-weight: 760;
+    letter-spacing: -.01em;
+}
+.shell-header[data-shell-header-accent-brand] .shell-header-title > strong,
+.shell-header[data-shell-header-accent-context] .shell-header-context {
+    color: var(--f-accent, var(--f-chrome-ink));
+}
+@media (prefers-reduced-motion: no-preference) {
+    .shell-header-heading-title {
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform .18s ease-out, opacity .18s ease-out;
+    }
+    .shell-header[data-f-shell-heading-exiting] .shell-header-heading-title {
+        transform: translateY(-150%);
+        opacity: 0;
+    }
+    @starting-style {
+        .shell-header[data-f-shell-heading-active] .shell-header-heading-title {
+            transform: translateY(-150%);
+            opacity: 0;
+        }
+    }
+}
 .shell-header-title strong,
 .shell-header-context {
     text-overflow: ellipsis;
-}
-.shell-header-title strong,
-.shell-header-context {
     font-weight: 760;
 }
 .shell-header-actions {
-    padding-right: 10px;
+    padding-inline-start: var(--f-shell-action-gap, 12px);
+    padding-inline-end: 10px;
     padding-block: 8px;
     row-gap: 8px;
 }
@@ -79,6 +118,11 @@
     max-width: 190px;
     font-size: var(--f-type-body,14px);
     text-overflow: ellipsis;
+}
+.shell-header-identity-icon {
+    inline-size: 48px;
+    justify-content: center;
+    padding-inline: 0;
 }
 .shell-header-center :is(.f-button, .f-button-text),
 .shell-header-actions :is(.f-button, .f-select):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *)),
@@ -153,7 +197,7 @@ a.shell-header-identity:focus-visible {
     max-width: 190px;
 }
 .shell-header-actions {
-    padding-right: 4px;
+    padding-inline-end: 4px;
 }
 .shell-header-identity {
     max-width: 54px;

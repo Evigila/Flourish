@@ -1,4 +1,14 @@
 {
+  "ChangeLog_DockedShellHeading": {
+    "en-US": "Dock page titles and actions in the shell header during scrolling, with entry and exit motion and restored branding. Improve presentation-page centering and responsive header spacing.",
+    "zh-CN": "滚动时将页面标题和操作移入顶部栏，保留进入和退出动画，并在返回时恢复品牌。改善展示页居中和顶部栏的响应式间距。",
+    "pt-BR": "Fixe títulos de páginas e ações no cabeçalho durante a rolagem, com animações de entrada e saída e restauração da marca. Melhore a centralização das páginas de apresentação e o espaçamento responsivo do cabeçalho."
+  },
+  "ChangeLog_BlazorNavigationAndSelection1411": {
+    "en-US": "Refine the light palette, navigation hover states, and table headers. Unify menu spacing and dropdown selection, with checkboxes retained for column visibility.",
+    "zh-CN": "优化浅色配色、导航悬停和表头。统一菜单间距和下拉选中样式，并保留列可见性复选框。",
+    "pt-BR": "Refine a paleta clara, os estados de foco por ponteiro da navegação e os cabeçalhos de tabelas. Uniformize o espaçamento dos menus e a seleção nas listas suspensas, com caixas de seleção para a visibilidade de colunas."
+  },
   "ChangeLog_BlazorAppearance149": {
     "en-US": "Use Noto Sans and Noto Sans SC, a 14px body, and a white, silver, and beige light theme with dark brown accents.",
     "zh-CN": "采用 Noto Sans 和 Noto Sans SC、14px 正文，以及白色、银色、米色和深棕点缀的浅色主题。",

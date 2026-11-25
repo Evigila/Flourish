@@ -448,10 +448,8 @@ function measuredSelect(env, labels = ['English', 'Português (Brasil)', '简体
     for (const text of labels) {
         const option = env.adopt(new Element('option'), select);
         option.value = text; option.label = text;
-        option.computedTheme = { 'font-family': 'Example Sans', 'font-size': '17px', 'letter-spacing': '.25px',
-            'padding-left': '10px', 'padding-right': '10px', 'column-gap': '10px', 'grid-template-columns': '28px minmax(0px, 1fr)' };
-        option.pseudoTheme = { '::checkmark': { 'box-sizing': 'border-box', 'width': '28px', 'height': '28px',
-            'border-left-width': '1px', 'border-right-width': '1px', 'border-left-style': 'solid', 'border-right-style': 'solid' } };
+        option.computedTheme = { 'display': 'flex', 'font-family': 'Example Sans', 'font-size': '17px',
+            'letter-spacing': '.25px', 'padding-left': '10px', 'padding-right': '10px' };
         option.nodes = [new PickerText(text)];
     }
     return select;
@@ -481,11 +479,11 @@ test('native picker settles one rounded intrinsic width before the opening defau
         assert.equal(probe.style.getPropertyValue('padding-left'), '6px');
         assert.equal(probe.style.getPropertyValue('border-left-width'), '1px');
         assert.equal(probe.children.length, 3);
-        const row = probe.children[1], [marker, label] = row.children;
-        assert.equal(row.style.display, 'grid'); assert.equal(row.style.gridTemplateColumns, '28px max-content');
-        assert.equal(row.style.getPropertyValue('letter-spacing'), '.25px'); assert.equal(row.style.getPropertyValue('column-gap'), '10px');
-        assert.equal(marker.style.getPropertyValue('width'), '28px'); assert.equal(marker.style.getPropertyValue('height'), '28px');
-        assert.equal(label.childNodes[0].textContent, 'Português (Brasil)');
+        const row = probe.children[1];
+        assert.equal(row.style.display, 'flex'); assert.equal(row.style.getPropertyValue('grid-template-columns'), '');
+        assert.equal(row.style.getPropertyValue('letter-spacing'), '.25px'); assert.equal(row.style.getPropertyValue('padding-right'), '10px');
+        assert.equal(row.children.length, 0);
+        assert.equal(row.childNodes[0].textContent, 'Português (Brasil)');
         assert.equal(select.value, 'selected-native-value'); assert.equal(select.getAttribute('data-f-popup-align'), 'right');
     };
     api.initializeNativePickers(env.document);
@@ -496,18 +494,16 @@ test('native picker settles one rounded intrinsic width before the opening defau
     assert.equal(env.document.body.children.length, 0);
     assert.equal(select.children.length, 3); assert.equal(select.value, 'selected-native-value');
 }));
-test('native measurement respects changed choice sizes on every opening without changing selection', () => run(env => {
+test('native measurement copies fresh label metrics on every opening without changing selection', () => run(env => {
     const select = measuredSelect(env); api.initializeNativePickers(env.document);
-    for (const size of ['28px', '36px', '48px']) {
+    for (const size of ['14px', '17px', '20px']) {
         for (const option of select.children) {
-            option.computedTheme['grid-template-columns'] = size + ' minmax(0px, 1fr)';
-            option.pseudoTheme['::checkmark'].width = size; option.pseudoTheme['::checkmark'].height = size;
+            option.computedTheme['font-size'] = size;
         }
         env.document.inspectProbe = probe => {
             for (const row of probe.children) {
-                assert.equal(row.style.gridTemplateColumns, size + ' max-content');
-                assert.equal(row.children[0].style.getPropertyValue('width'), size);
-                assert.equal(row.children[0].style.getPropertyValue('height'), size);
+                assert.equal(row.style.getPropertyValue('font-size'), size);
+                assert.equal(row.children.length, 0);
             }
         };
         env.document.emit('pointerdown', select);
@@ -525,7 +521,7 @@ test('native discovery does not remeasure its own removed probes but every new o
     env.document.emit('focusin', select);
     assert.equal(select.style.getPropertyValue('--f-picker-inline-size'), '322px');
     assert.equal(env.document.probeMeasurements.at(-1).children[0].style.getPropertyValue('font-family'), 'New Font');
-    assert.equal(env.document.probeMeasurements.at(-1).children[0].children[1].childNodes[0].textContent, 'A newly localized longer label');
+    assert.equal(env.document.probeMeasurements.at(-1).children[0].childNodes[0].textContent, 'A newly localized longer label');
     const writes = select.style.writeCount;
     env.document.emit('keydown', select); assert.equal(select.style.writeCount, writes); assert.equal(select.attributeWrites, 1);
 }));
@@ -539,12 +535,12 @@ test('rich option content and group labels retain actual metrics while IDs stay 
     const nested = new Element('option'); nested.ownerDocument = env.document; nested.nodes = [new PickerText('Ignored child')];
     nested.setAttribute('label', 'Displayed option label'); nested.label = 'Displayed option label'; group.appendChild(nested);
     api.initializeNativePickers(env.document);
-    const probe = env.document.probeMeasurements[0], clone = probe.children[0].children[1].childNodes[0];
+    const probe = env.document.probeMeasurements[0], clone = probe.children[0].childNodes[0];
     assert.equal(clone.localName, 'svg'); assert.equal(clone.hasAttribute('id'), false); assert.equal(icon.getAttribute('id'), 'real-option-icon');
     assert.equal(clone.style.getPropertyValue('width'), '24px');
     assert.equal(probe.children[1].children[0].textContent, 'Group header');
     assert.equal(probe.children[1].children[0].style.getPropertyValue('font-weight'), '700');
-    assert.equal(probe.children[1].children[1].children[1].textContent, 'Displayed option label');
+    assert.equal(probe.children[1].children[1].textContent, 'Displayed option label');
     assert.equal(env.document.body.children.length, 0);
 }));
 test('unsupported engines, hidden options and an already open picker keep their native behavior', () => run(env => {

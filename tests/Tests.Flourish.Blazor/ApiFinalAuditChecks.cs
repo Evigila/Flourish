@@ -37,7 +37,7 @@ internal static class ApiFinalAuditChecks
                     "Compact rendering lost selection controller identity or native state.");
             });
         }));
-        tests.Add(("reference selection markers remain decorative and include the hidden width measurement rows", async () =>
+        tests.Add(("reference selection renders option states and measures label width without markers", async () =>
         {
             await using var fixture = new Fixture();
             var output = await fixture.Render<Primitives.ReferenceDropdown<int>>(new()
@@ -51,10 +51,11 @@ internal static class ApiFinalAuditChecks
             {
                 Method(component, "Toggle").Invoke(component, null); Rerender(component);
                 var html = output.ToHtmlString();
-                var markers = Regex.Matches(html, @"<span\b[^>]*class=""f-selection-indicator""[^>]*>").Select(match => match.Value).ToArray();
-                Require(markers.Length == 5 && markers.All(tag => tag.Contains("aria-hidden=\"true\""))
-                    && markers.Count(tag => tag.Contains("data-selected=\"true\"")) == 1,
-                    "Reference option or intrinsic-width marker changed its decorative/selected semantics.");
+                var options = Regex.Matches(html, @"<button\b(?=[^>]*role=""option"")[^>]*>").Select(match => match.Value).ToArray();
+                Require(options.Length == 3 && options.Count(tag => tag.Contains("aria-selected=\"true\"")) == 1
+                    && html.Contains("selection-panel-width", StringComparison.Ordinal)
+                    && !html.Contains("f-selection-indicator", StringComparison.Ordinal),
+                    "Reference options must preserve selection semantics and measure labels without checkmarks.");
                 Require(!typeof(MultiSelectBox).Assembly.GetExportedTypes().Any(type => type.Name == "SelectionIndicator"),
                     "The embedded implementation became a standalone public control.");
             });

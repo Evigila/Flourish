@@ -1,7 +1,14 @@
 [
   {
-    "version": "1.4.11-preview",
+    "version": "1.4.12-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.11",
+    "changeKeys": [
+      "Key.ChangeLog_DockedShellHeading",
+      "Key.ChangeLog_BlazorNavigationAndSelection1411"
+    ]
   },
   {
     "version": "1.4.10",

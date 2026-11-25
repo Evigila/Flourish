@@ -60,7 +60,7 @@
     cursor: pointer;
 }
 .selection-dropdown-surface :is(.selection-option, .selection-create):hover:not(:disabled):not(:has(input:disabled)) {
-    color: var(--f-text);
+    color: var(--f-selection-hover-ink);
     background: var(--f-target-preview, var(--f-preview-light));
 }
 
@@ -84,7 +84,7 @@
     gap: 10px;
 }
 .selection-dropdown-surface label.selection-option:focus-within:not(:has(input:disabled)) {
-    color: var(--f-text);
+    color: var(--f-selection-hover-ink);
     background: var(--f-target-preview, var(--f-preview-light));
 }
 .selection-dropdown-surface span.selection-option {

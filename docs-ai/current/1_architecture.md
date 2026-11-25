@@ -40,7 +40,7 @@ Framework and Design CSS bundles are compiled from maintained source by build/Cs
 
 Framework owns geometry/state/interaction; optional Design owns supported semantic paint. Hosts own business values, permission/session/transport/persistence and approved brand configuration. Read [component contracts](component-api-organization.md), [Culture integration](culture-web-integration.md) and [native WPF](wpf-native-integration.md) for their technical boundaries; none defines a competing visual standard.
 
-ShellHeader defaults to the ordinary title/menu/action arrangement. Presentation hosts may opt into content-width following; added action controls use the public header slot and library spacing. NavigationTree shares the shell/surface renderer, stable identity and optional nested icons. Navigation labels are product data rather than inferred permissions.
+ShellHeader defaults to the ordinary title/menu/action arrangement. Presentation hosts may opt into content-width following. Header brand and context labels have separate theme accent opt-ins. Docked page titles use ordinary chrome ink. NavigationTree shares the shell/surface renderer, stable identity and optional nested icons. Available, unselected third-level links use the theme accent and a text underline for hover and keyboard focus. Navigation labels are supplied by the host.
 
 Blazor PageHeading retains the full heading in document flow. An independent compact overlay enters after it leaves view, with original back/action controls retained rather than duplicated. Scroll range does not collapse. PageHeading loading observes existing active sources without intercepting arbitrary host tasks. Native WPF retains its own scroll/template contract and manual display-scaling acceptance.
 

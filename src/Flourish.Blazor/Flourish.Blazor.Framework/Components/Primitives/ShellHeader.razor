@@ -1,5 +1,6 @@
 @namespace ArkheideSystem.Flourish.Blazor.Components.Primitives
-<header class="shell-header @Class" data-shell-header-follow-content="@(FollowContentWidth ? "true" : null)">
+<header class="shell-header @Class" data-shell-header-follow-content="@(FollowContentWidth ? "true" : null)"
+        data-shell-header-accent-brand="@(AccentBrand ? "true" : null)" data-shell-header-accent-context="@(AccentContext ? "true" : null)">
     <div class="shell-header-start">
         @if (ServiceLauncher is not null)
         {
@@ -18,6 +19,13 @@
             </span>
         </ArkheideSystem.Flourish.Blazor.Components.Button>
     </div>
+    <div class="shell-header-heading" data-f-shell-heading hidden aria-hidden="true">
+        <div class="shell-header-heading-main">
+            <span data-f-heading-parent-space hidden></span>
+            <span class="shell-header-heading-title"></span>
+        </div>
+        <span class="shell-header-heading-actions" data-f-heading-actions-space hidden></span>
+    </div>
     @if (Services is not null)
     {
         <div class="shell-header-center"><div class="f-topbar-slot">@Services</div></div>
@@ -33,14 +41,16 @@
             {
                 @if (!string.IsNullOrWhiteSpace(IdentityHref))
                 {
-                    <a class="shell-header-identity" href="@IdentityHref" aria-label="@IdentityAriaLabel">
-                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" /><strong>@IdentityName</strong>
+                    <a class="@IdentityClass" href="@IdentityHref" aria-label="@EffectiveIdentityLabel" title="@IdentityTooltip">
+                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" />
+                        @if (!IdentityIconOnly) { <strong>@IdentityName</strong> }
                     </a>
                 }
                 else
                 {
-                    <span class="shell-header-identity" aria-label="@IdentityAriaLabel">
-                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" /><strong>@IdentityName</strong>
+                    <span class="@IdentityClass" role="@(IdentityIconOnly ? "img" : null)" aria-label="@EffectiveIdentityLabel" title="@IdentityTooltip">
+                        <ArkheideSystem.Flourish.Blazor.Components.Icon Name="person" />
+                        @if (!IdentityIconOnly) { <strong>@IdentityName</strong> }
                     </span>
                 }
             }
@@ -57,10 +67,16 @@
     [Parameter, EditorRequired] public string HomeAriaLabel { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string LogoPath { get; set; } = string.Empty;
     [Parameter, EditorRequired] public string BrandName { get; set; } = string.Empty;
+    /// <summary>Uses the theme accent for the brand name.</summary>
+    [Parameter] public bool AccentBrand { get; set; }
     [Parameter] public string? ContextName { get; set; }
+    /// <summary>Uses the theme accent for the context name.</summary>
+    [Parameter] public bool AccentContext { get; set; }
     [Parameter] public string? IdentityName { get; set; }
     [Parameter] public string? IdentityHref { get; set; }
     [Parameter] public string? IdentityAriaLabel { get; set; }
+    /// <summary>Shows the user glyph without visible text, retaining the accessible label and identity tooltip.</summary>
+    [Parameter] public bool IdentityIconOnly { get; set; }
     [Parameter] public string? Class { get; set; }
     /// <summary>Aligns the menu to the page content when the header controls have room.</summary>
     [Parameter] public bool FollowContentWidth { get; set; }
@@ -71,4 +87,7 @@
     [Parameter] public RenderFragment? LeadingActions { get; set; }
     /// <summary>Right-side controls. Direct children receive standard header spacing.</summary>
     [Parameter] public RenderFragment? EndActions { get; set; }
+    private string IdentityClass => IdentityIconOnly ? "shell-header-identity shell-header-identity-icon" : "shell-header-identity";
+    private string? EffectiveIdentityLabel => string.IsNullOrWhiteSpace(IdentityAriaLabel) ? IdentityName : IdentityAriaLabel;
+    private string? IdentityTooltip => IdentityIconOnly ? IdentityName : null;
 }

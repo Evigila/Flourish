@@ -4,13 +4,22 @@
 html:has(.f-document-surface), body:has(.f-document-surface) { overscroll-behavior-y:none; }
 .content-surface.f-document-surface { display:flex; height:auto; min-height:100dvh; flex-direction:column; overflow:visible; }
 .f-document-surface-header { position:sticky; top:0; z-index:50; flex:0 0 auto; }
-.content-surface.f-document-surface > .content-stage { flex:1 0 auto; overflow:visible; overscroll-behavior:auto; }
+.content-surface.f-document-surface > .content-stage { --f-document-header-height:0px; --f-presentation-gutter-scale:.8; flex:1 0 auto; overflow:visible; overscroll-behavior:auto; }
+.f-document-surface:has(> .f-document-surface-header > .shell-header) > .content-stage { --f-document-header-height:var(--f-topbar-height,68px); }
+.f-document-surface > .content-stage .f-presentation-band > .f-content-container {
+ max-width:calc(100% * (1 - var(--f-presentation-gutter-scale)) + var(--f-content-width,1180px) * var(--f-presentation-gutter-scale));
+ padding-inline:calc(24px * var(--f-presentation-gutter-scale));
+}
 .f-document-surface .f-page-body.f-page-full { min-height:0; padding:0; }
 /* Website page titles stay in document flow; only the top bar owns sticky chrome. */
 .f-document-surface .f-page-heading { position:relative; }
 .f-document-surface .f-page-body.f-page-full > .f-page-heading { padding-inline:max(24px,calc((100% - var(--f-content-width,1180px))/2 + 24px)); }
 .f-presentation-band { box-sizing:border-box; display:flex; align-items:center; width:100%; min-width:0; min-height:var(--f-band-min-height,0px); }
 .f-presentation-band.f-presentation-fullheight { min-height:max(100vh,var(--f-band-min-height,0px)); min-height:max(100dvh,var(--f-band-min-height,0px)); }
+.f-document-surface > .content-stage .f-presentation-band.f-presentation-fullheight:not(:where(footer,[data-presentation-footer]) *) {
+ min-height:max(calc(100vh - var(--f-document-header-height)),var(--f-band-min-height,0px));
+ min-height:max(calc(100dvh - var(--f-document-header-height)),var(--f-band-min-height,0px));
+}
 /* A single scene fills its fixed host's remaining scroll viewport and can still grow. */
 :where(.content-surface:not(.f-document-surface) > .content-stage) > .f-presentation-band.f-presentation-fullheight:where(:only-child) { min-height:max(100%,var(--f-band-min-height,0px)); }
 /* A footer slot stays naturally sized even if it composes a presentation band. */
@@ -72,6 +81,7 @@ body:has(.f-document-surface) { margin:0; }
 @media(max-width:600px) { .f-offer-stage { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:560px) {
  .f-content-container { padding-inline:18px; }
+ .f-document-surface > .content-stage .f-presentation-band > .f-content-container { padding-inline:calc(18px * var(--f-presentation-gutter-scale)); }
  .f-document-surface .f-page-body.f-page-full > .f-page-heading { padding-inline:18px; }
 }
 

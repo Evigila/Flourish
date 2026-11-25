@@ -158,7 +158,7 @@ function popupFixture(kind, alignment) {
     panel = element("span", ["search-autocomplete-options"], owner, [], attributes);
     item = element("span", ["search-autocomplete-option"], panel);
   } else {
-    const owner = element("details", [kind === "split" ? "f-split-button-menu" : kind === "dropdown" ? "f-dropdown-surface" : kind === "service" ? "service-menu" : "f-action-menu"], rootElement);
+    const owner = element("details", [kind === "split" ? "f-split-button-menu" : kind === "dropdown" ? "f-dropdown-surface" : kind === "service" ? "service-menu" : kind === "multi" ? "f-multi-select-box" : "f-action-menu"], rootElement);
     panel = element("div", ["f-menu-panel", ...(kind === "service" ? ["service-menu-view"] : ["f-dropdown-panel"]), ...(kind === "multi" ? ["f-multi-select-panel"] : [])], owner, [], attributes);
     if (kind === "service") item = element("a", [], element("nav", [], panel));
     else if (kind === "multi") item = element("label", ["f-dropdown-item"], element("div", ["f-multi-select-option"], panel));
@@ -261,7 +261,7 @@ test("anchored dropdowns retain natural width and a viewport-bounded trigger flo
       for (const [property, expected] of [["width", kind === "multi" ? "auto" : "100%"], ["min-width", "0"], ["max-width", kind === "multi" ? "none" : "100%"], ["box-sizing", "border-box"], ["justify-self", "stretch"], ["align-self", "stretch"]])
         assert.equal(cascade(allStyles, item, property), expected, `${kind}/${alignment}/item ${property}`);
       for (const property of ["text-align", "justify-content"])
-        assert.equal(cascade(allStyles, item, property), kind === "multi" && property === "justify-content" ? "stretch" : "left", `${kind}/${alignment}/${property}`);
+        assert.equal(cascade(allStyles, item, property), "left", `${kind}/${alignment}/${property}`);
     }
   }
 });
@@ -298,7 +298,7 @@ test("structured dropdown actions use two body-sized lines without enlarging ord
     assert.equal(cascade(allStyles, action, property), expected, property);
   for (const states of [[], ["hover"], ["focus-visible"], ["active"]]) {
     action.states = new Set(states);
-    assert.equal(cascade(allStyles, action, "color"), "var(--f-text)", states.join("/"));
+    assert.equal(cascade(allStyles, action, "color"), states.some(state => state === "hover" || state === "focus-visible") ? "var(--f-selection-hover-ink)" : "var(--f-text)", states.join("/"));
     for (const [line, weight] of [[title, "700"], [description, "400"]]) {
       assert.equal(cascade(allStyles, line, "font-size"), "var(--f-type-body,14px)");
       assert.equal(cascade(allStyles, line, "font-weight"), weight);
@@ -324,9 +324,6 @@ test("hover language and native select choices retain body weight including the 
     assert.equal(cascade(allStyles, choice, "padding"), "6px 10px");
     assert.equal(cascade(allStyles, choice, "min-height"), "40px");
     assert.equal(cascade(allStyles, choice, "gap"), "12px");
-    const marker = element("span", ["f-selection-indicator"], choice);
-    assert.equal(cascade(allStyles, marker, "background"), "transparent");
-    assert.equal(cascade(allStyles, marker, "visibility"), checked ? "visible" : "hidden");
     const native = element("select", ["f-select"], null), option = element("option", [], native, checked ? ["checked"] : []);
     assert.equal(cascade(allStyles, option, "font-weight"), "400");
   }
@@ -391,9 +388,9 @@ test("business identity language and native POST controls retain their own targe
     assert.equal(cascade(allStyles, form, "align-items"), "center");
     const targetHeight = Number.parseFloat(cascade(allStyles, language, "height"));
     const wingInset = Number.parseFloat(cascade(allStyles, wing, "padding-block"));
-    const border = Number.parseFloat(cascade(allStyles, header, "border-bottom"));
     const minimum = Number.parseFloat(cascade(allStyles, header, "min-height"));
-    assert.equal(Math.max(minimum, targetHeight + 2 * wingInset + border), 68, 'the full business row fits the same growable baseline as the presentation row');
+    assert.equal(cascade(allStyles, header, "border-bottom"), undefined, 'elevated chrome uses a lower-edge shadow');
+    assert.equal(Math.max(minimum, targetHeight + 2 * wingInset), 68, 'the full business row fits the same growable baseline as the presentation row');
     assert.equal(cascade(allStyles, header, "height"), undefined);
     assert.equal(cascade(allStyles, wing, "flex-wrap"), "wrap", 'genuine narrow-screen overflow remains reachable');
     const transportSlot = element("div", ["f-topbar-slot"], wing), transportForm = element("form", [], transportSlot);
@@ -504,39 +501,34 @@ test("native picker sizing uses the pre-opening measurement in Framework with op
   }
 });
 
-test("native options reserve a compact trailing slot without a box or fill", () => {
+test("native options suppress the system checkmark without reserving a trailing slot", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left", "right"]) {
     const allStyles = rules(css), owner = element("select", ["f-select", "f-select-customized"], null, [], [["data-f-popup-align", alignment]]);
     const option = element("option", [], owner);
-    assert.equal(cascade(allStyles, option, "grid-template-columns"), "minmax(0,1fr) var(--f-choice-size,28px)");
-    assert.equal(cascade(allStyles, option, "min-height"), "calc(var(--f-choice-size,28px) + 12px)");
+    assert.equal(cascade(allStyles, option, "display"), "flex");
+    assert.equal(cascade(allStyles, option, "grid-template-columns"), undefined);
+    assert.equal(cascade(allStyles, option, "min-height"), "40px");
     assert.equal(cascade(allStyles, option, "text-align"), "left");
     assert.equal(cascade(allStyles, option, "overflow-wrap"), "anywhere");
     const marker = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
-    for (const [property, expected] of [["width","var(--f-choice-size,28px)"],["height","var(--f-choice-size,28px)"],["grid-column","2"],["grid-row","1"],["border","0"],["background","transparent"],["content",'""']])
-      assert.equal(marker.get(property), expected, property);
-    const selected = new Map(allStyles.filter(rule => rule.selectors.includes(".f-select option:checked::checkmark")).flatMap(rule => [...rule.declarations]));
-    assert.equal(selected.get("content"), '"✓"');
-    for (const property of ["width","height","border","background","grid-column"])
-      assert.equal(selected.get(property), undefined, "selection must not change geometry or paint: " + property);
+    assert.equal(marker.get("display"), "none");
+    assert.equal(marker.get("content"), "none");
+    assert.ok(!allStyles.some(rule => rule.selectors.includes(".f-select option:checked::checkmark")));
   }
 });
 
-test("embedded markers preserve native checked semantics and never acquire standalone checkbox paint", () => {
+test("only table visibility choices retain a compact checkmark without standalone checkbox paint", () => {
   for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) {
-    const allStyles = rules(css), {item:label} = popupFixture("multi","left");
+    const allStyles = rules(css), {item:label, panel} = popupFixture("multi","left");
+    panel.parent.attributes.set("data-f-table-selection","true");
     const input = element("input",["f-selection-indicator"],label,[],[["type","checkbox"]]);
     for (const states of [[],["checked"],["checked","hover"],["checked","active"],["disabled"]]) {
       input.states = new Set(states);
       for (const [property,expected] of [["width","var(--f-choice-size,28px)"],["height","var(--f-choice-size,28px)"],["border","0"],["background","transparent"]])
         assert.equal(cascade(allStyles,input,property),expected,states + "/" + property);
     }
-    for (const selected of [false,true]) {
-      const reference = element("button",["reference-option","selection-option"],element("div",["selection-dropdown-surface"],null),[],[["aria-selected",String(selected)]]);
-      const mark = element("span",["f-selection-indicator"],reference,[],selected ? [["data-selected","true"]] : []);
-      assert.equal(cascade(allStyles,mark,"visibility"),selected ? "visible" : "hidden");
-      assert.equal(cascade(allStyles,reference,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
-    }
+    const checked = allStyles.find(rule => rule.selectors.includes('.f-multi-select-box[data-f-table-selection="true"] input.f-selection-indicator:checked::before'));
+    assert.equal(checked.declarations.get("content"), '"✓"');
   }
   assert.match(frameworkCss, /@media\s*\(forced-colors:active\)\s*\{\s*\.f-selection-indicator\s*\{\s*color:CanvasText/);
 });
@@ -544,38 +536,33 @@ test("embedded markers preserve native checked semantics and never acquire stand
 test("embedded marker typography is inherited natively and supplied only by optional Design", () => {
   const native = rules(frameworkCss), skinned = rules(frameworkCss + "\n" + designCss);
   const expectedFont = '800 17px/1 var(--f-font,sans-serif)';
-  const pickerMark = new Map(rules(designCss).filter(rule => rule.selectors.includes(".f-select option::checkmark")).flatMap(rule => [...rule.declarations]));
-  assert.equal(pickerMark.get("font"), expectedFont);
   assert.doesNotMatch(strip(frameworkCss), /Segoe UI/);
-  for (const tag of ["input", "span"]) {
-    const {item:label} = popupFixture("multi", "left");
-    const marker = element(tag, ["f-selection-indicator"], label);
-    assert.equal(cascade(native, marker, "font"), "inherit");
-    assert.equal(cascade(native, marker, "line-height"), "1");
-    assert.equal(cascade(skinned, marker, "font"), pickerMark.get("font"));
-  }
+  const {item:label, panel} = popupFixture("multi", "left");
+  panel.parent.attributes.set("data-f-table-selection","true");
+  const marker = element("input", ["f-selection-indicator"], label);
+  assert.equal(cascade(native, marker, "font"), "inherit");
+  assert.equal(cascade(native, marker, "line-height"), "1");
+  assert.equal(cascade(skinned, marker, "font"), expectedFont);
 });
 
-test("multiselect labels keep text left and the stable compact native input on the right", () => {
-  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const alignment of ["left","right"]) {
-    const allStyles=rules(css), {item:label}=popupFixture("multi",alignment);
+test("multiselects keep their native input focusable and reserve space only for table checkmarks", () => {
+  for (const css of [frameworkCss, frameworkCss + "\n" + designCss]) for (const visibilityMenu of [false,true]) {
+    const allStyles=rules(css), {item:label,panel}=popupFixture("multi","left");
+    if (visibilityMenu) panel.parent.attributes.set("data-f-table-selection","true");
     const checkbox=element("input",["f-selection-indicator"],label,[],[["type","checkbox"]]), text=element("span",[],label);
-    assert.equal(cascade(allStyles,label,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
-    assert.equal(cascade(allStyles,text,"grid-column"),"1");
+    assert.equal(cascade(allStyles,label,"display"),"flex");
     assert.equal(cascade(allStyles,text,"text-align"),"left");
-    for (const selected of [false,true]) {
-      checkbox.states=new Set(selected ? ["checked"] : []);
-      assert.equal(cascade(allStyles,checkbox,"grid-column"),"2");
-      assert.equal(cascade(allStyles,checkbox,"grid-row"),"1");
-    }
+    assert.notEqual(cascade(allStyles,checkbox,"display"),"none");
+    assert.equal(cascade(allStyles,checkbox,"position"),visibilityMenu ? undefined : "absolute");
+    assert.equal(cascade(allStyles,checkbox,"clip-path"),visibilityMenu ? undefined : "inset(50%)");
+    assert.equal(cascade(allStyles,checkbox,"order"),visibilityMenu ? "1" : undefined);
   }
 });
 
-test("reference intrinsic width includes the same trailing slot without changing visible wrapping", () => {
+test("reference intrinsic width measures the option label without a trailing marker track", () => {
   const allStyles=rules(frameworkCss + "\n" + designCss), root=element("div",["selection-dropdown-surface"],null);
   const measurement=element("div",["selection-panel-width"],root), row=element("span",["selection-option"],measurement);
-  assert.equal(cascade(allStyles,row,"display"),"grid");
-  assert.equal(cascade(allStyles,row,"grid-template-columns"),"minmax(0,1fr) var(--f-choice-size,28px)");
+  assert.equal(cascade(allStyles,row,"grid-template-columns"),undefined);
   assert.equal(cascade(allStyles,row,"white-space"),"nowrap");
   const visible=element("button",["reference-option","selection-option"],root), text=element("span",[],visible,["first-child"]);
   assert.equal(cascade(allStyles,text,"min-width"),"0");
@@ -698,8 +685,9 @@ function withoutForcedColors(css) {
   return result + css.slice(offset);
 }
 function selectedChoice(kind, selected, states = []) {
-  if (kind === "native") {
-    const owner = element("select", ["f-select"], element("div", ["f-root"], null));
+  if (kind === "native" || kind === "editing-grid") {
+    const parent = kind === "editing-grid" ? element("div",["editing-grid-table"],null) : element("div", ["f-root"], null);
+    const owner = element("select", ["f-select"], parent);
     return { item: element("option", [], owner, [...states, ...(selected ? ["checked"] : [])]) };
   }
   const fixture = popupFixture(kind === "reference" ? "reference" : kind === "multi" ? "multi" : "action", "left");
@@ -708,25 +696,19 @@ function selectedChoice(kind, selected, states = []) {
     fixture.marker = element("input", ["f-selection-indicator"], fixture.item, selected ? ["checked"] : [], [["type", "checkbox"]]);
   } else {
     fixture.item.attributes.set(kind === "reference" ? "aria-selected" : "aria-checked", String(selected));
-    fixture.marker = element("span", ["f-selection-indicator"], fixture.item, [], selected ? [["data-selected", "true"]] : []);
     if (kind === "enhanced") fixture.item.classes.add("f-native-select-option");
   }
   return fixture;
 }
 test("every native and enhanced selected choice keeps its inverse surface and inset border across pointer and keyboard states", () => {
   const styles = rules(withoutForcedColors(frameworkCss + "\n" + designCss));
-  for (const kind of ["native", "enhanced", "reference", "multi"]) {
+  for (const kind of ["native", "enhanced", "reference", "multi", "editing-grid"]) {
     for (const states of [[], ["hover"], ["active"], ["hover", "active"], ["focus-visible"], ["focus-within"], ["disabled"]]) {
-      const { item, marker } = selectedChoice(kind, true, states);
-      assert.equal(cascade(styles, item, "background"), "var(--f-text)", kind + "/" + states);
-      assert.equal(cascade(styles, item, "color"), "var(--f-surface)", kind + "/" + states);
-      assert.equal(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-text)", kind + "/" + states);
+      const { item } = selectedChoice(kind, true, states);
+      assert.equal(cascade(styles, item, "background"), "var(--f-selection-surface)", kind + "/" + states);
+      assert.equal(cascade(styles, item, "color"), "var(--f-selection-ink)", kind + "/" + states);
+      assert.equal(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-selection-surface)", kind + "/" + states);
       assert.equal(cascade(styles, item, "border"), "0", "selected paint must not shift option geometry");
-      if (marker) {
-        assert.equal(cascade(styles, marker, "background"), "transparent", kind + " marker remains icon-only");
-        assert.equal(cascade(styles, marker, "border"), "0");
-        assert.equal(cascade(styles, marker, "color"), "inherit");
-      }
     }
   }
 });
@@ -734,8 +716,8 @@ test("ordinary unselected and hover choices do not acquire the selected surface 
   const styles = rules(withoutForcedColors(frameworkCss + "\n" + designCss));
   for (const kind of ["native", "enhanced", "reference", "multi"]) for (const states of [[], ["hover"], ["active"]]) {
     const { item } = selectedChoice(kind, false, states);
-    assert.notEqual(cascade(styles, item, "background"), "var(--f-text)", kind + "/" + states);
-    assert.notEqual(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-text)", kind + "/" + states);
+    assert.notEqual(cascade(styles, item, "background"), "var(--f-selection-surface)", kind + "/" + states);
+    assert.notEqual(cascade(styles, item, "box-shadow"), "inset 0 0 0 1px var(--f-selection-surface)", kind + "/" + states);
   }
 });
 test("explicit selected menu classes and ARIA attributes share the same default option paint", () => {
@@ -746,19 +728,34 @@ test("explicit selected menu classes and ARIA attributes share the same default 
     else item.attributes.set("aria-selected", "true");
     for (const state of ["hover", "active", "focus-visible"]) {
       item.states = new Set([state]);
-      assert.equal(cascade(styles, item, "background"), "var(--f-text)");
-      assert.equal(cascade(styles, item, "color"), "var(--f-surface)");
+      assert.equal(cascade(styles, item, "background"), "var(--f-selection-surface)");
+      assert.equal(cascade(styles, item, "color"), "var(--f-selection-ink)");
     }
   }
 });
 test("system high contrast preserves selected contrast without depending on box shadows", () => {
   const styles = rules(frameworkCss + "\n" + designCss);
   for (const kind of ["native", "enhanced", "reference", "multi"]) for (const states of [[], ["hover"], ["active"]]) {
-    const { item, marker } = selectedChoice(kind, true, states);
+    const { item } = selectedChoice(kind, true, states);
     assert.equal(cascade(styles, item, "color"), "HighlightText", kind + "/" + states);
     assert.equal(cascade(styles, item, "background"), "Highlight", kind + "/" + states);
     assert.equal(cascade(styles, item, "outline"), "1px solid Highlight");
     assert.equal(cascade(styles, item, "forced-color-adjust"), "none");
-    if (marker) assert.equal(cascade(styles, marker, "color"), "inherit");
+  }
+});
+test("table visibility checkmarks stay as the only persistent cue, including in forced colors", () => {
+  for (const css of [withoutForcedColors(frameworkCss + "\n" + designCss), frameworkCss + "\n" + designCss]) {
+    const styles = rules(css);
+    const { item, panel, marker } = selectedChoice("multi", true);
+    panel.parent.attributes.set("data-f-table-selection","true");
+    item.classes.add("is-selected");
+    assert.equal(cascade(styles, item, "background"), "transparent");
+    assert.equal(cascade(styles, item, "box-shadow"), undefined);
+    item.states.add("hover");
+    assert.equal(cascade(styles, item, "background"), "var(--f-target-preview)");
+    assert.equal(cascade(styles, panel, "--f-target-preview"), "var(--f-selection-hover)");
+    item.states.delete("hover");
+    marker.states.add("focus-visible");
+    assert.equal(cascade(styles, item, "outline"), "2px solid currentColor");
   }
 });

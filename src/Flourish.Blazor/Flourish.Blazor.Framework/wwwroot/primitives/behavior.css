@@ -270,11 +270,16 @@
     align-items: center;
 }
 .shell-header-start {
+    --f-shell-launcher-gap: 0px;
+    column-gap: var(--f-shell-launcher-gap);
     box-sizing: border-box;
     grid-column: 1;
     grid-row: 1;
     min-width: 0;
     align-self: center;
+}
+.shell-header-start:has(> .shell-header-launcher:not(:empty)) {
+    --f-shell-launcher-gap: var(--f-shell-action-gap, 12px);
 }
 .shell-header-center {
     grid-column: 1 / -1;
@@ -297,6 +302,66 @@
 }
 .shell-header:is([data-shell-header-layout="aligned"],[data-shell-header-layout="fitted"]) > .shell-header-actions {
     grid-column: 3;
+}
+.shell-header-heading[hidden] {
+    display: none;
+}
+.shell-header[data-f-shell-heading-active] {
+    grid-template-columns: max-content minmax(0, 1fr) max-content;
+}
+.shell-header[data-f-shell-heading-active] > .shell-header-start > .shell-header-brand,
+.shell-header[data-f-shell-heading-active] > .shell-header-center {
+    display: none;
+}
+.shell-header[data-f-shell-heading-active] > .shell-header-actions {
+    grid-column: 3;
+}
+.shell-header-heading {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    column-gap: var(--f-shell-action-gap, 12px);
+    min-inline-size: 0;
+}
+.shell-header-heading-title {
+    min-inline-size: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.shell-header-heading-main {
+    display: flex;
+    align-items: center;
+    column-gap: var(--f-shell-action-gap, 12px);
+    flex: 1 1 0;
+    min-inline-size: 0;
+}
+.shell-header-heading-main > [data-f-heading-parent-space],
+.shell-header-heading-actions {
+    flex: none;
+}
+.shell-header[data-f-shell-heading-stacked] .shell-header-heading {
+    display: contents;
+}
+.shell-header[data-f-shell-heading-stacked] .shell-header-heading-main {
+    grid-column: 2;
+    grid-row: 1;
+}
+.shell-header[data-f-shell-heading-stacked] .shell-header-heading-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: end;
+    margin: 0 10px 8px;
+}
+.f-heading-control-anchor[data-f-heading-header-control] {
+    right: auto;
+    bottom: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
 }
 .shell-header-brand {
     display: inline-flex;

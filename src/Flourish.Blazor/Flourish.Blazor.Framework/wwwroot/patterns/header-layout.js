@@ -68,8 +68,9 @@ function intrinsicWidth(element, parentStyle) {
     const style = getComputedStyle(element);
     const children = [...element.children].filter(node => {
         const position = getComputedStyle(node).position;
+        // A clipped label can have a zero-width box and still have measurable text.
         return !node.matches('.f-menu-panel,[data-f-popup-panel]') && !['absolute','fixed'].includes(position)
-            && node.getBoundingClientRect().width > 0;
+            && node.getClientRects().length > 0;
     });
     // Ignore stretched layout wrappers, but retain a real control's own box.
     // An icon-only Button is wider than its glyph even with zero padding.
@@ -106,6 +107,13 @@ function update(state) {
     if (!header.isConnected) { disposeShellHeader(header); return; }
     const context = stageFor(header);
     if (!context) { disposeShellHeader(header); return; }
+    const wrapper = header.closest('.f-document-surface-header');
+    const documentHeader = wrapper?.parentElement === context.surface ? wrapper : null;
+    const documentStage = documentHeader ? context.stage : null;
+    if (state.documentStage !== documentStage) {
+        state.documentStage?.style.removeProperty('--f-document-header-height');
+        state.documentStage = documentStage;
+    }
     const target = targetFor(context.stage, context.surface);
     const footers = new Set([...context.surface.querySelectorAll('.f-presentation-footer')]
         .filter(node => node.closest(surfaceSelector) === context.surface && !context.stage.contains(node)));
@@ -119,7 +127,7 @@ function update(state) {
     const end = header.querySelector(':scope > .shell-header-actions');
     const controlsFor = container => container ? [...container.querySelectorAll('.f-button,button,select,.service-menu-trigger,.shell-header-identity strong')]
         .filter(node => !node.closest('.f-menu-panel,[data-f-popup-panel],.f-dialog')) : [];
-    const observed = new Set([header, context.stage, target, start, center, end, ...controlsFor(center), ...controlsFor(end), ...footers,
+    const observed = new Set([header, documentHeader, context.stage, target, start, center, end, ...controlsFor(center), ...controlsFor(end), ...footers,
         ...header.querySelectorAll(':scope > .shell-header-start .shell-header-title > *')].filter(Boolean));
     for (const node of state.observed) if (!observed.has(node)) state.resize?.unobserve(node);
     for (const node of observed) if (!state.observed.has(node)) state.resize?.observe(node);
@@ -127,19 +135,23 @@ function update(state) {
     if (state.surface !== context.surface) {
         state.mutation?.disconnect();
         state.surface = context.surface;
-        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden','data-f-native-select-ready','data-shell-header-follow-content'], childList:true, subtree:true });
+        state.mutation?.observe(context.surface, { attributes:true, attributeFilter:['class','style','hidden','data-f-native-select-ready','data-shell-header-follow-content','data-f-shell-heading-active'], childList:true, subtree:true });
     }
     const bounds = contentBounds(target);
-    const headerBounds = header.getBoundingClientRect();
-    const followsContent = header.getAttribute('data-shell-header-follow-content') === 'true';
-    const menuBounds = followsContent ? bounds : headerBounds;
-    const layout = resolveHeaderLayout(headerBounds, menuBounds,
-        intrinsicWidth(start), intrinsicWidth(end), getComputedStyle(header).direction, intrinsicWidth(center));
-    if (!layout) return;
-    setProperty(header, '--f-shell-content-start', layout.start);
-    setProperty(header, '--f-shell-content-end', layout.end);
-    if (header.getAttribute('data-shell-header-layout') !== layout.mode)
-        header.setAttribute('data-shell-header-layout', layout.mode);
+    // Docking has its own grid. Keep the expanded fit while the brand and menu are hidden.
+    if (!header.hasAttribute('data-f-shell-heading-active')) {
+        const headerBounds = header.getBoundingClientRect();
+        const followsContent = header.getAttribute('data-shell-header-follow-content') === 'true';
+        const menuBounds = followsContent ? bounds : headerBounds;
+        const layout = resolveHeaderLayout(headerBounds, menuBounds,
+            intrinsicWidth(start), intrinsicWidth(end), getComputedStyle(header).direction, intrinsicWidth(center));
+        if (!layout) return;
+        setProperty(header, '--f-shell-content-start', layout.start);
+        setProperty(header, '--f-shell-content-end', layout.end);
+        if (header.getAttribute('data-shell-header-layout') !== layout.mode)
+            header.setAttribute('data-shell-header-layout', layout.mode);
+    }
+    if (documentHeader) setProperty(documentStage, '--f-document-header-height', documentHeader.getBoundingClientRect().height);
     // Foreground footer copy shares the same measured edges; the decorative
     // wordmark remains outside its independently padded full-width container.
     for (const footer of footers) {
@@ -167,7 +179,8 @@ export function initializeShellHeaders(scope = document) {
             state = { header, observed:new Set(), footers:new Set(), footerStyles:new Map(), frame:0, surface:null };
             state.resize = new ResizeObserver(() => schedule(state));
             state.mutation = new MutationObserver(records => {
-                if (records.some(record => record.attributeName === 'data-shell-header-follow-content' || record.target !== header && !(record.attributeName === 'style'
+                if (records.some(record => record.attributeName === 'data-shell-header-follow-content' || record.attributeName === 'data-f-shell-heading-active'
+                    || record.target !== header && !(record.attributeName === 'style'
                     && state.footers.has(record.target)
                     && state.footerStyles.get(record.target) === record.target.getAttribute('style')))) schedule(state);
             });
@@ -185,6 +198,7 @@ export function disposeShellHeader(header) {
     state.resize?.disconnect();
     state.mutation?.disconnect();
     for (const footer of state.footers) clearFooterLayout(footer);
+    state.documentStage?.style.removeProperty('--f-document-header-height');
     window.removeEventListener('resize', state.onResize);
     header.removeAttribute('data-shell-header-layout');
     header.style.removeProperty('--f-shell-content-start');

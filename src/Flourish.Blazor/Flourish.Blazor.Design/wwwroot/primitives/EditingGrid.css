@@ -125,34 +125,20 @@ appearance: none;
     padding-right: 32px;
 }
 
-/* Selection inverts the cell editor, not the independently surfaced picker. */
+/* The independently surfaced picker retains the shared dropdown selection styling. */
 .editing-grid-table select :is(option, optgroup) {
-    color: var(--f-text);
-    background: var(--f-surface);
-}
-
-.editing-grid-table select option:checked {
     color: var(--f-text);
     background: var(--f-surface);
 }
 
 @supports (appearance: base-select) {
     .editing-grid-table select::picker(select) {
-        --f-target-preview: var(--f-surface-preview);
+        --f-target-preview: var(--f-selection-hover);
         --f-target-click: var(--f-surface-click);
         color: var(--f-text);
         background: var(--f-surface);
     }
 
-    .editing-grid-table select option:is(:hover, :focus-visible) {
-        color: var(--f-text);
-        background: var(--f-surface-preview);
-    }
-
-    .editing-grid-table select option:active {
-        color: var(--f-text);
-        background: var(--f-surface-click);
-    }
 }
 
 .editing-grid-table .masked-input {

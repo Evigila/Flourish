@@ -201,12 +201,26 @@ await check('Outside press and idempotent teardown release the real menu listene
     assert.equal(observers[0].disconnected, true);
 });
 await check('Current menu CSS excludes disabled links from hover, pressed and focus preview paint', async () => {
+    function selectorArms(text) {
+        const arms = [];
+        let depth = 0, start = 0;
+        for (let index = 0; index < text.length; index++) {
+            if (text[index] === '(') depth++;
+            if (text[index] === ')') depth--;
+            if (text[index] === ',' && depth === 0) {
+                arms.push(text.slice(start,index).trim());
+                start = index + 1;
+            }
+        }
+        arms.push(text.slice(start).trim());
+        return arms;
+    }
     for (const name of ['controls.css','dropdown.css']) {
         const css = await fs.readFile(new URL(`../../src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/${name}`, import.meta.url), 'utf8');
         let guarded = 0;
         for (const block of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
             if (!/background:\s*var\(--f-(?:target-(?:preview|click)|preview-danger|click-danger)/.test(block[2])) continue;
-            for (const selector of block[1].trim().split(/,(?![^()]*\))/)) {
+            for (const selector of selectorArms(block[1])) {
                 if (!selector.includes('.f-menu-item') && !selector.includes('.f-dropdown-item') && !selector.includes('.f-menu-danger')) continue;
                 assert.ok(selector.includes(':not([aria-disabled="true"])'), selector); assert.ok(selector.includes(':not(:disabled)'), selector); guarded++;
             }
@@ -709,7 +723,7 @@ if (browserPath) {
                 }
                 return color;
             };
-            const hover = await interactionColor(['hover'],'rgb(234, 225, 213)');
+            const hover = await interactionColor(['hover'],'rgb(245, 241, 234)');
             const press = await interactionColor(['hover','active'],'rgb(211, 203, 192)');
             await send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:[]});
             await evaluate("document.body.className='f-root f-theme-dark'");
@@ -730,7 +744,7 @@ if (browserPath) {
         assert.equal(result.light.secondary,beige);
         assert.equal(result.light.applicationSecondary,beige);
         assert.equal(result.light.selected,'rgb(112, 84, 20)');
-        assert.equal(result.hover,'rgb(234, 225, 213)');
+        assert.equal(result.hover,beige);
         assert.equal(result.press,'rgb(211, 203, 192)');
         assert.equal(result.dark.top,'rgb(24, 35, 29)');
         assert.equal(result.dark.secondary,'rgb(49, 72, 59)');
@@ -944,7 +958,7 @@ if (browserPath) {
                     selectColor:getComputedStyle(select).color,triggerColor:getComputedStyle(trigger).color,iconColor:getComputedStyle(icon).color,appearance:getComputedStyle(select).appearance};})()`);
             const picker = await evaluate(`(async()=>{const select=document.querySelector('select');select.showPicker();await new Promise(resolve=>setTimeout(resolve,50));const style=getComputedStyle(select,'::picker(select)');
                 return {open:select.matches(':open'),color:style.color,background:style.backgroundColor,options:[...select.options].map(option=>{const value=getComputedStyle(option);
-                    return {selected:option.selected,color:value.color,background:value.backgroundColor,shadow:value.boxShadow,checkmarkColor:getComputedStyle(option,'::checkmark').color};})};})()`,true);
+                    return {selected:option.selected,color:value.color,background:value.backgroundColor,shadow:value.boxShadow,checkmarkDisplay:getComputedStyle(option,'::checkmark').display};})};})()`,true);
             return {initial,picker};
         });
         process.stdout.write('MEASURE chrome native select colors ' + JSON.stringify(result) + '\n');
@@ -958,15 +972,15 @@ if (browserPath) {
         assert.equal(result.picker.background,'rgb(255, 255, 255)');
         assert.equal(result.picker.options.filter(option=>option.selected).length,1);
         for (const option of result.picker.options) {
-            assert.equal(option.checkmarkColor,option.color,'The native marker must inherit its own option foreground.');
+            assert.equal(option.checkmarkDisplay,'none','The selected surface is the sole native selection cue.');
             if (option.selected) {
-                assert.equal(option.color,result.picker.background,'Selected options use inverse root-theme text, not trigger chrome.');
-                assert.equal(option.background,result.picker.color,'Selected options keep the common dark row surface.');
+                assert.equal(option.color,'rgb(255, 255, 255)','Selected options use the common light selection ink.');
+                assert.equal(option.background,'rgb(60, 57, 50)','Selected options keep the common dark row surface.');
                 assert.match(option.shadow,/\binset\b/,'The selected border must be inset so it cannot change option geometry.');
-                assert.ok(option.shadow.includes(result.picker.color),'The selected inset border uses the same root-theme text role.');
+                assert.ok(option.shadow.includes(option.background),'The selected border uses the common dark row surface.');
             } else {
                 assert.equal(option.color,result.picker.color,'Unselected options retain the root-theme foreground.');
-                assert.notEqual(option.background,result.picker.color,'Unselected options must not acquire the selected fill.');
+                assert.notEqual(option.background,'rgb(60, 57, 50)','Unselected options must not acquire the selected fill.');
                 assert.equal(option.shadow,'none','Unselected options must not acquire the selected inset border.');
             }
         }

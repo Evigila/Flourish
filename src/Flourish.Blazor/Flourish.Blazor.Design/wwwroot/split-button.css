@@ -11,11 +11,10 @@
 .f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary):active:not(:disabled):not([aria-disabled=true]),
 .f-split-button:not(.f-secondary-row) > .f-split-button-menu > .f-split-button-secondary:active { background:var(--f-target-click); }
 .f-split-button:not(.f-secondary-row) > .is-selected,
-.f-split-button:not(.f-secondary-row) > .f-split-button-menu > .is-selected { background:var(--f-primary); color:var(--f-surface); }
-.f-split-button:not(.f-secondary-row):has(> .is-selected):hover > .is-selected:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary); color:var(--f-surface); }
-.f-split-button:not(.f-secondary-row):has(> .is-selected) > .is-selected:active:not(:disabled):not([aria-disabled=true]) { background:var(--f-primary-click); color:var(--f-surface); }
-.f-split-button:not(.f-secondary-row) > .f-split-button-menu > .is-selected:hover { background:var(--f-primary); color:var(--f-surface); }
-.f-split-button:not(.f-secondary-row) > .f-split-button-menu > .is-selected:active { background:var(--f-primary-click); color:var(--f-surface); }
+.f-split-button:not(.f-secondary-row) > .f-split-button-menu > .is-selected,
+.f-split-button:not(.f-secondary-row):has(> .is-selected):hover > .is-selected:not(:disabled):not([aria-disabled=true]),
+.f-split-button:not(.f-secondary-row):has(> .is-selected) > .is-selected:active:not(:disabled):not([aria-disabled=true]),
+.f-split-button:not(.f-secondary-row) > .f-split-button-menu > .is-selected:is(:hover,:active) { background:var(--f-selection-surface); color:var(--f-selection-ink); }
 .f-split-button:not(.f-secondary-row) > :is(.f-split-button-primary,.f-split-button-secondary):is(:disabled,[aria-disabled=true]) { opacity:.55; cursor:not-allowed; }
 .f-split-button > :is(.f-split-button-primary,.f-split-button-secondary):focus-visible,
 .f-split-button > .f-split-button-menu > .f-split-button-secondary:focus-visible { outline:3px solid var(--f-accent); outline-offset:-3px; }

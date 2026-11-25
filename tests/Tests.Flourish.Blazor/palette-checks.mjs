@@ -126,9 +126,9 @@ test("direct secondary navigation uses the canonical palette in every selection 
   for (const selected of [false, true]) for (const states of [[], ["hover"], ["focus-visible"], ["active"], ["hover", "active"]]) {
     const element = { tag:"a", classes:new Set(["f-secondary-item", ...(selected ? ["is-selected"] : [])]), states:new Set(states), attributes:new Map() };
     const pressed = states.includes("active"), hovered = states.includes("hover");
-    assert.equal(buttonCascade(styles, element, "color"), selected ? "var(--f-surface)" : pressed || hovered ? "var(--f-text)" : "var(--f-ink-soft)",
+    assert.equal(buttonCascade(styles, element, "color"), selected ? "var(--f-selection-ink)" : pressed || hovered ? "var(--f-text)" : "var(--f-ink-soft)",
       `Incorrect secondary foreground for selected=${selected}, states=${states}.`);
-    assert.equal(buttonCascade(styles, element, "background"), selected ? pressed ? "var(--f-primary-click)" : "var(--f-primary)"
+    assert.equal(buttonCascade(styles, element, "background"), selected ? "var(--f-selection-surface)"
       : pressed ? "var(--f-target-click)" : hovered ? "var(--f-target-preview)" : "transparent",
       `Incorrect secondary background for selected=${selected}, states=${states}.`);
   }
@@ -150,6 +150,12 @@ test("read-only ListView reuses the table surface and exposes complete wrapped v
   assert.equal(property(surface, "background"), "var(--f-surface)");
   const cells = blockFor(design, ".f-data-table th, .f-data-table td");
   assert.equal(property(cells, "height"), "76px");
+  const header = blockFor(design, ".f-data-table thead th");
+  assert.equal(property(header, "background"), "var(--f-table-header-surface)");
+  assert.equal(property(header, "color"), "var(--f-table-header-ink)");
+  assert.equal(property(blockFor(design, ".f-data-table th.f-data-actions"), "background"), "var(--f-table-header-surface)");
+  assert.equal(property(blockFor(design, ".f-data-table thead :is(button,input):focus-visible"), "outline-color"), "var(--f-table-header-ink)");
+  assert.equal(property(blockFor(design, ".f-data-sort.f-button:is(:hover,:active):not(:disabled):not([aria-disabled=true])"), "color"), "inherit");
   const text = blockFor(design, ".f-list-view .f-data-table .f-data-cell");
   assert.equal(property(text, "white-space"), "normal");
   assert.equal(property(text, "overflow"), "visible");
@@ -314,8 +320,8 @@ const dark = {
 };
 
 const approvedLiterals = new Set([
-  "#3C3932", "#705414", "#EBEBE6", "#16745F", "#F5F1EA", "#FFFFFF", "#292721",
-  "#5E5A50", "#ECECE8", "#EAE1D5", "#514C41", "#949082",
+  "#3C3932", "#705414", "#EBEBE6", "#16745F", "#F5F1EA", "#EAE1D5", "#FFFFFF", "#292721",
+  "#5E5A50", "#ECECE8", "#514C41", "#949082",
   "#BBD7C9", "#75CBB2", "#18231D", "#263A30", "#E7EFEA",
   "#B8C9BF", "#31483B", "#D5E5DE", "#395A48", "#526F60",
   "#9D322D", "#FFB4AB", "#D3CBC0", "#C0CEC8", "#49443B", "#335141",
@@ -487,11 +493,19 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
   assertMode(base, light, "Light mode");
   assertMode(darkMode, dark, "Dark mode");
   assertMode(systemMode, dark, "System dark mode");
-  assert.equal(base.get("--f-primary-light"), "#3C3932");
+  assert.equal(base.get("--f-charcoal"), "#3C3932");
+  assert.equal(base.get("--f-primary-light"), "var(--f-charcoal)");
   assert.equal(base.get("--f-accent-light"), "#705414");
   assert.equal(base.get("--f-primary-dark"), "#BBD7C9");
   assert.equal(base.get("--f-accent-dark"), "#75CBB2");
   assert.equal(base.get("--f-surface-light"), "#FFFFFF");
+  assert.equal(base.get("--f-silver"), "#EBEBE6");
+  assert.equal(base.get("--f-table-header-surface"), "var(--f-silver)");
+  assert.equal(base.get("--f-table-header-ink"), "var(--f-text-light)");
+  assert.equal(base.get("--f-selection-surface"), "var(--f-charcoal)");
+  assert.equal(base.get("--f-selection-ink"), "var(--f-surface-light)");
+  assert.equal(base.get("--f-selection-hover"), "var(--f-secondary-navigation-surface)");
+  assert.equal(base.get("--f-selection-hover-ink"), "var(--f-text)");
 
   for (const fragment of baseBlock.split(";")) {
     const separator = fragment.indexOf(":");
@@ -501,7 +515,7 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
   assert.match(rootElementBlock, /(?:^|;)\s*color\s*:/);
   assert.match(rootElementBlock, /(?:^|;)\s*background\s*:/);
 
-  assert.equal(base.get("--f-surface-preview"), "var(--f-preview-light)");
+  assert.equal(base.get("--f-surface-preview"), "var(--f-selection-hover)");
   assert.equal(base.get("--f-target-preview"), "var(--f-surface-preview)");
   assert.equal(base.get("--f-primary-preview"), "var(--f-preview-dark)");
   assert.equal(base.get("--f-surface-click"), "var(--f-click-light)");
@@ -510,6 +524,7 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
   assert.equal(base.get("--f-accent-click"), "var(--f-click-dark)");
   assert.equal(base.get("--f-navigation-children-surface"), "var(--f-surface)");
   for (const [name, mode] of [["Dark mode", darkMode], ["System dark mode", systemMode]]) {
+    assert.equal(mode.get("--f-selection-hover"), "var(--f-preview-dark)", `${name} must keep its legible hover pair.`);
     assert.equal(mode.get("--f-surface-preview"), "var(--f-preview-dark)", `${name} does not use its surface preview role.`);
     assert.equal(mode.get("--f-target-preview"), "var(--f-surface-preview)", `${name} bypasses the surface preview alias.`);
     assert.equal(mode.get("--f-primary-preview"), "var(--f-preview-light)", `${name} does not invert preview over Primary.`);
@@ -522,17 +537,24 @@ test("foundation exposes the seventeen-role palette to documents and Flourish su
     assert.equal(mode.get("--f-chrome-ink"), "var(--f-text)", `${name} chrome ink must use Text.`);
   }
   assert.equal(base.get("--f-secondary-navigation-surface"), "#F5F1EA");
+  assert.equal(base.get("--f-secondary-navigation-preview"), "var(--f-surface-light)");
   assert.equal(darkMode.get("--f-secondary-navigation-surface"), "initial");
   assert.equal(systemMode.get("--f-secondary-navigation-surface"), "initial");
+  assert.equal(darkMode.get("--f-secondary-navigation-preview"), "initial");
+  assert.equal(systemMode.get("--f-secondary-navigation-preview"), "initial");
   const rail = blockFor(withoutComments(await readFile(join(designCssRoot, "patterns/navigation-surface.css"), "utf8")), ".navigation-surface .secondary-rail");
   assert.equal(property(rail, "background"), "var(--f-secondary-navigation-surface, var(--f-display-board))");
   assert.equal(property(blockFor(css, ".f-secondary-navigation"), "background"), "var(--f-secondary-navigation-surface,var(--f-surface-alternate))");
-  assert.equal(base.get("--f-chrome-light"), "#EBEBE6");
+  const railInteraction = blockFor(css, ".f-secondary-navigation, .navigation-surface .secondary-rail");
+  assert.equal(property(railInteraction, "--f-target-preview"), "var(--f-secondary-navigation-preview,var(--f-surface-preview))");
+  assert.equal(property(railInteraction, "--f-target-click"), "var(--f-secondary-navigation-preview,var(--f-surface-click))");
+  assert.equal(property(blockFor(css, ".f-third-navigation"), "--f-target-preview"), "var(--f-surface-preview)");
+  assert.equal(base.get("--f-chrome-light"), "var(--f-silver)");
   assert.equal(base.get("--f-chrome"), "var(--f-chrome-light)");
   assert.equal(base.get("--f-chrome-preview"), "var(--f-chrome-preview-light)");
-  assert.equal(base.get("--f-chrome-preview-light"), "var(--f-preview-light)");
+  assert.equal(base.get("--f-chrome-preview-light"), "var(--f-surface-light)");
   assert.equal(base.get("--f-chrome-click"), "var(--f-chrome-click-light)");
-  assert.equal(base.get("--f-chrome-click-light"), "var(--f-click-light)");
+  assert.equal(base.get("--f-chrome-click-light"), "var(--f-chrome-preview-light)");
   assert.equal(base.get("--f-chrome-ink"), "var(--f-chrome-ink-light)");
   assert.equal(base.get("--f-chrome-ink-light"), "var(--f-text)");
 });
@@ -567,7 +589,10 @@ test("Design CSS derives paint from roles without private palette literals", asy
         && /^rgb\(from var\(--f-surface-light\) r g b \/ 47%\)$/.test(expression)
         && rules(css).some(rule => rule.selector === ".f-progress-fill::after"
           && property(rule.body, "background")?.includes(expression));
-      if (!primaryAlpha && !progressHighlight) {
+      const bottomShadow = path === foundationPath
+        && /^rgb\(from var\(--f-text-light\) r g b \/ \.32\)$/.test(expression)
+        && property(blockFor(css, ":root, .f-root"), "--f-shadow-bottom")?.endsWith(expression);
+      if (!primaryAlpha && !progressHighlight && !bottomShadow) {
         violations.push(`${label}: ${expression}`);
       }
     }
@@ -694,12 +719,18 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   const secondarySelectedPress = one("foundation", "Secondary navigation selected press", rule => rule.selector.includes(".f-secondary-item") && rule.selector.includes(".is-selected") && rule.selector.includes(":active"));
   const secondaryHover = one("foundation", "Secondary navigation hover", rule => rule.selector.includes(".f-secondary-item") && rule.selector.includes(":hover") && !rule.selector.includes(".is-selected"));
   const secondaryPress = one("foundation", "Secondary navigation press", rule => rule.selector.includes(".f-secondary-item") && rule.selector.includes(":active") && !rule.selector.includes(".is-selected"));
-  assert.equal(property(secondarySelected.body, "background"), "var(--f-primary)");
-  assert.equal(property(secondarySelected.body, "color"), "var(--f-surface)!important");
-  assert.equal(property(secondarySelectedPress.body, "background"), "var(--f-primary-click)");
-  assert.equal(property(secondarySelectedPress.body, "color"), "var(--f-surface)!important");
+  assert.equal(property(secondarySelected.body, "background"), "var(--f-selection-surface)");
+  assert.equal(property(secondarySelected.body, "color"), "var(--f-selection-ink)!important");
+  assert.equal(property(secondarySelectedPress.body, "background"), "var(--f-selection-surface)");
+  assert.equal(property(secondarySelectedPress.body, "color"), "var(--f-selection-ink)!important");
   assert.equal(property(secondaryHover.body, "background"), "var(--f-target-preview)");
   assert.equal(property(secondaryPress.body, "background"), "var(--f-target-click)");
+  const thirdHover = ".f-third-item:not(.is-selected):is(:hover,:focus-visible):not([aria-disabled=true]):not(:disabled)";
+  const thirdInteraction = blockFor(source.foundation, thirdHover);
+  assert.equal(property(thirdInteraction, "background"), "transparent");
+  assert.equal(property(thirdInteraction, "color"), "var(--f-accent)!important");
+  const thirdLabel = blockFor(source.foundation, `${thirdHover} > :is(.f-navigation-label,.f-split-button-label)`);
+  assert.equal(property(thirdLabel, "text-decoration"), "underline");
   assert.ok(foundationRules.findIndex(rule => rule.selector === secondarySelected.selector) > foundationRules.findIndex(rule => rule.selector === secondaryHover.selector),
     "Secondary selection does not win over its generic hover rule.");
   assert.ok(foundationRules.findIndex(rule => rule.selector === secondarySelectedPress.selector) > foundationRules.findIndex(rule => rule.selector === secondaryPress.selector),
@@ -717,12 +748,14 @@ test("hover, press and persistent selections keep distinct cascade outcomes", as
   const dropdownSelected = one("dropdown", "Shared persistent dropdown selection", rule =>
     rule.selector.includes(".f-dropdown-item:is(") && rule.selector.includes(".is-selected")
       && rule.selector.includes(".selection-dropdown-surface .selection-option:is(")
-      && !rule.selector.includes(":hover") && property(rule.body, "background") === "var(--f-text)");
-  const dropdownHover = one("dropdown", "Dropdown hover", rule => rule.selector.includes(".f-dropdown-item:hover") && !rule.selector.includes(".is-selected"));
+      && !rule.selector.includes(":hover") && property(rule.body, "background") === "var(--f-selection-surface)");
+  const dropdownHover = one("dropdown", "Dropdown hover", rule => rule.selector.includes(".f-dropdown-item:is(:hover") && !rule.selector.includes(".is-selected"));
   const dropdownPress = one("dropdown", "Dropdown press", rule => rule.selector.includes(".f-dropdown-item:active") && !rule.selector.includes(".is-selected"));
-  assert.equal(property(dropdownSelected.body, "color"), "var(--f-surface)");
-  assert.equal(property(dropdownSelected.body, "background"), "var(--f-text)");
-  assert.equal(property(dropdownSelected.body, "box-shadow"), "inset 0 0 0 1px var(--f-text)");
+  assert.equal(property(dropdownSelected.body, "color"), "var(--f-selection-ink)");
+  assert.equal(property(dropdownSelected.body, "background"), "var(--f-selection-surface)");
+  assert.equal(property(dropdownSelected.body, "box-shadow"), "inset 0 0 0 1px var(--f-selection-surface)");
+  assert.match(dropdownSelected.selector, /:not\(:where\(\[data-f-table-selection="true"\]/);
+  assert.equal(property(dropdownHover.body, "color"), "var(--f-selection-hover-ink)");
   assert.equal(property(dropdownHover.body, "background"), "var(--f-target-preview)");
   assert.equal(property(dropdownPress.body, "background"), "var(--f-target-click)");
   const filledMultiSelectOptionRows = rules(await readFile(join(designCssRoot,"multi-select-box.css"),"utf8")).filter(rule => rule.selector.includes(".f-multi-select-panel")
@@ -863,6 +896,25 @@ test("components do not restore per-subtree themes", async () => {
   assert.deepEqual(violations, [], `Local theme mechanisms remain:\n${violations.join("\n")}`);
 });
 
+test("top bars and pinned headings use lower-edge elevation while the expanded heading uses spacing", async () => {
+  const foundation = withoutComments(await readFile(foundationPath, "utf8"));
+  const shell = withoutComments(await readFile(join(designCssRoot, "primitives/ShellHeader.css"), "utf8"));
+  const framework = withoutComments(await readFile(join(blazorRoot, "Flourish.Blazor.Framework/wwwroot/framework.css"), "utf8"));
+  const tokens = declarations(blockFor(foundation, ":root, .f-root"));
+  assert.match(tokens.get("--f-shadow-bottom"), /^0 [1-9]\d*px \d+px -\d+px /);
+  for (const [css, selector] of [[shell, ".shell-header"], [foundation, ".f-titlebar"],
+    [foundation, ".f-page-heading[data-heading-mode=compact]:not(.f-document-surface *)"],
+    [foundation, ".f-heading-overlay-panel"]]) {
+    const block = blockFor(css, selector);
+    assert.equal(property(block, "box-shadow"), "var(--f-shadow-bottom)");
+    assert.doesNotMatch(block, /border-(?:bottom|block-end)\s*:/);
+  }
+  assert.doesNotMatch(blockFor(foundation, ".f-page-heading"), /border-(?:bottom|block-end)\s*:|box-shadow\s*:/);
+  assert.doesNotMatch(blockFor(framework, ".f-heading-overlay-panel"), /border-(?:bottom|block-end)\s*:/);
+  assert.equal(property(blockFor(framework, ".f-heading-overlay-clip"), "overflow"), "hidden");
+  assert.match(property(blockFor(foundation, ".f-heading-overlay-clip"), "padding-block-end"), /var\(--f-heading-overlay-limit,0px\)/);
+});
+
 test("page titles use 42px expanded and reserve 38px for actual compact headings", async () => {
   const foundation = await readFile(foundationPath, "utf8");
   const tokens = declarations(blockFor(withoutComments(foundation), ":root, .f-root"));
@@ -973,8 +1025,9 @@ test("default reading, selected and preview foregrounds stay readable in both mo
       ["text", "surface-click"], ["surface", "primary-preview"], ["surface", "primary-click"],
       ["surface", "accent-click"], ["chrome-ink", "chrome-click"], ["chrome-ink", "chrome-preview"], ["chrome-ink", "chrome"],
       ["info-text", "surface"], ["warning-ink", "warning-background"],
-      ["surface-light", "preview-danger"], ["surface-light", "click-danger"]];
-    if (index === 0) pairs.push(["text", "secondary-navigation-surface"], ["muted", "secondary-navigation-surface"]);
+      ["surface-light", "preview-danger"], ["surface-light", "click-danger"], ["table-header-ink", "table-header-surface"]];
+    if (index === 0) pairs.push(["text", "secondary-navigation-surface"], ["muted", "secondary-navigation-surface"],
+      ["text", "secondary-navigation-preview"]);
     for (const [foreground, background] of pairs) {
       const values = [luminance(color(foreground)), luminance(color(background))];
       const ratio = (Math.max(...values) + .05) / (Math.min(...values) + .05);
@@ -1110,7 +1163,7 @@ function isChromeRoleBoundary(rule) {
     [".shell-header .f-select::picker(select),.f-titlebar .f-select::picker(select)", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-text":"var(--f-popup-accent-text)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
     [".shell-header .f-select option,.f-titlebar .f-select option", {"--f-text":"var(--f-popup-text)","--f-surface":"var(--f-popup-surface)","--f-accent-ink":"var(--f-popup-accent-ink)"}],
     [".shell-header :is(.f-button-quiet, .f-select.f-select-customized:has(> .f-button-quiet)):not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-accent-text":"var(--f-shell-header-ink)","--f-text":"var(--f-shell-header-ink)","--f-target-preview":"var(--f-chrome-preview)","--f-target-click":"var(--f-chrome-click)"}],
-    [".shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-text":"var(--f-shell-header-button-ink)","--f-surface":"var(--f-shell-header-button-surface)","--f-surface-preview":"var(--f-preview-light)","--f-surface-click":"var(--f-click-light)"}]
+    [".shell-header .f-button-elevated:not(:where(.f-menu-panel *, [data-f-popup-panel] *, .f-dialog *))", {"--f-text":"var(--f-shell-header-button-ink)","--f-surface":"var(--f-shell-header-button-surface)","--f-surface-preview":"var(--f-secondary-navigation-surface, var(--f-preview-light))","--f-surface-click":"var(--f-click-light)"}]
   ]);
   const expected = allowed.get(rule.selector);
   if (!expected) return false;

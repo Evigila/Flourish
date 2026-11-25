@@ -102,8 +102,8 @@ internal static class PresentationChecks
                 [nameof(Primitives.ShellHeader.Services)] = ButtonFragment(ButtonVariant.Quiet, "Services", "/services/"),
                 [nameof(Primitives.ShellHeader.EndActions)] = ButtonFragment(ButtonVariant.Elevated, "Sign in", "/login/")
             });
-            Check(Regex.IsMatch(html, @"</a>\s*</div>\s*<div class=""shell-header-center""><div class=""f-topbar-slot"">"),
-                "Services still share the brand wing rather than their content-aligned track.");
+            Check(Regex.IsMatch(html, @"</a>\s*</div>\s*<div class=""shell-header-heading""[^>]*\bhidden\b[^>]*>[\s\S]*?</div>\s*<div class=""shell-header-center""><div class=""f-topbar-slot"">"),
+                "Services and the initially hidden docked heading must each have a track independent of the brand.");
             Check(html.IndexOf("shell-header-start", StringComparison.Ordinal) < html.IndexOf("shell-header-center", StringComparison.Ordinal)
                 && html.IndexOf("shell-header-center", StringComparison.Ordinal) < html.IndexOf("shell-header-actions", StringComparison.Ordinal),
                 "Visual track order diverges from reading and keyboard order.");
@@ -207,20 +207,23 @@ internal static class PresentationChecks
             var buttonMinimum = Number(button, @"(?:^|;)\s*min-height\s*:\s*([\d.]+)px");
             var buttonPadding = Number(button, @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
             var buttonBorder = Number(button, @"(?:^|;)\s*border\s*:\s*([\d.]+)px");
-            Check(Rule(paint, ".shell-header-title").Contains("font-size: var(--f-type-body,14px)", StringComparison.Ordinal),
-                "The header title bypasses the designated body size.");
+            Check(new[] { ".shell-header-title", ".shell-header-heading-title" }.All(selector =>
+                Rule(paint, selector).Contains("font-size: var(--f-shell-title-size)", StringComparison.Ordinal)),
+                "The brand and docked heading must use the same header title scale.");
+            var header = Rule(paint, ".shell-header");
             var type = Rule(ReadSource("src/Flourish.Blazor/Flourish.Blazor.Design/wwwroot/foundation.css"), ":root, .f-root");
-            var textLine = Number(type, @"(?:^|;)\s*--f-type-body\s*:\s*([\d.]+)px")
-                * Number(button, @"(?:^|;)\s*line-height\s*:\s*([\d.]+)");
+            var bodySize = Number(type, @"(?:^|;)\s*--f-type-body\s*:\s*([\d.]+)px");
+            var titleIncrease = Number(header, @"--f-shell-title-size:\s*calc\(var\(--f-type-body,\s*14px\)\s*\+\s*([\d.]+)px\)");
+            var textLine = (bodySize + titleIncrease) * Number(button, @"(?:^|;)\s*line-height\s*:\s*([\d.]+)");
             var logoSize = Number(Rule(paint, ".shell-header-logo img"), @"(?:^|;)\s*height\s*:\s*([\d.]+)px");
             var wingPadding = Number(Rule(paint, ".shell-header-start"), @"(?:^|;)\s*padding\s*:\s*([\d.]+)px");
-            var header = Rule(paint, ".shell-header");
             var baseline = Number(header, @"(?:^|;)\s*min-height\s*:\s*([\d.]+)px");
-            var headerBorder = Number(header, @"(?:^|;)\s*border-bottom\s*:\s*([\d.]+)px");
+            Check(header.Contains("box-shadow: var(--f-shadow-bottom)", StringComparison.Ordinal)
+                && !Regex.IsMatch(header, @"(?:^|;)\s*border(?:-bottom)?\s*:"),
+                "The header must use the shared bottom elevation without a separator border.");
             var brandHeight = Math.Max(buttonMinimum, Math.Max(logoSize, textLine) + 2 * (buttonPadding + buttonBorder));
-            Check(logoSize == 24 && buttonMinimum == 48 && brandHeight == 48
-                && brandHeight + 2 * wingPadding + headerBorder <= baseline && baseline == 68,
-                "The logo/text line, standard Button box, wing spacing and border force a single-row header above its original baseline.");
+            Check(logoSize == 24 && buttonMinimum == 48 && brandHeight + 2 * wingPadding <= baseline && baseline == 68,
+                "The larger heading scale must still fit the header baseline and standard Button geometry.");
             Check(Rule(layout, ".shell-header-logo").Contains("flex: 0 0 24px", StringComparison.Ordinal)
                 && !paint.Contains("43px", StringComparison.Ordinal) && !layout.Contains("flex-basis: 43px", StringComparison.Ordinal),
                 "A larger logo reservation survived the compact desktop/narrow dimensions.");

@@ -2,7 +2,7 @@
 
 ## Evidence and interpretation
 
-Source declares stable Flourish 1.4.10 and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. The release includes the packaged Noto assets verified by the package gate. The preview builds and their checks remain historical evidence.
+Source declares stable Flourish 1.4.11 and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. The release includes the packaged Noto assets verified by the package gate. The preview builds and their checks remain historical evidence.
 
 The complete 2026-11-10 machine-readable capture is [archived evidence](1_archived/dependency-evidence-2026-11-10.json). It records declarations/references, matching asset timestamps/hashes, immediate dependency parents, full consumer sets, cache metadata and SDK download requests. Its 22 mixed-age asset captures contain 51 external package/version pairs. Blazor resolves Essential 1.4.0, while older native caches still show 1.3.0 despite current 1.4.0 declarations; the stale native results do not verify the current restore. The following captured table is retained without changing its package/version/consumer/source/license values.
 
