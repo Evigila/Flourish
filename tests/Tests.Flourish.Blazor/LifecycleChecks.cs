@@ -107,6 +107,7 @@ internal static class LifecycleChecks
     {
         internal int Imports { get; private set; }
         internal CountingModule Module { get; } = new();
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -121,6 +122,7 @@ internal static class LifecycleChecks
         internal int DisposeCalls { get; private set; }
         internal bool Released { get; private set; }
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             if (identifier == "synchronizeDialog") States.Add((bool)args![1]!);

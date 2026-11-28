@@ -49,17 +49,31 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender || Disposed) return;
-        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./reconnect-example.js");
-        if (Disposed) { await module.DisposeAsync(); return; }
-        Module = module;
-        await Module.InvokeVoidAsync("attach", Root);
+        try
+        {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./reconnect-example.js");
+            if (Disposed) { await ReleaseAsync(module); return; }
+            Module = module;
+            await module.InvokeVoidAsync("attach", Root);
+        }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
     public async ValueTask DisposeAsync()
     {
+        if (Disposed) return;
         base.Dispose();
         Disposed = true;
-        if (Module is null) return;
-        try { await Module.InvokeVoidAsync("detach", Root); await Module.DisposeAsync(); }
+        var module = Module;
+        Module = null;
+        if (module is null) return;
+        try { await module.InvokeVoidAsync("detach", Root); }
+        catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
+        finally { await ReleaseAsync(module); }
+    }
+
+    private static async ValueTask ReleaseAsync(IJSObjectReference module)
+    {
+        try { await module.DisposeAsync(); }
         catch (Exception exception) when (exception is JSDisconnectedException or TaskCanceledException) { }
     }
 }

@@ -181,5 +181,7 @@ internal static class DataSearchChecks
     }
     private static void Require(bool condition, string message) { if(!condition) throw new InvalidOperationException(message); }
     private sealed class CaptureActivator : IComponentActivator { internal List<IComponent> Components {get;}=[]; public IComponent CreateInstance(Type type) { var component=(IComponent)Activator.CreateInstance(type)!; Components.Add(component); return component; } }
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
     private sealed class NoJs : IJSRuntime { public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => throw new InvalidOperationException("SSR invoked JavaScript."); public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken token, object?[]? args) => InvokeAsync<TValue>(identifier,args); }
+#pragma warning restore BL0016
 }

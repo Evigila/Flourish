@@ -215,7 +215,9 @@ internal static class AvatarChecks
         internal int Resets { get; private set; }
         internal List<CropStream> Streams { get; } = [];
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
             InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             if (identifier == "reset") { Resets++; return ValueTask.FromResult((TValue)(object)true); }

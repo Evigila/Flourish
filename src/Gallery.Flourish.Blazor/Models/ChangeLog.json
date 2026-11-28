@@ -1,7 +1,11 @@
 [
   {
-    "version": "1.4.12-preview",
+    "version": "1.4.13-preview",
     "changeKeys": []
+  },
+  {
+    "version": "1.4.12-release",
+    "changeKeys": ["Key.ChangeLog_DotNet11Toolchain"]
   },
   {
     "version": "1.4.11",

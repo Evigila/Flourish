@@ -2,7 +2,7 @@
 
 ## Source, packages and scope
 
-Directory.Build.props declares stable source VersionPrefix 1.4.11 and EssentialCultureVersion 1.4.0. The release promotes the Blazor changes verified in Colligere with 1.4.11-preview.8. Earlier releases and their candidate hashes and consumer evidence remain in their original release records.
+Directory.Build.props declares Flourish 1.4.12-release and EssentialCultureVersion 1.4.0. The .NET 11 SDK builds the release, and the public Blazor packages continue to target .NET 10 for consumption by .NET 10 and .NET 11 applications. NuGet classifies suffixes, including `-release`, as prerelease versions. Earlier releases and their candidate hashes and consumer evidence remain in their original release records.
 
 ReleaseSettings defines six ordered IDs: Arkheide.Flourish.Core, Blazor.Abstract, Blazor.Framework, Blazor.Design, Extensions.Culture.Blazor and the dependency-only Blazor aggregate. Verification checks identities, exact local dependencies, Essential versions, architecture-neutral managed assemblies and required static/icon/license resources. WPF and WinUI are excluded. Do not infer package API ownership from the convenience aggregate.
 
@@ -10,9 +10,9 @@ Build/tag/version/public API identities are separate. Existing version bytes and
 
 ## Operator entry and immutable publication
 
-Use scripts/release.bat. Default Prepare runs the existing changelog, restore/build/test/pack and package-consumer checks. Explicit Mode Publish retains clean-master, exact remote/source agreement, canonical stable version, fresh tag and typed-tag confirmation. SkipBuild requests package verification of existing output rather than bypassing integrity checks.
+Use scripts/release.bat. Default Prepare runs the existing changelog, restore/build/test/pack and package-consumer checks. Explicit Mode Publish requires clean master, exact remote/source agreement, a canonical suffixed version, a fresh tag, the approved release notes file and confirmation of the exact tag. SkipBuild verifies existing package output.
 
-Publish fetches the relevant branch/tags, requires HEAD equal origin/master, rejects an existing tag, then creates/pushes only the reviewed annotated release tag. NuGet publication is controlled by the GitHub nuget environment and Trusted Publishing; no local API key is required. The helper does not silently replace a released package or retag an old identity.
+Publish fetches the relevant branch and tags, requires HEAD to equal origin/master, and creates the annotated tag with the approved title and notes. NuGet publication uses the GitHub nuget environment and Trusted Publishing. Existing package versions and tags are immutable.
 
 The build workflow runs on master pushes/pull requests/dispatch and version tags; its publish job is restricted to the version-tag event. NuGet login uses scoped OIDC permission. Repository review, environment protection, action refs and the publish allowlist remain independent controls. DocFX/Pages workflow and tooling are removed; no replacement site is deployed.
 

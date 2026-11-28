@@ -58,6 +58,7 @@ internal static class InteropFinalAuditChecks
                     await javascript.ImportStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
                     await DisposeBridge(component);
                     await DisposeBridge(component);
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
                     javascript.CompleteImport();
                     await pending;
                     Require(javascript.Module.Releases == 1 && javascript.Module.BehaviorCalls == 0,
@@ -335,6 +336,7 @@ internal static class InteropFinalAuditChecks
                 await component.InteractiveRenderAsync();
                 var oldModule = javascript.Module;
                 javascript.CompleteImport();
+#pragma warning restore BL0016
                 await pending;
                 Require(oldModule.Releases == 1 && oldModule.BehaviorCalls == 0,
                     "A late fixed-stage module installed scrolling or leaked after switching document flow.");
@@ -490,6 +492,7 @@ internal static class InteropFinalAuditChecks
         internal TaskCompletionSource ImportStarted { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private readonly TaskCompletionSource<IJSObjectReference> pendingImport = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal void CompleteImport() => pendingImport.TrySetResult(Module);
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -546,6 +549,7 @@ internal static class InteropFinalAuditChecks
             {
                 SynchronizationStarted.TrySetResult();
                 if (DelaySynchronization) return new ValueTask<TValue>(CompleteSynchronizationAsync<TValue>());
+#pragma warning restore BL0016
             }
             return ValueTask.FromResult(default(TValue)!);
         }

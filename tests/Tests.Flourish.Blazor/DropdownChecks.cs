@@ -295,7 +295,9 @@ internal static class DropdownChecks
     {
         internal List<ElementReference> FocusCalls { get; } = [];
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
             => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             Require(identifier == "Blazor._internal.domWrapper.focus", $"Unexpected browser operation: {identifier}.");

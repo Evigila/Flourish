@@ -139,6 +139,7 @@ internal static class SaveChangesBarChecks
         internal TaskCompletionSource<IJSObjectReference> Completion { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal PendingModule Module { get; } = new();
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => InvokeAsync<T>(identifier, CancellationToken.None, args);
         public async ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -151,6 +152,7 @@ internal static class SaveChangesBarChecks
     {
         internal int Disposals, Calls;
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => InvokeAsync<T>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args) { Calls++; return ValueTask.FromResult(default(T)!); }
         public ValueTask DisposeAsync() { Disposals++; return ValueTask.CompletedTask; }
     }

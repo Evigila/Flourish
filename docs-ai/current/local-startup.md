@@ -4,7 +4,7 @@
 
 Run debug.bat from the repository root on Windows. It preserves the former start launcher contract: select a runnable project, Enter chooses the Blazor Gallery and 0 cancels. The launcher resolves its own scripts directory and restores the caller's location.
 
-Use the SDK declared by global.json: 10.0.400, latestPatch roll-forward, no prerelease SDK selection. Existing .NET/Windows tooling and normal restore access are prerequisites; the launcher does not install SDKs, workloads or Visual Studio. Normal restore may download already declared packages. Desktop choices require Windows and their declared toolchain; WinUI is a placeholder, not a certified desktop workflow.
+Use SDK 11.0.100 with the latestPatch roll-forward policy in `global.json`. Gallery and diagnostic applications run on .NET 11. Package consumer and CSS integration checks also use the .NET 10 runtime to exercise the supported consumer baseline. Desktop choices require Windows and their declared toolchain. WinUI remains a placeholder.
 
     .\debug.bat
     .\debug.bat -List
@@ -32,7 +32,7 @@ The launcher restores the selected project, builds Release with no restore, then
 
 Platform Auto/x86/x64/ARM64 applies to WinUI; Auto uses Windows machine architecture and preserves the same platform/RID across all stages. Missing SDK/native tooling or a failed command stops later stages with a nonzero exit. Ctrl+C stops the console-owned application; occupied ports do not trigger unrelated process termination. No browser is opened automatically.
 
-Release preparation and explicitly authorized stable tag publication use scripts/release.bat. SAF check/sync/backup use origin/local. None of these are aliases for starting a Gallery, resetting consumer data or publishing a NuGet version.
+Release preparation and approved suffixed tag publication use scripts/release.bat. SAF check, synchronization and backup use origin/local. GitHub Actions publishes the verified package set after a release tag is pushed.
 
 ## Verification and manual acceptance
 

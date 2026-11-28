@@ -66,7 +66,9 @@ internal static class PresentationProgressChecks
                 var pending = component.InteractiveRenderAsync();
                 await javascript.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
                 await component.DisposeAsync();
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
                 javascript.CompleteImport();
+#pragma warning restore BL0016
                 await pending;
                 Require(javascript.Module.Synchronizations == 0 && javascript.Module.Releases == 1, "A late import attached a disposed navigation or leaked its module.");
                 await component.DisposeAsync();
@@ -119,6 +121,7 @@ internal static class PresentationProgressChecks
     private sealed class NoJs : IJSRuntime
     {
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => throw new InvalidOperationException("SSR invoked JavaScript.");
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
     }
     private sealed class DeferredJs : IJSRuntime
@@ -144,6 +147,7 @@ internal static class PresentationProgressChecks
         internal int Detaches { get; private set; }
         internal int Releases { get; private set; }
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             if (identifier == "synchronize") Synchronizations++;

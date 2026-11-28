@@ -234,6 +234,7 @@ internal static class TutorialBoardChecks
     private sealed class JsProbe : IJSRuntime
     {
         internal int Imports; internal string? Path; internal ModuleProbe Module = new();
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<T> InvokeAsync<T>(string name, object?[]? args) => InvokeAsync<T>(name, default, args);
         public ValueTask<T> InvokeAsync<T>(string name, CancellationToken token, object?[]? args)
         { Require(name == "import", "Unexpected JS call."); Imports++; Path = args![0]?.ToString(); return ValueTask.FromResult((T)(object)Module); }
@@ -242,6 +243,7 @@ internal static class TutorialBoardChecks
     {
         internal List<string> Calls = []; internal bool Disposed;
         public ValueTask<T> InvokeAsync<T>(string name, object?[]? args) => InvokeAsync<T>(name, default, args);
+#pragma warning restore BL0016
         public ValueTask<T> InvokeAsync<T>(string name, CancellationToken token, object?[]? args) { Calls.Add(name); return ValueTask.FromResult(default(T)!); }
         public ValueTask DisposeAsync() { Disposed = true; return ValueTask.CompletedTask; }
     }

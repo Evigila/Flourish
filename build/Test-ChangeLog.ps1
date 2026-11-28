@@ -6,26 +6,18 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
+. (Join-Path $root 'scripts/Release-Common.ps1')
+$publishedVersionPattern = "$VersionPrefixPattern(?:-$ReleaseSuffixPattern)?"
 if (!$CatalogPath) { $CatalogPath = Join-Path $root 'src/Gallery.Flourish.Blazor/Models/ChangeLog.json' }
 if (!$VersionPropsPath) { $VersionPropsPath = Join-Path $root 'Directory.Build.props' }
 if (!$CulturePath) { $CulturePath = @(Get-ChildItem -LiteralPath (Join-Path $root 'src/Gallery.Flourish.Blazor/Localization') -Filter 'Culture.*.json' -File | Sort-Object Name | ForEach-Object FullName) }
 if (!$CulturePath.Count) { throw 'ChangeLog validation needs Gallery Culture modules.' }
 
-function Read-Version([string] $Value) {
-    if ($Value -cnotmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$') {
-        throw "Invalid stable version '$Value'; use X.Y.Z without a tag prefix."
-    }
-    return [version]$Value
-}
-
-[xml]$props = Get-Content -LiteralPath $VersionPropsPath -Raw
-$versionPrefix = [string]($props.Project.PropertyGroup | ForEach-Object { $_.VersionPrefix } | Where-Object { $_ } | Select-Object -First 1)
-$releaseVersion = Read-Version $versionPrefix
-$versionSuffix = [string]($props.SelectNodes('/Project/PropertyGroup/VersionSuffix') | ForEach-Object { $_.InnerText } | Where-Object { $_ } | Select-Object -First 1)
-$isPreviewSource = ![string]::IsNullOrEmpty($versionSuffix)
-if ($isPreviewSource -and ($versionSuffix -cnotmatch '^preview(?:\.[0-9A-Za-z-]+)*$' -or
-    @($versionSuffix.Split('.') | Where-Object { $_ -cmatch '^0\d+$' }).Count)) {
-    throw 'Gallery preview source must use a canonical preview VersionSuffix.'
+$sourceVersion = Get-PackageVersion -VersionPropsPath $VersionPropsPath
+$versionPrefix, $versionSuffix = $sourceVersion -split '-', 2
+$isPreviewSource = $versionSuffix -cmatch '^preview(?:\.[0-9A-Za-z-]+)*$'
+if (!$isPreviewSource -and $sourceVersion -cnotmatch "^$publishedVersionPattern$") {
+    throw "Gallery source version '$sourceVersion' must use a public channel or a canonical preview suffix."
 }
 $json = Get-Content -LiteralPath $CatalogPath -Raw -Encoding UTF8
 if (!$json.TrimStart().StartsWith('[')) { throw 'ChangeLog must be a JSON array.' }
@@ -43,27 +35,27 @@ foreach ($file in $CulturePath) {
     } finally { $document.Dispose() }
 }
 $versions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-$stableVersions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-$highestStable = if ($isPreviewSource) { [version]'0.0.0' } else { $releaseVersion }
+$publishedVersions = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+$highestPublished = if ($isPreviewSource) { [version]'0.0.0' } else { [version]$versionPrefix }
 $previous = $null
 $preview = $null
 $checks = 0
 
 foreach ($entry in $entries) {
-    if ($null -eq $entry -or $entry.version -isnot [string] -or $entry.version -cnotmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-preview)?$') {
-        throw 'Every ChangeLog record must have a canonical X.Y.Z or X.Y.Z-preview version.'
+    if ($null -eq $entry -or $entry.version -isnot [string] -or $entry.version -cnotmatch "^(?:$publishedVersionPattern|$VersionPrefixPattern-preview)$") {
+        throw 'Every ChangeLog record must have a canonical published version or X.Y.Z-preview.'
     }
     $name = $entry.version
     if (!$versions.Add($name)) { throw "Duplicate ChangeLog version '$name'." }
-    $number = Read-Version ($name -replace '-preview$', '')
+    $number = [version](($name -split '-', 2)[0])
     if ($null -ne $previous -and $number -ge $previous) { throw 'ChangeLog versions must be strictly descending.' }
     $previous = $number
     if ($name.EndsWith('-preview')) {
         if ($null -ne $preview -or $name -cne $entries[0].version) { throw 'ChangeLog must have exactly one preview as its highest entry.' }
         $preview = $name
     } else {
-        [void]$stableVersions.Add($name)
-        if ($number -gt $highestStable) { $highestStable = $number }
+        [void]$publishedVersions.Add($name)
+        if ($number -gt $highestPublished) { $highestPublished = $number }
     }
     if ($entry.changeKeys -isnot [array]) { throw "$name must provide a changeKeys array." }
     if (!$name.EndsWith('-preview') -and !$entry.changeKeys.Count) { throw "$name must contain release notes." }
@@ -88,19 +80,18 @@ foreach ($entry in $entries) {
 # Tags from later or unrelated commits must not invalidate a historical checkout.
 $tags = @(& git -C $root tag --merged HEAD --list 'v*')
 if ($LASTEXITCODE -ne 0) { throw 'Cannot read local release tags reachable from HEAD.' }
-$stableTags = @($tags | Where-Object { $_ -cmatch '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$' } | Sort-Object { [version]$_.Substring(1) })
-$firstRelease = if ($stableTags.Count) { $stableTags[0].Substring(1) } else { $null }
-foreach ($tag in $stableTags | Select-Object -Skip 1) {
+$publishedTags = @($tags | Where-Object { $_ -cmatch "^v$publishedVersionPattern$" })
+$firstLegacyTag = $publishedTags | Where-Object { $_ -cmatch "^v$VersionPrefixPattern$" } |
+    Sort-Object { [version]$_.Substring(1) } | Select-Object -First 1
+foreach ($tag in $publishedTags | Where-Object { $_ -cne $firstLegacyTag }) {
     $version = $tag.Substring(1)
-    if (!$stableVersions.Contains($version)) { throw "Release tag '$tag' has no ChangeLog record." }
-    $number = Read-Version $version
-    if ($number -gt $highestStable) { $highestStable = $number }
+    if (!$publishedVersions.Contains($version)) { throw "Release tag '$tag' has no ChangeLog record." }
     $checks++
 }
-if (!$isPreviewSource -and $versionPrefix -cne $firstRelease -and !$stableVersions.Contains($versionPrefix)) {
-    throw "VersionPrefix '$versionPrefix' needs release notes before creating its tag."
+if (!$isPreviewSource -and "v$sourceVersion" -cne $firstLegacyTag -and !$publishedVersions.Contains($sourceVersion)) {
+    throw "Version '$sourceVersion' needs release notes before creating its tag."
 }
-$expectedPreview = '{0}.{1}.{2}-preview' -f $highestStable.Major, $highestStable.Minor, ($highestStable.Build + 1)
+$expectedPreview = '{0}.{1}.{2}-preview' -f $highestPublished.Major, $highestPublished.Minor, ($highestPublished.Build + 1)
 if ($preview -cne $expectedPreview) { throw "ChangeLog must contain exactly one highest preview '$expectedPreview'." }
 if ($isPreviewSource -and ($versionPrefix + '-preview') -cne $expectedPreview) {
     throw "Source preview '$versionPrefix-$versionSuffix' must belong to aggregate '$expectedPreview'."

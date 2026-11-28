@@ -749,7 +749,9 @@ internal static class DataTableChecks
             {
                 var loading = menu.AfterRenderAsync();
                 await menu.DisposeAsync();
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
                 javascript.CompleteImport();
+#pragma warning restore BL0016
                 await loading;
                 Require(javascript.Module.DisposeCount == 1 && javascript.Module.Calls.Count == 0,
                     "A late module was retained or reattached after the native menu left.");
@@ -1034,6 +1036,7 @@ internal static class DataTableChecks
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
         {
             if (identifier != "import") throw new InvalidOperationException($"Unexpected browser call: {identifier}");
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
             return delayed ? new ValueTask<TValue>(AwaitImport<TValue>()) : ValueTask.FromResult((TValue)(object)Module);
         }
         private async Task<TValue> AwaitImport<TValue>() => (TValue)(object)await import.Task;
@@ -1050,6 +1053,7 @@ internal static class DataTableChecks
             return ValueTask.FromResult(default(TValue)!);
         }
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
+#pragma warning restore BL0016
         public ValueTask DisposeAsync() { DisposeCount++; return ValueTask.CompletedTask; }
     }
 }

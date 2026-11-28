@@ -277,7 +277,7 @@ internal static class Program
         language.SetCulture("en-US");
         var root = await renderer.Dispatcher.InvokeAsync(() => renderer.RenderComponentAsync<LocalizedValidationHarness>(
             ParameterView.FromDictionary(new Dictionary<string, object?> { [nameof(LocalizedValidationHarness.Context)] = context })));
-        await renderer.Dispatcher.InvokeAsync(() => Check(!context.Validate(), "Real RecordDraft annotation validation should fail for an empty draft."));
+        await renderer.Dispatcher.InvokeAsync(async () => Check(!await context.ValidateAsync(), "Real RecordDraft annotation validation should fail for an empty draft."));
         var storedMessages = context.GetValidationMessages().ToArray();
         Check(storedMessages.Contains("Key.Validation_NameRequired") && storedMessages.Contains("Key.Validation_EmailRequired"), "Real annotations did not store stable localization tokens.");
         foreach (var culture in Cultures)
@@ -332,6 +332,7 @@ internal sealed class NoJs : IJSRuntime
     public TaskCompletionSource? CultureWriteStarted { get; set; }
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
         ValueTask.FromResult(identifier == "import" ? (TValue)(object)new Module(this) : default!);
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
     private sealed class Module(NoJs owner) : IJSObjectReference
     {
@@ -347,6 +348,7 @@ internal sealed class NoJs : IJSRuntime
             return default!;
         }
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
+#pragma warning restore BL0016
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 }

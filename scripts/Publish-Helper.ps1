@@ -1,4 +1,9 @@
-param([ValidateSet('Prepare', 'Publish')][string]$Mode = 'Prepare', [switch]$SkipBuild)
+param(
+    [ValidateSet('Prepare', 'Publish')][string]$Mode = 'Prepare',
+    [switch]$SkipBuild,
+    [string]$ReleaseNotesFile,
+    [string]$ConfirmedTag
+)
 . (Join-Path $PSScriptRoot 'Release-Common.ps1')
 function Assert-CleanMaster {
     $status = @(& git -C $ReleaseRoot status --porcelain)
@@ -6,7 +11,16 @@ function Assert-CleanMaster {
     $branch = & git -C $ReleaseRoot branch --show-current
     if ($LASTEXITCODE -ne 0 -or $branch -ne 'master') { throw 'Release requires the master branch.' }
 }
-if ($Mode -eq 'Publish') { Assert-CleanMaster }
+if ($Mode -eq 'Publish') {
+    Assert-CleanMaster
+    if (!$ReleaseNotesFile -or !(Test-Path -LiteralPath $ReleaseNotesFile -PathType Leaf)) {
+        throw 'Publish requires the approved release title and notes in ReleaseNotesFile.'
+    }
+    $ReleaseNotesFile = (Resolve-Path -LiteralPath $ReleaseNotesFile).Path
+    if ([string]::IsNullOrWhiteSpace([IO.File]::ReadAllText($ReleaseNotesFile))) {
+        throw 'The approved release notes file is empty.'
+    }
+}
 & (Join-Path $ReleaseRoot 'build/Test-ChangeLog.ps1')
 & (Join-Path $PSScriptRoot 'Test-Release.ps1') -VerifyOnly:$SkipBuild
 if ($Mode -eq 'Prepare') { return }
@@ -23,8 +37,8 @@ if ($LASTEXITCODE -eq 0) { throw "Tag '$tag' already exists. Choose a new versio
 Write-Host "Repository: $ReleaseRoot"
 Write-Host "Commit: $head"
 Write-Host "This will create and push $tag. The GitHub nuget environment will control Trusted Publishing."
-$answer = Read-Host "Type $tag to confirm"
-if ($answer -ne $tag) { throw 'Release cancelled; no tag was created.' }
-Invoke-ReleaseCommand 'git' @('-C', $ReleaseRoot, 'tag', '-a', $tag, '-m', "Release $tag")
+$answer = if ($ConfirmedTag) { $ConfirmedTag } else { Read-Host "Type $tag to confirm" }
+if ($answer -cne $tag) { throw 'Release cancelled; no tag was created.' }
+Invoke-ReleaseCommand 'git' @('-C', $ReleaseRoot, 'tag', '-a', $tag, '--cleanup=verbatim', '-F', $ReleaseNotesFile)
 Invoke-ReleaseCommand 'git' @('-C', $ReleaseRoot, 'push', 'origin', "refs/tags/$tag")
 Write-Host "Pushed $tag. Monitor the Build, test, and publish workflow; no API key is used locally."

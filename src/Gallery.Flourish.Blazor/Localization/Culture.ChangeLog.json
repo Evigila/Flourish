@@ -1,4 +1,9 @@
 {
+  "ChangeLog_DotNet11Toolchain": {
+    "en-US": "Build Flourish with the .NET 11 SDK and run the Gallery applications and tests on .NET 11. The published Blazor packages continue to support .NET 10 and .NET 11 applications.",
+    "zh-CN": "使用 .NET 11 SDK 构建 Flourish，并在 .NET 11 上运行示例应用和测试。发布的 Blazor 包继续支持 .NET 10 和 .NET 11 应用。",
+    "pt-BR": "Compile o Flourish com o SDK do .NET 11 e execute as galerias e os testes no .NET 11. Os pacotes Blazor publicados continuam compatíveis com aplicações .NET 10 e .NET 11."
+  },
   "ChangeLog_DockedShellHeading": {
     "en-US": "Dock page titles and actions in the shell header during scrolling, with entry and exit motion and restored branding. Improve presentation-page centering and responsive header spacing.",
     "zh-CN": "滚动时将页面标题和操作移入顶部栏，保留进入和退出动画，并在返回时恢复品牌。改善展示页居中和顶部栏的响应式间距。",

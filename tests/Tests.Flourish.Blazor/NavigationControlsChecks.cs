@@ -220,6 +220,7 @@ internal static class NavigationControlsChecks
             {
                 var first = AfterRender(component); var second = AfterRender(component);
                 Require(js.Imports == 1, "Concurrent renders created duplicate imports.");
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
                 await component.DisposeAsync(); js.Complete(); await Task.WhenAll(first, second);
                 Require(js.Module.Calls.Count == 0 && js.Module.Disposals == 1, "A late browser module attached to a disposed control.");
             });
@@ -232,6 +233,7 @@ internal static class NavigationControlsChecks
                 var first = AfterRender(component); var second = AfterRender(component);
                 Require(js.Imports == 1, "Concurrent section renders created duplicate imports.");
                 await component.DisposeAsync(); js.Complete(); await Task.WhenAll(first, second);
+#pragma warning restore BL0016
                 Require(js.Module.Calls.Count == 0 && js.Module.Disposals == 1, "A late section module attached to a disposed navigator.");
             });
         }));
@@ -276,6 +278,7 @@ internal static class NavigationControlsChecks
         internal CountingModule Module { get; } = new();
         private readonly TaskCompletionSource<IJSObjectReference> gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal void Complete() => gate.SetResult(Module);
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
         public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -289,6 +292,7 @@ internal static class NavigationControlsChecks
         internal List<(string Name, object?[] Args)> Calls { get; } = [];
         internal int Disposals { get; private set; }
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) { Calls.Add((identifier, args ?? [])); return ValueTask.FromResult(default(TValue)!); }
         public ValueTask DisposeAsync() { Disposals++; return ValueTask.CompletedTask; }
     }

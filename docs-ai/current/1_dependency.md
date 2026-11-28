@@ -2,7 +2,7 @@
 
 ## Evidence and interpretation
 
-Source declares stable Flourish 1.4.11 and EssentialCultureVersion 1.4.0. The SDK constraint is 10.0.400 with latestPatch roll-forward and prerelease disabled. The release includes the packaged Noto assets verified by the package gate. The preview builds and their checks remain historical evidence.
+Source declares Flourish 1.4.12-release and EssentialCultureVersion 1.4.0. SDK 11.0.100 is selected with latestPatch roll-forward and prerelease disabled. The Gallery applications, diagnostics, tests and WinUI placeholder target .NET 11. Core and the package-bearing Blazor and WPF projects retain their .NET 10 targets. Package identities, third-party dependency versions and bundled Noto assets retain their existing contracts.
 
 The complete 2026-11-10 machine-readable capture is [archived evidence](1_archived/dependency-evidence-2026-11-10.json). It records declarations/references, matching asset timestamps/hashes, immediate dependency parents, full consumer sets, cache metadata and SDK download requests. Its 22 mixed-age asset captures contain 51 external package/version pairs. Blazor resolves Essential 1.4.0, while older native caches still show 1.3.0 despite current 1.4.0 declarations; the stale native results do not verify the current restore. The following captured table is retained without changing its package/version/consumer/source/license values.
 
@@ -77,21 +77,21 @@ The optional Blazor Design package redistributes the original Google Fonts WOFF2
 | P05 | `src/Flourish.Core/Flourish.Core.csproj` | `net10.0` | None |
 | P06 | `src/Flourish.Extensions/Flourish.Extensions.Culture.Blazor/Flourish.Extensions.Culture.Blazor.csproj` | `net10.0` | P03 (`Flourish.Blazor.Framework`) |
 | P07 | `src/Flourish.Extensions/Flourish.Extensions.Culture.WPF/Flourish.Extensions.Culture.WPF.csproj` | `net10.0-windows` | P11 (`Flourish.WPF.Framework`) |
-| P08 | `src/Flourish.WinUI3/Flourish.WinUI3.csproj` | `net10.0-windows10.0.26100.0` | None |
+| P08 | `src/Flourish.WinUI3/Flourish.WinUI3.csproj` | `net11.0-windows10.0.26100.0` | None |
 | P09 | `src/Flourish.WPF/Flourish.WPF.Abstract/Flourish.WPF.Abstract.csproj` | `net10.0-windows` | None |
 | P10 | `src/Flourish.WPF/Flourish.WPF.Design/Flourish.WPF.Design.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`) |
 | P11 | `src/Flourish.WPF/Flourish.WPF.Framework/Flourish.WPF.Framework.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`) |
 | P12 | `src/Flourish.WPF/Flourish.WPF/Flourish.WPF.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`) |
-| P13 | `src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj` | `net10.0` | P03 (`Flourish.Blazor.Framework`)<br>P02 (`Flourish.Blazor.Design`)<br>P06 (`Flourish.Extensions.Culture.Blazor`) |
-| P14 | `src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj` | `net10.0-windows10.0.26100.0` | None |
-| P15 | `src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj` | `net10.0-windows` | P12 (`Flourish.WPF`)<br>P07 (`Flourish.Extensions.Culture.WPF`) |
-| P16 | `tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj` | `net10.0` | P03 (`Flourish.Blazor.Framework`) |
-| P17 | `tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj` | `net10.0` | P03 (`Flourish.Blazor.Framework`)<br>P02 (`Flourish.Blazor.Design`)<br>P06 (`Flourish.Extensions.Culture.Blazor`) |
-| P18 | `tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj` | `net10.0` | P05 (`Flourish.Core`) |
-| P19 | `tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj` | `net10.0` | P06 (`Flourish.Extensions.Culture.Blazor`) |
-| P20 | `tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj` | `net10.0-windows` | P07 (`Flourish.Extensions.Culture.WPF`) |
-| P21 | `tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj` | `net10.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`)<br>P15 (`Gallery.Flourish.WPF`) |
-| P22 | `tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj` | `net10.0` | P13 (`Gallery.Flourish.Blazor`) |
+| P13 | `src/Gallery.Flourish.Blazor/Gallery.Flourish.Blazor.csproj` | `net11.0` | P03 (`Flourish.Blazor.Framework`)<br>P02 (`Flourish.Blazor.Design`)<br>P06 (`Flourish.Extensions.Culture.Blazor`) |
+| P14 | `src/Gallery.Flourish.WinUI3/Gallery.Flourish.WinUI3.csproj` | `net11.0-windows10.0.26100.0` | None |
+| P15 | `src/Gallery.Flourish.WPF/Gallery.Flourish.WPF.csproj` | `net11.0-windows` | P12 (`Flourish.WPF`)<br>P07 (`Flourish.Extensions.Culture.WPF`) |
+| P16 | `tests/Tests.Flourish.Blazor.Native/Tests.Flourish.Blazor.Native.csproj` | `net11.0` | P03 (`Flourish.Blazor.Framework`) |
+| P17 | `tests/Tests.Flourish.Blazor/Tests.Flourish.Blazor.csproj` | `net11.0` | P03 (`Flourish.Blazor.Framework`)<br>P02 (`Flourish.Blazor.Design`)<br>P06 (`Flourish.Extensions.Culture.Blazor`) |
+| P18 | `tests/Tests.Flourish.Core/Tests.Flourish.Core.csproj` | `net11.0` | P05 (`Flourish.Core`) |
+| P19 | `tests/Tests.Flourish.Extensions.Culture.Blazor/Tests.Flourish.Extensions.Culture.Blazor.csproj` | `net11.0` | P06 (`Flourish.Extensions.Culture.Blazor`) |
+| P20 | `tests/Tests.Flourish.Extensions.Culture.WPF/Tests.Flourish.Extensions.Culture.WPF.csproj` | `net11.0-windows` | P07 (`Flourish.Extensions.Culture.WPF`) |
+| P21 | `tests/Tests.Flourish.WPF/Tests.Flourish.WPF.csproj` | `net11.0-windows` | P09 (`Flourish.WPF.Abstract`)<br>P11 (`Flourish.WPF.Framework`)<br>P10 (`Flourish.WPF.Design`)<br>P15 (`Gallery.Flourish.WPF`) |
+| P22 | `tests/Tests.Gallery.Flourish.Blazor/Tests.Gallery.Flourish.Blazor.csproj` | `net11.0` | P13 (`Gallery.Flourish.Blazor`) |
 
 The 22 source/diagnostic/test projects declare 33 local edges. Their source identities are not externally restored Flourish packages. Blazor Abstract uses Core, Framework uses Abstract, and optional Design/Culture use Framework. Native WPF is an independent graph; WinUI placeholders declare no Flourish source dependency. The aggregate packages are dependency-only, while Gallery/tests consume real production entries. No sibling Essential source reference exists.
 
@@ -118,15 +118,15 @@ The declared requirements and purposes below retain their original capture metad
 These are retained declaration/capture rows. Existing caches, SDK-injected packs and download dependencies can have different dates/platforms; cleaning an obj tree or observing one Web restore does not recapture native/WinUI runtimes. Current global.json remains the SDK selection contract.
 
 
-The observed SDK/pack/runtime versions in this table are the historical audit environment, not an assertion that those versions remain installed for the current local candidate. The candidate retains the existing `global.json` constraint; its actual selected SDK/assets are recorded with the coordinating build evidence above. No SDK or runtime installation is performed by this update.
+The currently selected SDK is 11.0.100. The machine also has SDK 10.0.404 and the .NET 10.0.15 runtime for consumer checks. The previous package and SDK captures remain historical resolution evidence.
 
 | Dependency / kind | Declared constraint | Observed version or contract | Consumers / scope / purpose | Evidence / source / license |
 | --- | --- | --- | --- | --- |
-| .NET SDK / build toolchain | `10.0.400`, `rollForward=latestPatch`, `allowPrerelease=false`; CI requests `10.0.x` | Locally selected `10.0.401`; `10.0.301` is also installed but does not satisfy this feature-band pin | P01–P22; build, restore, pack, publish, Roslyn, Razor/XAML compilation | `global.json`, CLI, CI; local Microsoft SDK distribution; its installed `LICENSE.txt` states Microsoft .NET Library terms, not an inferred uniform SPDX license for every SDK payload. |
-| `Microsoft.NET.Sdk`, `.Web`, `.Razor` / SDK components | Included in selected .NET SDK; all projects target .NET 10 | SDK 10.0.401 | `.Web`: P13/P16; `.Razor`: P02/P03/P06; other projects `.Sdk`; build | `.csproj` Sdk attributes. `build/CssBundle.targets` uses SDK `RoslynCodeTaskFactory`/`Microsoft.Build.Tasks.Core.dll`; no CSS bundler package. |
-| `Microsoft.NETCore.App` / shared runtime and targeting pack | `net10.0` family; SDK default runtime baseline 10.0.0 | 10.0.12 targeting pack / installed runtime; 10.0.9 also installed | All managed projects; application/test runtime | CLI, current assets frameworkReferences, SDK BundledVersions.props. Framework-delivered assemblies are covered by this distribution rather than separate NuGet rows. |
-| `Microsoft.AspNetCore.App` / shared web framework | Explicit FrameworkReference in P01/P02/P03/P06/P17/P22, implicit in P13/P16 | 10.0.12 targeting pack / installed runtime; 10.0.9 also installed | Blazor controls, interactive server Gallery and console renderer tests; production/build/test | Current project assets, .csproj, SDK/CLI. Its runtime supplies hosting, routing, DataProtection, logging, JS interop and Blazor SignalR transport. |
-| `Microsoft.WindowsDesktop.App.WPF` / native desktop framework | `UseWPF=true`, net10.0-windows | 10.0.12 targeting/runtime distribution; 10.0.9 also installed | P07/P09/P10/P11/P15/P20/P21; Windows-only WPF build/runtime/test | .csproj/current assets and CLI. P12 is a dependency-only metapackage. |
+| .NET SDK / build toolchain | `11.0.100`, `rollForward=latestPatch`, `allowPrerelease=false`; CI installs SDK 11 and SDK 10 for consumer checks | 11.0.100 selected locally | P01–P22; build, restore, pack, publish, Roslyn, Razor/XAML compilation | `global.json`, CLI and CI. |
+| `Microsoft.NET.Sdk`, `.Web`, `.Razor` / SDK components | Included in selected .NET SDK | SDK 11.0.100 | `.Web`: P13/P16; `.Razor`: P02/P03/P06; other projects `.Sdk`; build | `.csproj` SDK attributes. `build/CssBundle.targets` uses SDK `RoslynCodeTaskFactory`. |
+| `Microsoft.NETCore.App` / shared runtime and targeting pack | .NET 10 package targets and .NET 11 application/test targets | Installed runtimes 10.0.15 and 11.0.0 | All managed projects | Project targets and `dotnet --list-runtimes`. |
+| `Microsoft.AspNetCore.App` / shared web framework | Explicit FrameworkReference in P01/P02/P03/P06/P17/P22, implicit in P13/P16 | Installed runtimes 10.0.15 and 11.0.0 | Blazor controls, Gallery, diagnostic and renderer tests | Project framework references, SDK and CLI. |
+| `Microsoft.WindowsDesktop.App.WPF` / native desktop framework | `UseWPF=true`; .NET 10 library targets and .NET 11 Gallery/test targets | Installed runtimes 10.0.15 and 11.0.0 | P07/P09/P10/P11/P15/P20/P21 | Project targets and CLI. P12 is a dependency-only metapackage. |
 | Windows desktop OS / platform contract | WPF requires Windows; WinUI minimum `10.0.17763.0`, target `10.0.26100.0` | Installed OS version not inspected; declared minimum and target recorded separately | Native WPF/WinUI projects; production/build/test | UseWPF/UseWinUI and WinUI TargetPlatformMinVersion/SupportedOSPlatformVersion; vendor OS license/version not audited. |
 | Windows XAML/WinUI build tools / SDK contract | Windows-compatible XAML tooling and architecture; WinUI library allows AnyCPU/x86/x64/ARM64; Gallery x86/x64/ARM64 | Runtime IDs `win-x86`, `win-x64`, `win-arm64`; tool install/version beyond resolved NuGet packs unknown | P08/P14; WinUI build/deployment. Gallery sets WindowsPackageType=None and WindowsAppSDKSelfContained=true | WinUI .csproj and assets. WindowsAppSDKSelfContained concerns that payload; it does not by itself prove a .NET self-contained release. |
 | Windows DirectWrite / native asset conversion API | IDWriteFactory5.UnpackFontFile and IDWriteFactory6.CreateFontFaceReference in `dwrite.dll` | OS API contract; no package version | `scripts/Convert-MaterialIcons.ps1`; optional maintenance/build asset conversion | P/Invoke in the converter, icon source manifests. Not a downloaded conversion tool and not a separate WPF browser runtime. |

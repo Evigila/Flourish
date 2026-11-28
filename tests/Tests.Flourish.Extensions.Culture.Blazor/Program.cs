@@ -310,6 +310,7 @@ internal sealed class JsProbe : IJSRuntime
     internal List<string> ImportPaths { get; } = [];
     internal Exception? ImportFailure { get; set; }
     internal ModuleProbe Module { get; } = new();
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
@@ -332,6 +333,7 @@ internal sealed class ModuleProbe : IJSObjectReference
     internal int MaxActiveWrites { get; private set; }
     private int activeWrites;
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
     public async ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
         if (identifier != "saveCulture") throw new InvalidOperationException("Unexpected preference entry: " + identifier);

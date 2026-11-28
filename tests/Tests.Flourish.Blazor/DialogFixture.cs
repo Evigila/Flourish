@@ -42,6 +42,7 @@ internal sealed class DialogFixture : IAsyncDisposable
     {
         internal int Imports { get; private set; }
         internal CountingDialogModule Module { get; } = new();
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => InvokeAsync<T>(identifier, CancellationToken.None, args);
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -53,6 +54,7 @@ internal sealed class DialogFixture : IAsyncDisposable
     {
         internal List<(string Name, object?[]? Arguments)> Calls { get; } = [];
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => InvokeAsync<T>(identifier, CancellationToken.None, args);
+#pragma warning restore BL0016
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args)
         { Calls.Add((identifier, args)); return ValueTask.FromResult(default(T)!); }
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;

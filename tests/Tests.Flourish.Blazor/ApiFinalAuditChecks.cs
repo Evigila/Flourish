@@ -456,6 +456,8 @@ internal static class ApiFinalAuditChecks
     private sealed class NoInterop : IJSRuntime
     {
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => throw new InvalidOperationException("SSR unexpectedly invoked JavaScript: " + identifier);
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
+#pragma warning restore BL0016
     }
 }

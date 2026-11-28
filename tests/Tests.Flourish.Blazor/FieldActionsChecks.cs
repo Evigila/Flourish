@@ -219,6 +219,8 @@ internal static class FieldActionsChecks
     private sealed class NoJs : IJSRuntime
     {
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => throw new InvalidOperationException("Static rendering must not import browser behavior.");
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<T>(identifier, args);
+#pragma warning restore BL0016
     }
 }

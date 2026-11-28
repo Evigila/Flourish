@@ -258,7 +258,9 @@ internal static class SelectValueConversionChecks
             await javascript.Started.Task;
             var second = fixture.InteractiveAfterRender(helper);
             await ((IAsyncDisposable)helper).DisposeAsync();
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
             javascript.Complete();
+#pragma warning restore BL0016
             await Task.WhenAll(first, second);
             Require(javascript.Imports == 1 && javascript.Module.Releases == 1 && javascript.Module.Invocations == 0,
                 "Disposal leaked a deferred module, imported twice, or initialized detached DOM.");
@@ -412,6 +414,7 @@ internal static class SelectValueConversionChecks
     private sealed class NoJs : IJSRuntime
     {
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) => throw new InvalidOperationException("Static rendering must not call browser services.");
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<T>(identifier, args);
     }
     private sealed class DeferredJs : IJSRuntime
@@ -435,6 +438,7 @@ internal static class SelectValueConversionChecks
         internal int Releases { get; private set; }
         public ValueTask<T> InvokeAsync<T>(string identifier, object?[]? args) { Invocations++; return ValueTask.FromResult(default(T)!); }
         public ValueTask<T> InvokeAsync<T>(string identifier, CancellationToken token, object?[]? args) => InvokeAsync<T>(identifier, args);
+#pragma warning restore BL0016
         public ValueTask DisposeAsync() { Releases++; return ValueTask.CompletedTask; }
     }
 }

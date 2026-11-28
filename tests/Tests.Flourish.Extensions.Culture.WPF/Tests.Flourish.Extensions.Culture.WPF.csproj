@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net11.0-windows</TargetFramework>
     <AssemblyName>Tests.Flourish.Extensions.Culture.WPF</AssemblyName>
     <RootNamespace>ArkheideSystem.Tests.Flourish.Extensions.Culture.WPF</RootNamespace>
     <Nullable>enable</Nullable>

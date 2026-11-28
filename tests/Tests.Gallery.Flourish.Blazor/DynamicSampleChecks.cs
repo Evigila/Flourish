@@ -166,6 +166,7 @@ internal static class DynamicSampleChecks
         await RunSample(provider, "Primitives.EditingGrid", async (renderer, root, sample, language) =>
         {
             await Event(renderer, sample, "ShowValidationError");
+            var interactions = Get<GridInteractions>(sample, "Interactions");
             var invalidRows = Get<IReadOnlyList<GridRow>>(sample, "Rows");
             var invalidRevision = Get<long>(sample, "Revision");
             await Languages(renderer, root, language, html =>
@@ -175,15 +176,17 @@ internal static class DynamicSampleChecks
                 Check(invalidRows[0].Cells[1].Value == "-1" && invalidRows[0].Cells[1].Error == "Key.Sample_EnterAnAmountGreaterThanOrEqualTo0", "Language changed the cell value or stored validation token.");
                 Check(Count(sample, "History") == 1 && Count(sample, "RedoHistory") == 0 && Get<long>(sample, "Revision") == invalidRevision, "Language mutated grid history or edit revision.");
             });
-            await Event(renderer, sample, "UndoAsync");
+            await renderer.Dispatcher.InvokeAsync(interactions.Undo!);
+            Contains(await renderer.Dispatcher.InvokeAsync(root.ToHtmlString),
+                language.Parse("Key.Sample_DemoChangeUndone"), "The grid callback did not rerender its owning sample.");
             await Languages(renderer, root, language, html =>
             {
                 Contains(html, language.Parse("Key.Sample_DemoChangeUndone"), "Undo result did not change language.");
                 Check(Get<IReadOnlyList<GridRow>>(sample, "Rows")[0].Cells[1].Value == "12.50", "Undo did not restore the actual prior value.");
                 Check(Count(sample, "History") == 0 && Count(sample, "RedoHistory") == 1, "Language reset the undo/redo stacks.");
             });
-            await Event(renderer, sample, "RedoAsync");
-            await Event(renderer, sample, "SaveAsync");
+            await renderer.Dispatcher.InvokeAsync(interactions.Redo!);
+            await renderer.Dispatcher.InvokeAsync(interactions.Save!);
             await Languages(renderer, root, language, html =>
             {
                 Contains(html, language.Parse("Key.Sample_CorrectDemoValidationErrorsBeforeSaving"), "Rejected save status did not change language.");

@@ -89,8 +89,11 @@ else
     private string Message = "Key.Sample_FictionalDataIsRetainedOnlyInThisComponent";
     private Primitives.GridInteractions Interactions => new()
     {
-        Save = SaveAsync, Cancel = ResetAsync, Undo = UndoAsync, Redo = RedoAsync,
-        ReportError = message => { Message = message; StateHasChanged(); return Task.CompletedTask; }
+        Save = EventCallback.Factory.Create(this, SaveAsync).InvokeAsync,
+        Cancel = EventCallback.Factory.Create(this, Reset).InvokeAsync,
+        Undo = EventCallback.Factory.Create(this, UndoAsync).InvokeAsync,
+        Redo = EventCallback.Factory.Create(this, RedoAsync).InvokeAsync,
+        ReportError = EventCallback.Factory.Create<string>(this, message => Message = message).InvokeAsync
     };
     protected override void OnInitialized() { base.OnInitialized(); Rows = CreateRows(); }
     private IReadOnlyList<ArkheideSystem.Flourish.Blazor.Components.Primitives.GridRow> CreateRows() =>
@@ -138,26 +141,22 @@ else
     }
     private Task SaveAsync()
     {
-        if (Rows.Any(row => row.Cells.Any(cell => cell.Error is not null))) { Message = "Key.Sample_CorrectDemoValidationErrorsBeforeSaving"; StateHasChanged(); return Task.CompletedTask; }
+        if (Rows.Any(row => row.Cells.Any(cell => cell.Error is not null))) { Message = "Key.Sample_CorrectDemoValidationErrorsBeforeSaving"; return Task.CompletedTask; }
         Rows = Rows.Select(row => row with { Dirty = false, Cells = row.Cells.Select(cell => cell with { Changed = false }).ToArray() }).ToArray();
         History.Clear(); RedoHistory.Clear(); Revision++;
         Message = "Key.Sample_FictionalDraftSavedToLocalState";
-        StateHasChanged();
         return Task.CompletedTask;
     }
     private Task UndoAsync()
     {
         if (History.TryPop(out var previous)) { RedoHistory.Push(Rows); Rows = previous; Revision++; Message = "Key.Sample_DemoChangeUndone"; }
-        StateHasChanged();
         return Task.CompletedTask;
     }
     private Task RedoAsync()
     {
         if (RedoHistory.TryPop(out var next)) { History.Push(Rows); Rows = next; Revision++; Message = "Key.Sample_DemoChangeRedone"; }
-        StateHasChanged();
         return Task.CompletedTask;
     }
     private void ShowValidationError() => ChangeCell(new(0, 1, "-1"));
-    private Task ResetAsync() { Reset(); return Task.CompletedTask; }
-    private void Reset() { Rows = CreateRows(); History.Clear(); RedoHistory.Clear(); Revision++; ReadOnly = false; Message = "Key.Sample_FictionalDataReset"; StateHasChanged(); }
+    private void Reset() { Rows = CreateRows(); History.Clear(); RedoHistory.Clear(); Revision++; ReadOnly = false; Message = "Key.Sample_FictionalDataReset"; }
 }

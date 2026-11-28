@@ -26,6 +26,8 @@ This is a responsibility/dependency map, not an exhaustive file tree or a fresh 
 
 The root solution and four focused solutions group 22 projects and 33 declared local references. They are development graphs, not microservice orchestration. Exact project aliases/references, declarations and available package captures are in [dependencies](1_dependency.md#projects-and-source-reference-graph).
 
+SDK 11 builds the entire graph. The Gallery applications, native diagnostic host, tests and WinUI placeholder target .NET 11. Core and the package-bearing Blazor and WPF layers retain their .NET 10 targets for existing consumers. The release workflow uses both runtime generations to exercise application and package-consumer paths.
+
 ## Runtime, state and resources
 
 The Blazor Gallery is one ASP.NET Core/Kestrel process with browser HTTP/static assets and Interactive Server circuits. The Framework-only diagnostic host is separate and intentionally omits Design/Culture registration. WPF and WinUI Gallery entries are native desktop processes. No mandatory application database, cache server, message broker, authentication provider or remote business backend is introduced by these libraries.
@@ -56,7 +58,7 @@ Generic Dialog handles controlled/awaited and browser-controlled pre-rendered vi
 | --- | --- |
 | global.json, shared Build.props/targets and project files | SDK, source/Essential versions, identities, deterministic output and architecture-neutral package guards |
 | debug.bat -> scripts/Start-Project.ps1 | Runnable-project allowlist, Gallery/diagnostic selection, restore/build/run with preserved configuration and working directory |
-| scripts/release.bat -> Publish-Helper.ps1 | Prepare verification and separately confirmed stable tag publication |
+| scripts/release.bat -> Publish-Helper.ps1 | Prepare verification and separately confirmed publication of an annotated, suffixed release tag |
 | ReleaseSettings, Test-Release, Verify-PackageSet and build checks | Six dependency-ordered Core/Blazor packages, required assets, source/Gallery/JS/script/CSS/catalog/changelog and isolated consumer checks |
 | .github/workflows/build.yml | Build/test gate and tag-only NuGet Trusted Publishing; source push is not package publication |
 | scripts/Convert-MaterialIcons.ps1 and Subset-MaterialIcons.py | Explicit development regeneration of existing licensed assets; not normal consumer build dependencies |

@@ -166,12 +166,16 @@
     }
     private void AppearanceChanged(object? sender, EventArgs args) => _ = InvokeAsync(StateHasChanged);
     private void ChangeTheme(ApplicationTheme theme) => AppearanceService.SetTheme(theme);
-    private void ApplyPalette(EditContext context, PaletteDraft draft)
+    private async Task ApplyPalette(EditContext context, PaletteDraft draft)
     {
         if (Disposed || !ReferenceEquals(context, PaletteContext) || !ReferenceEquals(draft, Palette) || !PaletteDirty) return;
         ColorsApplied = false;
-        if (!context.Validate()) return;
-        AppearanceService.SetColors(draft.Primary, draft.Accent);
+        var primary = draft.Primary;
+        var accent = draft.Accent;
+        if (!await context.ValidateAsync()
+            || Disposed || !ReferenceEquals(context, PaletteContext) || !ReferenceEquals(draft, Palette)
+            || primary != draft.Primary || accent != draft.Accent) return;
+        AppearanceService.SetColors(primary, accent);
         SavedPrimary = AppearanceService.Current.Primary; SavedAccent = AppearanceService.Current.Accent;
         Palette = new() { Primary = SavedPrimary, Accent = SavedAccent };
         SetPaletteContext(); ColorsApplied = true;

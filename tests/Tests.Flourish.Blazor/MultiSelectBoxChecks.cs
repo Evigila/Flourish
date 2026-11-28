@@ -169,7 +169,9 @@ internal static class MultiSelectBoxChecks
             await f.Dispatch(async () =>
             {
                 var first = AfterRender(display); var second = AfterRender(display);
+#pragma warning disable BL0016 // Completing an in-process test double does not invoke browser interop.
                 await display.DisposeAsync(); js.Complete(); await Task.WhenAll(first,second);
+#pragma warning restore BL0016
             });
             Require(js.Imports==1 && js.Module.Calls.Count==0 && js.Module.Disposals==1,"A late module installed a discarded display controller.");
         }));
@@ -238,6 +240,7 @@ internal static class MultiSelectBoxChecks
         public ValueTask<T> InvokeAsync<T>(string name,object?[]? args)
         {
             if(name!="import")throw new InvalidOperationException(name); Imports++;
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
             return delayed ? new ValueTask<T>(Await<T>()) : ValueTask.FromResult((T)(object)Module);
         }
         private async Task<T> Await<T>()=>(T)(object)await Completion.Task;
@@ -248,6 +251,7 @@ internal static class MultiSelectBoxChecks
         internal List<string> Calls {get;}=[]; internal int Disposals;
         public ValueTask<T> InvokeAsync<T>(string name,object?[]? args) {Calls.Add(name); return ValueTask.FromResult(default(T)!);}
         public ValueTask<T> InvokeAsync<T>(string name,CancellationToken token,object?[]? args)=>InvokeAsync<T>(name,args);
+#pragma warning restore BL0016
         public ValueTask DisposeAsync() {Disposals++; return ValueTask.CompletedTask;}
     }
 }

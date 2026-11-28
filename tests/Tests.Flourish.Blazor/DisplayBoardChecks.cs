@@ -213,6 +213,7 @@ internal static class DisplayBoardChecks
         internal int ImportCount { get; private set; }
         internal string? ImportPath { get; private set; }
 
+#pragma warning disable BL0016 // In-process JS doubles expose their failures to the test runner.
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, default, args);
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
@@ -230,6 +231,7 @@ internal static class DisplayBoardChecks
         internal bool Disposed { get; private set; }
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => InvokeAsync<TValue>(identifier, default, args);
+#pragma warning restore BL0016
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
         {
             if (identifier != "copyText") throw new InvalidOperationException($"Unexpected module call: {identifier}.");
